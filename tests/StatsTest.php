@@ -65,4 +65,18 @@ class StatsTest extends TestCase
     {
         $this->assertEquals(100, Stats::max($this->data));
     }
+
+    public function test_softmax()
+    {
+        $values = Stats::softMax($this->data);
+
+        $this->assertEquals(0.03, Stats::round($values[0], 2));
+        $this->assertEquals(0.14, Stats::round($values[1], 2));
+        $this->assertEquals(0.12, Stats::round($values[2], 2));
+        $this->assertEquals(0.06, Stats::round($values[3], 2));
+        $this->assertEquals(0.23, Stats::round($values[4], 2));
+        $this->assertEquals(0.29, Stats::round($values[5], 2));
+        $this->assertEquals(0.03, Stats::round($values[6], 2));
+        $this->assertEquals(0.10, Stats::round($values[7], 2));
+    }
 }

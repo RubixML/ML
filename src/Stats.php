@@ -146,6 +146,23 @@ class Stats
     }
 
     /**
+     * Return a softmax array.
+     *
+     * @param  array  $values
+     * @return mixed
+     */
+    public static function softMax(array $values) : array
+    {
+        $sum = self::sum($values);
+
+        foreach ($values as $i => $value) {
+            $values[$i] = $value / $sum;
+        }
+
+        return $values;
+    }
+
+    /**
      * Format the number to a human readable format.
      *
      * @param  mixed  $number
