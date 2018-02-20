@@ -114,9 +114,21 @@ class GraphTest extends TestCase
         $this->assertEquals('Julie', $path->last()->name);
     }
 
+    public function test_find_all_pairs_shortest_paths()
+    {
+        $paths = $this->graph->findAllPairsShortestPaths();
+
+        $this->assertEquals(23, count($paths));
+
+        $this->assertEquals(['Andrew', 'Lacey', 'Julie'], $paths[0]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Lacey', 'Julie', 'Frank'], $paths[1]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Lacey', 'Steve', 'Seagal'], $paths[2]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Rich'], $paths[3]->pluck('name'));
+    }
+
     public function test_find_shortest_weighted_path()
     {
-        $path = $this->graph->findShortestPath($this->graph->find(1), $this->graph->find(2), 'years');
+        $path = $this->graph->findShortestWeightedPath($this->graph->find(1), $this->graph->find(2), 'years');
 
         $this->assertTrue($path instanceof Path);
         $this->assertEquals(3, $path->count());

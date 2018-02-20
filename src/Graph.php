@@ -241,8 +241,33 @@ class Graph
     }
 
     /**
+     * Find a shortest path between each node in the graph. Returns an array of
+     * paths in order they were discovered. O(V^2+E)
+     *
+     * @return array
+     */
+    public function findAllPairsShortestPaths() : array
+    {
+        $paths = [];
+
+        foreach ($this->nodes as $start) {
+            foreach ($this->nodes as $end) {
+                if (!$start->isSame($end)) {
+                    $path = $this->findShortestPath($start, $end);
+
+                    if (!is_null($path)) {
+                        $paths[] = $path;
+                    }
+                }
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
      * Find a shortest weighted path between start node and an end node.
-     * Returns null if no path can be found. O(VE)
+     * Returns null if no path can be found. O(V*E)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -268,7 +293,7 @@ class Graph
             'distance' => 0,
         ];
 
-        foreach (range(1, $this->nodes->count() - 1) as $iteration) {
+        foreach (range(1, $this->nodes->count() - 1) as $i) {
             foreach ($this->nodes as $current) {
                 foreach ($current->edges() as $edge) {
                     $distance = $discovered[$current]['distance'] + $edge->get($weight, $default);
@@ -310,7 +335,6 @@ class Graph
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
-     * @param  string  $relationship
      * @param  string  $weight
      * @param  mixed  $default
      * @return \Rubix\Engine\Path|null
@@ -357,7 +381,7 @@ class Graph
                         'distance' => $distance,
                     ];
 
-                    $queue->insert($edge->node(), 0 - $distance);
+                    $queue->insert($edge->node(), -$distance);
                 }
             }
         }

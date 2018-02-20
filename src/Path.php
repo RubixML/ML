@@ -44,7 +44,7 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * Select multiple columns of property values from an object. O(N^2)
+     * Select multiple columns of property values from an object. O(N*V)
      *
      * @param  mixed  $properties
      * @return array
@@ -57,7 +57,7 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * Select a particular column of property values. Return default if not found. O(N)
+     * Select a particular column of property values. Return default if not found. O(V)
      *
      * @param  string  $property
      * @param  mixed|null  $default
@@ -128,5 +128,15 @@ class Path extends SplDoublyLinkedList
     public function all() : array
     {
         return iterator_to_array($this);
+    }
+
+    /**
+     * Returns the length of the path. Alias of count().
+     *
+     * @return int
+     */
+    public function length() : int
+    {
+        return $this->count();
     }
 }
