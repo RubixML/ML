@@ -41,7 +41,8 @@ class TrieTest extends TestCase
         $node = $this->trie->insert('hairy');
 
         $this->assertTrue($node instanceof Node);
-        $this->assertEquals(['hairy' => 1], $node->words);
+        $this->assertEquals(true, $node->word);
+        $this->assertEquals('r', $node->parent->id());
     }
 
     public function test_find_prefix()

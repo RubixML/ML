@@ -21,7 +21,7 @@ class Trie extends Tree implements Countable
     {
         $this->size = 0;
 
-        parent::__construct(new Node('*'));
+        parent::__construct(new Node('*', ['parent' => null]));
 
         $this->merge($words);
     }
@@ -45,9 +45,7 @@ class Trie extends Tree implements Countable
         $current = $this->find($word);
 
         if (isset($current)) {
-            if (array_key_exists($word, $current->get('words', []))) {
-                return true;
-            }
+            return $current->word ? true : false;
         }
 
         return false;
@@ -74,9 +72,7 @@ class Trie extends Tree implements Countable
     {
         $current = $this->root;
 
-        $word = trim($word);
-
-        foreach (str_split(strtolower($word)) as $key) {
+        foreach (str_split(strtolower(trim($word))) as $key) {
             if ($current->edges()->has($key)) {
                 $current = $current->edges()->get($key)->node();
             } else {
@@ -84,8 +80,8 @@ class Trie extends Tree implements Countable
             }
         }
 
-        if (!array_key_exists($word, $current->get('words', []))) {
-            $current->set('words', $current->get('words', []) + [$word => 1]);
+        if ($current->word !== true) {
+            $current->set('word', true);
 
             $this->size++;
         }
@@ -118,10 +114,6 @@ class Trie extends Tree implements Countable
     {
         $current = $this->root;
 
-        if (strlen($prefix) === 0) {
-            return $current;
-        }
-
         foreach (str_split(strtolower(trim($prefix))) as $key) {
             if ($current->edges()->has($key)) {
                 $current = $current->edges()->get($key)->node();
@@ -147,20 +139,13 @@ class Trie extends Tree implements Countable
             return $this;
         }
 
-        $words = $current->get('words', []);
-
-        if (array_key_exists($word, $words)) {
-            $current->set('words', array_diff_key($words, [$word]));
-        }
+        $current->set('word', false);
 
         while ($current !== null) {
-            if (empty($current->words) && $current->isLeaf()) {
+            if ($current->word !== true && $current->isLeaf()) {
                 $current->parent->edges()->remove($current->id());
 
-                $temp = $current->parent;
-                unset($current);
-
-                $current = $temp;
+                $current = $current->parent;
             } else {
                 break;
             }
