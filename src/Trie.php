@@ -74,7 +74,9 @@ class Trie extends Tree implements Countable
     {
         $current = $this->root;
 
-        foreach (str_split(strtolower(trim($word))) as $key) {
+        $word = trim($word);
+
+        foreach (str_split(strtolower($word)) as $key) {
             if ($current->edges()->has($key)) {
                 $current = $current->edges()->get($key)->node();
             } else {
