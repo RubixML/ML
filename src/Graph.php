@@ -12,45 +12,26 @@ use SplStack;
 class Graph
 {
     /**
+     * An autoincrementing counter that keeps track of internal node IDs.
+     *
+     * @var \Rubix\Engine\Counter
+     */
+    protected $counter;
+
+    /**
      * An index of all the nodes in the graph.
      *
-     * @var  \Rubix\Engine\ObjectIndex
+     * @var \Rubix\Engine\ObjectIndex
      */
     protected $nodes;
 
     /**
-     * Factory method to build a graph from a list of nodes and edges.
-     *
-     * @param  array  $nodes
-     * @param  array  $edges
-     * @return self
-     */
-    public static function build(array $nodes = [], array $edges = []) : Graph
-    {
-        $graph = new self();
-
-        foreach ($nodes as $node) {
-            $graph->insert($node['id'], $node['properties'] ?? []);
-        }
-
-        foreach ($edges as $edge) {
-            $graph->find($edge['start'])->attach($graph->find($edge['end']), $edge['properties'] ?? []);
-        }
-
-        return $graph;
-    }
-
-    /**
-     * @param  \Rubix\Engine\ObjectIndex|null  $nodes
      * @return void
      */
-    public function __construct(ObjectIndex $nodes = null)
+    public function __construct()
     {
-        if (is_null($nodes)) {
-            $nodes = new ObjectIndex();
-        }
-
-        $this->nodes = $nodes;
+        $this->counter = new Counter();
+        $this->nodes = new ObjectIndex();
     }
 
     /**
@@ -62,6 +43,76 @@ class Graph
     }
 
     /**
+     * @return \Rubix\Engine\Counter
+     */
+    public function counter() : Counter
+    {
+        return $this->counter;
+    }
+
+    /**
+     * The order of the graph, or the total number of nodes. O(1)
+     *
+     * @return int
+     */
+    public function order() : int
+    {
+        return $this->nodes->count();
+    }
+
+    /**
+     * The size of the graph, or the total number of edges. O(V)
+     *
+     * @return int
+     */
+    public function size() : int
+    {
+        return array_reduce($this->nodes->all(), function ($carry, $node) {
+            return $carry += $node->edges()->count();
+        }, 0);
+    }
+
+    /**
+     * Is the graph acyclic? O(V+E)
+     *
+     * @return bool
+     */
+    public function acyclic() : bool
+    {
+        return !$this->cyclic();
+    }
+
+    /**
+     * Does the graph contain at least one infinite cycle. O(V+E)
+     *
+     * @return bool
+     */
+    public function cyclic() : bool
+    {
+        foreach ($this->nodes as $node) {
+            $discovered = new SplObjectStorage();
+            $stack = new SplStack();
+
+            $stack->push($node);
+
+            while (!$stack->isEmpty()) {
+                $current = $stack->pop();
+
+                foreach ($current->edges() as $edge) {
+                    if ($discovered->contains($edge->node())) {
+                        return true;
+                    }
+
+                    $discovered->attach($edge->node());
+                    $stack->push($edge->node());
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Insert a node into the graph. O(1)
      *
      * @param  mixed|null  $id
@@ -70,13 +121,9 @@ class Graph
      * @throws \RuntimeException
      * @return \Rubix\Engine\Node
      */
-    public function insert($id, array $properties = [], bool $overwrite = false) : Node
+    public function insert(array $properties = []) : Node
     {
-        if ($overwrite === false) {
-            if ($this->nodes->has($id)) {
-                throw new RuntimeException('Node with ID ' . (string) $id . ' already exists in the graph.');
-            }
-        }
+        $id = $this->counter->next();
 
         $node = new Node($id, $properties);
 
@@ -86,18 +133,18 @@ class Graph
     }
 
     /**
-     * Find a node in the graph.
+     * Find a node in the graph by internal ID. O(1)
      *
-     * @param  mixed  $id
+     * @param  int  $id
      * @return \Rubix\Engine\Node
      */
-    public function find($id) : ?Node
+    public function find(int $id) : ?Node
     {
         return $this->nodes->get($id);
     }
 
     /**
-     * Find many nodes.
+     * Find many nodes in the graph by ID.
      *
      * @param  array  $ids
      * @return array
@@ -108,8 +155,8 @@ class Graph
     }
 
     /**
-     * Find a path between a start node to an end node.
-     * Returns null if no path can be found. O(V+E)
+     * Find a path between a start node to an end node. Returns null if no path can
+     * be found. O(V+E)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -151,7 +198,7 @@ class Graph
     }
 
     /**
-     * Find a shortest path between a start node to an end node.
+     * Find a shortest path between a start node and an end node.
      * Returns null if no path can be found. O(V+E)
      *
      * @param  \Rubix\Engine\Node  $start
@@ -195,7 +242,7 @@ class Graph
 
     /**
      * Find a shortest weighted path between start node and an end node.
-     * Returns null if no path can be found. O(V*E)
+     * Returns null if no path can be found. O(VE)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -221,8 +268,8 @@ class Graph
             'distance' => 0,
         ];
 
-        foreach (range(1, $this->nodes->count()) as $iteration) {
-            foreach ($this->nodes() as $current) {
+        foreach (range(1, $this->nodes->count() - 1) as $iteration) {
+            foreach ($this->nodes as $current) {
                 foreach ($current->edges() as $edge) {
                     $distance = $discovered[$current]['distance'] + $edge->get($weight, $default);
 
@@ -354,58 +401,20 @@ class Graph
     }
 
     /**
-     * Is the relationship acyclic? O(V+E)
+     * Remove a node from the graph. O(V)
      *
-     * @return bool
-     */
-    public function acyclic() : bool
-    {
-        return !$this->cyclic();
-    }
-
-    /**
-     * Does the graph contain an infinite cycle. O(V+E)
-     *
-     * @return bool
-     */
-    public function cyclic() : bool
-    {
-        foreach ($this->nodes as $node) {
-            $discovered = new SplObjectStorage();
-            $stack = new SplStack();
-
-            $stack->push($node);
-
-            while (!$stack->isEmpty()) {
-                $current = $stack->pop();
-
-                foreach ($current->edges() as $edge) {
-                    if ($discovered->contains($edge->node())) {
-                        return true;
-                    }
-
-                    $discovered->attach($edge->node());
-                    $stack->push($edge->node());
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Remove a node from the graph. O(N)
-     *
-     * @param  mixed  $id
+     * @param  \Rubix\Engine\Node  $node
      * @return self
      */
-    public function delete($id) : Graph
+    public function delete(Node $node) : Graph
     {
         foreach ($this->nodes as $current) {
-            $current->edges()->remove($id);
+            $current->edges()->remove($node->id());
         }
 
-        $this->nodes->remove($id);
+        $this->nodes->remove($node->id());
+
+        unset($node);
 
         return $this;
     }

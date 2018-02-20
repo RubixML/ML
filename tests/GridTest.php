@@ -10,13 +10,11 @@ class GridTest extends TestCase
 
     public function setUp()
     {
-        $counter = 1;
-
         $this->grid = new Grid(['x', 'y']);
 
         for ($x = 0; $x < 10; $x++) {
             for ($y = 0; $y < 10; $y++) {
-                $this->grid->insert($counter++, ['x' => $x, 'y' => $y]);
+                $this->grid->insert(['x' => $x, 'y' => $y]);
             }
         }
 

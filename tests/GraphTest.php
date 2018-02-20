@@ -14,37 +14,46 @@ class GraphTest extends TestCase
     {
         $data = [
             'nodes' => [
-                ['id' => 1, 'properties' => ['name' => 'Andrew', 'gender' => 'male', 'age' => 34]],
-                ['id' => 2, 'properties' => ['name' => 'Julie', 'gender' => 'female', 'age' => 18]],
-                ['id' => 3, 'properties' => ['name' => 'Frank', 'gender' => 'male', 'age' => 32]],
-                ['id' => 4, 'properties' => ['name' => 'Seagal', 'gender' => 'male', 'age' => 49]],
-                ['id' => 5, 'properties' => ['name' => 'Rich', 'gender' => 'male', 'age' => 62]],
-                ['id' => 6, 'properties' => ['name' => 'Lacey', 'gender' => 'female', 'age' => 34]],
-                ['id' => 7, 'properties' => ['name' => 'Steve', 'gender' => 'male', 'age' => 21]],
-                ['id' => 8, 'properties' => ['name' => 'Harry', 'gender' => 'male', 'age' => 55]],
+                ['properties' => ['name' => 'Andrew', 'gender' => 'male', 'age' => 34]],
+                ['properties' => ['name' => 'Julie', 'gender' => 'female', 'age' => 18]],
+                ['properties' => ['name' => 'Frank', 'gender' => 'male', 'age' => 32]],
+                ['properties' => ['name' => 'Seagal', 'gender' => 'male', 'age' => 49]],
+                ['properties' => ['name' => 'Rich', 'gender' => 'male', 'age' => 62]],
+                ['properties' => ['name' => 'Lacey', 'gender' => 'female', 'age' => 34]],
+                ['properties' => ['name' => 'Steve', 'gender' => 'male', 'age' => 21]],
+                ['properties' => ['name' => 'Harry', 'gender' => 'male', 'age' => 55]],
             ],
             'edges' => [
-                ['start' => 1, 'end' => 5, 'properties' => ['years' => 9]],
-                ['start' => 1, 'end' => 6, 'properties' => ['years' => 5]],
-                ['start' => 2, 'end' => 3, 'properties' => ['years' => 1]],
-                ['start' => 2, 'end' => 6, 'properties' => ['years' => 5]],
-                ['start' => 4, 'end' => 7, 'properties' => ['years' => 4]],
-                ['start' => 5, 'end' => 1, 'properties' => ['years' => 9]],
-                ['start' => 6, 'end' => 2, 'properties' => ['years' => 5]],
-                ['start' => 6, 'end' => 7, 'properties' => ['years' => 6]],
-                ['start' => 7, 'end' => 4, 'properties' => ['years' => 4]],
-                ['start' => 8, 'end' => 3, 'properties' => ['years' => 2]],
+                ['start' => 'Andrew', 'end' => 'Rich', 'properties' => ['years' => 9]],
+                ['start' => 'Andrew', 'end' => 'Lacey', 'properties' => ['years' => 5]],
+                ['start' => 'Julie', 'end' => 'Frank', 'properties' => ['years' => 1]],
+                ['start' => 'Julie', 'end' => 'Lacey', 'properties' => ['years' => 5]],
+                ['start' => 'Seagal', 'end' => 'Steve', 'properties' => ['years' => 4]],
+                ['start' => 'Rich', 'end' => 'Andrew', 'properties' => ['years' => 9]],
+                ['start' => 'Lacey', 'end' => 'Julie', 'properties' => ['years' => 5]],
+                ['start' => 'Lacey', 'end' => 'Steve', 'properties' => ['years' => 6]],
+                ['start' => 'Steve', 'end' => 'Seagal', 'properties' => ['years' => 4]],
+                ['start' => 'Harry', 'end' => 'Frank', 'properties' => ['years' => 2]],
             ],
         ];
 
-        $this->graph = Graph::build($data['nodes'], $data['edges']);
+        $this->graph = new Graph();
+
+        foreach ($data['nodes'] as $node) {
+            $this->graph->insert($node['properties']);
+        }
+
+        foreach ($data['edges'] as $edge) {
+            $this->graph->nodes()->where('name', '==', $edge['start'])->first()
+                ->attach($this->graph->nodes()->where('name', '==', $edge['end'])->first(), $edge['properties']);
+        }
     }
 
     public function test_insert_node()
     {
         $this->assertEquals(8, $this->graph->nodes()->count());
 
-        $this->graph->insert(9, [
+        $this->graph->insert([
             'name' => 'Saoirse',
             'gender' => 'female',
         ]);
@@ -55,6 +64,16 @@ class GraphTest extends TestCase
 
         $this->assertEquals('Saoirse', $node->name);
         $this->assertEquals('female', $node->gender);
+    }
+
+    public function test_graph_order()
+    {
+        $this->assertEquals(8, $this->graph->order());
+    }
+
+    public function test_graph_size()
+    {
+        $this->assertEquals(10, $this->graph->size());
     }
 
     public function test_find_node()
@@ -129,7 +148,7 @@ class GraphTest extends TestCase
         $this->assertEquals(8, $this->graph->nodes()->count());
         $this->assertEquals('Seagal', $this->graph->find(4)->name);
 
-        $this->graph->delete(4);
+        $this->graph->delete($this->graph->find(4));
 
         $this->assertEquals(7, $this->graph->nodes()->count());
 
@@ -140,11 +159,11 @@ class GraphTest extends TestCase
 
     public function test_graph_is_acyclic()
     {
-        $this->assertFalse($this->graph->acyclic('FRIENDS'));
+        $this->assertFalse($this->graph->acyclic());
     }
 
     public function test_graph_is_cyclic()
     {
-        $this->assertTrue($this->graph->cyclic('FRIENDS'));
+        $this->assertTrue($this->graph->cyclic());
     }
 }
