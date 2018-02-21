@@ -437,6 +437,33 @@ class Graph
     }
 
     /**
+     * Find a shortest unsigned weighted path between each node in the graph. Returns
+     * an array of paths in order they were discovered.
+     *
+     * @param  string  $weight
+     * @param  string  $default
+     * @return array
+     */
+    public function findAllPairsShortestUnsignedWeightedPath(string $weight, $default = INF) : array
+    {
+        $paths = [];
+
+        foreach ($this->nodes as $start) {
+            foreach ($this->nodes as $end) {
+                if (!$start->isSame($end)) {
+                    $path = $this->findShortestUnsignedWeightedPath($start, $end, $weight, $default);
+
+                    if (isset($path)) {
+                        $paths[] = $path;
+                    }
+                }
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
      * Topologically sort the graph. O(V+E)
      *
      * @param  string  $relationship

@@ -159,6 +159,18 @@ class GraphTest extends TestCase
         $this->assertEquals('Julie', $path->last()->name);
     }
 
+    public function test_find_all_pairs_shortest_unsigned_weighted_path()
+    {
+        $paths = $this->graph->findAllPairsShortestUnsignedWeightedPath('years');
+
+        $this->assertEquals(27, count($paths));
+
+        $this->assertEquals(['Andrew', 'Lacey', 'Julie'], $paths[0]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Lacey', 'Julie', 'Frank'], $paths[1]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Lacey', 'Steve', 'Seagal'], $paths[2]->pluck('name'));
+        $this->assertEquals(['Andrew', 'Rich'], $paths[3]->pluck('name'));
+    }
+
     public function test_topological_sort()
     {
         $path = $this->graph->sort();
