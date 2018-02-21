@@ -28,6 +28,7 @@ class GraphTest extends TestCase
                 ['start' => 'Andrew', 'end' => 'Lacey', 'properties' => ['years' => 5]],
                 ['start' => 'Julie', 'end' => 'Frank', 'properties' => ['years' => 1]],
                 ['start' => 'Julie', 'end' => 'Lacey', 'properties' => ['years' => 5]],
+                ['start' => 'Frank', 'end' => 'Steve', 'properties' => ['years' => 1]],
                 ['start' => 'Seagal', 'end' => 'Steve', 'properties' => ['years' => 4]],
                 ['start' => 'Rich', 'end' => 'Andrew', 'properties' => ['years' => 9]],
                 ['start' => 'Lacey', 'end' => 'Julie', 'properties' => ['years' => 5]],
@@ -73,7 +74,7 @@ class GraphTest extends TestCase
 
     public function test_graph_size()
     {
-        $this->assertEquals(10, $this->graph->size());
+        $this->assertEquals(11, $this->graph->size());
     }
 
     public function test_find_node()
@@ -97,10 +98,20 @@ class GraphTest extends TestCase
         $path = $this->graph->findPath($this->graph->find(1), $this->graph->find(2));
 
         $this->assertTrue($path instanceof Path);
-        $this->assertEquals(3, $path->count());
+        $this->assertEquals(3, $path->length());
         $this->assertEquals('Andrew', $path->first()->name);
         $this->assertEquals('Lacey', $path->next()->name);
         $this->assertEquals('Julie', $path->last()->name);
+    }
+
+    public function test_find_all_paths()
+    {
+        $paths = $this->graph->findAllPaths($this->graph->find(6), $this->graph->find(7));
+
+        $this->assertEquals(2, count($paths));
+
+        $this->assertEquals(['Lacey', 'Julie', 'Frank', 'Steve'], $paths[0]->pluck('name'));
+        $this->assertEquals(['Lacey', 'Steve'], $paths[1]->pluck('name'));
     }
 
     public function test_find_shortest_path()
@@ -108,7 +119,7 @@ class GraphTest extends TestCase
         $path = $this->graph->findShortestPath($this->graph->find(1), $this->graph->find(2));
 
         $this->assertTrue($path instanceof Path);
-        $this->assertEquals(3, $path->count());
+        $this->assertEquals(3, $path->length());
         $this->assertEquals('Andrew', $path->first()->name);
         $this->assertEquals('Lacey', $path->next()->name);
         $this->assertEquals('Julie', $path->last()->name);
@@ -118,7 +129,7 @@ class GraphTest extends TestCase
     {
         $paths = $this->graph->findAllPairsShortestPaths();
 
-        $this->assertEquals(23, count($paths));
+        $this->assertEquals(27, count($paths));
 
         $this->assertEquals(['Andrew', 'Lacey', 'Julie'], $paths[0]->pluck('name'));
         $this->assertEquals(['Andrew', 'Lacey', 'Julie', 'Frank'], $paths[1]->pluck('name'));
@@ -131,7 +142,7 @@ class GraphTest extends TestCase
         $path = $this->graph->findShortestWeightedPath($this->graph->find(1), $this->graph->find(2), 'years');
 
         $this->assertTrue($path instanceof Path);
-        $this->assertEquals(3, $path->count());
+        $this->assertEquals(3, $path->length());
         $this->assertEquals('Andrew', $path->first()->name);
         $this->assertEquals('Lacey', $path->next()->name);
         $this->assertEquals('Julie', $path->last()->name);
@@ -142,7 +153,7 @@ class GraphTest extends TestCase
         $path = $this->graph->findShortestUnsignedWeightedPath($this->graph->find(1), $this->graph->find(2), 'years');
 
         $this->assertTrue($path instanceof Path);
-        $this->assertEquals(3, $path->count());
+        $this->assertEquals(3, $path->length());
         $this->assertEquals('Andrew', $path->first()->name);
         $this->assertEquals('Lacey', $path->next()->name);
         $this->assertEquals('Julie', $path->last()->name);

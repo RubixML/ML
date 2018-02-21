@@ -115,10 +115,7 @@ class Graph
     /**
      * Insert a node into the graph. O(1)
      *
-     * @param  mixed|null  $id
      * @param  array  $properties
-     * @param  bool  $overwrite
-     * @throws \RuntimeException
      * @return \Rubix\Engine\Node
      */
     public function insert(array $properties = []) : Node
@@ -198,8 +195,58 @@ class Graph
     }
 
     /**
-     * Find a shortest path between a start node and an end node.
-     * Returns null if no path can be found. O(V+E)
+     * Find all paths between a start node to an end node. Returns an empty array
+     * if no paths are found.
+     *
+     * @param  \Rubix\Engine\Node  $start
+     * @param  \Rubix\Engine\Node  $end
+     * @return array
+     */
+    public function findAllPaths(Node $start, Node $end) : array
+    {
+        $discovered = new SplObjectStorage();
+        $path = new Path();
+        $paths = [];
+
+        $this->_findAllPaths($start, $end, $discovered, $path, $paths);
+
+        return $paths;
+    }
+
+    /**
+     * Recursive backtracking function to find all paths between two given nodes.
+     *
+     * @param  \Rubix\Engine\Node  $root
+     * @param  \Rubix\Engine\Node  $end
+     * @param  \SplObjectStorage  $discovered
+     * @param  \Rubix\Engine\Path  $path
+     * @param  array  $paths
+     * @return void
+     */
+    protected function _findAllPaths(Node $root, Node $end, SplObjectStorage $discovered, Path $path, array &$paths) : void
+    {
+        $discovered->attach($root);
+        $path->push($root);
+
+        if ($root->isSame($end)) {
+            $paths[] = clone $path;
+        } else {
+            foreach ($root->edges() as $edge) {
+                $node = $edge->node();
+
+                if (!$discovered->contains($node)) {
+                    $this->_findAllPaths($node, $end, $discovered, $path, $paths);
+                }
+            }
+        }
+
+        $discovered->detach($root);
+        $path->pop();
+    }
+
+    /**
+     * Find a shortest path between a start node and an end node. Returns null if
+     * no path can be found. O(V+E)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -255,7 +302,7 @@ class Graph
                 if (!$start->isSame($end)) {
                     $path = $this->findShortestPath($start, $end);
 
-                    if (!is_null($path)) {
+                    if (isset($path)) {
                         $paths[] = $path;
                     }
                 }
