@@ -378,7 +378,7 @@ class Graph
 
     /**
      * Find a shortest unsigned weighted path between start node and an end node.
-     * Returns null if no path can be found. O(V+ElogV)
+     * Returns null if no path can be found. O(VlogV+ElogV)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -464,9 +464,9 @@ class Graph
     }
 
     /**
-     * Topologically sort the graph. O(V+E)
+     * Return a path of topologically sorted nodes which will only be valid if
+     * the graph is acyclic. O(V+E)
      *
-     * @param  string  $relationship
      * @return \Rubix\Engine\Path
      */
     public function sort() : Path

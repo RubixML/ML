@@ -108,10 +108,10 @@ class ObjectIndex implements IteratorAggregate, Countable
                 return false;
             }
 
-            if ($operator === '=' || $operator === '==') {
-                return $object->get($property) == $value;
-            } else if ($operator === '===') {
+            if ($operator === '===') {
                 return $object->get($property) === $value;
+            } else if ($operator === '==' || $operator === '=') {
+                return $object->get($property) == $value;
             } else if ($operator === '!=' || $operator === '<>') {
                 return $object->get($property) != $value;
             } else if ($operator === '>') {
@@ -125,7 +125,11 @@ class ObjectIndex implements IteratorAggregate, Countable
             } else if ($operator === '!==') {
                 return $object->get($property) !== $value;
             } else if ($operator === 'like') {
-                return strpos($object->get($property), $value) !== false ? true : false;
+                if (is_string($value)) {
+                    return strpos($object->get($property), $value) !== false ? true : false;
+                }
+
+                return false;
             }
         });
     }

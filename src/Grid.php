@@ -8,7 +8,7 @@ use SplPriorityQueue;
 class Grid extends Graph
 {
     /**
-     * The properties that represent axis on the grid.
+     * The properties that represent axis of the grid.
      *
      * @var array
      */
@@ -18,14 +18,13 @@ class Grid extends Graph
 
     /**
      * @param  array  $labels
-     * @param  \Rubix\Engine\ObjectIndex  $nodes
      * @return void
      */
-    public function __construct(array $labels = ['x', 'y'], ObjectIndex $nodes = null)
+    public function __construct(array $labels = ['x', 'y'])
     {
         $this->labels = $labels;
 
-        parent::__construct($nodes);
+        parent::__construct();
     }
 
     /**
@@ -50,7 +49,8 @@ class Grid extends Graph
 
     /**
      * Find a shortest smart path between a start node and an end node in a grid.
-     * Returns null if no path can be found. O(V+E)
+     * Uses a euclidian distance heuristic to prioritize the direction of the
+     * traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -102,7 +102,7 @@ class Grid extends Graph
                         return $carry += pow($edge->node()->get($label, INF) - $current->get($label, INF), 2);
                     }, 0));
 
-                    $queue->insert($edge->node(), 0 - ($distance + $heuristic));
+                    $queue->insert($edge->node(), -($distance + $heuristic));
                 }
             }
         }
@@ -111,8 +111,9 @@ class Grid extends Graph
     }
 
     /**
-     * Find a shortest smart unsigned weighted path between a start node to an end node in a grid.
-     * Returns null if no path can be found. O(V+E)
+     * Find a shortest smart unsigned weighted path between a start node to an end
+     * node in a grid. Uses a euclidian distance heuristic to prioritize the direction
+     * of the traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end
@@ -166,7 +167,7 @@ class Grid extends Graph
                         return $carry += pow($edge->node()->get($label, INF) - $current->get($label, INF), 2);
                     }, 0));
 
-                    $queue->insert($edge->node(), 0 - ($distance + $heuristic));
+                    $queue->insert($edge->node(), -($distance + $heuristic));
                 }
             }
         }
