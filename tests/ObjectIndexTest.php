@@ -84,6 +84,8 @@ class ObjectIndexTest extends TestCase
         $this->assertEquals(2, $this->index->where('color', '=', 'blue')->count());
         $this->assertEquals(4, $this->index->where('color', '!=', 'blue')->count());
         $this->assertEquals(4, $this->index->where('color', '<>', 'blue')->count());
+        $this->assertEquals(2, $this->index->where('color', 'like', 'blu')->count());
+        $this->assertEquals(2, $this->index->where('color', 'like', 'lue')->count());
         $this->assertEquals(2, $this->index->where('luminance', '>', '50')->count());
         $this->assertEquals(3, $this->index->where('luminance', '<', '50')->count());
         $this->assertEquals(4, $this->index->where('luminance', '<=', '50')->count());

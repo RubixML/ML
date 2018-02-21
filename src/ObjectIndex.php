@@ -124,6 +124,8 @@ class ObjectIndex implements IteratorAggregate, Countable
                 return $object->get($property) <= $value;
             } else if ($operator === '!==') {
                 return $object->get($property) !== $value;
+            } else if ($operator === 'like') {
+                return strpos($object->get($property), $value) !== false ? true : false;
             }
         });
     }
