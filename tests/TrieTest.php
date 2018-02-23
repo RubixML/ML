@@ -27,13 +27,7 @@ class TrieTest extends TestCase
         $this->assertTrue($this->trie->has('literally'));
         $this->assertTrue($this->trie->has('important'));
         $this->assertFalse($this->trie->has('earth'));
-    }
-
-    public function test_has_prefix()
-    {
-        $this->assertTrue($this->trie->hasPrefix('literal'));
-        $this->assertTrue($this->trie->hasPrefix('abs'));
-        $this->assertFalse($this->trie->hasPrefix('chi'));
+        $this->assertFalse($this->trie->has('mars'));
     }
 
     public function test_insert_word()
@@ -41,8 +35,16 @@ class TrieTest extends TestCase
         $node = $this->trie->insert('hairy');
 
         $this->assertTrue($node instanceof Node);
-        $this->assertEquals(true, $node->word);
+        $this->assertEquals('y', $node->id());
         $this->assertEquals('r', $node->parent->id());
+        $this->assertEquals('i', $node->parent->parent->id());
+        $this->assertEquals('a', $node->parent->parent->parent->id());
+        $this->assertEquals('h', $node->parent->parent->parent->parent->id());
+        $this->assertTrue($node->word);
+        $this->assertNull($node->parent->word);
+        $this->assertNull($node->parent->parent->word);
+        $this->assertNull($node->parent->parent->parent->word);
+        $this->assertNull($node->parent->parent->parent->parent->word);
     }
 
     public function test_find_prefix()
@@ -50,7 +52,12 @@ class TrieTest extends TestCase
         $node = $this->trie->find('norma');
 
         $this->assertTrue($node instanceof Node);
-        $this->assertNull($node->words);
+        $this->assertEquals('a', $node->id());
+        $this->assertEquals('m', $node->parent->id());
+        $this->assertEquals('r', $node->parent->parent->id());
+        $this->assertEquals('o', $node->parent->parent->parent->id());
+        $this->assertEquals('n', $node->parent->parent->parent->parent->id());
+        $this->assertNull($node->word);
     }
 
     public function test_delete_word()

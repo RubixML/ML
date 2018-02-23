@@ -4,14 +4,21 @@ namespace Rubix\Engine;
 
 use Countable;
 
-class Trie extends Tree implements Countable
+class Trie implements Countable
 {
+    /**
+     * The root node of the trie.
+     *
+     * @var \Rubix\Engine\Node|null  $root
+     */
+    protected $root;
+
     /**
      * The size of the trie in words.
      *
      * @var int
      */
-    public $size;
+    protected $size;
 
     /**
      * @param  array  $words
@@ -19,11 +26,18 @@ class Trie extends Tree implements Countable
      */
     public function __construct(array $words = [])
     {
+        $this->root = new Node('*', ['parent' => null]);
         $this->size = 0;
 
-        parent::__construct(new Node('*', ['parent' => null]));
-
         $this->merge($words);
+    }
+
+    /**
+     * @return \Rubix\Engine\Node|null
+     */
+    public function root() : ?Node
+    {
+        return $this->root;
     }
 
     /**
@@ -35,7 +49,7 @@ class Trie extends Tree implements Countable
     }
 
     /**
-     * Is a word present in the trie?
+     * Is a word present in the trie? O(L)
      *
      * @param  string  $word
      * @return bool
@@ -52,18 +66,7 @@ class Trie extends Tree implements Countable
     }
 
     /**
-     * Is the given prefix present in the trie?
-     *
-     * @param  string  $word
-     * @return bool
-     */
-    public function hasPrefix(string $prefix) : bool
-    {
-        return !is_null($this->find($prefix));
-    }
-
-    /**
-     * Insert a word into the trie.
+     * Insert a word into the trie. O(L)
      *
      * @param  string  $word
      * @return \Rubix\Engine\Node
@@ -80,7 +83,7 @@ class Trie extends Tree implements Countable
             }
         }
 
-        if ($current->word !== true) {
+        if ($current->get('word', false) === false) {
             $current->set('word', true);
 
             $this->size++;
@@ -90,7 +93,7 @@ class Trie extends Tree implements Countable
     }
 
     /**
-     * Merge an array of words into the trie at once.
+     * Merge an array of words into the trie at once. O(N*L)
      *
      * @param  array  $words
      * @return self
@@ -105,7 +108,7 @@ class Trie extends Tree implements Countable
     }
 
     /**
-     * Find the given prefix in the trie.
+     * Find a prefix node by key. O(L)
      *
      * @param  string  $prefix
      * @return \Rubix\Engine\Node|null
@@ -126,7 +129,7 @@ class Trie extends Tree implements Countable
     }
 
     /**
-     * Delete a word from the trie.
+     * Delete a word from the trie. O(L)
      *
      * @param  string  $word
      * @return self
@@ -142,7 +145,7 @@ class Trie extends Tree implements Countable
         $current->set('word', false);
 
         while ($current !== null) {
-            if ($current->word !== true && $current->isLeaf()) {
+            if ($current->get('word', false) === false && $current->isLeaf()) {
                 $current->parent->edges()->remove($current->id());
 
                 $current = $current->parent;
@@ -162,5 +165,15 @@ class Trie extends Tree implements Countable
     public function count() : int
     {
         return $this->size;
+    }
+
+    /**
+     * Is the trie empty?
+     *
+     * @return bool
+     */
+    public function isEmpty() : bool
+    {
+        return $this->size <= 0;
     }
 }
