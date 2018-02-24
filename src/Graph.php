@@ -2,14 +2,14 @@
 
 namespace Rubix\Engine;
 
-use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
 use SplPriorityQueue;
+use Countable;
 use SplQueue;
 use SplStack;
 
-class Graph
+class Graph implements Countable
 {
     /**
      * An autoincrementing counter that keeps track of internal node IDs.
@@ -120,17 +120,15 @@ class Graph
      */
     public function insert(array $properties = []) : Node
     {
-        $id = $this->counter->next();
+        $node = new Node($this->counter->next(), $properties);
 
-        $node = new Node($id, $properties);
-
-        $this->nodes->put($id, $node);
+        $this->nodes->put($node->id(), $node);
 
         return $node;
     }
 
     /**
-     * Find a node in the graph by internal ID. O(1)
+     * Find a node in the graph by ID. O(1)
      *
      * @param  int  $id
      * @return \Rubix\Engine\Node
@@ -141,7 +139,7 @@ class Graph
     }
 
     /**
-     * Find many nodes in the graph by ID.
+     * Find many nodes in the graph by ID. Returns an array indexed by node ID.
      *
      * @param  array  $ids
      * @return array
@@ -355,6 +353,9 @@ class Graph
             }
         }
 
+        // Run the algorithm one more time, if we are still able to relax an edge,
+        // then it is an infinite negative weight cycle and no shortest path can
+        // be computed.
         foreach ($this->nodes as $current) {
             foreach ($current->edges() as $edge) {
                 if ($discovered[$current]['distance'] != INF && $discovered[$current]['distance'] + $edge->$weight < $discovered[$edge->node()]['distance']) {
@@ -512,8 +513,14 @@ class Graph
 
         $this->nodes->remove($node->id());
 
-        unset($node);
-
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function count() : int
+    {
+        return $this->order();
     }
 }
