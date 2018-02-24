@@ -9,13 +9,6 @@ class BinaryNode extends GraphObject
     const BALANCE_FACTOR = 1;
 
     /**
-     * The parent node.
-     *
-     * @var \Rubix\Engine\BinaryNode
-     */
-    protected $parent;
-
-    /**
      * The value of the node.
      *
      * @var mixed
@@ -48,20 +41,11 @@ class BinaryNode extends GraphObject
             throw new InvalidArgumentException('Value must be a numeric or string type, ' . gettype($value) . ' found.');
         }
 
-        $this->parent = null;
         $this->value = $value;
         $this->left = null;
         $this->right = null;
 
         parent::__construct($properties);
-    }
-
-    /**
-     * @return \Rubix\Engine\BinaryNode|null
-     */
-    public function parent() : ?BinaryNode
-    {
-        return $this->parent;
     }
 
     /**
@@ -106,19 +90,6 @@ class BinaryNode extends GraphObject
     {
         return (isset($this->left) ? $this->left->height() : 0)
             - (isset($this->right) ? $this->right->height() : 0);
-    }
-
-    /**
-     * Set the parent node.
-     *
-     * @param  \Rubix\Engine\BinaryNode|null  $parent
-     * @return self
-     */
-    public function setParent(BinaryNode $parent = null) : BinaryNode
-    {
-        $this->parent = $parent;
-
-        return $this;
     }
 
     /**
