@@ -2,6 +2,7 @@
 
 use Rubix\Engine\Trie;
 use Rubix\Engine\Node;
+use Rubix\Engine\Path;
 use PHPUnit\Framework\TestCase;
 
 class TrieTest extends TestCase
@@ -32,32 +33,29 @@ class TrieTest extends TestCase
 
     public function test_insert_word()
     {
-        $node = $this->trie->insert('hairy');
+        $path = $this->trie->insert('hairy');
 
-        $this->assertTrue($node instanceof Node);
-        $this->assertEquals('y', $node->id());
-        $this->assertEquals('r', $node->parent->id());
-        $this->assertEquals('i', $node->parent->parent->id());
-        $this->assertEquals('a', $node->parent->parent->parent->id());
-        $this->assertEquals('h', $node->parent->parent->parent->parent->id());
-        $this->assertTrue($node->word);
-        $this->assertNull($node->parent->word);
-        $this->assertNull($node->parent->parent->word);
-        $this->assertNull($node->parent->parent->parent->word);
-        $this->assertNull($node->parent->parent->parent->parent->word);
+        $this->assertTrue($path instanceof Path);
+        $this->assertEquals('h', $path->first()->id());
+        $this->assertEquals('a', $path->next()->id());
+        $this->assertEquals('i', $path->next()->id());
+        $this->assertEquals('r', $path->next()->id());
+        $this->assertEquals('y', $path->next()->id());
+        $this->assertTrue($path->last()->word);
+        $this->assertNull($path->first()->word);
     }
 
     public function test_find_prefix()
     {
-        $node = $this->trie->find('norma');
+        $path = $this->trie->find('norma');
 
-        $this->assertTrue($node instanceof Node);
-        $this->assertEquals('a', $node->id());
-        $this->assertEquals('m', $node->parent->id());
-        $this->assertEquals('r', $node->parent->parent->id());
-        $this->assertEquals('o', $node->parent->parent->parent->id());
-        $this->assertEquals('n', $node->parent->parent->parent->parent->id());
-        $this->assertNull($node->word);
+        $this->assertTrue($path instanceof Path);
+        $this->assertEquals('n', $path->first()->id());
+        $this->assertEquals('o', $path->next()->id());
+        $this->assertEquals('r', $path->next()->id());
+        $this->assertEquals('m', $path->next()->id());
+        $this->assertEquals('a', $path->next()->id());
+        $this->assertNull($path->last()->word);
     }
 
     public function test_delete_word()

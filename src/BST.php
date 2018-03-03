@@ -70,10 +70,15 @@ class BST implements Countable
      *
      * @param  mixed  $value
      * @param  array  $properties
+     * @throws \InvalidArgumentException
      * @return \Rubix\Engine\BinaryNode
      */
     public function insert($value, array $properties = []) : BinaryNode
     {
+        if (!is_numeric($value) && !is_string($value)) {
+            throw new InvalidArgumentException('Value must be a string or numeric type, ' . gettype($value) . ' found.');
+        }
+
         $node = new BinaryNode(array_replace($properties, ['value' => $value]));
 
         if ($this->isEmpty()) {
@@ -142,12 +147,13 @@ class BST implements Countable
      * Find a node with the given value. O(log V)
      *
      * @param  mixed  $value
+     * @throws \InvalidArgumentException
      * @return \Rubix\Engine\BinaryNode|null
      */
     public function find($value) : ?BinaryNode
     {
         if (!is_numeric($value) && !is_string($value)) {
-            throw new InvalidArgumentException('Search value must be numeric or string type, ' . gettype($value) . ' found.');
+            throw new InvalidArgumentException('Value must be a string or numeric type, ' . gettype($value) . ' found.');
         }
 
         $current = $this->root;
@@ -170,12 +176,13 @@ class BST implements Countable
      *
      * @param  mixed  $start
      * @param  mixed  $end
+     * @throws \InvalidArgumentException
      * @return \Rubix\Engine\Path
      */
     public function findRange($start, $end) : Path
     {
         if ($start > $end) {
-            throw new InvalidArgumentException('Start range value must be less than or equal to end value.');
+            throw new InvalidArgumentException('Start value must be less than or equal to end value.');
         }
 
         $path = new Path();
@@ -196,7 +203,7 @@ class BST implements Countable
      */
     protected function _findRange($start, $end, BinaryNode $current = null, Path $path) : void
     {
-        if (is_null($current)) {
+        if (!isset($current)) {
             return;
         }
 

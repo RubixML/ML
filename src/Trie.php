@@ -3,6 +3,7 @@
 namespace Rubix\Engine;
 
 use Countable;
+use SplStack;
 
 class Trie implements Countable
 {
@@ -26,7 +27,7 @@ class Trie implements Countable
      */
     public function __construct(array $words = [])
     {
-        $this->root = new Node('*', ['parent' => null]);
+        $this->root = new Node('*');
         $this->size = 0;
 
         $this->merge($words);
@@ -56,31 +57,35 @@ class Trie implements Countable
      */
     public function has(string $word) : bool
     {
-        $current = $this->find($word);
+        $path = $this->find($word);
 
-        if (isset($current)) {
-            return $current->word ? true : false;
+        if (isset($path)) {
+            return $path->last()->get('word', false);
         }
 
         return false;
     }
 
     /**
-     * Insert a word into the trie. O(L)
+     * Insert a word into the trie and return a path of nodes. O(L)
      *
      * @param  string  $word
-     * @return \Rubix\Engine\Node
+     * @return \Rubix\Engine\Path
      */
-    public function insert(string $word) : Node
+    public function insert(string $word) : Path
     {
+        $path = new Path();
+
         $current = $this->root;
 
-        foreach (str_split(strtolower(trim($word))) as $key) {
-            if ($current->edges()->has($key)) {
-                $current = $current->edges()->get($key)->node();
+        foreach (str_split(strtolower(trim($word))) as $letter) {
+            if ($current->edges()->has($letter)) {
+                $current = $current->edges()->get($letter)->node();
             } else {
-                $current = $current->attach(new Node($key, ['parent' => $current]))->node();
+                $current = $current->attach(new Node($letter))->node();
             }
+
+            $path->append($current);
         }
 
         if ($current->get('word', false) === false) {
@@ -89,7 +94,7 @@ class Trie implements Countable
             $this->size++;
         }
 
-        return $current;
+        return $path;
     }
 
     /**
@@ -108,53 +113,69 @@ class Trie implements Countable
     }
 
     /**
-     * Find a prefix node by key. O(L)
+     * Find a path of given prefix or null if one does not exist. O(L)
      *
      * @param  string  $prefix
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Engine\Path
      */
-    public function find(string $prefix) : ?Node
+    public function find(string $prefix) : ?Path
     {
+        $path = new Path();
+
         $current = $this->root;
 
-        foreach (str_split(strtolower(trim($prefix))) as $key) {
-            if ($current->edges()->has($key)) {
-                $current = $current->edges()->get($key)->node();
+        foreach (str_split(strtolower(trim($prefix))) as $letter) {
+            if ($current->edges()->has($letter)) {
+                $current = $current->edges()->get($letter)->node();
+
+                $path->append($current);
             } else {
                 return null;
             }
         }
 
-        return $current;
+        return $path;
     }
 
     /**
-     * Delete a word from the trie. O(L)
+     * Remove a word from the trie. O(L)
      *
      * @param  string  $word
      * @return self
      */
     public function delete(string $word) : Trie
     {
-        $current = $this->find($word);
+        $stack = new SplStack();
 
-        if (is_null($current)) {
-            return $this;
+        $current = $this->root;
+
+        foreach (str_split(strtolower(trim($word))) as $letter) {
+            if ($current->edges()->has($letter)) {
+                $current = $current->edges()->get($letter)->node();
+
+                $stack->push($current);
+            } else {
+                return $this;
+            }
         }
 
-        $current->set('word', false);
+        if ($current->get('word', false)) {
+            $current->set('word', false);
 
-        while ($current !== null) {
-            if ($current->get('word', false) === false && $current->isLeaf()) {
-                $current->parent->edges()->remove($current->id());
+            $this->size--;
+        }
 
-                $current = $current->parent;
+        while (!$stack->isEmpty()) {
+            $current = $stack->pop();
+
+            if (!$current->get('word', false) && $current->isLeaf()) {
+                if ($stack->valid()) {
+                    $stack->top()->edges()->remove($current->id());
+                }
             } else {
                 break;
             }
         }
-
-        $this->size--;
 
         return $this;
     }
@@ -174,6 +195,6 @@ class Trie implements Countable
      */
     public function isEmpty() : bool
     {
-        return $this->size <= 0;
+        return !isset($this->root);
     }
 }
