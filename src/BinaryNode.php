@@ -6,54 +6,57 @@ use InvalidArgumentException;
 
 class BinaryNode extends GraphObject
 {
-    const BALANCE_FACTOR = 1;
+    const MAX_BALANCE_FACTOR = 1;
 
     /**
-     * The value of the node.
+     * The parent node.
      *
-     * @var mixed
+     * @var \Rubix\Engine\BinaryNode|null
      */
-    protected $value;
+    protected $parent;
 
     /**
      * The left child node.
      *
-     * @var \Rubix\Engine\BinaryNode
+     * @var \Rubix\Engine\BinaryNode|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var \Rubix\Engine\BinaryNode
+     * @var \Rubix\Engine\BinaryNode|null
      */
     protected $right;
 
     /**
-     * @param  mixed  $value
+     * The precomputed height of the node.
+     *
+     * @var int
+     */
+    protected $height;
+
+    /**
      * @param  array  $properties
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($value, array $properties = [])
+    public function __construct(array $properties = [])
     {
-        if (!is_numeric($value) && !is_string($value)) {
-            throw new InvalidArgumentException('Value must be a numeric or string type, ' . gettype($value) . ' found.');
-        }
-
-        $this->value = $value;
+        $this->parent = null;
         $this->left = null;
         $this->right = null;
+        $this->height = 1;
 
         parent::__construct($properties);
     }
 
     /**
-     * @return mixed
+     * @return \Rubix\Engine\BinaryNode|null
      */
-    public function value()
+    public function parent() : ?BinaryNode
     {
-        return $this->value;
+        return $this->parent;
     }
 
     /**
@@ -77,8 +80,7 @@ class BinaryNode extends GraphObject
      */
     public function height() : int
     {
-        return 1 + max(isset($this->left) ? $this->left->height() : 0,
-            isset($this->right) ? $this->right->height() : 0);
+        return $this->height;
     }
 
     /**
@@ -93,14 +95,33 @@ class BinaryNode extends GraphObject
     }
 
     /**
+     * Set the parent of this node.
+     *
+     * @param  \Rubix\Engine\BinaryNode|null  $node
+     * @return self
+     */
+    public function setParent(BinaryNode $node = null) : self
+    {
+        $this->parent = $node;
+
+        return $this;
+    }
+
+    /**
      * Set the left child node.
      *
      * @param  \Rubix\Engine\BinaryNode|null  $node
      * @return self
      */
-    public function attachLeft(BinaryNode $node = null) : BinaryNode
+    public function attachLeft(BinaryNode $node = null) : self
     {
         $this->left = $node;
+
+        $this->updateHeight();
+
+        if (isset($node)) {
+            $node->setParent($this);
+        }
 
         return $this;
     }
@@ -111,45 +132,70 @@ class BinaryNode extends GraphObject
      * @param  \Rubix\Engine\BinaryNode|null  $node
      * @return self
      */
-    public function attachRight(BinaryNode $node = null) : BinaryNode
+    public function attachRight(BinaryNode $node = null) : self
     {
         $this->right = $node;
+
+        $this->updateHeight();
+
+        if (isset($node)) {
+            $node->setParent($this);
+        }
 
         return $this;
     }
 
     /**
-     * Rotates the node to the left and returns the new root.
+     * Detach the left child node.
      *
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode
+     * @return self
      */
-    public function rotateLeft() : BinaryNode
+    public function detachLeft() : self
     {
-        $y = $this->right;
-        $temp = $y->left();
+        if (!isset($this->left)) {
+            return $this;
+        }
 
-        $y->attachLeft($this);
-        $this->attachRight($temp);
+        $this->left->setParent(null);
 
-        return $y;
+        $this->left = null;
+
+        $this->updateHeight();
+
+        return $this;
     }
 
     /**
-     * Rotates the node to the right and returns the new root.
+     * Detach the right child node.
      *
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode
+     * @return self
      */
-    public function rotateRight() : BinaryNode
+    public function detachRight() : self
     {
-        $x = $this->left;
-        $temp = $x->right();
+        if (!isset($this->right)) {
+            return $this;
+        }
 
-        $x->attachRight($this);
-        $this->attachLeft($temp);
+        $this->right->setParent(null);
 
-        return $x;
+        $this->right = null;
+
+        $this->updateHeight();
+
+        return $this;
+    }
+
+    /**
+     * Update the height of the node.
+     *
+     * @return void
+     */
+    public function updateHeight() : self
+    {
+        $this->height = 1 + max(isset($this->left) ? $this->left->height() : 0,
+            isset($this->right) ? $this->right->height() : 0);
+
+        return $this;
     }
 
     /**
@@ -159,7 +205,7 @@ class BinaryNode extends GraphObject
      */
     public function isBalanced() : bool
     {
-        return abs($this->balance()) <= static::BALANCE_FACTOR;
+        return abs($this->balance()) <= static::MAX_BALANCE_FACTOR;
     }
 
     /**

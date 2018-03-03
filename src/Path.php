@@ -7,25 +7,23 @@ use SplDoublyLinkedList;
 class Path extends SplDoublyLinkedList
 {
     /**
-     * @param  array  $nodes
+     * @param  array  $objects
      * @return void
      */
-    public function __construct(array $nodes = [])
+    public function __construct(array $objects = [])
     {
-        foreach ($nodes as $node) {
-            $this->append($node);
-        }
+        $this->extend($objects);
     }
 
     /**
-     *  Prepend a node onto the beginning of the path. O(1)
+     *  Prepend an object onto the beginning of the path. O(1)
      *
-     * @param  \Rubix\Engine\Node  $node
+     * @param  \Rubix\Engine\GraphObject  $object
      * @return self
      */
-    public function prepend(Node $node) : Path
+    public function prepend(GraphObject $object) : self
     {
-        $this->unshift($node);
+        $this->unshift($object);
 
         return $this;
     }
@@ -33,18 +31,33 @@ class Path extends SplDoublyLinkedList
     /**
      *  Append a node onto the end of the path. O(1)
      *
-     * @param  \Rubix\Engine\Node  $node
+     * @param  \Rubix\Engine\GraphObject  $object
      * @return self
      */
-    public function append(Node $node) : Path
+    public function append(GraphObject $object) : self
     {
-        $this->push($node);
+        $this->push($object);
 
         return $this;
     }
 
     /**
-     * Select multiple columns of property values from an object. O(N*V)
+     * Extend the path with a given array of objects. O(N)
+     *
+     * @param  array  $objects
+     * @return self
+     */
+    public function extend(array $objects) : self
+    {
+        foreach ($objects as $object) {
+            $this->append($object);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Select multiple columns of property values from an object. O(PN)
      *
      * @param  mixed  $properties
      * @return array
@@ -57,7 +70,7 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * Select a particular column of property values. Return default if not found. O(V)
+     * Select a particular column of property values. Return default if not found. O(N)
      *
      * @param  string  $property
      * @param  mixed|null  $default
@@ -75,11 +88,11 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * The first node in the path. O(1)
+     * The first object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Engine\GraphObject|null
      */
-    public function first() : ?Node
+    public function first() : ?GraphObject
     {
         $this->rewind();
 
@@ -87,11 +100,11 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * The next node in the path. O(1)
+     * The next object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Engine\GraphObject|null
      */
-    public function next() : ?Node
+    public function next() : ?GraphObject
     {
         parent::next();
 
@@ -99,11 +112,11 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * The previous node in the path. O(1)
+     * The previous object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Engine\GraphObject|null
      */
-    public function prev() : ?Node
+    public function prev() : ?GraphObject
     {
         parent::prev();
 
@@ -111,17 +124,17 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * The last node in the path. O(1)
+     * The last object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Engine\GraphObject|null
      */
-    public function last() : ?Node
+    public function last() : ?GraphObject
     {
         return $this->top();
     }
 
     /**
-     * Return an array of all the nodes in the path. O(N)
+     * Return an array of all the objects in the path. O(N)
      *
      * @return array
      */
@@ -131,7 +144,7 @@ class Path extends SplDoublyLinkedList
     }
 
     /**
-     * Returns the length of the path. Alias of count().
+     * Returns the length of the path in objects.
      *
      * @return int
      */

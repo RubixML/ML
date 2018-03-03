@@ -9,14 +9,14 @@ class BinaryNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new BinaryNode(1, ['coolness_factor' => 'medium']);
+        $this->node = new BinaryNode(['coolness_factor' => 'medium']);
     }
 
     public function test_create_binary_node()
     {
         $this->assertTrue($this->node instanceof BinaryNode);
-        $this->assertEquals(1, $this->node->value());
         $this->assertEquals('medium', $this->node->coolness_factor);
+
         $this->assertEquals(1, $this->node->height());
         $this->assertNull($this->node->left());
         $this->assertNull($this->node->right());
@@ -30,7 +30,7 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($this->node->isBalanced());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachLeft(new BinaryNode(2));
+        $node = $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'low']));
 
         $this->assertNotNull($node->left());
         $this->assertTrue($node->left() instanceof BinaryNode);
@@ -46,7 +46,7 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($this->node->isBalanced());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachRight(new BinaryNode(2));
+        $node = $this->node->attachRight(new BinaryNode(['coolness_factor' => 'high']));
 
         $this->assertNotNull($node->right());
         $this->assertTrue($node->right() instanceof BinaryNode);
@@ -55,4 +55,6 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($node->isBalanced());
         $this->assertFalse($node->isLeaf());
     }
+
+    
 }
