@@ -183,7 +183,7 @@ class GraphTest extends TestCase
         $this->assertEquals(8, $this->graph->nodes()->count());
         $this->assertEquals('Seagal', $this->graph->find(4)->name);
 
-        $this->graph->delete($this->graph->find(4));
+        $this->graph->delete(4);
 
         $this->assertEquals(7, $this->graph->nodes()->count());
 

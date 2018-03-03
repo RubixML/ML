@@ -12,13 +12,6 @@ use SplStack;
 class Graph implements Countable
 {
     /**
-     * An autoincrementing counter that keeps track of internal node IDs.
-     *
-     * @var \Rubix\Engine\Counter
-     */
-    protected $counter;
-
-    /**
      * An index of all the nodes in the graph.
      *
      * @var \Rubix\Engine\ObjectIndex
@@ -26,12 +19,19 @@ class Graph implements Countable
     protected $nodes;
 
     /**
+     * An autoincrementing counter that keeps track of internal node IDs.
+     *
+     * @var int
+     */
+    protected $counter;
+
+    /**
      * @return void
      */
     public function __construct()
     {
-        $this->counter = new Counter();
         $this->nodes = new ObjectIndex();
+        $this->counter = 1;
     }
 
     /**
@@ -43,9 +43,9 @@ class Graph implements Countable
     }
 
     /**
-     * @return \Rubix\Engine\Counter
+     * @return int
      */
-    public function counter() : Counter
+    public function counter() : int
     {
         return $this->counter;
     }
@@ -120,9 +120,11 @@ class Graph implements Countable
      */
     public function insert(array $properties = []) : Node
     {
-        $node = new Node($this->counter->next(), $properties);
+        $id = $this->counter++;
 
-        $this->nodes->put($node->id(), $node);
+        $node = new Node($id, $properties);
+
+        $this->nodes->put($id, $node);
 
         return $node;
     }
@@ -139,7 +141,7 @@ class Graph implements Countable
     }
 
     /**
-     * Find many nodes in the graph by ID. Returns an array indexed by node ID.
+     * Find many nodes in the graph by ID. Returns an array indexed by the node ID.
      *
      * @param  array  $ids
      * @return array
@@ -466,12 +468,16 @@ class Graph implements Countable
 
     /**
      * Return a path of topologically sorted nodes which will only be valid if
-     * the graph is acyclic. O(V+E)
+     * the graph is acyclic. Returns null if graph is empty. O(V+E)
      *
-     * @return \Rubix\Engine\Path
+     * @return \Rubix\Engine\Path|null
      */
-    public function sort() : Path
+    public function sort() : ?Path
     {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
         $discovered = new SplObjectStorage();
         $stack = new SplStack();
         $path = new Path();
@@ -500,27 +506,45 @@ class Graph implements Countable
     }
 
     /**
-     * Remove a node from the graph. O(V)
+     * Remove a node from the graph by ID. O(V)
      *
-     * @param  \Rubix\Engine\Node  $node
+     * @param  int  $id
      * @return self
      */
-    public function delete(Node $node) : Graph
+    public function delete(int $id) : self
     {
-        foreach ($this->nodes as $current) {
-            $current->edges()->remove($node->id());
+        if (!$this->nodes->has($id)) {
+            return $this;
         }
 
-        $this->nodes->remove($node->id());
+        foreach ($this->nodes as $current) {
+            if ($current->edges()->has($id)) {
+                $current->edges()->remove($id);
+            }
+        }
+
+        $this->nodes->remove($id);
 
         return $this;
     }
 
     /**
+     * The number of nodes in the graph. Alias of order().
+     *
      * @return int
      */
     public function count() : int
     {
         return $this->order();
+    }
+
+    /**
+     * Is the graph empty?
+     *
+     * @return int
+     */
+    public function isEmpty() : bool
+    {
+        return $this->nodes->isEmpty();
     }
 }
