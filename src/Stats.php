@@ -53,33 +53,25 @@ class Stats
      */
     public static function median(array $values, string $split = 'AVERAGE')
     {
-        foreach ($values as $value) {
-            if (!is_numeric($value)) {
-                throw new RuntimeException('Found non-numeric value in data set, unable to determine median.');
-            }
-        }
-
-        sort($values, SORT_NUMERIC);
-
         $count = count($values);
 
         if ($count === 0) {
             return null;
         }
 
+        sort($values);
+
         $middle = floor($count / 2) - 1;
 
         if ($count % 2) {
             return $values[$middle];
         } else {
-            if ($split === 'AVERAGE') {
-                return ($values[$middle] + $values[$middle + 1]) / 2;
-            } else if ($split === 'LOW') {
+            if ($split === 'LOWER') {
                 return $values[$middle];
-            } else if ($split === 'HIGH') {
+            } else if ($split === 'UPPER') {
                 return $values[$middle + 1];
             } else {
-                throw new InvalidArgumentException('Invalid split method, unable to determine median.');
+                return ($values[$middle] + $values[$middle + 1]) / 2;
             }
         }
     }

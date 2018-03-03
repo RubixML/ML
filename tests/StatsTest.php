@@ -32,13 +32,9 @@ class StatsTest extends TestCase
     public function test_calculate_median()
     {
         $this->assertEquals(37.5, Stats::median($this->data));
-        $this->assertEquals(35, Stats::median($this->data, 'LOW'));
-        $this->assertEquals(40, Stats::median($this->data, 'HIGH'));
+        $this->assertEquals(35, Stats::median($this->data, 'LOWER'));
+        $this->assertEquals(40, Stats::median($this->data, 'UPPER'));
         $this->assertEquals(37.5, Stats::median($this->data, 'AVERAGE'));
-
-        $this->expectException(\RuntimeException::class);
-
-        Stats::median(['bad', 'data']);
     }
 
     public function test_calculate_mode()
