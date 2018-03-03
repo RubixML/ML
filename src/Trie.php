@@ -88,7 +88,7 @@ class Trie implements Countable
             $path->append($current);
         }
 
-        if ($current->get('word', false) === false) {
+        if (!$current->word) {
             $current->set('word', true);
 
             $this->size++;
@@ -103,7 +103,7 @@ class Trie implements Countable
      * @param  array  $words
      * @return self
      */
-    public function merge(array $words) : Trie
+    public function merge(array $words) : self
     {
         foreach ($words as $word) {
             $this->insert($word);
@@ -138,12 +138,12 @@ class Trie implements Countable
     }
 
     /**
-     * Remove a word from the trie. O(L)
+     * Remove a word from the trie and trim the suffix. O(L)
      *
      * @param  string  $word
      * @return self
      */
-    public function delete(string $word) : Trie
+    public function delete(string $word) : self
     {
         $stack = new SplStack();
 
@@ -159,7 +159,7 @@ class Trie implements Countable
             }
         }
 
-        if ($current->get('word', false)) {
+        if ($current->word) {
             $current->set('word', false);
 
             $this->size--;
@@ -168,7 +168,7 @@ class Trie implements Countable
         while (!$stack->isEmpty()) {
             $current = $stack->pop();
 
-            if (!$current->get('word', false) && $current->isLeaf()) {
+            if (!$current->word && $current->isLeaf()) {
                 if ($stack->valid()) {
                     $stack->top()->edges()->remove($current->id());
                 }
