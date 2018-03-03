@@ -55,6 +55,14 @@ class BST implements Countable
     }
 
     /**
+     * @return int
+     */
+    public function size() : int
+    {
+        return $this->size;
+    }
+
+    /**
      * Search the BST for a given value. O(log V)
      *
      * @param  mixed  $value
@@ -104,23 +112,7 @@ class BST implements Countable
                 }
             }
 
-            while (isset($parent)) {
-                $balance = $parent->balance();
-
-                if ($balance > 1 && $node->value < $parent->left()->value) {
-                    $this->rotateRight($parent);
-                } else if ($balance < -1 && $node->value > $parent->right()->value) {
-                    $this->rotateLeft($parent);
-                } else if ($balance > 1 && $node->value > $parent->left()->value) {
-                    $this->rotateLeft($parent->left());
-                    $this->rotateRight($parent);
-                } else if ($balance < -1 && $node->value < $parent->right()->value) {
-                    $this->rotateRight($parent->right());
-                    $this->rotateLeft($parent);
-                }
-
-                $parent = $parent->parent();
-            }
+            $this->rebalance($parent);
         }
 
         $this->size++;
@@ -158,7 +150,7 @@ class BST implements Countable
 
         $current = $this->root;
 
-        while ($current !== null) {
+        while (isset($current)) {
             if ($current->value === $value) {
                 break;
             } else if ($current->value > $value) {
@@ -172,7 +164,7 @@ class BST implements Countable
     }
 
     /**
-     * Find a range of nodes with values between start and end. O(log N)
+     * Find a range of nodes with values between start and end.
      *
      * @param  mixed  $start
      * @param  mixed  $end
@@ -227,12 +219,12 @@ class BST implements Countable
      */
     public function sort() : ?Path
     {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
         $stack = new SplStack();
         $path = new Path();
-
-        if ($this->isEmpty()) {
-            return $path;
-        }
 
         $current = $this->root;
 
@@ -268,7 +260,7 @@ class BST implements Countable
         if (!is_null($node->right())) {
             $parent = $node->right();
 
-            while ($parent !== null) {
+            while (isset($parent)) {
                 if (is_null($parent->left())) {
                     return $parent;
                 } else {
@@ -279,7 +271,7 @@ class BST implements Countable
             $parent = $this->root;
             $successor = null;
 
-            while ($parent !== null) {
+            while (isset($parent)) {
                 if ($node->value < $parent->value) {
                     $successor = $parent;
 
@@ -372,18 +364,14 @@ class BST implements Countable
             } else if (is_null($node->right()) && !is_null($node->left())) {
                 if ($node->value > $parent->value) {
                     $parent->attachRight($node->left());
-                    $node->left()->setParent($parent);
                 } else {
                     $parent->attachLeft($node->left());
-                    $node->left()->setParent($parent);
                 }
             } else if (is_null($node->left()) && !is_null($node->right())) {
                 if ($node->value > $parent->value) {
                     $parent->attachRight($node->right());
-                    $node->right()->setParent($parent);
                 } else {
                     $parent->attachLeft($node->right());
-                    $node->right()->setParent($parent);
                 }
             } else {
                 $successor = $this->successor($node);
@@ -393,28 +381,39 @@ class BST implements Countable
                 $node->update($successor->properties());
             }
 
-            while (isset($parent)) {
-                $balance = $parent->balance();
-
-                if ($balance > 1 && $parent->left()->balance() >= 0) {
-                    $this->rotateRight($parent);
-                } else if ($balance < -1 && $parent->right()->balance() <= 0) {
-                    $this->rotateLeft($parent);
-                } else if ($balance > 1 && $parent->left()->balance() < 0) {
-                    $this->rotateLeft($parent->left());
-                    $this->rotateRight($parent);
-                } else if ($balance < -1 && $parent->right()->balance() > 0) {
-                    $this->rotateRight($parent->right());
-                    $this->rotateLeft($parent);
-                }
-
-                $parent = $parent->parent();
-            }
+            $this->rebalance($parent);
         }
 
         $this->size--;
 
         return $this;
+    }
+
+    /**
+     * Rebalance the tree starting from a node and traversing to the root. O(H)
+     *
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return void
+     */
+    protected function rebalance(BinaryNode $node = null) : void
+    {
+        while (isset($node)) {
+            $balance = $node->balance();
+
+            if ($balance > 1 && $node->left()->balance() >= 0) {
+                $this->rotateRight($node);
+            } else if ($balance < -1 && $node->right()->balance() <= 0) {
+                $this->rotateLeft($node);
+            } else if ($balance > 1 && $node->left()->balance() < 0) {
+                $this->rotateLeft($node->left());
+                $this->rotateRight($node);
+            } else if ($balance < -1 && $node->right()->balance() > 0) {
+                $this->rotateRight($node->right());
+                $this->rotateLeft($node);
+            }
+
+            $node = $node->parent();
+        }
     }
 
     /**
@@ -484,13 +483,13 @@ class BST implements Countable
     }
 
     /**
-     * Count the number of nodes in the tree.
+     * Count the number of nodes in the tree. Alias of size().
      *
      * @return int
      */
     public function count() : int
     {
-        return $this->size;
+        return $this->size();
     }
 
     /**
@@ -500,6 +499,6 @@ class BST implements Countable
      */
     public function isEmpty() : bool
     {
-        return is_null($this->root);
+        return !isset($this->root);
     }
 }
