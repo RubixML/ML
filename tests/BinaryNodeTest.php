@@ -56,5 +56,8 @@ class BinaryNodeTest extends TestCase
         $this->assertFalse($node->isLeaf());
     }
 
-    
+    public function test_detach_left_child()
+    {
+        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'high']));
+    }
 }

@@ -2,11 +2,9 @@
 
 namespace Rubix\Engine;
 
-use InvalidArgumentException;
-
 class BinaryNode extends GraphObject
 {
-    const MAX_BALANCE_FACTOR = 1;
+    const BALANCE_THRESHOLD = 1;
 
     /**
      * The parent node.
@@ -38,7 +36,6 @@ class BinaryNode extends GraphObject
 
     /**
      * @param  array  $properties
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $properties = [])
@@ -115,13 +112,15 @@ class BinaryNode extends GraphObject
      */
     public function attachLeft(BinaryNode $node = null) : self
     {
-        $this->left = $node;
-
-        $this->updateHeight();
+        $this->detachLeft();
 
         if (isset($node)) {
             $node->setParent($this);
+
+            $this->left = $node;
         }
+
+        $this->updateHeight();
 
         return $this;
     }
@@ -134,13 +133,15 @@ class BinaryNode extends GraphObject
      */
     public function attachRight(BinaryNode $node = null) : self
     {
-        $this->right = $node;
-
-        $this->updateHeight();
+        $this->detachRight();
 
         if (isset($node)) {
             $node->setParent($this);
+
+            $this->right = $node;
         }
+
+        $this->updateHeight();
 
         return $this;
     }
@@ -152,15 +153,11 @@ class BinaryNode extends GraphObject
      */
     public function detachLeft() : self
     {
-        if (!isset($this->left)) {
-            return $this;
+        if (isset($this->left)) {
+            $this->left = null;
+
+            $this->updateHeight();
         }
-
-        $this->left->setParent(null);
-
-        $this->left = null;
-
-        $this->updateHeight();
 
         return $this;
     }
@@ -172,28 +169,32 @@ class BinaryNode extends GraphObject
      */
     public function detachRight() : self
     {
-        if (!isset($this->right)) {
-            return $this;
+        if (isset($this->right)) {
+            $this->right = null;
+
+            $this->updateHeight();
         }
-
-        $this->right->setParent(null);
-
-        $this->right = null;
-
-        $this->updateHeight();
 
         return $this;
     }
 
     /**
-     * Update the height of the node.
+     * Recursive function to update the node's height up to the root. O(N logN)
      *
-     * @return void
+     * @return self
      */
     public function updateHeight() : self
     {
-        $this->height = 1 + max(isset($this->left) ? $this->left->height() : 0,
+        $height = 1 + max(isset($this->left) ? $this->left->height() : 0,
             isset($this->right) ? $this->right->height() : 0);
+
+        if ($this->height !== $height) {
+            $this->height = $height;
+
+            if (!is_null($this->parent())) {
+                $this->parent()->updateHeight();
+            }
+        }
 
         return $this;
     }
@@ -205,7 +206,7 @@ class BinaryNode extends GraphObject
      */
     public function isBalanced() : bool
     {
-        return abs($this->balance()) <= static::MAX_BALANCE_FACTOR;
+        return abs($this->balance()) <= static::BALANCE_THRESHOLD;
     }
 
     /**

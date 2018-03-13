@@ -62,10 +62,23 @@ class BSTTest extends TestCase
 
     public function test_get_in_order_successor()
     {
-        $this->assertEquals(47, $this->tree->successor($this->tree->find(42))->value);
+        $this->assertEquals(6, $this->tree->successor($this->tree->find(2))->value);
+        $this->assertEquals(12, $this->tree->successor($this->tree->find(6))->value);
+        $this->assertEquals(15, $this->tree->successor($this->tree->find(12))->value);
+        $this->assertEquals(16, $this->tree->successor($this->tree->find(15))->value);
+        $this->assertEquals(20, $this->tree->successor($this->tree->find(16))->value);
+        $this->assertEquals(27, $this->tree->successor($this->tree->find(20))->value);
+        $this->assertEquals(32, $this->tree->successor($this->tree->find(27))->value);
+        $this->assertEquals(42, $this->tree->successor($this->tree->find(32))->value);
         $this->assertEquals(49, $this->tree->successor($this->tree->find(47))->value);
         $this->assertEquals(58, $this->tree->successor($this->tree->find(49))->value);
         $this->assertEquals(72, $this->tree->successor($this->tree->find(58))->value);
+        $this->assertEquals(75, $this->tree->successor($this->tree->find(72))->value);
+        $this->assertEquals(77, $this->tree->successor($this->tree->find(75))->value);
+        $this->assertEquals(79, $this->tree->successor($this->tree->find(77))->value);
+        $this->assertEquals(83, $this->tree->successor($this->tree->find(79))->value);
+        $this->assertEquals(88, $this->tree->successor($this->tree->find(83))->value);
+        $this->assertEquals(99, $this->tree->successor($this->tree->find(88))->value);
     }
 
     public function test_min_value()
@@ -83,12 +96,19 @@ class BSTTest extends TestCase
         $this->assertEquals([2, 6, 12, 15, 16, 20, 27, 32, 42, 47, 49, 58, 72, 75,
             77, 79, 83, 88, 99], $this->tree->sort()->pluck('value'));
 
-        $this->tree->delete($this->tree->find(88));
-        $this->tree->delete($this->tree->find(20));
-        $this->tree->delete($this->tree->find(47));
-        $this->tree->delete($this->tree->find(27));
+        $this->tree->delete(88);
+        $this->tree->delete(20);
+        $this->tree->delete(47);
+        $this->tree->delete(27);
 
         $this->assertEquals([2, 6, 12, 15, 16, 32, 42, 49, 58, 72, 75, 77, 79, 83,
             99], $this->tree->sort()->pluck('value'));
+    }
+
+    public function test_delete_range()
+    {
+        $this->tree->deleteRange(16, 80);
+
+        $this->assertEquals([2, 6, 12, 15, 83, 88, 99], $this->tree->sort()->pluck('value'));
     }
 }
