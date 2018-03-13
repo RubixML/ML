@@ -50,7 +50,7 @@ class GraphObject
      * @param  mixed  $value
      * @return self
      */
-    public function set(string $property, $value) : GraphObject
+    public function set(string $property, $value = null) : GraphObject
     {
         $this->properties[$property] = $value;
 
@@ -73,8 +73,8 @@ class GraphObject
     }
 
     /**
-     * Return a given property or return default if not found. O(1)
-     * If property is a function, call it and return its output.
+     * Return a given property or return default if not found.  If property is a
+     * callback function, call and return it.
      *
      * @param  string  $property
      * @param  mixed|null  $default
@@ -89,6 +89,21 @@ class GraphObject
         }
 
         return $value;
+    }
+
+    /**
+     * Remove a property from the object.
+     *
+     * @param  string  $property
+     * @return self
+     */
+    public function remove(string $property) : self
+    {
+        if ($this->has($property)) {
+            unset($this->properties[$property]);
+        }
+
+        return $this;
     }
 
     /**

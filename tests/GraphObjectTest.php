@@ -59,4 +59,17 @@ class GraphObjectTest extends TestCase
         $this->assertEquals('100g', $this->object->mass);
         $this->assertEquals(6, $this->object->faces);
     }
+
+    public function test_remove_property()
+    {
+        $this->assertTrue($this->object->has('color'));
+        $this->assertTrue($this->object->has('dimensions'));
+        $this->assertFalse($this->object->has('tacos'));
+
+        $this->object->remove('color');
+
+        $this->assertFalse($this->object->has('color'));
+        $this->assertTrue($this->object->has('dimensions'));
+        $this->assertFalse($this->object->has('tacos'));
+    }
 }
