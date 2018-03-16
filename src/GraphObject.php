@@ -58,7 +58,7 @@ class GraphObject
     }
 
     /**
-     * Update the object with properties from an associative array. O(N)
+     * Update the object with properties from an associative array. O(P)
      *
      * @param  array  $properties
      * @return self
@@ -107,7 +107,18 @@ class GraphObject
     }
 
     /**
-     * Magic getters.
+     * Set a property using an assignment operation.
+     *
+     * @param  mixed  $property
+     * @return mixed
+     */
+    public function __set(string $property, $value)
+    {
+        return $this->set($property, $value);
+    }
+
+    /**
+     * Return a property value via object property accessor.
      *
      * @param  mixed  $property
      * @return mixed
@@ -115,5 +126,27 @@ class GraphObject
     public function __get(string $property)
     {
         return $this->get($property);
+    }
+
+    /**
+     * Determine if a property is set, i.e. present and not null.
+     *
+     * @param  string  $property
+     * @return bool
+     */
+    public function __isset(string $property)
+    {
+        return isset($this->properties[$property]);
+    }
+
+    /**
+     * Remove a property from the object via unset().
+     *
+     * @param  string  $property
+     * @return bool
+     */
+    public function __unset(string $property)
+    {
+        return $this->remove($property);
     }
 }

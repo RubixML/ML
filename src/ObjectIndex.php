@@ -29,7 +29,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
-     * Determine if an object exists in the index. O(1)
+     * Determine if an object exists in the index even if it is null. O(1)
      *
      * @param  mixed  $key
      * @return bool
@@ -58,7 +58,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
-     * Merge an array of objects into the index. O(N)
+     * Merge an array of objects into the index. O(O)
      *
      * @param  mixed  $objects
      * @return self
@@ -83,7 +83,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
-     * Return an array of objects from the index with keys intact. O(N)
+     * Return an array of objects from the index with keys intact. O(K)
      *
      * @param  array  $keys
      * @return self
@@ -112,6 +112,8 @@ class ObjectIndex implements IteratorAggregate, Countable
                 return $object->get($property) === $value;
             } else if ($operator === '==' || $operator === '=') {
                 return $object->get($property) == $value;
+            } else if ($operator === '!==') {
+                return $object->get($property) !== $value;
             } else if ($operator === '!=' || $operator === '<>') {
                 return $object->get($property) != $value;
             } else if ($operator === '>') {
@@ -122,20 +124,15 @@ class ObjectIndex implements IteratorAggregate, Countable
                 return $object->get($property) >= $value;
             } else if ($operator === '<=') {
                 return $object->get($property) <= $value;
-            } else if ($operator === '!==') {
-                return $object->get($property) !== $value;
             } else if ($operator === 'like') {
-                if (is_string($value)) {
-                    return strpos($object->get($property), $value) !== false ? true : false;
-                }
-
-                return false;
+                return strpos($object->get($property), (string) $value) !== false ? true : false;
             }
         });
     }
 
     /**
      * Return all the objects with property values present in an array of values.
+     * O(V*N)
      *
      * @param  string  $property
      * @param  array  $values
@@ -175,7 +172,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
-     * Select multiple columns of property values from an object. O(N^2)
+     * Select multiple columns of property values from an object. O(P*N)
      *
      * @param  mixed  $properties
      * @return array
@@ -188,18 +185,14 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
-     * Select a particular column of property values. If a property
-     * is missing fill it in with a default value. O(N)
+     * Select a particular column of property values from the index. O(N)
      *
      * @param  string  $property
-     * @param  mixed  $default
      * @return array
      */
-    public function pluck(string $property, $default = null) : array
+    public function pluck(string $property) : array
     {
-        return array_map(function ($object) use ($property, $default) {
-            return $object->get($property, $default);
-        }, $this->objects);
+        return array_column($this->objects, $property);
     }
 
     /**
