@@ -4,8 +4,6 @@ namespace Rubix\Engine;
 
 class BinaryNode extends GraphObject
 {
-    const BALANCE_THRESHOLD = 1;
-
     /**
      * The parent node.
      *
@@ -81,17 +79,6 @@ class BinaryNode extends GraphObject
     }
 
     /**
-     * The balance factor of the node.
-     *
-     * @return int
-     */
-    public function balance() : int
-    {
-        return (isset($this->left) ? $this->left->height() : 0)
-            - (isset($this->right) ? $this->right->height() : 0);
-    }
-
-    /**
      * Set the parent of this node.
      *
      * @param  \Rubix\Engine\BinaryNode|null  $node
@@ -154,6 +141,8 @@ class BinaryNode extends GraphObject
     public function detachLeft() : self
     {
         if (isset($this->left)) {
+            $this->left->setParent(null);
+
             $this->left = null;
 
             $this->updateHeight();
@@ -170,6 +159,8 @@ class BinaryNode extends GraphObject
     public function detachRight() : self
     {
         if (isset($this->right)) {
+            $this->right->setParent(null);
+
             $this->right = null;
 
             $this->updateHeight();
@@ -197,16 +188,6 @@ class BinaryNode extends GraphObject
         }
 
         return $this;
-    }
-
-    /**
-     * Is the node balanced?
-     *
-     * @return bool
-     */
-    public function isBalanced() : bool
-    {
-        return abs($this->balance()) <= static::BALANCE_THRESHOLD;
     }
 
     /**

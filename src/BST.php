@@ -74,7 +74,7 @@ class BST implements Countable
     }
 
     /**
-     * Insert a node into the BST and rebalance. O(log V)
+     * Insert a node into the BST. ϴ(logV), O(V)
      *
      * @param  mixed  $value
      * @param  array  $properties
@@ -111,8 +111,6 @@ class BST implements Countable
                     }
                 }
             }
-
-            $this->rebalance($current);
         }
 
         $this->size++;
@@ -309,13 +307,44 @@ class BST implements Countable
     }
 
     /**
+     * Return the in order predecessor of a given node or null if given node is min.
+     *
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return \Rubix\Engine\BinaryNode|null
+     */
+    public function predecessor(BinaryNode $node = null) : ?BinaryNode
+    {
+        if (!isset($node)) {
+            return $node;
+        }
+
+        if (is_null($node->left())) {
+            $parent = $node->parent();
+
+            while (isset($parent) && $node === $parent->left()) {
+                $node = $parent;
+
+                $parent = $parent->parent();
+            }
+
+            return $parent;
+        }
+
+        return $this->_max($node->left());
+    }
+
+    /**
      * Return the in order successor of a given node or null if given node is max.
      *
      * @param  \Rubix\Engine\BinaryNode  $node
      * @return \Rubix\Engine\BinaryNode|null
      */
-    public function successor(BinaryNode $node) : ?BinaryNode
+    public function successor(BinaryNode $node = null) : ?BinaryNode
     {
+        if (!isset($node)) {
+            return $node;
+        }
+
         if (is_null($node->right())) {
             $parent = $node->parent();
 
@@ -359,7 +388,9 @@ class BST implements Countable
      */
     public function deleteRange($start, $end) : self
     {
-        foreach ($this->findRange($start, $end) as $node) {
+        $range = $this->findRange($start, $end);
+
+        foreach ($range as $node) {
             $this->_delete($node);
         }
 
@@ -377,134 +408,48 @@ class BST implements Countable
         $parent = $node->parent();
 
         if (!isset($parent)) {
-            // Node to be deleted is the root node.
-            $parent = $node;
+            if ($node->isLeaf()) {
+                $this->root = $node;
+            } else if (is_null($node->right()) && !is_null($node->left())) {
+                $this->root = $node->left()->setParent(null);
+            } else if (is_null($node->left()) && !is_null($node->right())) {
+                $this->root = $node->right()->setParent(null);
+            } else {
+                $predecessor = $this->predecessor($node);
 
-            $successor = $this->successor($node);
+                $this->_delete($predecessor);
 
-            $node->update($successor->properties());
-
-            $this->_delete($successor);
+                $this->root->update($predecessor->properties());
+            }
         } else {
             if ($node->isLeaf()) {
-                if ($node === $parent->left()) {
+                if ($parent->left() === $node) {
                     $parent->detachLeft();
-                } else {
+                } else if ($parent->right() === $node) {
                     $parent->detachRight();
                 }
             } else if (is_null($node->right()) && !is_null($node->left())) {
-                $node->update($node->left()->properties());
-
-                $this->_delete($node->left());
+                if ($parent->left() === $node) {
+                    $parent->attachLeft($node->left());
+                } else if ($parent->right() === $node) {
+                    $parent->attachRight($node->left());
+                }
             } else if (is_null($node->left()) && !is_null($node->right())) {
-                $node->update($node->right()->properties());
-
-                $this->_delete($node->right());
+                if ($parent->left() === $node) {
+                    $parent->attachLeft($node->right());
+                } else if ($parent->right() === $node) {
+                    $parent->attachRight($node->right());
+                }
             } else {
                 $successor = $this->successor($node);
 
-                $node->update($successor->properties());
-
                 $this->_delete($successor);
+
+                $node->update($successor->properties());
             }
         }
-
-        $this->rebalance($parent);
 
         $this->size--;
-    }
-
-    /**
-     * Rebalance the tree starting from a node and traversing up to the root.
-     *
-     * @param  \Rubix\Engine\BinaryNode|null  $node
-     * @return void
-     */
-    protected function rebalance(BinaryNode $node = null) : void
-    {
-        while (isset($node)) {
-            $balance = $node->balance();
-
-            if ($balance > 1 && $node->left()->balance() >= 0) {
-                $this->rotateRight($node);
-            } else if ($balance < -1 && $node->right()->balance() <= 0) {
-                $this->rotateLeft($node);
-            } else if ($balance > 1 && $node->left()->balance() < 0) {
-                $this->rotateLeft($node->left());
-                $this->rotateRight($node);
-            } else if ($balance < -1 && $node->right()->balance() > 0) {
-                $this->rotateRight($node->right());
-                $this->rotateLeft($node);
-            }
-
-            $node = $node->updateHeight()->parent();
-        }
-    }
-
-    /**
-     * Rotates node x to the left as demonstrated in the picture below. O(1)
-     *
-     *      x                               y
-     *     / \        rotate left         /  \
-     *   T1   y      – – – - - – >      x    T3
-     *       / \                       / \
-     *     T2  T3                    T1  T2
-     *
-     * @param  \Rubix\Engine\BinaryNode  $x
-     * @return void
-     */
-    protected function rotateLeft(BinaryNode $x) : void
-    {
-        $y = $x->right();
-
-        $y->setParent($x->parent());
-
-        if (is_null($y->parent())) {
-            $this->root = $y;
-        } else {
-            if ($y->parent()->left() === $x) {
-                $y->parent()->attachLeft($y);
-            } else if ($y->parent()->right() === $x) {
-                $y->parent()->attachRight($y);
-            }
-        }
-
-        $x->attachRight($y->left());
-
-        $y->attachLeft($x);
-    }
-
-    /**
-     * Rotates node x to the right as demonstrated in the picture below. O(1)
-     *
-     *      y                              x
-     *     / \       rotate right        /  \
-     *    x   T3     – – – - - – >     T1    y
-     *   / \                                / \
-     *  T1  T2                            T2  T3
-     *
-     * @param  \Rubix\Engine\BinaryNode  $x
-     * @return void
-     */
-    protected function rotateRight(BinaryNode $x) : void
-    {
-        $y = $x->left();
-
-        $y->setParent($x->parent());
-
-        if (is_null($y->parent())) {
-            $this->root = $y;
-        } else {
-            if ($y->parent()->left() === $x) {
-                $y->parent()->attachLeft($y);
-            } else if ($y->parent()->right() === $x) {
-                $y->parent()->attachRight($y);
-            }
-        }
-
-        $x->attachLeft($y->right());
-
-        $y->attachRight($x);
     }
 
     /**

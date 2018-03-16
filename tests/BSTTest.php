@@ -81,6 +81,14 @@ class BSTTest extends TestCase
         $this->assertEquals(99, $this->tree->successor($this->tree->find(88))->value);
     }
 
+    public function test_get_in_order_predecessor()
+    {
+        $this->assertEquals(2, $this->tree->predecessor($this->tree->find(6))->value);
+        $this->assertEquals(6, $this->tree->predecessor($this->tree->find(12))->value);
+        $this->assertEquals(12, $this->tree->predecessor($this->tree->find(15))->value);
+        $this->assertEquals(15, $this->tree->predecessor($this->tree->find(16))->value);
+    }
+
     public function test_min_value()
     {
         $this->assertEquals(2, $this->tree->min()->value);
