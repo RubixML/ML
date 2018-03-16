@@ -206,6 +206,16 @@ class ObjectIndex implements IteratorAggregate, Countable
     }
 
     /**
+     * Return the last object in the index. O(1)
+     *
+     * @return \Rubix\Engine\GraphObject|null
+     */
+    public function last() : ?GraphObject
+    {
+        return end($this->objects) ?: null;
+    }
+
+    /**
      * Return a random object from the index or null if empty. O(N)
      *
      * @return \Rubix\Engine\GraphObject|null
