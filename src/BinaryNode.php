@@ -2,7 +2,9 @@
 
 namespace Rubix\Engine;
 
-class BinaryNode extends GraphObject
+use InvalidArgumentException;
+
+class BinaryNode extends GraphObject implements Node
 {
     /**
      * The parent node.
@@ -10,6 +12,13 @@ class BinaryNode extends GraphObject
      * @var \Rubix\Engine\BinaryNode|null
      */
     protected $parent;
+
+    /**
+     * The value of the node.
+     *
+     * @var mixed
+     */
+    protected $value;
 
     /**
      * The left child node.
@@ -33,11 +42,14 @@ class BinaryNode extends GraphObject
     protected $height;
 
     /**
+     * @param  mixed  $value
      * @param  array  $properties
      * @return void
      */
-    public function __construct(array $properties = [])
+    public function __construct($value, array $properties = [])
     {
+        $this->changeValue($value);
+        
         $this->parent = null;
         $this->left = null;
         $this->right = null;
@@ -52,6 +64,14 @@ class BinaryNode extends GraphObject
     public function parent() : ?BinaryNode
     {
         return $this->parent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function value()
+    {
+        return $this->value;
     }
 
     /**
@@ -79,6 +99,17 @@ class BinaryNode extends GraphObject
     }
 
     /**
+     * The balance factor of the node.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return (isset($this->left) ? $this->left->height() : 0)
+            - (isset($this->right) ? $this->right->height() : 0);
+    }
+
+    /**
      * Set the parent of this node.
      *
      * @param  \Rubix\Engine\BinaryNode|null  $node
@@ -87,6 +118,23 @@ class BinaryNode extends GraphObject
     public function setParent(BinaryNode $node = null) : self
     {
         $this->parent = $node;
+
+        return $this;
+    }
+
+    /**
+     * Change the value of the node.
+     *
+     * @param  mixed  $values
+     * @return self
+     */
+    public function changeValue($value) : self
+    {
+        if (!is_numeric($value) && !is_string($value)) {
+            throw new InvalidArgumentException('Value must be a string or numeric type, ' . gettype($value) . ' found.');
+        }
+
+        $this->value = $value;
 
         return $this;
     }
@@ -170,7 +218,7 @@ class BinaryNode extends GraphObject
     }
 
     /**
-     * Recursive function to update the node's height up to the root. O(N logN)
+     * Recursive function to update the node's height up to the root. O(logN)
      *
      * @return self
      */

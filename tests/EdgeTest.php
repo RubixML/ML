@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Node;
+use Rubix\Engine\GraphNode;
 use Rubix\Engine\Edge;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ class EdgeTest extends TestCase
 
     public function setUp()
     {
-        $node = new Node(1, [
+        $node = new GraphNode(1, [
             'name' => 'Programming',
         ]);
 

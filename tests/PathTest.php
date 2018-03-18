@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Path;
-use Rubix\Engine\Node;
+use Rubix\Engine\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class PathTest extends TestCase
@@ -11,19 +11,19 @@ class PathTest extends TestCase
     public function setUp()
     {
         $this->path = new Path([
-            new Node(1, [
+            new GraphNode(1, [
                 'name' => 'San Francisco',
                 'population' => 938493,
             ]),
-            new Node(2, [
+            new GraphNode(2, [
                 'name' => 'Chicago',
                 'population' => 847392,
             ]),
-            new Node(3, [
+            new GraphNode(3, [
                 'name' => 'New York',
                 'population' => 1847593,
             ]),
-            new Node(4, [
+            new GraphNode(4, [
                 'name' => 'London',
                 'population' => 958093,
             ])
@@ -34,7 +34,7 @@ class PathTest extends TestCase
     {
         $this->assertEquals('San Francisco', $this->path->first()->name);
 
-        $this->path->prepend(new Node(5, [
+        $this->path->prepend(new GraphNode(5, [
             'name' => 'Paris',
             'population' => 453234,
         ]));
@@ -46,7 +46,7 @@ class PathTest extends TestCase
     {
         $this->assertEquals('London', $this->path->last()->name);
 
-        $this->path->append(new Node(5, [
+        $this->path->append(new GraphNode(5, [
             'name' => 'Paris',
             'population' => 453234,
         ]));

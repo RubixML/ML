@@ -22,9 +22,9 @@ class Grid extends Graph
      */
     public function __construct(array $labels = ['x', 'y'])
     {
-        $this->labels = $labels;
-
         parent::__construct();
+
+        $this->labels = $labels;
     }
 
     /**
@@ -50,7 +50,7 @@ class Grid extends Graph
     /**
      * Find a shortest smart path between a start node and an end node in a grid.
      * Uses a euclidian distance heuristic to prioritize the direction of the
-     * traversal. Returns null if no path can be found. O(VlogV+ElogV)
+     * traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
      * @param  \Rubix\Engine\Node  $start
      * @param  \Rubix\Engine\Node  $end

@@ -9,7 +9,7 @@ class BinaryNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new BinaryNode(['coolness_factor' => 'medium']);
+        $this->node = new BinaryNode(40, ['coolness_factor' => 'medium']);
     }
 
     public function test_create_binary_node()
@@ -23,12 +23,17 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($this->node->isLeaf());
     }
 
+    public function test_get_node_value()
+    {
+        $this->assertEquals(40, $this->node->value());
+    }
+
     public function test_attach_left_child()
     {
         $this->assertNull($this->node->left());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'low']));
+        $node = $this->node->attachLeft(new BinaryNode(16, ['coolness_factor' => 'low']));
 
         $this->assertNotNull($node->left());
         $this->assertTrue($node->left() instanceof BinaryNode);
@@ -42,7 +47,7 @@ class BinaryNodeTest extends TestCase
         $this->assertNull($this->node->right());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachRight(new BinaryNode(['coolness_factor' => 'high']));
+        $node = $this->node->attachRight(new BinaryNode(19, ['coolness_factor' => 'high']));
 
         $this->assertNotNull($node->right());
         $this->assertTrue($node->right() instanceof BinaryNode);
@@ -53,7 +58,7 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_left_child()
     {
-        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'high']));
+        $this->node->attachLeft(new BinaryNode(9, ['coolness_factor' => 'high']));
 
         $this->assertNotNull($this->node->left());
         $this->assertTrue($this->node->left() instanceof BinaryNode);
@@ -67,7 +72,7 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_right_child()
     {
-        $this->node->attachRight(new BinaryNode(['coolness_factor' => 'low']));
+        $this->node->attachRight(new BinaryNode(12, ['coolness_factor' => 'low']));
 
         $this->assertNotNull($this->node->right());
         $this->assertTrue($this->node->right() instanceof BinaryNode);

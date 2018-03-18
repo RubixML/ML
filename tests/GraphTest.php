@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Node;
+use Rubix\Engine\GraphNode;
 use Rubix\Engine\Edge;
 use Rubix\Engine\Path;
 use Rubix\Engine\Graph;

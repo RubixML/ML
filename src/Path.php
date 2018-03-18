@@ -7,23 +7,23 @@ use SplDoublyLinkedList;
 class Path extends SplDoublyLinkedList
 {
     /**
-     * @param  array  $objects
+     * @param  array  $nodes
      * @return void
      */
-    public function __construct(array $objects = [])
+    public function __construct(array $nodes = [])
     {
-        $this->extend($objects);
+        $this->extend($nodes);
     }
 
     /**
-     *  Prepend an object onto the beginning of the path. O(1)
+     *  Prepend an node onto the beginning of the path. O(1)
      *
-     * @param  \Rubix\Engine\GraphObject  $object
+     * @param  \Rubix\Engine\Node  $node
      * @return self
      */
-    public function prepend(GraphObject $object) : self
+    public function prepend(Node $node) : self
     {
-        $this->unshift($object);
+        $this->unshift($node);
 
         return $this;
     }
@@ -31,12 +31,12 @@ class Path extends SplDoublyLinkedList
     /**
      *  Append a node onto the end of the path. O(1)
      *
-     * @param  \Rubix\Engine\GraphObject  $object
+     * @param  \Rubix\Engine\Node  $node
      * @return self
      */
-    public function append(GraphObject $object) : self
+    public function append(Node $node) : self
     {
-        $this->push($object);
+        $this->push($node);
 
         return $this;
     }
@@ -44,13 +44,13 @@ class Path extends SplDoublyLinkedList
     /**
      * Extend the path with a given array of objects. O(N)
      *
-     * @param  array  $objects
+     * @param  array  $nodes
      * @return self
      */
-    public function extend(array $objects) : self
+    public function extend(array $nodes) : self
     {
-        foreach ($objects as $object) {
-            $this->append($object);
+        foreach ($nodes as $node) {
+            $this->append($node);
         }
 
         return $this;
@@ -90,9 +90,9 @@ class Path extends SplDoublyLinkedList
     /**
      * The first object in the path. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Engine\Node|null
      */
-    public function first() : ?GraphObject
+    public function first() : ?Node
     {
         $this->rewind();
 
@@ -102,9 +102,9 @@ class Path extends SplDoublyLinkedList
     /**
      * The next object in the path. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Engine\Node|null
      */
-    public function next() : ?GraphObject
+    public function next() : ?Node
     {
         parent::next();
 
@@ -114,9 +114,9 @@ class Path extends SplDoublyLinkedList
     /**
      * The previous object in the path. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Engine\Node|null
      */
-    public function prev() : ?GraphObject
+    public function prev() : ?Node
     {
         parent::prev();
 
@@ -126,9 +126,9 @@ class Path extends SplDoublyLinkedList
     /**
      * The last object in the path. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Engine\Node|null
      */
-    public function last() : ?GraphObject
+    public function last() : ?Node
     {
         return $this->top();
     }

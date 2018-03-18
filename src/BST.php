@@ -6,15 +6,8 @@ use InvalidArgumentException;
 use Countable;
 use SplStack;
 
-class BST implements Countable
+class BST extends Tree implements Countable
 {
-    /**
-     * The root node of the binary search tree.
-     *
-     * @var \Rubix\Engine\BinaryNode|null  $root
-     */
-    protected $root;
-
     /**
      * The number of nodes stored in the tree.
      *
@@ -43,15 +36,9 @@ class BST implements Countable
      */
     public function __construct()
     {
-        $this->root = null;
-    }
+        parent::__construct();
 
-    /**
-     * @return \Rubix\Engine\BinaryNode|null
-     */
-    public function root() : ?BinaryNode
-    {
-        return $this->root;
+        $this->size = 0;
     }
 
     /**
@@ -60,6 +47,26 @@ class BST implements Countable
     public function size() : int
     {
         return $this->size;
+    }
+
+    /**
+     * The height of the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return $this->root->height();
+    }
+
+    /**
+     * The balance factor of the tree.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return $this->root->balance();
     }
 
     /**
@@ -78,24 +85,32 @@ class BST implements Countable
      *
      * @param  mixed  $value
      * @param  array  $properties
-     * @throws \InvalidArgumentException
      * @return \Rubix\Engine\BinaryNode
      */
     public function insert($value, array $properties = []) : BinaryNode
     {
-        if (!is_numeric($value) && !is_string($value)) {
-            throw new InvalidArgumentException('Value must be a string or numeric type, ' . gettype($value) . ' found.');
-        }
+        $node = new BinaryNode($value, $properties);
 
-        $node = new BinaryNode(array_replace($properties, ['value' => $value]));
+        $this->_insert($node);
 
+        return $node;
+    }
+
+    /**
+     * Helper function to insert a node into the tree.
+     *
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return void
+     */
+    protected function _insert(BinaryNode $node) : void
+    {
         if ($this->isEmpty()) {
             $this->root = $node;
         } else {
             $current = $this->root;
 
             while (isset($current)) {
-                if ($current->value > $value) {
+                if ($current->value() > $node->value()) {
                     if (is_null($current->left())) {
                         $current->attachLeft($node);
                         break;
@@ -114,8 +129,6 @@ class BST implements Countable
         }
 
         $this->size++;
-
-        return $node;
     }
 
     /**
@@ -149,9 +162,9 @@ class BST implements Countable
         $current = $this->root;
 
         while (isset($current)) {
-            if ($current->value === $value) {
+            if ($current->value() === $value) {
                 break;
-            } else if ($current->value > $value) {
+            } else if ($current->value() > $value) {
                 $current = $current->left();
             } else {
                 $current = $current->right();
@@ -198,15 +211,15 @@ class BST implements Countable
             return;
         }
 
-        if ($current->value > $start) {
+        if ($current->value() > $start) {
             $this->_findRange($start, $end, $current->left(), $path);
         }
 
-        if ($current->value >= $start && $current->value <= $end) {
+        if ($current->value() >= $start && $current->value <= $end) {
             $path->append($current);
         }
 
-        if ($current->value < $end) {
+        if ($current->value() < $end) {
             $this->_findRange($start, $end, $current->right(), $path);
         }
     }
@@ -249,6 +262,82 @@ class BST implements Countable
     }
 
     /**
+     * Return the in order predecessor of a given node or null if given node is min.
+     *
+     * @param  mixed  $value
+     * @return \Rubix\Engine\BinaryNode|null
+     */
+    public function predecessor($value) : ?BinaryNode
+    {
+        $current = $this->find($value);
+
+        if (!isset($current)) {
+            return null;
+        }
+
+        return $this->_predecessor($current);
+    }
+
+    /**
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return \Rubix\Engine\BinaryNode|null
+     */
+    protected function _predecessor(BinaryNode $node) : ?BinaryNode
+    {
+        if (is_null($node->left())) {
+            $parent = $node->parent();
+
+            while (isset($parent) && $node === $parent->left()) {
+                $node = $parent;
+
+                $parent = $parent->parent();
+            }
+
+            return $parent;
+        }
+
+        return $this->_max($node->left());
+    }
+
+    /**
+     * Return the in order successor of a given node or null if given node is max.
+     *
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return \Rubix\Engine\BinaryNode|null
+     */
+    public function successor($value) : ?BinaryNode
+    {
+        $current = $this->find($value);
+
+        if (!isset($current)) {
+            return null;
+        }
+
+        return $this->_successor($current);
+    }
+
+    /**
+     * @param  \Rubix\Engine\BinaryNode  $node
+     * @return \Rubix\Engine\BinaryNode|null
+     */
+    protected function _successor(BinaryNode $node = null) : ?BinaryNode
+    {
+        if (is_null($node->right())) {
+            $parent = $node->parent();
+
+            while (isset($parent) && $node === $parent->right()) {
+                $node = $parent;
+
+                $parent = $parent->parent();
+            }
+
+            return $parent;
+        }
+
+        return $this->_min($node->right());
+    }
+
+    /**
      * Return the minimum value node or null if tree is empty. O(log V)
      *
      * @return \Rubix\Engine\BinaryNode
@@ -259,8 +348,6 @@ class BST implements Countable
     }
 
     /**
-     * Return the node with the minimum value rooted at a given node. O(log V)
-     *
      * @param  \Rubix\Engine\BinaryNode  $root
      * @return \Rubix\Engine\BinaryNode
      */
@@ -288,8 +375,6 @@ class BST implements Countable
     }
 
     /**
-     * Return the node with the maximum value rooted at a given node. O(log V))
-     *
      * @param  \Rubix\Engine\BinaryNode  $root
      * @return \Rubix\Engine\BinaryNode
      */
@@ -304,60 +389,6 @@ class BST implements Countable
         }
 
         return $root;
-    }
-
-    /**
-     * Return the in order predecessor of a given node or null if given node is min.
-     *
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode|null
-     */
-    public function predecessor(BinaryNode $node = null) : ?BinaryNode
-    {
-        if (!isset($node)) {
-            return $node;
-        }
-
-        if (is_null($node->left())) {
-            $parent = $node->parent();
-
-            while (isset($parent) && $node === $parent->left()) {
-                $node = $parent;
-
-                $parent = $parent->parent();
-            }
-
-            return $parent;
-        }
-
-        return $this->_max($node->left());
-    }
-
-    /**
-     * Return the in order successor of a given node or null if given node is max.
-     *
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode|null
-     */
-    public function successor(BinaryNode $node = null) : ?BinaryNode
-    {
-        if (!isset($node)) {
-            return $node;
-        }
-
-        if (is_null($node->right())) {
-            $parent = $node->parent();
-
-            while (isset($parent) && $node === $parent->right()) {
-                $node = $parent;
-
-                $parent = $parent->parent();
-            }
-
-            return $parent;
-        }
-
-        return $this->_min($node->right());
     }
 
     /**
@@ -380,25 +411,7 @@ class BST implements Countable
     }
 
     /**
-     * Delete a range of nodes within range of start and end value.
-     *
-     * @param  mixed  $start
-     * @param  mixed  $end
-     * @return self
-     */
-    public function deleteRange($start, $end) : self
-    {
-        $range = $this->findRange($start, $end);
-
-        foreach ($range as $node) {
-            $this->_delete($node);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Delete a node from the BST and rebalance. O(log V)
+     * Helper function to delete a node from the BST and rebalance. O(log V)
      *
      * @param  \Rubix\Engine\BinaryNode  $node
      * @return void
@@ -408,19 +421,12 @@ class BST implements Countable
         $parent = $node->parent();
 
         if (!isset($parent)) {
-            if ($node->isLeaf()) {
-                $this->root = $node;
-            } else if (is_null($node->right()) && !is_null($node->left())) {
-                $this->root = $node->left()->setParent(null);
-            } else if (is_null($node->left()) && !is_null($node->right())) {
-                $this->root = $node->right()->setParent(null);
-            } else {
-                $predecessor = $this->predecessor($node);
+            $successor = $this->_successor($node);
 
-                $this->_delete($predecessor);
+            $this->root->changeValue($successor->value())
+                ->update($successor->properties());
 
-                $this->root->update($predecessor->properties());
-            }
+            $this->_delete($successor);
         } else {
             if ($node->isLeaf()) {
                 if ($parent->left() === $node) {
@@ -441,11 +447,12 @@ class BST implements Countable
                     $parent->attachRight($node->right());
                 }
             } else {
-                $successor = $this->successor($node);
+                $successor = $this->_successor($node);
 
                 $this->_delete($successor);
 
-                $node->update($successor->properties());
+                $node->changeValue($successor->value())
+                    ->update($successor->properties());
             }
         }
 
@@ -460,15 +467,5 @@ class BST implements Countable
     public function count() : int
     {
         return $this->size();
-    }
-
-    /**
-     * Is the tree empty?
-     *
-     * @return bool
-     */
-    public function isEmpty() : bool
-    {
-        return !isset($this->root);
     }
 }

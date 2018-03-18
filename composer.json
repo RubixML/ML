@@ -1,8 +1,8 @@
 {
-    "name": "rubix/engine",
+    "name": "rubix/graph",
     "description": "A library for querying and performing computations on graphs.",
     "license": "MIT",
-    "keywords": ["php", "graph"],
+    "keywords": ["php", "graph", "tree", "grid", "dag", "bst", "trie"],
     "authors": [
         {
             "name": "Andrew DalPino",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Rubix\\Engine\\": "src/"
+            "Rubix\\Graph\\": "src/"
         }
     },
     "config": {

@@ -116,13 +116,13 @@ class Graph implements Countable
      * Insert a node into the graph. O(1)
      *
      * @param  array  $properties
-     * @return \Rubix\Engine\Node
+     * @return \Rubix\Engine\GraphNode
      */
-    public function insert(array $properties = []) : Node
+    public function insert(array $properties = []) : GraphNode
     {
         $id = $this->counter++;
 
-        $node = new Node($id, $properties);
+        $node = new GraphNode($id, $properties);
 
         $this->nodes->put($id, $node);
 
@@ -133,9 +133,9 @@ class Graph implements Countable
      * Find a node in the graph by ID. O(1)
      *
      * @param  int  $id
-     * @return \Rubix\Engine\Node
+     * @return \Rubix\Engine\GraphNode
      */
-    public function find(int $id) : ?Node
+    public function find(int $id) : ?GraphNode
     {
         return $this->nodes->get($id);
     }
@@ -155,11 +155,11 @@ class Graph implements Countable
      * Find a path between a start node to an end node. Returns null if no path can
      * be found. O(V+E)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @return \Rubix\Engine\Path|null
      */
-    public function findPath(Node $start, Node $end) : ?Path
+    public function findPath(GraphNode $start, GraphNode $end) : ?Path
     {
         $discovered = new SplObjectStorage();
         $stack = new SplStack();
@@ -198,11 +198,11 @@ class Graph implements Countable
      * Find all paths between a start node to an end node. Returns an empty array
      * if no paths are found.
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @return array
      */
-    public function findAllPaths(Node $start, Node $end) : array
+    public function findAllPaths(GraphNode $start, GraphNode $end) : array
     {
         $discovered = new SplObjectStorage();
         $path = new Path();
@@ -216,14 +216,14 @@ class Graph implements Countable
     /**
      * Recursive backtracking function to find all paths between two given nodes.
      *
-     * @param  \Rubix\Engine\Node  $root
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $root
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  \SplObjectStorage  $discovered
      * @param  \Rubix\Engine\Path  $path
      * @param  array  $paths
      * @return void
      */
-    protected function _findAllPaths(Node $root, Node $end, SplObjectStorage $discovered, Path $path, array &$paths) : void
+    protected function _findAllPaths(GraphNode $root, GraphNode $end, SplObjectStorage $discovered, Path $path, array &$paths) : void
     {
         $discovered->attach($root);
         $path->push($root);
@@ -248,11 +248,11 @@ class Graph implements Countable
      * Find a shortest path between a start node and an end node. Returns null if
      * no path can be found. O(V+E)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @return \Rubix\Engine\Path|null
      */
-    public function findShortestPath(Node $start, Node $end) : ?Path
+    public function findShortestPath(GraphNode $start, GraphNode $end) : ?Path
     {
         $discovered = new SplObjectStorage();
         $queue = new SplQueue();
@@ -316,14 +316,14 @@ class Graph implements Countable
      * Find a shortest weighted path between start node and an end node.
      * Returns null if no path can be found. O(V*E)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
      * @throws \RuntimeException
      * @return \Rubix\Engine\Path|null
      */
-    public function findShortestWeightedPath(Node $start, Node $end, string $weight, $default = INF) : ?Path
+    public function findShortestWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
         $discovered = new SplObjectStorage();
         $path = new Path();
@@ -383,13 +383,13 @@ class Graph implements Countable
      * Find a shortest unsigned weighted path between start node and an end node.
      * Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
      * @return \Rubix\Engine\Path|null
      */
-    public function findShortestUnsignedWeightedPath(Node $start, Node $end, string $weight, $default = INF) : ?Path
+    public function findShortestUnsignedWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
         $discovered = new SplObjectStorage();
         $queue = new SplPriorityQueue();

@@ -5,15 +5,8 @@ namespace Rubix\Engine;
 use Countable;
 use SplStack;
 
-class Trie implements Countable
+class Trie extends Tree implements Countable
 {
-    /**
-     * The root node of the trie.
-     *
-     * @var \Rubix\Engine\Node|null  $root
-     */
-    protected $root;
-
     /**
      * The size of the trie in words.
      *
@@ -27,18 +20,11 @@ class Trie implements Countable
      */
     public function __construct(array $words = [])
     {
-        $this->root = new Node('*');
+        parent::__construct(new GraphNode('*'));
+
         $this->size = 0;
 
         $this->merge($words);
-    }
-
-    /**
-     * @return \Rubix\Engine\Node|null
-     */
-    public function root() : ?Node
-    {
-        return $this->root;
     }
 
     /**
@@ -82,7 +68,7 @@ class Trie implements Countable
             if ($current->edges()->has($letter)) {
                 $current = $current->edges()->get($letter)->node();
             } else {
-                $current = $current->attach(new Node($letter))->node();
+                $current = $current->attach(new GraphNode($letter))->node();
             }
 
             $path->append($current);
@@ -186,15 +172,5 @@ class Trie implements Countable
     public function count() : int
     {
         return $this->size;
-    }
-
-    /**
-     * Is the trie empty?
-     *
-     * @return bool
-     */
-    public function isEmpty() : bool
-    {
-        return !isset($this->root);
     }
 }

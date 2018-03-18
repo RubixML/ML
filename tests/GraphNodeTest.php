@@ -1,22 +1,22 @@
 <?php
 
-use Rubix\Engine\Node;
+use Rubix\Engine\GraphNode;
 use PHPUnit\Framework\TestCase;
 
-class NodeTest extends TestCase
+class GraphNodeTest extends TestCase
 {
     protected $node;
 
     public function setUp()
     {
-        $this->node = new Node(1, [
+        $this->node = new GraphNode(1, [
             'color' => 'orange',
         ]);
     }
 
     public function test_create_node()
     {
-        $this->assertTrue($this->node instanceof Node);
+        $this->assertTrue($this->node instanceof GraphNode);
     }
 
     public function test_get_id()
@@ -26,7 +26,7 @@ class NodeTest extends TestCase
 
     public function test_attach_and_detach_edges()
     {
-        $node = new Node(2, [
+        $node = new GraphNode(2, [
             'color' => 'brown',
         ]);
 
