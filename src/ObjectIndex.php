@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -43,7 +43,7 @@ class ObjectIndex implements IteratorAggregate, Countable
      * Put an object into the index. O(1)
      *
      * @param  mixed  $key
-     * @param  \Rubix\Engine\GraphObject
+     * @param  \Rubix\Graph\GraphObject
      * @return self
      */
     public function put($key, GraphObject $object) : ObjectIndex
@@ -136,7 +136,7 @@ class ObjectIndex implements IteratorAggregate, Countable
      *
      * @param  string  $property
      * @param  array  $values
-     * @return \Rubix\Engine\ObjectIndex
+     * @return \Rubix\Graph\ObjectIndex
      */
     public function whereIn(string $property, array $values) : ObjectIndex
     {
@@ -198,7 +198,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     /**
      * Return the first object in the index. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Graph\GraphObject|null
      */
     public function first() : ?GraphObject
     {
@@ -208,7 +208,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     /**
      * Return the last object in the index. O(1)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Graph\GraphObject|null
      */
     public function last() : ?GraphObject
     {
@@ -218,7 +218,7 @@ class ObjectIndex implements IteratorAggregate, Countable
     /**
      * Return a random object from the index or null if empty. O(N)
      *
-     * @return \Rubix\Engine\GraphObject|null
+     * @return \Rubix\Graph\GraphObject|null
      */
     public function random() : ?GraphObject
     {

@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Trie;
-use Rubix\Engine\Node;
-use Rubix\Engine\Path;
+use Rubix\Graph\Trie;
+use Rubix\Graph\Node;
+use Rubix\Graph\Path;
 use PHPUnit\Framework\TestCase;
 
 class TrieTest extends TestCase

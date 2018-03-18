@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 class GraphNode extends GraphObject implements Node
 {
@@ -14,7 +14,7 @@ class GraphNode extends GraphObject implements Node
     /**
      * An index of edges.
      *
-     * @var \Rubix\Engine\ObjectIndex
+     * @var \Rubix\Graph\ObjectIndex
      */
     protected $edges;
 
@@ -50,9 +50,9 @@ class GraphNode extends GraphObject implements Node
     /**
      * Attach an edge linking this node to another node.
      *
-     * @param  \Rubix\Engine\GraphNode  $node
+     * @param  \Rubix\Graph\GraphNode  $node
      * @param  array  $properties
-     * @return \Rubix\Engine\Edge
+     * @return \Rubix\Graph\Edge
      */
     public function attach(GraphNode $node, array $properties = []) : Edge
     {
@@ -66,7 +66,7 @@ class GraphNode extends GraphObject implements Node
     /**
      * Remove an edge from the node.
      *
-     * @param  \Rubix\Engine\GraphNode  $node
+     * @param  \Rubix\Graph\GraphNode  $node
      * @return void
      */
     public function detach(GraphNode $node) : self
@@ -79,7 +79,7 @@ class GraphNode extends GraphObject implements Node
     /**
      * Check if this node is the same as a given node.
      *
-     * @param  \Rubix\Engine\GraphNode  $node
+     * @param  \Rubix\Graph\GraphNode  $node
      * @return bool
      */
     public function isSame(GraphNode $node) : bool

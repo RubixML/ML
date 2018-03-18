@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use SplDoublyLinkedList;
 
@@ -18,7 +18,7 @@ class Path extends SplDoublyLinkedList
     /**
      *  Prepend an node onto the beginning of the path. O(1)
      *
-     * @param  \Rubix\Engine\Node  $node
+     * @param  \Rubix\Graph\Node  $node
      * @return self
      */
     public function prepend(Node $node) : self
@@ -31,7 +31,7 @@ class Path extends SplDoublyLinkedList
     /**
      *  Append a node onto the end of the path. O(1)
      *
-     * @param  \Rubix\Engine\Node  $node
+     * @param  \Rubix\Graph\Node  $node
      * @return self
      */
     public function append(Node $node) : self
@@ -90,7 +90,7 @@ class Path extends SplDoublyLinkedList
     /**
      * The first object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Graph\Node|null
      */
     public function first() : ?Node
     {
@@ -102,7 +102,7 @@ class Path extends SplDoublyLinkedList
     /**
      * The next object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Graph\Node|null
      */
     public function next() : ?Node
     {
@@ -114,7 +114,7 @@ class Path extends SplDoublyLinkedList
     /**
      * The previous object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Graph\Node|null
      */
     public function prev() : ?Node
     {
@@ -126,7 +126,7 @@ class Path extends SplDoublyLinkedList
     /**
      * The last object in the path. O(1)
      *
-     * @return \Rubix\Engine\Node|null
+     * @return \Rubix\Graph\Node|null
      */
     public function last() : ?Node
     {

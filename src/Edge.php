@@ -1,18 +1,18 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 class Edge extends GraphObject
 {
     /**
      * The node that this edge connects to.
      *
-     * @var  \Rubix\Engine\Node
+     * @var  \Rubix\Graph\Node
      */
     protected $node;
 
     /**
-     * @param  \Rubix\Engine\Node  $node
+     * @param  \Rubix\Graph\Node  $node
      * @param  array  $properties
      * @return void
      */
@@ -24,7 +24,7 @@ class Edge extends GraphObject
     }
 
     /**
-     * @return \Rubix\Engine\Node
+     * @return \Rubix\Graph\Node
      */
     public function node() : Node
     {

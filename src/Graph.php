@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use RuntimeException;
 use SplObjectStorage;
@@ -14,7 +14,7 @@ class Graph implements Countable
     /**
      * An index of all the nodes in the graph.
      *
-     * @var \Rubix\Engine\ObjectIndex
+     * @var \Rubix\Graph\ObjectIndex
      */
     protected $nodes;
 
@@ -35,7 +35,7 @@ class Graph implements Countable
     }
 
     /**
-     * @return \Rubix\Engine\ObjectIndex
+     * @return \Rubix\Graph\ObjectIndex
      */
     public function nodes() : ObjectIndex
     {
@@ -116,7 +116,7 @@ class Graph implements Countable
      * Insert a node into the graph. O(1)
      *
      * @param  array  $properties
-     * @return \Rubix\Engine\GraphNode
+     * @return \Rubix\Graph\GraphNode
      */
     public function insert(array $properties = []) : GraphNode
     {
@@ -133,7 +133,7 @@ class Graph implements Countable
      * Find a node in the graph by ID. O(1)
      *
      * @param  int  $id
-     * @return \Rubix\Engine\GraphNode
+     * @return \Rubix\Graph\GraphNode
      */
     public function find(int $id) : ?GraphNode
     {
@@ -155,9 +155,9 @@ class Graph implements Countable
      * Find a path between a start node to an end node. Returns null if no path can
      * be found. O(V+E)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @return \Rubix\Engine\Path|null
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
+     * @return \Rubix\Graph\Path|null
      */
     public function findPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -198,8 +198,8 @@ class Graph implements Countable
      * Find all paths between a start node to an end node. Returns an empty array
      * if no paths are found.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
      * @return array
      */
     public function findAllPaths(GraphNode $start, GraphNode $end) : array
@@ -216,10 +216,10 @@ class Graph implements Countable
     /**
      * Recursive backtracking function to find all paths between two given nodes.
      *
-     * @param  \Rubix\Engine\GraphNode  $root
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\Graph\GraphNode  $root
+     * @param  \Rubix\Graph\GraphNode  $end
      * @param  \SplObjectStorage  $discovered
-     * @param  \Rubix\Engine\Path  $path
+     * @param  \Rubix\Graph\Path  $path
      * @param  array  $paths
      * @return void
      */
@@ -248,9 +248,9 @@ class Graph implements Countable
      * Find a shortest path between a start node and an end node. Returns null if
      * no path can be found. O(V+E)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @return \Rubix\Engine\Path|null
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
+     * @return \Rubix\Graph\Path|null
      */
     public function findShortestPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -316,12 +316,12 @@ class Graph implements Countable
      * Find a shortest weighted path between start node and an end node.
      * Returns null if no path can be found. O(V*E)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
      * @throws \RuntimeException
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\Graph\Path|null
      */
     public function findShortestWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
@@ -383,11 +383,11 @@ class Graph implements Countable
      * Find a shortest unsigned weighted path between start node and an end node.
      * Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\Graph\Path|null
      */
     public function findShortestUnsignedWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
@@ -470,7 +470,7 @@ class Graph implements Countable
      * Return a path of topologically sorted nodes which will only be valid if
      * the graph is acyclic. Returns null if graph is empty. O(V+E)
      *
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\Graph\Path|null
      */
     public function sort() : ?Path
     {

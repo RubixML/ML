@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use Countable;
 use SplStack;
@@ -56,7 +56,7 @@ class Trie extends Tree implements Countable
      * Insert a word into the trie and return a path of nodes. O(L)
      *
      * @param  string  $word
-     * @return \Rubix\Engine\Path
+     * @return \Rubix\Graph\Path
      */
     public function insert(string $word) : Path
     {
@@ -102,7 +102,7 @@ class Trie extends Tree implements Countable
      * Find a path of given prefix or null if one does not exist. O(L)
      *
      * @param  string  $prefix
-     * @return \Rubix\Engine\Path
+     * @return \Rubix\Graph\Path
      */
     public function find(string $prefix) : ?Path
     {

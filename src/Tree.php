@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 class Tree
 {
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\Engine\Node|null  $root
+     * @var \Rubix\Graph\Node|null  $root
      */
     protected $root;
 
@@ -20,7 +20,7 @@ class Tree
     }
 
     /**
-     * @return \Rubix\Engine\NodeNode|null
+     * @return \Rubix\Graph\NodeNode|null
      */
     public function root() : ?Node
     {

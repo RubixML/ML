@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Grid;
-use Rubix\Engine\Path;
+use Rubix\Graph\Grid;
+use Rubix\Graph\Path;
 use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase

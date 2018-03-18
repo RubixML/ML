@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\BST;
-use Rubix\Engine\BinaryNode;
+use Rubix\Graph\BST;
+use Rubix\Graph\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 class BSTTest extends TestCase

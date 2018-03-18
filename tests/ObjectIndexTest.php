@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\ObjectIndex;
-use Rubix\Engine\GraphObject;
+use Rubix\Graph\ObjectIndex;
+use Rubix\Graph\GraphObject;
 use PHPUnit\Framework\TestCase;
 
 class ObjectIndexTest extends TestCase

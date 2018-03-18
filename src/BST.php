@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use InvalidArgumentException;
 use Countable;
@@ -85,7 +85,7 @@ class BST extends Tree implements Countable
      *
      * @param  mixed  $value
      * @param  array  $properties
-     * @return \Rubix\Engine\BinaryNode
+     * @return \Rubix\Graph\BinaryNode
      */
     public function insert($value, array $properties = []) : BinaryNode
     {
@@ -99,7 +99,7 @@ class BST extends Tree implements Countable
     /**
      * Helper function to insert a node into the tree.
      *
-     * @param  \Rubix\Engine\BinaryNode  $node
+     * @param  \Rubix\Graph\BinaryNode  $node
      * @return void
      */
     protected function _insert(BinaryNode $node) : void
@@ -151,7 +151,7 @@ class BST extends Tree implements Countable
      *
      * @param  mixed  $value
      * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\BinaryNode|null
+     * @return \Rubix\Graph\BinaryNode|null
      */
     public function find($value) : ?BinaryNode
     {
@@ -181,7 +181,7 @@ class BST extends Tree implements Countable
      * @param  mixed  $start
      * @param  mixed  $end
      * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\Graph\Path|null
      */
     public function findRange($start, $end) : ?Path
     {
@@ -201,8 +201,8 @@ class BST extends Tree implements Countable
      *
      * @param  mixed  $start
      * @param  mixed  $end
-     * @param  \Rubix\Engine\BinaryNode  $current
-     * @param  \Rubix\Engine\Path  $path
+     * @param  \Rubix\Graph\BinaryNode  $current
+     * @param  \Rubix\Graph\Path  $path
      * @return void
      */
     protected function _findRange($start, $end, BinaryNode $current = null, Path $path) : void
@@ -265,7 +265,7 @@ class BST extends Tree implements Countable
      * Return the in order predecessor of a given node or null if given node is min.
      *
      * @param  mixed  $value
-     * @return \Rubix\Engine\BinaryNode|null
+     * @return \Rubix\Graph\BinaryNode|null
      */
     public function predecessor($value) : ?BinaryNode
     {
@@ -279,8 +279,8 @@ class BST extends Tree implements Countable
     }
 
     /**
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode|null
+     * @param  \Rubix\Graph\BinaryNode  $node
+     * @return \Rubix\Graph\BinaryNode|null
      */
     protected function _predecessor(BinaryNode $node) : ?BinaryNode
     {
@@ -302,8 +302,8 @@ class BST extends Tree implements Countable
     /**
      * Return the in order successor of a given node or null if given node is max.
      *
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode|null
+     * @param  \Rubix\Graph\BinaryNode  $node
+     * @return \Rubix\Graph\BinaryNode|null
      */
     public function successor($value) : ?BinaryNode
     {
@@ -317,8 +317,8 @@ class BST extends Tree implements Countable
     }
 
     /**
-     * @param  \Rubix\Engine\BinaryNode  $node
-     * @return \Rubix\Engine\BinaryNode|null
+     * @param  \Rubix\Graph\BinaryNode  $node
+     * @return \Rubix\Graph\BinaryNode|null
      */
     protected function _successor(BinaryNode $node = null) : ?BinaryNode
     {
@@ -340,7 +340,7 @@ class BST extends Tree implements Countable
     /**
      * Return the minimum value node or null if tree is empty. O(log V)
      *
-     * @return \Rubix\Engine\BinaryNode
+     * @return \Rubix\Graph\BinaryNode
      */
     public function min() : ?BinaryNode
     {
@@ -348,8 +348,8 @@ class BST extends Tree implements Countable
     }
 
     /**
-     * @param  \Rubix\Engine\BinaryNode  $root
-     * @return \Rubix\Engine\BinaryNode
+     * @param  \Rubix\Graph\BinaryNode  $root
+     * @return \Rubix\Graph\BinaryNode
      */
     protected function _min(BinaryNode $root) : BinaryNode
     {
@@ -367,7 +367,7 @@ class BST extends Tree implements Countable
     /**
      * Return the maximum value node or null if tree is empty. O(log V)
      *
-     * @return \Rubix\Engine\BinaryNode
+     * @return \Rubix\Graph\BinaryNode
      */
     public function max() : ?BinaryNode
     {
@@ -375,8 +375,8 @@ class BST extends Tree implements Countable
     }
 
     /**
-     * @param  \Rubix\Engine\BinaryNode  $root
-     * @return \Rubix\Engine\BinaryNode
+     * @param  \Rubix\Graph\BinaryNode  $root
+     * @return \Rubix\Graph\BinaryNode
      */
     public function _max(BinaryNode $root) : BinaryNode
     {
@@ -413,7 +413,7 @@ class BST extends Tree implements Countable
     /**
      * Helper function to delete a node from the BST and rebalance. O(log V)
      *
-     * @param  \Rubix\Engine\BinaryNode  $node
+     * @param  \Rubix\Graph\BinaryNode  $node
      * @return void
      */
     protected function _delete(BinaryNode $node) : void

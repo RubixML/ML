@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Graph;
 
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -52,9 +52,9 @@ class Grid extends Graph
      * Uses a euclidian distance heuristic to prioritize the direction of the
      * traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
-     * @return \Rubix\Engine\Path|null
+     * @param  \Rubix\Graph\Node  $start
+     * @param  \Rubix\Graph\Node  $end
+     * @return \Rubix\Graph\Path|null
      */
     public function findShortestSmartPath(Node $start, Node $end) : ?Path
     {
@@ -115,11 +115,11 @@ class Grid extends Graph
      * node in a grid. Uses a euclidian distance heuristic to prioritize the direction
      * of the traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Engine\Node  $start
-     * @param  \Rubix\Engine\Node  $end
+     * @param  \Rubix\Graph\Node  $start
+     * @param  \Rubix\Graph\Node  $end
      * @param  string  $weight
      * @param  mixed  $default
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\Graph\Path|null
      */
     public function findShortestUnsignedWeightedSmartPath(Node $start, Node $end, string $weight, $default = INF) : ?Path
     {
