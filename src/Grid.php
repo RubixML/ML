@@ -2,39 +2,51 @@
 
 namespace Rubix\Graph;
 
+use Rubix\Graph\DistanceFunctions\Euclidean;
+use Rubix\Graph\DistanceFunctions\DistanceFunction;
+use InvalidArgumentException;
 use SplObjectStorage;
 use SplPriorityQueue;
 
 class Grid extends Graph
 {
     /**
-     * The properties that represent axis of the grid.
+     * The property names that represent the axis of the grid.
      *
      * @var array
      */
-    protected $labels = [
-        //
-    ];
+    protected $axis;
 
     /**
-     * @param  array  $labels
+     * The distance function that describes the grid space.
+     *
+     * @var \Rubix\DistanceFunctions\DistanceFunction
+     */
+    protected $distanceFunction;
+
+    /**
+     * @param  array  $axis
+     * @param  \Rubix\DistanceFunctions\DistanceFunction|null  $distance
      * @return void
      */
-    public function __construct(array $labels = ['x', 'y'])
+    public function __construct(array $axis, DistanceFunction $distanceFunction = null)
     {
-        parent::__construct();
+        if (!isset($distanceFunction)) {
+            $distanceFunction = new Euclidean();
+        }
 
-        $this->labels = $labels;
+        $this->axis = $axis;
+        $this->distanceFunction = $distanceFunction;
+
+        parent::__construct();
     }
 
     /**
-     * Return the axis labels.
-     *
-     * @return int
+     * @return array
      */
-    public function labels() : array
+    public function axis() : array
     {
-        return $this->labels;
+        return $this->axis;
     }
 
     /**
@@ -44,7 +56,37 @@ class Grid extends Graph
      */
     public function dimensions() : int
     {
-        return count($this->labels);
+        return count($this->axis);
+    }
+
+    /**
+     * Compute the distance between two given nodes.
+     *
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
+     * @return float
+     */
+    public function distance(GraphNode $start, GraphNode $end) : float
+    {
+        return $this->distanceFunction->compute($start, $end, $this->axis);
+    }
+
+    /**
+     * Insert a node into the grid. O(1)
+     *
+     * @param  array  $properties
+     * @throws \InvalidArgumentException
+     * @return \Rubix\Graph\GraphGraphNode
+     */
+    public function insert(array $properties = []) : GraphNode
+    {
+        foreach ($this->axis as $axis) {
+            if (!isset($properties[$axis])) {
+                throw new InvalidArgumentException('Node must have a value set for all axis of the grid.');
+            }
+        }
+
+        return parent::insert($properties);
     }
 
     /**
@@ -52,11 +94,11 @@ class Grid extends Graph
      * Uses a euclidian distance heuristic to prioritize the direction of the
      * traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
-     * @param  \Rubix\Graph\Node  $start
-     * @param  \Rubix\Graph\Node  $end
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
      * @return \Rubix\Graph\Path|null
      */
-    public function findShortestSmartPath(Node $start, Node $end) : ?Path
+    public function findShortestSmartPath(GraphNode $start, GraphNode $end) : ?Path
     {
         $discovered = new SplObjectStorage();
         $queue = new SplPriorityQueue();
@@ -98,9 +140,7 @@ class Grid extends Graph
                         'distance' => $distance,
                     ];
 
-                    $heuristic = sqrt(array_reduce($this->labels, function ($carry, $label) use ($current, $edge) {
-                        return $carry += pow($edge->node()->get($label, INF) - $current->get($label, INF), 2);
-                    }, 0));
+                    $heuristic = $this->distance($current, $edge->node());
 
                     $queue->insert($edge->node(), -($distance + $heuristic));
                 }
@@ -115,13 +155,13 @@ class Grid extends Graph
      * node in a grid. Uses a euclidian distance heuristic to prioritize the direction
      * of the traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Graph\Node  $start
-     * @param  \Rubix\Graph\Node  $end
+     * @param  \Rubix\Graph\GraphNode  $start
+     * @param  \Rubix\Graph\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
      * @return \Rubix\Graph\Path|null
      */
-    public function findShortestUnsignedWeightedSmartPath(Node $start, Node $end, string $weight, $default = INF) : ?Path
+    public function findShortestUnsignedWeightedSmartPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
         $discovered = new SplObjectStorage();
         $queue = new SplPriorityQueue();
@@ -163,9 +203,7 @@ class Grid extends Graph
                         'distance' => $distance,
                     ];
 
-                    $heuristic = sqrt(array_reduce($this->labels, function ($carry, $label) use ($current, $edge) {
-                        return $carry += pow($edge->node()->get($label, INF) - $current->get($label, INF), 2);
-                    }, 0));
+                    $heuristic = $this->distance($current, $edge->node());
 
                     $queue->insert($edge->node(), -($distance + $heuristic));
                 }

@@ -2,6 +2,7 @@
 
 use Rubix\Graph\Grid;
 use Rubix\Graph\Path;
+use Rubix\Graph\DistanceFunctions\Manhattan;
 use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase
@@ -10,7 +11,7 @@ class GridTest extends TestCase
 
     public function setUp()
     {
-        $this->grid = new Grid(['x', 'y']);
+        $this->grid = new Grid(['x','y'], new Manhattan());
 
         for ($x = 0; $x < 10; $x++) {
             for ($y = 0; $y < 10; $y++) {
@@ -23,8 +24,8 @@ class GridTest extends TestCase
         foreach ($this->grid->nodes() as $node) {
             foreach ($directions as $direction) {
                 $neighbor = $this->grid->nodes()
-                    ->where('x', '==', $node->x + $direction[0])
-                    ->where('y', '==', $node->y + $direction[1])
+                    ->where('x', '===', $node->x + $direction[0])
+                    ->where('y', '===', $node->y + $direction[1])
                     ->first();
 
                 if (isset($neighbor)) {
@@ -34,6 +35,14 @@ class GridTest extends TestCase
                 }
             }
         }
+    }
+
+    public function test_compute_distance()
+    {
+        $start = $this->grid->nodes()->where('x', '===', 3)->where('y', '===', 7)->first();
+        $end = $this->grid->nodes()->where('x', '===', 5)->where('y', '===', 2)->first();
+
+        $this->assertEquals(7.0, round($this->grid->distance($start, $end), 2));
     }
 
     public function test_find_shortest_smart_path()

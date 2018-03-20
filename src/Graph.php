@@ -19,7 +19,7 @@ class Graph implements Countable
     protected $nodes;
 
     /**
-     * An autoincrementing counter that keeps track of internal node IDs.
+     * An autoincrementing counter that keeps track of node IDs.
      *
      * @var int
      */
@@ -43,77 +43,7 @@ class Graph implements Countable
     }
 
     /**
-     * @return int
-     */
-    public function counter() : int
-    {
-        return $this->counter;
-    }
-
-    /**
-     * The order of the graph, or the total number of nodes. O(1)
-     *
-     * @return int
-     */
-    public function order() : int
-    {
-        return $this->nodes->count();
-    }
-
-    /**
-     * The size of the graph, or the total number of edges. O(V)
-     *
-     * @return int
-     */
-    public function size() : int
-    {
-        return array_reduce($this->nodes->all(), function ($carry, $node) {
-            return $carry += $node->edges()->count();
-        }, 0);
-    }
-
-    /**
-     * Is the graph acyclic? O(V+E)
-     *
-     * @return bool
-     */
-    public function acyclic() : bool
-    {
-        return !$this->cyclic();
-    }
-
-    /**
-     * Does the graph contain at least one infinite cycle. O(V+E)
-     *
-     * @return bool
-     */
-    public function cyclic() : bool
-    {
-        foreach ($this->nodes as $node) {
-            $discovered = new SplObjectStorage();
-            $stack = new SplStack();
-
-            $stack->push($node);
-
-            while (!$stack->isEmpty()) {
-                $current = $stack->pop();
-
-                foreach ($current->edges() as $edge) {
-                    if ($discovered->contains($edge->node())) {
-                        return true;
-                    }
-
-                    $discovered->attach($edge->node());
-                    $stack->push($edge->node());
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Insert a node into the graph. O(1)
+     * Insert a node into the layer. O(1)
      *
      * @param  array  $properties
      * @return \Rubix\Graph\GraphNode
@@ -149,6 +79,28 @@ class Graph implements Countable
     public function findMany(array $ids) : array
     {
         return $this->nodes->mget($ids);
+    }
+
+    /**
+     * The order of the graph, or the total number of nodes. O(1)
+     *
+     * @return int
+     */
+    public function order() : int
+    {
+        return $this->count();
+    }
+
+    /**
+     * The size of the graph, or the total number of edges. O(V)
+     *
+     * @return int
+     */
+    public function size() : int
+    {
+        return array_reduce($this->nodes->all(), function ($carry, $node) {
+            return $carry += $node->edges()->count();
+        }, 0);
     }
 
     /**
@@ -506,6 +458,46 @@ class Graph implements Countable
     }
 
     /**
+     * Is the graph acyclic? O(V+E)
+     *
+     * @return bool
+     */
+    public function acyclic() : bool
+    {
+        return !$this->cyclic();
+    }
+
+    /**
+     * Does the graph contain at least one infinite cycle. O(V+E)
+     *
+     * @return bool
+     */
+    public function cyclic() : bool
+    {
+        foreach ($this->nodes as $node) {
+            $discovered = new SplObjectStorage();
+            $stack = new SplStack();
+
+            $stack->push($node);
+
+            while (!$stack->isEmpty()) {
+                $current = $stack->pop();
+
+                foreach ($current->edges() as $edge) {
+                    if ($discovered->contains($edge->node())) {
+                        return true;
+                    }
+
+                    $discovered->attach($edge->node());
+                    $stack->push($edge->node());
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Remove a node from the graph by ID. O(V)
      *
      * @param  int  $id
@@ -529,13 +521,13 @@ class Graph implements Countable
     }
 
     /**
-     * The number of nodes in the graph. Alias of order().
+     * The number of nodes in the layer.
      *
      * @return int
      */
     public function count() : int
     {
-        return $this->order();
+        return $this->nodes->count();
     }
 
     /**
