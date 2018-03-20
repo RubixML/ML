@@ -17,7 +17,7 @@ class Diagonal implements DistanceFunction
     public function compute(GraphNode $start, GraphNode $end, array $axis) : float
     {
         return (float) max(array_map(function ($axis) use ($start, $end) {
-            return abs($start->get($axis, INF) - $end->get($axis, INF));
+            return abs($start->get($axis) - $end->get($axis));
         }, $axis));
     }
 }

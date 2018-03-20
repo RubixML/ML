@@ -16,8 +16,8 @@ class Manhattan implements DistanceFunction
      */
     public function compute(GraphNode $start, GraphNode $end, array $axis) : float
     {
-        return (float) array_reduce($axis, function ($carry, $label) use ($start, $end) {
-            return $carry += abs($start->get($label, 0.0) - $end->get($label, INF));
+        return (float) array_reduce($axis, function ($carry, $axis) use ($start, $end) {
+            return $carry += abs($start->get($axis) - $end->get($axis));
         }, 0.0);
     }
 }

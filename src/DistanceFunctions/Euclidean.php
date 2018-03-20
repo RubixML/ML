@@ -17,7 +17,7 @@ class Euclidean implements DistanceFunction
     public function compute(GraphNode $start, GraphNode $end, array $axis) : float
     {
         return (float) sqrt(array_reduce($axis, function ($carry, $axis) use ($start, $end) {
-            return $carry += pow($start->get($axis, INF) - $end->get($axis, INF), 2);
-        }, 0));
+            return $carry += pow($start->get($axis) - $end->get($axis), 2);
+        }, 0.0));
     }
 }

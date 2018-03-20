@@ -26,7 +26,7 @@ class Minkowski implements DistanceFunction
     public function compute(GraphNode $start, GraphNode $end, array $axis) : float
     {
         return (float) pow(array_reduce($axis, function ($carry, $axis) use ($start, $end) {
-            return $carry += pow(abs($start->get($axis, INF) - $end->get($axis, INF)), $this->lambda);
-        }, 0.0), 1 / $this->lambda);
+            return $carry += pow(abs($start->get($axis) - $end->get($axis)), $this->lambda);
+        }, 0.0), 1.0 / $this->lambda);
     }
 }

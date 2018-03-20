@@ -26,10 +26,10 @@ class Grid extends Graph
 
     /**
      * @param  array  $axis
-     * @param  \Rubix\DistanceFunctions\DistanceFunction|null  $distance
+     * @param  \Rubix\DistanceFunctions\DistanceFunction|null  $distanceFunction
      * @return void
      */
-    public function __construct(array $axis, DistanceFunction $distanceFunction = null)
+    public function __construct(array $axis = ['x', 'y'], DistanceFunction $distanceFunction = null)
     {
         if (!isset($distanceFunction)) {
             $distanceFunction = new Euclidean();
@@ -60,7 +60,7 @@ class Grid extends Graph
     }
 
     /**
-     * Compute the distance between two given nodes.
+     * Compute the distance between two given nodes on the grid.
      *
      * @param  \Rubix\Graph\GraphNode  $start
      * @param  \Rubix\Graph\GraphNode  $end
@@ -104,7 +104,7 @@ class Grid extends Graph
         $queue = new SplPriorityQueue();
         $path = new Path();
 
-        foreach ($this->nodes()->all() as $node) {
+        foreach ($this->nodes as $node) {
             $discovered->attach($node, [
                 'parent' => null,
                 'distance' => INF,
@@ -131,7 +131,7 @@ class Grid extends Graph
                 return $path;
             }
 
-            foreach ($current->edges()->all() as $edge) {
+            foreach ($current->edges() as $edge) {
                 $distance = $discovered[$current]['distance'] + 1;
 
                 if ($distance < $discovered[$edge->node()]['distance']) {
@@ -167,7 +167,7 @@ class Grid extends Graph
         $queue = new SplPriorityQueue();
         $path = new Path();
 
-        foreach ($this->nodes()->all() as $node) {
+        foreach ($this->nodes as $node) {
             $discovered->attach($node, [
                 'parent' => null,
                 'distance' => INF,
@@ -194,7 +194,7 @@ class Grid extends Graph
                 return $path;
             }
 
-            foreach ($current->edges()->all() as $edge) {
+            foreach ($current->edges() as $edge) {
                 $distance = $discovered[$current]['distance'] + abs($edge->get($weight, $default));
 
                 if ($distance < $discovered[$edge->node()]['distance']) {
