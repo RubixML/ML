@@ -63,18 +63,6 @@ class Grid extends Graph
     }
 
     /**
-     * Compute the distance between two given nodes on the grid.
-     *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @return float
-     */
-    public function distance(GraphNode $start, GraphNode $end) : float
-    {
-        return $this->distanceFunction->compute($start, $end, $this->axis);
-    }
-
-    /**
      * Insert a node into the grid. O(1)
      *
      * @param  array  $properties
@@ -90,6 +78,138 @@ class Grid extends Graph
         }
 
         return parent::insert($properties);
+    }
+
+    /**
+     * Compute the distance between two given nodes on the grid.
+     *
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
+     * @return float
+     */
+    public function distance(GraphNode $start, GraphNode $end) : float
+    {
+        return $this->distanceFunction->compute($start, $end, $this->axis);
+    }
+
+    /**
+     * Find the K nearest neighbors of a given node. O(V logV)
+     *
+     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  int  $k
+     * @return array
+     */
+    public function findKNearestNeighbors(GraphNode $node, int $k = 3) : array
+    {
+        $neighbors = new SplPriorityQueue();
+        $nearest = [];
+
+        if ($k > $this->nodes->count()) {
+            $k = $this->nodes->count();
+        }
+
+        foreach ($this->nodes as $neighbor) {
+            if (!$neighbor->isSame($node)) {
+                $distance = $this->distance($node, $neighbor);
+
+                $neighbors->insert($neighbor, -$distance);
+            }
+        }
+
+        foreach (range(1, $k) as $i) {
+            $nearest[] = $neighbors->extract();
+        }
+
+        return $nearest;
+    }
+
+    /**
+     * Find the K farthest neighbors of a given node. O(V logV)
+     *
+     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  int  $k
+     * @return array
+     */
+    public function findKFarthestNeighbors(GraphNode $node, int $k = 3) : array
+    {
+        $neighbors = new SplPriorityQueue();
+        $frathest = [];
+
+        if ($k > $this->nodes->count()) {
+            $k = $this->nodes->count();
+        }
+
+        foreach ($this->nodes as $neighbor) {
+            if (!$neighbor->isSame($node)) {
+                $distance = $this->distance($node, $neighbor);
+
+                $neighbors->insert($neighbor, $distance);
+            }
+        }
+
+        foreach (range(1, $k) as $i) {
+            $farthest[] = $neighbors->extract();
+        }
+
+        return $farthest;
+    }
+
+    /**
+     * Find the K nearest attached neighbors of a given node.
+     *
+     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  int  $k
+     * @return array
+     */
+    public function findKNearestAttachedNeighbors(GraphNode $node, int $k = 3) : array
+    {
+        $neighbors = new SplPriorityQueue();
+        $nearest = [];
+
+        if ($k > $node->edges()->count()) {
+            $k = $node->edges()->count();
+        }
+
+        foreach ($node->edges() as $edge) {
+            $distance = $this->distance($node, $edge->node());
+
+            $neighbors->insert($edge->node(), -$distance);
+        }
+
+        foreach (range(1, $k) as $i) {
+            $nearest[] = $neighbors->extract();
+        }
+
+        return $nearest;
+    }
+
+    /**
+     * Find the K farthest attached neighbors of a given node.
+     *
+     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  int  $k
+     * @return array
+     */
+    public function findKFarthestAttachedNeighbors(GraphNode $node, int $k = 3) : array
+    {
+        $neighbors = new SplPriorityQueue();
+        $farthest = [];
+
+        if ($k > $node->edges()->count()) {
+            $k = $node->edges()->count();
+        }
+
+        foreach ($node->edges() as $edge) {
+            $distance = $this->distance($node, $edge->node());
+
+            $neighbors->insert($edge->node(), $distance);
+        }
+
+        foreach (range(1, $k) as $i) {
+            $farthest[] = $neighbors->extract();
+        }
+
+        return $farthest;
     }
 
     /**
