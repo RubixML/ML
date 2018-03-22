@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\GraphNode;
-use Rubix\Engine\Edge;
+use Rubix\Engine\Graph\Edge;
+use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class EdgeTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\DistanceFunctions;
 
-use Rubix\Engine\GraphNode;
+use Rubix\Engine\Graph\GraphNode;
 
 interface DistanceFunction
 {

@@ -2,6 +2,9 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Graph\Path;
+use Rubix\Engine\Graph\GraphNode;
+use Rubix\Engine\Graph\ObjectIndex;
 use Rubix\Engine\DistanceFunctions\Euclidean;
 use Rubix\Engine\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;

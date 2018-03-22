@@ -1,8 +1,8 @@
 <?php
 
 use Rubix\Engine\Trie;
-use Rubix\Engine\Node;
-use Rubix\Engine\Path;
+use Rubix\Engine\Graph\GraphNode;
+use Rubix\Engine\Graph\Path;
 use PHPUnit\Framework\TestCase;
 
 class TrieTest extends TestCase
@@ -20,7 +20,7 @@ class TrieTest extends TestCase
     public function test_build_trie()
     {
         $this->assertTrue($this->trie instanceof Trie);
-        $this->assertTrue($this->trie->root() instanceof Node);
+        $this->assertTrue($this->trie->root() instanceof GraphNode);
     }
 
     public function test_has_word()

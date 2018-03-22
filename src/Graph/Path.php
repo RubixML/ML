@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Engine\Graph;
 
 use SplDoublyLinkedList;
 

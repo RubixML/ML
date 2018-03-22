@@ -2,6 +2,9 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Graph\Tree;
+use Rubix\Engine\Graph\Path;
+use Rubix\Engine\Graph\GraphNode;
 use Countable;
 use SplStack;
 

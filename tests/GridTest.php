@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Grid;
-use Rubix\Engine\Path;
+use Rubix\Engine\Graph\Path;
 use Rubix\Engine\DistanceFunctions\Manhattan;
 use PHPUnit\Framework\TestCase;
 

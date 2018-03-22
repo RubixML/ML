@@ -2,8 +2,8 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Tree;
-use Rubix\Engine\BinaryNode;
+use Rubix\Engine\Graph\Tree;
+use Rubix\Engine\Graph\BinaryNode;
 use InvalidArgumentException;
 
 class CART extends Tree implements Estimator

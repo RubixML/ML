@@ -2,7 +2,7 @@
 
 use Rubix\Engine\DistanceFunctions\Manhattan;
 use Rubix\Engine\DistanceFunctions\DistanceFunction;
-use Rubix\Engine\GraphNode;
+use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class ManhattanTest extends TestCase

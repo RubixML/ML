@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\BinaryNode;
+use Rubix\Engine\Graph\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 class BinaryNodeTest extends TestCase
