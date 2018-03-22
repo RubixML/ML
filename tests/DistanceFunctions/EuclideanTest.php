@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Graph\DistanceFunctions\Euclidean;
-use Rubix\Graph\DistanceFunctions\DistanceFunction;
-use Rubix\Graph\GraphNode;
+use Rubix\Engine\DistanceFunctions\Euclidean;
+use Rubix\Engine\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class EuclideanTest extends TestCase

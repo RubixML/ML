@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Graph;
+namespace Rubix\Engine;
 
 use InvalidArgumentException;
 
@@ -9,7 +9,7 @@ class BinaryNode extends GraphObject implements Node
     /**
      * The parent node.
      *
-     * @var \Rubix\Graph\BinaryNode|null
+     * @var \Rubix\Engine\BinaryNode|null
      */
     protected $parent;
 
@@ -23,23 +23,16 @@ class BinaryNode extends GraphObject implements Node
     /**
      * The left child node.
      *
-     * @var \Rubix\Graph\BinaryNode|null
+     * @var \Rubix\Engine\BinaryNode|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var \Rubix\Graph\BinaryNode|null
+     * @var \Rubix\Engine\BinaryNode|null
      */
     protected $right;
-
-    /**
-     * The precomputed height of the node.
-     *
-     * @var int
-     */
-    protected $height;
 
     /**
      * @param  mixed  $value
@@ -49,17 +42,16 @@ class BinaryNode extends GraphObject implements Node
     public function __construct($value, array $properties = [])
     {
         $this->changeValue($value);
-        
+
         $this->parent = null;
         $this->left = null;
         $this->right = null;
-        $this->height = 1;
 
         parent::__construct($properties);
     }
 
     /**
-     * @return \Rubix\Graph\BinaryNode|null
+     * @return \Rubix\Engine\BinaryNode|null
      */
     public function parent() : ?BinaryNode
     {
@@ -75,7 +67,7 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
-     * @return \Rubix\Graph\BinaryNode|null
+     * @return \Rubix\Engine\BinaryNode|null
      */
     public function left() : ?BinaryNode
     {
@@ -83,7 +75,7 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
-     * @return \Rubix\Graph\BinaryNode|null
+     * @return \Rubix\Engine\BinaryNode|null
      */
     public function right() : ?BinaryNode
     {
@@ -91,11 +83,14 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
+     * Recursive function to determine the height of the node. O(V)
+     *
      * @return int
      */
     public function height() : int
     {
-        return $this->height;
+        return 1 + max(isset($this->left) ? $this->left->height() : 0,
+            isset($this->right) ? $this->right->height() : 0);
     }
 
     /**
@@ -112,7 +107,7 @@ class BinaryNode extends GraphObject implements Node
     /**
      * Set the parent of this node.
      *
-     * @param  \Rubix\Graph\BinaryNode|null  $node
+     * @param  \Rubix\Engine\BinaryNode|null  $node
      * @return self
      */
     public function setParent(BinaryNode $node = null) : self
@@ -142,7 +137,7 @@ class BinaryNode extends GraphObject implements Node
     /**
      * Set the left child node.
      *
-     * @param  \Rubix\Graph\BinaryNode|null  $node
+     * @param  \Rubix\Engine\BinaryNode|null  $node
      * @return self
      */
     public function attachLeft(BinaryNode $node = null) : self
@@ -155,15 +150,13 @@ class BinaryNode extends GraphObject implements Node
             $this->left = $node;
         }
 
-        $this->updateHeight();
-
         return $this;
     }
 
     /**
      * Set the right child node.
      *
-     * @param  \Rubix\Graph\BinaryNode|null  $node
+     * @param  \Rubix\Engine\BinaryNode|null  $node
      * @return self
      */
     public function attachRight(BinaryNode $node = null) : self
@@ -175,8 +168,6 @@ class BinaryNode extends GraphObject implements Node
 
             $this->right = $node;
         }
-
-        $this->updateHeight();
 
         return $this;
     }
@@ -192,8 +183,6 @@ class BinaryNode extends GraphObject implements Node
             $this->left->setParent(null);
 
             $this->left = null;
-
-            $this->updateHeight();
         }
 
         return $this;
@@ -210,36 +199,13 @@ class BinaryNode extends GraphObject implements Node
             $this->right->setParent(null);
 
             $this->right = null;
-
-            $this->updateHeight();
         }
 
         return $this;
     }
 
     /**
-     * Recursive function to update the node's height up to the root. O(logN)
-     *
-     * @return self
-     */
-    public function updateHeight() : self
-    {
-        $height = 1 + max(isset($this->left) ? $this->left->height() : 0,
-            isset($this->right) ? $this->right->height() : 0);
-
-        if ($this->height !== $height) {
-            $this->height = $height;
-
-            if (!is_null($this->parent())) {
-                $this->parent()->updateHeight();
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Is this a leaf node? I.e no children.
+     * Is this a leaf node? i.e no children.
      *
      * @return bool
      */

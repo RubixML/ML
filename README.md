@@ -1,3 +1,3 @@
 # Rubix Engine
 
-A library for querying and performing computations on graphs.
+A library for building intelligent systems with PHP.

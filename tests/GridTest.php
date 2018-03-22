@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Graph\Grid;
-use Rubix\Graph\Path;
-use Rubix\Graph\DistanceFunctions\Manhattan;
+use Rubix\Engine\Grid;
+use Rubix\Engine\Path;
+use Rubix\Engine\DistanceFunctions\Manhattan;
 use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase

@@ -1,17 +1,18 @@
 <?php
 
-namespace Rubix\Graph;
+namespace Rubix\Engine;
 
 class Tree
 {
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\Graph\Node|null  $root
+     * @var \Rubix\Engine\Node|null  $root
      */
     protected $root;
 
     /**
+     * @param  \Rubix\Engine\Node|null  $root
      * @return void
      */
     public function __construct(Node $root = null)
@@ -20,7 +21,7 @@ class Tree
     }
 
     /**
-     * @return \Rubix\Graph\NodeNode|null
+     * @return \Rubix\Engine\NodeNode|null
      */
     public function root() : ?Node
     {

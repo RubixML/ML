@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Graph;
+namespace Rubix\Engine;
 
 use RuntimeException;
 use SplObjectStorage;
@@ -9,12 +9,12 @@ use Countable;
 use SplQueue;
 use SplStack;
 
-class Graph implements Countable
+class Graph
 {
     /**
-     * An index of all the nodes in the graph.
+     * An index of the nodes in the layer.
      *
-     * @var \Rubix\Graph\ObjectIndex
+     * @var \Rubix\Engine\ObjectIndex
      */
     protected $nodes;
 
@@ -32,53 +32,6 @@ class Graph implements Countable
     {
         $this->nodes = new ObjectIndex();
         $this->counter = 1;
-    }
-
-    /**
-     * @return \Rubix\Graph\ObjectIndex
-     */
-    public function nodes() : ObjectIndex
-    {
-        return $this->nodes;
-    }
-
-    /**
-     * Insert a node into the layer. O(1)
-     *
-     * @param  array  $properties
-     * @return \Rubix\Graph\GraphNode
-     */
-    public function insert(array $properties = []) : GraphNode
-    {
-        $id = $this->counter++;
-
-        $node = new GraphNode($id, $properties);
-
-        $this->nodes->put($id, $node);
-
-        return $node;
-    }
-
-    /**
-     * Find a node in the graph by ID. O(1)
-     *
-     * @param  int  $id
-     * @return \Rubix\Graph\GraphNode
-     */
-    public function find(int $id) : ?GraphNode
-    {
-        return $this->nodes->get($id);
-    }
-
-    /**
-     * Find many nodes in the graph by ID. Returns an array indexed by the node ID.
-     *
-     * @param  array  $ids
-     * @return array
-     */
-    public function findMany(array $ids) : array
-    {
-        return $this->nodes->mget($ids);
     }
 
     /**
@@ -104,12 +57,59 @@ class Graph implements Countable
     }
 
     /**
+     * @return \Rubix\Engine\ObjectIndex
+     */
+    public function nodes() : ObjectIndex
+    {
+        return $this->nodes;
+    }
+
+    /**
+     * Insert a node into the layer. O(1)
+     *
+     * @param  array  $properties
+     * @return \Rubix\Engine\GraphNode
+     */
+    public function insert(array $properties = []) : GraphNode
+    {
+        $id = $this->counter++;
+
+        $node = new GraphNode($id, $properties);
+
+        $this->nodes->put($id, $node);
+
+        return $node;
+    }
+
+    /**
+     * Find a node in the graph by ID. O(1)
+     *
+     * @param  int  $id
+     * @return \Rubix\Engine\GraphNode
+     */
+    public function find(int $id) : ?GraphNode
+    {
+        return $this->nodes->get($id);
+    }
+
+    /**
+     * Find many nodes in the graph by ID. Returns an array indexed by the node ID.
+     *
+     * @param  array  $ids
+     * @return array
+     */
+    public function findMany(array $ids) : array
+    {
+        return $this->nodes->mget($ids);
+    }
+
+    /**
      * Find a path between a start node to an end node. Returns null if no path can
      * be found. O(V+E)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
-     * @return \Rubix\Graph\Path|null
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
+     * @return \Rubix\Engine\Path|null
      */
     public function findPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -150,8 +150,8 @@ class Graph implements Countable
      * Find all paths between a start node to an end node. Returns an empty array
      * if no paths are found.
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @return array
      */
     public function findAllPaths(GraphNode $start, GraphNode $end) : array
@@ -168,10 +168,10 @@ class Graph implements Countable
     /**
      * Recursive backtracking function to find all paths between two given nodes.
      *
-     * @param  \Rubix\Graph\GraphNode  $root
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $root
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  \SplObjectStorage  $discovered
-     * @param  \Rubix\Graph\Path  $path
+     * @param  \Rubix\Engine\Path  $path
      * @param  array  $paths
      * @return void
      */
@@ -200,9 +200,9 @@ class Graph implements Countable
      * Find a shortest path between a start node and an end node. Returns null if
      * no path can be found. O(V+E)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
-     * @return \Rubix\Graph\Path|null
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
+     * @return \Rubix\Engine\Path|null
      */
     public function findShortestPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -268,12 +268,12 @@ class Graph implements Countable
      * Find a shortest weighted path between start node and an end node.
      * Returns null if no path can be found. O(V*E)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
      * @throws \RuntimeException
-     * @return \Rubix\Graph\Path|null
+     * @return \Rubix\Engine\Path|null
      */
     public function findShortestWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
@@ -335,11 +335,11 @@ class Graph implements Countable
      * Find a shortest unsigned weighted path between start node and an end node.
      * Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
-     * @return \Rubix\Graph\Path|null
+     * @return \Rubix\Engine\Path|null
      */
     public function findShortestUnsignedWeightedPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {
@@ -422,7 +422,7 @@ class Graph implements Countable
      * Return a path of topologically sorted nodes which will only be valid if
      * the graph is acyclic. Returns null if graph is empty. O(V+E)
      *
-     * @return \Rubix\Graph\Path|null
+     * @return \Rubix\Engine\Path|null
      */
     public function sort() : ?Path
     {
@@ -498,24 +498,22 @@ class Graph implements Countable
     }
 
     /**
-     * Remove a node from the graph by ID. O(V)
+     * Remove a node from the graph by ID.
      *
      * @param  int  $id
      * @return self
      */
     public function delete(int $id) : self
     {
-        if (!$this->nodes->has($id)) {
-            return $this;
-        }
+        $node = $this->find($id);
 
-        foreach ($this->nodes as $current) {
-            if ($current->edges()->has($id)) {
-                $current->edges()->remove($id);
+        if (isset($node)) {
+            foreach ($node->edges() as $edge) {
+                $edge->node()->detach($node);
             }
-        }
 
-        $this->nodes->remove($id);
+            $this->nodes->remove($id);
+        }
 
         return $this;
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Graph;
+namespace Rubix\Engine;
 
-use Rubix\Graph\DistanceFunctions\Euclidean;
-use Rubix\Graph\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\DistanceFunctions\Euclidean;
+use Rubix\Engine\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -62,8 +62,8 @@ class Grid extends Graph
     /**
      * Compute the distance between two given nodes on the grid.
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @return float
      */
     public function distance(GraphNode $start, GraphNode $end) : float
@@ -76,7 +76,7 @@ class Grid extends Graph
      *
      * @param  array  $properties
      * @throws \InvalidArgumentException
-     * @return \Rubix\Graph\GraphGraphNode
+     * @return \Rubix\Engine\GraphGraphNode
      */
     public function insert(array $properties = []) : GraphNode
     {
@@ -94,9 +94,9 @@ class Grid extends Graph
      * Uses a euclidian distance heuristic to prioritize the direction of the
      * traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
-     * @return \Rubix\Graph\Path|null
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
+     * @return \Rubix\Engine\Path|null
      */
     public function findShortestSmartPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -155,11 +155,11 @@ class Grid extends Graph
      * node in a grid. Uses a euclidian distance heuristic to prioritize the direction
      * of the traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
-     * @return \Rubix\Graph\Path|null
+     * @return \Rubix\Engine\Path|null
      */
     public function findShortestUnsignedWeightedSmartPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {

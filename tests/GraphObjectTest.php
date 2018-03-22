@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Graph\GraphObject;
+use Rubix\Engine\GraphObject;
 use PHPUnit\Framework\TestCase;
 
 class GraphObjectTest extends TestCase

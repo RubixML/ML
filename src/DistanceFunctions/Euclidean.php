@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Graph\DistanceFunctions;
+namespace Rubix\Engine\DistanceFunctions;
 
-use Rubix\Graph\GraphNode;
+use Rubix\Engine\GraphNode;
 
 class Euclidean implements DistanceFunction
 {
     /**
      * Compute the distance between two nodes.
      *
-     * @param  \Rubix\Graph\GraphNode  $start
-     * @param  \Rubix\Graph\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $start
+     * @param  \Rubix\Engine\GraphNode  $end
      * @param  array  $axis
      * @return float
      */

@@ -1,9 +1,9 @@
 <?php
 
-use Rubix\Graph\GraphNode;
-use Rubix\Graph\Edge;
-use Rubix\Graph\Path;
-use Rubix\Graph\Graph;
+use Rubix\Engine\GraphNode;
+use Rubix\Engine\Edge;
+use Rubix\Engine\Path;
+use Rubix\Engine\Graph;
 use PHPUnit\Framework\TestCase;
 
 class GraphTest extends TestCase
@@ -50,6 +50,21 @@ class GraphTest extends TestCase
         }
     }
 
+    public function test_build_graph()
+    {
+        $this->assertTrue($this->graph instanceof Graph);
+    }
+
+    public function test_graph_order()
+    {
+        $this->assertEquals(8, $this->graph->order());
+    }
+
+    public function test_graph_size()
+    {
+        $this->assertEquals(11, $this->graph->size());
+    }
+
     public function test_insert_node()
     {
         $this->assertEquals(8, $this->graph->nodes()->count());
@@ -67,16 +82,6 @@ class GraphTest extends TestCase
         $this->assertEquals('female', $node->gender);
     }
 
-    public function test_graph_order()
-    {
-        $this->assertEquals(8, $this->graph->order());
-    }
-
-    public function test_graph_size()
-    {
-        $this->assertEquals(11, $this->graph->size());
-    }
-
     public function test_find_node()
     {
         $this->assertEquals('Julie', $this->graph->find(2)->name);
@@ -91,6 +96,20 @@ class GraphTest extends TestCase
         $this->assertEquals('Andrew', $nodes[1]->name);
         $this->assertEquals('Frank', $nodes[3]->name);
         $this->assertEquals('Seagal', $nodes[4]->name);
+    }
+
+    public function test_delete_node_from_graph()
+    {
+        $this->assertEquals(8, $this->graph->nodes()->count());
+        $this->assertEquals('Seagal', $this->graph->find(4)->name);
+
+        $this->graph->delete(4);
+
+        $this->assertEquals(7, $this->graph->nodes()->count());
+
+        $this->assertNull($this->graph->find(4));
+
+        $this->assertNull($this->graph->find(7)->edges()->get(4));
     }
 
     public function test_find_path()
@@ -176,20 +195,6 @@ class GraphTest extends TestCase
         $path = $this->graph->sort();
 
         $this->assertTrue(true);
-    }
-
-    public function test_delete_node_from_graph()
-    {
-        $this->assertEquals(8, $this->graph->nodes()->count());
-        $this->assertEquals('Seagal', $this->graph->find(4)->name);
-
-        $this->graph->delete(4);
-
-        $this->assertEquals(7, $this->graph->nodes()->count());
-
-        $this->assertNull($this->graph->find(4));
-
-        $this->assertNull($this->graph->find(7)->edges()->get(4));
     }
 
     public function test_graph_is_acyclic()
