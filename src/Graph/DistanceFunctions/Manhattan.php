@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\DistanceFunctions;
+namespace Rubix\Engine\Graph\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 

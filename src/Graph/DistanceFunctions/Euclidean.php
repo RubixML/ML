@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\DistanceFunctions;
+namespace Rubix\Engine\Graph\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 
-class Diagonal extends DistanceFunction
+class Euclidean extends DistanceFunction
 {
     /**
      * Compute the distance between node a and b.
@@ -15,8 +15,8 @@ class Diagonal extends DistanceFunction
      */
     public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) max(array_map(function ($axis) use ($a, $b) {
-            return abs($a->get($axis) - $b->get($axis));
-        }, $this->axes));
+        return (float) sqrt(array_reduce($this->axes, function ($carry, $axis) use ($a, $b) {
+            return $carry += pow($a->get($axis) - $b->get($axis), 2);
+        }, 0.0));
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\DistanceFunctions\Minkowski;
-use Rubix\Engine\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Graph\DistanceFunctions\Minkowski;
+use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 

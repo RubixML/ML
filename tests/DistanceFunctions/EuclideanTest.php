@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\DistanceFunctions\Euclidean;
-use Rubix\Engine\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
+use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
