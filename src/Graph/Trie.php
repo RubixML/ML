@@ -6,7 +6,6 @@ use Rubix\Engine\Graph\Tree;
 use Rubix\Engine\Graph\Path;
 use Rubix\Engine\Graph\GraphNode;
 use Countable;
-use SplStack;
 
 class Trie extends Tree implements Countable
 {
@@ -134,7 +133,7 @@ class Trie extends Tree implements Countable
      */
     public function delete(string $word) : self
     {
-        $stack = new SplStack();
+        $stack = [];
 
         $current = $this->root;
 
@@ -142,7 +141,7 @@ class Trie extends Tree implements Countable
             if ($current->edges()->has($letter)) {
                 $current = $current->edges()->get($letter)->node();
 
-                $stack->push($current);
+                $stack[] = $current;
             } else {
                 return $this;
             }
@@ -154,12 +153,12 @@ class Trie extends Tree implements Countable
             $this->size--;
         }
 
-        while (!$stack->isEmpty()) {
-            $current = $stack->pop();
+        while (!empty($stack)) {
+            $current = array_pop($stack);
 
             if (!$current->word && $current->isLeaf()) {
-                if ($stack->valid()) {
-                    $stack->top()->edges()->remove($current->id());
+                if (!empty($stack)) {
+                    end($stack)->edges()->remove($current->id());
                 }
             } else {
                 break;
