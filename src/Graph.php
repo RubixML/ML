@@ -10,12 +10,11 @@ use SplObjectStorage;
 use SplPriorityQueue;
 use Countable;
 use SplQueue;
-use SplStack;
 
-class Graph
+class Graph implements Countable
 {
     /**
-     * An index of the nodes in the layer.
+     * An index of the nodes in the graph.
      *
      * @var \Rubix\Engine\ObjectIndex
      */
@@ -75,11 +74,9 @@ class Graph
      */
     public function insert(array $properties = []) : GraphNode
     {
-        $id = $this->counter++;
+        $node = new GraphNode($this->counter++, $properties);
 
-        $node = new GraphNode($id, $properties);
-
-        $this->nodes->put($id, $node);
+        $this->nodes->put($node->id(), $node);
 
         return $node;
     }
@@ -117,15 +114,15 @@ class Graph
     public function findPath(GraphNode $start, GraphNode $end) : ?Path
     {
         $discovered = new SplObjectStorage();
-        $stack = new SplStack();
         $path = new Path();
+        $stack = [];
 
         $discovered->attach($start, null);
 
-        $stack->push($start);
+        array_push($stack, $start);
 
-        while (!$stack->isEmpty()) {
-            $current = $stack->pop();
+        while (!empty($stack)) {
+            $current = array_pop($stack);
 
             if ($current->isSame($end)) {
                 while ($end !== null) {
@@ -138,10 +135,12 @@ class Graph
             }
 
             foreach ($current->edges() as $edge) {
-                if (!$discovered->contains($edge->node())) {
-                    $discovered->attach($edge->node(), $current);
+                $node = $edge->node();
 
-                    $stack->push($edge->node());
+                if (!$discovered->contains($node)) {
+                    $discovered->attach($node, $current);
+
+                    $stack[] = $node;
                 }
             }
         }
@@ -159,11 +158,9 @@ class Graph
      */
     public function findAllPaths(GraphNode $start, GraphNode $end) : array
     {
-        $discovered = new SplObjectStorage();
-        $path = new Path();
         $paths = [];
 
-        $this->_findAllPaths($start, $end, $discovered, $path, $paths);
+        $this->_findAllPaths($start, $end, new SplObjectStorage(), new Path(), $paths);
 
         return $paths;
     }
@@ -429,28 +426,28 @@ class Graph
      */
     public function sort() : ?Path
     {
-        if ($this->isEmpty()) {
+        if ($this->order() === 0) {
             return null;
         }
 
         $discovered = new SplObjectStorage();
-        $stack = new SplStack();
         $path = new Path();
+        $stack = [];
 
         foreach ($this->nodes as $node) {
-            $stack->push($node);
+            $stack[] = $node;
         }
 
-        while (!$stack->isEmpty()) {
-            $current = $stack->pop();
+        while (!empty($stack)) {
+            $current = array_pop($stack);
 
             if (!$discovered->contains($current)) {
                 $discovered->attach($current);
 
-                $stack->push($current);
+                $stack[] = $current;
 
                 foreach ($current->edges() as $edge) {
-                    $stack->push($edge->node());
+                    $stack[] = $edge->node();
                 }
             } else {
                 $path->prepend($current);
@@ -479,12 +476,12 @@ class Graph
     {
         foreach ($this->nodes as $node) {
             $discovered = new SplObjectStorage();
-            $stack = new SplStack();
+            $stack = [];
 
-            $stack->push($node);
+            array_push($stack, $node);
 
-            while (!$stack->isEmpty()) {
-                $current = $stack->pop();
+            while (!empty($stack)) {
+                $current = array_pop($stack);
 
                 foreach ($current->edges() as $edge) {
                     if ($discovered->contains($edge->node())) {
@@ -492,7 +489,8 @@ class Graph
                     }
 
                     $discovered->attach($edge->node());
-                    $stack->push($edge->node());
+
+                    $stack[] = $edge->node();
                 }
             }
         }
@@ -529,15 +527,5 @@ class Graph
     public function count() : int
     {
         return $this->nodes->count();
-    }
-
-    /**
-     * Is the graph empty?
-     *
-     * @return int
-     */
-    public function isEmpty() : bool
-    {
-        return $this->nodes->isEmpty();
     }
 }
