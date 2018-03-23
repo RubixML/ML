@@ -4,29 +4,31 @@ namespace Rubix\Engine\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 
-class Minkowski implements DistanceFunction
+class Minkowski extends DistanceFunction
 {
     /**
+     * @param  array  $axes
      * @param  float  $lambda
      * @return void
      */
-    public function __construct(float $lambda = 3.0)
+    public function __construct(array $axes = ['x', 'y'], float $lambda = 3.0)
     {
         $this->lambda = $lambda;
+
+        parent::__construct($axes);
     }
 
     /**
-     * Compute the distance between two nodes.
+     * Compute the distance between node a and b.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @param  array  $axis
+     * @param  \Rubix\Engine\GraphNode  $a
+     * @param  \Rubix\Engine\GraphNode  $b
      * @return float
      */
-    public function compute(GraphNode $start, GraphNode $end, array $axis) : float
+    public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) pow(array_reduce($axis, function ($carry, $axis) use ($start, $end) {
-            return $carry += pow(abs($start->get($axis) - $end->get($axis)), $this->lambda);
+        return (float) pow(array_reduce($this->axes, function ($carry, $axis) use ($a, $b) {
+            return $carry += pow(abs($a->get($axis) - $b->get($axis)), $this->lambda);
         }, 0.0), 1.0 / $this->lambda);
     }
 }

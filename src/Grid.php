@@ -14,13 +14,6 @@ use SplPriorityQueue;
 class Grid extends Graph
 {
     /**
-     * The property names that represent the axis of the grid.
-     *
-     * @var array
-     */
-    protected $axis;
-
-    /**
      * The distance function that describes the grid space.
      *
      * @var \Rubix\DistanceFunctions\DistanceFunction
@@ -28,28 +21,18 @@ class Grid extends Graph
     protected $distanceFunction;
 
     /**
-     * @param  array  $axis
      * @param  \Rubix\DistanceFunctions\DistanceFunction|null  $distanceFunction
      * @return void
      */
-    public function __construct(array $axis = ['x', 'y'], DistanceFunction $distanceFunction = null)
+    public function __construct(DistanceFunction $distanceFunction = null)
     {
         if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+            $distanceFunction = new Euclidean(['x', 'y']);
         }
 
-        $this->axis = $axis;
         $this->distanceFunction = $distanceFunction;
 
         parent::__construct();
-    }
-
-    /**
-     * @return array
-     */
-    public function axis() : array
-    {
-        return $this->axis;
     }
 
     /**
@@ -59,7 +42,15 @@ class Grid extends Graph
      */
     public function dimensions() : int
     {
-        return count($this->axis);
+        return $this->distanceFunction->dimensions();
+    }
+
+    /**
+     * @return array
+     */
+    public function axes() : array
+    {
+        return $this->distanceFunction->axes();
     }
 
     /**
@@ -71,7 +62,7 @@ class Grid extends Graph
      */
     public function insert(array $properties = []) : GraphNode
     {
-        foreach ($this->axis as $axis) {
+        foreach ($this->axes() as $axis) {
             if (!isset($properties[$axis])) {
                 throw new InvalidArgumentException('Node must have a value set for all axis of the grid.');
             }
@@ -87,9 +78,9 @@ class Grid extends Graph
      * @param  \Rubix\Engine\GraphNode  $end
      * @return float
      */
-    public function distance(GraphNode $start, GraphNode $end) : float
+    public function distance(GraphNode $a, GraphNode $b) : float
     {
-        return $this->distanceFunction->compute($start, $end, $this->axis);
+        return $this->distanceFunction->compute($a, $b);
     }
 
     /**
@@ -97,30 +88,37 @@ class Grid extends Graph
      *
      * @param  \Rubix\Engine\Graph\GraphNode  $node
      * @param  int  $k
-     * @return array
+     * @param  bool  $self
+     * @return \Rubix\Engine\Graph\ObjectIndex
      */
-    public function findKNearestNeighbors(GraphNode $node, int $k = 3) : array
+    public function findNearestNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
         $neighbors = new SplPriorityQueue();
-        $nearest = [];
-
-        if ($k > $this->nodes->count()) {
-            $k = $this->nodes->count();
-        }
+        $cluster = new ObjectIndex();
 
         foreach ($this->nodes as $neighbor) {
-            if (!$neighbor->isSame($node)) {
-                $distance = $this->distance($node, $neighbor);
-
-                $neighbors->insert($neighbor, -$distance);
+            if ($self !== true) {
+                if ($neighbor->isSame($node)) {
+                    continue;
+                }
             }
+
+            $distance = $this->distance($node, $neighbor);
+
+            $neighbors->insert($neighbor, 1 - $distance);
         }
 
-        foreach (range(1, $k) as $i) {
-            $nearest[] = $neighbors->extract();
+        while ($neighbors->valid()) {
+            if ($cluster->count() >= $k) {
+                break;
+            }
+
+            $neighbor = $neighbors->extract();
+
+            $cluster->put($neighbor->id(), $neighbor);
         }
 
-        return $nearest;
+        return $cluster;
     }
 
     /**
@@ -128,94 +126,152 @@ class Grid extends Graph
      *
      * @param  \Rubix\Engine\Graph\GraphNode  $node
      * @param  int  $k
-     * @return array
+     * @param  bool  $self
+     * @return \Rubix\Engine\Graph\ObjectIndex
      */
-    public function findKFarthestNeighbors(GraphNode $node, int $k = 3) : array
+    public function findFarthestNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
         $neighbors = new SplPriorityQueue();
-        $frathest = [];
-
-        if ($k > $this->nodes->count()) {
-            $k = $this->nodes->count();
-        }
+        $cluster = new ObjectIndex();
 
         foreach ($this->nodes as $neighbor) {
-            if (!$neighbor->isSame($node)) {
-                $distance = $this->distance($node, $neighbor);
+            if ($self !== true) {
+                if ($neighbor->isSame($node)) {
+                    continue;
+                }
+            }
 
-                $neighbors->insert($neighbor, $distance);
+            $distance = $this->distance($node, $neighbor);
+
+            $neighbors->insert($neighbor, $distance);
+        }
+
+        while ($neighbors->valid()) {
+            if ($cluster->count() >= $k) {
+                break;
+            }
+
+            $neighbor = $neighbors->extract();
+
+            $cluster->put($neighbor->id(), $neighbor);
+        }
+
+        return $cluster;
+    }
+
+    /**
+     * Find the K nearest reachable neighbors of a given node.
+     *
+     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  int  $k
+     * @param  bool  $self
+     * @return \Rubix\Engine\Graph\ObjectIndex
+     */
+    public function findNearestReachableNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
+    {
+        $discovered = new SplObjectStorage();
+        $neighbors = new SplPriorityQueue();
+        $cluster = new ObjectIndex();
+        $stack = [];
+
+        $discovered->attach($node, null);
+
+        array_push($stack, $node);
+
+        while (!empty($stack)) {
+            $current = array_pop($stack);
+
+            foreach ($current->edges() as $edge) {
+                $neighbor = $edge->node();
+
+                if (!$discovered->contains($neighbor)) {
+                    $discovered->attach($neighbor, $current);
+
+                    if ($self !== true) {
+                        if ($neighbor->isSame($node)) {
+                            continue;
+                        }
+                    }
+
+                    $distance = $this->distance($node, $neighbor);
+
+                    $neighbors->insert($neighbor, 1 - $distance);
+
+                    $stack[] = $neighbor;
+                }
             }
         }
 
-        foreach (range(1, $k) as $i) {
-            $farthest[] = $neighbors->extract();
+        while ($neighbors->valid()) {
+            if ($cluster->count() >= $k) {
+                break;
+            }
+
+            $neighbor = $neighbors->extract();
+
+            $cluster->put($neighbor->id(), $neighbor);
         }
 
-        return $farthest;
+        return $cluster;
     }
 
     /**
-     * Find the K nearest attached neighbors of a given node.
+     * Find the K farthest reachable neighbors of a given node.
      *
      * @param  \Rubix\Engine\Graph\GraphNode  $node
      * @param  int  $k
-     * @return array
+     * @return \Rubix\Engine\Graph\ObjectIndex
      */
-    public function findKNearestAttachedNeighbors(GraphNode $node, int $k = 3) : array
+    public function findFarthestReachableNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
+        $discovered = new SplObjectStorage();
         $neighbors = new SplPriorityQueue();
-        $nearest = [];
+        $cluster = new ObjectIndex();
+        $stack = [];
 
-        if ($k > $node->edges()->count()) {
-            $k = $node->edges()->count();
+        array_push($stack, $node);
+
+        while (!empty($stack)) {
+            $current = array_pop($stack);
+
+            foreach ($current->edges() as $edge) {
+                $neighbor = $edge->node();
+
+                if (!$discovered->contains($neighbor)) {
+                    $discovered->attach($neighbor, $current);
+
+                    if ($self !== true) {
+                        if ($neighbor->isSame($node)) {
+                            continue;
+                        }
+                    }
+
+                    $distance = $this->distance($node, $neighbor);
+
+                    $neighbors->insert($neighbor, $distance);
+
+                    $stack[] = $neighbor;
+                }
+            }
         }
 
-        foreach ($node->edges() as $edge) {
-            $distance = $this->distance($node, $edge->node());
+        while ($neighbors->valid()) {
+            if ($cluster->count() >= $k) {
+                break;
+            }
 
-            $neighbors->insert($edge->node(), -$distance);
+            $neighbor = $neighbors->extract();
+
+            $cluster->put($neighbor->id(), $neighbor);
         }
 
-        foreach (range(1, $k) as $i) {
-            $nearest[] = $neighbors->extract();
-        }
-
-        return $nearest;
-    }
-
-    /**
-     * Find the K farthest attached neighbors of a given node.
-     *
-     * @param  \Rubix\Engine\Graph\GraphNode  $node
-     * @param  int  $k
-     * @return array
-     */
-    public function findKFarthestAttachedNeighbors(GraphNode $node, int $k = 3) : array
-    {
-        $neighbors = new SplPriorityQueue();
-        $farthest = [];
-
-        if ($k > $node->edges()->count()) {
-            $k = $node->edges()->count();
-        }
-
-        foreach ($node->edges() as $edge) {
-            $distance = $this->distance($node, $edge->node());
-
-            $neighbors->insert($edge->node(), $distance);
-        }
-
-        foreach (range(1, $k) as $i) {
-            $farthest[] = $neighbors->extract();
-        }
-
-        return $farthest;
+        return $cluster;
     }
 
     /**
      * Find a shortest smart path between a start node and an end node in a grid.
-     * Uses a euclidian distance heuristic to prioritize the direction of the
-     * traversal. Returns null if no path can be found. O(VlogV + ElogV)
+     * Uses a distance function to compute a heuristic that prioritizes the direction
+     * of the traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
      * @param  \Rubix\Engine\GraphNode  $start
      * @param  \Rubix\Engine\GraphNode  $end

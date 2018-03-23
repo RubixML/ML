@@ -11,7 +11,7 @@ class GridTest extends TestCase
 
     public function setUp()
     {
-        $this->grid = new Grid(['x','y'], new Manhattan());
+        $this->grid = new Grid(new Manhattan(['x','y']));
 
         for ($x = 0; $x < 10; $x++) {
             for ($y = 0; $y < 10; $y++) {
@@ -45,52 +45,56 @@ class GridTest extends TestCase
         $this->assertEquals(7.0, round($this->grid->distance($start, $end), 2));
     }
 
-    public function test_find_k_nearest_neighbors()
+    public function test_find_nearest_neighbors()
     {
         $node = $this->grid->nodes()->where('x', '===', 3)->where('y', '===', 7)->first();
 
-        $neighbors = $this->grid->findKNearestNeighbors($node, 3);
+        $neighbors = $this->grid->findNearestNeighbors($node, 3);
 
-        $this->assertEquals(3, count($neighbors));
-        $this->assertEquals([2, 7], [$neighbors[0]->x, $neighbors[0]->y]);
-        $this->assertEquals([3, 6], [$neighbors[1]->x, $neighbors[1]->y]);
-        $this->assertEquals([3, 8], [$neighbors[2]->x, $neighbors[2]->y]);
+        $this->assertEquals(3, $neighbors->count());
+
+        foreach ($neighbors as $neighbor) {
+            $this->assertTrue(in_array([$neighbor->x, $neighbor->y], [[2, 7], [3, 6], [3, 8]]));
+        }
     }
 
-    public function test_find_k_farthest_neighbors()
+    public function test_find_farthest_neighbors()
     {
         $node = $this->grid->nodes()->where('x', '===', 3)->where('y', '===', 7)->first();
 
-        $neighbors = $this->grid->findKFarthestNeighbors($node, 3);
+        $neighbors = $this->grid->findFarthestNeighbors($node, 3);
 
-        $this->assertEquals(3, count($neighbors));
-        $this->assertEquals([9, 0], [$neighbors[0]->x, $neighbors[0]->y]);
-        $this->assertEquals([8, 0], [$neighbors[1]->x, $neighbors[1]->y]);
-        $this->assertEquals([9, 1], [$neighbors[2]->x, $neighbors[2]->y]);
+        $this->assertEquals(3, $neighbors->count());
+
+        foreach ($neighbors as $neighbor) {
+            $this->assertTrue(in_array([$neighbor->x, $neighbor->y], [[9, 0], [8, 0], [9, 1]]));
+        }
     }
 
-    public function test_find_k_nearest_attached_neighbors()
+    public function test_find_nearest_reachable_neighbors()
     {
         $node = $this->grid->nodes()->where('x', '===', 3)->where('y', '===', 7)->first();
 
-        $neighbors = $this->grid->findKNearestAttachedNeighbors($node, 3);
+        $neighbors = $this->grid->findNearestReachableNeighbors($node, 3);
 
-        $this->assertEquals(3, count($neighbors));
-        $this->assertEquals([4, 7], [$neighbors[0]->x, $neighbors[0]->y]);
-        $this->assertEquals([3, 6], [$neighbors[1]->x, $neighbors[1]->y]);
-        $this->assertEquals([2, 7], [$neighbors[2]->x, $neighbors[2]->y]);
+        $this->assertEquals(3, $neighbors->count());
+
+        foreach ($neighbors as $neighbor) {
+            $this->assertTrue(in_array([$neighbor->x, $neighbor->y], [[3, 8], [3, 6], [4, 7]]));
+        }
     }
 
-    public function test_find_k_farthest_attached_neighbors()
+    public function test_find_farthest_reachable_neighbors()
     {
         $node = $this->grid->nodes()->where('x', '===', 3)->where('y', '===', 7)->first();
 
-        $neighbors = $this->grid->findKFarthestAttachedNeighbors($node, 3);
+        $neighbors = $this->grid->findFarthestReachableNeighbors($node, 3);
 
-        $this->assertEquals(3, count($neighbors));
-        $this->assertEquals([4, 7], [$neighbors[0]->x, $neighbors[0]->y]);
-        $this->assertEquals([3, 6], [$neighbors[1]->x, $neighbors[1]->y]);
-        $this->assertEquals([2, 7], [$neighbors[2]->x, $neighbors[2]->y]);
+        $this->assertEquals(3, $neighbors->count());
+
+        foreach ($neighbors as $neighbor) {
+            $this->assertTrue(in_array([$neighbor->x, $neighbor->y], [[9, 0], [8, 0], [9, 1]]));
+        }
     }
 
     public function test_find_shortest_smart_path()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Tokenizers;
+namespace Rubix\Engine\Transformers\Tokenizers;
 
 class WordTokenizer implements Tokenizer
 {

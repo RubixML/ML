@@ -2,9 +2,9 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Tokenizers\Tokenizer;
-use Rubix\Engine\Tokenizers\WhitespaceTokenizer;
 use Rubix\Engine\Math\Matrix;
+use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
+use Rubix\Engine\Transformers\Tokenizers\WhitespaceTokenizer;
 
 abstract class Vectorizer
 {

@@ -4,20 +4,19 @@ namespace Rubix\Engine\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 
-class Diagonal implements DistanceFunction
+class Diagonal extends DistanceFunction
 {
     /**
-     * Compute the distance between two nodes.
+     * Compute the distance between node a and b.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @param  array  $axis
+     * @param  \Rubix\Engine\GraphNode  $a
+     * @param  \Rubix\Engine\GraphNode  $b
      * @return float
      */
-    public function compute(GraphNode $start, GraphNode $end, array $axis) : float
+    public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) max(array_map(function ($axis) use ($start, $end) {
-            return abs($start->get($axis) - $end->get($axis));
-        }, $axis));
+        return (float) max(array_map(function ($axis) use ($a, $b) {
+            return abs($a->get($axis) - $b->get($axis));
+        }, $this->axes));
     }
 }

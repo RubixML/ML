@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Engine\Graph;
 
 use Rubix\Engine\Graph\Tree;
 use Rubix\Engine\Graph\Path;

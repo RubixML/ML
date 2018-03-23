@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Trie;
+use Rubix\Engine\Graph\Trie;
 use Rubix\Engine\Graph\GraphNode;
 use Rubix\Engine\Graph\Path;
 use PHPUnit\Framework\TestCase;

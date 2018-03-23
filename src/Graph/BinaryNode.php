@@ -125,10 +125,6 @@ class BinaryNode extends GraphObject implements Node
      */
     public function changeValue($value) : self
     {
-        if (!is_numeric($value) && !is_string($value)) {
-            throw new InvalidArgumentException('Value must be a string or numeric type, ' . gettype($value) . ' found.');
-        }
-
         $this->value = $value;
 
         return $this;

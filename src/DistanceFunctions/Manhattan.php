@@ -4,20 +4,19 @@ namespace Rubix\Engine\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 
-class Manhattan implements DistanceFunction
+class Manhattan extends DistanceFunction
 {
     /**
      * Compute the distance between two nodes.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @param  array  $axis
+     * @param  \Rubix\Engine\GraphNode  $a
+     * @param  \Rubix\Engine\GraphNode  $b
      * @return float
      */
-    public function compute(GraphNode $start, GraphNode $end, array $axis) : float
+    public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) array_reduce($axis, function ($carry, $axis) use ($start, $end) {
-            return $carry += abs($start->get($axis) - $end->get($axis));
+        return (float) array_reduce($this->axes, function ($carry, $axis) use ($a, $b) {
+            return $carry += abs($a->get($axis) - $b->get($axis));
         }, 0.0);
     }
 }

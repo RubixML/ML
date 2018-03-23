@@ -23,13 +23,6 @@ class CART extends Tree implements Estimator
     protected $maxDepth;
 
     /**
-     * The labels of columns of data. Ex. height, weight, sex, etc.
-     *
-     * @var array
-     */
-    protected $labels;
-
-    /**
      * The number of columns of a sample in the training set.
      *
      * @var int
@@ -49,21 +42,12 @@ class CART extends Tree implements Estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX, array $labels = [])
+    public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX)
     {
-        $this->minSize = $minSamples;
+        $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
-        $this->labels = $labels;
         $this->columns = 0;
         $this->splits = 0;
-    }
-
-    /**
-     * @return array
-     */
-    public function labels() : array
-    {
-        return $this->labels;
     }
 
     /**
@@ -75,7 +59,7 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * The number of features or data points of a sample.
+     * The number of features or data points of a sample in the training set.
      *
      * @return int
      */
@@ -85,7 +69,7 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * The height of the tree.
+     * The height of the tree. O(V)
      *
      * @return int
      */
@@ -95,7 +79,7 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * The balance factor of the tree.
+     * The balance factor of the tree. O(V)
      *
      * @return int
      */
@@ -179,7 +163,6 @@ class CART extends Tree implements Estimator
         $output = $this->_predict($this->root, $sample);
 
         return [
-            'label' => $output->label,
             'outcome' => $output->value(),
             'certainty' => $output->certainty,
         ];
@@ -233,18 +216,16 @@ class CART extends Tree implements Estimator
 
             $root->attachLeft($node);
             $root->attachRight($node);
-
             return;
         }
 
         if ($depth >= $this->maxDepth) {
             $root->attachLeft($this->terminate($left));
             $root->attachRight($this->terminate($right));
-
             return;
         }
 
-        if (count($left) >= $this->minSize) {
+        if (count($left) >= $this->minSamples) {
             $root->attachLeft($this->findBestSplit($left));
 
             $this->splits++;
@@ -254,7 +235,7 @@ class CART extends Tree implements Estimator
             $root->attachLeft($this->terminate($left));
         }
 
-        if (count($right) >= $this->minSize) {
+        if (count($right) >= $this->minSamples) {
             $root->attachRight($this->findBestSplit($right));
 
             $this->splits++;
@@ -267,7 +248,8 @@ class CART extends Tree implements Estimator
 
     /**
      * Greedy algorithm to chose the best split point for a given set of data
-     * as determined by its gini index.
+     * as determined by its gini index. Terminate early if found a homogenous
+     * split. i.e. a gini score of 0.
      *
      * @param  array  $data
      * @return \Rubix\Engine\BinaryNode
@@ -279,36 +261,29 @@ class CART extends Tree implements Estimator
             'value' => null, 'groups' => [],
         ];
 
-        $outcomes = array_unique(array_map(function ($row) {
-            return $row[count($row) - 1];
-        }, $data));
+        $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
         foreach (range(0, $this->columns() - 2) as $index) {
             foreach ($data as $row) {
-                $value = $row[$index];
-
-                $groups = $this->partition($data, $index, $value);
+                $groups = $this->partition($data, $index, $row[$index]);
 
                 $gini = $this->calculateGini($groups, $outcomes);
 
                 if ($gini < $best['gini']) {
                     $best = [
                         'gini' => $gini, 'index' => $index,
-                        'value' => $value, 'groups' => $groups,
+                        'value' => $row[$index], 'groups' => $groups,
                     ];
                 }
 
                 if ($gini === 0.0) {
-                    break;
+                    break 2;
                 }
             }
         }
 
         return new BinaryNode($best['value'], [
             'index' => $best['index'],
-            'label' => function ($node) {
-                return !empty($this->labels) ? $this->labels[$node->index] : null;
-            },
             'gini' => $best['gini'],
             'is_continuous' => is_numeric($best['value']),
             'is_terminal' => false,
@@ -329,9 +304,6 @@ class CART extends Tree implements Estimator
         $outcome = array_search(max($outcomes), $outcomes);
 
         return new BinaryNode($outcome, [
-            'label' => function ($node) {
-                return !empty($this->labels) ? $this->labels[count($this->labels) - 1] : null;
-            },
             'certainty' => (float) $outcomes[$outcome] / count($data),
             'is_terminal' => true,
         ]);
@@ -377,8 +349,8 @@ class CART extends Tree implements Estimator
      */
     protected function calculateGini(array $groups, array $outcomes) : float
     {
-        $gini = 0.0;
         $n = array_sum(array_map('count', $groups));
+        $gini = 0.0;
 
         foreach ($groups as $group) {
             $count = count($group);

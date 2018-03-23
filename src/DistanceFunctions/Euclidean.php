@@ -4,20 +4,19 @@ namespace Rubix\Engine\DistanceFunctions;
 
 use Rubix\Engine\Graph\GraphNode;
 
-class Euclidean implements DistanceFunction
+class Euclidean extends DistanceFunction
 {
     /**
-     * Compute the distance between two nodes.
+     * Compute the distance between node a and b.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @param  array  $axis
+     * @param  \Rubix\Engine\GraphNode  $a
+     * @param  \Rubix\Engine\GraphNode  $b
      * @return float
      */
-    public function compute(GraphNode $start, GraphNode $end, array $axis) : float
+    public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) sqrt(array_reduce($axis, function ($carry, $axis) use ($start, $end) {
-            return $carry += pow($start->get($axis) - $end->get($axis), 2);
+        return (float) sqrt(array_reduce($this->axes, function ($carry, $axis) use ($a, $b) {
+            return $carry += pow($a->get($axis) - $b->get($axis), 2);
         }, 0.0));
     }
 }

@@ -53,7 +53,7 @@ class DecisionForest implements Estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, int $minSize = 5, int $maxDepth = 1000)
+    public function __construct(int $trees = 100, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 1000)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be less than 1.');
@@ -65,7 +65,7 @@ class DecisionForest implements Estimator
 
         $this->trees = $trees;
         $this->ratio = $ratio;
-        $this->minSize = $minSize;
+        $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
     }
 
@@ -100,7 +100,7 @@ class DecisionForest implements Estimator
         foreach (range(1, $this->trees) as $i) {
             $subset = $this->generateRandomSubset($data, $this->ratio);
 
-            $tree = new CART($this->minSize, $this->maxDepth);
+            $tree = new CART($this->minSamples, $this->maxDepth);
 
             $tree->train($subset);
 
@@ -159,9 +159,10 @@ class DecisionForest implements Estimator
      */
     protected function generateRandomSubset(array $data, float $ratio) : array
     {
+        $n = $ratio * count($data);
         $subset = [];
 
-        foreach (range(1, $ratio * count($data)) as $i) {
+        foreach (range(1, $n) as $i) {
             $subset[] = Random::item($data);
         }
 
