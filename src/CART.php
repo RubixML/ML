@@ -23,7 +23,7 @@ class CART extends Tree implements Estimator
     protected $maxDepth;
 
     /**
-     * The number of columns of a sample in the training set.
+     * The number of features in a sample.
      *
      * @var int
      */
@@ -48,24 +48,6 @@ class CART extends Tree implements Estimator
         $this->maxDepth = $maxDepth;
         $this->columns = 0;
         $this->splits = 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function columns() : int
-    {
-        return $this->columns;
-    }
-
-    /**
-     * The number of features or data points of a sample in the training set.
-     *
-     * @return int
-     */
-    public function features() : int
-    {
-        return $this->columns() - 1;
     }
 
     /**
@@ -104,48 +86,22 @@ class CART extends Tree implements Estimator
      * @param  array  $data
      * @return void
      */
-    public function train(array $data) : void
+    public function train(array $samples, array $outcomes) : void
     {
-        $columns = count($data[0]);
-
-        if ($columns < 2) {
-            throw new InvalidArgumentException('Sample set must have at least 1 data point and 1 outcome per row.');
+        if (count($samples) !== count($outcomes)) {
+            throw new InvalidArgumentException('The number of samples and outcomes must be equal.');
         }
 
-        foreach ($data as $row) {
-            if (count($row) !== $columns) {
-                throw new InvalidArgumentException('Each row must contain an equal number of data points.');
-            }
-        }
-
-        $this->columns = $columns;
+        $this->columns = count($samples[0]);
         $this->splits = 1;
 
-        $this->root = $this->findBestSplit($data);
-
-        $this->split($this->root);
-    }
-
-    /**
-     * Calculate the accuracy of the CART.
-     *
-     * @return float
-     */
-    public function test(array $data) : float
-    {
-        $score = 0;
-
-        foreach ($data as $i => $sample) {
-            $actual = array_pop($sample);
-
-            $outcome = $this->predict($sample)['outcome'];
-
-            if ($outcome === $actual) {
-                $score++;
-            }
+        foreach ($samples as $i => &$sample) {
+            $sample[] = $outcomes[$i];
         }
 
-        return (float) ($score / count($data));
+        $this->root = $this->findBestSplit($samples);
+
+        $this->split($this->root);
     }
 
     /**
@@ -156,7 +112,7 @@ class CART extends Tree implements Estimator
      */
     public function predict(array $sample) : array
     {
-        if (count($sample) !== $this->features()) {
+        if (count($sample) !== $this->columns) {
             throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
         }
 
@@ -263,7 +219,7 @@ class CART extends Tree implements Estimator
 
         $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
-        foreach (range(0, $this->columns() - 2) as $index) {
+        foreach (range(0, $this->columns - 1) as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 

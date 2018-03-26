@@ -1,18 +1,21 @@
 <?php
 
-use Rubix\Engine\DecisionForest;
 use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\MultiLayerPerceptron;
 use PHPUnit\Framework\TestCase;
 
-class DecisionForestTest extends TestCase
+class MultiLayerPerceptronTest extends TestCase
 {
-    protected $estimator;
-
-    protected $dataset;
+    protected $network;
 
     public function setUp()
     {
-        $this->dataset = new SupervisedDataset([
+        $this->network = new MultiLayerPerceptron(2, [4, 4], ['male', 'female'], 100, 3, 1.0);
+    }
+
+    public function test_train_model()
+    {
+        $dataset = new SupervisedDataset([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],
@@ -35,20 +38,10 @@ class DecisionForestTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new DecisionForest(10, 0.3, 3, 30);
+        $this->network->train($dataset->samples(), $dataset->outcomes());
 
-        $this->estimator->train($this->dataset->samples(), $this->dataset->outcomes());
-    }
+        $prediction = $this->network->predict([7.5, 3.2]);
 
-    public function test_create_tree()
-    {
-        $this->assertTrue($this->estimator instanceof DecisionForest);
-    }
-
-    public function test_make_prediction()
-    {
-        $outcome = $this->estimator->predict([7.5, 3.2]);
-
-        $this->assertEquals('male', $outcome['outcome']);
+        $this->assertEquals('male', $prediction['outcome']);
     }
 }

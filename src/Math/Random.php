@@ -37,7 +37,7 @@ class Random
      * @param  int  $max
      * @return int
      */
-    public static function int(int $min, int $max) : int
+    public static function integer(int $min, int $max) : int
     {
         return mt_rand($min, $max);
     }
@@ -51,7 +51,7 @@ class Random
      */
     public static function even(int $min, int $max) : int
     {
-        $number = self::int($min, $max);
+        $number = self::integer($min, $max);
 
         if ($number % 2 === 0) {
             return $number;
@@ -73,7 +73,7 @@ class Random
      */
     public static function odd(int $min, int $max) : int
     {
-        $number = self::int($min, $max);
+        $number = self::integer($min, $max);
 
         if ($number % 2 === 1) {
             return $number;

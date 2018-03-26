@@ -80,54 +80,24 @@ class DecisionForest implements Estimator
     }
 
     /**
-     * @return array
-     */
-    public function forest() : array
-    {
-        return $this->forest;
-    }
-
-    /**
      * Train the Decision Forest on a labeled data set.
      *
      * @param  array  $data
      * @return self
      */
-    public function train(array $data) : void
+    public function train(array $samples, array $outcomes) : void
     {
         $this->forest = [];
 
         foreach (range(1, $this->trees) as $i) {
-            $subset = $this->generateRandomSubset($data, $this->ratio);
+            $subset = $this->generateRandomSubset($samples, $outcomes, $this->ratio);
 
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train($subset);
+            $tree->train($subset[0], $subset[1]);
 
             $this->forest[] = $tree;
         }
-    }
-
-    /**
-     * Calculate the accuracy of the Decision Forest.
-     *
-     * @return float
-     */
-    public function test(array $data) : float
-    {
-        $score = 0;
-
-        foreach ($data as $i => $sample) {
-            $actual = array_pop($sample);
-
-            $outcome = $this->predict($sample)['outcome'];
-
-            if ($outcome === $actual) {
-                $score++;
-            }
-        }
-
-        return (float) ($score / count($data));
     }
 
     /**
@@ -153,17 +123,21 @@ class DecisionForest implements Estimator
     /**
      * Generate a random subset with replacement of the data set. O(N)
      *
-     * @param  array  $data
+     * @param  array  $samples
+     * @param  array  $outcomes
      * @param  float  $ratio
      * @return array
      */
-    protected function generateRandomSubset(array $data, float $ratio) : array
+    protected function generateRandomSubset(array $samples, array $outcomes, float $ratio) : array
     {
-        $n = $ratio * count($data);
+        $n = $ratio * count($samples);
         $subset = [];
 
         foreach (range(1, $n) as $i) {
-            $subset[] = Random::item($data);
+            $rand = Random::integer(0, count($samples) - 1);
+
+            $subset[0][] = $samples[$rand];
+            $subset[1][] = $outcomes[$rand];
         }
 
         return $subset;

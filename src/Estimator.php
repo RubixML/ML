@@ -7,17 +7,11 @@ interface Estimator
     /**
      * Train the model with a labeled dataset.
      *
-     * @param  array  $data
-     * @return self
+     * @param  array  $samples
+     * @param  array  $outcomes
+     * @return void
      */
-    public function train(array $data) : void;
-
-    /**
-     * Calculate the accuracy of the estimator with provided testing set.
-     *
-     * @return float
-     */
-    public function test(array $data) : float;
+    public function train(array $samples, array $outcomes) : void;
 
     /**
      * Make a prediction of a given sample.

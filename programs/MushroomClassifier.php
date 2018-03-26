@@ -2,16 +2,17 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
+use Rubix\Engine\Test;
 use Rubix\Engine\Math\Stats;
 use Rubix\Engine\Math\Random;
 use Rubix\Engine\DecisionForest;
-use Rubix\Engine\Transformers\RandomSplitter;
+use Rubix\Engine\SupervisedDataset;
 use League\Csv\Reader;
 
-$trees = $argv[1] ?? 100;
+$trees = $argv[1] ?? 10;
 $ratio = $argv[2] ?? 0.10;
 $minSize = $argv[3] ?? 3;
-$maxDepth = $argv[4] ?? 1000;
+$maxDepth = $argv[4] ?? 300;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
@@ -20,7 +21,10 @@ echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/mushrooms.csv')->setDelimiter(',');
-$dataset = new RandomSplitter(iterator_to_array($dataset), 0.2);
+
+$dataset = new SupervisedDataset(iterator_to_array($dataset));
+
+list ($training, $testing) = $dataset->randomize()->split(0.5);
 
 $estimator = new DecisionForest($trees, $ratio, $minSize, $maxDepth);
 
@@ -28,23 +32,23 @@ echo 'Training a Decision Forest of ' . $trees . ' trees ... ';
 
 $start = microtime(true);
 
-$estimator->train($dataset->training());
+$estimator->train($training->samples(), $training->outcomes());
 
 echo 'done in ' . (string) round(microtime(true) - $start, 5) . ' seconds.' . "\n";
 
 echo  "\n";
+
+$test = new Test($estimator);
 
 echo 'Testing model ...';
 
 $start = microtime(true);
 
-$accuracy = $estimator->test($dataset->testing());
-
-echo 'done in ' . (string) round(microtime(true) - $start, 5) . ' seconds.' . "\n";
+$accuracy = $test->accuracy($testing->samples(), $testing->outcomes());
 
 echo  "\n";
 
-echo 'Model is ' . (string) Stats::round($accuracy, 5) . ' accurate.' . "\n";
+echo 'Model is ' . (string) $accuracy . '% accurate.' . "\n";
 
 echo  "\n";
 

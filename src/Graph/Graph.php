@@ -1,10 +1,7 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Engine\Graph;
 
-use Rubix\Engine\Graph\Path;
-use Rubix\Engine\Graph\GraphNode;
-use Rubix\Engine\Graph\ObjectIndex;
 use RuntimeException;
 use SplObjectStorage;
 use SplPriorityQueue;

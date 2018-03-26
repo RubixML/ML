@@ -27,9 +27,9 @@ class RandomTest extends TestCase
         $this->assertTrue($float <= 99.99);
     }
 
-    public function test_random_int()
+    public function test_random_integer()
     {
-        $float = Random::int(1, 99);
+        $float = Random::integer(1, 99);
 
         $this->assertTrue(is_int($float));
         $this->assertTrue($float >= 1);

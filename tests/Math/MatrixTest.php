@@ -17,37 +17,7 @@ class MatrixTest extends TestCase
 
     public function test_build_matrix()
     {
-        $this->assertTrue($this->matrix instanceof Matrix);
-    }
-
-    public function test_build_column_vector()
-    {
-        $vector = Matrix::vector([2, 1, 6]);
-
-        $this->assertTrue($vector instanceof Matrix);
-        $this->assertEquals([[2], [1], [6]], $vector->values());
-    }
-
-    public function test_build_row_vector()
-    {
-        $vector = Matrix::vector([2, 1, 6], 'row');
-
-        $this->assertTrue($vector instanceof Matrix);
-        $this->assertEquals([[2, 1, 6]], $vector->values());
-    }
-
-    public function test_calculate_dot_product()
-    {
-        $matrix = Matrix::vector([4, 1, 6])->dot(Matrix::vector([9, 5, 2]));
-
-        $answer = [
-            [36, 20, 8],
-            [9, 5, 2],
-            [54, 30, 12],
-        ];
-
-        $this->assertTrue($matrix instanceof Matrix);
-        $this->assertEquals($answer, $matrix->values());
+        $this->assertInstanceOf(Matrix::class, $this->matrix);
     }
 
     public function test_select_row()

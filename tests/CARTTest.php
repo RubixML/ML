@@ -1,15 +1,18 @@
 <?php
 
 use Rubix\Engine\CART;
+use Rubix\Engine\SupervisedDataset;
 use PHPUnit\Framework\TestCase;
 
 class CARTTest extends TestCase
 {
     protected $estimator;
 
+    protected $dataset;
+
     public function setUp()
     {
-        $data = [
+        $this->dataset = new SupervisedDataset([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],
@@ -30,11 +33,11 @@ class CARTTest extends TestCase
             [7.234523457, 0.736747567, 'male'],
             [10.56785567, 3.123412342, 'male'],
             [6.456749570, 3.324523456, 'male'],
-        ];
+        ]);
 
-        $this->estimator = new CART(3, 10);
+        $this->estimator = new CART(3, 30);
 
-        $this->estimator->train($data);
+        $this->estimator->train($this->dataset->samples(), $this->dataset->outcomes());
     }
 
     public function test_create_tree()

@@ -18,25 +18,6 @@ class Matrix implements ArrayAccess, IteratorAggregate
     protected $values;
 
     /**
-     * Build a vector from an array of values. If row is set to true the output
-     * will be a row vector otherwise it will be a column vector.
-     *
-     * @param  array  $values
-     * @param  bool  $row
-     * @return self
-     */
-    public static function vector(array $values = [], bool $row = false) : self
-    {
-        if ($row === true) {
-            return new static([$values]);
-        } else {
-            return new static(array_map(function ($value) {
-                return [$value];
-            }, $values));
-        }
-    }
-
-    /**
      * @param  array  $values
      * @return void
      */
