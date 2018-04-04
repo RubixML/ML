@@ -9,7 +9,7 @@ class Input extends Neuron
      *
      * @var float
      */
-    protected $value = 0.0;
+    protected $value;
 
     /**
      * @param  float  $value
@@ -17,7 +17,7 @@ class Input extends Neuron
      */
     public function __construct()
     {
-        parent::__construct();
+        $this->value = 0.0;
     }
 
     /**

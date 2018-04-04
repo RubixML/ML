@@ -41,11 +41,20 @@ abstract class DistanceFunction
     }
 
     /**
-     * Compute the distance between two nodes.
+     * Measure the distance between two nodes.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\Engine\GraphNode  $a
+     * @param  \Rubix\Engine\GraphNode  $b
      * @return float
      */
-    abstract public function compute(GraphNode $start, GraphNode $end) : float;
+    abstract public function compute(GraphNode $a, GraphNode $b) : float;
+
+    /**
+     * Compute the distance given two coordinate vectors.
+     *
+     * @param  array  $a
+     * @param  array  $b
+     * @return float
+     */
+    abstract public function distance(array $a, array $b) : float;
 }

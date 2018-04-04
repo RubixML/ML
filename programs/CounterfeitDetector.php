@@ -2,29 +2,32 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
+use Rubix\Engine\CART;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Tests\Speed;
-use Rubix\Engine\LeastSquares;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Preprocessors\L1Normalizer;
 use League\Csv\Reader;
 
+$minSamples = $argv[1] ?? 3;
+$maxDepth = $argv[2] ?? 300;
+
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Tester using Least Squares Regression          ║' . "\n";
+echo '║ Counterfeit Banknote Detector using CART            ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
-$dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')->setDelimiter(',')->getRecords();
+$dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/banknotes.csv')->setDelimiter(',')->getRecords();
 
 $dataset = new SupervisedDataset(iterator_to_array($dataset));
 
 list ($training, $testing) = $dataset->randomize()->split(0.3);
 
-$pipeline = new Prototype(new LeastSquares(), [new L1Normalizer()], [new Accuracy(), new Speed()]);
+$pipeline = new Prototype(new CART($minSamples, $maxDepth), [new L1Normalizer()], [new Accuracy(), new Speed()]);
 
-echo 'Training a Least Squares ... ';
+echo 'Training a CART ... ';
 
 $start = microtime(true);
 

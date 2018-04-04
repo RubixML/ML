@@ -2,36 +2,24 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\NeuralNetwork\Bias;
-use Rubix\Engine\NeuralNetwork\Input;
-use Rubix\Engine\NeuralNetwork\Neuron;
 use Rubix\Engine\NeuralNetwork\Hidden;
-use Rubix\Engine\NeuralNetwork\Output;
+use Rubix\Engine\NeuralNetwork\Network;
 use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-class MultiLayerPerceptron implements Estimator
+class MultiLayerPerceptron extends Network implements Classifier
 {
     /**
-     * The layers of the neural network.
-     *
-     * @var array
-     */
-    protected $layers = [
-        //
-    ];
-
-    /**
-     * The maximum number of training epochs. i.e. training rounds.
+     * The fixed number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
      *
      * @var int
      */
     protected $epochs;
 
     /**
-     * The number of samples to consider per training round.
+     * The number of training samples to consider per iteration of gradient descent.
      *
      * @var int
      */
@@ -39,7 +27,7 @@ class MultiLayerPerceptron implements Estimator
 
     /**
      * The learning rate. i.e. the size of each step towards the minimum during
-     * backpropagation.
+     * gradient descent.
      *
      * @var float
      */
@@ -55,7 +43,7 @@ class MultiLayerPerceptron implements Estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 1000, int $batchSize = 3, float $rate = 0.3)
+    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, float $rate = 0.1)
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of inputs must be greater than 1.');
@@ -101,31 +89,11 @@ class MultiLayerPerceptron implements Estimator
             $this->addHiddenLayer($layer[0], $layer[1] ?? new Sigmoid());
         }
 
-        $this->addOutputLayer($outcomes);
+        $this->addOutputLayer($outcomes, new Sigmoid());
 
         foreach (range(count($this->layers) - 1, 1, -1) as $i) {
             $this->connectLayers($this->layers[$i], $this->layers[$i - 1]);
         }
-    }
-
-    /**
-     * Return the input layer.
-     *
-     * @return array
-     */
-    public function inputs() : array
-    {
-        return $this->layers[0];
-    }
-
-    /**
-     * Return the output layer.
-     *
-     * @return array
-     */
-    public function outputs() : array
-    {
-        return $this->layers[count($this->layers) - 1];
     }
 
     /**
@@ -164,23 +132,26 @@ class MultiLayerPerceptron implements Estimator
                 }
 
                 foreach ($deltas as $synapse) {
-                    $synapse->adjustWeight($deltas[$synapse]);
+                    $synapse->adjustWeight($this->rate * $deltas[$synapse]);
                 }
+
+                unset($deltas);
             }
         }
     }
 
     /**
-     * Predict a sample.
+     * Feed a sample through the network and make a prediction based on the highest
+     * activated output neuron.
      *
      * @param  array  $sample
      * @return array
      */
     public function predict(array $sample) : array
     {
-        $this->feed($sample);
-
         $best = ['activation' => -INF, 'neuron' => null];
+
+        $this->feed($sample);
 
         foreach ($this->outputs() as $neuron) {
             if ($neuron->output() > $best['activation']) {
@@ -195,7 +166,7 @@ class MultiLayerPerceptron implements Estimator
     }
 
     /**
-     * Feed forward.
+     * Feed forward and calculate the output of each neuron in the network.
      *
      * @param  array  $sample
      * @throws \InvalidArgumentException
@@ -230,24 +201,25 @@ class MultiLayerPerceptron implements Estimator
      */
     protected function backpropagate($outcome, SplObjectStorage $deltas) : void
     {
-        foreach (range(count($this->layers) - 1, 1, -1) as $i) {
+        foreach (range(count($this->layers) - 1, 1, -1) as $layer) {
             $sigmas = new SplObjectStorage();
 
-            foreach ($this->layers[$i] as $j => $neuron) {
+            foreach ($this->layers[$layer] as $neuron) {
                 if ($neuron instanceof Hidden) {
-                    $output = $neuron->output();
                     $sigma = $neuron->error();
 
-                    if ($i === count($this->layers) - 1) {
+                    if ($layer === count($this->layers) - 1) {
                         $value = $neuron->outcome() === $outcome ? 1.0 : 0.0;
 
-                        $sigma *= ($value - $output);
+                        $sigma *= ($value - $neuron->output());
                     } else {
                         $prev = 0.0;
 
                         foreach ($prevSigmas as $prevNode) {
                             foreach ($prevNode->synapses() as $synapse) {
-                                $prev += $synapse->weight() * $prevSigmas[$prevNode];
+                                if ($synapse->neuron() === $neuron) {
+                                    $prev += $synapse->weight() * $prevSigmas[$prevNode];
+                                }
                             }
                         }
 
@@ -257,7 +229,7 @@ class MultiLayerPerceptron implements Estimator
                     $sigmas->attach($neuron, $sigma);
 
                     foreach ($neuron->synapses() as $synapse) {
-                        $delta = $this->rate * $sigma * $synapse->neuron()->output();
+                        $delta = $sigma * $synapse->neuron()->output();
 
                         if ($deltas->contains($synapse)) {
                             $deltas[$synapse] += $delta;
@@ -270,104 +242,8 @@ class MultiLayerPerceptron implements Estimator
 
             $prevSigmas = $sigmas;
         }
-    }
 
-    /**
-     * Add the input layer of neurons.
-     *
-     * @param  int  $inputs
-     * @return array
-     */
-    protected function addInputLayer(int $inputs) : array
-    {
-        $layer = [];
-
-        foreach (range(1, $inputs) as $i) {
-            $layer[] = new Input();
-        }
-
-        array_push($layer, new Bias());
-
-        $this->layers[] = $layer;
-
-        return $layer;
-    }
-
-    /**
-     * Add a hidden layer of n neurons using given activation function.
-     *
-     * @param  int  $n
-     * @param  \Rubix\Engine\NeuralNetwork\ActivationsFunctions\ActivationFunction
-     * @return array
-     */
-    protected function addHiddenLayer(int $n, ActivationFunction $activationFunction) : array
-    {
-        $layer = [];
-
-        foreach (range(1, $n) as $i) {
-            $layer[] = new Hidden($activationFunction);
-        }
-
-        array_push($layer, new Bias());
-
-        $this->layers[] = $layer;
-
-        return $layer;
-    }
-
-    /**
-     * Add an output layer of neurons.
-     *
-     * @param  array  $outcomes
-     * @return array
-     */
-    protected function addOutputLayer(array $outcomes) : array
-    {
-        $outcomes = array_unique($outcomes);
-        $layer = [];
-
-        foreach ($outcomes as $outcome) {
-            $layer[] = new Output($outcome);
-        }
-
-        $this->layers[] = $layer;
-
-        return $layer;
-    }
-
-    /**
-     * Fully connect layer a to layer b.
-     *
-     * @param  array  $a
-     * @param  array  $b
-     * @return self
-     */
-    protected function connectLayers(array $a, array $b) : self
-    {
-        foreach ($a as $next) {
-            if ($next instanceof Neuron) {
-                foreach ($b as $current) {
-                    $next->connect($current);
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Reset the z values for all neurons in the network.
-     *
-     * @return void
-     */
-    protected function reset() : void
-    {
-        foreach (range(1, count($this->layers) - 1) as $i) {
-            foreach ($this->layers[$i] as $neuron) {
-                if ($neuron instanceof Hidden) {
-                    $neuron->reset();
-                }
-            }
-        }
+        unset($sigmas);
+        unset($prevSigmas);
     }
 }

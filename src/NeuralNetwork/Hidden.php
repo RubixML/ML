@@ -7,13 +7,6 @@ use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
 class Hidden extends Neuron
 {
     /**
-     * The precomputed output of the neuron.
-     *
-     * @var float
-     */
-    protected $precomputed;
-
-    /**
      * The sum of all incoming nerve impulses.
      *
      * @var float
@@ -21,7 +14,14 @@ class Hidden extends Neuron
     protected $z;
 
     /**
-     * The function that determines if the neuron fires or not.
+     * The precomputed output of the neuron.
+     *
+     * @var float
+     */
+    protected $precomputed;
+
+    /**
+     * The function that determines the magnitude of this neurons output.
      *
      * @var \Rubix\Engine\ActivationFunctions\ActivationFunction
      */

@@ -2,8 +2,6 @@
 
 namespace Rubix\Engine\NeuralNetwork;
 
-use Rubix\Engine\Math\Random;
-
 class Synapse
 {
     /**
@@ -21,14 +19,28 @@ class Synapse
     protected $weight;
 
     /**
+     * Initialize the synapse with a random weight.
+     *
+     * @param  \Rubix\Engine\Neuron  $neuron
+     * @return self
+     */
+    public static function init(Neuron $neuron, float $min = -4.0, float $max = 4.0, int $precision = 5) : self
+    {
+        $synapse = new static($neuron);
+
+        $synapse->randomize($min, $max, $precision);
+
+        return $synapse;
+    }
+
+    /**
      * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
      * @return void
      */
     public function __construct(Neuron $neuron)
     {
         $this->neuron = $neuron;
-
-        $this->randomize();
+        $this->weight = 0.0;
     }
 
     /**
@@ -58,6 +70,19 @@ class Synapse
     }
 
     /**
+     * Set the weight to the given value.
+     *
+     * @param  float  $weight
+     * @return self
+     */
+    public function setWeight(float $weight) : self
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
      * Adjust the weight by delta. i.e. the difference.
      *
      * @param  float  $delta
@@ -71,13 +96,18 @@ class Synapse
     }
 
     /**
-     * Randomize the weight.
+     * Randomize the weight of the synapse.
      *
+     * @param  float  $min
+     * @param  float  $max
+     * @param  int  $precision
      * @return self
      */
-    public function randomize() : self
+    public function randomize(float $min = -4.0, float $max = 4.0, int $precision = 5) : self
     {
-        $this->weight = Random::float(-4, 4, 5);
+        $scale = pow(10, $precision);
+
+        $this->weight = random_int($min * $scale, $max * $scale) / $scale;
 
         return $this;
     }

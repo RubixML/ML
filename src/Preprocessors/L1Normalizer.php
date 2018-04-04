@@ -28,7 +28,7 @@ class L1Normalizer implements Preprocessor
             }, 0);
 
             if ($norm === 0) {
-                $sample = array_fill(0, count($sample), 1.0 / count($sample));
+                $sample = array_fill(0, count($sample), 1 / count($sample));
             } else {
                 foreach ($sample as &$feature) {
                     $feature /= $norm;

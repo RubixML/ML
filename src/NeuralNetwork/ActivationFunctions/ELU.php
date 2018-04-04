@@ -41,6 +41,6 @@ class ELU implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return $computed >= 0.0 ? 1.0 : $computed + $this->alpha;
+        return $computed >= 0 ? 1.0 : $computed + $this->alpha;
     }
 }

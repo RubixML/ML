@@ -1,6 +1,8 @@
 <?php
 
-namespace Rubuix\Engine;
+namespace Rubix\Engine;
+
+use Rubix\Engine\Preprocessors\Preprocessor;
 
 class Pipeline implements Estimator
 {
@@ -12,12 +14,14 @@ class Pipeline implements Estimator
     protected $estimator;
 
     /**
-     * The transformers that process the sample data before they are fed into the
-     * estimator.
+     * The transformers that process the sample data before they are fed to the
+     * estimator for training, testing, and prediction.
      *
      * @var array
      */
-    protected $preprocessors;
+    protected $preprocessors = [
+        //
+    ];
 
     /**
      * @param  \Rubix\Engine\Estimator  $estimator
@@ -26,11 +30,11 @@ class Pipeline implements Estimator
      */
     public function __construct(Estimator $estimator, array $preprocessors = [])
     {
-        $this->estimator = $estimator;
-
         foreach ($preprocessors as $preprocessor) {
             $this->addPreprocessor($preprocessor);
         }
+
+        $this->estimator = $estimator;
     }
 
     /**
@@ -48,6 +52,23 @@ class Pipeline implements Estimator
         }
 
         $this->estimator->train($samples, $outcomes);
+    }
+
+    /**
+     * Make a prediction of a given sample.
+     *
+     * @param  array  $sample
+     * @return array
+     */
+    public function predict(array $sample) : array
+    {
+        $sample = [$sample];
+
+        foreach ($this->preprocessors as $preprocessor) {
+            $preprocessor->transform($sample);
+        }
+
+        return $this->estimator->predict($sample);
     }
 
     /**

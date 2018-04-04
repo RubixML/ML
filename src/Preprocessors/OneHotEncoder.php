@@ -5,7 +5,7 @@ namespace Rubix\Engine\Preprocessors;
 class OneHotEncoder implements Preprocessor
 {
     /**
-     * The set of possible categories of the sampled data.
+     * The set of unique possible categories of the training set.
      *
      * @var array
      */
@@ -14,7 +14,7 @@ class OneHotEncoder implements Preprocessor
     ];
 
     /**
-     * Build the list of unique categories.
+     * Build the list of categories.
      *
      * @param  array  $samples
      * @param  array|null  $outcomes

@@ -19,7 +19,7 @@ class Minkowski extends DistanceFunction
     }
 
     /**
-     * Compute the distance between node a and b.
+     * Compute the distance between two coordinate vectors.
      *
      * @param  \Rubix\Engine\GraphNode  $a
      * @param  \Rubix\Engine\GraphNode  $b
@@ -27,8 +27,31 @@ class Minkowski extends DistanceFunction
      */
     public function compute(GraphNode $a, GraphNode $b) : float
     {
-        return (float) pow(array_reduce($this->axes, function ($carry, $axis) use ($a, $b) {
-            return $carry += pow(abs($a->get($axis) - $b->get($axis)), $this->lambda);
+        return (float) pow(array_reduce($this->axes, function ($distance, $axis) use ($a, $b) {
+            return $distance += pow(abs($a->get($axis) - $b->get($axis)), $this->lambda);
         }, 0.0), 1.0 / $this->lambda);
+    }
+
+    /**
+     * Compute the distance given two coordinate vectors.
+     *
+     * @param  array  $a
+     * @param  array  $b
+     * @throws \InvalidArgumentException
+     * @return float
+     */
+    public function distance(array $a, array $b) : float
+    {
+        if (count($a) !== count($b)) {
+            throw new InvalidArgumentException('The size of each coordinate vector must be equal.');
+        }
+
+        $distance = 0.0;
+
+        foreach ($a as $i => $coordinate) {
+            $distance += pow(abs($coordinate - $b[$i]), $this->lambda);
+        }
+
+        return (float) pow($distance, 1.0 / $this->lambda);
     }
 }

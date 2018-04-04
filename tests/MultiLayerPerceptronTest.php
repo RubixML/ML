@@ -10,7 +10,7 @@ class MultiLayerPerceptronTest extends TestCase
 
     public function setUp()
     {
-        $this->network = new MultiLayerPerceptron(2, [4, 4], ['male', 'female'], 100, 3, 1.0);
+        $this->network = new MultiLayerPerceptron(2, [10, 10], ['male', 'female'], 5, 5, 10.0);
     }
 
     public function test_train_model()

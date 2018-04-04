@@ -15,7 +15,7 @@ class SupervisedDataset implements Countable
     protected $samples;
 
     /**
-     * The labeled outcomes used for supervised learning.
+     * The labeled outcomes used for supervised training.
      *
      * @var array
      */
@@ -33,8 +33,12 @@ class SupervisedDataset implements Countable
             }
 
             foreach ($sample as &$feature) {
-                if (is_numeric($feature)) {
-                    $feature = (float) $feature;
+                if (is_string($feature) && is_numeric($feature)) {
+                    if (is_float($feature + 0)) {
+                        $feature = (float) $feature;
+                    } else {
+                        $feature = (int) $feature;
+                    }
                 }
             }
 
@@ -99,12 +103,12 @@ class SupervisedDataset implements Countable
     }
 
     /**
-     * Split the dataset into training and testing sets.
+     * Split the dataset into two stratified subsets.
      *
      * @param  float  $ratio
      * @return array
      */
-    public function split(float $ratio) : array
+    public function split(float $ratio = 0.5) : array
     {
         if ($ratio <= 0.0 || $ratio >= 0.9) {
             throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 0.9.');
@@ -127,8 +131,25 @@ class SupervisedDataset implements Countable
     }
 
     /**
+     * Remove a feature column from the dataset given by the column's offset.
+     *
+     * @param  int  $offset
+     * @return self
+     */
+    public function removeColumn(int $offset) : self
+    {
+        foreach ($this->samples as &$sample) {
+            unset($sample[$offset]);
+
+            $sample = array_values($sample);
+        }
+    }
+
+    /**
      * Group samples by outcome and return an array of strata.
      *
+     * @param  array  $samples
+     * @param  array  $outcomes
      * @return array
      */
     protected function stratify(array $samples, array $outcomes) : array

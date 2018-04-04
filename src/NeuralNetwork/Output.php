@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNetwork;
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
 class Output extends Hidden
@@ -16,10 +16,11 @@ class Output extends Hidden
 
     /**
      * @param  mixed  $outcome
+     * @param  \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction  $activationFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($outcome)
+    public function __construct($outcome, ActivationFunction $activationFunction)
     {
         if (!is_numeric($outcome) && !is_string($outcome)) {
             throw new InvalidArgumentException('Outcome must be a numeric or string value, ' . gettype($outcome) . ' found.');
@@ -27,7 +28,7 @@ class Output extends Hidden
 
         $this->outcome = $outcome;
 
-        parent::__construct(new Sigmoid());
+        parent::__construct($activationFunction);
     }
 
     /**

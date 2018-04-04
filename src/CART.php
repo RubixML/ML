@@ -4,33 +4,34 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Graph\Tree;
 use Rubix\Engine\Graph\BinaryNode;
+use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
-class CART extends Tree implements Estimator
+class CART extends Tree implements Classifier, Regression
 {
     /**
-     * The minimum number of samples that a node needs to make a prediction.
+     * The minimum number of samples that form a consensus to make a prediction.
      *
      * @var int
      */
     protected $minSamples;
 
     /**
-     * The maximum depth of a branch before it is terminated.
+     * The maximum depth of a branch before it is forced to terminate.
      *
      * @var int
      */
     protected $maxDepth;
 
     /**
-     * The number of features in a sample.
+     * The number of feature columns per sample.
      *
      * @var int
      */
     protected $columns;
 
     /**
-     * The number of times the tree splits.
+     * The number of times the tree has split. i.e. a comparison is made.
      *
      * @var int
      */
@@ -51,7 +52,17 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * The height of the tree. O(V)
+     * The complexity of the CART i.e. the number of splits.
+     *
+     * @return int
+     */
+    public function complexity() : int
+    {
+        return $this->splits;
+    }
+
+    /**
+     * The height of the tree. O(V) because heights are not memoized.
      *
      * @return int
      */
@@ -71,19 +82,30 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * The complexity of the CART i.e. the number of splits.
+     * Is this model a classifier?
      *
-     * @return int
+     * @return bool
      */
-    public function complexity() : int
+    public function classifier() : bool
     {
-        return $this->splits;
+        return $this->classifier;
     }
 
     /**
-     * Train the CART model on a labeled dataset.
+     * Does this model output continuous data?
      *
-     * @param  array  $data
+     * @return bool
+     */
+    public function regression() : bool
+    {
+        return !$this->classifier;
+    }
+
+    /**
+     * Train the CART by learning the most optimal splits in the training set.
+     *
+     * @param  array  $samples
+     * @param  array  $outcomes
      * @return void
      */
     public function train(array $samples, array $outcomes) : void
@@ -93,13 +115,14 @@ class CART extends Tree implements Estimator
         }
 
         $this->columns = count($samples[0]);
-        $this->splits = 1;
+        $this->classifier = is_string($outcomes[0]);
 
         foreach ($samples as $i => &$sample) {
             $sample[] = $outcomes[$i];
         }
 
         $this->root = $this->findBestSplit($samples);
+        $this->splits = 1;
 
         $this->split($this->root);
     }
@@ -116,7 +139,7 @@ class CART extends Tree implements Estimator
             throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
         }
 
-        $output = $this->_predict($this->root, $sample);
+        $output = $this->_predict($sample, $this->root);
 
         return [
             'outcome' => $output->value(),
@@ -131,31 +154,31 @@ class CART extends Tree implements Estimator
      * @param  array  $sample
      * @return \Rubix\Engine\BinaryNode
      */
-    protected function _predict(BinaryNode $root, array $sample) : BinaryNode
+    protected function _predict(array $sample, BinaryNode $root) : BinaryNode
     {
-        if ($root->is_terminal) {
+        if ($root->terminal) {
             return $root;
         }
 
-        if ($root->is_continuous) {
-            if ($sample[$root->index] < $root->value()) {
-                return $this->_predict($root->left(), $sample);
+        if ($root->categorical) {
+            if ($sample[$root->index] === $root->value()) {
+                return $this->_predict($sample, $root->left());
             } else {
-                return $this->_predict($root->right(), $sample);
+                return $this->_predict($sample, $root->right());
             }
         } else {
-            if ($sample[$root->index] === $root->value()) {
-                return $this->_predict($root->left(), $sample);
+            if ($sample[$root->index] < $root->value()) {
+                return $this->_predict($sample, $root->left());
             } else {
-                return $this->_predict($root->right(), $sample);
+                return $this->_predict($sample, $root->right());
             }
         }
     }
 
     /**
-     * Recursive function to split the training data adding desision nodes along the
+     * Recursive function to split the training data adding decision nodes along the
      * way. The terminating conditions are a) split would make node responsible
-     * for less values than $minSamples or b) the max depth of a branch has been reached.
+     * for less values than $minSamples or b) the max depth of the branch has been reached.
      *
      * @param  \Rubix\Engine\BinaryNode  $root
      * @param  int  $depth
@@ -204,8 +227,9 @@ class CART extends Tree implements Estimator
 
     /**
      * Greedy algorithm to chose the best split point for a given set of data
-     * as determined by its gini index. Terminate early if found a homogenous
-     * split. i.e. a gini score of 0.
+     * as determined by its gini index, or variance for continuous data. The
+     * algorithm will terminate early if it finds a homogenous split. i.e. a gini
+     * or variance score of 0.
      *
      * @param  array  $data
      * @return \Rubix\Engine\BinaryNode
@@ -213,26 +237,30 @@ class CART extends Tree implements Estimator
     protected function findBestSplit(array $data) : BinaryNode
     {
         $best = [
-            'gini' => INF, 'index' => null,
+            'cost' => INF, 'index' => null,
             'value' => null, 'groups' => [],
         ];
 
-        $outcomes = array_unique(array_column($data, count($data[0]) - 1));
+        $outcomes = array_column($data, count($data[0]) - 1);
 
         foreach (range(0, $this->columns - 1) as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
-                $gini = $this->calculateGini($groups, $outcomes);
+                if ($this->classifier) {
+                    $cost = $this->calculateGini($groups, $outcomes);
+                } else {
+                    $cost = $this->calculateVariance($groups, $outcomes);
+                }
 
-                if ($gini < $best['gini']) {
+                if ($cost < $best['cost']) {
                     $best = [
-                        'gini' => $gini, 'index' => $index,
+                        'cost' => $cost, 'index' => $index,
                         'value' => $row[$index], 'groups' => $groups,
                     ];
                 }
 
-                if ($gini === 0.0) {
+                if ($cost === 0.0) {
                     break 2;
                 }
             }
@@ -240,9 +268,8 @@ class CART extends Tree implements Estimator
 
         return new BinaryNode($best['value'], [
             'index' => $best['index'],
-            'gini' => $best['gini'],
-            'is_continuous' => is_numeric($best['value']),
-            'is_terminal' => false,
+            'cost' => $best['cost'],
+            'categorical' => is_string($best['value']),
             'groups' => $best['groups'],
         ]);
     }
@@ -255,13 +282,13 @@ class CART extends Tree implements Estimator
      */
     protected function terminate(array $data) : BinaryNode
     {
-        $outcomes = array_count_values(array_column($data, count($data[0]) -1));
+        $outcomes = array_count_values(array_column($data, count($data[0]) - 1));
 
         $outcome = array_search(max($outcomes), $outcomes);
 
         return new BinaryNode($outcome, [
             'certainty' => (float) $outcomes[$outcome] / count($data),
-            'is_terminal' => true,
+            'terminal' => true,
         ]);
     }
 
@@ -278,14 +305,14 @@ class CART extends Tree implements Estimator
         $left = $right = [];
 
         foreach ($data as $row) {
-            if (is_numeric($row[$index])) {
-                if ($row[$index] < $value) {
+            if (is_string($row[$index])) {
+                if ($row[$index] !== $value) {
                     $left[] = $row;
                 } else {
                     $right[] = $row;
                 }
             } else {
-                if ($row[$index] !== $value) {
+                if ($row[$index] < $value) {
                     $left[] = $row;
                 } else {
                     $right[] = $row;
@@ -297,7 +324,7 @@ class CART extends Tree implements Estimator
     }
 
     /**
-     * Calculate the Gini index for a given split.
+     * Calculate the Gini index for a given split. Used for categorical data.
      *
      * @param  array  $groups
      * @param  array  $outcomes
@@ -312,15 +339,15 @@ class CART extends Tree implements Estimator
             $count = count($group);
 
             if ($count === 0) {
-                continue;
+                continue 1;
             }
 
             $score = 0.0;
             $occurrences = array_count_values(array_column($group, count($group[0]) - 1));
 
-            foreach ($outcomes as $outcome) {
+            foreach (array_unique($outcomes) as $outcome) {
                 if (isset($occurrences[$outcome])) {
-                    $score += pow($occurrences[$outcome] / $count, 2);
+                    $score += ($occurrences[$outcome] / $count) ** 2;
                 }
             }
 
@@ -328,5 +355,29 @@ class CART extends Tree implements Estimator
         }
 
         return $gini;
+    }
+
+    /**
+     * Calculate the variance of a given split. Used for continuous data.
+     *
+     * @param  array  $groups
+     * @param  array  $outcomes
+     * @return float
+     */
+    protected function calculateVariance(array $groups, array $outcomes) : float
+    {
+        $variance = 0.0;
+
+        foreach ($groups as $group) {
+            if (count($group) === 0) {
+                continue;
+            }
+
+            $occurrences = array_column($group, count($group[0]) - 1);
+
+            $variance += Descriptive::populationVariance($occurrences);
+        }
+
+        return $variance;
     }
 }

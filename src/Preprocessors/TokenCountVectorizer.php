@@ -8,14 +8,23 @@ use Rubix\Engine\Preprocessors\Tokenizers\WhitespaceTokenizer;
 class TokenCountVectorizer implements Preprocessor
 {
     /**
-     * The tokenizer used to extract text data.
+     * The tokenizer used to extract text data into tokenable values.
      *
      * @var \Rubix\Engine\Transformers\Tokenizers\Tokenizer
      */
     protected $tokenizer;
 
     /**
-     * The vocabulary of the sampled text data.
+     * The dictionary of stop words to filter out of the dataset.
+     *
+     * @var array
+     */
+    protected $stopWords = [
+        //
+    ];
+
+    /**
+     * The vocabulary of the fitted training set.
      *
      * @var array
      */
@@ -24,16 +33,18 @@ class TokenCountVectorizer implements Preprocessor
     ];
 
     /**
-     * @param  \Rubix\Engine\Tokenizer  $tokenizer
+     * @param  \Rubix\Engine\Preprocessors\Tokenizers\Tokenizer  $tokenizer
+     * @param  array  $stopWords
      * @return void
      */
-    public function __construct(Tokenizer $tokenizer = null)
+    public function __construct(Tokenizer $tokenizer = null, array $stopWords = [])
     {
         if (!isset($tokenizer)) {
             $tokenizer = new WhitespaceTokenizer();
         }
 
         $this->tokenizer = $tokenizer;
+        $this->stopWords = array_fill_keys($stopWords, true);
     }
 
     /**
@@ -53,7 +64,15 @@ class TokenCountVectorizer implements Preprocessor
     }
 
     /**
-     * Build the vocabulary for the vector encoder.
+     * @return array
+     */
+    public function stopWords() : array
+    {
+        return array_keys($this->stopWords);
+    }
+
+    /**
+     * Build the vocabulary for the vectorizer.
      *
      * @param  array  $samples
      * @param  array|null  $outcomes
@@ -62,18 +81,23 @@ class TokenCountVectorizer implements Preprocessor
     public function fit(array $samples, ?array $outcomes = null) : void
     {
         foreach ($samples as $sample) {
-            $tokens = $this->tokenizer->tokenize($sample[0]);
+            foreach ($sample as $feature) {
+                $tokens = $this->tokenizer->tokenize($feature);
 
-            foreach ($tokens as $token) {
-                if (!isset($this->vocabulary[$token])) {
-                    $this->vocabulary[$token] = count($this->vocabulary);
+                foreach ($tokens as $token) {
+                    if (!isset($this->stopWords[$token])) {
+                        if (!isset($this->vocabulary[$token])) {
+                            $this->vocabulary[$token] = count($this->vocabulary);
+                        }
+                    }
                 }
             }
         }
     }
 
     /**
-     * Transform an array of samples into an array of vectors.
+     * Transform the text dataset into a collection of vectors where the value
+     * is equal to the number of times that word appears in the sample.
      *
      * @param  array  $samples
      * @return void
@@ -81,12 +105,14 @@ class TokenCountVectorizer implements Preprocessor
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $sample = $this->vectorize($sample[0]);
+            foreach ($sample as &$feature) {
+                $sample = $this->vectorize($feature);
+            }
         }
     }
 
     /**
-     * Convert a string into a vector where the values are token counts.
+     * Convert a string into a vector where the scalars are token counts.
      *
      * @param  string  $sample
      * @return array

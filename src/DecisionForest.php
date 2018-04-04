@@ -2,14 +2,13 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Math\Stats;
-use Rubix\Engine\Math\Random;
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class DecisionForest implements Estimator
+class DecisionForest implements Classifier, Regression
 {
     /**
-     * The decision trees that make up the forest.
+     * The CART trees that make up the forest.
      *
      * @var array
      */
@@ -18,21 +17,21 @@ class DecisionForest implements Estimator
     ];
 
     /**
-     * The number of trees to train.
+     * The number of trees to plant (train) in the ensemble.
      *
      * @var int
      */
     protected $trees;
 
     /**
-     * The ratio of samples to include in each subset of data.
+     * The ratio of training samples to include in each subset of training data.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     * The minimum number of samples that a node needs to make a prediction.
+     *  The minimum number of samples that form a consensus to make a prediction.
      *
      * @var int
      */
@@ -53,7 +52,7 @@ class DecisionForest implements Estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 1000)
+    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 1000)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be less than 1.');
@@ -80,21 +79,21 @@ class DecisionForest implements Estimator
     }
 
     /**
-     * Train the Decision Forest on a labeled data set.
+     * Train an n-tree Decision Forest by generating random subsets of the training
+     * data per CART tree.
      *
-     * @param  array  $data
-     * @return self
+     * @param  array  $samples
+     * @param  array  $outcomes
+     * @return void
      */
     public function train(array $samples, array $outcomes) : void
     {
         $this->forest = [];
 
         foreach (range(1, $this->trees) as $i) {
-            $subset = $this->generateRandomSubset($samples, $outcomes, $this->ratio);
-
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train($subset[0], $subset[1]);
+            $tree->train(...$this->generateRandomSubset($samples, $outcomes, $this->ratio));
 
             $this->forest[] = $tree;
         }
@@ -115,13 +114,13 @@ class DecisionForest implements Estimator
         }
 
         return [
-            'outcome' => Stats::mode(array_column($outcomes, 'outcome')),
-            'certainty' => Stats::mean(array_column($outcomes, 'certainty')),
+            'outcome' => Average::mode(array_column($outcomes, 'outcome'))[0],
+            'certainty' => Average::mean(array_column($outcomes, 'certainty')),
         ];
     }
 
     /**
-     * Generate a random subset with replacement of the data set. O(N)
+     * Generate a random subset with replacement of the training dataset.
      *
      * @param  array  $samples
      * @param  array  $outcomes
@@ -130,14 +129,14 @@ class DecisionForest implements Estimator
      */
     protected function generateRandomSubset(array $samples, array $outcomes, float $ratio) : array
     {
-        $n = $ratio * count($samples);
+        $n = floor($ratio * count($samples));
         $subset = [];
 
         foreach (range(1, $n) as $i) {
-            $rand = Random::integer(0, count($samples) - 1);
+            $index = random_int(0, count($samples) - 1);
 
-            $subset[0][] = $samples[$rand];
-            $subset[1][] = $outcomes[$rand];
+            $subset[0][] = $samples[$index];
+            $subset[1][] = $outcomes[$index];
         }
 
         return $subset;

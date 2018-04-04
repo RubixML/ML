@@ -2,7 +2,7 @@
     "name": "rubix/engine",
     "description": "A library for building intelligent systems with PHP.",
     "license": "MIT",
-    "keywords": ["php", "data", "science", "machine", "learning", "mining", "ai"],
+    "keywords": ["php", "data", "science", "machine", "learning", "mining", "predictive", "modeling"],
     "authors": [
         {
             "name": "Andrew DalPino",
@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=7.1.3",
-        "league/csv": "^9.1"
+        "league/csv": "^9.1",
+        "markrogoyski/math-php": "^0.40.0"
     },
     "require-dev": {
         "phpunit/phpunit": "7.0.*"
