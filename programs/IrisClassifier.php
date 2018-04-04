@@ -3,7 +3,7 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Prototype;
-use Rubix\Engine\Tests\Speed;
+use Rubix\Engine\Tests\Performance;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\NearestNeighbors;
 use Rubix\Engine\SupervisedDataset;
@@ -24,7 +24,7 @@ $dataset = new SupervisedDataset(iterator_to_array($dataset));
 
 list ($training, $testing) = $dataset->randomize()->split(0.25);
 
-$pipeline = new Prototype(new NearestNeighbors($k, new Euclidean()), [], [new Accuracy(), new Speed()]);
+$pipeline = new Prototype(new NearestNeighbors($k, new Euclidean()), [], [new Accuracy(), new Performance()]);
 
 echo 'Training Nearest Neighbors ... ';
 

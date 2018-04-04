@@ -4,7 +4,7 @@ namespace Rubix\Engine\Tests;
 
 use MathPHP\Statistics\Average;
 
-class Speed extends Test
+class Performance extends Test
 {
     /**
      * The minimum speed score in seconds.

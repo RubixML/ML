@@ -29,7 +29,7 @@ class ELU implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return $value >= 0 ? $value : $this->alpha * (exp($value) - 1);
+        return $value >= 0.0 ? $value : $this->alpha * (exp($value) - 1);
     }
 
     /**
@@ -41,6 +41,6 @@ class ELU implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return $computed >= 0 ? 1.0 : $computed + $this->alpha;
+        return $computed >= 0.0 ? 1.0 : $computed + $this->alpha;
     }
 }

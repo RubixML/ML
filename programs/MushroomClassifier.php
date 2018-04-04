@@ -3,7 +3,7 @@
 include __DIR__ . '/../vendor/autoload.php';
 
 use Rubix\Engine\Prototype;
-use Rubix\Engine\Tests\Speed;
+use Rubix\Engine\Tests\Performance;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\DecisionForest;
 use Rubix\Engine\SupervisedDataset;
@@ -30,7 +30,7 @@ list ($training, $testing) = $dataset->randomize()->split(0.5);
 $pipeline = new Prototype(
     new DecisionForest($trees, $ratio, $minSize, $maxDepth),
     [new OneHotEncoder()],
-    [new Accuracy(), new Speed()]
+    [new Accuracy(), new Performance()]
 );
 
 echo 'Training a Decision Forest of ' . $trees . ' trees ... ';

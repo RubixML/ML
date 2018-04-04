@@ -28,7 +28,7 @@ class PReLU implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return $value >= 0 ? $value : $this->leakage * $value;
+        return $value >= 0.0 ? $value : $this->leakage * $value;
     }
 
     /**
@@ -40,6 +40,6 @@ class PReLU implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return $computed >= 0 ? 1.0 : $this->leakage;
+        return $computed >= 0.0 ? 1.0 : $this->leakage;
     }
 }

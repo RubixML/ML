@@ -2,7 +2,6 @@
 
 namespace Rubix\Engine;
 
-use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\MatrixFactory;
 
@@ -23,14 +22,6 @@ class LeastSquares implements Regression
     protected $coefficients = [
         //
     ];
-
-    /**
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * @return float|null
@@ -57,14 +48,7 @@ class LeastSquares implements Regression
      */
     public function train(array $samples, array $outcomes) : void
     {
-        foreach ($samples as &$sample) {
-            array_unshift($sample, 1);
-        }
-
-        $samples = MatrixFactory::create($samples);
-        $outcomes = MatrixFactory::create([new Vector($outcomes)]);
-
-        $coefficients = $this->computeCoefficients($samples, $outcomes)->getColumn(0);
+        $coefficients = $this->computeCoefficients($samples, $outcomes);
 
         $this->intercept = array_shift($coefficients);
         $this->coefficients = $coefficients;
@@ -90,15 +74,22 @@ class LeastSquares implements Regression
     }
 
     /**
-     * Compute the coefficients of the training data by solving the normal equation.
+     * Compute the coefficients of the training data by solving for the normal equation.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $samples
-     * @param  \MathPHP\LinearAlgebra\Matrix  $outcomes
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  array  $samples
+     * @param  array  $outcomes
+     * @return array
      */
-    protected function computeCoefficients(Matrix $samples, Matrix $outcomes) : Matrix
+    protected function computeCoefficients(array $samples, array $outcomes) : array
     {
+        foreach ($samples as &$sample) {
+            array_unshift($sample, 1);
+        }
+
+        $samples = MatrixFactory::create($samples);
+        $outcomes = MatrixFactory::create([new Vector($outcomes)]);
+
         return $samples->transpose()->multiply($samples)->inverse()
-            ->multiply($samples->transpose()->multiply($outcomes));
+            ->multiply($samples->transpose()->multiply($outcomes))->getColumn(0);
     }
 }

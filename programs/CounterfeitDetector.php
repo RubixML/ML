@@ -4,7 +4,7 @@ include __DIR__ . '/../vendor/autoload.php';
 
 use Rubix\Engine\CART;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\Tests\Speed;
+use Rubix\Engine\Tests\Performance;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Preprocessors\L1Normalizer;
@@ -25,7 +25,7 @@ $dataset = new SupervisedDataset(iterator_to_array($dataset));
 
 list ($training, $testing) = $dataset->randomize()->split(0.3);
 
-$pipeline = new Prototype(new CART($minSamples, $maxDepth), [new L1Normalizer()], [new Accuracy(), new Speed()]);
+$pipeline = new Prototype(new CART($minSamples, $maxDepth), [new L1Normalizer()], [new Accuracy(), new Performance()]);
 
 echo 'Training a CART ... ';
 
