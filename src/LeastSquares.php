@@ -89,6 +89,7 @@ class LeastSquares implements Regression
         $outcomes = MatrixFactory::create([new Vector($outcomes)]);
 
         return $samples->transpose()->multiply($samples)->inverse()
-            ->multiply($samples->transpose()->multiply($outcomes))->getColumn(0);
+            ->multiply($samples->transpose()->multiply($outcomes))
+            ->getColumn(0);
     }
 }

@@ -24,7 +24,7 @@ $dataset = SupervisedDataset::build($dataset);
 
 list ($training, $testing) = $dataset->randomize()->split(0.25);
 
-$prototype = new Prototype(new KNearestNeighbors($k, new Euclidean()), [], [new Accuracy(), new Performance()]);
+$prototype = new Prototype(new KNearestNeighbors(3), [], [new Accuracy(), new Performance()]);
 
 echo 'Training Nearest Neighbors ... ';
 

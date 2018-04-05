@@ -8,6 +8,9 @@ use Countable;
 
 class SupervisedDataset implements Countable
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The feature vectors or columns of a data table.
      *
@@ -105,6 +108,18 @@ class SupervisedDataset implements Countable
     }
 
     /**
+     * Return the types for the feature columns.
+     *
+     * @return array
+     */
+    public function columnTypes() : array
+    {
+        return array_map(function ($feature) {
+            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
+        }, $this->samples[0]);
+    }
+
+    /**
      * @return array
      */
     public function outcomes() : array
@@ -113,7 +128,7 @@ class SupervisedDataset implements Countable
     }
 
     /**
-     * All possible labeled outcomes.
+     * The set of all possible labeled outcomes.
      *
      * @return array
      */
@@ -163,7 +178,7 @@ class SupervisedDataset implements Countable
             throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 0.9.');
         }
 
-        $strata = $this->stratify($this->samples, $this->outcomes);
+        $strata = $this->stratify();
 
         $training = $testing = [0 => [], 1 => []];
 
@@ -232,16 +247,14 @@ class SupervisedDataset implements Countable
     /**
      * Group samples by outcome and return an array of strata.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
      * @return array
      */
-    public function stratify(array $samples, array $outcomes) : array
+    public function stratify() : array
     {
         $strata = [];
 
-        foreach ($outcomes as $i => $outcome) {
-            $strata[0][$outcome][] = $samples[$i];
+        foreach ($this->outcomes as $i => $outcome) {
+            $strata[0][$outcome][] = $this->samples[$i];
             $strata[1][$outcome][] = $outcome;
         }
 
