@@ -24,6 +24,13 @@ class CART extends Tree implements Classifier, Regression
     protected $maxDepth;
 
     /**
+     * Is this a classifier model?
+     *
+     * @var bool|null
+     */
+    protected $classifier;
+
+    /**
      * The number of feature columns per sample.
      *
      * @var int
@@ -47,6 +54,7 @@ class CART extends Tree implements Classifier, Regression
     {
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
+        $this->classifier = null;
         $this->columns = 0;
         $this->splits = 0;
     }
@@ -84,9 +92,9 @@ class CART extends Tree implements Classifier, Regression
     /**
      * Is this model a classifier?
      *
-     * @return bool
+     * @return bool|null
      */
-    public function classifier() : bool
+    public function classifier() : ?bool
     {
         return $this->classifier;
     }
@@ -94,9 +102,9 @@ class CART extends Tree implements Classifier, Regression
     /**
      * Does this model output continuous data?
      *
-     * @return bool
+     * @return bool|null
      */
-    public function regression() : bool
+    public function regression() : ?bool
     {
         return !$this->classifier;
     }
@@ -104,17 +112,14 @@ class CART extends Tree implements Classifier, Regression
     /**
      * Train the CART by learning the most optimal splits in the training set.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
-        if (count($samples) !== count($outcomes)) {
-            throw new InvalidArgumentException('The number of samples and outcomes must be equal.');
-        }
+        list($samples, $outcomes) = $data->toArray();
 
-        $this->columns = count($samples[0]);
+        $this->columns = $data->columns();
         $this->classifier = is_string($outcomes[0]);
 
         foreach ($samples as $i => &$sample) {

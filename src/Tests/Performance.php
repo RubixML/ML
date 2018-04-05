@@ -3,6 +3,7 @@
 namespace Rubix\Engine\Tests;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\SupervisedDataset;
 
 class Performance extends Test
 {
@@ -34,15 +35,14 @@ class Performance extends Test
     /**
      * Test the speed of the estimator.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return bool
      */
-    public function test(array $samples, array $outcomes) : bool
+    public function test(SupervisedDataset $data) : bool
     {
         $speeds = [];
 
-        foreach ($samples as $sample) {
+        foreach ($data->samples() as $sample) {
             $start = microtime(true);
 
             $this->estimator->predict($sample);

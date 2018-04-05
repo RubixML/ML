@@ -99,12 +99,13 @@ class MultiLayerPerceptron extends Network implements Classifier
     /**
      * Train the model using backpropagation.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
+        list($samples, $outcomes) = $data->toArray();
+
         foreach (range(1, $this->epochs) as $epoch) {
             $order = range(0, count($samples) - 1);
 

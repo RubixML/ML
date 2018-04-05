@@ -25,14 +25,10 @@ class L1Normalizer implements Preprocessor
         foreach ($samples as &$sample) {
             $norm = array_reduce($sample, function ($carry, $feature) {
                 return $carry += abs($feature);
-            }, 0);
+            }, 0) + 1e-10;
 
-            if ($norm === 0) {
-                $sample = array_fill(0, count($sample), 1 / count($sample));
-            } else {
-                foreach ($sample as &$feature) {
-                    $feature /= $norm;
-                }
+            foreach ($sample as &$feature) {
+                $feature /= $norm;
             }
         }
     }

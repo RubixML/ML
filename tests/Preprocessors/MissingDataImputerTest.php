@@ -1,15 +1,15 @@
 <?php
 
-use Rubix\Engine\Preprocessors\MissingValueImputer;
+use Rubix\Engine\Preprocessors\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
-class MissingValueImputerTest extends TestCase
+class MissingDataImputerTest extends TestCase
 {
     protected $preprocessor;
 
     public function setUp()
     {
-        $this->preprocessor = new MissingValueImputer();
+        $this->preprocessor = new MissingDataImputer('?');
 
         $this->preprocessor->fit([
             [30, 'friendly'],
@@ -20,7 +20,7 @@ class MissingValueImputerTest extends TestCase
 
     public function test_build_imputer()
     {
-        $this->assertInstanceOf(MissingValueImputer::class, $this->preprocessor);
+        $this->assertInstanceOf(MissingDataImputer::class, $this->preprocessor);
     }
 
     public function test_fit_dataset()

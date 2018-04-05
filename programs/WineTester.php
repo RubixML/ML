@@ -12,23 +12,23 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Tester using Least Squares Regression          ║' . "\n";
+echo '║ Wine Tester using Least Squares                     ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')->setDelimiter(',')->getRecords();
 
-$dataset = new SupervisedDataset(iterator_to_array($dataset));
+$dataset = SupervisedDataset::build($dataset);
 
 list ($training, $testing) = $dataset->randomize()->split(0.3);
 
-$pipeline = new Prototype(new LeastSquares(), [new L1Normalizer()], [new Accuracy(), new Performance()]);
+$prototype = new Prototype(new LeastSquares(), [new L1Normalizer()], [new Accuracy(), new Performance()]);
 
 echo 'Training a Least Squares ... ';
 
 $start = microtime(true);
 
-$pipeline->train($training->samples(), $training->outcomes());
+$prototype->train($training->samples(), $training->outcomes());
 
 echo 'done in ' . (string) round(microtime(true) - $start, 5) . ' seconds.' . "\n";
 
@@ -36,4 +36,4 @@ echo  "\n";
 
 echo 'Testing model ...' . "\n";
 
-$pipeline->test($testing->samples(), $testing->outcomes());
+$prototype->test($testing->samples(), $testing->outcomes());

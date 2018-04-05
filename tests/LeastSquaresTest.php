@@ -12,7 +12,7 @@ class LeastSquaresTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new SupervisedDataset([
+        $this->dataset = SupervisedDataset::build([
             [4, 91.0, 1795, 33.0],
             [6, 225.0, 3651, 20.0],
             [6, 250.0, 3574, 18.0],
@@ -29,7 +29,7 @@ class LeastSquaresTest extends TestCase
 
         $this->estimator = new LeastSquares();
 
-        $this->estimator->train($this->dataset->samples(), $this->dataset->outcomes());
+        $this->estimator->train($this->dataset);
     }
 
     public function test_create_tree()

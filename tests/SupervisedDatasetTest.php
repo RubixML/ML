@@ -16,7 +16,7 @@ class SupervisedDatasetTest extends TestCase
             ['mean', 'rough', 'friendly', 'monster'],
         ];
 
-        $this->data = new SupervisedDataset($data);
+        $this->data = SupervisedDataset::build($data);
     }
 
     public function test_build_supervised_dataset()

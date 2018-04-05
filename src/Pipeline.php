@@ -40,18 +40,19 @@ class Pipeline implements Estimator
     /**
      * Train the pipeline.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
+        list($samples, $outcomes) = $data->toArray();
+
         foreach ($this->preprocessors as $preprocessor) {
             $preprocessor->fit($samples, $outcomes);
             $preprocessor->transform($samples);
         }
 
-        $this->estimator->train($samples, $outcomes);
+        $this->estimator->train(new SupervisedDataset($samples, $outcomes));
     }
 
     /**

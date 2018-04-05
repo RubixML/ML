@@ -42,13 +42,12 @@ class LeastSquares implements Regression
     /**
      * Learn the coefficients of the training data.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
-        $coefficients = $this->computeCoefficients($samples, $outcomes);
+        $coefficients = $this->computeCoefficients($data->samples(), $data->outcomes());
 
         $this->intercept = array_shift($coefficients);
         $this->coefficients = $coefficients;

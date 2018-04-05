@@ -5,6 +5,7 @@ namespace Rubix\Engine\Tests;
 use Rubix\Engine\Classifier;
 use Rubix\Engine\Regression;
 use MathPHP\Statistics\Average;
+use Rubix\Engine\SupervisedDataset;
 use InvalidArgumentException;
 
 class Accuracy extends Test
@@ -41,18 +42,18 @@ class Accuracy extends Test
     /**
      * Test the accuracy of the estimator.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param \Rubix\Engine\SupervisedDataset  $data
      * @return bool
      */
-    public function test(array $samples, array $outcomes) : bool
+    public function test(SupervisedDataset $data) : bool
     {
         $accuracy = 0;
 
         if ($this->estimator instanceof Classifier) {
+            $outcomes = $data->outcomes();
             $score = 0;
 
-            foreach ($samples as $i => $sample) {
+            foreach ($data->samples() as $i => $sample) {
                 $prediction = $this->estimator->predict($sample);
 
                 if ($prediction['outcome'] === $outcomes[$i]) {
@@ -60,7 +61,7 @@ class Accuracy extends Test
                 }
             }
 
-            $accuracy = round(($score / count($samples)) * 100, $this->precision);
+            $accuracy = round(($score / $data->count()) * 100, $this->precision);
         }
 
         $pass = $accuracy >= $this->accuracy;

@@ -8,7 +8,7 @@ use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use SplPriorityQueue;
 
-class NearestNeighbors implements Classifier, Regression
+class KNearestNeighbors implements Classifier, Regression
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -56,14 +56,12 @@ class NearestNeighbors implements Classifier, Regression
      * Store the sample and outcome arrays. No other work to be done as this is
      * a lazy learning algorithm.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
-        $this->samples = $samples;
-        $this->outcomes = $outcomes;
+        list($this->samples, $this->outcomes) = $data->toArray();
     }
 
     /**
@@ -74,7 +72,7 @@ class NearestNeighbors implements Classifier, Regression
      */
     public function predict(array $sample) : array
     {
-        $neighbors = $this->findKNearestNeighbors($sample, $this->k);
+        $neighbors = $this->findNearestNeighbors($sample);
 
         if (is_string($neighbors[0])) {
             $outcomes = array_count_values($neighbors);
@@ -98,12 +96,12 @@ class NearestNeighbors implements Classifier, Regression
      * Find the K closest neighbors to the given sample vector.
      *
      * @param  array  $sample
-     * @param  int  $k
      * @return array
      */
-    protected function findKNearestNeighbors(array $sample, int $k) : array
+    protected function findNearestNeighbors(array $sample) : array
     {
         $neighbors = new SplPriorityQueue();
+        $k = $this->k;
 
         foreach ($this->samples as $i => $neighbor) {
             $distance = $this->distanceFunction->distance($sample, $neighbor);

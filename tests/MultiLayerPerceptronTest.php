@@ -15,7 +15,7 @@ class MultiLayerPerceptronTest extends TestCase
 
     public function test_train_model()
     {
-        $dataset = new SupervisedDataset([
+        $dataset = SupervisedDataset::build([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],
@@ -38,7 +38,7 @@ class MultiLayerPerceptronTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->network->train($dataset->samples(), $dataset->outcomes());
+        $this->network->train($dataset);
 
         $prediction = $this->network->predict([7.5, 3.2]);
 

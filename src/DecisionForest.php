@@ -82,18 +82,19 @@ class DecisionForest implements Classifier, Regression
      * Train an n-tree Decision Forest by generating random subsets of the training
      * data per CART tree.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
      */
-    public function train(array $samples, array $outcomes) : void
+    public function train(SupervisedDataset $data) : void
     {
+        list($samples, $outcomes) = $data->toArray();
+
         $this->forest = [];
 
         foreach (range(1, $this->trees) as $i) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train(...$this->generateRandomSubset($samples, $outcomes, $this->ratio));
+            $tree->train(new SupervisedDataset(...$this->generateRandomSubset($samples, $outcomes, $this->ratio)));
 
             $this->forest[] = $tree;
         }

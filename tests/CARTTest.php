@@ -12,7 +12,7 @@ class CARTTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new SupervisedDataset([
+        $this->dataset = SupervisedDataset::build([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],
@@ -37,7 +37,7 @@ class CARTTest extends TestCase
 
         $this->estimator = new CART(3, 30);
 
-        $this->estimator->train($this->dataset->samples(), $this->dataset->outcomes());
+        $this->estimator->train($this->dataset);
     }
 
     public function test_create_tree()

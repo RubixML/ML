@@ -33,18 +33,20 @@ class Prototype extends Pipeline
     /**
      * Run the tests on the prototype.
      *
-     * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return bool
      */
-    public function test(array $samples, array $outcomes) : bool
+    public function test(SupervisedDataset $data) : bool
     {
+        $samples = $data->samples();
+        $outcomes = $data->outcomes();
+
         foreach ($this->preprocessors as $preprocessor) {
             $preprocessor->transform($samples);
         }
 
         $results = array_map(function ($test) use ($samples, $outcomes) {
-            return $test->load($this->estimator)->test($samples, $outcomes);
+            return $test->load($this->estimator)->test(new SupervisedDataset($samples, $outcomes));
         }, $this->tests);
 
         return !in_array(false, $results);

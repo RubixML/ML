@@ -7,10 +7,10 @@ use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
 use Rubix\Engine\Preprocessors\Strategies\LocalCelebrity;
 use InvalidArgumentException;
 
-class MissingValueImputer implements Preprocessor
+class MissingDataImputer implements Preprocessor
 {
-    public const CATEGORICAL = 1;
-    public const CONTINUOUS = 2;
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
 
     /**
      * The placeholder of a missing value.
@@ -53,7 +53,8 @@ class MissingValueImputer implements Preprocessor
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\Engine\Preprocessors\Strategies\Strategy|null  $strategy
+     * @param  \Rubix\Engine\Preprocessors\Strategies\Categorical|null  $categoricalStrategy
+     * @param  \Rubix\Engine\Preprocessors\Strategies\Continuous|null  $continuousStrategy
      * @throws \InvalidArgumentException
      * @return void
      */

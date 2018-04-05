@@ -3,6 +3,7 @@
 namespace Rubix\Engine\Tests;
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\SupervisedDataset;
 
 abstract class Test
 {
@@ -29,7 +30,8 @@ abstract class Test
     /**
      * Run the test.
      *
-     * @return mixed
+     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @return bool
      */
-    abstract public function test(array $samples, array $outcomes);
+    abstract public function test(SupervisedDataset $data) : bool;
 }
