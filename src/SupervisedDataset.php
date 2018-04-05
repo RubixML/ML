@@ -168,6 +168,28 @@ class SupervisedDataset implements Countable
     }
 
     /**
+     * Generate a random subset with replacement.
+     *
+     * @param  float  $ratio
+     * @return self
+     */
+    public function generateRandomSubset(float $ratio = 0.1) : self
+    {
+        $n = ceil($ratio * $this->rows());
+        $max = $this->rows() - 1;
+        $subset = [];
+
+        foreach (range(1, $n) as $i) {
+            $index = random_int(0, $max);
+
+            $subset[0][] = $this->samples[$index];
+            $subset[1][] = $this->outcomes[$index];
+        }
+
+        return new static(...$subset);
+    }
+
+    /**
      * Take n samples and outcomes from this dataset and return them in a new dataset.
      *
      * @param  int  $n

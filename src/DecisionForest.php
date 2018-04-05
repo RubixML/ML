@@ -87,14 +87,12 @@ class DecisionForest implements Classifier, Regression
      */
     public function train(SupervisedDataset $data) : void
     {
-        list($samples, $outcomes) = $data->toArray();
-
         $this->forest = [];
 
         foreach (range(1, $this->trees) as $i) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train(new SupervisedDataset(...$this->generateRandomSubset($samples, $outcomes, $this->ratio)));
+            $tree->train($data->generateRandomSubset($this->ratio));
 
             $this->forest[] = $tree;
         }
@@ -118,28 +116,5 @@ class DecisionForest implements Classifier, Regression
             'outcome' => Average::mode(array_column($outcomes, 'outcome'))[0],
             'certainty' => Average::mean(array_column($outcomes, 'certainty')),
         ];
-    }
-
-    /**
-     * Generate a random subset with replacement of the training dataset.
-     *
-     * @param  array  $samples
-     * @param  array  $outcomes
-     * @param  float  $ratio
-     * @return array
-     */
-    protected function generateRandomSubset(array $samples, array $outcomes, float $ratio) : array
-    {
-        $n = floor($ratio * count($samples));
-        $subset = [];
-
-        foreach (range(1, $n) as $i) {
-            $index = random_int(0, count($samples) - 1);
-
-            $subset[0][] = $samples[$index];
-            $subset[1][] = $outcomes[$index];
-        }
-
-        return $subset;
     }
 }
