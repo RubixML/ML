@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Preprocessors\Preprocessor;
 use InvalidArgumentException;
 use Countable;
 
@@ -119,6 +120,19 @@ class SupervisedDataset implements Countable
     public function labels() : array
     {
         return array_unique($this->outcomes);
+    }
+
+    /**
+     * Have a preprocessor transform the dataset.
+     *
+     * @param  \Rubix\Engine\Preprocessors\Preprocessor  $preprocessor
+     * @return self
+     */
+    public function transform(Preprocessor $preprocessor) : self
+    {
+        $preprocessor->transform($this->samples);
+
+        return $this;
     }
 
     /**

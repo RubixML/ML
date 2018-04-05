@@ -38,7 +38,8 @@ class Pipeline implements Estimator
     }
 
     /**
-     * Train the pipeline.
+     * Run the training dataset through all preprocessors in order and use the
+     * transformed dataset to train the estimator.
      *
      * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return void
@@ -49,14 +50,15 @@ class Pipeline implements Estimator
 
         foreach ($this->preprocessors as $preprocessor) {
             $preprocessor->fit($samples, $outcomes);
-            $preprocessor->transform($samples);
+
+            $data->transform($preprocessor);
         }
 
-        $this->estimator->train(new SupervisedDataset($samples, $outcomes));
+        $this->estimator->train($data);
     }
 
     /**
-     * Make a prediction of a given sample.
+     * Preprocess the sample and make a prediction.
      *
      * @param  array  $sample
      * @return array
