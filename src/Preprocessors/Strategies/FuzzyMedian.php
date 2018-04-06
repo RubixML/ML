@@ -6,10 +6,10 @@ use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
-class FuzzyMean implements Continuous
+class FuzzyMedian implements Continuous
 {
     /**
-     * The amount of gaussian noise by ratio of the variance to add to the mean.
+     * The amount of gaussian noise by ratio of the variance to add to the median.
      *
      * @var float
      */
@@ -38,14 +38,14 @@ class FuzzyMean implements Continuous
     }
 
     /**
-     * Guess a value based on the mean plus a fuzz factor of Gaussian noise.
+     * Guess a value based on the median plus a fuzz factor of Gaussian noise.
      *
      * @param  array  $values
      * @return mixed
      */
     public function guess(array $values)
     {
-        return Average::mean($values) + $this->generateGaussianValue() * $this->fuzz * Descriptive::standardDeviation($values);
+        return Average::median($values) + $this->generateGaussianValue() * $this->fuzz * Descriptive::standardDeviation($values);
     }
 
     /**

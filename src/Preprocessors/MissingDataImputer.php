@@ -2,8 +2,9 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\Strategies\Strategy;
-use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
+use Rubix\Engine\Preprocessors\Strategies\FuzzyMedian;
 use Rubix\Engine\Preprocessors\Strategies\LocalCelebrity;
 use InvalidArgumentException;
 
@@ -43,7 +44,7 @@ class MissingDataImputer implements Preprocessor
     ];
 
     /**
-     * The data type for each feature column. i.e. categorical or continuous.
+     * The type of each feature column. i.e. categorical or continuous.
      *
      * @var array
      */
@@ -69,7 +70,7 @@ class MissingDataImputer implements Preprocessor
         }
 
         if (!isset($continuousStrategy)) {
-            $continuousStrategy = new FuzzyMean();
+            $continuousStrategy = new FuzzyMedian();
         }
 
         $this->placeholder = $placeholder;
@@ -78,13 +79,18 @@ class MissingDataImputer implements Preprocessor
     }
 
     /**
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
-        $this->samples = array_map(null, ...$samples);
+        $this->samples = array_map(null, ...$data->samples());
+
+        foreach ($this->samples as &$column) {
+            $column = array_filter($column, function ($feature) {
+                return $feature !== $this->placeholder;
+            });
+        }
 
         $this->types = array_map(function ($column) {
             return is_string($column[0]) ? self::CATEGORICAL : self::CONTINUOUS;

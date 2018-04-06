@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
 
@@ -9,12 +10,12 @@ class OneHotEncoderTest extends TestCase
 
     public function setUp()
     {
-        $data = [
+        $data = new Dataset([
             ['nice', 'furry', 'friendly'],
             ['mean', 'furry', 'loner'],
             ['nice', 'rough', 'friendly'],
             ['mean', 'rough', 'friendly'],
-        ];
+        ]);
 
         $this->preprocessor = new OneHotEncoder();
 

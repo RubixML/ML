@@ -38,15 +38,12 @@ class Prototype extends Pipeline
      */
     public function test(SupervisedDataset $data) : bool
     {
-        $samples = $data->samples();
-        $outcomes = $data->outcomes();
-
         foreach ($this->preprocessors as $preprocessor) {
-            $preprocessor->transform($samples);
+            $data->transform($preprocessor);
         }
 
-        $results = array_map(function ($test) use ($samples, $outcomes) {
-            return $test->load($this->estimator)->test(new SupervisedDataset($samples, $outcomes));
+        $results = array_map(function ($test) use ($data) {
+            return $test->load($this->estimator)->test($data);
         }, $this->tests);
 
         return !in_array(false, $results);

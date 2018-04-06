@@ -6,10 +6,14 @@ use Rubix\Engine\NeuralNetwork\Hidden;
 use Rubix\Engine\NeuralNetwork\Network;
 use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
+use RuntimeException;
 use SplObjectStorage;
 
 class MultiLayerPerceptron extends Network implements Classifier
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The fixed number of training epochs. i.e. the number of times to iterate
      * over the entire training set.
@@ -104,6 +108,12 @@ class MultiLayerPerceptron extends Network implements Classifier
      */
     public function train(SupervisedDataset $data) : void
     {
+        foreach ($data->types() as $type) {
+            if ($type !== self::CONTINUOUS) {
+                throw new InvalidArgumentException('This estimator only works with continuous input data.');
+            }
+        }
+
         list($samples, $outcomes) = $data->toArray();
 
         foreach (range(1, $this->epochs) as $epoch) {
@@ -170,13 +180,13 @@ class MultiLayerPerceptron extends Network implements Classifier
      * Feed forward and calculate the output of each neuron in the network.
      *
      * @param  array  $sample
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return void
      */
     protected function feed(array $sample) : void
     {
         if (count($sample) !== count($this->layers[0]) - 1) {
-            throw new InvalidArgumentException('Feature columns must equal the number of input neurons.');
+            throw new RuntimeException('Feature columns must equal the number of input neurons.');
         }
 
         $this->reset();

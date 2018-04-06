@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +20,7 @@ class VarianceThresholdFilterTest extends TestCase
 
     public function test_fit_dataset()
     {
-        $data = [[0, 0, 1], [0, 1, 0], [0, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]];
+        $data = new Dataset([[0, 0, 1], [0, 1, 0], [0, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]]);
 
         $this->preprocessor->fit($data);
 

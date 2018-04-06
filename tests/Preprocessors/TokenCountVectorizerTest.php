@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\TokenCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
@@ -9,9 +10,9 @@ class TokenCountVectorizerTest extends TestCase
 
     public function setUp()
     {
-        $data = [
+        $data = new Dataset([
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
-        ];
+        ]);
 
         $this->preprocessor = new TokenCountVectorizer();
 

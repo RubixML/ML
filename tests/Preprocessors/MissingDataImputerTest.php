@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
@@ -11,11 +12,11 @@ class MissingDataImputerTest extends TestCase
     {
         $this->preprocessor = new MissingDataImputer('?');
 
-        $this->preprocessor->fit([
+        $this->preprocessor->fit(new Dataset([
             [30, 'friendly'],
             [40, 'mean'],
             [50, 'friendly'],
-        ]);
+        ]));
     }
 
     public function test_build_imputer()

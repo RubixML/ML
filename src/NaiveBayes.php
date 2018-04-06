@@ -44,7 +44,7 @@ class NaiveBayes implements Classifier
      */
     public function train(SupervisedDataset $data) : void
     {
-        $this->types = $data->columnTypes();
+        $this->types = $data->types();
         $this->stats = [];
 
         foreach ($data->stratify()[0] as $class => $samples) {

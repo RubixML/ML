@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\L1Normalizer;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +20,7 @@ class L1NormalizerTest extends TestCase
 
     public function test_fit_dataset()
     {
-        $this->preprocessor->fit([]);
+        $this->preprocessor->fit(new Dataset([]));
 
         $this->assertTrue(true);
     }

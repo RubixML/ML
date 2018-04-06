@@ -2,14 +2,17 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
+
 class L1Normalizer implements Preprocessor
 {
+    const EPSILON = 1e-10;
+
     /**
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
         //
     }
@@ -25,7 +28,7 @@ class L1Normalizer implements Preprocessor
         foreach ($samples as &$sample) {
             $norm = array_reduce($sample, function ($carry, $feature) {
                 return $carry += abs($feature);
-            }, 0) + 1e-10;
+            }, 0) + self::EPSILON;
 
             foreach ($sample as &$feature) {
                 $feature /= $norm;

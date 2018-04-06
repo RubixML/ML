@@ -2,14 +2,15 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
+
 interface Preprocessor
 {
     /**
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void;
+    public function fit(Dataset $data) : void;
 
     /**
      * @param  array  $samples

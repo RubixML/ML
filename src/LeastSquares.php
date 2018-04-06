@@ -4,9 +4,13 @@ namespace Rubix\Engine;
 
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\MatrixFactory;
+use InvalidArgumentException;
 
 class LeastSquares implements Regression
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The computed y intercept.
      *
@@ -43,10 +47,17 @@ class LeastSquares implements Regression
      * Learn the coefficients of the training data.
      *
      * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(SupervisedDataset $data) : void
     {
+        foreach ($data->types() as $type) {
+            if ($type !== self::CONTINUOUS) {
+                throw new InvalidArgumentException('This estimator only works with continuous input data.');
+            }
+        }
+
         $coefficients = $this->computeCoefficients($data->samples(), $data->outcomes());
 
         $this->intercept = array_shift($coefficients);

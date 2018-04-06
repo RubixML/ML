@@ -9,6 +9,9 @@ use InvalidArgumentException;
 
 class CART extends Tree implements Classifier, Regression
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The minimum number of samples that form a consensus to make a prediction.
      *
@@ -24,25 +27,27 @@ class CART extends Tree implements Classifier, Regression
     protected $maxDepth;
 
     /**
-     * Is this a classifier model?
-     *
-     * @var bool|null
-     */
-    protected $classifier;
-
-    /**
-     * The number of feature columns per sample.
-     *
-     * @var int
-     */
-    protected $columns;
-
-    /**
      * The number of times the tree has split. i.e. a comparison is made.
      *
      * @var int
      */
     protected $splits;
+
+    /**
+     * The type of each feature column. i.e. categorical or continuous.
+     *
+     * @var array
+     */
+    protected $types = [
+        //
+    ];
+
+    /**
+     * The output type. i.e. categorical or continuous.
+     *
+     * @var int
+     */
+    protected $output;
 
     /**
      * @param  int  $minSamples
@@ -54,9 +59,16 @@ class CART extends Tree implements Classifier, Regression
     {
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
-        $this->classifier = null;
-        $this->columns = 0;
+        $this->output = 0;
         $this->splits = 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function columns() : int
+    {
+        return count($this->types);
     }
 
     /**
@@ -90,26 +102,6 @@ class CART extends Tree implements Classifier, Regression
     }
 
     /**
-     * Is this model a classifier?
-     *
-     * @return bool|null
-     */
-    public function classifier() : ?bool
-    {
-        return $this->classifier;
-    }
-
-    /**
-     * Does this model output continuous data?
-     *
-     * @return bool|null
-     */
-    public function regression() : ?bool
-    {
-        return !$this->classifier;
-    }
-
-    /**
      * Train the CART by learning the most optimal splits in the training set.
      *
      * @param  \Rubix\Engine\SupervisedDataset  $data
@@ -119,8 +111,8 @@ class CART extends Tree implements Classifier, Regression
     {
         list($samples, $outcomes) = $data->toArray();
 
-        $this->columns = $data->columns();
-        $this->classifier = is_string($outcomes[0]);
+        $this->types = $data->types();
+        $this->output = $data->output();
 
         foreach ($samples as $i => &$sample) {
             $sample[] = $outcomes[$i];
@@ -140,7 +132,7 @@ class CART extends Tree implements Classifier, Regression
      */
     public function predict(array $sample) : array
     {
-        if (count($sample) !== $this->columns) {
+        if (count($sample) !== $this->columns()) {
             throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
         }
 
@@ -155,8 +147,8 @@ class CART extends Tree implements Classifier, Regression
     /**
      * Recursive function to traverse the tree and return a terminal node.
      *
-     * @param  \Rubix\Engine\BinaryNode  $root
      * @param  array  $sample
+     * @param  \Rubix\Engine\BinaryNode  $root
      * @return \Rubix\Engine\BinaryNode
      */
     protected function _predict(array $sample, BinaryNode $root) : BinaryNode
@@ -165,7 +157,7 @@ class CART extends Tree implements Classifier, Regression
             return $root;
         }
 
-        if ($root->categorical) {
+        if ($this->types[$root->index] === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value()) {
                 return $this->_predict($sample, $root->left());
             } else {
@@ -248,11 +240,11 @@ class CART extends Tree implements Classifier, Regression
 
         $outcomes = array_column($data, count($data[0]) - 1);
 
-        foreach (range(0, $this->columns - 1) as $index) {
+        foreach (range(0, $this->columns() - 1) as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
-                if ($this->classifier) {
+                if ($this->output === self::CATEGORICAL) {
                     $cost = $this->calculateGini($groups, $outcomes);
                 } else {
                     $cost = $this->calculateVariance($groups, $outcomes);
@@ -274,7 +266,6 @@ class CART extends Tree implements Classifier, Regression
         return new BinaryNode($best['value'], [
             'index' => $best['index'],
             'cost' => $best['cost'],
-            'categorical' => is_string($best['value']),
             'groups' => $best['groups'],
         ]);
     }
@@ -310,7 +301,7 @@ class CART extends Tree implements Classifier, Regression
         $left = $right = [];
 
         foreach ($data as $row) {
-            if (is_string($row[$index])) {
+            if ($this->types[$index] === self::CATEGORICAL) {
                 if ($row[$index] !== $value) {
                     $left[] = $row;
                 } else {

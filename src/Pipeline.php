@@ -46,10 +46,8 @@ class Pipeline implements Estimator
      */
     public function train(SupervisedDataset $data) : void
     {
-        list($samples, $outcomes) = $data->toArray();
-
         foreach ($this->preprocessors as $preprocessor) {
-            $preprocessor->fit($samples, $outcomes);
+            $preprocessor->fit($data);
 
             $data->transform($preprocessor);
         }

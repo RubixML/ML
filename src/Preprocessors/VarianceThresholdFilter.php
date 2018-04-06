@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
 use MathPHP\Statistics\Descriptive;
 
 class VarianceThresholdFilter implements Preprocessor
@@ -52,13 +53,12 @@ class VarianceThresholdFilter implements Preprocessor
     }
 
     /**
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
-        foreach (array_map(null, ...$samples) as $column => $data) {
+        foreach (array_map(null, ...$data->samples()) as $column => $data) {
             if (Descriptive::populationVariance($data) > $this->threshold) {
                 $this->selected[$column] = true;
             }

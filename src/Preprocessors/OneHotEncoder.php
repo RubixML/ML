@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
+
 class OneHotEncoder implements Preprocessor
 {
     /**
@@ -16,13 +18,12 @@ class OneHotEncoder implements Preprocessor
     /**
      * Build the list of categories.
      *
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
-        foreach ($samples as $sample) {
+        foreach ($data->samples() as $sample) {
             foreach ($sample as $feature) {
                 if (!isset($this->categories[$feature])) {
                     $this->categories[$feature] = count($this->categories);

@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
+
 class TfIdfTransformer implements Preprocessor
 {
     /**
@@ -14,12 +16,13 @@ class TfIdfTransformer implements Preprocessor
     /**
      * Calculate the inverse document frequency values.
      *
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
+        $samples = $data->samples();
+
         $this->idfs = array_fill_keys(array_keys($samples[0]), 0);
 
         foreach ($samples as $sample) {

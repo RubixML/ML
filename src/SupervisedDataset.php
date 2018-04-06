@@ -2,28 +2,25 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Preprocessors\Preprocessor;
 use InvalidArgumentException;
-use Countable;
 
-class SupervisedDataset implements Countable
+class SupervisedDataset extends Dataset
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
-    /**
-     * The feature vectors or columns of a data table.
-     *
-     * @var array
-     */
-    protected $samples;
-
     /**
      * The labeled outcomes used for supervised training.
      *
      * @var array
      */
-    protected $outcomes;
+    protected $outcomes = [
+        //
+    ];
+
+    /**
+     * The output type. i.e. categorical or continuous.
+     *
+     * @var int
+     */
+    protected $output;
 
     /**
      * Build a supervised dataset used for training and testing models. The assumption
@@ -42,7 +39,7 @@ class SupervisedDataset implements Countable
             $samples[] = array_values($row);
         }
 
-        return new static($samples, $outcomes);
+        return new self($samples, $outcomes);
     }
 
     /**
@@ -57,66 +54,21 @@ class SupervisedDataset implements Countable
             throw new InvalidArgumentException('The number of samples must equal the number of outcomes.');
         }
 
-        foreach ($samples as &$sample) {
-            if (count($sample) !== count($samples[0])) {
-                throw new InvalidArgumentException('The number of feature columns must be equal for all samples.');
+        parent::__construct($samples);
+
+        foreach ($outcomes as &$outcome) {
+            if (!is_string($outcome) && !is_numeric($outcome)) {
+                throw new InvalidArgumentException('Outcome must be a string or numeric type, ' . gettype($outcome) . ' found.');
             }
 
-            foreach ($sample as &$feature) {
-                if (!is_string($feature) && !is_numeric($feature)) {
-                    throw new InvalidArgumentException('Feature values must be a string or numeric type, ' . gettype($feature) . ' found.');
-                }
-
-                if (is_string($feature) && is_numeric($feature)) {
-                    if (is_float($feature + 0)) {
-                        $feature = (float) $feature;
-                    } else {
-                        $feature = (int) $feature;
-                    }
-                }
+            if (is_string($outcome) && is_numeric($outcome)) {
+                $outcome = $this->convertNumericString($outcome);
             }
         }
 
-        $this->samples = $samples;
+        $this->output = is_string($outcomes[0]) ? static::CATEGORICAL : static::CONTINUOUS;
+
         $this->outcomes = $outcomes;
-    }
-
-    /**
-     * @return array
-     */
-    public function samples() : array
-    {
-        return $this->samples;
-    }
-
-    /**
-     * @return int
-     */
-    public function rows() : int
-    {
-        return count($this->samples);
-    }
-
-    /**
-     * The number of feature columns in this dataset.
-     *
-     * @return int
-     */
-    public function columns() : int
-    {
-        return count($this->samples[0] ?? []);
-    }
-
-    /**
-     * Return the types for the feature columns.
-     *
-     * @return array
-     */
-    public function columnTypes() : array
-    {
-        return array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $this->samples[0]);
     }
 
     /**
@@ -128,6 +80,14 @@ class SupervisedDataset implements Countable
     }
 
     /**
+     * @return int
+     */
+    public function output() : int
+    {
+        return $this->output;
+    }
+
+    /**
      * The set of all possible labeled outcomes.
      *
      * @return array
@@ -135,19 +95,6 @@ class SupervisedDataset implements Countable
     public function labels() : array
     {
         return array_unique($this->outcomes);
-    }
-
-    /**
-     * Have a preprocessor transform the dataset.
-     *
-     * @param  \Rubix\Engine\Preprocessors\Preprocessor  $preprocessor
-     * @return self
-     */
-    public function transform(Preprocessor $preprocessor) : self
-    {
-        $preprocessor->transform($this->samples);
-
-        return $this;
     }
 
     /**
@@ -164,6 +111,28 @@ class SupervisedDataset implements Countable
         array_multisort($order, $this->samples, $this->outcomes);
 
         return $this;
+    }
+
+    /**
+     * Take n samples and outcomes from this dataset and return them in a new dataset.
+     *
+     * @param  int  $n
+     * @return self
+     */
+    public function take(int $n = 1) : self
+    {
+        return new static(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
+    }
+
+    /**
+     * Leave n samples and outcomes on this dataset and return the rest in a new dataset.
+     *
+     * @param  int  $n
+     * @return self
+     */
+    public function leave(int $n = 1) : self
+    {
+        return new static(array_splice($this->samples, $n), array_splice($this->outcomes, $n));
     }
 
     /**
@@ -219,32 +188,6 @@ class SupervisedDataset implements Countable
     }
 
     /**
-     * Take n samples and outcomes from this dataset and return them in a new dataset.
-     *
-     * @param  int  $n
-     * @return self
-     */
-    public function take(int $n = 1) : self
-    {
-        return new static(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
-    }
-
-    /**
-     * Remove a feature column from the dataset given by the column's offset.
-     *
-     * @param  int  $offset
-     * @return self
-     */
-    public function removeColumn(int $offset) : self
-    {
-        foreach ($this->samples as &$sample) {
-            unset($sample[$offset]);
-
-            $sample = array_values($sample);
-        }
-    }
-
-    /**
      * Group samples by outcome and return an array of strata.
      *
      * @return array
@@ -270,13 +213,5 @@ class SupervisedDataset implements Countable
             $this->samples,
             $this->outcomes,
         ];
-    }
-
-    /**
-     * @return int
-     */
-    public function count() : int
-    {
-        return $this->rows();
     }
 }

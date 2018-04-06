@@ -8,15 +8,6 @@ use InvalidArgumentException;
 class DecisionForest implements Classifier, Regression
 {
     /**
-     * The CART trees that make up the forest.
-     *
-     * @var array
-     */
-    protected $forest = [
-        //
-    ];
-
-    /**
      * The number of trees to plant (train) in the ensemble.
      *
      * @var int
@@ -43,6 +34,15 @@ class DecisionForest implements Classifier, Regression
      * @var int
      */
     protected $maxDepth;
+
+    /**
+     * The CART trees that make up the forest.
+     *
+     * @var array
+     */
+    protected $forest = [
+        //
+    ];
 
     /**
      * @param  int  $trees

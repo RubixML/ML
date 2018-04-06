@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\Preprocessors;
 
+use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\Tokenizers\Tokenizer;
 use Rubix\Engine\Preprocessors\Tokenizers\WhitespaceTokenizer;
 
@@ -74,13 +75,12 @@ class TokenCountVectorizer implements Preprocessor
     /**
      * Build the vocabulary for the vectorizer.
      *
-     * @param  array  $samples
-     * @param  array|null  $outcomes
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function fit(array $samples, ?array $outcomes = null) : void
+    public function fit(Dataset $data) : void
     {
-        foreach ($samples as $sample) {
+        foreach ($data->samples() as $sample) {
             foreach ($sample as $feature) {
                 $tokens = $this->tokenizer->tokenize($feature);
 

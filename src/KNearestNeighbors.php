@@ -2,14 +2,15 @@
 
 namespace Rubix\Engine;
 
-use MathPHP\Statistics\Average;
-use MathPHP\Statistics\Descriptive;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use SplPriorityQueue;
 
 class KNearestNeighbors implements Classifier, Regression
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The number of neighbors to consider when making a prediction.
      *
@@ -29,14 +30,25 @@ class KNearestNeighbors implements Classifier, Regression
      *
      * @var array
      */
-    protected $samples;
+    protected $samples = [
+        //
+    ];
 
     /**
      * The training outcomes.
      *
      * @var array
      */
-    protected $outcomes;
+    protected $outcomes = [
+        //
+    ];
+
+    /**
+     * The output type. i.e. categorical or continuous.
+     *
+     * @var int
+     */
+    protected $output;
 
     /**
      * @param  int  $k
@@ -50,6 +62,7 @@ class KNearestNeighbors implements Classifier, Regression
 
         $this->k = $k;
         $this->distanceFunction = $distanceFunction;
+        $this->output = 0;
     }
 
     /**
@@ -62,6 +75,8 @@ class KNearestNeighbors implements Classifier, Regression
     public function train(SupervisedDataset $data) : void
     {
         list($this->samples, $this->outcomes) = $data->toArray();
+
+        $this->output = $data->output();
     }
 
     /**
@@ -74,16 +89,20 @@ class KNearestNeighbors implements Classifier, Regression
     {
         $neighbors = $this->findNearestNeighbors($sample);
 
-        if (is_string($neighbors[0])) {
+        $n = count($neighbors);
+
+        if ($this->output === self::CATEGORICAL) {
             $outcomes = array_count_values($neighbors);
 
             $outcome = array_search(max($outcomes), $outcomes);
 
-            $certainty = $outcomes[$outcome] / count($neighbors);
+            $certainty = $outcomes[$outcome] / $n;
         } else {
-            $outcome = Average::median($neighbors);
+            $outcome = array_sum($neighbors) / $n;
 
-            $certainty = Descriptive::standardDeviation($neighbors);
+            $certainty = sqrt(array_reduce($neighbors, function ($carry, $value) use ($outcome) {
+                return $carry += ($value - $outcome) ** 2;
+            }, 0) / $n);
         }
 
         return [
