@@ -11,9 +11,6 @@ use SplObjectStorage;
 
 class MultiLayerPerceptron extends Network implements Classifier
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The fixed number of training epochs. i.e. the number of times to iterate
      * over the entire training set.
@@ -69,8 +66,6 @@ class MultiLayerPerceptron extends Network implements Classifier
             }
         }
 
-        $outcomes = array_unique($outcomes);
-
         if (count($outcomes) < 1) {
             throw new InvalidArgumentException('The number of unique outcomes must be greater than 1.');
         }
@@ -93,30 +88,33 @@ class MultiLayerPerceptron extends Network implements Classifier
             $this->addHiddenLayer($layer[0], $layer[1] ?? new Sigmoid());
         }
 
-        $this->addOutputLayer($outcomes, new Sigmoid());
+        $this->addOutputLayer(array_unique($outcomes), new Sigmoid());
 
-        foreach (range(count($this->layers) - 1, 1, -1) as $i) {
-            $this->connectLayers($this->layers[$i], $this->layers[$i - 1]);
+        for ($layer = count($this->layers) - 1; $layer > 1; $layer--) {
+            $this->connectLayers($this->layers[$layer], $this->layers[$layer - 1]);
         }
     }
 
     /**
-     * Train the model using backpropagation.
+     * Train the model using mini-batch gradient descent with backpropagation.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
-        foreach ($data->types() as $type) {
-            if ($type !== self::CONTINUOUS) {
-                throw new InvalidArgumentException('This estimator only works with continuous input data.');
-            }
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
+
+        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
         list($samples, $outcomes) = $data->toArray();
 
-        foreach (range(1, $this->epochs) as $epoch) {
+        for ($epoch = 1; $epoch < $this->epochs; $epoch++) {
             $order = range(0, count($samples) - 1);
 
             shuffle($order);
@@ -138,15 +136,12 @@ class MultiLayerPerceptron extends Network implements Classifier
 
                 foreach ($batch[0] as $i => $sample) {
                     $this->feed($sample);
-
                     $this->backpropagate($batch[1][$i], $deltas);
                 }
 
                 foreach ($deltas as $synapse) {
                     $synapse->adjustWeight($this->rate * $deltas[$synapse]);
                 }
-
-                unset($deltas);
             }
         }
     }
@@ -156,24 +151,32 @@ class MultiLayerPerceptron extends Network implements Classifier
      * activated output neuron.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
-        $best = ['activation' => -INF, 'neuron' => null];
+        $best = ['activation' => -INF, 'outcome' => null];
+        $totalActivation = 0.0;
 
         $this->feed($sample);
 
         foreach ($this->outputs() as $neuron) {
-            if ($neuron->output() > $best['activation']) {
-                $best = ['activation' => $neuron->output(), 'neuron' => $neuron];
+            $activation = $neuron->output();
+
+            if ($activation > $best['activation']) {
+                $best = [
+                    'activation' => $activation,
+                    'outcome' => $neuron->outcome(),
+                ];
             }
+
+            $totalActivation += $activation;
         }
 
-        return [
-            'outcome' => $best['neuron']->outcome(),
-            'activation' => $best['neuron']->output(),
-        ];
+        return new Prediction($best['outcome'], [
+            'certainty' => $best['activation'] / $totalActivation + self::EPSILON,
+            'activation' => $best['activation'],
+        ]);
     }
 
     /**
@@ -212,7 +215,7 @@ class MultiLayerPerceptron extends Network implements Classifier
      */
     protected function backpropagate($outcome, SplObjectStorage $deltas) : void
     {
-        foreach (range(count($this->layers) - 1, 1, -1) as $layer) {
+        for ($layer = count($this->layers) - 1; $layer > 1; $layer--) {
             $sigmas = new SplObjectStorage();
 
             foreach ($this->layers[$layer] as $neuron) {

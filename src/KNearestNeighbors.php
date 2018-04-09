@@ -4,13 +4,11 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
+use InvalidArgumentException;
 use SplPriorityQueue;
 
 class KNearestNeighbors implements Classifier, Regression
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The number of neighbors to consider when making a prediction.
      *
@@ -26,11 +24,11 @@ class KNearestNeighbors implements Classifier, Regression
     protected $distanceFunction;
 
     /**
-     * The training samples.
+     * The coordinate vectors of the training data.
      *
      * @var array
      */
-    protected $samples = [
+    protected $coordinates = [
         //
     ];
 
@@ -53,9 +51,15 @@ class KNearestNeighbors implements Classifier, Regression
     /**
      * @param  int  $k
      * @param  \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction  $distanceFunction
+     * @throws \InvalidArgumentException
+     * @return void
      */
     public function __construct(int $k = 3, DistanceFunction $distanceFunction = null)
     {
+        if ($k < 1) {
+            throw new InvalidArgumentException('K cannot be less than 1.');
+        }
+
         if (!isset($distanceFunction)) {
             $distanceFunction = new Euclidean();
         }
@@ -70,11 +74,20 @@ class KNearestNeighbors implements Classifier, Regression
      * a lazy learning algorithm.
      *
      * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
-        list($this->samples, $this->outcomes) = $data->toArray();
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
+
+        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+        }
+
+        list($this->coordinates, $this->outcomes) = $data->toArray();
 
         $this->output = $data->output();
     }
@@ -83,36 +96,39 @@ class KNearestNeighbors implements Classifier, Regression
      * Compute the distances and locate the k nearest neighboring values.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
-        $neighbors = $this->findNearestNeighbors($sample);
-
-        $n = count($neighbors);
+        $outcomes = $this->findNearestNeighbors($sample);
 
         if ($this->output === self::CATEGORICAL) {
-            $outcomes = array_count_values($neighbors);
+            $counts = array_count_values($outcomes);
 
-            $outcome = array_search(max($outcomes), $outcomes);
+            $outcome = array_search(max($counts), $counts);
 
-            $certainty = $outcomes[$outcome] / $n;
+            $certainty = $counts[$outcome] / count($outcomes);
+
+            return new Prediction($outcome, [
+                'certainty' => $certainty,
+            ]);
         } else {
-            $outcome = array_sum($neighbors) / $n;
+            $mean = Average::mean($outcomes);
 
-            $certainty = sqrt(array_reduce($neighbors, function ($carry, $value) use ($outcome) {
-                return $carry += ($value - $outcome) ** 2;
-            }, 0) / $n);
+            $variance = array_reduce($outcomes, function ($carry, $outcome) use ($mean) {
+                return $carry += ($outcome - $mean) ** 2;
+            }, 0.0) / count($outcomes);
+
+            return new Prediction($mean, [
+                'variance' => $variance,
+            ]);
         }
 
-        return [
-            'outcome' => $outcome,
-            'certainty' => $certainty,
-        ];
+        return new Prediction($outcome, $certainty);
     }
 
     /**
-     * Find the K closest neighbors to the given sample vector.
+     * Find the K nearest neighbors to the given sample vector.
      *
      * @param  array  $sample
      * @return array
@@ -122,8 +138,8 @@ class KNearestNeighbors implements Classifier, Regression
         $neighbors = new SplPriorityQueue();
         $k = $this->k;
 
-        foreach ($this->samples as $i => $neighbor) {
-            $distance = $this->distanceFunction->distance($sample, $neighbor);
+        foreach ($this->coordinates as $i => $neighbor) {
+            $distance = $this->distanceFunction->compute($sample, $neighbor);
 
             $neighbors->insert($this->outcomes[$i], 1 - $distance);
         }

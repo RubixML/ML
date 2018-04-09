@@ -2,7 +2,6 @@
 
 use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
-use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class ManhattanTest extends TestCase
@@ -22,10 +21,6 @@ class ManhattanTest extends TestCase
 
     public function test_compute_distance()
     {
-        $start = new GraphNode(1, ['x' => 2, 'y' => 1]);
-
-        $end = new GraphNode(2, ['x' => 7, 'y' => 9]);
-
-        $this->assertEquals(13.0, $this->distanceFunction->compute($start, $end, ['x', 'y']));
+        $this->assertEquals(13.0, $this->distanceFunction->compute(['x' => 2, 'y' => 1], ['x' => 7, 'y' => 9]));
     }
 }

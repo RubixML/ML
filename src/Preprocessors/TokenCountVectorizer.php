@@ -25,6 +25,15 @@ class TokenCountVectorizer implements Preprocessor
     ];
 
     /**
+     * The column types of the fitted dataset. i.e. categorical or continuous.
+     *
+     * @var array
+     */
+    protected $columnTypes = [
+        //
+    ];
+
+    /**
      * The vocabulary of the fitted training set.
      *
      * @var array
@@ -80,14 +89,18 @@ class TokenCountVectorizer implements Preprocessor
      */
     public function fit(Dataset $data) : void
     {
-        foreach ($data->samples() as $sample) {
-            foreach ($sample as $feature) {
-                $tokens = $this->tokenizer->tokenize($feature);
+        $this->columnTypes = $data->columnTypes();
 
-                foreach ($tokens as $token) {
-                    if (!isset($this->stopWords[$token])) {
-                        if (!isset($this->vocabulary[$token])) {
-                            $this->vocabulary[$token] = count($this->vocabulary);
+        foreach ($data->samples() as $sample) {
+            foreach ($sample as $column => $feature) {
+                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                    $tokens = $this->tokenizer->tokenize($feature);
+
+                    foreach ($tokens as $token) {
+                        if (!isset($this->stopWords[$token])) {
+                            if (!isset($this->vocabulary[$token])) {
+                                $this->vocabulary[$token] = count($this->vocabulary);
+                            }
                         }
                     }
                 }
@@ -105,9 +118,17 @@ class TokenCountVectorizer implements Preprocessor
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                $sample = $this->vectorize($feature);
+            foreach ($sample as $column => $feature) {
+                $vectors = [];
+
+                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                    $vectors[] = $this->vectorize($feature);
+                }
+
+                unset($sample[$column]);
             }
+
+            $sample = array_merge(array_values($sample), ...$vectors);
         }
     }
 
@@ -117,11 +138,11 @@ class TokenCountVectorizer implements Preprocessor
      * @param  string  $sample
      * @return array
      */
-    public function vectorize(string $sample) : array
+    public function vectorize(string $string) : array
     {
         $vector = array_fill_keys($this->vocabulary, 0);
 
-        $tokens = $this->tokenizer->tokenize($sample);
+        $tokens = $this->tokenizer->tokenize($string);
 
         foreach ($tokens as $token) {
             if (isset($this->vocabulary[$token])) {

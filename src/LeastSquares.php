@@ -8,9 +8,6 @@ use InvalidArgumentException;
 
 class LeastSquares implements Regression
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The computed y intercept.
      *
@@ -46,16 +43,18 @@ class LeastSquares implements Regression
     /**
      * Learn the coefficients of the training data.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
-        foreach ($data->types() as $type) {
-            if ($type !== self::CONTINUOUS) {
-                throw new InvalidArgumentException('This estimator only works with continuous input data.');
-            }
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
+
+        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
         $coefficients = $this->computeCoefficients($data->samples(), $data->outcomes());
@@ -68,9 +67,9 @@ class LeastSquares implements Regression
      * Make a prediction of a given sample.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
         $outcome = $this->intercept;
 
@@ -78,13 +77,13 @@ class LeastSquares implements Regression
             $outcome += $coefficient * $sample[$i];
         }
 
-        return [
-            'outcome' => $outcome,
-        ];
+        return new Prediction($outcome);
     }
 
     /**
-     * Compute the coefficients of the training data by solving for the normal equation.
+     * Compute the coefficients of the training data by solving for the normal
+     * equation. The resulting equation is the line that minimizes the sum of
+     * the squares of the errors.
      *
      * @param  array  $samples
      * @param  array  $outcomes

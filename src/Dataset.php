@@ -4,9 +4,11 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Preprocessors\Preprocessor;
 use InvalidArgumentException;
+use IteratorAggregate;
+use ArrayIterator;
 use Countable;
 
-class Dataset implements Countable
+class Dataset implements IteratorAggregate, Countable
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
@@ -21,13 +23,15 @@ class Dataset implements Countable
     ];
 
     /**
-     * The type of each feature column. i.e. categorical or continuous.
+     * Build a dataset from an iterator.
      *
-     * @var array
+     * @param  iterable  $data
+     * @return self
      */
-    protected $types = [
-        //
-    ];
+    public static function fromIterator(iterable $data)
+    {
+        return new self(iterator_to_array($data));
+    }
 
     /**
      * @param  array  $samples
@@ -38,6 +42,10 @@ class Dataset implements Countable
     public function __construct(array $samples)
     {
         foreach ($samples as $i => &$sample) {
+            if (!is_array($sample)) {
+                $sample = [$sample];
+            }
+
             if (count($sample) !== count($samples[0])) {
                 throw new InvalidArgumentException('The number of feature columns must be equal for all samples.');
             }
@@ -52,10 +60,6 @@ class Dataset implements Countable
                 }
             }
         }
-
-        $this->types = array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $samples[0] ?? []);
 
         $this->samples = $samples;
     }
@@ -83,15 +87,17 @@ class Dataset implements Countable
      */
     public function columns() : int
     {
-        return count($this->types);
+        return count($this->samples[0] ?? []);
     }
 
     /**
      * @return array
      */
-    public function types() : array
+    public function columnTypes() : array
     {
-        return $this->types;
+        return array_map(function ($feature) {
+            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
+        }, $this->samples[0] ?? []);
     }
 
     /**
@@ -118,7 +124,17 @@ class Dataset implements Countable
     }
 
     /**
-     * Take n samples and outcomes from this dataset and return them in a new dataset.
+     * Rotates the table of samples into columns of feature values.
+     *
+     * @return array
+     */
+    public function rotate() : array
+    {
+        return array_map(null, ...$this->samples);
+    }
+
+    /**
+     * Take n samples from this dataset and return them in a new dataset.
      *
      * @param  int  $n
      * @return self
@@ -129,7 +145,7 @@ class Dataset implements Countable
     }
 
     /**
-     * Leave n samples and outcomes on this dataset and return the rest in a new dataset.
+     * Leave n samples  on this dataset and return the rest in a new dataset.
      *
      * @param  int  $n
      * @return self
@@ -149,15 +165,34 @@ class Dataset implements Countable
     public function split(float $ratio = 0.5) : array
     {
         if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be a float value between 0 and 1.');
+            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
         }
 
-        $testing = array_splice($this->samples, ceil($ratio * $this->rows()));
+        $testing = array_splice($this->samples, round($ratio * $this->rows()));
 
         return [
             new self($this->samples),
             new self($testing),
         ];
+    }
+
+    /**
+     * Divide the dataset into n sets of equal proportion.
+     *
+     * @param  int  $n
+     * @return array
+     */
+    public function divide(int $n = 5) : array
+    {
+        $size = round($this->rows() / $sets);
+
+        $subsets = [];
+
+        while (!empty($this->samples)) {
+            $subsets[] = new self(array_splice($this->samples, 0, $size));
+        }
+
+        return $subsets;
     }
 
     /**
@@ -170,12 +205,32 @@ class Dataset implements Countable
     public function generateRandomSubset(float $ratio = 0.1)
     {
         if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be a float value between 0 and 1.');
+            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
+        }
+
+        $subset = $this->samples;
+
+        shuffle($subset);
+
+        return new self(array_slice($subset, 0, round($ratio * $this->rows())));
+    }
+
+    /**
+     * Generate a random subset with replacement.
+     *
+     * @param  float  $ratio
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function generateRandomSubsetWithReplacement(float $ratio = 0.1)
+    {
+        if ($ratio <= 0.0) {
+            throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
         }
 
         $subset = [];
 
-        foreach (range(1, ceil($ratio * $this->rows())) as $i) {
+        foreach (range(1, round($ratio * $this->rows())) as $i) {
             $subset[] = $this->samples[array_rand($this->samples)];
         }
 
@@ -226,5 +281,45 @@ class Dataset implements Countable
     public function count() : int
     {
         return $this->rows();
+    }
+
+    /**
+     * Is the dataset empty?
+     *
+     * @return bool
+     */
+    public function isEmpty() : bool
+    {
+        return $this->rows() === 0;
+    }
+
+    /**
+     * Get an iterator for the samples in the dataset.
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->samples);
+    }
+
+    /**
+     * Return a feature vector at given row in the dataset.
+     *
+     * @param  int  $row
+     * @return mixed
+     */
+    public function __get(int $row)
+    {
+        return $this->samples[$row] ?? null;
+    }
+
+    /**
+     * @param  int  $row
+     * @return bool
+     */
+    public function __isset(int $row)
+    {
+        return isset($this->samples[$row]);
     }
 }

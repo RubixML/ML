@@ -16,7 +16,7 @@ class Synapse
      *
      * @var float
      */
-    protected $weight;
+    protected $weight = 0.0;
 
     /**
      * Initialize the synapse with a random weight.
@@ -24,11 +24,11 @@ class Synapse
      * @param  \Rubix\Engine\Neuron  $neuron
      * @return self
      */
-    public static function init(Neuron $neuron, float $min = -4.0, float $max = 4.0, int $precision = 5) : self
+    public static function init(Neuron $neuron, float $min = -4.0, float $max = 4.0) : self
     {
         $synapse = new static($neuron);
 
-        $synapse->randomize($min, $max, $precision);
+        $synapse->randomize($min, $max);
 
         return $synapse;
     }
@@ -40,7 +40,6 @@ class Synapse
     public function __construct(Neuron $neuron)
     {
         $this->neuron = $neuron;
-        $this->weight = 0.0;
     }
 
     /**
@@ -100,12 +99,11 @@ class Synapse
      *
      * @param  float  $min
      * @param  float  $max
-     * @param  int  $precision
      * @return self
      */
-    public function randomize(float $min = -4.0, float $max = 4.0, int $precision = 5) : self
+    public function randomize(float $min = -4.0, float $max = 4.0) : self
     {
-        $scale = pow(10, $precision);
+        $scale = pow(10, 8);
 
         $this->weight = random_int($min * $scale, $max * $scale) / $scale;
 

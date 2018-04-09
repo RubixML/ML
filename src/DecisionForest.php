@@ -45,6 +45,13 @@ class DecisionForest implements Classifier, Regression
     ];
 
     /**
+     * The output type. i.e. categorical or continuous.
+     *
+     * @var int
+     */
+    protected $output;
+
+    /**
      * @param  int  $trees
      * @param  float  $ratio
      * @param  int  $minSize
@@ -82,14 +89,20 @@ class DecisionForest implements Classifier, Regression
      * Train an n-tree Decision Forest by generating random subsets of the training
      * data per CART tree.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
+
+        $this->output = $data->output();
         $this->forest = [];
 
-        foreach (range(1, $this->trees) as $i) {
+        for ($n = 1; $n < $this->trees; $n++) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
             $tree->train($data->generateRandomSubset($this->ratio));
@@ -102,19 +115,40 @@ class DecisionForest implements Classifier, Regression
      * Make a prediction on a given sample.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
-        $outcomes = [];
+        $predictions = array_map(function ($tree) use ($sample) {
+            return $tree->predict($sample);
+        }, $this->forest);
 
-        foreach ($this->forest as $tree) {
-            $outcomes[] = $tree->predict($sample);
+        $outcomes = array_map(function ($prediction) {
+            return $prediction->outcome();
+        }, $predictions);
+
+        if ($this->output === self::CATEGORICAL) {
+            $counts = array_count_values($outcomes);
+
+            $outcome = array_search(max($counts), $counts);
+
+            $certainty = array_reduce($predictions, function ($carry, $prediction) {
+                return $carry += $prediction->meta()['certainty'];
+            }, 0.0) / count($predictions);
+
+            return new Prediction($outcome, [
+                'certainty' => $certainty,
+            ]);
+        } else {
+            $mean = Average::mean($outcomes);
+
+            $variance = array_reduce($predictions, function ($carry, $prediction) {
+                return $carry += $prediction->meta()['variance'];
+            }, 0.0) / count($predictions);
+
+            return new Prediction($mean, [
+                'variance' => $variance,
+            ]);
         }
-
-        return [
-            'outcome' => Average::mode(array_column($outcomes, 'outcome'))[0],
-            'certainty' => Average::mean(array_column($outcomes, 'certainty')),
-        ];
     }
 }

@@ -37,7 +37,7 @@ class MissingDataImputerTest extends TestCase
 
         $this->preprocessor->transform($data);
 
-        $this->assertTrue($data[0][0] > 39 && $data[0][0] < 41);
+        $this->assertTrue($data[0][0] > 37 && $data[0][0] < 43);
         $this->assertTrue(in_array($data[0][1], ['friendly', 'mean']));
     }
 }

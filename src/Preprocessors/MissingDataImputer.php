@@ -4,15 +4,12 @@ namespace Rubix\Engine\Preprocessors;
 
 use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\Strategies\Strategy;
-use Rubix\Engine\Preprocessors\Strategies\FuzzyMedian;
-use Rubix\Engine\Preprocessors\Strategies\LocalCelebrity;
+use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
+use Rubix\Engine\Preprocessors\Strategies\KMostFrequent;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Preprocessor
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The placeholder of a missing value.
      *
@@ -39,7 +36,7 @@ class MissingDataImputer implements Preprocessor
      *
      * @var array
      */
-    protected $samples = [
+    protected $columns = [
         //
     ];
 
@@ -48,7 +45,7 @@ class MissingDataImputer implements Preprocessor
      *
      * @var array
      */
-    protected $types = [
+    protected $columnTypes = [
         //
     ];
 
@@ -66,11 +63,11 @@ class MissingDataImputer implements Preprocessor
         }
 
         if (!isset($categoricalStrategy)) {
-            $categoricalStrategy = new LocalCelebrity();
+            $categoricalStrategy = new KMostFrequent();
         }
 
         if (!isset($continuousStrategy)) {
-            $continuousStrategy = new FuzzyMedian();
+            $continuousStrategy = new FuzzyMean();
         }
 
         $this->placeholder = $placeholder;
@@ -84,17 +81,14 @@ class MissingDataImputer implements Preprocessor
      */
     public function fit(Dataset $data) : void
     {
-        $this->samples = array_map(null, ...$data->samples());
+        $this->columnTypes = $data->columnTypes();
+        $this->columns = $data->rotate();
 
-        foreach ($this->samples as &$column) {
+        foreach ($this->columns as &$column) {
             $column = array_filter($column, function ($feature) {
                 return $feature !== $this->placeholder;
             });
         }
-
-        $this->types = array_map(function ($column) {
-            return is_string($column[0]) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $this->samples);
     }
 
     /**
@@ -108,10 +102,10 @@ class MissingDataImputer implements Preprocessor
         foreach ($samples as $row => &$sample) {
             foreach ($sample as $column => &$feature) {
                 if ($feature === $this->placeholder) {
-                    if ($this->types[$column] === self::CATEGORICAL) {
-                        $feature = $this->categoricalStrategy->guess($this->samples[$column]);
+                    if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                        $feature = $this->categoricalStrategy->guess($this->columns[$column]);
                     } else {
-                        $feature = $this->continuousStrategy->guess($this->samples[$column]);
+                        $feature = $this->continuousStrategy->guess($this->columns[$column]);
                     }
                 }
             }

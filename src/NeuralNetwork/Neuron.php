@@ -9,15 +9,9 @@ class Neuron
      *
      * @var array
      */
-    protected $synapses;
-
-    /**
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->synapses = [];
-    }
+    protected $synapses = [
+        //
+    ];
 
     /**
      * @return array

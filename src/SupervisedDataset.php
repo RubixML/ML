@@ -23,14 +23,15 @@ class SupervisedDataset extends Dataset
     protected $output;
 
     /**
-     * Build a supervised dataset used for training and testing models. The assumption
-     * is the that dataset contain 0 < n < ∞ feature columns where the last column is
-     * always the labeled outcome.
+     * Build a supervised dataset used for training and testing models from an
+     * iterator or array of feature vectors. The assumption is the that dataset
+     * contains 0 < n < ∞ feature columns where the last column is always the
+     * labeled outcome.
      *
      * @param  iterable  $data
      * @return self
      */
-    public static function build(iterable $data) : self
+    public static function fromIterator(iterable $data) : self
     {
         $samples = $outcomes = [];
 
@@ -66,7 +67,7 @@ class SupervisedDataset extends Dataset
             }
         }
 
-        $this->output = is_string($outcomes[0]) ? static::CATEGORICAL : static::CONTINUOUS;
+        $this->output = is_string(reset($outcomes)) ? static::CATEGORICAL : static::CONTINUOUS;
 
         $this->outcomes = $outcomes;
     }
@@ -80,14 +81,6 @@ class SupervisedDataset extends Dataset
     }
 
     /**
-     * @return int
-     */
-    public function output() : int
-    {
-        return $this->output;
-    }
-
-    /**
      * The set of all possible labeled outcomes.
      *
      * @return array
@@ -95,6 +88,16 @@ class SupervisedDataset extends Dataset
     public function labels() : array
     {
         return array_unique($this->outcomes);
+    }
+
+    /**
+     * The type of data of the outcomes.
+     *
+     * @return int
+     */
+    public function output() : int
+    {
+        return $this->output;
     }
 
     /**
@@ -143,8 +146,8 @@ class SupervisedDataset extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 || $ratio >= 0.9) {
-            throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 0.9.');
+        if ($ratio <= 0.0 || $ratio >= 1.0) {
+            throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
         }
 
         $strata = $this->stratify();
@@ -169,15 +172,46 @@ class SupervisedDataset extends Dataset
      * Generate a random subset with replacement.
      *
      * @param  float  $ratio
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function generateRandomSubset(float $ratio = 0.1) : self
     {
-        $n = ceil($ratio * $this->rows());
+        if ($ratio <= 0.0 || $ratio >= 1.0) {
+            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
+        }
+
+        $n = round($ratio * $this->rows());
+
+        $samples = $this->samples;
+        $outcomes = $this->outcomes;
+
+        $order = range(0, count($outcomes) - 1);
+
+        shuffle($order);
+
+        array_multisort($order, $samples, $outcomes);
+
+        return new self(array_slice($samples, 0, $n), array_slice($outcomes, 0, $n));
+    }
+
+    /**
+     * Generate a random subset with replacement.
+     *
+     * @param  float  $ratio
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : self
+    {
+        if ($ratio <= 0.0) {
+            throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
+        }
+
         $max = $this->rows() - 1;
         $subset = [];
 
-        foreach (range(1, $n) as $i) {
+        foreach (range(1, round($ratio * $this->rows())) as $i) {
             $index = random_int(0, $max);
 
             $subset[0][] = $this->samples[$index];

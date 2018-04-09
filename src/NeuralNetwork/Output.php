@@ -48,4 +48,14 @@ class Output extends Hidden
     {
         return $this->outcome;
     }
+
+    /**
+     * Alias of output().
+     *
+     * @return float
+     */
+    public function activation() : float
+    {
+        return $this->output();
+    }
 }

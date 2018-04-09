@@ -58,7 +58,7 @@ class VarianceThresholdFilter implements Preprocessor
      */
     public function fit(Dataset $data) : void
     {
-        foreach (array_map(null, ...$data->samples()) as $column => $data) {
+        foreach ($data->rotate() as $column => $data) {
             if (Descriptive::populationVariance($data) > $this->threshold) {
                 $this->selected[$column] = true;
             }

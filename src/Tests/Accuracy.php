@@ -2,14 +2,12 @@
 
 namespace Rubix\Engine\Tests;
 
-use Rubix\Engine\Classifier;
-use Rubix\Engine\Regression;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
-use Rubix\Engine\SupervisedDataset;
 use InvalidArgumentException;
+use RuntimeException;
 
-class Accuracy extends Test
+class Accuracy implements Test
 {
     /**
      * The minimum accuracy score to pass the test.
@@ -34,28 +32,32 @@ class Accuracy extends Test
     /**
      * Test the accuracy of the estimator.
      *
-     * @param \Rubix\Engine\SupervisedDataset  $data
+     * @param  array  $predictions
+     * @param  array|null  $outcomes
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    public function test(SupervisedDataset $data) : bool
+    public function test(array $predictions, ?array $outcomes = null) : bool
     {
-        $outcomes = $data->outcomes();
-        $predictions = [];
-        $accuracy = 0;
-
-        foreach ($data->samples() as $sample) {
-            $predictions[] = $this->estimator->predict($sample)['outcome'];
+        if (!isset($outcomes)) {
+            throw new RuntimeException('This test requires the labeled outcomes of a supervised dataset.');
         }
 
-        if ($this->estimator instanceof Classifier) {
+        if (count($predictions) < 1) {
+            throw new RuntimeException('This test requires at least 1 prediction.');
+        }
+
+        $accuracy = 0.0;
+
+        if (reset($predictions)->categorical()) {
             $accuracy = $this->calculateCategoricalAccuracy($predictions, $outcomes);
-        } else if ($this->estimator instanceof Regression) {
+        } else if (reset($predictions)->continuous()) {
             $accuracy = $this->calculateContinuousAccuracy($predictions, $outcomes);
         }
 
         $pass = $accuracy >= $this->threshold;
 
-        echo 'Model is ' . (string) round($accuracy * 100, 5) . '% accurate - ' . ($pass ? 'PASS' : 'FAIL') . "\n";
+        echo 'Model is ' . (string) round($accuracy * 100, 3) . '% accurate - ' . ($pass ? 'PASS' : 'FAIL') . "\n";
 
         return $pass;
     }
@@ -72,7 +74,7 @@ class Accuracy extends Test
         $score = 0;
 
         foreach ($predictions as $i => $prediction) {
-            if ($prediction === $outcomes[$i]) {
+            if ($prediction->outcome() === $outcomes[$i]) {
                 $score++;
             }
         }
@@ -92,9 +94,9 @@ class Accuracy extends Test
         $errors = [];
 
         foreach ($predictions as $i => $prediction) {
-            $errors[] = ($outcomes[$i] - $prediction) ** 2;
+            $errors[] = ($outcomes[$i] - $prediction->outcome()) ** 2;
         }
 
-        return 1 - sqrt(Average::mean($errors)) / Descriptive::standardDeviation($errors);
+        return (1 / count($errors)) * array_sum($errors);
     }
 }

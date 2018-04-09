@@ -9,16 +9,7 @@ class Input extends Neuron
      *
      * @var float
      */
-    protected $value;
-
-    /**
-     * @param  float  $value
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->value = 0.0;
-    }
+    protected $value = 0.0;
 
     /**
      * The output of the neuron.
@@ -34,12 +25,10 @@ class Input extends Neuron
      * Prime the input with a given value.
      *
      * @param  float  $value
-     * @return self
+     * @return void
      */
-    public function prime(float $value) : self
+    public function prime(float $value) : void
     {
         $this->value = $value;
-
-        return $this;
     }
 }

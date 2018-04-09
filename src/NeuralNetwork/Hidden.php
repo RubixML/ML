@@ -11,14 +11,14 @@ class Hidden extends Neuron
      *
      * @var float
      */
-    protected $z;
+    protected $z = 0.0;
 
     /**
      * The precomputed output of the neuron.
      *
-     * @var float
+     * @var float|null
      */
-    protected $precomputed;
+    protected $precomputed = null;
 
     /**
      * The function that determines the magnitude of this neurons output.
@@ -33,11 +33,7 @@ class Hidden extends Neuron
      */
     public function __construct(ActivationFunction $activationFunction)
     {
-        parent::__construct();
-
         $this->activationFunction = $activationFunction;
-
-        $this->reset();
     }
 
     /**
@@ -48,8 +44,6 @@ class Hidden extends Neuron
     public function output() : float
     {
         if (!isset($this->precomputed)) {
-            $this->z = 0.0;
-
             foreach ($this->synapses as $synapse) {
                 $this->z += $synapse->impulse();
             }

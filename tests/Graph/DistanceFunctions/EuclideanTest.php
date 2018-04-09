@@ -2,7 +2,6 @@
 
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
-use Rubix\Engine\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class EuclideanTest extends TestCase
@@ -22,10 +21,6 @@ class EuclideanTest extends TestCase
 
     public function test_compute_distance()
     {
-        $start = new GraphNode(1, ['x' => 2, 'y' => 1]);
-
-        $end = new GraphNode(2, ['x' => 7, 'y' => 9]);
-
-        $this->assertEquals(9.43, round($this->distanceFunction->compute($start, $end, ['x', 'y']), 2));
+        $this->assertEquals(9.43, round($this->distanceFunction->compute(['x' => 2, 'y' => 1], ['x' => 7, 'y' => 9]), 2));
     }
 }

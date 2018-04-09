@@ -2,10 +2,10 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
+use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\DecisionForest;
-use Rubix\Engine\Tests\Performance;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Preprocessors\OneHotEncoder;
 use League\Csv\Reader;
@@ -21,28 +21,19 @@ echo '║ Mushroom Classifier using a Decision Forest         ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
+echo  "\n";
+
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/mushrooms.csv')->setDelimiter(',');
 
-$dataset = SupervisedDataset::build($dataset);
+$dataset = SupervisedDataset::fromIterator($dataset);
 
 list ($training, $testing) = $dataset->randomize()->split(0.5);
 
 $prototype = new Prototype(
-    new DecisionForest($trees, $ratio, $minSize, $maxDepth),
-    [new OneHotEncoder()],
-    [new Accuracy(), new Performance()]
+    new Pipeline(new DecisionForest($trees, $ratio, $minSize, $maxDepth), [new OneHotEncoder()]),
+    [new Accuracy()]
 );
 
-echo 'Training a Decision Forest of ' . $trees . ' trees ... ';
-
-$start = microtime(true);
-
 $prototype->train($training);
-
-echo 'done in ' . (string) round(microtime(true) - $start, 5) . ' seconds.' . "\n";
-
-echo  "\n";
-
-echo 'Testing model ...' . "\n";
 
 $prototype->test($testing);

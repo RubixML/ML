@@ -3,15 +3,13 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Graph\Tree;
+use MathPHP\Statistics\Average;
 use Rubix\Engine\Graph\BinaryNode;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
 class CART extends Tree implements Classifier, Regression
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The minimum number of samples that form a consensus to make a prediction.
      *
@@ -104,14 +102,19 @@ class CART extends Tree implements Classifier, Regression
     /**
      * Train the CART by learning the most optimal splits in the training set.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
+
         list($samples, $outcomes) = $data->toArray();
 
-        $this->types = $data->types();
+        $this->types = $data->columnTypes();
         $this->output = $data->output();
 
         foreach ($samples as $i => &$sample) {
@@ -128,20 +131,25 @@ class CART extends Tree implements Classifier, Regression
      * Make a prediction on a given sample.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
         if (count($sample) !== $this->columns()) {
             throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
         }
 
-        $output = $this->_predict($sample, $this->root);
+        $node = $this->_predict($sample, $this->root);
 
-        return [
-            'outcome' => $output->value(),
-            'certainty' => $output->certainty,
-        ];
+        if ($node->output === self::CATEGORICAL) {
+            return new Prediction($node->value(), [
+                'certainty' => $node->certainty,
+            ]);
+        } else {
+            return new Prediction($node->value(), [
+                'variance' => $node->variance,
+            ]);
+        }
     }
 
     /**
@@ -240,7 +248,7 @@ class CART extends Tree implements Classifier, Regression
 
         $outcomes = array_column($data, count($data[0]) - 1);
 
-        foreach (range(0, $this->columns() - 1) as $index) {
+        for ($index = 0; $index < $this->columns() - 1; $index++) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -278,14 +286,33 @@ class CART extends Tree implements Classifier, Regression
      */
     protected function terminate(array $data) : BinaryNode
     {
-        $outcomes = array_count_values(array_column($data, count($data[0]) - 1));
+        $outcomes = array_column($data, count($data[0]) - 1);
 
-        $outcome = array_search(max($outcomes), $outcomes);
+        if ($this->output === self::CATEGORICAL) {
+            $counts = array_count_values($outcomes);
 
-        return new BinaryNode($outcome, [
-            'certainty' => (float) $outcomes[$outcome] / count($data),
-            'terminal' => true,
-        ]);
+            $outcome = array_search(max($counts), $counts);
+
+            $certainty = $counts[$outcome] / count($outcomes);
+
+            return new BinaryNode($outcome, [
+                'certainty' =>  $certainty,
+                'output' => self::CATEGORICAL,
+                'terminal' => true,
+            ]);
+        } else {
+            $mean = Average::mean($outcomes);
+
+            $variance = array_reduce($outcomes, function ($carry, $outcome) use ($mean) {
+                return $carry += ($outcome - $mean) ** 2;
+            }, 0.0) / count($outcomes);
+
+            return new BinaryNode($mean, [
+                'variance' =>  $variance,
+                'output' => self::CONTINUOUS,
+                'terminal' => true,
+            ]);
+        }
     }
 
     /**
@@ -369,9 +396,7 @@ class CART extends Tree implements Classifier, Regression
                 continue;
             }
 
-            $occurrences = array_column($group, count($group[0]) - 1);
-
-            $variance += Descriptive::populationVariance($occurrences);
+            $variance += Descriptive::populationVariance(array_column($group, count($group[0]) - 1));
         }
 
         return $variance;

@@ -6,7 +6,22 @@ use Rubix\Engine\Dataset;
 
 class L1Normalizer implements Preprocessor
 {
-    const EPSILON = 1e-10;
+    /**
+     * The columns that should be normalized. i.e. the continuous data points.
+     *
+     * @var array
+     */
+    protected $columns = [
+        //
+    ];
+
+    /**
+     * @return array
+     */
+    public function columns() : array
+    {
+        return $this->columns;
+    }
 
     /**
      * @param  \Rubix\Engine\Dataset  $data
@@ -14,7 +29,13 @@ class L1Normalizer implements Preprocessor
      */
     public function fit(Dataset $data) : void
     {
-        //
+        $this->columns = [];
+
+        foreach ($data->columnTypes() as $column => $type) {
+            if ($type === self::CONTINUOUS) {
+                $this->columns[] = $column;
+            }
+        }
     }
 
     /**
@@ -26,12 +47,12 @@ class L1Normalizer implements Preprocessor
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $norm = array_reduce($sample, function ($carry, $feature) {
-                return $carry += abs($feature);
+            $norm = array_reduce($this->columns, function ($carry, $column) use ($sample) {
+                return $carry += $sample[$column];
             }, 0) + self::EPSILON;
 
-            foreach ($sample as &$feature) {
-                $feature /= $norm;
+            foreach ($this->columns as $column) {
+                $sample[$column] /= $norm;
             }
         }
     }

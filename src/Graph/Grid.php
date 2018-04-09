@@ -11,22 +11,36 @@ use SplPriorityQueue;
 class Grid extends Graph
 {
     /**
+     * The axis labels of the grid.
+     *
+     * @var  array
+     */
+    protected $axes;
+
+    /**
      * The distance function that describes the grid space.
      *
-     * @var \Rubix\DistanceFunctions\DistanceFunction
+     * @var \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction
      */
     protected $distanceFunction;
 
     /**
-     * @param  \Rubix\DistanceFunctions\DistanceFunction|null  $distanceFunction
+     * @param  array  $axes
+     * @param  \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction|null  $distanceFunction
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(DistanceFunction $distanceFunction = null)
+    public function __construct(array $axes = ['x', 'y'], DistanceFunction $distanceFunction = null)
     {
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean(['x', 'y']);
+        if ($axes !== array_filter($axes, 'is_string')) {
+            throw new InvalidArgumentException('Axis label must be a string type.');
         }
 
+        if (!isset($distanceFunction)) {
+            $distanceFunction = new Euclidean();
+        }
+
+        $this->axes = $axes;
         $this->distanceFunction = $distanceFunction;
 
         parent::__construct();
@@ -39,15 +53,17 @@ class Grid extends Graph
      */
     public function dimensions() : int
     {
-        return $this->distanceFunction->dimensions();
+        return count($this->axes);
     }
 
     /**
+     * The labels of the axes of the grid.
+     *
      * @return array
      */
-    public function axes() : array
+    public function labels() : array
     {
-        return $this->distanceFunction->axes();
+        return $this->axes;
     }
 
     /**
@@ -55,11 +71,11 @@ class Grid extends Graph
      *
      * @param  array  $properties
      * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\GraphGraphNode
+     * @return \Rubix\Engine\GraphNode
      */
     public function insert(array $properties = []) : GraphNode
     {
-        foreach ($this->axes() as $axis) {
+        foreach ($this->axes as $axis) {
             if (!isset($properties[$axis])) {
                 throw new InvalidArgumentException('Node must have a value set for all axis of the grid.');
             }
@@ -77,7 +93,14 @@ class Grid extends Graph
      */
     public function distance(GraphNode $a, GraphNode $b) : float
     {
-        return $this->distanceFunction->compute($a, $b);
+        $vectors = [0 => [], 1 => []];
+
+        foreach ($this->axes as $axis) {
+            $vectors[0][] = $a->get($axis);
+            $vectors[1][] = $b->get($axis);
+        }
+
+        return $this->distanceFunction->compute(...$vectors);
     }
 
     /**

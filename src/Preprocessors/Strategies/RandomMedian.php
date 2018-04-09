@@ -2,10 +2,10 @@
 
 namespace Rubix\Engine\Preprocessors\Strategies;
 
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
-use RuntimeException;
 
-class LocalCelebrity implements Categorical
+class RandomMedian implements Continuous
 {
     /**
      * The ratio of random samples to consider when deciding the most popular value.
@@ -29,10 +29,9 @@ class LocalCelebrity implements Categorical
     }
 
     /**
-     * Guess the most popular category from a random subset of samples with replacement.
+     * Guess a value based on the median of a subsampling of the values.
      *
      * @param  array  $values
-     * @throws \RuntimeException
      * @return mixed
      */
     public function guess(array $values)
@@ -41,15 +40,12 @@ class LocalCelebrity implements Categorical
             throw new RuntimeException('This strategy requires at least 1 data point.');
         }
 
-        $n = ceil(count($values) * $this->ratio);
         $subset = [];
 
-        foreach (range(0, $n - 1) as $i) {
+        foreach (range(1, ceil($this->ratio * count($values))) as $i) {
             $subset[] = $values[array_rand($values)];
         }
 
-        $occurrences = array_count_values($subset);
-
-        return array_search(max($occurrences), $occurrences);
+        return Average::median($subset);
     }
 }

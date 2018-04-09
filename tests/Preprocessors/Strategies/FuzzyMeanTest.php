@@ -1,20 +1,20 @@
 <?php
 
-use Rubix\Engine\Preprocessors\Strategies\FuzzyMedian;
+use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
 use PHPUnit\Framework\TestCase;
 
-class FuzzyMedianTest extends TestCase
+class FuzzyMeanTest extends TestCase
 {
     protected $strategy;
 
     public function setUp()
     {
-        $this->strategy = new FuzzyMedian();
+        $this->strategy = new FuzzyMean();
     }
 
     public function test_build_strategy()
     {
-        $this->assertInstanceOf(FuzzyMedian::class, $this->strategy);
+        $this->assertInstanceOf(FuzzyMean::class, $this->strategy);
     }
 
     public function test_guess_value()

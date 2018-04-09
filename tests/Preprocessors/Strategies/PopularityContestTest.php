@@ -1,20 +1,20 @@
 <?php
 
-use Rubix\Engine\Preprocessors\Strategies\LocalCelebrity;
+use Rubix\Engine\Preprocessors\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
-class LocalCelebrityTest extends TestCase
+class PopularityContestTest extends TestCase
 {
     protected $strategy;
 
     public function setUp()
     {
-        $this->strategy = new LocalCelebrity();
+        $this->strategy = new PopularityContest();
     }
 
     public function test_build_local_celebrity_strategy()
     {
-        $this->assertInstanceOf(LocalCelebrity::class, $this->strategy);
+        $this->assertInstanceOf(PopularityContest::class, $this->strategy);
     }
 
     public function test_guess_value()

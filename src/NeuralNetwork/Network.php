@@ -45,7 +45,7 @@ class Network
     {
         $layer = [];
 
-        foreach (range(1, $inputs) as $i) {
+        for ($n = 1; $n <= $inputs; $n++) {
             $layer[] = new Input();
         }
 
@@ -128,8 +128,8 @@ class Network
      */
     public function reset() : void
     {
-        foreach (range(1, count($this->layers) - 1) as $i) {
-            foreach ($this->layers[$i] as $neuron) {
+        for ($layer = 1; $layer < count($this->layers); $layer++) {
+            foreach ($this->layers[$layer] as $neuron) {
                 if ($neuron instanceof Hidden) {
                     $neuron->reset();
                 }

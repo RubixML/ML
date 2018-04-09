@@ -3,6 +3,7 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Preprocessors\Preprocessor;
+use RuntimeException;
 
 class Pipeline implements Estimator
 {
@@ -38,13 +39,24 @@ class Pipeline implements Estimator
     }
 
     /**
+     * Return the instance of the estimator.
+     *
+     * @return \Rubix\Engine\Estimator
+     */
+    public function estimator() : Estimator
+    {
+        return $this->estimator;
+    }
+
+    /**
      * Run the training dataset through all preprocessors in order and use the
      * transformed dataset to train the estimator.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
+     * @throws \RuntimeException
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
         foreach ($this->preprocessors as $preprocessor) {
             $preprocessor->fit($data);
@@ -59,21 +71,21 @@ class Pipeline implements Estimator
      * Preprocess the sample and make a prediction.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
-        $sample = [$sample];
+        $samples = [$sample];
 
         foreach ($this->preprocessors as $preprocessor) {
-            $preprocessor->transform($sample);
+            $preprocessor->transform($samples);
         }
 
-        return $this->estimator->predict($sample);
+        return $this->estimator->predict($samples[0]);
     }
 
     /**
-     * Add a preprocessor middleware to the pipline.
+     * Add a preprocessor middleware to the pipeline.
      *
      * @param  \Rubix\Engine\Preprocessors\Preprocessor  $preprocessor
      * @return self

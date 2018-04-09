@@ -3,11 +3,19 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Tests\Test;
+use MathPHP\Statistics\Average;
 
-class Prototype extends Pipeline
+class Prototype
 {
     /**
-     * The prototypes testing middleware stack.
+     * The estimator.
+     *
+     * @var \Rubix\Engine\Estimator
+     */
+    protected $estimator;
+
+    /**
+     * The testing middleware stack.
      *
      * @var array
      */
@@ -17,40 +25,81 @@ class Prototype extends Pipeline
 
     /**
      * @param  \Rubix\Engine\Estimator  $estimator
-     * @param  array  $preprocessors
      * @param  array  $tests
      * @return void
      */
-    public function __construct(Estimator $estimator, array $preprocessors = [], array $tests = [])
+    public function __construct(Estimator $estimator, array $tests = [])
     {
-        parent::__construct($estimator, $preprocessors);
-
         foreach ($tests as $test) {
             $this->addTest($test);
         }
+
+        $this->estimator = $estimator;
     }
 
     /**
-     * Run the tests on the prototype.
+     * @param  \Rubix\Engine\Dataset  $data
+     * @return void
+     */
+    public function train(Dataset $data) : void
+    {
+        $start = microtime(true);
+
+        $this->estimator->train($data);
+
+        $timestamp = microtime(true) - $start;
+
+        echo 'Training completed in ' . (string) round($timestamp, 5) . 's' . "\n";
+    }
+
+    /**
+     * @param  array  $sample
+     * @return \Rubix\Engine\Prediction
+     */
+    public function predict(array $sample) : Prediction
+    {
+        $start = microtime(true);
+
+        $prediction = $this->estimator->predict($sample);
+
+        $timestamp = microtime(true) - $start;
+
+        return $prediction->addMeta([
+            'prediction_time' => $timestamp,
+        ]);
+    }
+
+    /**
+     * Run the tests on the estimator.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
      * @return bool
      */
-    public function test(SupervisedDataset $data) : bool
+    public function test(Dataset $data) : bool
     {
-        foreach ($this->preprocessors as $preprocessor) {
-            $data->transform($preprocessor);
+        $predictions = $timestamps = [];
+
+        foreach ($data->samples() as $sample) {
+            $prediction = $this->predict($sample);
+
+            $predictions[] = $prediction;
+            $timestamps[] = $prediction->meta('prediction_time');
         }
 
-        $results = array_map(function ($test) use ($data) {
-            return $test->load($this->estimator)->test($data);
+        $results = array_map(function ($test) use ($predictions, $data) {
+            return $test->test($predictions, $data->outcomes());
         }, $this->tests);
 
-        return !in_array(false, $results);
+        $pass = !in_array(false, $results);
+
+        echo 'Average prediction took ' . (string) round(Average::mean($timestamps), 5) . 's' . "\n";
+        echo 'Testing finished - ' . ($pass ? 'PASS' : 'FAIL') . "\n";
+
+        return $pass;
     }
 
     /**
-     * Add a test afterware to the pipeline.
+     * Add a test to the testing stack.
      *
      * @param  \Rubix\Engine\Tests\Test  $test
      * @return self

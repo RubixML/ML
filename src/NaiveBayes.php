@@ -2,22 +2,11 @@
 
 namespace Rubix\Engine;
 
+use MathPHP\Statistics\Average;
+use InvalidArgumentException;
+
 class NaiveBayes implements Classifier
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
-    const EPSILON = 1e-10;
-
-    /**
-     * The data type for each feature column. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $types = [
-        //
-    ];
-
     /**
      * The precomputed probabilities for categorical data and means and standard
      * deviations for continuous data per outcome.
@@ -25,6 +14,24 @@ class NaiveBayes implements Classifier
      * @var array
      */
     protected $stats = [
+        //
+    ];
+
+    /**
+     * The weights of the unique outcomes of the training set.
+     *
+     * @var array
+     */
+    protected $weights = [
+        //
+    ];
+
+    /**
+     * The data type for each feature column. i.e. categorical or continuous.
+     *
+     * @var array
+     */
+    protected $columnTypes = [
         //
     ];
 
@@ -37,30 +44,46 @@ class NaiveBayes implements Classifier
     }
 
     /**
+     * @return array
+     */
+    public function weights() : array
+    {
+        return $this->weights;
+    }
+
+    /**
      * Compute the means and standard deviations of the values per class.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
-    public function train(SupervisedDataset $data) : void
+    public function train(Dataset $data) : void
     {
-        $this->types = $data->types();
-        $this->stats = [];
+        if (!$data instanceof SupervisedDataset) {
+            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
+        }
 
-        foreach ($data->stratify()[0] as $class => $samples) {
-            foreach (array_map(null, ...$samples) as $column => $values) {
-                $n = count($values);
+        $this->columnTypes = $data->columnTypes();
+        $this->stats = $this->weights = [];
 
-                if ($this->types[$column] === self::CATEGORICAL) {
-                    $this->stats[$class][$column] = array_map(function ($value) use ($n) {
-                        return $value / $n;
-                    }, array_count_values($values)) + self::EPSILON;
+        $strata = $data->stratify();
+
+        foreach ($strata[0] as $class => $samples) {
+            $this->weights[$class] = count($samples) / count($data);
+
+            foreach (array_map(null, ...$samples) as $column => $features) {
+                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                    $counts = array_count_values($features);
+
+                    foreach ($counts as $label => $count) {
+                        $this->stats[$class][$column][$label] = $count / count($features);
+                    }
                 } else {
-                    $mean = array_sum($values) / $n;
+                    $mean = Average::mean($features);
 
-                    $stddev = sqrt(array_reduce($values, function ($carry, $value) use ($mean) {
-                        return $carry += ($value - $mean) ** 2;
-                    }, 0) / $n) + self::EPSILON;
+                    $stddev = sqrt(array_reduce($features, function ($carry, $feature) use ($mean) {
+                        return $carry += ($feature - $mean) ** 2;
+                    }, 0.0) / count($features)) + self::EPSILON;
 
                     $this->stats[$class][$column] = [$mean, $stddev];
                 }
@@ -73,25 +96,25 @@ class NaiveBayes implements Classifier
      * classes and chose the highest probaility outcome as the prediction.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\Engine\Prediction
      */
-    public function predict(array $sample) : array
+    public function predict(array $sample) : Prediction
     {
-        $best = [
-            'outcome' => null,
-            'probability' => 0.0,
-        ];
+        $best = ['probability' => -INF, 'outcome' => null];
 
-        foreach ($this->stats as $class => $columns) {
-            $probability = 0.0;
+        foreach ($this->stats as $class => $stats) {
+            $probability = $this->weights[$class];
 
             foreach ($sample as $column => $feature) {
-                if ($this->types[$column] === self::CATEGORICAL) {
-                    $probability += $columns[$column][$feature] ?? 0.0;
+                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                    $probability += $stats[$column][$feature] ?? 0.0;
                 } else {
-                    list($mean, $stddev) = $columns[$column];
+                    list($mean, $stddev) = $stats[$column];
 
-                    $probability += (1 / (sqrt(2 * M_PI) * $stddev)) * exp(-(($feature - $mean) ** 2 / (2 * $stddev ** 2)));
+                    $pdf = -0.5 * log(2.0 * M_PI * $stddev ** 2);
+                    $pdf -= 0.5 * ($feature - $mean) ** 2 / ($stddev ** 2);
+
+                    $probability += $pdf;
                 }
             }
 
@@ -103,9 +126,8 @@ class NaiveBayes implements Classifier
             }
         }
 
-        return [
-            'outcome' => $best['outcome'],
-            'certainty' => $best['probability'],
-        ];
+        return new Prediction($best['outcome'], [
+            'probability' => $best['probability'],
+        ]);
     }
 }

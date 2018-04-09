@@ -12,7 +12,7 @@ class CARTTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = SupervisedDataset::build([
+        $this->dataset = SupervisedDataset::fromIterator([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],
@@ -47,8 +47,8 @@ class CARTTest extends TestCase
 
     public function test_make_prediction()
     {
-        $outcome = $this->estimator->predict([7.1, 3.2]);
+        $prediction = $this->estimator->predict([7.1, 3.2]);
 
-        $this->assertEquals('male', $outcome['outcome']);
+        $this->assertEquals('male', $prediction->outcome());
     }
 }

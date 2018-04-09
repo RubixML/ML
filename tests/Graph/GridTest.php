@@ -11,7 +11,7 @@ class GridTest extends TestCase
 
     public function setUp()
     {
-        $this->grid = new Grid(new Manhattan(['x','y']));
+        $this->grid = new Grid(['x','y'], new Manhattan());
 
         for ($x = 0; $x < 10; $x++) {
             for ($y = 0; $y < 10; $y++) {

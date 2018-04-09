@@ -12,6 +12,10 @@ class WordTokenizer implements Tokenizer
      */
     public function tokenize(string $string) : array
     {
-        return preg_split('/\w\w+/u', $string);
+        $tokens = [];
+
+        preg_match_all('/\w\w+/u', $string, $tokens);
+
+        return $tokens[0];
     }
 }

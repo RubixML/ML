@@ -11,6 +11,8 @@ class L1NormalizerTest extends TestCase
     public function setUp()
     {
         $this->preprocessor = new L1Normalizer();
+
+        $this->preprocessor->fit(new Dataset([[1, 2, 3, 4]]));
     }
 
     public function test_build_l1_normalizer()
@@ -20,9 +22,7 @@ class L1NormalizerTest extends TestCase
 
     public function test_fit_dataset()
     {
-        $this->preprocessor->fit(new Dataset([]));
-
-        $this->assertTrue(true);
+        $this->assertEquals([0, 1, 2, 3], $this->preprocessor->columns());
     }
 
     public function test_transform_dataset()
