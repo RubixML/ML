@@ -76,19 +76,6 @@ class Prediction implements JsonSerializable
     }
 
     /**
-     * Add metadata to the prediction, overwrites previous meta values.
-     *
-     * @param  array  $meta
-     * @return self
-     */
-    public function addMeta(array $meta) : self
-    {
-        $this->meta = array_replace($this->meta, $meta);
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function toArray() : array

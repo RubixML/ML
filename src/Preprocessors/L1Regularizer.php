@@ -4,10 +4,10 @@ namespace Rubix\Engine\Preprocessors;
 
 use Rubix\Engine\Dataset;
 
-class L1Normalizer implements Preprocessor
+class L1Regularizer implements Preprocessor
 {
     /**
-     * The columns that should be normalized. i.e. the continuous data points.
+     * The columns that should be regularized. i.e. the continuous data points.
      *
      * @var array
      */
@@ -24,6 +24,8 @@ class L1Normalizer implements Preprocessor
     }
 
     /**
+     * Determine the columns that need to be regularized.
+     *
      * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
@@ -39,7 +41,8 @@ class L1Normalizer implements Preprocessor
     }
 
     /**
-     * Normalize the dataset.
+     * Regularize the dataset by dividing each feature by the L1 norm of the sample
+     * vector.
      *
      * @param  array  $samples
      * @return void

@@ -4,6 +4,7 @@ include __DIR__ . '/../vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\DecisionForest;
 use Rubix\Engine\SupervisedDataset;
@@ -31,7 +32,7 @@ list ($training, $testing) = $dataset->randomize()->split(0.5);
 
 $prototype = new Prototype(
     new Pipeline(new DecisionForest($trees, $ratio, $minSize, $maxDepth), [new OneHotEncoder()]),
-    [new Accuracy()]
+    [new Accuracy(), new F1Score()]
 );
 
 $prototype->train($training);

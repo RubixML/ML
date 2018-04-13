@@ -66,28 +66,18 @@ class NaiveBayes implements Classifier
         $this->columnTypes = $data->columnTypes();
         $this->stats = $this->weights = [];
 
-        $strata = $data->stratify();
+        $classes = $data->stratify();
 
-        foreach ($strata[0] as $class => $samples) {
-            $this->weights[$class] = count($samples) / count($data);
-
+        foreach ($classes[0] as $class => $samples) {
             foreach (array_map(null, ...$samples) as $column => $features) {
                 if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $counts = array_count_values($features);
-
-                    foreach ($counts as $label => $count) {
-                        $this->stats[$class][$column][$label] = $count / count($features);
-                    }
+                    $this->stats[$class][$column] = $this->calculateProbabilities($features);
                 } else {
-                    $mean = Average::mean($features);
-
-                    $stddev = sqrt(array_reduce($features, function ($carry, $feature) use ($mean) {
-                        return $carry += ($feature - $mean) ** 2;
-                    }, 0.0) / count($features)) + self::EPSILON;
-
-                    $this->stats[$class][$column] = [$mean, $stddev];
+                    $this->stats[$class][$column] = $this->calculateStatistics($features);
                 }
             }
+
+            $this->weights[$class] = count($samples) / count($data);
         }
     }
 
@@ -129,5 +119,40 @@ class NaiveBayes implements Classifier
         return new Prediction($best['outcome'], [
             'probability' => $best['probability'],
         ]);
+    }
+
+    /**
+     * Calculate the probabilities of a column of features.
+     *
+     * @param  array  $values
+     * @return array
+     */
+    protected function calculateProbabilities(array $values) : array
+    {
+        $counts = array_count_values($values);
+        $probabilities = [];
+
+        foreach ($counts as $label => $count) {
+            $probabilities[$label] = $count / count($values);
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Calculate the mean and standard deviation of a column of features.
+     *
+     * @param  array  $values
+     * @return array
+     */
+    protected function calculateStatistics(array $values) : array
+    {
+        $mean = Average::mean($values);
+
+        $stddev = sqrt(array_reduce($values, function ($carry, $value) use ($mean) {
+            return $carry += ($value - $mean) ** 2;
+        }, 0.0) / count($values)) + self::EPSILON;
+
+        return [$mean, $stddev];
     }
 }

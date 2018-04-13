@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\SupervisedDataset;
@@ -26,7 +27,7 @@ $dataset = SupervisedDataset::fromIterator($dataset);
 
 list ($training, $testing) = $dataset->randomize()->split(0.2);
 
-$prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy()]);
+$prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy(), new F1Score()]);
 
 $prototype->train($training);
 

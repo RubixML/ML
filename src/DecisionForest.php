@@ -99,15 +99,15 @@ class DecisionForest implements Classifier, Regression
             throw new InvalidArgumentException('This estimator requires a supervised dataset.');
         }
 
-        $this->output = $data->output();
+        $this->output = $data->outcomeType();
         $this->forest = [];
 
-        for ($n = 1; $n < $this->trees; $n++) {
+        for ($i = 0; $i < $this->trees; $i++) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
             $tree->train($data->generateRandomSubset($this->ratio));
 
-            $this->forest[] = $tree;
+            $this->forest[$i] = $tree;
         }
     }
 
@@ -130,23 +130,19 @@ class DecisionForest implements Classifier, Regression
         if ($this->output === self::CATEGORICAL) {
             $counts = array_count_values($outcomes);
 
-            $outcome = array_search(max($counts), $counts);
-
             $certainty = array_reduce($predictions, function ($carry, $prediction) {
-                return $carry += $prediction->meta()['certainty'];
+                return $carry += $prediction->meta('certainty');
             }, 0.0) / count($predictions);
 
-            return new Prediction($outcome, [
+            return new Prediction(array_search(max($counts), $counts), [
                 'certainty' => $certainty,
             ]);
         } else {
-            $mean = Average::mean($outcomes);
-
             $variance = array_reduce($predictions, function ($carry, $prediction) {
-                return $carry += $prediction->meta()['variance'];
+                return $carry += $prediction->meta('variance');
             }, 0.0) / count($predictions);
 
-            return new Prediction($mean, [
+            return new Prediction(Average::mean($outcomes), [
                 'variance' => $variance,
             ]);
         }

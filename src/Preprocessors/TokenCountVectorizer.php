@@ -5,24 +5,23 @@ namespace Rubix\Engine\Preprocessors;
 use Rubix\Engine\Dataset;
 use Rubix\Engine\Preprocessors\Tokenizers\Tokenizer;
 use Rubix\Engine\Preprocessors\Tokenizers\WhitespaceTokenizer;
+use InvalidArgumentException;
 
 class TokenCountVectorizer implements Preprocessor
 {
+    /**
+     * The maximum size of the vocabulary.
+     *
+     * @var int
+     */
+    protected $maxVocabulary;
+
     /**
      * The tokenizer used to extract text data into tokenable values.
      *
      * @var \Rubix\Engine\Transformers\Tokenizers\Tokenizer
      */
     protected $tokenizer;
-
-    /**
-     * The dictionary of stop words to filter out of the dataset.
-     *
-     * @var array
-     */
-    protected $stopWords = [
-        //
-    ];
 
     /**
      * The column types of the fitted dataset. i.e. categorical or continuous.
@@ -43,18 +42,22 @@ class TokenCountVectorizer implements Preprocessor
     ];
 
     /**
+     * @param  int  $maxVocabulary
      * @param  \Rubix\Engine\Preprocessors\Tokenizers\Tokenizer  $tokenizer
-     * @param  array  $stopWords
      * @return void
      */
-    public function __construct(Tokenizer $tokenizer = null, array $stopWords = [])
+    public function __construct(int $maxVocabulary = PHP_INT_MAX, Tokenizer $tokenizer = null)
     {
+        if ($maxVocabulary < 1) {
+            throw new InvalidArgumentException('Max vocabulary must be greater than 0.');
+        }
+
         if (!isset($tokenizer)) {
             $tokenizer = new WhitespaceTokenizer();
         }
 
+        $this->maxVocabulary = $maxVocabulary;
         $this->tokenizer = $tokenizer;
-        $this->stopWords = array_fill_keys($stopWords, true);
     }
 
     /**
@@ -74,14 +77,6 @@ class TokenCountVectorizer implements Preprocessor
     }
 
     /**
-     * @return array
-     */
-    public function stopWords() : array
-    {
-        return array_keys($this->stopWords);
-    }
-
-    /**
      * Build the vocabulary for the vectorizer.
      *
      * @param  \Rubix\Engine\Dataset  $data
@@ -90,21 +85,31 @@ class TokenCountVectorizer implements Preprocessor
     public function fit(Dataset $data) : void
     {
         $this->columnTypes = $data->columnTypes();
+        $this->vocabulary = [];
+        $counts = [];
 
         foreach ($data->samples() as $sample) {
             foreach ($sample as $column => $feature) {
                 if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $tokens = $this->tokenizer->tokenize($feature);
-
-                    foreach ($tokens as $token) {
-                        if (!isset($this->stopWords[$token])) {
-                            if (!isset($this->vocabulary[$token])) {
-                                $this->vocabulary[$token] = count($this->vocabulary);
-                            }
+                    foreach ($this->tokenizer->tokenize($feature) as $token) {
+                        if (isset($counts[$token])) {
+                            $counts[$token]++;
+                        } else {
+                            $counts[$token] = 1;
                         }
                     }
                 }
             }
+        }
+
+        if (count($counts) > $this->maxVocabulary) {
+            arsort($counts);
+
+            $counts = array_splice($counts, 0, $this->maxVocabulary);
+        }
+
+        foreach ($counts as $token => $count) {
+            $this->vocabulary[$token] = count($this->vocabulary);
         }
     }
 
@@ -118,11 +123,11 @@ class TokenCountVectorizer implements Preprocessor
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as $column => $feature) {
+            foreach ($this->columnTypes as $column => $type) {
                 $vectors = [];
 
-                if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $vectors[] = $this->vectorize($feature);
+                if ($type === self::CATEGORICAL) {
+                    $vectors[] = $this->vectorize($sample[$column]);
                 }
 
                 unset($sample[$column]);
@@ -142,9 +147,7 @@ class TokenCountVectorizer implements Preprocessor
     {
         $vector = array_fill_keys($this->vocabulary, 0);
 
-        $tokens = $this->tokenizer->tokenize($string);
-
-        foreach ($tokens as $token) {
+        foreach ($this->tokenizer->tokenize($string) as $token) {
             if (isset($this->vocabulary[$token])) {
                 $vector[$this->vocabulary[$token]] += 1;
             }

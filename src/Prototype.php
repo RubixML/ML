@@ -3,9 +3,10 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Tests\Test;
-use MathPHP\Statistics\Average;
+use Rubix\Engine\Tests\Loggers\Screen;
+use Rubix\Engine\Tests\Loggers\Logger;
 
-class Prototype
+class Prototype implements Estimator
 {
     /**
      * The estimator.
@@ -24,17 +25,30 @@ class Prototype
     ];
 
     /**
+     * The logger used to log messages emitted by the model.
+     *
+     * @var \Rubix\Engine\Loggers\Logger
+     */
+    protected $logger;
+
+    /**
      * @param  \Rubix\Engine\Estimator  $estimator
      * @param  array  $tests
+     * @param  \Runix\Engine\Loggers\Logger  $logger
      * @return void
      */
-    public function __construct(Estimator $estimator, array $tests = [])
+    public function __construct(Estimator $estimator, array $tests = [], Logger $logger = null)
     {
-        foreach ($tests as $test) {
-            $this->addTest($test);
+        if (!isset($logger)) {
+            $logger = new Screen();
         }
 
         $this->estimator = $estimator;
+        $this->logger = $logger;
+
+        foreach ($tests as $test) {
+            $this->addTest($test);
+        }
     }
 
     /**
@@ -43,13 +57,15 @@ class Prototype
      */
     public function train(Dataset $data) : void
     {
+        $this->logger->log('Training started');
+
         $start = microtime(true);
 
         $this->estimator->train($data);
 
         $timestamp = microtime(true) - $start;
 
-        echo 'Training completed in ' . (string) round($timestamp, 5) . 's' . "\n";
+        $this->logger->log('Training completed in ' . (string) round($timestamp, 5) . 's');
     }
 
     /**
@@ -58,44 +74,35 @@ class Prototype
      */
     public function predict(array $sample) : Prediction
     {
-        $start = microtime(true);
-
-        $prediction = $this->estimator->predict($sample);
-
-        $timestamp = microtime(true) - $start;
-
-        return $prediction->addMeta([
-            'prediction_time' => $timestamp,
-        ]);
+        return $this->estimator->predict($sample);
     }
 
     /**
      * Run the tests on the estimator.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\SupervisedDataset  $data
      * @return bool
      */
-    public function test(Dataset $data) : bool
+    public function test(SupervisedDataset $data) : bool
     {
-        $predictions = $timestamps = [];
+        $this->logger->log('Testing started');
 
-        foreach ($data->samples() as $sample) {
-            $prediction = $this->predict($sample);
+        $start = microtime(true);
 
-            $predictions[] = $prediction;
-            $timestamps[] = $prediction->meta('prediction_time');
-        }
+        $predictions = array_map(function ($sample) {
+            return $this->predict($sample)->outcome();
+        }, $data->samples());
+
+        $timestamp = (microtime(true) - $start) / count($data);
 
         $results = array_map(function ($test) use ($predictions, $data) {
-            return $test->test($predictions, $data->outcomes());
+            return $test->score($predictions, $data->outcomes());
         }, $this->tests);
 
-        $pass = !in_array(false, $results);
+        $this->logger->log('Model took ' . (string) round($timestamp, 5) . 's on average to make a prediction.');
+        $this->logger->log('Testing completed');
 
-        echo 'Average prediction took ' . (string) round(Average::mean($timestamps), 5) . 's' . "\n";
-        echo 'Testing finished - ' . ($pass ? 'PASS' : 'FAIL') . "\n";
-
-        return $pass;
+        return true;
     }
 
     /**

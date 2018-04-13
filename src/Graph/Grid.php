@@ -20,13 +20,13 @@ class Grid extends Graph
     /**
      * The distance function that describes the grid space.
      *
-     * @var \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction
+     * @var \Rubix\Engine\Contracts\DistanceFunction
      */
     protected $distanceFunction;
 
     /**
      * @param  array  $axes
-     * @param  \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction|null  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\DistanceFunction|null  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */

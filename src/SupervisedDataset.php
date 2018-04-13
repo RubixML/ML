@@ -81,6 +81,17 @@ class SupervisedDataset extends Dataset
     }
 
     /**
+     * Return the outcome at the given row.
+     *
+     * @param  int  $row
+     * @return mixed
+     */
+    public function getOutcome(int $row)
+    {
+        return $this->outcomes[$row] ?? null;
+    }
+
+    /**
      * The set of all possible labeled outcomes.
      *
      * @return array
@@ -91,13 +102,13 @@ class SupervisedDataset extends Dataset
     }
 
     /**
-     * The type of data of the outcomes.
+     * The type of data of the outcomes. i.e. categorical or continuous.
      *
      * @return int
      */
-    public function output() : int
+    public function outcomeType() : int
     {
-        return $this->output;
+        return is_string(reset($this->outcomes)) ? self::CATEGORICAL : self::CONTINUOUS;
     }
 
     /**

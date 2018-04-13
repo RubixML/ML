@@ -19,7 +19,7 @@ class KNearestNeighbors implements Classifier, Regression
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction
+     * @var \Rubix\Engine\Contracts\DistanceFunction
      */
     protected $distanceFunction;
 
@@ -50,7 +50,7 @@ class KNearestNeighbors implements Classifier, Regression
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -87,9 +87,9 @@ class KNearestNeighbors implements Classifier, Regression
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        list($this->coordinates, $this->outcomes) = $data->toArray();
+        $this->output = $data->outcomeType();
 
-        $this->output = $data->output();
+        list($this->coordinates, $this->outcomes) = $data->toArray();
     }
 
     /**
@@ -123,8 +123,6 @@ class KNearestNeighbors implements Classifier, Regression
                 'variance' => $variance,
             ]);
         }
-
-        return new Prediction($outcome, $certainty);
     }
 
     /**

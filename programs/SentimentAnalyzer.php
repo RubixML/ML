@@ -5,9 +5,11 @@ include __DIR__ . '/../vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\NaiveBayes;
+use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Preprocessors\TextNormalizer;
+use Rubix\Engine\Preprocessors\StopWordFilter;
 use Rubix\Engine\Preprocessors\TokenCountVectorizer;
 use Rubix\Engine\Preprocessors\BlanketCharacterFilter;
 use Rubix\Engine\Preprocessors\Tokenizers\WordTokenizer;
@@ -21,17 +23,19 @@ echo '╚═══════════════════════�
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/sentiment.csv')->setDelimiter(',')->getRecords();
 
-$stopWords = file(dirname(__DIR__) . '/datasets/stopwords.txt');
-
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->split(0.3);
+list($training, $testing) = $dataset->randomize()->split(0.2);
 
 $prototype = new Prototype(new Pipeline(new NaiveBayes(), [
+    new StopWordFilter(file(dirname(__DIR__) . '/datasets/stopwords.txt')),
+    new BlanketCharacterFilter(BlanketCharacterFilter::SPECIAL),
     new TextNormalizer(),
-    new BlanketCharacterFilter(),
-    new TokenCountVectorizer(new WordTokenizer(), $stopWords),
-]), [new Accuracy()]);
+    new TokenCountVectorizer(400, new WordTokenizer()),
+]), [
+    new Accuracy(),
+    new F1Score(),
+]);
 
 $prototype->train($training);
 

@@ -36,7 +36,7 @@ class CART extends Tree implements Classifier, Regression
      *
      * @var array
      */
-    protected $types = [
+    protected $columnTypes = [
         //
     ];
 
@@ -66,7 +66,7 @@ class CART extends Tree implements Classifier, Regression
      */
     public function columns() : int
     {
-        return count($this->types);
+        return count($this->columnTypes);
     }
 
     /**
@@ -114,8 +114,8 @@ class CART extends Tree implements Classifier, Regression
 
         list($samples, $outcomes) = $data->toArray();
 
-        $this->types = $data->columnTypes();
-        $this->output = $data->output();
+        $this->columnTypes = $data->columnTypes();
+        $this->output = $data->outcomeType();
 
         foreach ($samples as $i => &$sample) {
             $sample[] = $outcomes[$i];
@@ -165,7 +165,7 @@ class CART extends Tree implements Classifier, Regression
             return $root;
         }
 
-        if ($this->types[$root->index] === self::CATEGORICAL) {
+        if ($this->columnTypes[$root->index] === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value()) {
                 return $this->_predict($sample, $root->left());
             } else {
@@ -328,7 +328,7 @@ class CART extends Tree implements Classifier, Regression
         $left = $right = [];
 
         foreach ($data as $row) {
-            if ($this->types[$index] === self::CATEGORICAL) {
+            if ($this->columnTypes[$index] === self::CATEGORICAL) {
                 if ($row[$index] !== $value) {
                     $left[] = $row;
                 } else {

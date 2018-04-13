@@ -23,17 +23,6 @@ class Dataset implements IteratorAggregate, Countable
     ];
 
     /**
-     * Build a dataset from an iterator.
-     *
-     * @param  iterable  $data
-     * @return self
-     */
-    public static function fromIterator(iterable $data)
-    {
-        return new self(iterator_to_array($data));
-    }
-
-    /**
      * @param  array  $samples
      * @param  array  $outcomes
      * @throws \InvalidArgumentException
@@ -73,6 +62,17 @@ class Dataset implements IteratorAggregate, Countable
     }
 
     /**
+     * Return a sample given by row number. Return null if not found.
+     *
+     * @param  int  $row
+     * @return array|null
+     */
+    public function getSample(int $row) : ?array
+    {
+        return $this->samples[$row] ?? null;
+    }
+
+    /**
      * @return int
      */
     public function rows() : int
@@ -103,24 +103,12 @@ class Dataset implements IteratorAggregate, Countable
     /**
      * Have a preprocessor transform the dataset.
      *
-     * @param  \Rubix\Engine\Preprocessors\Preprocessor  $preprocessor
+     * @param  \Rubix\Engine\Contracts\Preprocessor  $preprocessor
      * @return void
      */
     public function transform(Preprocessor $preprocessor) : void
     {
         $preprocessor->transform($this->samples);
-    }
-
-    /**
-     * Randomize the dataset.
-     *
-     * @return self
-     */
-    public function randomize()
-    {
-        shuffle($this->samples);
-
-        return $this;
     }
 
     /**
@@ -131,110 +119,6 @@ class Dataset implements IteratorAggregate, Countable
     public function rotate() : array
     {
         return array_map(null, ...$this->samples);
-    }
-
-    /**
-     * Take n samples from this dataset and return them in a new dataset.
-     *
-     * @param  int  $n
-     * @return self
-     */
-    public function take(int $n = 1)
-    {
-        return new self(array_splice($this->samples, 0, $n));
-    }
-
-    /**
-     * Leave n samples  on this dataset and return the rest in a new dataset.
-     *
-     * @param  int  $n
-     * @return self
-     */
-    public function leave(int $n = 1)
-    {
-        return new self(array_splice($this->samples, $n));
-    }
-
-    /**
-     * Split the dataset into two stratified subsets with a given ratio of samples.
-     *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return array
-     */
-    public function split(float $ratio = 0.5) : array
-    {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
-        }
-
-        $testing = array_splice($this->samples, round($ratio * $this->rows()));
-
-        return [
-            new self($this->samples),
-            new self($testing),
-        ];
-    }
-
-    /**
-     * Divide the dataset into n sets of equal proportion.
-     *
-     * @param  int  $n
-     * @return array
-     */
-    public function divide(int $n = 5) : array
-    {
-        $size = round($this->rows() / $sets);
-
-        $subsets = [];
-
-        while (!empty($this->samples)) {
-            $subsets[] = new self(array_splice($this->samples, 0, $size));
-        }
-
-        return $subsets;
-    }
-
-    /**
-     * Generate a random subset with replacement.
-     *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function generateRandomSubset(float $ratio = 0.1)
-    {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
-        }
-
-        $subset = $this->samples;
-
-        shuffle($subset);
-
-        return new self(array_slice($subset, 0, round($ratio * $this->rows())));
-    }
-
-    /**
-     * Generate a random subset with replacement.
-     *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function generateRandomSubsetWithReplacement(float $ratio = 0.1)
-    {
-        if ($ratio <= 0.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
-        }
-
-        $subset = [];
-
-        foreach (range(1, round($ratio * $this->rows())) as $i) {
-            $subset[] = $this->samples[array_rand($this->samples)];
-        }
-
-        return new self($subset);
     }
 
     /**
@@ -304,14 +188,12 @@ class Dataset implements IteratorAggregate, Countable
     }
 
     /**
-     * Return a feature vector at given row in the dataset.
-     *
      * @param  int  $row
      * @return mixed
      */
     public function __get(int $row)
     {
-        return $this->samples[$row] ?? null;
+        return $this->getSample($row);
     }
 
     /**

@@ -87,7 +87,7 @@ class Pipeline implements Estimator
     /**
      * Add a preprocessor middleware to the pipeline.
      *
-     * @param  \Rubix\Engine\Preprocessors\Preprocessor  $preprocessor
+     * @param  \Rubix\Engine\Contracts\Preprocessor  $preprocessor
      * @return self
      */
     public function addPreprocessor(Preprocessor $preprocessor) : self

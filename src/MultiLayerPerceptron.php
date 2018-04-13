@@ -2,9 +2,11 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\NeuralNetwork\Input;
 use Rubix\Engine\NeuralNetwork\Hidden;
 use Rubix\Engine\NeuralNetwork\Network;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
+use Rubix\Engine\NeuralNetwork\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
@@ -27,12 +29,11 @@ class MultiLayerPerceptron extends Network implements Classifier
     protected $batchSize;
 
     /**
-     * The learning rate. i.e. the size of each step towards the minimum during
-     * gradient descent.
+     * The gradient descent optimizer.
      *
-     * @var float
+     * @var \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer
      */
-    protected $rate;
+    protected $optimizer;
 
     /**
      * @param  int  $inputs
@@ -40,36 +41,12 @@ class MultiLayerPerceptron extends Network implements Classifier
      * @param  array  $outcomes
      * @param  int  $epochs
      * @param  int  $batchSize
-     * @param  float  $rate
+     * @param  \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer  $optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, float $rate = 0.1)
+    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null)
     {
-        if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of inputs must be greater than 1.');
-        }
-
-        foreach ($hidden as &$layer) {
-            if (!is_array($layer)) {
-                $layer = [$layer];
-            }
-
-            if (!is_int($layer[0]) || $layer[0] < 1) {
-                throw new InvalidArgumentException('The size parameter of a hidden layer must be an integer greater than 0.');
-            }
-
-            if (isset($layer[1])) {
-                if (!$layer[1] instanceof ActivationFunction) {
-                    throw new InvalidArgumentException('The second hidden layer parameter must be an instance of an ActivationFunction.');
-                }
-            }
-        }
-
-        if (count($outcomes) < 1) {
-            throw new InvalidArgumentException('The number of unique outcomes must be greater than 1.');
-        }
-
         if ($epochs < 1) {
             throw new InvalidArgumentException('Epoch parameter must be an integer greater than 0.');
         }
@@ -78,25 +55,19 @@ class MultiLayerPerceptron extends Network implements Classifier
             throw new InvalidArgumentException('Batch size cannot be less than 1.');
         }
 
+        if (!isset($optimizer)) {
+            $optimizer = new Adam();
+        }
+
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
-        $this->rate = $rate;
+        $this->optimizer = $optimizer;
 
-        $this->addInputLayer($inputs);
-
-        foreach ($hidden as $layer) {
-            $this->addHiddenLayer($layer[0], $layer[1] ?? new Sigmoid());
-        }
-
-        $this->addOutputLayer(array_unique($outcomes), new Sigmoid());
-
-        for ($layer = count($this->layers) - 1; $layer > 1; $layer--) {
-            $this->connectLayers($this->layers[$layer], $this->layers[$layer - 1]);
-        }
+        parent::__construct($inputs, $hidden, $outcomes);
     }
 
     /**
-     * Train the model using mini-batch gradient descent with backpropagation.
+     * Train the network using mini-batch gradient descent with backpropagation.
      *
      * @param  \Rubix\Engine\Dataset  $data
      * @throws \InvalidArgumentException
@@ -112,35 +83,20 @@ class MultiLayerPerceptron extends Network implements Classifier
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        list($samples, $outcomes) = $data->toArray();
+        $this->randomizeWeights();
 
-        for ($epoch = 1; $epoch < $this->epochs; $epoch++) {
-            $order = range(0, count($samples) - 1);
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            foreach ($this->generateMiniBatches(clone $data) as $batch) {
+                $sigmas = new SplObjectStorage();
 
-            shuffle($order);
-
-            array_multisort($order, $samples, $outcomes);
-
-            $queue = [
-                array_slice($samples, 0),
-                array_slice($outcomes, 0),
-            ];
-
-            while (!empty($queue[0])) {
-                $batch = [
-                    array_splice($queue[0], 0, $this->batchSize),
-                    array_splice($queue[1], 0, $this->batchSize),
-                ];
-
-                $deltas = new SplObjectStorage();
-
-                foreach ($batch[0] as $i => $sample) {
+                foreach ($batch as $row => $sample) {
                     $this->feed($sample);
-                    $this->backpropagate($batch[1][$i], $deltas);
+
+                    $this->backpropagate($batch->getOutcome($row), $sigmas);
                 }
 
-                foreach ($deltas as $synapse) {
-                    $synapse->adjustWeight($this->rate * $deltas[$synapse]);
+                foreach ($sigmas as $synapse) {
+                    $this->optimizer->step($synapse, $sigmas[$synapse]);
                 }
             }
         }
@@ -155,10 +111,9 @@ class MultiLayerPerceptron extends Network implements Classifier
      */
     public function predict(array $sample) : Prediction
     {
-        $best = ['activation' => -INF, 'outcome' => null];
-        $totalActivation = 0.0;
-
         $this->feed($sample);
+
+        $best = ['activation' => -INF, 'outcome' => null];
 
         foreach ($this->outputs() as $neuron) {
             $activation = $neuron->output();
@@ -169,95 +124,85 @@ class MultiLayerPerceptron extends Network implements Classifier
                     'outcome' => $neuron->outcome(),
                 ];
             }
-
-            $totalActivation += $activation;
         }
 
         return new Prediction($best['outcome'], [
-            'certainty' => $best['activation'] / $totalActivation + self::EPSILON,
             'activation' => $best['activation'],
         ]);
     }
 
     /**
-     * Feed forward and calculate the output of each neuron in the network.
-     *
-     * @param  array  $sample
-     * @throws \RuntimeException
-     * @return void
-     */
-    protected function feed(array $sample) : void
-    {
-        if (count($sample) !== count($this->layers[0]) - 1) {
-            throw new RuntimeException('Feature columns must equal the number of input neurons.');
-        }
-
-        $this->reset();
-
-        foreach ($this->inputs() as $input) {
-            if ($input instanceof Input) {
-                $input->prime(next($sample));
-            }
-        }
-
-        foreach ($this->outputs() as $output) {
-            $output->fire();
-        }
-    }
-
-    /**
      * Backpropgate the errors and save the sum of the computed deltas to be used
-     * when adjusting the synapse weights.
+     * during gradient descent.
      *
      * @param  mixed  $outcome
-     * @param  \SplObjectStorage  $deltas
+     * @param  \SplObjectStorage  $sigmas
      * @return void
      */
-    protected function backpropagate($outcome, SplObjectStorage $deltas) : void
+    protected function backpropagate($outcome, SplObjectStorage $sigmas) : void
     {
-        for ($layer = count($this->layers) - 1; $layer > 1; $layer--) {
-            $sigmas = new SplObjectStorage();
+        for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
+            $deltas = new SplObjectStorage();
 
             foreach ($this->layers[$layer] as $neuron) {
                 if ($neuron instanceof Hidden) {
-                    $sigma = $neuron->error();
+                    $delta = $neuron->derivative();
 
                     if ($layer === count($this->layers) - 1) {
-                        $value = $neuron->outcome() === $outcome ? 1.0 : 0.0;
+                        $expected = $neuron->outcome() === $outcome ? 1.0 : 0.0;
 
-                        $sigma *= ($value - $neuron->output());
+                        $delta *= ($expected - $neuron->output());
                     } else {
-                        $prev = 0.0;
+                        $previous = 0.0;
 
-                        foreach ($prevSigmas as $prevNode) {
-                            foreach ($prevNode->synapses() as $synapse) {
+                        foreach ($previousDeltas as $previousNeuron) {
+                            foreach ($previousNeuron->synapses() as $synapse) {
                                 if ($synapse->neuron() === $neuron) {
-                                    $prev += $synapse->weight() * $prevSigmas[$prevNode];
+                                    $previous += $synapse->weight() * $previousDeltas[$previousNeuron];
                                 }
                             }
                         }
 
-                        $sigma *= $prev;
+                        $delta *= $previous;
                     }
 
-                    $sigmas->attach($neuron, $sigma);
+                    $deltas->attach($neuron, $delta);
 
                     foreach ($neuron->synapses() as $synapse) {
-                        $delta = $sigma * $synapse->neuron()->output();
+                        $sigma = $delta * $synapse->neuron()->output();
 
-                        if ($deltas->contains($synapse)) {
-                            $deltas[$synapse] += $delta;
+                        if ($sigmas->contains($synapse)) {
+                            $sigmas[$synapse] += $sigma;
                         } else {
-                            $deltas->attach($synapse, $delta);
+                            $sigmas->attach($synapse, $sigma);
                         }
                     }
                 }
             }
 
-            $prevSigmas = $sigmas;
+            $previousDeltas = $deltas;
         }
 
-        unset($sigmas);
-        unset($prevSigmas);
+        unset($deltas);
+        unset($previousDeltas);
+    }
+
+    /**
+     * Generate a collection of mini batches from the training data.
+     *
+     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @return array
+     */
+    protected function generateMiniBatches(SupervisedDataset $data) : array
+    {
+        $data->randomize();
+
+        $batches = [];
+
+        while (!$data->isEmpty()) {
+            $batches[] = $data->take($this->batchSize);
+        }
+
+        return $batches;
     }
 }

@@ -16,7 +16,7 @@ class HyperbolicTangent implements ActivationFunction
     }
 
     /**
-     * Compute the derivative.
+     * Calculate the partial derivative with respect to the computed output.
      *
      * @param  float  $value
      * @param  float  $computed

@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
 interface ActivationFunction
 {
     /**
-     * Compute the output value.
+     * Compute the activation of the neuron.
      *
      * @param  float  $value
      * @return float

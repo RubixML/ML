@@ -10,8 +10,11 @@ class DBSCAN implements Clusterer
 {
     const NOISE = null;
 
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
-     * The minimum distance between two points.
+     * The maximum distance between two points to be considered neighbors.
      *
      * @var float
      */
@@ -27,23 +30,14 @@ class DBSCAN implements Clusterer
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction
+     * @var \Rubix\Engine\Contracts\DistanceFunction
      */
     protected $distanceFunction;
 
     /**
-     * The learned labels of the training data.
-     *
-     * @var array
-     */
-    protected $labels = [
-        //
-    ];
-
-    /**
      * @param  float  $epsilon
-     * @param  int  $minPoints
-     * @param  \Rubix\Engine\Graph\DistanceFunctions\DistanceFunction  $distanceFunction
+     * @param  int  $minDensity
+     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -77,34 +71,34 @@ class DBSCAN implements Clusterer
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        $this->labels = [];
-        $n = 0;
+        $labels = [];
+        $current = 0;
 
         foreach ($data as $id => $sample) {
-            if (isset($this->labels[$id])) {
+            if (isset($labels[$id])) {
                 continue 1;
             }
 
             $neighbors = $this->groupNeighborsByDistance($sample, $data->samples());
 
             if (count($neighbors) < $this->minDensity) {
-                $this->labels[$id] = self::NOISE;
+                $labels[$id] = self::NOISE;
 
                 continue 1;
             }
 
-            $this->labels[$id] = $n;
+            $labels[$id] = $current;
 
-            $this->expand($data->samples(), $neighbors, $n);
+            $this->expand($data->samples(), $neighbors, $labels, $current);
 
-            $n++;
+            $current++;
         }
 
-        $clusters = array_fill(0, $n, []);
+        $clusters = array_fill(0, $current, []);
 
         foreach ($data as $id => $sample) {
-            if ($this->labels[$id] !== self::NOISE) {
-                $clusters[$this->labels[$id]][] = $sample;
+            if ($labels[$id] !== self::NOISE) {
+                $clusters[$labels[$id]][] = $sample;
             }
         }
 
@@ -117,23 +111,24 @@ class DBSCAN implements Clusterer
      *
      * @param  array  $samples
      * @param  array  $neighbors
-     * @param  int  $n
+     * @param  array  $labels
+     * @param  int  $label
      * @return void
      */
-    protected function expand(array $samples, array $neighbors, int $n) : void
+    protected function expand(array $samples, array $neighbors, array &$labels, int $current) : void
     {
         while (!empty($neighbors)) {
             $id = array_pop($neighbors);
 
-            if (isset($this->labels[$id])) {
-                if ($this->labels[$id] === self::NOISE) {
-                    $this->labels[$id] = $n;
+            if (isset($labels[$id])) {
+                if ($labels[$id] === self::NOISE) {
+                    $labels[$id] = $label;
                 }
 
                 continue 1;
             }
 
-            $this->labels[$id] = $n;
+            $labels[$id] = $current;
 
             $seeds = $this->groupNeighborsByDistance($samples[$id], $samples);
 
@@ -156,7 +151,7 @@ class DBSCAN implements Clusterer
         $neighbors = [];
 
         foreach ($samples as $id => $sample) {
-            $distance = $this->distanceFunction->distance($neighbor, $sample);
+            $distance = $this->distanceFunction->compute($neighbor, $sample);
 
             if ($distance <= $this->epsilon) {
                 $neighbors[] = $id;

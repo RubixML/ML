@@ -1,23 +1,23 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\L2Normalizer;
+use Rubix\Engine\Preprocessors\L2Regularizer;
 use PHPUnit\Framework\TestCase;
 
-class L2NormalizerTest extends TestCase
+class L2RegularizerTest extends TestCase
 {
     protected $preprocessor;
 
     public function setUp()
     {
-        $this->preprocessor = new L2Normalizer();
+        $this->preprocessor = new L2Regularizer();
 
         $this->preprocessor->fit(new Dataset([[1, 2, 3, 4]]));
     }
 
-    public function test_build_l1_normalizer()
+    public function test_build_l1_regularizer()
     {
-        $this->assertInstanceOf(L2Normalizer::class, $this->preprocessor);
+        $this->assertInstanceOf(L2Regularizer::class, $this->preprocessor);
     }
 
     public function test_fit_dataset()

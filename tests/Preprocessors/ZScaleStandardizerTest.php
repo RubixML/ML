@@ -1,16 +1,16 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\ZScaleNormalizer;
+use Rubix\Engine\Preprocessors\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 
-class ZScaleNormalizerTest extends TestCase
+class ZScaleStandardizerTest extends TestCase
 {
     protected $preprocessor;
 
     public function setUp()
     {
-        $this->preprocessor = new ZScaleNormalizer();
+        $this->preprocessor = new ZScaleStandardizer();
 
         $this->preprocessor->fit(new Dataset([
             [1, 2, 3, 4],
@@ -19,15 +19,13 @@ class ZScaleNormalizerTest extends TestCase
         ]));
     }
 
-    public function test_build_l1_normalizer()
+    public function test_build_z_scale_standardizer()
     {
-        $this->assertInstanceOf(ZScaleNormalizer::class, $this->preprocessor);
+        $this->assertInstanceOf(ZScaleStandardizer::class, $this->preprocessor);
     }
 
     public function test_fit_dataset()
     {
-        $this->preprocessor->fit(new Dataset([]));
-
         $this->assertTrue(true);
     }
 

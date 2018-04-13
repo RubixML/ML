@@ -7,7 +7,7 @@ interface Estimator
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
 
-    const EPSILON = 1e-10;
+    const EPSILON = 1e-8;
 
     /**
      * Train the classification model with a dataset.

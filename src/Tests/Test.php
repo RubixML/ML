@@ -2,14 +2,39 @@
 
 namespace Rubix\Engine\Tests;
 
-interface Test
+use Rubix\Engine\Tests\Loggers\Screen;
+use Rubix\Engine\Tests\Loggers\Logger;
+
+abstract class Test
 {
+    const EPSILON = 1e-8;
+
     /**
-     * Run the test.
+     * The logging interface to use.
+     *
+     * @var \Rubix\Engine\Tests\Loggers\Logger
+     */
+    protected $logger;
+
+    /**
+     * @param  \Rubix\Engine\Tests\Loggers\Logger  $logger
+     * @return void
+     */
+    public function __construct(Logger $logger = null)
+    {
+        if (!isset($logger)) {
+            $logger = new Screen();
+        }
+
+        $this->logger = $logger;
+    }
+
+    /**
+     * Score the test.
      *
      * @param  array  $predictions
-     * @param  array|null  $outcomes
-     * @return bool
+     * @param  array  $outcomes
+     * @return float
      */
-    public function test(array $predictions, ?array $outcomes = null) : bool;
+    abstract public function score(array $predictions, array $outcomes) : float;
 }

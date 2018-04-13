@@ -2,7 +2,7 @@
     "name": "rubix/engine",
     "description": "A library for building intelligent systems with PHP.",
     "license": "MIT",
-    "keywords": ["php", "data", "science", "machine", "learning", "mining", "predictive", "modeling"],
+    "keywords": ["data", "science", "mining", "machine", "learning", "predictive", "modeling", "ai"],
     "authors": [
         {
             "name": "Andrew DalPino",

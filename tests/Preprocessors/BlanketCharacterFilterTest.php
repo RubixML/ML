@@ -11,6 +11,8 @@ class BlanketCharacterFilterTest extends TestCase
     public function setUp()
     {
         $this->preprocessor = new BlanketCharacterFilter([',']);
+
+        $this->preprocessor->fit(new Dataset(['some text']));
     }
 
     public function test_build_blanket_character_filter()
@@ -20,8 +22,6 @@ class BlanketCharacterFilterTest extends TestCase
 
     public function test_fit_dataset()
     {
-        $this->preprocessor->fit(new Dataset([]));
-
         $this->assertTrue(true);
     }
 

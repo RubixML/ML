@@ -23,7 +23,7 @@ class Hidden extends Neuron
     /**
      * The function that determines the magnitude of this neurons output.
      *
-     * @var \Rubix\Engine\ActivationFunctions\ActivationFunction
+     * @var \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
 
@@ -59,9 +59,9 @@ class Hidden extends Neuron
      *
      * @return float
      */
-    public function error() : float
+    public function derivative() : float
     {
-        return $this->activationFunction->differentiate($this->z, $this->output());
+        return $this->activationFunction->differentiate($this->z, $this->precomputed);
     }
 
     /**

@@ -3,7 +3,7 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\DBSCAN;
-use Rubix\Engine\Dataset;
+use Rubix\Engine\UnsupervisedDataset;
 use Rubix\Engine\Preprocessors\OneHotEncoder;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use League\Csv\Reader;
@@ -19,7 +19,7 @@ echo '╚═══════════════════════�
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setDelimiter(',');
 
-$dataset = Dataset::fromIterator($dataset);
+$dataset = UnsupervisedDataset::fromIterator($dataset);
 
 $preprocessor = new OneHotEncoder();
 

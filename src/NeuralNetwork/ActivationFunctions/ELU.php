@@ -33,7 +33,7 @@ class ELU implements ActivationFunction
     }
 
     /**
-     * Calculate the partial derivative.
+     * Calculate the partial derivative with respect to the computed output.
      *
      * @param  float  $value
      * @param  float  $computed

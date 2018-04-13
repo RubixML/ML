@@ -5,9 +5,9 @@ include __DIR__ . '/../vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\LeastSquares;
-use Rubix\Engine\Tests\Accuracy;
+use Rubix\Engine\Tests\MeanError;
 use Rubix\Engine\SupervisedDataset;
-use Rubix\Engine\Preprocessors\L2Normalizer;
+use Rubix\Engine\Preprocessors\L2Regularizer;
 use Rubix\Engine\Preprocessors\MissingDataImputer;
 use League\Csv\Reader;
 
@@ -23,9 +23,9 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/auto-mpg.csv')->
 
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list ($training, $testing) = $dataset->randomize()->split(0.3);
+list($training, $testing) = $dataset->randomize()->split(0.15);
 
-$prototype = new Prototype(new Pipeline(new LeastSquares(), [new MissingDataImputer('?'), new L2Normalizer()]), [new Accuracy(0.8)]);
+$prototype = new Prototype(new Pipeline(new LeastSquares(), [new MissingDataImputer('?'), new L2Regularizer()]), [new MeanError()]);
 
 $prototype->train($training);
 

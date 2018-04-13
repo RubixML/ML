@@ -20,18 +20,26 @@ class BlanketCharacterFilter implements Preprocessor
      *
      * @var array
      */
-    protected $remove = [
+    protected $characters = [
         //
     ];
 
     /**
+     * The column types of the fitted dataset. i.e. categorical or continuous.
+     *
+     * @var array
+     */
+    protected $columnTypes = [
+        //
+    ];
 
-     * @param  array|null  $remove
+    /**
+     * @param  array  $characters
      * @return void
      */
-    public function __construct(array $remove = self::SPECIAL)
+    public function __construct(array $characters = [])
     {
-        $this->remove = $remove;
+        $this->characters = $characters;
     }
 
     /**
@@ -40,7 +48,7 @@ class BlanketCharacterFilter implements Preprocessor
      */
     public function fit(Dataset $data) : void
     {
-        //
+        $this->columnTypes = $data->columnTypes();
     }
 
     /**
@@ -52,9 +60,9 @@ class BlanketCharacterFilter implements Preprocessor
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($sample as &$feature) {
-                if (is_string($feature)) {
-                    $feature = str_replace($this->remove, '', $feature);
+            foreach ($this->columnTypes as $column => $type) {
+                if ($type === self::CATEGORICAL) {
+                    $sample[$column] = str_replace($this->characters, '', $sample[$column]);
                 }
             }
         }
