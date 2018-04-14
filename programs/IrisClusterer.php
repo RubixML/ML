@@ -4,7 +4,6 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\DBSCAN;
 use Rubix\Engine\UnsupervisedDataset;
-use Rubix\Engine\Preprocessors\OneHotEncoder;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use League\Csv\Reader;
 

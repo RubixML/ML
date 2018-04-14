@@ -52,6 +52,16 @@ class Prototype implements Estimator
     }
 
     /**
+     * Return the underlying estimator instance.
+     *
+     * @return \Rubix\Engine\Estimator
+     */
+    public function estimator() : Estimator
+    {
+        return $this->estimator;
+    }
+
+    /**
      * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */

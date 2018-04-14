@@ -85,6 +85,16 @@ class Network
     }
 
     /**
+     * The depth of the network. i.e. the number of hidden layers.
+     *
+     * @return int
+     */
+    public function depth() : int
+    {
+        return count($this->layers) - 2;
+    }
+
+    /**
      * Feed a sample through the network and calculate the output of each neuron.
      *
      * @param  array  $sample
@@ -113,6 +123,26 @@ class Network
     }
 
     /**
+     * Return an array of paramters. i.e. the weights of each synapse in the network.
+     *
+     * @return array
+     */
+    public function readParameters() : array
+    {
+        $paramters = [];
+
+        for ($layer = 1; $layer < count($this->layers); $layer++) {
+            foreach ($this->layers[$layer] as $i => $neuron) {
+                foreach ($neuron->synapses() as $j => $synapse) {
+                    $parameters[$layer][$i][$j] = $synapse->weight();
+                }
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
      * Return the output vector of the network.
      *
      * @return array
@@ -135,7 +165,7 @@ class Network
      */
     public function randomizeWeights() : void
     {
-        for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
+        for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $neuron) {
                 foreach ($neuron->synapses() as $synapse) {
                     $synapse->randomize();
@@ -154,12 +184,8 @@ class Network
     public function connectLayers(Layer $a, Layer $b) : self
     {
         foreach ($a as $next) {
-            if ($next instanceof Neuron) {
-                foreach ($b as $current) {
-                    if ($current instanceof Neuron) {
-                        $next->connect(new Synapse($current));
-                    }
-                }
+            foreach ($b as $current) {
+                $next->connect(new Synapse($current));
             }
         }
 
@@ -173,7 +199,7 @@ class Network
      */
     public function reset() : void
     {
-        for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
+        for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $neuron) {
                 if ($neuron instanceof Hidden) {
                     $neuron->reset();

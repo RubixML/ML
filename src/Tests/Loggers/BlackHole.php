@@ -12,8 +12,6 @@ class BlackHole implements Logger
      */
     public function log(string $message) : void
     {
-        /**
-        *    ⬤
-        */
+        // ⬤
     }
 }

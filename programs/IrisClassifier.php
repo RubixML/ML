@@ -4,10 +4,12 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\Tests\MCC;
 use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use League\Csv\Reader;
 
@@ -27,7 +29,7 @@ $dataset = SupervisedDataset::fromIterator($dataset);
 
 list ($training, $testing) = $dataset->randomize()->split(0.2);
 
-$prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy(), new F1Score()]);
+$prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy(), new F1Score(), new MCC(), new Informedness()]);
 
 $prototype->train($training);
 

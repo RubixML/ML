@@ -52,10 +52,10 @@ class L2Regularizer implements Preprocessor
         foreach ($samples as &$sample) {
             $norm = sqrt(array_reduce($this->columns, function ($carry, $column) use ($sample) {
                 return $carry += $sample[$column] ** 2;
-            }, 0)) + self::EPSILON;
+            }, 0));
 
             foreach ($this->columns as $column) {
-                $sample[$column] /= $norm;
+                $sample[$column] /= ($norm ? $norm : self::EPSILON);
             }
         }
     }

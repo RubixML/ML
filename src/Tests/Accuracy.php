@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\Tests;
 
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
 class Accuracy extends Test
@@ -19,18 +20,38 @@ class Accuracy extends Test
             throw new InvalidArgumentException('The number of outcomes must match the number of predictions.');
         }
 
-        $accuracy = 0;
+        $accuracy = $truePositives = $trueNegatives = $falsePositives = $falseNegatives = [];
+
+        foreach (array_unique(array_merge($predictions, $outcomes)) as $label) {
+            $accuracy[$label] = $truePositives[$label] = $trueNegatives[$label] = $falsePositives[$label] = $falseNegatives[$label] = 0;
+        }
 
         foreach ($predictions as $i => $prediction) {
             if ($prediction === $outcomes[$i]) {
-                $accuracy++;
+                $truePositives[$prediction]++;
+                $trueNegatives[$outcomes[$i]]++;
+            } else {
+                $falsePositives[$prediction]++;
+                $falseNegatives[$outcomes[$i]]++;
             }
         }
 
-        $accuracy /= count($outcomes);
+        foreach ($truePositives as $label => $count) {
+            $tn = $trueNegatives[$label];
+            $fp = $falsePositives[$label];
+            $fn = $falseNegatives[$label];
 
-        $this->logger->log('Model is ' . number_format($accuracy * 100, 2) . '% accurate');
+            $accuracy[$label] = ($count + $tn) / ($count + $tn + $fp + $fn);
+        }
 
-        return $accuracy;
+        $average = Average::mean($accuracy);
+        $best = max($accuracy);
+        $worst = min($accuracy);
+
+        $this->logger->log('Average Accuracy: ' . number_format($average, 5) . ' (' . number_format($average * 100, 2) . '%)');
+        $this->logger->log('Best Accuracy: ' . number_format($best, 5) . ' (label: ' . (string) array_search($best, $accuracy) . ')');
+        $this->logger->log('Worst Accuracy: ' . number_format($worst, 5) . ' (label: ' . (string) array_search($worst, $accuracy) . ')');
+
+        return $average;
     }
 }

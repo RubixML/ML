@@ -9,7 +9,7 @@ interface Preprocessor
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
 
-    const EPSILON = 1e-10;
+    const EPSILON = 1e-8;
 
     /**
      * @param  \Rubix\Engine\Dataset  $data

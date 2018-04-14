@@ -39,7 +39,7 @@ class Pipeline implements Estimator
     }
 
     /**
-     * Return the instance of the estimator.
+     * Return the underlying estimator instance.
      *
      * @return \Rubix\Engine\Estimator
      */

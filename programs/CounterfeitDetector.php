@@ -4,9 +4,11 @@ include __DIR__ . '/../vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\Tests\MCC;
 use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\MultiLayerPerceptron;
 use Rubix\Engine\Preprocessors\L2Regularizer;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
@@ -24,7 +26,7 @@ $dataset = SupervisedDataset::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->split(0.3);
 
-$prototype = new Prototype(new Pipeline(new MultiLayerPerceptron($dataset->columns(), [10, 10], $dataset->labels(), 3, 10, new Adam(0.01)), [new L2Regularizer()]), [new Accuracy(), new F1Score()]);
+$prototype = new Prototype(new Pipeline(new MultiLayerPerceptron($dataset->columns(), [10, 10], $dataset->labels(), 3, 10, new Adam(0.01)), [new L2Regularizer()]), [new Accuracy(), new F1Score(), new MCC(), new Informedness()]);
 
 $prototype->train($training);
 

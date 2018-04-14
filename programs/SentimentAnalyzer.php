@@ -4,10 +4,12 @@ include __DIR__ . '/../vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\Tests\MCC;
 use Rubix\Engine\NaiveBayes;
 use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\Preprocessors\TextNormalizer;
 use Rubix\Engine\Preprocessors\StopWordFilter;
 use Rubix\Engine\Preprocessors\TokenCountVectorizer;
@@ -35,6 +37,8 @@ $prototype = new Prototype(new Pipeline(new NaiveBayes(), [
 ]), [
     new Accuracy(),
     new F1Score(),
+    new MCC(),
+    new Informedness(),
 ]);
 
 $prototype->train($training);

@@ -23,7 +23,7 @@ class MeanError extends Test
 
         $error /= count($outcomes);
 
-        $this->logger->log('Predictions off by ' . number_format($error, 5) . ' on average');
+        $this->logger->log('Mean error: ' . number_format($error, 5));
 
         return $error;
     }

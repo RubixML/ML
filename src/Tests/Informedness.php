@@ -5,7 +5,7 @@ namespace Rubix\Engine\Tests;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class F1Score extends Test
+class Informedness extends Test
 {
     /**
      * Test the accuracy of the predictions.
@@ -20,15 +20,16 @@ class F1Score extends Test
             throw new InvalidArgumentException('The number of outcomes must match the number of predictions.');
         }
 
-        $f1scores = $truePositives = $falsePositives = $falseNegatives = [];
+        $informedness = $truePositives = $trueNegatives = $falsePositives = $falseNegatives = [];
 
         foreach (array_unique(array_merge($predictions, $outcomes)) as $label) {
-            $f1scores[$label] = $truePositives[$label] = $falsePositives[$label] = $falseNegatives[$label] = 0;
+            $informedness[$label] = $truePositives[$label] = $trueNegatives[$label] = $falsePositives[$label] = $falseNegatives[$label] = 0;
         }
 
         foreach ($predictions as $i => $prediction) {
             if ($prediction === $outcomes[$i]) {
                 $truePositives[$prediction]++;
+                $trueNegatives[$outcomes[$i]]++;
             } else {
                 $falsePositives[$prediction]++;
                 $falseNegatives[$outcomes[$i]]++;
@@ -36,19 +37,19 @@ class F1Score extends Test
         }
 
         foreach ($truePositives as $label => $count) {
-            $precision = $count / ($count + $falsePositives[$label] + self::EPSILON);
             $recall = $count / ($count + $falseNegatives[$label] + self::EPSILON);
+            $specificity = $trueNegatives[$label] / ($trueNegatives[$label] + $falsePositives[$label] + self::EPSILON);
 
-            $f1scores[$label] = 2.0 * (($precision * $recall) / ($precision + $recall + self::EPSILON));
+            $informedness[$label] = $recall + $specificity - 1;
         }
 
-        $average = Average::mean($f1scores);
-        $best = max($f1scores);
-        $worst = min($f1scores);
+        $average = Average::mean($informedness);
+        $best = max($informedness);
+        $worst = min($informedness);
 
-        $this->logger->log('Average F1 score: ' . number_format($average, 5));
-        $this->logger->log('Best F1 score: ' . number_format($best, 5) . ' (label: ' . (string) array_search($best, $f1scores) . ')');
-        $this->logger->log('Worst F1 score: ' . number_format($worst, 5) . ' (label: ' . (string) array_search($worst, $f1scores) . ')');
+        $this->logger->log('Average informedness: ' . number_format($average, 5));
+        $this->logger->log('Best informedness: ' . number_format($best, 5) . ' (label: ' . (string) array_search($best, $informedness) . ')');
+        $this->logger->log('Worst informedness: ' . number_format($worst, 5) . ' (label: ' . (string) array_search($worst, $informedness) . ')');
 
         return $average;
     }
