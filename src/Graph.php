@@ -1,14 +1,19 @@
 <?php
 
-namespace Rubix\Engine\Graph;
+namespace Rubix\Engine;
 
+use Rubix\Engine\Graph\Path;
+use Rubix\Engine\Graph\GraphNode;
+use Rubix\Engine\Graph\ObjectIndex;
+use Rubix\Engine\Connectors\Connector;
+use Rubix\Engine\Connectors\Persistable;
 use RuntimeException;
 use SplObjectStorage;
 use SplPriorityQueue;
 use Countable;
 use SplQueue;
 
-class Graph implements Countable
+class Graph implements Persistable, Countable
 {
     /**
      * An index of the nodes in the graph.
@@ -25,11 +30,29 @@ class Graph implements Countable
     protected $counter;
 
     /**
+     * Restore the graph from persistence.
+     *
+     * @param \Rubix\Engine\Connectors\Connector  $connector
+     * @return self|null
+     */
+    public static function restore(Connector $connector) : self
+    {
+        $graph = $connector->restore();
+
+        if (!$graph instanceof Graph) {
+            throw new InvalidargumentException('The restored model is not a Graph instance.');
+        }
+
+        return $graph;
+    }
+
+    /**
      * @return void
      */
-    public function __construct()
+    public function __construct(Connector $connector = null)
     {
         $this->nodes = new ObjectIndex();
+        $this->connector = $connector;
         $this->counter = 1;
     }
 
@@ -493,6 +516,16 @@ class Graph implements Countable
         }
 
         return false;
+    }
+
+    /**
+     * Save the graph to persistence.
+     *
+     * @return bool
+     */
+    public function save() : bool
+    {
+        return $this->connector->save($this);
     }
 
     /**

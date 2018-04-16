@@ -7,9 +7,11 @@ use Rubix\Engine\Prototype;
 use Rubix\Engine\Tests\MCC;
 use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
+use Rubix\Engine\PersistentModel;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\MultiLayerPerceptron;
+use Rubix\Engine\Connectors\Filesystem;
 use Rubix\Engine\Preprocessors\L2Regularizer;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use League\Csv\Reader;
@@ -24,10 +26,18 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/banknotes.csv')-
 
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->split(0.3);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.3);
 
 $prototype = new Prototype(new Pipeline(new MultiLayerPerceptron($dataset->columns(), [10, 10], $dataset->labels(), 3, 10, new Adam(0.01)), [new L2Regularizer()]), [new Accuracy(), new F1Score(), new MCC(), new Informedness()]);
 
 $prototype->train($training);
 
-$prototype->test($testing);
+$connector = new Filesystem(dirname(__DIR__) . '/models/conterfeit_detector.model');
+
+$model = new PersistentModel($prototype, $connector);
+
+$model->save();
+
+$restored = PersistentModel::restore($connector);
+
+$restored->estimator()->test($testing);

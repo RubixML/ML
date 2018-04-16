@@ -150,14 +150,27 @@ class SupervisedDataset extends Dataset
     }
 
     /**
-     * Split the dataset into two stratified subsets with a given ratio of samples.
+     * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param  float  $ratio
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function split(float $ratio = 0.5) : array
     {
-        return $this->stratifiedSplit($ratio);
+        if ($ratio <= 0.0 || $ratio >= 1.0) {
+            throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
+        }
+
+        $testing = [
+            array_splice($this->samples, 0, round($ratio * count($this->samples))),
+            array_splice($this->outcomes, 0, round($ratio * count($this->outcomes))),
+        ];
+
+        return [
+            new static($this->samples, $this->outcomes),
+            new static($testing[0], $testing[1]),
+        ];
     }
 
     /**

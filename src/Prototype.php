@@ -5,8 +5,9 @@ namespace Rubix\Engine;
 use Rubix\Engine\Tests\Test;
 use Rubix\Engine\Tests\Loggers\Screen;
 use Rubix\Engine\Tests\Loggers\Logger;
+use Rubix\Engine\Connectors\Persistable;
 
-class Prototype implements Estimator
+class Prototype implements Estimator, Persistable
 {
     /**
      * The estimator.
@@ -62,6 +63,8 @@ class Prototype implements Estimator
     }
 
     /**
+     * Train the estimator logging the time spent.
+     *
      * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */

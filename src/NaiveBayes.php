@@ -3,9 +3,10 @@
 namespace Rubix\Engine;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Connectors\Persistable;
 use InvalidArgumentException;
 
-class NaiveBayes implements Classifier
+class NaiveBayes implements Classifier, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard

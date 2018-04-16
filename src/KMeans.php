@@ -2,12 +2,13 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Connectors\Persistable;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KMeans implements Classifier, Clusterer
+class KMeans implements Classifier, Clusterer, Persistable
 {
     /**
      * The target number of clusters.

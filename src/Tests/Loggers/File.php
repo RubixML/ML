@@ -8,7 +8,7 @@ use RuntimeException;
 class File implements Logger
 {
     const DATE_FORMAT = 'Y-m-d H:i:s';
-    const MODE = 'a+';
+    const MODE = 'ab+';
 
     /**
      * The file handle.

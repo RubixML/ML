@@ -6,9 +6,10 @@ use Rubix\Engine\Graph\Tree;
 use MathPHP\Statistics\Average;
 use Rubix\Engine\Graph\BinaryNode;
 use MathPHP\Statistics\Descriptive;
+use Rubix\Engine\Connectors\Persistable;
 use InvalidArgumentException;
 
-class CART extends Tree implements Classifier, Regression
+class CART extends Tree implements Classifier, Regression, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.

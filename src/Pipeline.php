@@ -3,9 +3,10 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Preprocessors\Preprocessor;
+use Rubix\Engine\Connectors\Persistable;
 use RuntimeException;
 
-class Pipeline implements Estimator
+class Pipeline implements Estimator, Persistable
 {
     /**
      * The estimator.

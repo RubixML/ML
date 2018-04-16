@@ -7,11 +7,12 @@ use Rubix\Engine\NeuralNetwork\Hidden;
 use Rubix\Engine\NeuralNetwork\Network;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use Rubix\Engine\NeuralNetwork\Optimizers\Optimizer;
+use Rubix\Engine\Connectors\Persistable;
 use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
 
-class MultiLayerPerceptron extends Network implements Classifier
+class MultiLayerPerceptron extends Network implements Classifier, Persistable
 {
     /**
      * The fixed number of training epochs. i.e. the number of times to iterate

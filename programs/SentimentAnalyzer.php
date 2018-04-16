@@ -27,7 +27,7 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/sentiment.csv')-
 
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->split(0.2);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.2);
 
 $prototype = new Prototype(new Pipeline(new NaiveBayes(), [
     new StopWordFilter(file(dirname(__DIR__) . '/datasets/stopwords.txt')),

@@ -27,7 +27,7 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setD
 
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list ($training, $testing) = $dataset->randomize()->split(0.2);
+list ($training, $testing) = $dataset->randomize()->stratifiedSplit(0.2);
 
 $prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy(), new F1Score(), new MCC(), new Informedness()]);
 

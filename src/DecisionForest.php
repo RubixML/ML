@@ -3,9 +3,10 @@
 namespace Rubix\Engine;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Connectors\Persistable;
 use InvalidArgumentException;
 
-class DecisionForest implements Classifier, Regression
+class DecisionForest implements Classifier, Regression, Persistable
 {
     /**
      * The number of trees to plant (train) in the ensemble.

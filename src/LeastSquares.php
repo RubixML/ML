@@ -4,9 +4,10 @@ namespace Rubix\Engine;
 
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\Engine\Connectors\Persistable;
 use InvalidArgumentException;
 
-class LeastSquares implements Regression
+class LeastSquares implements Regression, Persistable
 {
     /**
      * The computed y intercept.

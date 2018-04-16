@@ -30,7 +30,7 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/mushrooms.csv')-
 
 $dataset = SupervisedDataset::fromIterator($dataset);
 
-list ($training, $testing) = $dataset->randomize()->split(0.5);
+list ($training, $testing) = $dataset->randomize()->stratifiedSplit(0.5);
 
 $prototype = new Prototype(
     new Pipeline(new DecisionForest($trees, $ratio, $minSize, $maxDepth), [new OneHotEncoder()]),
