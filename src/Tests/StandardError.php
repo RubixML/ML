@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class StandardError extends Test
 {
     /**
-     * Calculate the mean error of the predictions.
+     * Calculate the standard error of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes

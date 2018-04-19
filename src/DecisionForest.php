@@ -66,8 +66,8 @@ class DecisionForest implements Classifier, Regression, Persistable
             throw new InvalidArgumentException('The number of trees cannot be less than 1.');
         }
 
-        if ($ratio < 0.1 || $ratio > 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0.1 and 1.0.');
+        if ($ratio < 0.01 || $ratio > 1.0) {
+            throw new InvalidArgumentException('Sample ratio must be a float value between 0.01 and 1.0.');
         }
 
         $this->trees = $trees;

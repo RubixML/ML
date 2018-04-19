@@ -5,9 +5,10 @@ include __DIR__ . '/../vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\LeastSquares;
-use Rubix\Engine\Tests\MeanError;
+use Rubix\Engine\Tests\RMSError;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\StandardError;
+use Rubix\Engine\Tests\MeanAbsoluteError;
 use Rubix\Engine\Preprocessors\L2Regularizer;
 use Rubix\Engine\Preprocessors\KBestSelector;
 use Rubix\Engine\Preprocessors\MissingDataImputer;
@@ -27,7 +28,7 @@ $dataset = SupervisedDataset::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->split(0.15);
 
-$prototype = new Prototype(new Pipeline(new LeastSquares(), [new MissingDataImputer('?'), new L2Regularizer()]), [new MeanError(), new StandardError()]);
+$prototype = new Prototype(new Pipeline(new LeastSquares(), [new MissingDataImputer('?'), new L2Regularizer()]), [new RMSError(), new MeanAbsoluteError(), new StandardError()]);
 
 $prototype->train($training);
 

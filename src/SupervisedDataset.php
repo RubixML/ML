@@ -16,15 +16,8 @@ class SupervisedDataset extends Dataset
     ];
 
     /**
-     * The output type. i.e. categorical or continuous.
-     *
-     * @var int
-     */
-    protected $output;
-
-    /**
      * Build a supervised dataset used for training and testing models from an
-     * iterator or array of feature vectors. The assumption is the that dataset
+     * iterator or array of feature vectors. The assumption is that the dataset
      * contains 0 < n < ∞ feature columns where the last column is always the
      * labeled outcome.
      *
@@ -66,8 +59,6 @@ class SupervisedDataset extends Dataset
                 $outcome = $this->convertNumericString($outcome);
             }
         }
-
-        $this->output = is_string(reset($outcomes)) ? static::CATEGORICAL : static::CONTINUOUS;
 
         $this->outcomes = $outcomes;
     }
