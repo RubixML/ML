@@ -38,6 +38,8 @@ class GraphTest extends TestCase
             ],
         ];
 
+        GraphNode::resetCounter();
+
         $this->graph = new Graph();
 
         foreach ($data['nodes'] as $node) {

@@ -2,6 +2,7 @@
 
 use Rubix\Engine\Grid;
 use Rubix\Engine\Graph\Path;
+use Rubix\Engine\Graph\GraphNode;
 use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
 use PHPUnit\Framework\TestCase;
 
@@ -11,6 +12,8 @@ class GridTest extends TestCase
 
     public function setUp()
     {
+        GraphNode::resetCounter();
+
         $this->grid = new Grid(['x','y'], new Manhattan());
 
         for ($x = 0; $x < 10; $x++) {

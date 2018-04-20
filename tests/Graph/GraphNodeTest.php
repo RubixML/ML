@@ -9,7 +9,9 @@ class GraphNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new GraphNode(1, [
+        GraphNode::resetCounter();
+        
+        $this->node = new GraphNode([
             'color' => 'orange',
         ]);
     }
@@ -26,7 +28,7 @@ class GraphNodeTest extends TestCase
 
     public function test_attach_and_detach_edges()
     {
-        $node = new GraphNode(2, [
+        $node = new GraphNode([
             'color' => 'brown',
         ]);
 

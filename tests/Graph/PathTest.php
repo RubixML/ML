@@ -11,19 +11,19 @@ class PathTest extends TestCase
     public function setUp()
     {
         $this->path = new Path([
-            new GraphNode(1, [
+            new GraphNode([
                 'name' => 'San Francisco',
                 'population' => 938493,
             ]),
-            new GraphNode(2, [
+            new GraphNode([
                 'name' => 'Chicago',
                 'population' => 847392,
             ]),
-            new GraphNode(3, [
+            new GraphNode([
                 'name' => 'New York',
                 'population' => 1847593,
             ]),
-            new GraphNode(4, [
+            new GraphNode([
                 'name' => 'London',
                 'population' => 958093,
             ])
@@ -34,7 +34,7 @@ class PathTest extends TestCase
     {
         $this->assertEquals('San Francisco', $this->path->first()->name);
 
-        $this->path->prepend(new GraphNode(5, [
+        $this->path->prepend(new GraphNode([
             'name' => 'Paris',
             'population' => 453234,
         ]));
@@ -46,7 +46,7 @@ class PathTest extends TestCase
     {
         $this->assertEquals('London', $this->path->last()->name);
 
-        $this->path->append(new GraphNode(5, [
+        $this->path->append(new GraphNode([
             'name' => 'Paris',
             'population' => 453234,
         ]));

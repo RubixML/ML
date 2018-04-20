@@ -10,7 +10,9 @@ class EdgeTest extends TestCase
 
     public function setUp()
     {
-        $node = new GraphNode(1, [
+        GraphNode::resetCounter();
+        
+        $node = new GraphNode([
             'name' => 'Programming',
         ]);
 

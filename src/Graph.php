@@ -23,13 +23,6 @@ class Graph implements Persistable, Countable
     protected $nodes;
 
     /**
-     * An autoincrementing counter that keeps track of node IDs.
-     *
-     * @var int
-     */
-    protected $counter;
-
-    /**
      * Restore the graph from persistence.
      *
      * @param \Rubix\Engine\Connectors\Connector  $connector
@@ -53,7 +46,6 @@ class Graph implements Persistable, Countable
     {
         $this->nodes = new ObjectIndex();
         $this->connector = $connector;
-        $this->counter = 1;
     }
 
     /**
@@ -94,7 +86,7 @@ class Graph implements Persistable, Countable
      */
     public function insert(array $properties = []) : GraphNode
     {
-        $node = new GraphNode($this->counter++, $properties);
+        $node = new GraphNode($properties);
 
         $this->nodes->put($node->id(), $node);
 

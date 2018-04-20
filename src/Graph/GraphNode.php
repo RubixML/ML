@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\Graph;
 
+use InvalidArgumentException;
+
 class GraphNode extends GraphObject implements Node
 {
     /**
@@ -19,13 +21,34 @@ class GraphNode extends GraphObject implements Node
     protected $edges;
 
     /**
-     * @param  mixed  $id
+     * An autoincrementing counter that keeps track of issued node IDs.
+     *
+     * @var int
+     */
+    protected static $counter = 1;
+
+    /**
+     * Reset the autoincrementing counter to a particular offset value.
+     *
+     * @param  int  $offset
+     * @return void
+     */
+    public static function resetCounter(int $offset = 1) : void
+    {
+        if ($offset < 0) {
+            throw new InvalidArgumentException('Autoincrementing counter offset must be non-negative.');
+        }
+
+        self::$counter = $offset;
+    }
+
+    /**
      * @param  array  $properties
      * @return void
      */
-    public function __construct($id, array $properties = [])
+    public function __construct(array $properties = [])
     {
-        $this->id = $id;
+        $this->id = self::$counter++;
         $this->edges = new ObjectIndex();
 
         parent::__construct($properties);
