@@ -21,10 +21,10 @@ class RMSError extends Test
             $error += ($outcomes[$i] - $prediction) ** 2;
         }
 
-        $error = sqrt((1 / count($predictions)) * $error);
+        $rmse = sqrt((1 / count($predictions)) * $error);
 
-        $this->logger->log('RMS error: ' . number_format($error, 5));
+        $this->logger->log('RMS error: ' . number_format($rmse, 5));
 
-        return $error;
+        return $rmse;
     }
 }

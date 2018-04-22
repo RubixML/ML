@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class Informedness extends Test
 {
     /**
-     * Test the accuracy of the predictions.
+     * Test the informedness of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes

@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class MeanAbsoluteError extends Test
 {
     /**
-     * Calculate the mean error of the predictions.
+     * Calculate the mean absolute error of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes

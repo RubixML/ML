@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class F1Score extends Test
 {
     /**
-     * Test the accuracy of the predictions.
+     * Test the F1 score of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes

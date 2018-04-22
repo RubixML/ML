@@ -89,7 +89,7 @@ class SupervisedDataset extends Dataset
      */
     public function labels() : array
     {
-        return array_unique($this->outcomes);
+        return array_values(array_unique($this->outcomes));
     }
 
     /**
@@ -195,7 +195,7 @@ class SupervisedDataset extends Dataset
     }
 
     /**
-     * Generate a random subset with replacement.
+     * Generate a random subset without replacement.
      *
      * @param  float  $ratio
      * @throws \InvalidArgumentException

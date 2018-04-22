@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class StandardError extends Test
 {
     /**
-     * Calculate the standard error of the predictions.
+     * Calculate the standard error of the mean from a set of predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes
@@ -29,7 +29,7 @@ class StandardError extends Test
 
         $stderror = $stddev / sqrt(count($outcomes));
 
-        $this->logger->log('Standard error: ' . number_format($stderror, 5));
+        $this->logger->log('Standard error of the mean: ' . number_format($stderror, 5));
 
         return $stderror;
     }

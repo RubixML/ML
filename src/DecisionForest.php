@@ -106,7 +106,7 @@ class DecisionForest implements Classifier, Regression, Persistable
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train($data->generateRandomSubset($this->ratio));
+            $tree->train($data->generateRandomSubsetWithReplacement($this->ratio));
 
             $this->forest[$i] = $tree;
         }

@@ -42,7 +42,8 @@ class LeastSquares implements Regression, Persistable
     }
 
     /**
-     * Learn the coefficients of the training data.
+     * Learn the coefficients of the training data. i.e. compute the line that best
+     * fits the training data.
      *
      * @param  \Rubix\Engine\Dataset  $data
      * @throws \InvalidArgumentException
@@ -83,7 +84,7 @@ class LeastSquares implements Regression, Persistable
 
     /**
      * Compute the coefficients of the training data by solving for the normal
-     * equation. The resulting equation is the line that minimizes the sum of
+     * equation. The resulting equation is the polynomial that minimizes the sum of
      * the squares of the errors.
      *
      * @param  array  $samples

@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class MCC extends Test
 {
     /**
-     * Test the accuracy of the predictions.
+     * Test the Matthews correlation coefficient of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes
