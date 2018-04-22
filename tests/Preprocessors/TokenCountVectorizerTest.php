@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\TokenCountVectorizer;
+use Rubix\Engine\Transformers\TokenCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
 class TokenCountVectorizerTest extends TestCase

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class OneHotEncoder implements Preprocessor
+class OneHotEncoder implements Transformer
 {
     /**
      * The set of unique possible categories of the training set.

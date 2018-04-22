@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\OneHotEncoder;
+use Rubix\Engine\Transformers\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
 
 class OneHotEncoderTest extends TestCase

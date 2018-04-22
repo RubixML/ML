@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\TextNormalizer;
+use Rubix\Engine\Transformers\TextNormalizer;
 use PHPUnit\Framework\TestCase;
 
 class TextNormalizerTest extends TestCase

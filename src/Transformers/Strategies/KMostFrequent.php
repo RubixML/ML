@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors\Strategies;
+namespace Rubix\Engine\Transformers\Strategies;
 
 use InvalidArgumentException;
 

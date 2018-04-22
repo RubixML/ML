@@ -1,17 +1,26 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class StopWordFilter implements Preprocessor
+class BlanketCharacterFilter implements Transformer
 {
+    const SPECIAL = [
+        '.', ',', '?', '!', '#', '(', ')', '[', ']', '{', '}', ':', ';', '\'', '"',
+        '|', '<', '>', '/', '\\', '+', '=',
+    ];
+
+    const NUMBERS = [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    ];
+
     /**
-     * The dictionary of stop words to filter out of the dataset.
+     * The characters to remove from the text.
      *
      * @var array
      */
-    protected $stopWords = [
+    protected $characters = [
         //
     ];
 
@@ -25,17 +34,15 @@ class StopWordFilter implements Preprocessor
     ];
 
     /**
-     * @param  array  $stopWords
+     * @param  array  $characters
      * @return void
      */
-    public function __construct(array $stopWords = [])
+    public function __construct(array $characters = [])
     {
-        $this->stopWords = array_values($stopWords);
+        $this->characters = $characters;
     }
 
     /**
-     * Build the vocabulary for the vectorizer.
-     *
      * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
@@ -45,8 +52,7 @@ class StopWordFilter implements Preprocessor
     }
 
     /**
-     * Transform the text dataset into a collection of vectors where the value
-     * is equal to the number of times that word appears in the sample.
+     * Normalize the dataset.
      *
      * @param  array  $samples
      * @return void
@@ -56,7 +62,7 @@ class StopWordFilter implements Preprocessor
         foreach ($samples as &$sample) {
             foreach ($this->columnTypes as $column => $type) {
                 if ($type === self::CATEGORICAL) {
-                    $sample[$column] = preg_replace('/\b(' . implode('|', $this->stopWords) . ')\b/', '', $sample[$column]);
+                    $sample[$column] = str_replace($this->characters, '', $sample[$column]);
                 }
             }
         }

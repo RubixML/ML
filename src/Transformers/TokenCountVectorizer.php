@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\Tokenizers\Tokenizer;
-use Rubix\Engine\Preprocessors\Tokenizers\WhitespaceTokenizer;
+use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
+use Rubix\Engine\Transformers\Tokenizers\WhitespaceTokenizer;
 use InvalidArgumentException;
 
-class TokenCountVectorizer implements Preprocessor
+class TokenCountVectorizer implements Transformer
 {
     /**
      * The maximum size of the vocabulary.
@@ -43,7 +43,7 @@ class TokenCountVectorizer implements Preprocessor
 
     /**
      * @param  int  $maxVocabulary
-     * @param  \Rubix\Engine\Preprocessors\Tokenizers\Tokenizer  $tokenizer
+     * @param  \Rubix\Engine\Transformers\Tokenizers\Tokenizer  $tokenizer
      * @return void
      */
     public function __construct(int $maxVocabulary = PHP_INT_MAX, Tokenizer $tokenizer = null)

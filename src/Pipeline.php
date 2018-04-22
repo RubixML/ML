@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Preprocessors\Preprocessor;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Connectors\Persistable;
 use RuntimeException;
 
@@ -21,19 +21,19 @@ class Pipeline implements Estimator, Persistable
      *
      * @var array
      */
-    protected $preprocessors = [
+    protected $transformers = [
         //
     ];
 
     /**
      * @param  \Rubix\Engine\Estimator  $estimator
-     * @param  array  $preprocessors
+     * @param  array  $transformers
      * @return void
      */
-    public function __construct(Estimator $estimator, array $preprocessors = [])
+    public function __construct(Estimator $estimator, array $transformers = [])
     {
-        foreach ($preprocessors as $preprocessor) {
-            $this->addPreprocessor($preprocessor);
+        foreach ($transformers as $transformer) {
+            $this->addTransformer($transformer);
         }
 
         $this->estimator = $estimator;
@@ -50,7 +50,7 @@ class Pipeline implements Estimator, Persistable
     }
 
     /**
-     * Run the training dataset through all preprocessors in order and use the
+     * Run the training dataset through all transformers in order and use the
      * transformed dataset to train the estimator.
      *
      * @param  \Rubix\Engine\Dataset  $data
@@ -59,10 +59,10 @@ class Pipeline implements Estimator, Persistable
      */
     public function train(Dataset $data) : void
     {
-        foreach ($this->preprocessors as $preprocessor) {
-            $preprocessor->fit($data);
+        foreach ($this->transformers as $transformer) {
+            $transformer->fit($data);
 
-            $data->transform($preprocessor);
+            $data->transform($transformer);
         }
 
         $this->estimator->train($data);
@@ -78,22 +78,22 @@ class Pipeline implements Estimator, Persistable
     {
         $samples = [$sample];
 
-        foreach ($this->preprocessors as $preprocessor) {
-            $preprocessor->transform($samples);
+        foreach ($this->transformers as $transformer) {
+            $transformer->transform($samples);
         }
 
         return $this->estimator->predict($samples[0]);
     }
 
     /**
-     * Add a preprocessor middleware to the pipeline.
+     * Add a transformer middleware to the pipeline.
      *
-     * @param  \Rubix\Engine\Contracts\Preprocessor  $preprocessor
+     * @param  \Rubix\Engine\Contracts\Transformer  $transformer
      * @return self
      */
-    public function addPreprocessor(Preprocessor $preprocessor) : self
+    public function addTransformer(Transformer $transformer) : self
     {
-        $this->preprocessors[] = $preprocessor;
+        $this->transformers[] = $transformer;
 
         return $this;
     }

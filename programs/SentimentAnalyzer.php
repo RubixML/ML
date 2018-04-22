@@ -10,11 +10,11 @@ use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
-use Rubix\Engine\Preprocessors\TextNormalizer;
-use Rubix\Engine\Preprocessors\StopWordFilter;
-use Rubix\Engine\Preprocessors\TokenCountVectorizer;
-use Rubix\Engine\Preprocessors\BlanketCharacterFilter;
-use Rubix\Engine\Preprocessors\Tokenizers\WordTokenizer;
+use Rubix\Engine\Transformers\TextNormalizer;
+use Rubix\Engine\Transformers\StopWordFilter;
+use Rubix\Engine\Transformers\TokenCountVectorizer;
+use Rubix\Engine\Transformers\BlanketCharacterFilter;
+use Rubix\Engine\Transformers\Tokenizers\WordTokenizer;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

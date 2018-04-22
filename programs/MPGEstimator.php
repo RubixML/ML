@@ -10,8 +10,8 @@ use Rubix\Engine\Tests\RSquared;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\StandardError;
 use Rubix\Engine\Tests\MeanAbsoluteError;
-use Rubix\Engine\Preprocessors\L2Regularizer;
-use Rubix\Engine\Preprocessors\MissingDataImputer;
+use Rubix\Engine\Transformers\L2Regularizer;
+use Rubix\Engine\Transformers\MissingDataImputer;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

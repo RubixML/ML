@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors\Tokenizers;
+namespace Rubix\Engine\Transformers\Tokenizers;
 
 interface Tokenizer
 {

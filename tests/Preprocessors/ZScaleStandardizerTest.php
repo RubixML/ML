@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\ZScaleStandardizer;
+use Rubix\Engine\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 
 class ZScaleStandardizerTest extends TestCase

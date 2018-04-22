@@ -1,26 +1,17 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class BlanketCharacterFilter implements Preprocessor
+class StopWordFilter implements Transformer
 {
-    const SPECIAL = [
-        '.', ',', '?', '!', '#', '(', ')', '[', ']', '{', '}', ':', ';', '\'', '"',
-        '|', '<', '>', '/', '\\', '+', '=',
-    ];
-
-    const NUMBERS = [
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    ];
-
     /**
-     * The characters to remove from the text.
+     * The dictionary of stop words to filter out of the dataset.
      *
      * @var array
      */
-    protected $characters = [
+    protected $stopWords = [
         //
     ];
 
@@ -34,15 +25,17 @@ class BlanketCharacterFilter implements Preprocessor
     ];
 
     /**
-     * @param  array  $characters
+     * @param  array  $stopWords
      * @return void
      */
-    public function __construct(array $characters = [])
+    public function __construct(array $stopWords = [])
     {
-        $this->characters = $characters;
+        $this->stopWords = array_values($stopWords);
     }
 
     /**
+     * Build the vocabulary for the vectorizer.
+     *
      * @param  \Rubix\Engine\Dataset  $data
      * @return void
      */
@@ -52,7 +45,8 @@ class BlanketCharacterFilter implements Preprocessor
     }
 
     /**
-     * Normalize the dataset.
+     * Transform the text dataset into a collection of vectors where the value
+     * is equal to the number of times that word appears in the sample.
      *
      * @param  array  $samples
      * @return void
@@ -62,7 +56,7 @@ class BlanketCharacterFilter implements Preprocessor
         foreach ($samples as &$sample) {
             foreach ($this->columnTypes as $column => $type) {
                 if ($type === self::CATEGORICAL) {
-                    $sample[$column] = str_replace($this->characters, '', $sample[$column]);
+                    $sample[$column] = preg_replace('/\b(' . implode('|', $this->stopWords) . ')\b/', '', $sample[$column]);
                 }
             }
         }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class TextNormalizer implements Preprocessor
+class TextNormalizer implements Transformer
 {
     /**
      * @param  \Rubix\Engine\Dataset  $data

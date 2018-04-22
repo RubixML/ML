@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
+use Rubix\Engine\Transformers\Strategies\FuzzyMean;
 use PHPUnit\Framework\TestCase;
 
 class FuzzyMeanTest extends TestCase

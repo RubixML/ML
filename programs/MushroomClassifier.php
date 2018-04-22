@@ -10,7 +10,7 @@ use Rubix\Engine\Tests\Accuracy;
 use Rubix\Engine\DecisionForest;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
-use Rubix\Engine\Preprocessors\OneHotEncoder;
+use Rubix\Engine\Transformers\OneHotEncoder;
 use League\Csv\Reader;
 
 $trees = $argv[1] ?? 5;

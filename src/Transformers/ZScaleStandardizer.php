@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 use MathPHP\Statistics\Average;
 
-class ZScaleStandardizer implements Preprocessor
+class ZScaleStandardizer implements Transformer
 {
     /**
      * The type of each feature column. i.e. categorical or continuous.

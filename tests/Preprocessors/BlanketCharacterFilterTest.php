@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\BlanketCharacterFilter;
+use Rubix\Engine\Transformers\BlanketCharacterFilter;
 use PHPUnit\Framework\TestCase;
 
 class BlanketCharacterFilterTest extends TestCase

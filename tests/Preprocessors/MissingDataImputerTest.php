@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\MissingDataImputer;
+use Rubix\Engine\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
 class MissingDataImputerTest extends TestCase

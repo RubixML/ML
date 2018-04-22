@@ -12,7 +12,7 @@ use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\MultiLayerPerceptron;
 use Rubix\Engine\Connectors\Filesystem;
-use Rubix\Engine\Preprocessors\L2Regularizer;
+use Rubix\Engine\Transformers\L2Regularizer;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use League\Csv\Reader;
 

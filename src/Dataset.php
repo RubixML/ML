@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Preprocessors\Preprocessor;
+use Rubix\Engine\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use ArrayIterator;
@@ -101,14 +101,14 @@ class Dataset implements IteratorAggregate, Countable
     }
 
     /**
-     * Have a preprocessor transform the dataset.
+     * Have a transformer transform the dataset.
      *
-     * @param  \Rubix\Engine\Contracts\Preprocessor  $preprocessor
+     * @param  \Rubix\Engine\Contracts\Transformer  $transformer
      * @return void
      */
-    public function transform(Preprocessor $preprocessor) : void
+    public function transform(Transformer $transformer) : void
     {
-        $preprocessor->transform($this->samples);
+        $transformer->transform($this->samples);
     }
 
     /**

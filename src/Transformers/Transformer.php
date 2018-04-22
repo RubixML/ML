@@ -1,14 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-interface Preprocessor
+interface Transformer
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
-
     const EPSILON = 1e-8;
 
     /**

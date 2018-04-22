@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\L1Regularizer;
+use Rubix\Engine\Transformers\L1Regularizer;
 use PHPUnit\Framework\TestCase;
 
 class L1RegularizerTest extends TestCase

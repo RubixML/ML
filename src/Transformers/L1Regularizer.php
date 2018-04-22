@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class L1Regularizer implements Preprocessor
+class L1Regularizer implements Transformer
 {
     /**
      * The columns that should be regularized. i.e. the continuous data points.

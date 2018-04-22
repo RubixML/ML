@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Preprocessors\Strategies\PopularityContest;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
 class PopularityContestTest extends TestCase

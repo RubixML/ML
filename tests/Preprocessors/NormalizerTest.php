@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\Normalizer;
+use Rubix\Engine\Transformers\Normalizer;
 use PHPUnit\Framework\TestCase;
 
 class NormalizerTest extends TestCase

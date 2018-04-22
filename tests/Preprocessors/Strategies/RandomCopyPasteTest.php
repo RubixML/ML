@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Preprocessors\Strategies\RandomCopyPaste;
+use Rubix\Engine\Transformers\Strategies\RandomCopyPaste;
 use PHPUnit\Framework\TestCase;
 
 class RandomCopyPasteTest extends TestCase

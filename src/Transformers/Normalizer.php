@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 
-class Normalizer implements Preprocessor
+class Normalizer implements Transformer
 {
     /**
      * The type of each feature column. i.e. categorical or continuous.

@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\VarianceThresholdFilter;
+use Rubix\Engine\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 
 class VarianceThresholdFilterTest extends TestCase

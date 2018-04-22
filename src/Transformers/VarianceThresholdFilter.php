@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
 use MathPHP\Statistics\Descriptive;
 
-class VarianceThresholdFilter implements Preprocessor
+class VarianceThresholdFilter implements Transformer
 {
     /**
      * The minimum variance a feature column must have in order to be selected.

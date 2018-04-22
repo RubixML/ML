@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\Preprocessors;
+namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Dataset;
-use Rubix\Engine\Preprocessors\Strategies\Strategy;
-use Rubix\Engine\Preprocessors\Strategies\FuzzyMean;
-use Rubix\Engine\Preprocessors\Strategies\KMostFrequent;
+use Rubix\Engine\Transformers\Strategies\Strategy;
+use Rubix\Engine\Transformers\Strategies\FuzzyMean;
+use Rubix\Engine\Transformers\Strategies\KMostFrequent;
 use InvalidArgumentException;
 
-class MissingDataImputer implements Preprocessor
+class MissingDataImputer implements Transformer
 {
     /**
      * The placeholder of a missing value.
@@ -20,14 +20,14 @@ class MissingDataImputer implements Preprocessor
     /**
      * The particular strategy to use when guessing categorical values.
      *
-     * @var \Rubix\Engine\Preprocessors\Strategies\Categorical
+     * @var \Rubix\Engine\Transformers\Strategies\Categorical
      */
     protected $categoricalStrategy;
 
     /**
      * The particular strategy to use when guessing continuous values.
      *
-     * @var \Rubix\Engine\Preprocessors\Strategies\Continuous
+     * @var \Rubix\Engine\Transformers\Strategies\Continuous
      */
     protected $continuousStrategy;
 
@@ -51,8 +51,8 @@ class MissingDataImputer implements Preprocessor
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\Engine\Preprocessors\Strategies\Categorical|null  $categoricalStrategy
-     * @param  \Rubix\Engine\Preprocessors\Strategies\Continuous|null  $continuousStrategy
+     * @param  \Rubix\Engine\Transformers\Strategies\Categorical|null  $categoricalStrategy
+     * @param  \Rubix\Engine\Transformers\Strategies\Continuous|null  $continuousStrategy
      * @throws \InvalidArgumentException
      * @return void
      */
