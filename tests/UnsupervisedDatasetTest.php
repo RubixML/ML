@@ -31,6 +31,11 @@ class UnsupervisedDatasetTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function test_head()
+    {
+        $this->assertEquals(3, $this->dataset->head(3)->rows());
+    }
+
     public function test_split_dataset()
     {
         $splits = $this->dataset->split(0.5);

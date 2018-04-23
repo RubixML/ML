@@ -119,6 +119,17 @@ class SupervisedDataset extends Dataset
     }
 
     /**
+     * Return a dataset containing only the first n samples.
+     *
+     * @param  int  $n
+     * @return self
+     */
+    public function head(int $n = 10) : self
+    {
+        return new static(array_slice($this->samples, 0, $n), array_slice($this->outcomes, 0, $n));
+    }
+
+    /**
      * Take n samples and outcomes from this dataset and return them in a new dataset.
      *
      * @param  int  $n
