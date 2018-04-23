@@ -30,33 +30,33 @@ class Filesystem implements Persister
     }
 
     /**
-     * Save the model to the Filesystem. Returns true on success, false on error.
+     * Save the persisable object to the Filesystem. Returns true on success, false on error.
      *
      * @return bool
      */
-    public function save(Persistable $model) : bool
+    public function save(Persistable $persistable) : bool
     {
-        return file_put_contents($this->path, serialize($model), LOCK_EX) ? true : false;
+        return file_put_contents($this->path, serialize($persistable), LOCK_EX) ? true : false;
     }
 
     /**
-     * Restore the estimator from the filesystem.
+     * Restore the persistable object from the filesystem.
      *
      * @throws \RuntimeException
      * @return \Rubix\Engine\Persistable
      */
-    public function restore() : Persistable
+    public function load() : Persistable
     {
         if (!file_exists($this->path) || !is_readable($this->path)) {
             throw new RuntimeException('File ' . basename($path) . ' cannot be opened.');
         }
 
-        $model = unserialize(file_get_contents($this->path));
+        $persistable = unserialize(file_get_contents($this->path));
 
-        if ($model === false) {
-            throw new RuntimeException('Model could not be reconstituted.');
+        if ($persistable === false) {
+            throw new RuntimeException('Object could not be reconstituted.');
         }
 
-        return $model;
+        return $persistable;
     }
 }

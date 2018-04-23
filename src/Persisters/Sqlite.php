@@ -63,44 +63,44 @@ class Sqlite implements Persister
         $this->table = addslashes($table);
         $this->history = $history;
 
-        $this->connection->query("CREATE TABLE IF NOT EXISTS {$this->table} (model BLOB, created_at INTEGER);");
+        $this->connection->query("CREATE TABLE IF NOT EXISTS {$this->table} (object BLOB, created_at INTEGER);");
     }
 
     /**
-     * @param  \Rubix\Engine\Persisters\Persistable  $model
+     * @param  \Rubix\Engine\Persisters\Persistable  $persistable
      * @throws \RuntimeException
      * @return bool
      */
-    public function save(Persistable $model) : bool
+    public function save(Persistable $persistable) : bool
     {
-        $model = serialize($model);
+        $persistable = serialize($persistable);
 
-        if ((strlen($model) * 1e-9) > 2.1) {
-            throw new RuntimeException('Sqlite cannot handle models larger than 2.1 gigabytes.');
+        if ((strlen($persistable) * 1e-9) > 2.1) {
+            throw new RuntimeException('Sqlite cannot handle objects larger than 2.1 gigabytes.');
         }
 
         if ($this->history === false) {
             $this->truncate();
         }
 
-        return $this->connection->prepare("INSERT INTO {$this->table} (model, created_at) VALUES (?, ?);")
-            ->execute([$model, time()]);
+        return $this->connection->prepare("INSERT INTO {$this->table} (object, created_at) VALUES (?, ?);")
+            ->execute([$persistable, time()]);
     }
 
     /**
      * @throws \RuntimeException
      * @return \Rubix\Engine\Persistable|null
      */
-    public function restore() : ?Persistable
+    public function load() : ?Persistable
     {
-        $result = $this->connection->query("SELECT * FROM {$this->table} ORDER BY created_at DESC LIMIT 1;")
+        $result = $this->connection->query("SELECT object FROM {$this->table} ORDER BY created_at DESC LIMIT 1;")
             ->fetch();
 
         if ($result === false) {
             throw new RuntimeException('Could not load model from the database.');
         }
 
-        return unserialize($result['model']) ?: null;
+        return unserialize($result['object']) ?: null;
     }
 
     /**

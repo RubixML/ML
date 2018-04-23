@@ -7,7 +7,6 @@ use Rubix\Engine\Prototype;
 use Rubix\Engine\Tests\MCC;
 use Rubix\Engine\Tests\F1Score;
 use Rubix\Engine\Tests\Accuracy;
-use Rubix\Engine\PersistentModel;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\MultiLayerPerceptron;
@@ -32,12 +31,8 @@ $prototype = new Prototype(new Pipeline(new MultiLayerPerceptron($dataset->colum
 
 $prototype->train($training);
 
-$connector = new Filesystem(dirname(__DIR__) . '/models/conterfeit_detector.model');
+$persister = new Filesystem(dirname(__DIR__) . '/models/conterfeit_detector.model');
 
-$model = new PersistentModel($prototype, $connector);
+$persister->save($prototype);
 
-$model->save();
-
-$restored = PersistentModel::restore($connector);
-
-$restored->estimator()->test($testing);
+$persister->load()->test($testing);

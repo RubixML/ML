@@ -59,36 +59,36 @@ class PHPRedis implements Persister
     }
 
     /**
-     * @param  \Rubix\Engine\Persisters\Persistable  $model
+     * @param  \Rubix\Engine\Persisters\Persistable  $persistable
      * @return bool
      */
-    public function save(Persistable $model) : bool
+    public function save(Persistable $persistable) : bool
     {
-        if ((strlen($model) * 1e-6) > 512) {
+        if ((strlen($persistable) * 1e-6) > 512) {
             throw new RuntimeException('Redis cannot handle models larger than 512 megabytes.');
         }
 
-        return $this->connection->set($this->key, serialize($model));
+        return $this->connection->set($this->key, serialize($persistable));
     }
 
     /**
      * @throws \RuntimeException
      * @return \Rubix\Engine\Persistable|null
      */
-    public function restore() : Persistable
+    public function load() : Persistable
     {
-        $model = $this->connection->get($this->key);
+        $persistable = $this->connection->get($this->key);
 
-        if ($model === false) {
-            throw new RuntimeException('Could not load model from the database.');
+        if ($persistable === false) {
+            throw new RuntimeException('Could not load object from the database.');
         }
 
-        $model = unserialize($model);
+        $persistable = unserialize($persistable);
 
-        if (!$model instanceof Persistable) {
-            throw new RuntimeException('Model could not be reconstituted.');
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Object could not be reconstituted.');
         }
 
-        return $model;
+        return $persistable;
     }
 }

@@ -12,10 +12,10 @@ interface Persister
     public function save(Persistable $model) : bool;
 
     /**
-     * Restore the model from persistence. Returns the stored object of null if
-     * cannot be found or error.
+     * Load object from persistence. Returns the stored object or null if
+     * either it cannot be found or error.
      *
      * @return \Rubix\Engine\Persisters\Persistable
      */
-    public function restore() : Persistable;
+    public function load() : Persistable;
 }

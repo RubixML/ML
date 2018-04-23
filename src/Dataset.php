@@ -3,12 +3,13 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Transformers\Transformer;
+use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use ArrayIterator;
 use Countable;
 
-class Dataset implements IteratorAggregate, Countable
+class Dataset implements Persistable, IteratorAggregate, Countable
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
