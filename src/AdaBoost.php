@@ -33,14 +33,14 @@ class AdaBoost implements Classifier
     protected $experts;
 
     /**
-     * The ratio of samples to consider during each expert training round.
+     * The ratio of samples to consider during each training round.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     * The threshold acccuracy of a classifier before the algorithm stops early.
+     * The threshold accuracy of a single classifier before the algorithm stops early.
      *
      * @var float
      */
@@ -56,7 +56,7 @@ class AdaBoost implements Classifier
     ];
 
     /**
-     * The ensemble of experts that specialize in classifying certain aspects of
+     * The ensemble of experts that each specialize in classifying certain aspects of
      * the training set.
      *
      * @var array
@@ -111,8 +111,8 @@ class AdaBoost implements Classifier
     }
 
     /**
-     * Train a boosted enemble of binary classifiers assigning an influence values
-     * to the classifiers, and re-weighting the training data according to how
+     * Train a boosted enemble of binary classifiers assigning an influence value
+     * to each one and re-weighting the training data according to reflect how
      * difficult a particular sample is to classify.
      *
      * @param  \Rubix\Engine\Dataset  $data
@@ -154,8 +154,7 @@ class AdaBoost implements Classifier
 
             $sum = $data->totalWeight();
             $error /= $sum;
-            $score = abs($error - 0.5);
-            $influence = 0.5 * log((1 - $score) / ($score ? $score : self::EPSILON));
+            $influence = 0.5 * log((1 - $error) / ($error ? $error : self::EPSILON));
 
             foreach ($data as $i => $sample) {
                 $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
@@ -167,15 +166,15 @@ class AdaBoost implements Classifier
             $this->influence[] = $influence;
             $this->ensemble[] = $expert;
 
-            if ((1 - $score) > $this->threshold) {
+            if ((1 - $error) > $this->threshold) {
                 break 1;
             }
         }
     }
 
     /**
-     * Make a prediction by consulting the panel of trained experts and chosing
-     * the class label closest to the value of the weighted sum of all the predictions.
+     * Make a prediction by consulting the ensemble of experts and chosing the class
+     * label closest to the value of the weighted sum of each expert's prediction.
      *
      * @param  array  $sample
      * @return \Rubix\Engine\Prediction

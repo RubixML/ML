@@ -14,10 +14,10 @@ use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use League\Csv\Reader;
 
-$minSize = $argv[1] ?? 3;
-$maxDepth = $argv[2] ?? 10;
+$minSize = $argv[1] ?? 1;
+$maxDepth = $argv[2] ?? 3;
 $experts = $argv[3] ?? 100;
-$ratio = $argv[4] ?? 0.20;
+$ratio = $argv[4] ?? 0.10;
 $threshold = $argv[5] ?? 0.99;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
