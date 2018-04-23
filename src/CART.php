@@ -113,16 +113,10 @@ class CART extends Tree implements Classifier, Regression, Persistable
             throw new InvalidArgumentException('This estimator requires a supervised dataset.');
         }
 
-        list($samples, $outcomes) = $data->toArray();
-
         $this->columnTypes = $data->columnTypes();
         $this->output = $data->outcomeType();
 
-        foreach ($samples as $i => &$sample) {
-            $sample[] = $outcomes[$i];
-        }
-
-        $this->root = $this->findBestSplit($samples);
+        $this->root = $this->findBestSplit($data->all());
         $this->splits = 1;
 
         $this->split($this->root);

@@ -24,6 +24,6 @@ class MCCTest extends TestCase
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
         $outcomes = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $this->assertEquals(0.16666667666666665, $this->test->score($predictions, $outcomes));
+        $this->assertEquals(0.16666666648148146, $this->test->score($predictions, $outcomes));
     }
 }

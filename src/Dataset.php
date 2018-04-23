@@ -152,9 +152,11 @@ class Dataset implements IteratorAggregate, Countable
     }
 
     /**
+     * Return an array containing all of the samples.
+     *
      * @return array
      */
-    public function toArray() : array
+    public function all() : array
     {
         return $this->samples;
     }

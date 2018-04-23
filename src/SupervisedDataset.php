@@ -265,13 +265,25 @@ class SupervisedDataset extends Dataset
     }
 
     /**
+     * Return an array of all the samples and outcomes with the last column of each
+     * row being the labeled outcome of the supervised dataset.
+     *
      * @return array
      */
-    public function toArray() : array
+    public function all() : array
     {
-        return [
-            $this->samples,
-            $this->outcomes,
-        ];
+        return array_map(function ($sample, $outcome) {
+            return array_merge($sample, (array) $outcome);
+        }, $this->samples, $this->outcomes);
+    }
+
+    /**
+     * Return a new weighted dataset with uniform weights.
+     *
+     * @return \Rubix\Engine\WeightedDataset
+     */
+    public function toWeightedDataset() : WeightedDataset
+    {
+        return new WeightedDataset($this->samples, $this->outcomes);
     }
 }

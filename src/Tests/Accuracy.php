@@ -48,7 +48,7 @@ class Accuracy extends Test
         $best = max($accuracy);
         $worst = min($accuracy);
 
-        $this->logger->log('Average Accuracy: ' . number_format($average, 5) . ' (' . number_format($average * 100, 2) . '%)');
+        $this->logger->log('Average Accuracy: ' . number_format($average, 5));
         $this->logger->log('Best Accuracy: ' . number_format($best, 5) . ' (label: ' . (string) array_search($best, $accuracy) . ')');
         $this->logger->log('Worst Accuracy: ' . number_format($worst, 5) . ' (label: ' . (string) array_search($worst, $accuracy) . ')');
 

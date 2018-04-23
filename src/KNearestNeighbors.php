@@ -87,9 +87,9 @@ class KNearestNeighbors implements Classifier, Regression
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
+        $this->coordinates = $data->samples();
+        $this->outcomes = $data->outcomes();
         $this->output = $data->outcomeType();
-
-        list($this->coordinates, $this->outcomes) = $data->toArray();
     }
 
     /**

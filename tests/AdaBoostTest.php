@@ -1,10 +1,11 @@
 <?php
 
 use Rubix\Engine\CART;
+use Rubix\Engine\AdaBoost;
 use Rubix\Engine\SupervisedDataset;
 use PHPUnit\Framework\TestCase;
 
-class CARTTest extends TestCase
+class AdaBoostTest extends TestCase
 {
     protected $estimator;
 
@@ -35,14 +36,14 @@ class CARTTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new CART(3, 30);
+        $this->estimator = new AdaBoost(CART::class, [1, 1], 10, 1.0, 0.999);
 
         $this->estimator->train($this->dataset);
     }
 
-    public function test_create_tree()
+    public function test_build_ada_boost_classifier()
     {
-        $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(AdaBoost::class, $this->estimator);
     }
 
     public function test_make_prediction()
