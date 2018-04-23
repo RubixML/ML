@@ -41,7 +41,7 @@ class MCC extends Test
             $fp = $falsePositives[$label];
             $fn = $falseNegatives[$label];
 
-            $mcc[$label] = ($count * $tn - $fp * $fn) / sqrt(($count + $fp) * ($count + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON;
+            $mcc[$label] = ($count * $tn - $fp * $fn) / (sqrt(($count + $fp) * ($count + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON);
         }
 
         $average = Average::mean($mcc);
