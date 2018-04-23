@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/../vendor/autoload.php';
+include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;

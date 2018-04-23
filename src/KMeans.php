@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;

@@ -3,7 +3,7 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 use RuntimeException;
 
 class Pipeline implements Estimator, Persistable

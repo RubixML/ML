@@ -3,7 +3,7 @@
 namespace Rubix\Engine;
 
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
 class DecisionForest implements Classifier, Regression, Persistable

@@ -1,12 +1,12 @@
 <?php
 
-namespace  Rubix\Engine\Connectors;
+namespace Rubix\Engine\Persisters;
 
 use InvalidArgumentException;
 use RuntimeException;
 use Redis;
 
-class PHPRedis implements Connector
+class PHPRedis implements Persister
 {
     const DEFAULT_OPTIONS = [
         'password' => null,
@@ -59,7 +59,7 @@ class PHPRedis implements Connector
     }
 
     /**
-     * @param  \Rubix\Engine\Connectors\Persistable  $model
+     * @param  \Rubix\Engine\Persisters\Persistable  $model
      * @return bool
      */
     public function save(Persistable $model) : bool

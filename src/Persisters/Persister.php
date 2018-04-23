@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Connectors;
+namespace Rubix\Engine\Persisters;
 
-interface Connector
+interface Persister
 {
     /**
      * Save the model. Return true on success and false on error.
@@ -15,7 +15,7 @@ interface Connector
      * Restore the model from persistence. Returns the stored object of null if
      * cannot be found or error.
      *
-     * @return \Rubix\Engine\Connectors\Persistable
+     * @return \Rubix\Engine\Persisters\Persistable
      */
     public function restore() : Persistable;
 }

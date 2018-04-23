@@ -7,7 +7,7 @@ use Rubix\Engine\NeuralNetwork\Hidden;
 use Rubix\Engine\NeuralNetwork\Network;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use Rubix\Engine\NeuralNetwork\Optimizers\Optimizer;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;

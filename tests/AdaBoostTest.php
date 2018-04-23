@@ -36,7 +36,7 @@ class AdaBoostTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new AdaBoost(CART::class, [1, 1], 10, 1.0, 0.999);
+        $this->estimator = new AdaBoost(CART::class, [1, 1], 5, 0.5, 0.999);
 
         $this->estimator->train($this->dataset);
     }

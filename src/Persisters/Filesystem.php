@@ -1,11 +1,11 @@
 <?php
 
-namespace  Rubix\Engine\Connectors;
+namespace Rubix\Engine\Persisters;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class Filesystem implements Connector
+class Filesystem implements Persister
 {
     const MODE = 'wb+';
 

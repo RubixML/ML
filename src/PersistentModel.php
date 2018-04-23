@@ -2,8 +2,8 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Connectors\Connector;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persister;
+use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
 class PersistentModel implements Estimator
@@ -18,35 +18,35 @@ class PersistentModel implements Estimator
     /**
      * The connector responsible for persisting the model.
      *
-     * @var \Rubix\Engine\Connectors\Connector
+     * @var \Rubix\Engine\Persisters\Persister
      */
-    protected $connector;
+    protected $persister;
 
     /**
      * Factory method to restore the model from persistence.
      *
-     * @param \Rubix\Engine\Connectors\Connector  $connector
+     * @param \Rubix\Engine\Persisters\Persister  $persister
      * @return self
      */
-    public static function restore(Connector $connector) : self
+    public static function restore(Persister $persister) : self
     {
-        return new self($connector->restore(), $connector);
+        return new self($persister->restore(), $persister);
     }
 
     /**
      * @param  \Rubix\Engine\Estimator  $estimator
-     * @param  \Rubix\Engine\Connector  $connector
+     * @param  \Rubix\Engine\Persister  $persister
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $estimator, Connector $connector)
+    public function __construct(Estimator $estimator, Persister $persister)
     {
         if (!$estimator instanceof Persistable) {
             throw new InvalidArgumentException('Estimator must implement the Persistable interface.');
         }
 
         $this->estimator = $estimator;
-        $this->connector = $connector;
+        $this->connector = $persister;
     }
 
     /**
@@ -60,7 +60,7 @@ class PersistentModel implements Estimator
     }
 
     /**
-     * @return \Rubix\Engine\Connectors\Connector
+     * @return \Rubix\Engine\Persisters\Persister
      */
     public function connector() : Estimator
     {

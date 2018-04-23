@@ -6,7 +6,7 @@ use Rubix\Engine\Graph\Tree;
 use MathPHP\Statistics\Average;
 use Rubix\Engine\Graph\BinaryNode;
 use MathPHP\Statistics\Descriptive;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
 class CART extends Tree implements Classifier, Regression, Persistable

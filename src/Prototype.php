@@ -5,7 +5,7 @@ namespace Rubix\Engine;
 use Rubix\Engine\Tests\Test;
 use Rubix\Engine\Tests\Loggers\Screen;
 use Rubix\Engine\Tests\Loggers\Logger;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persistable;
 
 class Prototype implements Estimator, Persistable
 {

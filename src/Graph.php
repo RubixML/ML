@@ -5,8 +5,8 @@ namespace Rubix\Engine;
 use Rubix\Engine\Graph\Path;
 use Rubix\Engine\Graph\GraphNode;
 use Rubix\Engine\Graph\ObjectIndex;
-use Rubix\Engine\Connectors\Connector;
-use Rubix\Engine\Connectors\Persistable;
+use Rubix\Engine\Persisters\Persister;
+use Rubix\Engine\Persisters\Persistable;
 use RuntimeException;
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -25,7 +25,7 @@ class Graph implements Persistable, Countable
     /**
      * Restore the graph from persistence.
      *
-     * @param \Rubix\Engine\Connectors\Connector  $connector
+     * @param \Rubix\Engine\Persisters\Persister  $connector
      * @return self|null
      */
     public static function restore(Connector $connector) : self

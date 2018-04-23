@@ -1,12 +1,12 @@
 <?php
 
-namespace  Rubix\Engine\Connectors;
+namespace Rubix\Engine\Persisters;
 
 use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
-class Sqlite implements Connector
+class Sqlite implements Persister
 {
     const DEFAULT_OPTIONS = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -67,7 +67,7 @@ class Sqlite implements Connector
     }
 
     /**
-     * @param  \Rubix\Engine\Connectors\Persistable  $model
+     * @param  \Rubix\Engine\Persisters\Persistable  $model
      * @throws \RuntimeException
      * @return bool
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Connectors;
+namespace Rubix\Engine\Persisters;
 
 interface Persistable
 {

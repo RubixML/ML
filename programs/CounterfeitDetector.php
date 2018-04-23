@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/../vendor/autoload.php';
+include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
@@ -11,7 +11,7 @@ use Rubix\Engine\PersistentModel;
 use Rubix\Engine\SupervisedDataset;
 use Rubix\Engine\Tests\Informedness;
 use Rubix\Engine\MultiLayerPerceptron;
-use Rubix\Engine\Connectors\Filesystem;
+use Rubix\Engine\Persisters\Filesystem;
 use Rubix\Engine\Transformers\L2Regularizer;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use League\Csv\Reader;
