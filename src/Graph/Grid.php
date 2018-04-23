@@ -1,10 +1,7 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\Engine\Graph;
 
-use Rubix\Engine\Graph\Path;
-use Rubix\Engine\Graph\GraphNode;
-use Rubix\Engine\Graph\ObjectIndex;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;

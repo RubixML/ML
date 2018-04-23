@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Grid;
+use Rubix\Engine\Graph\Grid;
 use Rubix\Engine\Graph\Path;
 use Rubix\Engine\Graph\GraphNode;
 use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
