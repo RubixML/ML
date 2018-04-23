@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\LeastSquares;
+use Rubix\Engine\Ridge;
 use Rubix\Engine\SupervisedDataset;
 use PHPUnit\Framework\TestCase;
 
-class LeastSquaresTest extends TestCase
+class RidgeTest extends TestCase
 {
     protected $estimator;
 
@@ -27,14 +27,14 @@ class LeastSquaresTest extends TestCase
             [8, 260.0, 3365, 19.9],
         ]);
 
-        $this->estimator = new LeastSquares();
+        $this->estimator = new Ridge(0.0);
 
         $this->estimator->train($this->dataset);
     }
 
-    public function test_build_least_squares_regression()
+    public function test_build_ridge_regression()
     {
-        $this->assertInstanceOf(LeastSquares::class, $this->estimator);
+        $this->assertInstanceOf(Ridge::class, $this->estimator);
     }
 
     public function test_make_prediction()
