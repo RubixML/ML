@@ -2,7 +2,7 @@
 
 use Rubix\Engine\CART;
 use Rubix\Engine\AdaBoost;
-use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
 class AdaBoostTest extends TestCase
@@ -13,7 +13,7 @@ class AdaBoostTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = SupervisedDataset::fromIterator([
+        $this->dataset = Supervised::fromIterator([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],

@@ -3,10 +3,11 @@
 namespace Rubix\Engine;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class NaiveBayes implements Classifier, Persistable
+class NaiveBayes implements Estimator, Classifier, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard
@@ -55,19 +56,15 @@ class NaiveBayes implements Classifier, Persistable
     /**
      * Compute the means and standard deviations of the values per class.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        $this->columnTypes = $data->columnTypes();
+        $this->columnTypes = $dataset->columnTypes();
         $this->stats = $this->weights = [];
 
-        $classes = $data->stratify();
+        $classes = $dataset->stratify();
 
         foreach ($classes[0] as $class => $samples) {
             foreach (array_map(null, ...$samples) as $column => $features) {
@@ -78,7 +75,7 @@ class NaiveBayes implements Classifier, Persistable
                 }
             }
 
-            $this->weights[$class] = count($samples) / count($data);
+            $this->weights[$class] = count($samples) / count($dataset);
         }
     }
 

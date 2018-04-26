@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 
 class ZScaleStandardizer implements Transformer
@@ -45,15 +45,15 @@ class ZScaleStandardizer implements Transformer
     /**
      * Calculate the means and standard deviations of the dataset.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $data->columnTypes();
+        $this->columnTypes = $dataset->columnTypes();
         $this->stats = [];
 
-        foreach ($data->rotate() as $column => $features) {
+        foreach ($dataset->rotate() as $column => $features) {
             if ($this->columnTypes[$column] === self::CONTINUOUS) {
                 $mean = Average::mean($features);
 

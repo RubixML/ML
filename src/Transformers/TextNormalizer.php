@@ -2,15 +2,15 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 
 class TextNormalizer implements Transformer
 {
     /**
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
         //
     }

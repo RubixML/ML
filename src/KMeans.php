@@ -2,13 +2,14 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KMeans implements Classifier, Clusterer, Persistable
+class KMeans implements Clusterer, Persistable
 {
     /**
      * The target number of clusters.
@@ -30,15 +31,6 @@ class KMeans implements Classifier, Clusterer, Persistable
      * @var int
      */
     protected $maxIterations;
-
-    /**
-     * The learned centroid vectors from the training data.
-     *
-     * @var array
-     */
-    protected $centroids = [
-        //
-    ];
 
     /**
      * @param  int  $k
@@ -67,79 +59,18 @@ class KMeans implements Classifier, Clusterer, Persistable
     }
 
     /**
-     * Return the learned coordinate vectors of the k centroids.
-     *
-     * @return array
-     */
-    public function centroids() : array
-    {
-        return $this->centroids;
-    }
-
-    /**
-     * Alias of centroids().
-     *
-     * @return array
-     */
-    public function means() : array
-    {
-        return $this->centroids();
-    }
-
-    /**
-     * Learn the means of the training data and store as centroid vectors.
-     *
-     * @param  \Rubix\Engine\Dataset  $data
-     * @return void
-     */
-    public function train(Dataset $data) : void
-    {
-        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
-        }
-
-        $this->centroids = $this->findKCentroids($data->samples());
-    }
-
-    /**
-     * Classify the sample based on the distance from one of the k trained centroids.
-     *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Prediction
-     */
-    public function predict(array $sample) : Prediction
-    {
-        $best = ['distance' => INF, 'label' => null];
-
-        foreach ($this->centroids as $label => $centroid) {
-            $distance = $this->distanceFunction->compute($sample, $centroid);
-
-            if ($distance < $best['distance']) {
-                $best = [
-                    'distance' => $distance,
-                    'label' => $label,
-                ];
-            }
-        }
-
-        return new Prediction($best['label'], [
-            'distance' => $best['distance'],
-        ]);
-    }
-
-    /**
      * Cluster a given dataset based on the computed means of the centroids.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Unsupervised  $dataset
      * @return array
      */
-    public function cluster(Dataset $data) : array
+    public function cluster(Unsupervised $dataset) : array
     {
-        $centroids = $this->findKCentroids($data->samples());
+        $centroids = $this->findKCentroids($dataset->samples());
 
         $clusters = [];
 
-        foreach ($data as $sample) {
+        foreach ($dataset as $sample) {
             $label = $this->label($sample, $centroids);
 
             $clusters[$label][] = $sample;

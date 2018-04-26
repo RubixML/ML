@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\DecisionForest;
-use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
 class DecisionForestTest extends TestCase
@@ -12,7 +12,7 @@ class DecisionForestTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = SupervisedDataset::fromIterator([
+        $this->dataset = Supervised::fromIterator([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],

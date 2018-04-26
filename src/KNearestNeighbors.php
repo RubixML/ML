@@ -2,12 +2,13 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNearestNeighbors implements Classifier, Regression
+class KNearestNeighbors implements Estimator, Classifier, Regression
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -73,23 +74,19 @@ class KNearestNeighbors implements Classifier, Regression
      * Store the sample and outcome arrays. No other work to be done as this is
      * a lazy learning algorithm.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        $this->coordinates = $data->samples();
-        $this->outcomes = $data->outcomes();
-        $this->output = $data->outcomeType();
+        $this->coordinates = $dataset->samples();
+        $this->outcomes = $dataset->outcomes();
+        $this->output = $dataset->outcomeType();
     }
 
     /**

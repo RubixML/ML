@@ -2,54 +2,43 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Tests\Test;
-use Rubix\Engine\Tests\Loggers\Screen;
-use Rubix\Engine\Tests\Loggers\Logger;
+use League\CLImate\CLImate;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Metrics\Reports\Report;
+use ReflectionClass;
 
 class Prototype implements Estimator, Persistable
 {
     /**
-     * The estimator.
+     * The base estimator.
      *
      * @var \Rubix\Engine\Estimator
      */
     protected $estimator;
 
     /**
-     * The testing middleware stack.
+     * The report middleware stack. i.e. the reports to generate when the reports
+     * method is called.
      *
      * @var array
      */
-    protected $tests = [
+    protected $reports = [
         //
     ];
 
     /**
-     * The logger used to log messages emitted by the model.
-     *
-     * @var \Rubix\Engine\Loggers\Logger
-     */
-    protected $logger;
-
-    /**
      * @param  \Rubix\Engine\Estimator  $estimator
-     * @param  array  $tests
-     * @param  \Runix\Engine\Loggers\Logger  $logger
+     * @param  array  $reports
      * @return void
      */
-    public function __construct(Estimator $estimator, array $tests = [], Logger $logger = null)
+    public function __construct(Estimator $estimator, array $reports = [])
     {
-        if (!isset($logger)) {
-            $logger = new Screen();
+        foreach ($reports as $report) {
+            $this->addReport($report);
         }
 
         $this->estimator = $estimator;
-        $this->logger = $logger;
-
-        foreach ($tests as $test) {
-            $this->addTest($test);
-        }
     }
 
     /**
@@ -63,22 +52,12 @@ class Prototype implements Estimator, Persistable
     }
 
     /**
-     * Train the estimator logging the time spent.
-     *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        $this->logger->log('Training started');
-
-        $start = microtime(true);
-
-        $this->estimator->train($data);
-
-        $timestamp = microtime(true) - $start;
-
-        $this->logger->log('Training completed in ' . (string) round($timestamp, 5) . 's');
+        $this->estimator->train($dataset);
     }
 
     /**
@@ -91,42 +70,33 @@ class Prototype implements Estimator, Persistable
     }
 
     /**
-     * Run the tests on the estimator.
+     * Generate the reports in the reporting middleware stack.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
-     * @return bool
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
+     * @return void
      */
-    public function test(SupervisedDataset $data) : bool
+    public function test(Supervised $dataset) : void
     {
-        $this->logger->log('Testing started');
-
-        $start = microtime(true);
+        $logger = new CLImate();
 
         $predictions = array_map(function ($sample) {
             return $this->predict($sample)->outcome();
-        }, $data->samples());
+        }, $dataset->samples());
 
-        $timestamp = (microtime(true) - $start) / count($data);
-
-        $results = array_map(function ($test) use ($predictions, $data) {
-            return $test->score($predictions, $data->outcomes());
-        }, $this->tests);
-
-        $this->logger->log('Model took ' . (string) round($timestamp, 5) . 's on average to make a prediction.');
-        $this->logger->log('Testing completed');
-
-        return true;
+        foreach ($this->reports as $report) {
+            $logger->json($report->generate($predictions, $dataset->outcomes()));
+        }
     }
 
     /**
      * Add a test to the testing stack.
      *
-     * @param  \Rubix\Engine\Tests\Test  $test
+     * @param  \Rubix\Engine\Metrics\Reports\Report  $report
      * @return self
      */
-    public function addTest(Test $test) : self
+    public function addReport(Report $report) : self
     {
-        $this->tests[] = $test;
+        $this->reports[] = $report;
 
         return $this;
     }

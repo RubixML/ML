@@ -2,11 +2,12 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Supervised;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class AdaBoost implements Classifier
+class AdaBoost implements Estimator, Classifier
 {
     /**
      * The reflector instance of the base classifier.
@@ -20,7 +21,7 @@ class AdaBoost implements Classifier
      *
      * @var array
      */
-    protected $args = [
+    protected $params = [
         //
     ];
 
@@ -56,7 +57,7 @@ class AdaBoost implements Classifier
     ];
 
     /**
-     * The ensemble of experts that each specialize in classifying certain aspects of
+     * The ensemble of experts that specialize in classifying certain aspects of
      * the training set.
      *
      * @var array
@@ -67,7 +68,7 @@ class AdaBoost implements Classifier
 
     /**
      * The amount of influence an expert has. i.e. the classifier's ability to
-     * make accurate predictions historically.
+     * make accurate predictions.
      *
      * @var array
      */
@@ -77,19 +78,19 @@ class AdaBoost implements Classifier
 
     /**
      * @param  string  $base
-     * @param  array  $args
+     * @param  array  $params
      * @param  int  $experts
      * @param  float  $ratio
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $args = [], int $experts = 50, float $ratio = 0.1, float $threshold = 0.999)
+    public function __construct(string $base, array $params = [], int $experts = 50, float $ratio = 0.1, float $threshold = 0.999)
     {
         $this->reflector = new ReflectionClass($base);
 
         if (!in_array(Classifier::class, $this->reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('Base estimator must be a classifier.');
+            throw new InvalidArgumentException('Base class must be a classifier.');
         }
 
         if ($experts < 1) {
@@ -104,7 +105,7 @@ class AdaBoost implements Classifier
             throw new InvalidArgumentException('Threshold value must be a float between 0 and 1.');
         }
 
-        $this->args = $args;
+        $this->params = $params;
         $this->experts = $experts;
         $this->ratio = $ratio;
         $this->threshold = $threshold;
@@ -115,52 +116,44 @@ class AdaBoost implements Classifier
      * to each one and re-weighting the training data according to reflect how
      * difficult a particular sample is to classify.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        $labels = $data->labels();
+        $labels = $dataset->labels();
 
         if (count($labels) !== 2) {
             throw new InvalidArgumentException('The number of unique outcomes must be exactly 2, ' . (string) count($labels) . ' given.');
         }
 
-        if (!$data instanceof WeightedDataset) {
-            $data = $data->toWeightedDataset();
-        }
-
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
         $this->ensemble = $this->influence = [];
 
-        $outcomes = $data->outcomes();
+        $outcomes = $dataset->outcomes();
 
         for ($round = 1; $round <= $this->experts; $round++) {
-            $expert = $this->reflector->newInstanceArgs($this->args);
+            $expert = $this->reflector->newInstanceArgs($this->params);
             $error = 0;
 
-            $expert->train($data->generateRandomWeightedSubsetWithReplacement($this->ratio));
+            $expert->train($dataset->generateRandomWeightedSubsetWithReplacement($this->ratio));
 
-            foreach ($data as $i => $sample) {
+            foreach ($dataset as $i => $sample) {
                 if ($expert->predict($sample)->outcome() !== $outcomes[$i]) {
-                    $error += $data->weight($i);
+                    $error += $dataset->weight($i);
                 }
             }
 
-            $sum = $data->totalWeight();
+            $sum = $dataset->totalWeight();
             $error /= $sum;
             $influence = 0.5 * log((1 - $error) / ($error ? $error : self::EPSILON));
 
-            foreach ($data as $i => $sample) {
+            foreach ($dataset as $i => $sample) {
                 $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
                 $outcome = $outcomes[$i] === $this->labels[1] ? 1 : -1;
 
-                $data->setWeight($i,  $data->weight($i) * exp(-$influence * $outcome * $prediction) / $sum);
+                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $outcome * $prediction) / $sum);
             }
 
             $this->influence[] = $influence;

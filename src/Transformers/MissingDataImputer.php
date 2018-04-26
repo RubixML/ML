@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Transformers\Strategies\Strategy;
 use Rubix\Engine\Transformers\Strategies\FuzzyMean;
 use Rubix\Engine\Transformers\Strategies\KMostFrequent;
@@ -76,13 +76,13 @@ class MissingDataImputer implements Transformer
     }
 
     /**
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $data->columnTypes();
-        $this->columns = $data->rotate();
+        $this->columnTypes = $dataset->columnTypes();
+        $this->columns = $dataset->rotate();
 
         foreach ($this->columns as &$column) {
             $column = array_filter($column, function ($feature) {

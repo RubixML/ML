@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine;
 
-interface Regression extends Estimator
+interface Regression
 {
     //
 }

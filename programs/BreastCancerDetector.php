@@ -6,15 +6,13 @@ use Rubix\Engine\CART;
 use Rubix\Engine\AdaBoost;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\Tests\MCC;
-use Rubix\Engine\Tests\F1Score;
-use Rubix\Engine\Tests\Accuracy;
-use Rubix\Engine\SupervisedDataset;
-use Rubix\Engine\Tests\Informedness;
-use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Transformers\L2Regularizer;
+use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\Engine\Metrics\Reports\ClassificationReport;
 use League\Csv\Reader;
 
-$minSize = $argv[1] ?? 1;
+$minSize = $argv[1] ?? 10;
 $maxDepth = $argv[2] ?? 3;
 $experts = $argv[3] ?? 100;
 $ratio = $argv[4] ?? 0.10;
@@ -22,7 +20,7 @@ $threshold = $argv[5] ?? 0.99;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Breast Cancer Detector using Adaboost               ║' . "\n";
+echo '║ Breast Cancer Detector using AdaBoost               ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -30,15 +28,16 @@ echo  "\n";
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/breast-cancer.csv')->setDelimiter(',');
 
-$dataset = SupervisedDataset::fromIterator($dataset);
+$dataset = Supervised::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->split(0.3);
+list($training, $testing) = $dataset->randomize()->split(0.2);
 
-$prototype = new Prototype(
-    new Pipeline(new AdaBoost(CART::class, [$minSize, $maxDepth], $experts, $ratio, $threshold), [new OneHotEncoder()]),
-    [new Accuracy(), new F1Score(), new MCC(), new Informedness()]
-);
+$estimator = new Prototype(new Pipeline(new AdaBoost(CART::class, [$minSize, $maxDepth], $experts, $ratio, $threshold), [
+    new MissingDataImputer('?'), new L2Regularizer(),
+]), [
+    new ClassificationReport(),
+]);
 
-$prototype->train($training);
+$estimator->train($training);
 
-$prototype->test($testing);
+$estimator->test($testing);

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 
 class StopWordFilter implements Transformer
 {
@@ -36,12 +36,12 @@ class StopWordFilter implements Transformer
     /**
      * Build the vocabulary for the vectorizer.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $data->columnTypes();
+        $this->columnTypes = $dataset->columnTypes();
     }
 
     /**

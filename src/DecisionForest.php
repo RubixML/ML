@@ -3,10 +3,11 @@
 namespace Rubix\Engine;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class DecisionForest implements Classifier, Regression, Persistable
+class DecisionForest implements Estimator, Classifier, Regression, Persistable
 {
     /**
      * The number of trees to plant (train) in the ensemble.
@@ -90,23 +91,19 @@ class DecisionForest implements Classifier, Regression, Persistable
      * Train an n-tree Decision Forest by generating random subsets of the training
      * data per CART tree.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        $this->output = $data->outcomeType();
+        $this->output = $dataset->outcomeType();
         $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new CART($this->minSamples, $this->maxDepth);
 
-            $tree->train($data->generateRandomSubsetWithReplacement($this->ratio));
+            $tree->train($dataset->generateRandomSubsetWithReplacement($this->ratio));
 
             $this->forest[$i] = $tree;
         }
@@ -121,31 +118,17 @@ class DecisionForest implements Classifier, Regression, Persistable
     public function predict(array $sample) : Prediction
     {
         $predictions = array_map(function ($tree) use ($sample) {
-            return $tree->predict($sample);
+            return $tree->predict($sample)->outcome();
         }, $this->forest);
 
-        $outcomes = array_map(function ($prediction) {
-            return $prediction->outcome();
-        }, $predictions);
-
         if ($this->output === self::CATEGORICAL) {
-            $counts = array_count_values($outcomes);
+            $counts = array_count_values($predictions);
 
-            $certainty = array_reduce($predictions, function ($carry, $prediction) {
-                return $carry += $prediction->meta('certainty');
-            }, 0.0) / count($predictions);
-
-            return new Prediction(array_search(max($counts), $counts), [
-                'certainty' => $certainty,
-            ]);
+            $outcome = array_search(max($counts), $counts);
         } else {
-            $variance = array_reduce($predictions, function ($carry, $prediction) {
-                return $carry += $prediction->meta('variance');
-            }, 0.0) / count($predictions);
-
-            return new Prediction(Average::mean($outcomes), [
-                'variance' => $variance,
-            ]);
+            $outcome = Average::mean($predictions);
         }
+
+        return new Prediction($outcome);
     }
 }

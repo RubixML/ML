@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 
 class Normalizer implements Transformer
 {
@@ -44,15 +44,15 @@ class Normalizer implements Transformer
     /**
      * Calculate the minimums and maximums of each feature column in the dataset.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $data->columnTypes();
+        $this->columnTypes = $dataset->columnTypes();
         $this->minimums = $this->maximums = [];
 
-        foreach ($data->rotate() as $column => $features) {
+        foreach ($dataset->rotate() as $column => $features) {
             if ($this->columnTypes[$column] === self::CONTINUOUS) {
                 $this->minimums[$column] = min($features);
                 $this->maximums[$column] = max($features);

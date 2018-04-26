@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\KMeans;
-use Rubix\Engine\UnsupervisedDataset;
+use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class KMeansTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = UnsupervisedDataset::fromIterator([
+        $this->dataset = Unsupervised::fromIterator([
             [2.771244718, 1.784783929],
             [1.728571309, 1.169761413],
             [3.678319846, 2.812813570],
@@ -36,9 +36,7 @@ class KMeansTest extends TestCase
             [6.456749570, 3.324523456],
         ]);
 
-        $this->estimator = new KMeans(2, new Euclidean(), 1000);
-
-        $this->estimator->train($this->dataset);
+        $this->estimator = new KMeans(2, new Euclidean(), 500);
     }
 
     public function test_build_k_means_clusterer()
@@ -46,10 +44,11 @@ class KMeansTest extends TestCase
         $this->assertInstanceOf(KMeans::class, $this->estimator);
     }
 
-    public function test_make_prediction()
+    public function test_cluster_samples()
     {
-        $prediction = $this->estimator->predict([7.1929367, 3.52848298]);
+        $clusters = $this->estimator->cluster($this->dataset);
 
-        $this->assertContains($prediction->outcome(), [0, 1]);
+        $this->assertEquals(10, count($clusters[0]));
+        $this->assertEquals(10, count($clusters[1]));
     }
 }

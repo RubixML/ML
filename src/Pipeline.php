@@ -2,8 +2,9 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\Transformers\Transformer;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Transformers\Transformer;
 use RuntimeException;
 
 class Pipeline implements Estimator, Persistable
@@ -53,19 +54,19 @@ class Pipeline implements Estimator, Persistable
      * Run the training dataset through all transformers in order and use the
      * transformed dataset to train the estimator.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \RuntimeException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
-            $transformer->fit($data);
+            $transformer->fit($dataset);
 
-            $data->transform($transformer);
+            $dataset->transform($transformer);
         }
 
-        $this->estimator->train($data);
+        $this->estimator->train($dataset);
     }
 
     /**

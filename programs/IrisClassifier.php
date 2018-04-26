@@ -2,18 +2,15 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\Tests\MCC;
-use Rubix\Engine\Tests\F1Score;
-use Rubix\Engine\Tests\Accuracy;
+use Rubix\Engine\GridSearch;
+use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\KNearestNeighbors;
-use Rubix\Engine\SupervisedDataset;
-use Rubix\Engine\Tests\Informedness;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
+use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
+use Rubix\Engine\Metrics\Reports\ClassificationReport;
 use League\Csv\Reader;
-
-$k = $argv[1] ?? 3;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
@@ -25,12 +22,14 @@ echo "\n";
 
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setDelimiter(',');
 
-$dataset = SupervisedDataset::fromIterator($dataset);
+$dataset = Supervised::fromIterator($dataset);
 
-list ($training, $testing) = $dataset->randomize()->stratifiedSplit(0.2);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.1);
 
-$prototype = new Prototype(new KNearestNeighbors(3, new Euclidean()), [new Accuracy(), new F1Score(), new MCC(), new Informedness()]);
+$estimator = new Prototype(new GridSearch(KNearestNeighbors::class, [[1, 3, 5], [new Euclidean(), new Manhattan()]], new Accuracy(), 0.1), [
+    new ClassificationReport(),
+]);
 
-$prototype->train($training);
+$estimator->train($training);
 
-$prototype->test($testing);
+$estimator->test($testing);

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
 
 class VarianceThresholdFilter implements Transformer
@@ -53,21 +53,28 @@ class VarianceThresholdFilter implements Transformer
     }
 
     /**
-     * @param  \Rubix\Engine\Dataset  $data
+     * Chose the columns with a variance greater than the given threshold.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        foreach ($data->rotate() as $column => $data) {
-            if (Descriptive::populationVariance($data) > $this->threshold) {
+        $n = $dataset->rows();
+        
+        foreach ($dataset->rotate() as $column => $values) {
+            if (Descriptive::variance($values, $n) > $this->threshold) {
                 $this->selected[$column] = true;
             }
         }
     }
 
     /**
+     * Transform an array of samples by removing the feature columns that did
+     * not meet the variance threshold.
+     *
      * @param  array  $samples
-     * @return array
+     * @return void
      */
     public function transform(array &$samples) : void
     {

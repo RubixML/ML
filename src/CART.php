@@ -6,10 +6,11 @@ use Rubix\Engine\Graph\Tree;
 use MathPHP\Statistics\Average;
 use Rubix\Engine\Graph\BinaryNode;
 use MathPHP\Statistics\Descriptive;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class CART extends Tree implements Classifier, Regression, Persistable
+class CART extends Tree implements Estimator, Classifier, Regression, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.
@@ -103,20 +104,16 @@ class CART extends Tree implements Classifier, Regression, Persistable
     /**
      * Train the CART by learning the most optimal splits in the training set.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
+        $this->columnTypes = $dataset->columnTypes();
+        $this->output = $dataset->outcomeType();
 
-        $this->columnTypes = $data->columnTypes();
-        $this->output = $data->outcomeType();
-
-        $this->root = $this->findBestSplit($data->all());
+        $this->root = $this->findBestSplit($dataset->all());
         $this->splits = 1;
 
         $this->split($this->root);

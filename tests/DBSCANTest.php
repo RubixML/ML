@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\DBSCAN;
-use Rubix\Engine\UnsupervisedDataset;
+use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class DBSCANTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = UnsupervisedDataset::fromIterator([
+        $this->dataset = Unsupervised::fromIterator([
             [2.771244718, 1.784783929],
             [1.728571309, 1.169761413],
             [3.678319846, 2.812813570],

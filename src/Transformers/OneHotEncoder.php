@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 
 class OneHotEncoder implements Transformer
 {
@@ -27,14 +27,14 @@ class OneHotEncoder implements Transformer
     /**
      * Build the list of categories.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $data->columnTypes();
+        $this->columnTypes = $dataset->columnTypes();
 
-        foreach ($data->samples() as $sample) {
+        foreach ($dataset->samples() as $sample) {
             foreach ($this->columnTypes as $column => $type) {
                 if ($type === self::CATEGORICAL) {
                     if (!isset($this->categories[$sample[$column]])) {

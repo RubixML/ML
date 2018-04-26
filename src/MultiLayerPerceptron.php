@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\NeuralNetwork\Input;
 use Rubix\Engine\NeuralNetwork\Hidden;
 use Rubix\Engine\NeuralNetwork\Network;
@@ -12,7 +13,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
 
-class MultiLayerPerceptron extends Network implements Classifier, Persistable
+class MultiLayerPerceptron extends Network implements Estimator, Classifier, Persistable
 {
     /**
      * The fixed number of training epochs. i.e. the number of times to iterate
@@ -70,24 +71,20 @@ class MultiLayerPerceptron extends Network implements Classifier, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
         $this->randomizeWeights();
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            foreach ($this->generateMiniBatches(clone $data) as $batch) {
+            foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $sigmas = new SplObjectStorage();
 
                 foreach ($batch as $row => $sample) {
@@ -191,17 +188,17 @@ class MultiLayerPerceptron extends Network implements Classifier, Persistable
     /**
      * Generate a collection of mini batches from the training data.
      *
-     * @param  \Rubix\Engine\SupervisedDataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @return array
      */
-    protected function generateMiniBatches(SupervisedDataset $data) : array
+    protected function generateMiniBatches(Supervised $dataset) : array
     {
-        $data->randomize();
+        $dataset->randomize();
 
         $batches = [];
 
-        while (!$data->isEmpty()) {
-            $batches[] = $data->take($this->batchSize);
+        while (!$dataset->isEmpty()) {
+            $batches[] = $dataset->take($this->batchSize);
         }
 
         return $batches;

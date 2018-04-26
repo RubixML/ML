@@ -2,13 +2,19 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Unsupervised;
+
 interface Clusterer
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+    const EPSILON = 1e-8;
+
     /**
      * Return an array of samples from a dataset organized by cluster.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Unsupervised  $data
      * @return array
      */
-    public function cluster(Dataset $data) : array;
+    public function cluster(Unsupervised $data) : array;
 }

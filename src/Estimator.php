@@ -2,20 +2,21 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Supervised;
+
 interface Estimator
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
-
     const EPSILON = 1e-8;
 
     /**
-     * Train the classification model with a dataset.
+     * Train the estimator.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @return void
      */
-    public function train(Dataset $data) : void;
+    public function train(Supervised $dataset) : void;
 
     /**
      * Make a prediction of a given sample.

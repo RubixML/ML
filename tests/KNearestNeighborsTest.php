@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\KNearestNeighbors;
-use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class KNearestNeighborsTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = SupervisedDataset::fromIterator([
+        $this->dataset = Supervised::fromIterator([
             [2.771244718, 1.784783929, 'female'],
             [1.728571309, 1.169761413, 'female'],
             [3.678319846, 2.812813570, 'female'],

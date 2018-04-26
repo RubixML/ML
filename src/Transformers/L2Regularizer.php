@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Dataset;
+use Rubix\Engine\Datasets\Dataset;
 
 class L2Regularizer implements Transformer
 {
@@ -26,14 +26,14 @@ class L2Regularizer implements Transformer
     /**
      * Determine the columns that need to be regularized.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(Dataset $data) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->columns = [];
 
-        foreach ($data->columnTypes() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === self::CONTINUOUS) {
                 $this->columns[] = $column;
             }

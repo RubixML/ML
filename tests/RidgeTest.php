@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Ridge;
-use Rubix\Engine\SupervisedDataset;
+use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
 class RidgeTest extends TestCase
@@ -12,7 +12,7 @@ class RidgeTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = SupervisedDataset::fromIterator([
+        $this->dataset = Supervised::fromIterator([
             [4, 91.0, 1795, 33.0],
             [6, 225.0, 3651, 20.0],
             [6, 250.0, 3574, 18.0],

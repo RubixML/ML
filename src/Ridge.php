@@ -3,11 +3,12 @@
 namespace Rubix\Engine;
 
 use MathPHP\LinearAlgebra\Vector;
+use Rubix\Engine\Datasets\Supervised;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class Ridge implements Regression, Persistable
+class Ridge implements Estimator, Regression, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the
@@ -62,21 +63,17 @@ class Ridge implements Regression, Persistable
      * Learn the coefficients of the training data. i.e. compute the line that best
      * fits the training data.
      *
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Dataset $data) : void
+    public function train(Supervised $dataset) : void
     {
-        if (!$data instanceof SupervisedDataset) {
-            throw new InvalidArgumentException('This estimator requires a supervised dataset.');
-        }
-
-        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        $coefficients = $this->computeCoefficients($data->samples(), $data->outcomes());
+        $coefficients = $this->computeCoefficients($dataset->samples(), $dataset->outcomes());
 
         $this->intercept = array_shift($coefficients);
         $this->coefficients = $coefficients;

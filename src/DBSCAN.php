@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
 use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
@@ -10,25 +11,23 @@ class DBSCAN implements Clusterer
 {
     const NOISE = null;
 
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
-     * The maximum distance between two points to be considered neighbors.
+     * The maximum distance between two points to be considered neighbors. The
+     * smaller the value, the tighter the clusters will be.
      *
      * @var float
      */
     protected $epsilon;
 
     /**
-     * The minimum number of points to from a dense region.
+     * The minimum number of points to from a dense region or cluster.
      *
      * @var int
      */
     protected $minDensity;
 
     /**
-     * The distance function to use when computing the distances.
+     * The distance function to use when computing the distances between points.
      *
      * @var \Rubix\Engine\Contracts\DistanceFunction
      */
@@ -61,25 +60,25 @@ class DBSCAN implements Clusterer
     }
 
     /**
-     * @param  \Rubix\Engine\Dataset  $data
+     * @param  \Rubix\Engine\Datasets\Unsupervised  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function cluster(Dataset $data) : array
+    public function cluster(Unsupervised $dataset) : array
     {
-        if (in_array(self::CATEGORICAL, $data->columnTypes())) {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
         $labels = [];
         $current = 0;
 
-        foreach ($data as $id => $sample) {
+        foreach ($dataset as $id => $sample) {
             if (isset($labels[$id])) {
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighborsByDistance($sample, $data->samples());
+            $neighbors = $this->groupNeighborsByDistance($sample, $dataset->samples());
 
             if (count($neighbors) < $this->minDensity) {
                 $labels[$id] = self::NOISE;
@@ -89,14 +88,14 @@ class DBSCAN implements Clusterer
 
             $labels[$id] = $current;
 
-            $this->expand($data->samples(), $neighbors, $labels, $current);
+            $this->expand($dataset->samples(), $neighbors, $labels, $current);
 
             $current++;
         }
 
         $clusters = array_fill(0, $current, []);
 
-        foreach ($data as $id => $sample) {
+        foreach ($dataset as $id => $sample) {
             if ($labels[$id] !== self::NOISE) {
                 $clusters[$labels[$id]][] = $sample;
             }
