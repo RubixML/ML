@@ -7,6 +7,7 @@ use Rubix\Engine\Prototype;
 use Rubix\Engine\DecisionForest;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\Engine\Metrics\Reports\ConfusionMatrix;
 use Rubix\Engine\Metrics\Reports\ClassificationReport;
 use League\Csv\Reader;
 
@@ -32,6 +33,7 @@ list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.3);
 $estimator = new Prototype(new Pipeline(new DecisionForest($trees, $ratio, $minSize, $maxDepth), [
     new OneHotEncoder(),
 ]), [
+    new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
 ]);
 

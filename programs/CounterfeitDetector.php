@@ -9,6 +9,7 @@ use Rubix\Engine\MultiLayerPerceptron;
 use Rubix\Engine\Persisters\Filesystem;
 use Rubix\Engine\Transformers\L2Regularizer;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
+use Rubix\Engine\Metrics\Reports\ConfusionMatrix;
 use Rubix\Engine\Metrics\Reports\ClassificationReport;
 use League\Csv\Reader;
 
@@ -27,6 +28,7 @@ list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.2);
 $estimator = new Prototype(new Pipeline(new MultiLayerPerceptron($dataset->columns(), [10, 10], $dataset->labels(), 3, 10, new Adam(0.01)), [
     new L2Regularizer(),
 ]), [
+    new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
 ]);
 

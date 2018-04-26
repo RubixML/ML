@@ -9,6 +9,7 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Transformers\TextNormalizer;
 use Rubix\Engine\Transformers\StopWordFilter;
 use Rubix\Engine\Transformers\TfIdfTransformer;
+use Rubix\Engine\Metrics\Reports\ConfusionMatrix;
 use Rubix\Engine\Transformers\TokenCountVectorizer;
 use Rubix\Engine\Transformers\BlanketCharacterFilter;
 use Rubix\Engine\Metrics\Reports\ClassificationReport;
@@ -34,6 +35,7 @@ $estimator = new Prototype(new Pipeline(new NaiveBayes(), [
     new TokenCountVectorizer(1000, new WordTokenizer()),
     new TfIdfTransformer(),
 ]), [
+    new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
 ]);
 
