@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\DecisionForest;
+use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
-class DecisionForestTest extends TestCase
+class RandomForestTest extends TestCase
 {
     protected $estimator;
 
@@ -35,14 +35,14 @@ class DecisionForestTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new DecisionForest(10, 0.3, 3, 30);
+        $this->estimator = new RandomForest(10, 0.3, 3, 30);
 
         $this->estimator->train($this->dataset);
     }
 
     public function test_create_tree()
     {
-        $this->assertTrue($this->estimator instanceof DecisionForest);
+        $this->assertTrue($this->estimator instanceof RandomForest);
     }
 
     public function test_make_prediction()

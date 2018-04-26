@@ -4,7 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\DecisionForest;
+use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use Rubix\Engine\Metrics\Reports\ConfusionMatrix;
@@ -30,7 +30,7 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.3);
 
-$estimator = new Prototype(new Pipeline(new DecisionForest($trees, $ratio, $minSize, $maxDepth), [
+$estimator = new Prototype(new Pipeline(new RandomForest($trees, $ratio, $minSize, $maxDepth), [
     new OneHotEncoder(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
