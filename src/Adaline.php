@@ -132,7 +132,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
                 $outcomes = $batch->outcomes();
                 $sigmas = array_fill(0, count($this->synapses), 0.0);
                 $error = 0.0;
-                $steps = [];
+                $worst = INF;
 
                 foreach ($batch as $row => $sample) {
                     $activation = $this->feed($sample);
@@ -150,13 +150,16 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
                 foreach ($this->synapses as $i => $synapse) {
                     $step = $this->optimizer->step($synapse, $sigmas[$i]);
+                    $magnitude = abs($step);
 
                     $synapse->adjustWeight($step);
 
-                    $steps[] = abs($step);
+                    if ($magnitude < $worst) {
+                        $worst = $magnitude;
+                    }
                 }
 
-                if (max($steps) < $this->threshold && $epoch > 1) {
+                if ($worst < $this->threshold && $epoch > 1) {
                     break 2;
                 }
             }

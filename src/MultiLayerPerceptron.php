@@ -98,7 +98,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $sigmas = new SplObjectStorage();
-                $steps = [];
+                $worst = INF;
 
                 foreach ($batch as $row => $sample) {
                     $this->feed($sample);
@@ -108,13 +108,16 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
 
                 foreach ($sigmas as $synapse) {
                     $step = $this->optimizer->step($synapse, $sigmas[$synapse]);
+                    $magnitude = abs($step);
 
                     $synapse->adjustWeight($step);
 
-                    $steps[] = abs($step);
+                    if ($magnitude < $worst) {
+                        $worst = $magnitude;
+                    }
                 }
 
-                if (min($steps) < $this->threshold) {
+                if ($worst < $this->threshold) {
                     break 2;
                 }
             }
