@@ -10,7 +10,6 @@ use Rubix\Engine\NeuralNetwork\Synapse;
 use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use Rubix\Engine\NeuralNetwork\Optimizers\Optimizer;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\SoftSign;
 use InvalidArgumentException;
 
 class Adaline extends Neuron implements Estimator, Classifier, Persistable
@@ -38,13 +37,6 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     protected $optimizer;
 
     /**
-     * The function that determines this neuron's output activation.
-     *
-     * @var \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction
-     */
-    protected $activationFunction;
-
-    /**
      * The actual labels of the binary class outcomes.
      *
      * @var array
@@ -54,6 +46,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     ];
 
     /**
+     * @param  int  $inputs
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer  $optimizer
@@ -81,7 +74,6 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
-        $this->activationFunction = new SoftSign();
 
         for ($i = 0; $i < $inputs; $i++) {
             $this->connect(new Synapse(new Input()));
@@ -135,13 +127,11 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
                 foreach ($batch as $row => $sample) {
                     $activation = $this->feed($sample);
 
-                    $gradient = $this->activationFunction->differentiate($activation[0], $activation[1]);
-
-                    $output = $activation[1] > 0 ? 1 : -1;
+                    $output = $activation > 0 ? 1 : -1;
 
                     $expected = $this->labels[$output] === $outcomes[$row] ? $output : -$output;
 
-                    $delta += $gradient * ($expected - $activation[1]);
+                    $delta += ($expected - $output);
 
                     foreach ($this->synapses as $i => $synapse) {
                         $sigmas[$i] += $delta * $synapse->neuron()->output();
@@ -165,16 +155,18 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     {
         $activation = $this->feed($sample);
 
-        return new Prediction($this->labels[$activation[1] > 0 ? 1 : -1], [
-            'activation' => $activation[1],
+        return new Prediction($this->labels[$activation > 0 ? 1 : -1], [
+            'activation' => $activation,
         ]);
     }
 
     /**
+     * Feed a sample into the network and return the output of the neuron.
+     *
      * @param  array  $sample
-     * @return array
+     * @return float
      */
-    public function feed(array $sample) : array
+    public function feed(array $sample) : float
     {
         $column = 0;
         $z = 0.0;
@@ -191,9 +183,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
             $z += $synapse->impulse();
         }
 
-        $computed = $this->activationFunction->compute($z);
-
-        return [$z, $computed];
+        return $z;
     }
 
     /**

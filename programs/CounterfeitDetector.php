@@ -9,6 +9,7 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\Transformers\L2Regularizer;
 use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -25,7 +26,7 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
-$estimator = new Prototype(new Pipeline(new Adaline(4, 10, 3),[
+$estimator = new Prototype(new Pipeline(new Adaline(4, 10, 1, new Adam(0.01)), [
     new L2Regularizer(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
