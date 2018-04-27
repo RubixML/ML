@@ -4,14 +4,13 @@ namespace Rubix\Engine\Metrics;
 
 use InvalidArgumentException;
 
-class F1Score implements Classification
+class MCC implements Classification
 {
     /**
-     * Test the F1 score of the predictions.
+     * Test the Matthews correlation coefficient of the predictions.
      *
      * @param  array  $predictions
      * @param  array  $outcomes
-     * @throws \InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $outcomes) : float
@@ -22,34 +21,33 @@ class F1Score implements Classification
 
         $labels = array_unique(array_merge($predictions, $outcomes));
 
-        $truePositives = $falsePositives = $falseNegatives = [];
+        $truePositives = $trueNegatives = $falsePositives = $falseNegatives = [];
 
         foreach ($labels as $label) {
-            $truePositives[$label] = $falsePositives[$label] = $falseNegatives[$label] = 0;
+            $truePositives[$label] = $trueNegatives[$label] = $falsePositives[$label] = $falseNegatives[$label] = 0;
         }
 
         foreach ($predictions as $i => $prediction) {
             if ($prediction === $outcomes[$i]) {
                 $truePositives[$prediction]++;
+                $trueNegatives[$outcomes[$i]]++;
             } else {
                 $falsePositives[$prediction]++;
                 $falseNegatives[$outcomes[$i]]++;
             }
         }
 
-        $score = 0;
+        $mcc = 0.0;
 
         foreach ($truePositives as $label => $tp) {
+            $tn = $trueNegatives[$label];
             $fp = $falsePositives[$label];
             $fn = $falseNegatives[$label];
 
-            $precision = $tp / ($tp + $fp + self::EPSILON);
-            $recall = $tp / ($tp + $fn + self::EPSILON);
-
-            $score += 2.0 * (($precision * $recall) / ($precision + $recall + self::EPSILON));
+            $mcc += ($tp * $tn - $fp * $fn) / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON);
         }
 
-        return $score / count($labels);
+        return $mcc / count($labels);
     }
 
     /**

@@ -75,11 +75,11 @@ class Unsupervised extends Dataset
             throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
         }
 
-        $testing = array_splice($this->samples, round($ratio * $this->rows()));
+        $left = array_splice($this->samples, round($ratio * $this->rows()));
 
         return [
+            new self($left),
             new self($this->samples),
-            new self($testing),
         ];
     }
 

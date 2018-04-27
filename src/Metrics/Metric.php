@@ -14,4 +14,11 @@ interface Metric
      * @return float
      */
     public function score(array $predictions, array $outcomes) : float;
+
+    /**
+     * Should this metric be minimized?
+     *
+     * @return bool
+     */
+    public function minimize() : bool;
 }

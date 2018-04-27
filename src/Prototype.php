@@ -3,9 +3,9 @@
 namespace Rubix\Engine;
 
 use League\CLImate\CLImate;
+use Rubix\Engine\Reports\Report;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\Metrics\Reports\Report;
 use ReflectionClass;
 
 class Prototype implements Estimator, Persistable

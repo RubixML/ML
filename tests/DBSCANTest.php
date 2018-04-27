@@ -2,7 +2,7 @@
 
 use Rubix\Engine\DBSCAN;
 use Rubix\Engine\Datasets\Unsupervised;
-use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase

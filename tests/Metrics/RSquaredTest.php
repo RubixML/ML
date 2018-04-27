@@ -19,9 +19,9 @@ class RSquaredTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = [9, 15, 9, 12, 8];
+        $predictions = [9, 11, 5, 12, 8];
         $outcomes = [10, 10, 6, 14, 8];
 
-        $this->assertEquals(0.02985074626865658, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(0.8011363636363636, $this->metric->score($predictions, $outcomes));
     }
 }

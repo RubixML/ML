@@ -7,10 +7,10 @@ use Rubix\Engine\GridSearch;
 use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Metrics\Reports\ConfusionMatrix;
-use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
-use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
-use Rubix\Engine\Metrics\Reports\ClassificationReport;
+use Rubix\Engine\Reports\ConfusionMatrix;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\DistanceFunctions\Manhattan;
+use Rubix\Engine\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -25,7 +25,7 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setD
 
 $dataset = Supervised::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.1);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.90);
 
 $estimator = new Prototype(new GridSearch(KNearestNeighbors::class, [[1, 3, 5], [new Euclidean(), new Manhattan()]], new Accuracy(), 0.1), [
     new ConfusionMatrix($dataset->labels()),

@@ -125,39 +125,41 @@ class AdaBoost implements Estimator, Classifier
         $labels = $dataset->labels();
 
         if (count($labels) !== 2) {
-            throw new InvalidArgumentException('The number of unique outcomes must be exactly 2, ' . (string) count($labels) . ' given.');
+            throw new InvalidArgumentException('The number of unique outcomes must be exactly 2, ' . (string) count($labels) . ' found.');
         }
 
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
         $this->ensemble = $this->influence = [];
 
-        $outcomes = $dataset->outcomes();
-
         for ($round = 1; $round <= $this->experts; $round++) {
-            $expert = $this->reflector->newInstanceArgs($this->params);
+            $estimator = $this->reflector->newInstanceArgs($this->params);
             $error = 0;
 
-            $expert->train($dataset->generateRandomWeightedSubsetWithReplacement($this->ratio));
+            $estimator->train($dataset->generateRandomWeightedSubsetWithReplacement($this->ratio));
 
-            foreach ($dataset as $i => $sample) {
-                if ($expert->predict($sample)->outcome() !== $outcomes[$i]) {
+            $predictions = array_map(function ($sample) use ($estimator) {
+                return $estimator->predict($sample)->outcome();
+            }, $dataset->samples());
+
+            foreach ($dataset->outcomes() as $i => $outcome) {
+                if ($predictions[$i] !== $outcome) {
                     $error += $dataset->weight($i);
                 }
             }
 
-            $sum = $dataset->totalWeight();
-            $error /= $sum;
+            $sigma = $dataset->totalWeight();
+            $error /= $sigma;
             $influence = 0.5 * log((1 - $error) / ($error ? $error : self::EPSILON));
 
-            foreach ($dataset as $i => $sample) {
-                $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
-                $outcome = $outcomes[$i] === $this->labels[1] ? 1 : -1;
+            foreach ($dataset->outcomes() as $i => $outcome) {
+                $x = $predictions[$i] === $this->labels[1] ? 1 : -1;
+                $y = $outcome === $this->labels[1] ? 1 : -1;
 
-                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $outcome * $prediction) / $sum);
+                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $x * $y) / $sigma);
             }
 
             $this->influence[] = $influence;
-            $this->ensemble[] = $expert;
+            $this->ensemble[] = $estimator;
 
             if ((1 - $error) > $this->threshold) {
                 break 1;
@@ -174,14 +176,14 @@ class AdaBoost implements Estimator, Classifier
      */
     public function predict(array $sample) : Prediction
     {
-        $sum = 0;
+        $sigma = 0;
 
         foreach ($this->ensemble as $i => $expert) {
             $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
 
-            $sum += $this->influence[$i] * $prediction;
+            $sigma += $this->influence[$i] * $prediction;
         }
 
-        return new Prediction($this->labels[$sum > 0 ? 1 : -1]);
+        return new Prediction($this->labels[$sigma > 0 ? 1 : -1]);
     }
 }

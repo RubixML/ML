@@ -1,15 +1,15 @@
 <?php
 
+use Rubix\Engine\Prototype;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-class KNearestNeighborsTest extends TestCase
+class PrototypeTest extends TestCase
 {
-    protected $estimator;
-
     protected $dataset;
+
+    protected $estimator;
 
     public function setUp()
     {
@@ -36,18 +36,18 @@ class KNearestNeighborsTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new KNearestNeighbors(3, new Euclidean());
-
-        $this->estimator->train($this->dataset);
+        $this->estimator = new Prototype(new KNearestNeighbors(3), []);
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_ridge_regression()
     {
-        $this->assertInstanceOf(KNearestNeighbors::class, $this->estimator);
+        $this->assertInstanceOf(Prototype::class, $this->estimator);
     }
 
     public function test_make_prediction()
     {
+        $this->estimator->train($this->dataset);
+
         $prediction = $this->estimator->predict([7.1929367, 3.52848298]);
 
         $this->assertEquals('male', $prediction->outcome());

@@ -3,8 +3,8 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
-use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplPriorityQueue;
 

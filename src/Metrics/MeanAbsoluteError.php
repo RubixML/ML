@@ -28,4 +28,14 @@ class MeanAbsoluteError implements Error
 
         return $error / count($predictions);
     }
+
+    /**
+     * Should this metric be minimized?
+     *
+     * @return bool
+     */
+    public function minimize() : bool
+    {
+        return true;
+    }
 }

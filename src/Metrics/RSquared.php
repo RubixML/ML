@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\Metrics;
 
+use MathPHP\Statistics\Correlation;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
@@ -21,7 +22,7 @@ class RSquared implements Error
             throw new InvalidArgumentException('The number of outcomes must match the number of predictions.');
         }
 
-        $mean = Average::mean($predictions);
+        $mean = Average::mean($outcomes);
         $ssr = $sst = 0.0;
 
         foreach ($predictions as $i => $prediction) {
@@ -30,5 +31,15 @@ class RSquared implements Error
         }
 
         return 1 - ($ssr / $sst);
+    }
+
+    /**
+     * Should this metric be minimized?
+     *
+     * @return bool
+     */
+    public function minimize() : bool
+    {
+        return false;
     }
 }

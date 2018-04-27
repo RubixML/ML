@@ -30,4 +30,14 @@ class Accuracy implements Classification
 
         return $score / count($outcomes);
     }
+
+    /**
+     * Should this metric be minimized?
+     *
+     * @return bool
+     */
+    public function minimize() : bool
+    {
+        return false;
+    }
 }

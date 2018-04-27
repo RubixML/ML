@@ -28,7 +28,7 @@ class Network
     public function __construct(int $inputs, array $hidden, array $outcomes)
     {
         if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of inputs must be greater than 1.');
+            throw new InvalidArgumentException('The number of inputs must be greater than 0.');
         }
 
         foreach ($hidden as &$layer) {
@@ -47,7 +47,7 @@ class Network
             }
         }
 
-        if (count($outcomes) < 1) {
+        if (count($outcomes) < 2) {
             throw new InvalidArgumentException('The number of unique outcomes must be greater than 1.');
         }
 
@@ -167,9 +167,7 @@ class Network
     {
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $neuron) {
-                foreach ($neuron->synapses() as $synapse) {
-                    $synapse->randomize();
-                }
+                $neuron->zap();
             }
         }
     }

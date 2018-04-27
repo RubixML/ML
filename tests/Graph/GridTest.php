@@ -3,7 +3,7 @@
 use Rubix\Engine\Graph\Grid;
 use Rubix\Engine\Graph\Path;
 use Rubix\Engine\Graph\GraphNode;
-use Rubix\Engine\Graph\DistanceFunctions\Manhattan;
+use Rubix\Engine\Metrics\DistanceFunctions\Manhattan;
 use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase

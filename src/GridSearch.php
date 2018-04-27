@@ -4,7 +4,6 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Metrics\Error;
 use Rubix\Engine\Metrics\Metric;
-use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Metrics\Classification;
 use ReflectionClass;
@@ -81,9 +80,7 @@ class GridSearch implements Estimator
         }
 
         foreach ($params as &$options) {
-            if (!is_array($options)) {
-                $options = [$options];
-            }
+            $options = (array) $options;
         }
 
         $this->params = $params;
@@ -118,7 +115,12 @@ class GridSearch implements Estimator
     public function train(Supervised $dataset) : void
     {
         $this->trials = [];
-        $best = ['score' => null, 'estimator' => null];
+
+        if ($this->metric->minimize()) {
+            $best = ['score' => INF, 'estimator' => null];
+        } else if ($this->metric instanceof Error) {
+            $best = ['score' => 0, 'estimator' => null];
+        }
 
         foreach ($this->combineParams($this->params) as $params) {
             list($training, $testing) = $dataset->split($this->ratio);
@@ -133,19 +135,13 @@ class GridSearch implements Estimator
 
             $score = $this->metric->score($predictions, $testing->outcomes());
 
-            if ($this->metric instanceof Classification) {
-                if ($score > $best['score'] ?? 0) {
-                    $best = [
-                        'score' => $score,
-                        'estimator' => $estimator,
-                    ];
+            if ($this->metric->minimize()) {
+                if ($score < $best['score']) {
+                    $best = ['score' => $score, 'estimator' => $estimator];
                 }
-            } else if ($this->metric instanceof Error) {
-                if ($score < $best['score'] ?? -INF) {
-                    $best = [
-                        'score' => $score,
-                        'estimator' => $estimator,
-                    ];
+            } else {
+                if ($score > $best['score']) {
+                    $best = ['score' => $score, 'estimator' => $estimator];
                 }
             }
 

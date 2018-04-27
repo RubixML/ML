@@ -236,14 +236,14 @@ class Supervised extends Dataset
             throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
         }
 
-        $testing = [
+        $left = [
             array_splice($this->samples, 0, round($ratio * count($this->samples))),
             array_splice($this->outcomes, 0, round($ratio * count($this->outcomes))),
         ];
 
         return [
+            new static(...$left),
             new static($this->samples, $this->outcomes),
-            new static($testing[0], $testing[1]),
         ];
     }
 
@@ -261,19 +261,19 @@ class Supervised extends Dataset
 
         $strata = $this->stratify();
 
-        $training = $testing = [0 => [], 1 => []];
+        $left = $right = [[], []];
 
         foreach ($strata[0] as $i => $stratum) {
-            $testing[0] = array_merge($testing[0], array_splice($stratum, 0, round($ratio * count($stratum))));
-            $testing[1] = array_merge($testing[1], array_splice($strata[1][$i], 0, round($ratio * count($strata[1][$i]))));
+            $left[0] = array_merge($left[0], array_splice($stratum, 0, round($ratio * count($stratum))));
+            $left[1] = array_merge($left[1], array_splice($strata[1][$i], 0, round($ratio * count($strata[1][$i]))));
 
-            $training[0] = array_merge($training[0], $stratum);
-            $training[1] = array_merge($training[1], $strata[1][$i]);
+            $right[0] = array_merge($right[0], $stratum);
+            $right[1] = array_merge($right[1], $strata[1][$i]);
         }
 
         return [
-            new static(...$training),
-            new static(...$testing),
+            new static(...$left),
+            new static(...$right),
         ];
     }
 

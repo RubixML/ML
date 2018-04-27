@@ -2,8 +2,8 @@
 
 namespace Rubix\Engine\Graph;
 
-use Rubix\Engine\Graph\DistanceFunctions\Euclidean;
-use Rubix\Engine\Graph\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -20,7 +20,7 @@ class Grid extends Graph
     /**
      * The distance function that describes the grid space.
      *
-     * @var \Rubix\Engine\Contracts\DistanceFunction
+     * @var \Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction
      */
     protected $distanceFunction;
 

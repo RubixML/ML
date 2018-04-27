@@ -28,4 +28,14 @@ class RMSError implements Error
 
         return sqrt($error / count($outcomes));
     }
+
+    /**
+     * Should this metric be minimized?
+     *
+     * @return bool
+     */
+    public function minimize() : bool
+    {
+        return true;
+    }
 }

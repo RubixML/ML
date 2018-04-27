@@ -35,6 +35,21 @@ class Neuron
     }
 
     /**
+     * Randomize this neuron's synapse weights.
+     *
+     * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
+     * @return self
+     */
+    public function zap() : self
+    {
+        foreach ($this->synapses as $synapse) {
+            $synapse->randomize();
+        }
+
+        return $this;
+    }
+
+    /**
      * Sever the connection to a given neuron by pruning the synapse.
      *
      * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
