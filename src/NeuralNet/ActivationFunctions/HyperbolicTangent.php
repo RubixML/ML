@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
+namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-class Sigmoid implements ActivationFunction
+class HyperbolicTangent implements ActivationFunction
 {
     /**
      * Compute the output value.
@@ -12,7 +12,7 @@ class Sigmoid implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return 1 / (1 + exp(-$value));
+        return tanh($value);
     }
 
     /**
@@ -24,6 +24,6 @@ class Sigmoid implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return $computed * (1 - $computed);
+        return 1 - ($computed ** 2);
     }
 }

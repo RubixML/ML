@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
 class Neuron
 {
@@ -24,8 +24,8 @@ class Neuron
     /**
      * Connect this neuron to another neuron via a synapse.
      *
-     * @param  \Rubix\Engine\NeuralNetwork\Synapse  $synapse
-     * @return \Rubix\Engine\NeuralNetwork\Synapse
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @return \Rubix\Engine\NeuralNet\Synapse
      */
     public function connect(Synapse $synapse) : Synapse
     {
@@ -37,7 +37,7 @@ class Neuron
     /**
      * Randomize this neuron's synapse weights.
      *
-     * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
+     * @param  \Rubix\Engine\NeuralNet\Neuron  $neuron
      * @return self
      */
     public function zap() : self
@@ -52,7 +52,7 @@ class Neuron
     /**
      * Sever the connection to a given neuron by pruning the synapse.
      *
-     * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
+     * @param  \Rubix\Engine\NeuralNet\Neuron  $neuron
      * @return self
      */
     public function prune(Synapse $synapse) : self

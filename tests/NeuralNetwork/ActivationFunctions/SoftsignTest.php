@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Softsign;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Softsign;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class SoftsignTest extends TestCase

@@ -2,14 +2,14 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\NeuralNetwork\Bias;
+use Rubix\Engine\NeuralNet\Bias;
+use Rubix\Engine\NeuralNet\Input;
+use Rubix\Engine\NeuralNet\Neuron;
+use Rubix\Engine\NeuralNet\Synapse;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\NeuralNetwork\Input;
-use Rubix\Engine\NeuralNetwork\Neuron;
-use Rubix\Engine\NeuralNetwork\Synapse;
 use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\NeuralNetwork\Optimizers\Adam;
-use Rubix\Engine\NeuralNetwork\Optimizers\Optimizer;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
 class Adaline extends Neuron implements Estimator, Classifier, Persistable
@@ -32,7 +32,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     /**
      * The gradient descent optimizer.
      *
-     * @var \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer
+     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
@@ -56,7 +56,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      * @param  int  $inputs
      * @param  int  $epochs
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer  $optimizer
+     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
@@ -131,8 +131,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
             foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $outcomes = $batch->outcomes();
                 $sigmas = array_fill(0, count($this->synapses), 0.0);
-                $error = 0.0;
-                $worst = INF;
+                $error = $magnitude = 0.0;
 
                 foreach ($batch as $row => $sample) {
                     $activation = $this->feed($sample);
@@ -150,16 +149,13 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
                 foreach ($this->synapses as $i => $synapse) {
                     $step = $this->optimizer->step($synapse, $sigmas[$i]);
-                    $magnitude = abs($step);
 
                     $synapse->adjustWeight($step);
 
-                    if ($magnitude < $worst) {
-                        $worst = $magnitude;
-                    }
+                    $magnitude += abs($step);
                 }
 
-                if ($worst < $this->threshold && $epoch > 1) {
+                if ($magnitude < $this->threshold && $epoch > 1) {
                     break 2;
                 }
             }

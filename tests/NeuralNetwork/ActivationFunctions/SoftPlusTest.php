@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\SoftPlus;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\SoftPlus;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class SoftPlusTest extends TestCase

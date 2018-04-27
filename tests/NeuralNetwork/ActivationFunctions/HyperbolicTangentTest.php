@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\HyperbolicTangent;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class HyperbolicTangentTest extends TestCase

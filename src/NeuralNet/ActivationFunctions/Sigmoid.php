@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
+namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-class Gaussian implements ActivationFunction
+class Sigmoid implements ActivationFunction
 {
     /**
      * Compute the output value.
@@ -12,7 +12,7 @@ class Gaussian implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return exp(-($value ** 2));
+        return 1 / (1 + exp(-$value));
     }
 
     /**
@@ -24,6 +24,6 @@ class Gaussian implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return -2 * $value * $computed;
+        return $computed * (1 - $computed);
     }
 }

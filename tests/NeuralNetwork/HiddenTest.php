@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\Hidden;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNet\Hidden;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use PHPUnit\Framework\TestCase;
 
 class HiddenTest extends TestCase

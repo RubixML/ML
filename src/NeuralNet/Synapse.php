@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
 class Synapse
 {
     /**
      * The neuron that this synapse connects to.
      *
-     * @var  \Rubix\Engine\NeuralNetwork\Neuron
+     * @var  \Rubix\Engine\NeuralNet\Neuron
      */
     protected $neuron;
 
@@ -19,7 +19,7 @@ class Synapse
     protected $weight;
 
     /**
-     * @param  \Rubix\Engine\NeuralNetwork\Neuron  $neuron
+     * @param  \Rubix\Engine\NeuralNet\Neuron  $neuron
      * @param  float  $weight
      * @return void
      */

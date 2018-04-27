@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Sigmoid;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -92,34 +92,6 @@ class Network
     public function depth() : int
     {
         return count($this->layers) - 2;
-    }
-
-    /**
-     * Feed a sample through the network and calculate the output of each neuron.
-     *
-     * @param  array  $sample
-     * @throws \RuntimeException
-     * @return void
-     */
-    public function feed(array $sample) : void
-    {
-        if (count($sample) !== count($this->layers[0]) - 1) {
-            throw new RuntimeException('The number of feature columns must equal the number of input neurons.');
-        }
-
-        $this->reset();
-
-        $column = 0;
-
-        foreach ($this->inputs() as $input) {
-            if ($input instanceof Input) {
-                $input->prime($sample[$column++]);
-            }
-        }
-
-        foreach ($this->outputs() as $output) {
-            $output->fire();
-        }
     }
 
     /**

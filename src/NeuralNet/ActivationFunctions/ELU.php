@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
+namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
 class ELU implements ActivationFunction
 {

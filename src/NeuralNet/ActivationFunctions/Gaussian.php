@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
+namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-class HyperbolicTangent implements ActivationFunction
+class Gaussian implements ActivationFunction
 {
     /**
      * Compute the output value.
@@ -12,7 +12,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return tanh($value);
+        return exp(-($value ** 2));
     }
 
     /**
@@ -24,6 +24,6 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return 1 - ($computed ** 2);
+        return -2 * $value * $computed;
     }
 }

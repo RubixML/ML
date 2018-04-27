@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\Input;
+use Rubix\Engine\NeuralNet\Input;
 use PHPUnit\Framework\TestCase;
 
 class InputTest extends TestCase

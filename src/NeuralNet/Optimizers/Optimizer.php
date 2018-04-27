@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\Optimizers;
+namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNetwork\Synapse;
+use Rubix\Engine\NeuralNet\Synapse;
 
 interface Optimizer
 {
@@ -11,7 +11,7 @@ interface Optimizer
     /**
      * Calculate the amount of a step of gradient descent.
      *
-     * @param  \Rubix\Engine\NeuralNetwork\Synapse  $synapse
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
      * @param  float  $gradient
      * @return float
      */

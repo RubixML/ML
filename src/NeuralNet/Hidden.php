@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 
 class Hidden extends Neuron
 {
@@ -23,12 +23,12 @@ class Hidden extends Neuron
     /**
      * The function that determines the magnitude of this neurons output.
      *
-     * @var \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction
+     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
 
     /**
-     * @param  \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction  $activationFunction
+     * @param  \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
      * @return void
      */
     public function __construct(ActivationFunction $activationFunction)

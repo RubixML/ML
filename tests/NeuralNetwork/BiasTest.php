@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\Bias;
+use Rubix\Engine\NeuralNet\Bias;
 use PHPUnit\Framework\TestCase;
 
 class BiasTest extends TestCase

@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\PReLU;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class PReLUTest extends TestCase

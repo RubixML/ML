@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 
 class HiddenLayer extends Layer
 {
     /**
      * @param  int  $n
-     * @param  \Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction  $activationFunction
+     * @param  \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
      * @return void
      */
     public function __construct(int $n, ActivationFunction $activationFunction)

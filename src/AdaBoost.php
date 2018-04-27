@@ -147,15 +147,15 @@ class AdaBoost implements Estimator, Classifier
                 }
             }
 
-            $sigma = $dataset->totalWeight();
-            $error /= $sigma;
+            $total = $dataset->totalWeight();
+            $error /= $total;
             $influence = 0.5 * log((1 - $error) / ($error ? $error : self::EPSILON));
 
             foreach ($dataset->outcomes() as $i => $outcome) {
                 $x = $predictions[$i] === $this->labels[1] ? 1 : -1;
                 $y = $outcome === $this->labels[1] ? 1 : -1;
 
-                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $x * $y) / $sigma);
+                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $x * $y) / $total);
             }
 
             $this->influence[] = $influence;
@@ -176,14 +176,14 @@ class AdaBoost implements Estimator, Classifier
      */
     public function predict(array $sample) : Prediction
     {
-        $sigma = 0;
+        $total = 0;
 
         foreach ($this->ensemble as $i => $expert) {
             $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
 
-            $sigma += $this->influence[$i] * $prediction;
+            $total += $this->influence[$i] * $prediction;
         }
 
-        return new Prediction($this->labels[$sigma > 0 ? 1 : -1]);
+        return new Prediction($this->labels[$total > 0 ? 1 : -1]);
     }
 }

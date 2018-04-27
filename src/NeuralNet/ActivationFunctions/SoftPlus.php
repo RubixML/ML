@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork\ActivationFunctions;
+namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-class Softsign implements ActivationFunction
+class SoftPlus implements ActivationFunction
 {
     /**
      * Compute the output value.
@@ -12,7 +12,7 @@ class Softsign implements ActivationFunction
      */
     public function compute(float $value) : float
     {
-        return $value / (1 + abs($value));
+        return log(1 + exp($value));
     }
 
     /**
@@ -24,6 +24,6 @@ class Softsign implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return 1 / (1 + abs($computed)) ** 2;
+        return 1 / (1 + exp(-$computed));
     }
 }

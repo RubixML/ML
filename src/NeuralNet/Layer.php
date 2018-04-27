@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNetwork;
+namespace Rubix\Engine\NeuralNet;
 
 use SplFixedArray;
 

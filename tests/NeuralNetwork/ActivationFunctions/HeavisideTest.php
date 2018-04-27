@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\Heaviside;
-use Rubix\Engine\NeuralNetwork\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Heaviside;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class HeavisideTest extends TestCase
