@@ -19,7 +19,7 @@ class Stochastic implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001)
+    public function __construct(float $rate = 0.01)
     {
         if (!$rate > 0.0) {
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
@@ -35,8 +35,8 @@ class Stochastic implements Optimizer
      * @param  float  $gradient
      * @return float
      */
-    public function step(Synapse $synapse, float $gradient) : void
+    public function step(Synapse $synapse, float $gradient) : float
     {
-        $synapse->adjustWeight($this->rate * $gradient);
+        return $this->rate * $gradient;
     }
 }

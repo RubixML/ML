@@ -37,6 +37,13 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     protected $optimizer;
 
     /**
+     * The minimum gradient descent step before the algorithm terminates early.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * The actual labels of the binary class outcomes.
      *
      * @var array
@@ -50,10 +57,11 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNetwork\Optimizers\Optimizer  $optimizer
+     * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, int $epochs = 10, int $batchSize = 10, Optimizer $optimizer = null)
+    public function __construct(int $inputs, int $epochs = 10, int $batchSize = 10, Optimizer $optimizer = null, float $threshold = 1e-8)
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of inputs must be greater than 0.');
@@ -74,6 +82,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
+        $this->threshold = $threshold;
 
         for ($i = 0; $i < $inputs; $i++) {
             $this->connect(new Synapse(new Input()));
@@ -122,7 +131,8 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
             foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $outcomes = $batch->outcomes();
                 $sigmas = array_fill(0, count($this->synapses), 0.0);
-                $delta = 0.0;
+                $error = 0.0;
+                $steps = [];
 
                 foreach ($batch as $row => $sample) {
                     $activation = $this->feed($sample);
@@ -131,15 +141,23 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
                     $expected = $this->labels[$output] === $outcomes[$row] ? $output : -$output;
 
-                    $delta += ($expected - $output);
+                    $error += ($expected - $output);
 
                     foreach ($this->synapses as $i => $synapse) {
-                        $sigmas[$i] += $delta * $synapse->neuron()->output();
+                        $sigmas[$i] += $error * $synapse->neuron()->output();
                     }
                 }
 
                 foreach ($this->synapses as $i => $synapse) {
-                    $this->optimizer->step($synapse, $sigmas[$i]);
+                    $step = $this->optimizer->step($synapse, $sigmas[$i]);
+
+                    $synapse->adjustWeight($step);
+
+                    $steps[] = abs($step);
+                }
+
+                if (max($steps) < $this->threshold && $epoch > 1) {
+                    break 2;
                 }
             }
         }

@@ -55,16 +55,18 @@ class Momentum implements Optimizer
      *
      * @param  \Rubix\Engine\NeuralNetwork\Synapse  $synapse
      * @param  float  $gradient
-     * @return void
+     * @return float
      */
-    public function step(Synapse $synapse, float $gradient) : void
+    public function step(Synapse $synapse, float $gradient) : float
     {
-        if (!$this->cache->contains($synapse)) {
-            $this->cache->attach($synapse, 0.0);
+        if (!$this->velocities->contains($synapse)) {
+            $this->velocities->attach($synapse, 0.0);
         }
 
-        $this->velocities[$synapse] = $this->decay * $this->velocities[$synapse] + $this->rate * $gradient;
+        $velocity = $this->decay * $this->velocities[$synapse] + $this->rate * $gradient;
 
-        $synapse->adjustWeight($this->velocities[$synapse]);
+        $this->velocities[$synapse] = $velocity;
+
+        return $velocity;
     }
 }

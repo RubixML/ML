@@ -38,6 +38,13 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     protected $optimizer;
 
     /**
+     * The minimum gradient descent step before the algorithm terminates early.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * @param  int  $inputs
      * @param  array  $hidden
      * @param  array  $outcomes
@@ -47,7 +54,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null)
+    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null, float $threshold = 1e-8)
     {
         if ($epochs < 1) {
             throw new InvalidArgumentException('Epoch parameter must be an integer greater than 0.');
@@ -57,6 +64,10 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             throw new InvalidArgumentException('Batch size cannot be less than 1.');
         }
 
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Threshold step size must be a float greater than 0.');
+        }
+
         if (!isset($optimizer)) {
             $optimizer = new Adam();
         }
@@ -64,6 +75,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
+        $this->threshold = $threshold;
 
         parent::__construct($inputs, $hidden, $outcomes);
     }
@@ -86,6 +98,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $sigmas = new SplObjectStorage();
+                $steps = [];
 
                 foreach ($batch as $row => $sample) {
                     $this->feed($sample);
@@ -94,7 +107,15 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 }
 
                 foreach ($sigmas as $synapse) {
-                    $this->optimizer->step($synapse, $sigmas[$synapse]);
+                    $step = $this->optimizer->step($synapse, $sigmas[$synapse]);
+
+                    $synapse->adjustWeight($step);
+
+                    $steps[] = abs($step);
+                }
+
+                if (min($steps) < $this->threshold) {
+                    break 2;
                 }
             }
         }

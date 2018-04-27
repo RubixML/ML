@@ -8,8 +8,6 @@ use SplObjectStorage;
 
 class Adam implements Optimizer
 {
-    const EPSILON = 1e-8;
-
     /**
      * The learning rate. i.e. the master step size.
      *
@@ -70,9 +68,9 @@ class Adam implements Optimizer
      *
      * @param  \Rubix\Engine\NeuralNetwork\Synapse  $synapse
      * @param  float  $gradient
-     * @return void
+     * @return float
      */
-    public function step(Synapse $synapse, float $gradient) : void
+    public function step(Synapse $synapse, float $gradient) : float
     {
         if (!$this->cache->contains($synapse)) {
             $this->cache->attach($synapse, [0.0, 0.0]);
@@ -83,6 +81,6 @@ class Adam implements Optimizer
             $this->rmsDecay * $this->cache[$synapse][1] + (1 - $this->rmsDecay) * $gradient ** 2,
         ];
 
-        $synapse->adjustWeight($this->rate * $this->cache[$synapse][0] / (sqrt($this->cache[$synapse][1]) + self::EPSILON));
+        return $this->rate * $this->cache[$synapse][0] / (sqrt($this->cache[$synapse][1]) + self::EPSILON);
     }
 }

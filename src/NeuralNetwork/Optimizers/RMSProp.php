@@ -8,8 +8,6 @@ use SplObjectStorage;
 
 class RMSProp implements Optimizer
 {
-    const EPSILON = 1e-10;
-
     /**
      * The learning rate. i.e. the master step size.
      *
@@ -55,9 +53,9 @@ class RMSProp implements Optimizer
      *
      * @param  \Rubix\Engine\NeuralNetwork\Synapse  $synapse
      * @param  float  $gradient
-     * @return void
+     * @return float
      */
-    public function step(Synapse $synapse, float $gradient) : void
+    public function step(Synapse $synapse, float $gradient) : float
     {
         if (!$this->cache->contains($synapse)) {
             $this->cache->attach($synapse, 0.0);
@@ -65,6 +63,6 @@ class RMSProp implements Optimizer
 
         $this->cache[$synapse] = $this->decay * $this->cache[$synapse] + (1 - $this->decay) * $gradient ** 2;
 
-        $synapse->adjustWeight($this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON));
+        return $this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON);
     }
 }
