@@ -61,7 +61,7 @@ class RandomForest implements Estimator, Classifier, Regression, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 1000)
+    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 100)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be less than 1.');

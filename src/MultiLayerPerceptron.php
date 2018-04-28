@@ -7,8 +7,8 @@ use Rubix\Engine\NeuralNet\Hidden;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
+use Rubix\Engine\NeuralNet\LearningRates\Adam;
+use Rubix\Engine\NeuralNet\LearningRates\LearningRate;
 use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
@@ -31,11 +31,11 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     protected $batchSize;
 
     /**
-     * The gradient descent optimizer.
+     * The learnign rate to use when adjusting the weights of the synapses.
      *
-     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
+     * @var \Rubix\Engine\NeuralNet\LearningRates\LearningRate
      */
-    protected $optimizer;
+    protected $rate;
 
     /**
      * @param  int  $inputs
@@ -43,11 +43,11 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      * @param  array  $outcomes
      * @param  int  $epochs
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  \Rubix\Engine\NeuralNet\LearningRates\LearningRate  $rate
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null)
+    public function __construct(int $inputs, array $hidden, array $outcomes, int $epochs = 100, int $batchSize = 10, LearningRate $rate = null)
     {
         if ($epochs < 1) {
             throw new InvalidArgumentException('Epoch parameter must be an integer greater than 0.');
@@ -57,13 +57,13 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             throw new InvalidArgumentException('Batch size cannot be less than 1.');
         }
 
-        if (!isset($optimizer)) {
-            $optimizer = new Adam();
+        if (!isset($rate)) {
+            $rate = new Adam();
         }
 
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer;
+        $this->rate = $rate;
 
         parent::__construct($inputs, $hidden, $outcomes);
     }
@@ -94,7 +94,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 }
 
                 foreach ($sigmas as $synapse) {
-                    $step = $this->optimizer->step($synapse, $sigmas[$synapse]);
+                    $step = $this->rate->step($synapse, $sigmas[$synapse]);
 
                     $synapse->adjustWeight($step);
                 }

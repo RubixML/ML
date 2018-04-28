@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Optimizers;
+namespace Rubix\Engine\NeuralNet\LearningRates;
 
 use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-class RMSProp implements Optimizer
+class RMSProp implements LearningRate
 {
     /**
      * The learning rate. i.e. the master step size.

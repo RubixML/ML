@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Optimizers;
+namespace Rubix\Engine\NeuralNet\LearningRates;
 
 use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 
-class Stochastic implements Optimizer
+class Constant implements LearningRate
 {
     /**
      * The learning rate. i.e. the master step size.

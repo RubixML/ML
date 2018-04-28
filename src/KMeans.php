@@ -3,13 +3,12 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Unsupervised;
-use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
 use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KMeans implements Clusterer, Persistable
+class KMeans implements Clusterer
 {
     /**
      * The target number of clusters.
@@ -30,23 +29,23 @@ class KMeans implements Clusterer, Persistable
      *
      * @var int
      */
-    protected $maxIterations;
+    protected $epochs;
 
     /**
      * @param  int  $k
      * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
-     * @param  int  $maxIterations
+     * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, DistanceFunction $distanceFunction = null, int $maxIterations = PHP_INT_MAX)
+    public function __construct(int $k, DistanceFunction $distanceFunction = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('K must be an integer greater than 1.');
+            throw new InvalidArgumentException('Parameter K must be an integer larger than 1.');
         }
 
-        if ($maxIterations < 1) {
-            throw new InvalidArgumentException('Max interations must be greater than 1.');
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Max epochs must be larger than 1.');
         }
 
         if (!isset($distanceFunction)) {
@@ -54,8 +53,8 @@ class KMeans implements Clusterer, Persistable
         }
 
         $this->k = $k;
-        $this->maxIterations = $maxIterations;
         $this->distanceFunction = $distanceFunction;
+        $this->epochs = $epochs;
     }
 
     /**
@@ -66,7 +65,7 @@ class KMeans implements Clusterer, Persistable
      */
     public function cluster(Unsupervised $dataset) : array
     {
-        $centroids = $this->findKCentroids($dataset->samples());
+        $centroids = $this->findCentroids($dataset->samples());
 
         $clusters = [];
 
@@ -80,45 +79,42 @@ class KMeans implements Clusterer, Persistable
     }
 
     /**
-     * Pick K random points and assign them as centroids. Compute the coordinates
+     * Pick K random samples and assign them as centroids. Compute the coordinates
      * of the centroids by clustering the points based on each sample's distance
      * from one of the k centroids, then recompute the centroid coordinate as the
-     * mean of the new cluster's population.
+     * mean of the new cluster.
      *
-     * @param  array  $points
+     * @param  array  $samples
      * @throws \RuntimeException
      * @return array
      */
-    protected function findKCentroids(array $points) : array
+    protected function findCentroids(array $samples) : array
     {
-        if (count($points) < $this->k) {
-            throw new RuntimeException('The number of sample points cannot be less than K.');
+        if (count($samples) < $this->k) {
+            throw new RuntimeException('The number of samples cannot be less than the parameter K.');
         }
 
-        $labels = array_fill(0, count($points), null);
+        $labels = array_fill(0, count($samples), null);
         $sizes = array_fill(0, $this->k, 0);
         $changed = true;
 
-        shuffle($points);
+        shuffle($samples);
 
-        $centroids = array_splice($points, 0, $this->k);
+        $centroids = array_splice($samples, 0, $this->k);
 
-        for ($i = 0; $i < $this->maxIterations; $i++) {
-            foreach ($points as $id => $sample) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+            foreach ($samples as $i => $sample) {
                 $label = $this->label($sample, $centroids);
 
-                if ($label !== $labels[$id]) {
-                    $labels[$id] = $label;
-
+                if ($label !== $labels[$i]) {
+                    $labels[$i] = $label;
                     $sizes[$label]++;
                 } else {
                     $changed = false;
                 }
 
-                $n = $sizes[$label];
-
                 foreach ($centroids[$label] as $column => &$mean) {
-                    $mean = ($mean * ($n - 1) + $sample[$column]) / $n;
+                    $mean = ($mean * ($sizes[$label] - 1) + $sample[$column]) / $sizes[$label];
                 }
             }
 

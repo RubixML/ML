@@ -4,7 +4,7 @@ use Rubix\Engine\Adaline;
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\LearningRates\Adam;
 use PHPUnit\Framework\TestCase;
 
 class AdalineTest extends TestCase

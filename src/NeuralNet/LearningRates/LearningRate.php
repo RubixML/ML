@@ -1,15 +1,16 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Optimizers;
+namespace Rubix\Engine\NeuralNet\LearningRates;
 
 use Rubix\Engine\NeuralNet\Synapse;
 
-interface Optimizer
+interface LearningRate
 {
     const EPSILON = 1e-8;
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the value of a single step of gradient descent for a given
+     * parameter.
      *
      * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
      * @param  float  $gradient

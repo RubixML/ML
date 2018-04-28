@@ -8,8 +8,8 @@ use Rubix\Engine\NeuralNet\Neuron;
 use Rubix\Engine\NeuralNet\Synapse;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
+use Rubix\Engine\NeuralNet\LearningRates\Adam;
+use Rubix\Engine\NeuralNet\LearningRates\LearningRate;
 use InvalidArgumentException;
 
 class Adaline extends Neuron implements Estimator, Classifier, Persistable
@@ -32,9 +32,9 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     /**
      * The gradient descent optimizer.
      *
-     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
+     * @var \Rubix\Engine\NeuralNet\LearningRates\LearningRate
      */
-    protected $optimizer;
+    protected $rate;
 
     /**
      * The minimum gradient descent step before the algorithm terminates early.
@@ -56,12 +56,12 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      * @param  int  $inputs
      * @param  int  $epochs
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  \Rubix\Engine\NeuralNet\LearningRates\LearningRate  $rate
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, int $epochs = 10, int $batchSize = 10, Optimizer $optimizer = null, float $threshold = 1e-8)
+    public function __construct(int $inputs, int $epochs = 10, int $batchSize = 10, LearningRate $rate = null, float $threshold = 1e-8)
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of inputs must be greater than 0.');
@@ -75,13 +75,13 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
             throw new InvalidArgumentException('Batch size cannot be less than 1.');
         }
 
-        if (!isset($optimizer)) {
-            $optimizer = new Adam();
+        if (!isset($rate)) {
+            $rate = new Adam();
         }
 
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer;
+        $this->rate = $rate;
         $this->threshold = $threshold;
 
         for ($i = 0; $i < $inputs; $i++) {
@@ -148,7 +148,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
                 }
 
                 foreach ($this->synapses as $i => $synapse) {
-                    $step = $this->optimizer->step($synapse, $sigmas[$i]);
+                    $step = $this->rate->step($synapse, $sigmas[$i]);
 
                     $synapse->adjustWeight($step);
 

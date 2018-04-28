@@ -4,7 +4,7 @@ namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\FuzzyMean;
+use Rubix\Engine\Transformers\Strategies\BlurryMean;
 use Rubix\Engine\Transformers\Strategies\KMostFrequent;
 use InvalidArgumentException;
 
@@ -67,7 +67,7 @@ class MissingDataImputer implements Transformer
         }
 
         if (!isset($continuousStrategy)) {
-            $continuousStrategy = new FuzzyMean();
+            $continuousStrategy = new BlurryMean();
         }
 
         $this->placeholder = $placeholder;

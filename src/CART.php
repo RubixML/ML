@@ -135,7 +135,7 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
 
         if ($node->output === self::CATEGORICAL) {
             return new Prediction($node->value(), [
-                'certainty' => $node->certainty,
+                'probablity' => $node->probability,
             ]);
         } else {
             return new Prediction($node->value(), [
@@ -285,10 +285,10 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
 
             $outcome = array_search(max($counts), $counts);
 
-            $certainty = $counts[$outcome] / count($outcomes);
+            $probability = $counts[$outcome] / count($outcomes);
 
             return new BinaryNode($outcome, [
-                'certainty' =>  $certainty,
+                'probability' =>  $probability,
                 'output' => self::CATEGORICAL,
                 'terminal' => true,
             ]);
