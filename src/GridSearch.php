@@ -70,7 +70,7 @@ class GridSearch implements Estimator
     public function __construct(string $base, array $params, Metric $metric, float $ratio = 0.2)
     {
         if ($ratio < 0.01 || $ratio > 1) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0.01 and 1.0.');
+            throw new InvalidArgumentException('Testing ratio must be a float value between 0.01 and 1.0.');
         }
 
         $this->reflector = new ReflectionClass($base);
@@ -187,5 +187,17 @@ class GridSearch implements Estimator
         }
 
         return $params;
+    }
+
+    /**
+     * Allow methods to be called from the base estimator from this estimator.
+     *
+     * @param  string  $name
+     * @param  array  $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->estimator->$name(...$arguments);
     }
 }
