@@ -26,8 +26,8 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron(23, [6, 3], $dataset->labels(),
-                    3, new Adam(0.01), 0.999, 3, new Accuracy(), 100), [
+$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron(23, [6, 6], $dataset->labels(),
+                    3, new Adam(0.01), 0.999, 2, new Accuracy(), 100), [
     new OneHotEncoder(),
 ]), [
     new ConfusionMatrix($dataset->labels()),

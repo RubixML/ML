@@ -158,7 +158,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 foreach ($batch as $row => $sample) {
                     $this->feed($sample);
 
-                    $this->backpropagate($sigmas, $batch->getOutcome($row));
+                    $this->backpropagate($sigmas, $batch->outcome($row));
                 }
 
                 foreach ($sigmas as $synapse) {

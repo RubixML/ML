@@ -3,6 +3,7 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Datasets\WeightedSupervised;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
@@ -112,6 +113,26 @@ class AdaBoost implements Estimator, Classifier
     }
 
     /**
+     * Return the array of trained classifiers that comprise the ensemble.
+     *
+     * @return array
+     */
+    public function ensemble() : array
+    {
+        return $this->ensemble;
+    }
+
+    /**
+     * Return the list of influence values for each estimator in the ensemble.
+     *
+     * @return array
+     */
+    public function influence() : array
+    {
+        return $this->influence;
+    }
+
+    /**
      * Train a boosted enemble of binary classifiers assigning an influence value
      * to each one and re-weighting the training data according to reflect how
      * difficult a particular sample is to classify.
@@ -128,22 +149,26 @@ class AdaBoost implements Estimator, Classifier
             throw new InvalidArgumentException('The number of unique outcomes must be exactly 2, ' . (string) count($labels) . ' found.');
         }
 
-        $this->labels = [1 => $labels[0], -1 => $labels[1]];
+        if (!$dataset instanceof WeightedSupervised) {
+            $dataset = new WeightedSupervised($dataset->samples(), $dataset->outcomes());
+        }
+
         $this->ensemble = $this->influence = [];
+        $this->labels = [1 => $labels[0], -1 => $labels[1]];
 
         for ($round = 1; $round <= $this->experts; $round++) {
             $estimator = $this->reflector->newInstanceArgs($this->params);
             $error = 0;
 
-            $estimator->train($dataset->generateRandomWeightedSubsetWithReplacement($this->ratio));
+            $estimator->train($dataset->generateRandomSubsetWithReplacement($this->ratio));
 
             $predictions = array_map(function ($sample) use ($estimator) {
                 return $estimator->predict($sample)->outcome();
             }, $dataset->samples());
 
-            foreach ($dataset->outcomes() as $i => $outcome) {
-                if ($predictions[$i] !== $outcome) {
-                    $error += $dataset->weight($i);
+            foreach ($dataset->outcomes() as $row => $outcome) {
+                if ($predictions[$row] !== $outcome) {
+                    $error += $dataset->weight($row);
                 }
             }
 
@@ -151,11 +176,11 @@ class AdaBoost implements Estimator, Classifier
             $error /= $total;
             $influence = 0.5 * log((1 - $error) / ($error ? $error : self::EPSILON));
 
-            foreach ($dataset->outcomes() as $i => $outcome) {
-                $x = $predictions[$i] === $this->labels[1] ? 1 : -1;
+            foreach ($dataset->outcomes() as $row => $outcome) {
+                $x = $predictions[$row] === $this->labels[1] ? 1 : -1;
                 $y = $outcome === $this->labels[1] ? 1 : -1;
 
-                $dataset->setWeight($i,  $dataset->weight($i) * exp(-$influence * $x * $y) / $total);
+                $dataset->setWeight($row,  $dataset->weight($row) * exp(-$influence * $x * $y) / $total);
             }
 
             $this->influence[] = $influence;
@@ -176,12 +201,10 @@ class AdaBoost implements Estimator, Classifier
      */
     public function predict(array $sample) : Prediction
     {
-        $total = 0;
+        $total = 0.0;
 
-        foreach ($this->ensemble as $i => $expert) {
-            $prediction = $expert->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
-
-            $total += $this->influence[$i] * $prediction;
+        foreach ($this->ensemble as $i => $estimator) {
+            $total += $this->influence[$i] * ($estimator->predict($sample)->outcome() === $this->labels[1] ? 1 : -1);
         }
 
         return new Prediction($this->labels[$total > 0 ? 1 : -1]);

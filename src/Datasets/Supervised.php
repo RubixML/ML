@@ -16,15 +16,6 @@ class Supervised extends Dataset
     ];
 
     /**
-     * The weight of each training sample in the dataset.
-     *
-     * @var array
-     */
-    protected $weights = [
-        //
-    ];
-
-    /**
      * Build a supervised dataset used for training and testing models from an
      * iterator or array of feature vectors. The assumption is that the dataset
      * contains 0 < n < ∞ feature columns where the last column is always the
@@ -54,7 +45,7 @@ class Supervised extends Dataset
     public function __construct(array $samples, array $outcomes)
     {
         if (count($samples) !== count($outcomes)) {
-            throw new InvalidArgumentException('The number of samples must equal the number of outcomes.');
+            throw new InvalidArgumentException('The ratio of samples to outcomes must be equal.');
         }
 
         foreach ($outcomes as &$outcome) {
@@ -67,12 +58,9 @@ class Supervised extends Dataset
             }
         }
 
-        if (!empty($samples)) {
-            $this->weights = array_fill(0, count($samples), 1 / count($samples));
-            $this->outcomes = $outcomes;
-        }
-
         parent::__construct($samples);
+
+        $this->outcomes = $outcomes;
     }
 
     /**
@@ -89,9 +77,13 @@ class Supervised extends Dataset
      * @param  int  $row
      * @return mixed
      */
-    public function getOutcome(int $row)
+    public function outcome(int $row)
     {
-        return $this->outcomes[$row] ?? null;
+        if (!isset($this->outcomes[$row])) {
+            throw new RuntimeException('Invalid row offset.');
+        }
+
+        return $this->outcomes[$row];
     }
 
     /**
@@ -115,63 +107,13 @@ class Supervised extends Dataset
     }
 
     /**
-     * Return the weight of a particular sample given by row offset.
-     *
-     * @param  int  $row
-     * @return mixed
-     */
-    public function weight(int $row)
-    {
-        if (!isset($this->weights[$row])) {
-            throw new RuntimeException('Inlvalid row offset.');
-        }
-
-        return $this->weights[$row];
-    }
-
-    /**
-     * @return array
-     */
-    public function weights() : array
-    {
-        return $this->weights;
-    }
-
-    /**
-     * Return the sum of all weights.
-     *
-     * @return mixed
-     */
-    public function totalWeight()
-    {
-        return array_sum($this->weights);
-    }
-
-    /**
-     * Set the weight of a particular sample given by row offset.
-     *
-     * @param  int  $row
-     * @param  mixed  $weights
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function setWeight(int $row, $weight) : void
-    {
-        if ((!is_int($weight) && !is_float($weight)) || $weight < 0) {
-            throw new InvalidArgumentException('Weight must be an positive integer or float value.');
-        }
-
-        $this->weights[$row] = $weight;
-    }
-
-    /**
      * Randomize the dataset.
      *
      * @return self
      */
-    public function randomize() : self
+    public function randomize() : Dataset
     {
-        $order = range(0, count($this->outcomes) - 1);
+        $order = range(0, $this->rows() - 1);
 
         shuffle($order);
 
@@ -186,9 +128,9 @@ class Supervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function head(int $n = 10) : self
+    public function head(int $n = 10) : Dataset
     {
-        return new static(array_slice($this->samples, 0, $n), array_slice($this->outcomes, 0, $n));
+        return new self(array_slice($this->samples, 0, $n), array_slice($this->outcomes, 0, $n));
     }
 
     /**
@@ -197,9 +139,9 @@ class Supervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function take(int $n = 1) : self
+    public function take(int $n = 1) : Dataset
     {
-        return new static(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
+        return new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
     }
 
     /**
@@ -208,9 +150,9 @@ class Supervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function leave(int $n = 1) : self
+    public function leave(int $n = 1) : Dataset
     {
-        return new static(array_splice($this->samples, $n), array_splice($this->outcomes, $n));
+        return new self(array_splice($this->samples, $n), array_splice($this->outcomes, $n));
     }
 
     /**
@@ -226,14 +168,11 @@ class Supervised extends Dataset
             throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
         }
 
-        $left = [
-            array_splice($this->samples, 0, round($ratio * count($this->samples))),
-            array_splice($this->outcomes, 0, round($ratio * count($this->outcomes))),
-        ];
+        $n = round($ratio * $this->rows());
 
         return [
-            new static(...$left),
-            new static($this->samples, $this->outcomes),
+            new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n)),
+            new self($this->samples, $this->outcomes),
         ];
     }
 
@@ -246,19 +185,26 @@ class Supervised extends Dataset
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
         if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
+            throw new InvalidArgumentException('Split ratio must be between 0.0 and 1.0.');
         }
 
         $strata = $this->stratify();
 
         $left = $right = [[], []];
+        $totals = [];
 
-        foreach ($strata[0] as $i => $stratum) {
-            $left[0] = array_merge($left[0], array_splice($stratum, 0, round($ratio * count($stratum))));
-            $left[1] = array_merge($left[1], array_splice($strata[1][$i], 0, round($ratio * count($strata[1][$i]))));
+        foreach ($strata[0] as $label => $stratum) {
+            $totals[$label] = count($stratum);
+        }
+
+        foreach ($strata[0] as $label => $stratum) {
+            $n = round($ratio * $totals[$label]);
+
+            $left[0] = array_merge($left[0], array_splice($stratum, 0, $n));
+            $left[1] = array_merge($left[1], array_splice($strata[1][$label], 0, $n));
 
             $right[0] = array_merge($right[0], $stratum);
-            $right[1] = array_merge($right[1], $strata[1][$i]);
+            $right[1] = array_merge($right[1], $strata[1][$label]);
         }
 
         return [
@@ -268,13 +214,72 @@ class Supervised extends Dataset
     }
 
     /**
+     * Fold the dataset k times to form k + 1 equal size datasets.
+     *
+     * @param  int  $k
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function fold(int $k = 2) : array
+    {
+        if ($k < 1) {
+            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
+        }
+
+        $n = round(count($this->samples) / ($k + 1));
+        $subsets = [];
+
+        for ($i = 0; $i < $k + 1; $i++) {
+            $subsets[] = new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
+        }
+
+        return $subsets;
+    }
+
+    /**
+     * Fold the dataset k times to form k + 1 equal size stratified datasets.
+     *
+     * @param  int  $k
+     * @return array
+     */
+    public function stratifiedFold(int $k = 2) : array
+    {
+        if ($k < 1) {
+            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
+        }
+
+        $strata = $this->stratify();
+
+        $subsets = $totals = [];
+
+        foreach ($strata[0] as $label => $stratum) {
+            $totals[$label] = count($stratum);
+        }
+
+        for ($i = 0; $i < $k + 1; $i++) {
+            $samples = $outcomes = [];
+
+            foreach ($strata[0] as $label => $stratum) {
+                $n = $totals[$label] / ($k + 1);
+
+                $samples = array_merge($samples, array_splice($stratum, 0, $n));
+                $outcomes = array_merge($outcomes, array_splice($strata[1][$label], 0, $n));
+            }
+
+            $subsets[] = new self($samples, $outcomes);
+        }
+
+        return $subsets;
+    }
+
+    /**
      * Generate a random subset without replacement.
      *
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubset(float $ratio = 0.1) : self
+    public function generateRandomSubset(float $ratio = 0.1) : Dataset
     {
         if ($ratio <= 0.0 || $ratio >= 1.0) {
             throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
@@ -282,8 +287,7 @@ class Supervised extends Dataset
 
         $n = round($ratio * $this->rows());
 
-        $samples = $this->samples;
-        $outcomes = $this->outcomes;
+        list($samples, $outcomes) = [$this->samples, $this->outcomes];
 
         $order = range(0, count($outcomes) - 1);
 
@@ -301,57 +305,24 @@ class Supervised extends Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : self
+    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : Dataset
     {
         if ($ratio <= 0.0) {
             throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
         }
 
-        $max = $this->rows() - 1;
-        $subset = [];
-
-        foreach (range(1, round($ratio * $this->rows())) as $i) {
-            $index = random_int(0, $max);
-
-            $subset[0][] = $this->samples[$index];
-            $subset[1][] = $this->outcomes[$index];
-        }
-
-        return new static(...$subset);
-    }
-
-    /**
-     * Generate a random weighted subset with replacement.
-     *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function generateRandomWeightedSubsetWithReplacement(float $ratio = 0.1) : self
-    {
-        if ($ratio < 0.0 || $ratio > 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
-        }
-
         $n = round($ratio * $this->rows());
-        $samples = $outcomes = [];
+        $max = $this->rows() - 1;
+        $subset = [[], []];
 
         for ($i = 0; $i < $n; $i++) {
-            $randomWeight = random_int(0, array_sum($this->weights) * 10000) / 10000;
+            $row = random_int(0, $max);
 
-            foreach ($this->samples as $j => $sample) {
-                $randomWeight = $randomWeight - $this->weights[$j];
-
-                if ($randomWeight < 0) {
-                    $samples[] = $this->samples[$j];
-                    $outcomes[] = $this->outcomes[$j];
-
-                    break;
-                }
-            }
+            $subset[0][] = $this->samples[$row];
+            $subset[1][] = $this->outcomes[$row];
         }
 
-        return new self($samples, $outcomes);
+        return new self(...$subset);
     }
 
     /**
@@ -361,7 +332,7 @@ class Supervised extends Dataset
      */
     public function stratify() : array
     {
-        $strata = [];
+        $strata = [[], []];
 
         foreach ($this->outcomes as $i => $outcome) {
             $strata[0][$outcome][] = $this->samples[$i];
@@ -382,15 +353,5 @@ class Supervised extends Dataset
         return array_map(function ($sample, $outcome) {
             return array_merge($sample, (array) $outcome);
         }, $this->samples, $this->outcomes);
-    }
-
-    /**
-     * Return a new weighted dataset with uniform weights.
-     *
-     * @return \Rubix\Engine\WeightedDataset
-     */
-    public function toWeightedDataset() : WeightedDataset
-    {
-        return new WeightedDataset($this->samples, $this->outcomes);
     }
 }

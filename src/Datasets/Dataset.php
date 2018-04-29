@@ -2,14 +2,16 @@
 
 namespace Rubix\Engine\Datasets;
 
-use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
+use RuntimeException;
 use ArrayIterator;
+use ArrayAccess;
 use Countable;
 
-class Dataset implements Persistable, IteratorAggregate, Countable
+class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
@@ -61,14 +63,18 @@ class Dataset implements Persistable, IteratorAggregate, Countable
     }
 
     /**
-     * Return a sample given by row number. Return null if not found.
+     * Return the sample at the given row.
      *
      * @param  int  $row
-     * @return array|null
+     * @return mixed
      */
-    public function getSample(int $row) : ?array
+    public function sample(int $row) : array
     {
-        return $this->samples[$row] ?? null;
+        if (!isset($this->samples[$row])) {
+            throw new RuntimeException('Invalid row offset.');
+        }
+
+        return $this->samples[$row];
     }
 
     /**
@@ -179,6 +185,46 @@ class Dataset implements Persistable, IteratorAggregate, Countable
     }
 
     /**
+     * @param  int  $row
+     * @param  array  $sample
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function offsetSet($row, $sample) : void
+    {
+        throw new RuntimeException('Datasets cannot be mutated directly.');
+    }
+
+    /**
+     * @param  int  $row
+     * @return bool
+     */
+    public function offsetExists($row) : bool
+    {
+        return isset($this->samples[$row]);
+    }
+
+    /**
+     * @param  int  $row
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function offsetUnset($row) : void
+    {
+        throw new RuntimeException('Datasets cannot be mutated directly.');
+    }
+
+    /**
+     * @param  int  $row
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function offsetGet($row) : array
+    {
+        return $this->sample($row);
+    }
+
+    /**
      * Get an iterator for the samples in the dataset.
      *
      * @return \ArrayIterator
@@ -194,7 +240,7 @@ class Dataset implements Persistable, IteratorAggregate, Countable
      */
     public function __get(int $row)
     {
-        return $this->getSample($row);
+        return $this->sample($row);
     }
 
     /**

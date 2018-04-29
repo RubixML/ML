@@ -1,5 +1,6 @@
 <?php
 
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +25,7 @@ class SupervisedTest extends TestCase
     public function test_build_supervised_dataset()
     {
         $this->assertInstanceOf(Supervised::class, $this->dataset);
+        $this->assertInstanceOf(Dataset::class, $this->dataset);
     }
 
     public function test_get_outcomes()
@@ -40,15 +42,7 @@ class SupervisedTest extends TestCase
 
     public function test_head()
     {
-        $this->assertEquals(3, $this->dataset->head(3)->rows());
-    }
-
-    public function test_split_dataset()
-    {
-        $splits = $this->dataset->split(0.5);
-
-        $this->assertEquals(2, count($splits[0]));
-        $this->assertEquals(2, count($splits[1]));
+        $this->assertEquals(3, $this->dataset->head(3)->count());
     }
 
     public function test_take_samples_from_dataset()
@@ -71,15 +65,37 @@ class SupervisedTest extends TestCase
         $this->assertEquals(1, $this->dataset->count());
     }
 
-    public function test_generate_random_weighted_subset_with_replacement()
+    public function test_split_dataset()
     {
-        $this->dataset->setWeight(3, 0);
-        $this->dataset->setWeight(0, 0);
-        $this->dataset->setWeight(1, 0);
-        $this->dataset->setWeight(2, 1);
+        $splits = $this->dataset->split(0.5);
 
-        $samples = $this->dataset->generateRandomWeightedSubsetWithReplacement(0.25)->all();
+        $this->assertEquals(2, count($splits[0]));
+        $this->assertEquals(2, count($splits[1]));
+    }
 
-        $this->assertEquals(['nice', 'rough', 'friendly', 'not monster'], $samples[0]);
+    public function test_stratified_split()
+    {
+        $splits = $this->dataset->stratifiedSplit(0.5);
+
+        $this->assertEquals(2, count($splits[0]));
+        $this->assertEquals(2, count($splits[1]));
+    }
+
+    public function test_fold_dataset()
+    {
+        $folds = $this->dataset->fold(1);
+
+        $this->assertEquals(2, count($folds));
+        $this->assertEquals(2, count($folds[0]));
+        $this->assertEquals(2, count($folds[1]));
+    }
+
+    public function test_stratified_fold()
+    {
+        $folds = $this->dataset->stratifiedFold(1);
+
+        $this->assertEquals(2, count($folds));
+        $this->assertEquals(2, count($folds[0]));
+        $this->assertEquals(2, count($folds[1]));
     }
 }

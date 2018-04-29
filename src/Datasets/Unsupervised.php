@@ -22,7 +22,7 @@ class Unsupervised extends Dataset
      *
      * @return self
      */
-    public function randomize()
+    public function randomize() : self
     {
         shuffle($this->samples);
 
@@ -46,7 +46,7 @@ class Unsupervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function take(int $n = 1) : self
+    public function take(int $n = 1) : Dataset
     {
         return new self(array_splice($this->samples, 0, $n));
     }
@@ -57,7 +57,7 @@ class Unsupervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function leave(int $n = 1) : self
+    public function leave(int $n = 1) : Dataset
     {
         return new self(array_splice($this->samples, $n));
     }
@@ -75,31 +75,33 @@ class Unsupervised extends Dataset
             throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
         }
 
-        $left = array_splice($this->samples, round($ratio * $this->rows()));
-
         return [
-            new self($left),
+            new self(array_splice($this->samples, round($ratio * $this->rows()))),
             new self($this->samples),
         ];
     }
 
     /**
-     * Divide the dataset into n sets of equal proportion.
+     * Fold the dataset k times to form k + 1 equal size datasets.
      *
-     * @param  int  $n
+     * @param  int  $k
+     * @throws \InvalidArgumentException
      * @return array
      */
-    public function divide(int $n = 5) : array
+    public function fold(int $k = 2) : array
     {
-        $size = round($this->rows() / $sets);
-
-        $subsets = [];
-
-        while (!empty($this->samples)) {
-            $subsets[] = new self(array_splice($this->samples, 0, $size));
+        if ($k < 1) {
+            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
         }
 
-        return $subsets;
+        $n = round(count($this->samples) / ($k + 1));
+        $datasets = [];
+
+        for ($i = 0; $i < $k + 1; $i++) {
+            $datasets[] = new self(array_splice($this->samples, 0, $n));
+        }
+
+        return $datasets;
     }
 
     /**
@@ -109,7 +111,7 @@ class Unsupervised extends Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubset(float $ratio = 0.1) : self
+    public function generateRandomSubset(float $ratio = 0.1) : Dataset
     {
         if ($ratio <= 0.0 || $ratio >= 1.0) {
             throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
@@ -129,7 +131,7 @@ class Unsupervised extends Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : self
+    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : Dataset
     {
         if ($ratio <= 0.0) {
             throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
@@ -137,7 +139,7 @@ class Unsupervised extends Dataset
 
         $subset = [];
 
-        foreach (range(1, round($ratio * $this->rows())) as $i) {
+        for ($i = 0; $i < round($ratio * $this->rows()); $i++) {
             $subset[] = $this->samples[array_rand($this->samples)];
         }
 
