@@ -2,19 +2,22 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Ridge;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\GridSearch;
-use Rubix\Engine\Metrics\RSquared;
+use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Transformers\L1Regularizer;
 use Rubix\Engine\Reports\RegressionAnalysis;
-use Rubix\Engine\Transformers\ZScaleStandardizer;
 use League\Csv\Reader;
+
+$trees = $argv[1] ?? 10;
+$ratio = $argv[2] ?? 0.10;
+$minSize = $argv[3] ?? 5;
+$maxDepth = $argv[4] ?? 10;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Quality Tester using Ridge Regression          ║' . "\n";
+echo '║ Wine Tester using a Decision Forest                 ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -24,10 +27,10 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.
 
 $dataset = Supervised::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->split(0.80);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new GridSearch(Ridge::class, [[0.0, 0.1, 0.25, 0.5, 1.0, 5.0, 10.0]], new RSquared()), [
-    new ZScaleStandardizer(),
+$estimator = new Prototype(new Pipeline(new RandomForest($trees, $ratio, $minSize, $maxDepth), [
+    new L1Regularizer(),
 ]), [
     new RegressionAnalysis(),
 ]);

@@ -1,6 +1,8 @@
 <?php
 
+use Rubix\Engine\Metrics\Metric;
 use Rubix\Engine\Metrics\Accuracy;
+use Rubix\Engine\Metrics\Classification;
 use PHPUnit\Framework\TestCase;
 
 class AccuracyTest extends TestCase
@@ -15,6 +17,8 @@ class AccuracyTest extends TestCase
     public function test_build_accuracy_metric()
     {
         $this->assertInstanceOf(Accuracy::class, $this->metric);
+        $this->assertInstanceOf(Classification::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_score_predictions()

@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Metrics\Error;
+use Rubix\Engine\Metrics\Metric;
 use Rubix\Engine\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +17,8 @@ class RSquaredTest extends TestCase
     public function test_build_r_squared_metric()
     {
         $this->assertInstanceOf(RSquared::class, $this->metric);
+        $this->assertInstanceOf(Error::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_score_predictions()

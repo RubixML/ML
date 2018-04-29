@@ -18,9 +18,7 @@ class SupervisedTest extends TestCase
 
         $outcomes = ['not monster', 'monster', 'not monster', 'monster'];
 
-        $weights = [0, 0, 1, 0];
-
-        $this->dataset = new Supervised($samples, $outcomes, $weights);
+        $this->dataset = new Supervised($samples, $outcomes);
     }
 
     public function test_build_supervised_dataset()
@@ -75,6 +73,11 @@ class SupervisedTest extends TestCase
 
     public function test_generate_random_weighted_subset_with_replacement()
     {
+        $this->dataset->setWeight(3, 0);
+        $this->dataset->setWeight(0, 0);
+        $this->dataset->setWeight(1, 0);
+        $this->dataset->setWeight(2, 1);
+
         $samples = $this->dataset->generateRandomWeightedSubsetWithReplacement(0.25)->all();
 
         $this->assertEquals(['nice', 'rough', 'friendly', 'not monster'], $samples[0]);

@@ -38,7 +38,7 @@ class AdalineTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new Adaline(2, 5, 1, new Adam(0.01));
+        $this->estimator = new Adaline(2, 1, new Adam(0.01), 0.1, 10);
     }
 
     public function test_build_adaline_classifier()

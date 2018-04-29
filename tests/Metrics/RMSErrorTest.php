@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Metrics\Error;
+use Rubix\Engine\Metrics\Metric;
 use Rubix\Engine\Metrics\RMSError;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +17,8 @@ class RMSErrorTest extends TestCase
     public function test_build_rms_error_metric()
     {
         $this->assertInstanceOf(RMSError::class, $this->metric);
+        $this->assertInstanceOf(Error::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_score_predictions()

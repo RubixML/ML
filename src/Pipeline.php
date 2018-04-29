@@ -98,4 +98,16 @@ class Pipeline implements Estimator, Persistable
 
         return $this;
     }
+
+    /**
+     * Allow methods to be called from the base estimator from this estimator.
+     *
+     * @param  string  $name
+     * @param  array  $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->estimator->$name(...$arguments);
+    }
 }

@@ -11,17 +11,10 @@ use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\NeuralNet\LearningRates\Adam;
 use Rubix\Engine\NeuralNet\LearningRates\LearningRate;
 use InvalidArgumentException;
+use RuntimeException;
 
 class Adaline extends Neuron implements Estimator, Classifier, Persistable
 {
-    /**
-     * The fixed number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
-     *
-     * @var int
-     */
-    protected $epochs;
-
     /**
      * The number of training samples to consider per iteration of gradient descent.
      *
@@ -44,11 +37,28 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     protected $threshold;
 
     /**
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
      * The actual labels of the binary class outcomes.
      *
      * @var array
      */
     protected $labels = [
+        //
+    ];
+
+    /**
+     * A history of the magnitude of each step of gradient descent.
+     *
+     * @var array
+     */
+    protected $steps = [
         //
     ];
 
@@ -61,28 +71,33 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, int $epochs = 10, int $batchSize = 10, LearningRate $rate = null, float $threshold = 1e-8)
+    public function __construct(int $inputs, int $batchSize = 10, LearningRate $rate = null,
+                                float $threshold = 1e-8, int $epochs = PHP_INT_MAX)
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of inputs must be greater than 0.');
-        }
-
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Epoch parameter must be an integer greater than 0.');
         }
 
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size cannot be less than 1.');
         }
 
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Early stopping threshold parameter must be 0 or greater.');
+        }
+
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Epoch parameter must be an integer greater than 0.');
+        }
+
         if (!isset($rate)) {
             $rate = new Adam();
         }
 
-        $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->rate = $rate;
         $this->threshold = $threshold;
+        $this->epochs = $epochs;
 
         for ($i = 0; $i < $inputs; $i++) {
             $this->connect(new Synapse(new Input()));
@@ -101,6 +116,14 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
         return array_map(function ($synapse) {
             return $synapse->weight();
         }, $this->synapses);
+    }
+
+    /**
+     * @return array
+     */
+    public function steps() : array
+    {
+        return $this->steps;
     }
 
     /**
@@ -124,14 +147,17 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
         }
 
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
+        $this->steps = [];
 
         $this->zap();
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+            $magnitude = 0.0;
+
             foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
                 $outcomes = $batch->outcomes();
                 $sigmas = array_fill(0, count($this->synapses), 0.0);
-                $error = $magnitude = 0.0;
+                $gradient = 0.0;
 
                 foreach ($batch as $row => $sample) {
                     $activation = $this->feed($sample);
@@ -140,10 +166,10 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
                     $expected = $this->labels[$output] === $outcomes[$row] ? $output : -$output;
 
-                    $error += ($expected - $output);
+                    $gradient += $expected - $output;
 
                     foreach ($this->synapses as $i => $synapse) {
-                        $sigmas[$i] += $error * $synapse->neuron()->output();
+                        $sigmas[$i] += $gradient * $synapse->neuron()->output();
                     }
                 }
 
@@ -154,10 +180,12 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
                     $magnitude += abs($step);
                 }
+            }
 
-                if ($magnitude < $this->threshold && $epoch > 1) {
-                    break 2;
-                }
+            $this->steps[] = $magnitude;
+
+            if ($magnitude < $this->threshold && $epoch > 1) {
+                break 1;
             }
         }
     }
@@ -173,7 +201,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
         $activation = $this->feed($sample);
 
         return new Prediction($this->labels[$activation > 0 ? 1 : -1], [
-            'activation' => $activation,
+            'activation' => abs($activation),
         ]);
     }
 
@@ -185,6 +213,11 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      */
     public function feed(array $sample) : float
     {
+        if (count($sample) !== count($this->synapses) - 1) {
+            throw new RuntimeException('The ratio of feature columns to inputs is unequal, '
+                . (string) count($sample) . ' found, ' . (string) (count($this->synapses) - 1) . ' needed.');
+        }
+
         $column = 0;
         $z = 0.0;
 

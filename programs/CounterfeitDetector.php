@@ -26,7 +26,7 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
-$estimator = new Prototype(new Pipeline(new Adaline(4, 10, 1, new Adam(0.01)), [
+$estimator = new Prototype(new Pipeline(new Adaline(4, 1, new Adam(0.001), 0.3, 100), [
     new L2Regularizer(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
@@ -34,5 +34,7 @@ $estimator = new Prototype(new Pipeline(new Adaline(4, 10, 1, new Adam(0.01)), [
 ]);
 
 $estimator->train($training);
+
+var_dump($estimator->steps());
 
 $estimator->test($testing);

@@ -48,25 +48,14 @@ class Supervised extends Dataset
     /**
      * @param  array  $samples
      * @param  array  $outcomes
-     * @param  array|null  $weights
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples, array $outcomes, ?array $weights = null)
+    public function __construct(array $samples, array $outcomes)
     {
         if (count($samples) !== count($outcomes)) {
             throw new InvalidArgumentException('The number of samples must equal the number of outcomes.');
         }
-
-        if (!isset($weights)) {
-            $weights = array_fill(0, count($samples), 1 / count($samples));
-        }
-
-        if (count($samples) !== count($weights)) {
-            throw new InvalidArgumentException('The number of weights must equal the number of samples.');
-        }
-
-        parent::__construct($samples);
 
         foreach ($outcomes as &$outcome) {
             if (!is_string($outcome) && !is_numeric($outcome)) {
@@ -78,11 +67,12 @@ class Supervised extends Dataset
             }
         }
 
-        foreach ($weights as $i => $weight) {
-            $this->setWeight($i, $weight);
+        if (!empty($samples)) {
+            $this->weights = array_fill(0, count($samples), 1 / count($samples));
+            $this->outcomes = $outcomes;
         }
 
-        $this->outcomes = $outcomes;
+        parent::__construct($samples);
     }
 
     /**

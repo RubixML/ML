@@ -1,6 +1,8 @@
 <?php
 
+use Rubix\Engine\Metrics\Metric;
 use Rubix\Engine\Metrics\F1Score;
+use Rubix\Engine\Metrics\Classification;
 use PHPUnit\Framework\TestCase;
 
 class F1ScoreTest extends TestCase
@@ -15,6 +17,8 @@ class F1ScoreTest extends TestCase
     public function test_build_f1_score_metric()
     {
         $this->assertInstanceOf(F1Score::class, $this->metric);
+        $this->assertInstanceOf(Classification::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_score_predictions()

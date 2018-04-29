@@ -2,21 +2,21 @@
 
 use Rubix\Engine\Metrics\Error;
 use Rubix\Engine\Metrics\Metric;
-use Rubix\Engine\Metrics\MeanAbsoluteError;
+use Rubix\Engine\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
 
-class MeanAbsoluteErrorTest extends TestCase
+class MeanSquaredErrorTest extends TestCase
 {
     protected $metric;
 
     public function setUp()
     {
-        $this->metric = new MeanAbsoluteError();
+        $this->metric = new MeanSquaredError();
     }
 
-    public function test_build_mean_absolute_error_metric()
+    public function test_build_mean_squared_error_metric()
     {
-        $this->assertInstanceOf(MeanAbsoluteError::class, $this->metric);
+        $this->assertInstanceOf(MeanSquaredError::class, $this->metric);
         $this->assertInstanceOf(Error::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
     }
@@ -26,6 +26,6 @@ class MeanAbsoluteErrorTest extends TestCase
         $predictions = [9, 15, 9, 12, 8];
         $outcomes = [10, 10, 6, 14, 8];
 
-        $this->assertEquals(2.2, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(7.8, $this->metric->score($predictions, $outcomes));
     }
 }
