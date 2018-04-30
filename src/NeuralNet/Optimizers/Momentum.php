@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\LearningRates;
+namespace Rubix\Engine\NeuralNet\Optimizers;
 
 use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-class RMSProp implements LearningRate
+class Momentum implements Optimizer
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -16,16 +16,18 @@ class RMSProp implements LearningRate
     protected $rate;
 
     /**
+     * The rate at which the momentum force decays.
+     *
      * @var float
      */
     protected $decay;
 
     /**
-     * A cache of the sums of squared gradients for each synapse.
+     * A table storing the current velocity of each parameter.
      *
      * @var \SplObjectStorage
      */
-    protected $cache;
+    protected $velocities;
 
     /**
      * @param  float  $rate
@@ -45,7 +47,7 @@ class RMSProp implements LearningRate
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->cache = new SplObjectStorage();
+        $this->velocities = new SplObjectStorage();
     }
 
     /**
@@ -57,12 +59,14 @@ class RMSProp implements LearningRate
      */
     public function step(Synapse $synapse, float $gradient) : float
     {
-        if (!$this->cache->contains($synapse)) {
-            $this->cache->attach($synapse, 0.0);
+        if (!$this->velocities->contains($synapse)) {
+            $this->velocities->attach($synapse, 0.0);
         }
 
-        $this->cache[$synapse] = $this->decay * $this->cache[$synapse] + (1 - $this->decay) * $gradient ** 2;
+        $velocity = $this->decay * $this->velocities[$synapse] + $this->rate * $gradient;
 
-        return $this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON);
+        $this->velocities[$synapse] = $velocity;
+
+        return $velocity;
     }
 }

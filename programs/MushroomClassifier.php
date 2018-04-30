@@ -9,8 +9,8 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\MultiLayerPerceptron;
 use Rubix\Engine\Persisters\Filesystem;
 use Rubix\Engine\Reports\ConfusionMatrix;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
-use Rubix\Engine\NeuralNet\LearningRates\Adam;
 use Rubix\Engine\Reports\ClassificationReport;
 use League\Csv\Reader;
 

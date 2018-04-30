@@ -57,6 +57,14 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
      */
     public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX)
     {
+        if ($minSamples < 1) {
+            throw new InvalidArgumentException('At least one sample is required to make a decision.');
+        }
+
+        if ($maxDepth < 1) {
+            throw new InvalidArgumentException('A tree cannot have depth less than 1.');
+        }
+
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
         $this->output = 0;
@@ -105,7 +113,6 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
      * Train the CART by learning the most optimal splits in the training set.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(Supervised $dataset) : void
@@ -123,6 +130,7 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
      * Make a prediction on a given sample.
      *
      * @param  array  $sample
+     * @throws \InvalidArgumentException
      * @return \Rubix\Engine\Prediction
      */
     public function predict(array $sample) : Prediction
@@ -233,10 +241,7 @@ class CART extends Tree implements Estimator, Classifier, Regression, Persistabl
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
-        $best = [
-            'cost' => INF, 'index' => null,
-            'value' => null, 'groups' => [],
-        ];
+        $best = ['cost' => INF, 'index' => null, 'value' => null, 'groups' => []];
 
         $outcomes = array_column($data, count($data[0]) - 1);
 

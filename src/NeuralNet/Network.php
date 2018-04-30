@@ -101,7 +101,7 @@ class Network
      */
     public function readParameters() : array
     {
-        $paramters = [];
+        $parameters = [];
 
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $i => $neuron) {
@@ -112,6 +112,24 @@ class Network
         }
 
         return $parameters;
+    }
+
+    /**
+     * Restore the network parameters from an array of weights indexed by layer
+     * then neuron then finally synapse.
+     *
+     * @param  array  $parameters
+     * @return void
+     */
+    public function restoreParameters(array $parameters) : void
+    {
+        for ($layer = 1; $layer < count($this->layers); $layer++) {
+            foreach ($this->layers[$layer] as $i => $neuron) {
+                foreach ($neuron->synapses() as $j => $synapse) {
+                    $synapse->setWeight($parameters[$layer][$i][$j]);
+                }
+            }
+        }
     }
 
     /**

@@ -26,6 +26,6 @@ class AccuracyTest extends TestCase
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
         $outcomes = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $this->assertEquals(0.6, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(0.5999999988, $this->metric->score($predictions, $outcomes));
     }
 }

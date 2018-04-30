@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\LearningRates;
+namespace Rubix\Engine\NeuralNet\Optimizers;
 
 use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-class StepDecay implements LearningRate
+class RMSProp implements Optimizer
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -16,8 +16,6 @@ class StepDecay implements LearningRate
     protected $rate;
 
     /**
-     * The factor to decrease the learning rate by over a period of k steps.
-     *
      * @var float
      */
     protected $decay;
@@ -27,7 +25,7 @@ class StepDecay implements LearningRate
      *
      * @var \SplObjectStorage
      */
-    protected $steps;
+    protected $cache;
 
     /**
      * @param  float  $rate
@@ -35,15 +33,19 @@ class StepDecay implements LearningRate
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.01, float $decay = 1e-10)
+    public function __construct(float $rate = 0.01, float $decay = 0.9)
     {
         if (!$rate > 0.0) {
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
         }
 
+        if ($decay < 0.0 || $decay > 1.0) {
+            throw new InvalidArgumentException('Decay parameter must be a float value between 0 and 1.');
+        }
+
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->steps = new SplObjectStorage();
+        $this->cache = new SplObjectStorage();
     }
 
     /**
@@ -55,14 +57,12 @@ class StepDecay implements LearningRate
      */
     public function step(Synapse $synapse, float $gradient) : float
     {
-        if (!$this->steps->contains($synapse)) {
-            $this->steps->attach($synapse, 0);
+        if (!$this->cache->contains($synapse)) {
+            $this->cache->attach($synapse, 0.0);
         }
 
-        if ($gradient !== 0.0) {
-            $this->steps[$synapse] = $this->steps[$synapse] + 1;
-        }
+        $this->cache[$synapse] = $this->decay * $this->cache[$synapse] + (1 - $this->decay) * $gradient ** 2;
 
-        return $this->rate * (1 / (1 + $this->decay * $this->steps[$synapse])) * $gradient;
+        return $this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON);
     }
 }

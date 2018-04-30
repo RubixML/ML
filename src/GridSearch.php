@@ -34,15 +34,6 @@ class GridSearch implements Estimator
     protected $metric;
 
     /**
-     * The ratio of samples to leave out for validation. A higher ratio will
-     * result in less data being used to train the model, however the test
-     * results will have lower variance.
-     *
-     * @var float
-     */
-    protected $ratio;
-
-    /**
      * An array of data containing an array of parameters that were used to train
      * the model, and the score it received from the supplied performance metric.
      *
@@ -63,16 +54,11 @@ class GridSearch implements Estimator
      * @param  string  $base
      * @param  array  $params
      * @param  \Rubix\Engine\Metrics\Metric  $metric
-     * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, Metric $metric, float $ratio = 0.2)
+    public function __construct(string $base, array $params, Metric $metric)
     {
-        if ($ratio < 0.01 || $ratio > 1) {
-            throw new InvalidArgumentException('Testing ratio must be a float value between 0.01 and 1.0.');
-        }
-
         $this->reflector = new ReflectionClass($base);
 
         if (!in_array(Estimator::class, $this->reflector->getInterfaceNames())) {
@@ -85,7 +71,6 @@ class GridSearch implements Estimator
 
         $this->params = $params;
         $this->metric = $metric;
-        $this->ratio = $ratio;
     }
 
     /**
@@ -118,12 +103,12 @@ class GridSearch implements Estimator
 
         if ($this->metric->minimize()) {
             $best = ['score' => INF, 'estimator' => null];
-        } else if ($this->metric instanceof Error) {
-            $best = ['score' => 0, 'estimator' => null];
+        } else {
+            $best = ['score' => -INF, 'estimator' => null];
         }
 
         foreach ($this->combineParams($this->params) as $params) {
-            list($training, $testing) = $dataset->split($this->ratio);
+            list($training, $testing) = $dataset->split(0.8);
 
             $estimator = $this->reflector->newInstanceArgs($params);
 

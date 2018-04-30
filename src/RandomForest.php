@@ -38,6 +38,13 @@ class RandomForest implements Estimator, Classifier, Regression, Persistable
     protected $maxDepth;
 
     /**
+     * The output type. i.e. categorical or continuous.
+     *
+     * @var int
+     */
+    protected $output;
+
+    /**
      * The CART trees that make up the forest.
      *
      * @var array
@@ -47,13 +54,6 @@ class RandomForest implements Estimator, Classifier, Regression, Persistable
     ];
 
     /**
-     * The output type. i.e. categorical or continuous.
-     *
-     * @var int
-     */
-    protected $output;
-
-    /**
      * @param  int  $trees
      * @param  float  $ratio
      * @param  int  $minSize
@@ -61,7 +61,7 @@ class RandomForest implements Estimator, Classifier, Regression, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 100)
+    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 10)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be less than 1.');

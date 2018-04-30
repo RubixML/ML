@@ -29,7 +29,7 @@ class KNearestNeighbors implements Estimator, Classifier, Regression
      *
      * @var array
      */
-    protected $coordinates = [
+    protected $samples = [
         //
     ];
 
@@ -58,7 +58,7 @@ class KNearestNeighbors implements Estimator, Classifier, Regression
     public function __construct(int $k = 3, DistanceFunction $distanceFunction = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('K cannot be less than 1.');
+            throw new InvalidArgumentException('At least 1 neighbor is required to make a prediction.');
         }
 
         if (!isset($distanceFunction)) {
@@ -84,7 +84,7 @@ class KNearestNeighbors implements Estimator, Classifier, Regression
             throw new InvalidArgumentException('This estimator only works with continuous samples.');
         }
 
-        $this->coordinates = $dataset->samples();
+        $this->samples = $dataset->samples();
         $this->outcomes = $dataset->outcomes();
         $this->output = $dataset->outcomeType();
     }
@@ -104,10 +104,10 @@ class KNearestNeighbors implements Estimator, Classifier, Regression
 
             $outcome = array_search(max($counts), $counts);
 
-            $certainty = $counts[$outcome] / count($outcomes);
+            $probability = $counts[$outcome] / count($outcomes);
 
             return new Prediction($outcome, [
-                'certainty' => $certainty,
+                'probability' => $probability,
             ]);
         } else {
             $mean = Average::mean($outcomes);
@@ -130,21 +130,21 @@ class KNearestNeighbors implements Estimator, Classifier, Regression
      */
     protected function findNearestNeighbors(array $sample) : array
     {
-        $neighbors = new SplPriorityQueue();
-        $k = $this->k;
+        $computed = new SplPriorityQueue();
+        $neighbors = [];
 
-        foreach ($this->coordinates as $i => $neighbor) {
+        foreach ($this->samples as $row => $neighbor) {
             $distance = $this->distanceFunction->compute($sample, $neighbor);
 
-            $neighbors->insert($this->outcomes[$i], 1 - $distance);
+            $computed->insert($this->outcomes[$row], -$distance);
         }
 
-        if ($k > count($neighbors)) {
-            $k = count($neighbors);
+        $n = (count($this->samples) >= $this->k ? $this->k : count($this->samples));
+
+        for ($i = 0; $i < $n; $i++) {
+            $neighbors[] = $computed->extract();
         }
 
-        return array_map(function ($i) use ($neighbors) {
-            return $neighbors->extract();
-        }, range(0, $k - 1));
+        return $neighbors;
     }
 }

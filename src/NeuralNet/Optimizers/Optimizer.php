@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\LearningRates;
+namespace Rubix\Engine\NeuralNet\Optimizers;
 
 use Rubix\Engine\NeuralNet\Synapse;
 
-interface LearningRate
+interface Optimizer
 {
     const EPSILON = 1e-8;
 

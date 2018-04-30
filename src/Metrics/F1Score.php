@@ -37,6 +37,7 @@ class F1Score implements Classification
             }
         }
 
+        $n = count($labels);
         $score = 0;
 
         foreach ($truePositives as $label => $tp) {
@@ -49,7 +50,7 @@ class F1Score implements Classification
             $score += 2.0 * (($precision * $recall) / ($precision + $recall + self::EPSILON));
         }
 
-        return $score / count($labels);
+        return $score / ($n + self::EPSILON);
     }
 
     /**

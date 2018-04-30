@@ -20,6 +20,7 @@ class Accuracy implements Classification
             throw new InvalidArgumentException('The number of outcomes must match the number of predictions.');
         }
 
+        $n = count($predictions);
         $score = 0;
 
         foreach ($predictions as $i => $prediction) {
@@ -28,7 +29,7 @@ class Accuracy implements Classification
             }
         }
 
-        return $score / count($outcomes);
+        return $score / ($n + self::EPSILON);
     }
 
     /**

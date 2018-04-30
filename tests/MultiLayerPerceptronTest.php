@@ -2,7 +2,7 @@
 
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\MultiLayerPerceptron;
-use Rubix\Engine\NeuralNet\LearningRates\Adam;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use PHPUnit\Framework\TestCase;
 use League\Csv\Reader;
 

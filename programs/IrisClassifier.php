@@ -3,19 +3,16 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Prototype;
-use Rubix\Engine\GridSearch;
-use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Reports\ConfusionMatrix;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\Manhattan;
 use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Iris Classifier using K Nearest Neighbors           ║' . "\n";
+echo '║ Ecoli Localizer using K Nearest Neighbors           ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -25,9 +22,9 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setD
 
 $dataset = Supervised::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.90);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new GridSearch(KNearestNeighbors::class, [[1, 3, 5], [new Euclidean(), new Manhattan()]], new Accuracy(), 0.1), [
+$estimator = new Prototype(new KNearestNeighbors(3, new Euclidean()), [
     new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
 ]);

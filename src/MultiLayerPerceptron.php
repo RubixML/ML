@@ -2,7 +2,6 @@
 
 namespace Rubix\Engine;
 
-use MathPHP\Statistics\Average;
 use Rubix\Engine\NeuralNet\Input;
 use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\NeuralNet\Hidden;
@@ -10,8 +9,8 @@ use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Metrics\Classification;
 use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\NeuralNet\LearningRates\Adam;
-use Rubix\Engine\NeuralNet\LearningRates\LearningRate;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 use SplObjectStorage;
@@ -28,9 +27,9 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     /**
      * The learnign rate to use when adjusting the weights of the synapses.
      *
-     * @var \Rubix\Engine\NeuralNet\LearningRates\LearningRate
+     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
      */
-    protected $rate;
+    protected $optimizer;
 
     /**
      * The minimum validation score needed to early stop training.
@@ -76,7 +75,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      * @param  array  $hidden
      * @param  array  $outcomes
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\LearningRates\LearningRate|null  $rate
+     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $threshold
      * @param  int  $window
      * @param \Rubi\Engine\Metrics\Classification|null  $metric
@@ -85,7 +84,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      * @return void
      */
     public function __construct(int $inputs, array $hidden, array $outcomes,
-                    int $batchSize = 10, LearningRate $rate = null, float $threshold = 0.999,
+                    int $batchSize = 10, Optimizer $optimizer = null, float $threshold = 0.99,
                     int $window = 3, Classification $metric = null, int $epochs = PHP_INT_MAX)
     {
         if ($epochs < 1) {
@@ -104,8 +103,8 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             throw new InvalidArgumentException('Early stopping window must be 2 epochs or more.');
         }
 
-        if (!isset($rate)) {
-            $rate = new Adam();
+        if (!isset($optimizer)) {
+            $optimizer = new Adam();
         }
 
         if (!isset($metric)) {
@@ -114,7 +113,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
 
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
-        $this->rate = $rate;
+        $this->optimizer = $optimizer;
         $this->threshold = $threshold;
         $this->window = $window;
         $this->metric = $metric;
@@ -146,13 +145,14 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         $this->randomizeWeights();
 
         $this->progress = [];
+        $best = ['score' => 0.0, 'parameters' => null];
+
+        list($training, $testing) = $dataset->split(0.8);
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $data = clone $dataset;
+            $temp = clone $training;
 
-            list($training, $testing) = $data->split(0.8);
-
-            foreach ($this->generateMiniBatches($training) as $batch) {
+            foreach ($this->generateMiniBatches($temp) as $batch) {
                 $sigmas = new SplObjectStorage();
 
                 foreach ($batch as $row => $sample) {
@@ -162,11 +162,20 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 }
 
                 foreach ($sigmas as $synapse) {
-                    $synapse->adjustWeight($this->rate->step($synapse, $sigmas[$synapse]));
+                    $synapse->adjustWeight($this->optimizer->step($synapse, $sigmas[$synapse]));
                 }
             }
 
-            $this->progress[] = $this->scoreEpoch($testing);
+            $score = $this->scoreEpoch($testing);
+
+            if ($score > $best['score']) {
+                $best = [
+                    'score' => $score,
+                    'snapshot' => $this->readParameters(),
+                ];
+            }
+
+            $this->progress[] = $score;
 
             if ($epoch >= $this->window) {
                 $window = array_slice($this->progress, -$this->window);
@@ -182,6 +191,10 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                     break 1;
                 }
             }
+        }
+
+        if ($score !== $best['score']) {
+            $this->restoreParameters($best['snapshot']);
         }
     }
 

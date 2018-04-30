@@ -7,9 +7,9 @@ use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Reports\ConfusionMatrix;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\L2Regularizer;
 use Rubix\Engine\Reports\ClassificationReport;
-use Rubix\Engine\NeuralNet\LearningRates\Adam;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

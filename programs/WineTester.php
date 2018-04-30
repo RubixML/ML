@@ -2,11 +2,9 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Transformers\L1Regularizer;
 use Rubix\Engine\Reports\RegressionAnalysis;
 use League\Csv\Reader;
 
@@ -17,7 +15,7 @@ $maxDepth = $argv[4] ?? 10;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Tester using a Decision Forest                 ║' . "\n";
+echo '║ Wine Tester using a Random Forest                   ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -29,9 +27,7 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new RandomForest($trees, $ratio, $minSize, $maxDepth), [
-    new L1Regularizer(),
-]), [
+$estimator = new Prototype(new RandomForest($trees, $ratio, $minSize, $maxDepth), [
     new RegressionAnalysis(),
 ]);
 

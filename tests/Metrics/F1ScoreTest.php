@@ -26,6 +26,6 @@ class F1ScoreTest extends TestCase
         $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
         $outcomes = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $this->assertEquals(0.5833333259722223, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(0.5833333230555557, $this->metric->score($predictions, $outcomes));
     }
 }

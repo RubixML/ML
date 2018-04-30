@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\LearningRates;
+namespace Rubix\Engine\NeuralNet\Optimizers;
 
 use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 use SplObjectStorage;
 
-class Momentum implements LearningRate
+class StepDecay implements Optimizer
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -16,18 +16,18 @@ class Momentum implements LearningRate
     protected $rate;
 
     /**
-     * The rate at which the momentum force decays.
+     * The factor to decrease the learning rate by over a period of k steps.
      *
      * @var float
      */
     protected $decay;
 
     /**
-     * A table storing the current velocity of each parameter.
+     * A cache of the sums of squared gradients for each synapse.
      *
      * @var \SplObjectStorage
      */
-    protected $velocities;
+    protected $steps;
 
     /**
      * @param  float  $rate
@@ -35,19 +35,15 @@ class Momentum implements LearningRate
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.01, float $decay = 0.9)
+    public function __construct(float $rate = 0.01, float $decay = 1e-10)
     {
         if (!$rate > 0.0) {
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
         }
 
-        if ($decay < 0.0 || $decay > 1.0) {
-            throw new InvalidArgumentException('Decay parameter must be a float value between 0 and 1.');
-        }
-
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->velocities = new SplObjectStorage();
+        $this->steps = new SplObjectStorage();
     }
 
     /**
@@ -59,14 +55,14 @@ class Momentum implements LearningRate
      */
     public function step(Synapse $synapse, float $gradient) : float
     {
-        if (!$this->velocities->contains($synapse)) {
-            $this->velocities->attach($synapse, 0.0);
+        if (!$this->steps->contains($synapse)) {
+            $this->steps->attach($synapse, 0);
         }
 
-        $velocity = $this->decay * $this->velocities[$synapse] + $this->rate * $gradient;
+        if ($gradient !== 0.0) {
+            $this->steps[$synapse] = $this->steps[$synapse] + 1;
+        }
 
-        $this->velocities[$synapse] = $velocity;
-
-        return $velocity;
+        return $this->rate * (1 / (1 + $this->decay * $this->steps[$synapse])) * $gradient;
     }
 }
