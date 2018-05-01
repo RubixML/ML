@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet;
 
-class Input extends Neuron
+class Input implements Node
 {
     /**
      * The input value.

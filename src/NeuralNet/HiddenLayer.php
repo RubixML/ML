@@ -16,7 +16,7 @@ class HiddenLayer extends Layer
         parent::__construct($n + 1);
 
         for ($i = 0; $i < $n; $i++) {
-            $this[$i] = new Hidden($activationFunction);
+            $this[$i] = new Neuron($activationFunction);
         }
 
         $this[count($this) - 1] = new Bias();

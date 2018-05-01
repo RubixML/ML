@@ -26,4 +26,19 @@ class HyperbolicTangent implements ActivationFunction
     {
         return 1 - ($computed ** 2);
     }
+
+    /**
+     * Generate an initial synapse weight range based on n, the number of inputs
+     * to a particular neuron.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @param  int  $n
+     * @return array
+     */
+    public function initialize(int $n) : array
+    {
+        $r = pow(6 / $n, 1 / 4);
+
+        return [-$r, $r];
+    }
 }

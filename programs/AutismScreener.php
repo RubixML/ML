@@ -10,6 +10,7 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\Reports\ClassificationReport;
 use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\Engine\Transformers\ZScaleStandardizer;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -26,6 +27,8 @@ list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
 $estimator = new Prototype(new Pipeline(new AdaBoost(NaiveBayes::class, [], 20), [
     new MissingDataImputer('?'),
+    new ZScaleStandardizer(),
+
 ]), [
     new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),

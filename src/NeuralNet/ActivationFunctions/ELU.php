@@ -43,4 +43,19 @@ class ELU implements ActivationFunction
     {
         return $computed >= 0.0 ? 1.0 : $computed + $this->alpha;
     }
+
+    /**
+     * Generate an initial synapse weight range based on n, the number of inputs
+     * to a particular neuron.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @param  int  $n
+     * @return array
+     */
+    public function initialize(int $n) : array
+    {
+        $r = pow(6 / $n, 1 / self::ROOT_2);
+
+        return [-$r, $r];
+    }
 }

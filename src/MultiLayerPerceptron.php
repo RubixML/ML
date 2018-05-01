@@ -4,7 +4,7 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\NeuralNet\Input;
 use Rubix\Engine\Metrics\Accuracy;
-use Rubix\Engine\NeuralNet\Hidden;
+use Rubix\Engine\NeuralNet\Neuron;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Metrics\Classification;
@@ -139,7 +139,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     public function train(Supervised $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+            throw new InvalidArgumentException('This estimator only works on continuous features.');
         }
 
         $this->randomizeWeights();
@@ -221,7 +221,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         }
 
         return new Prediction($best['outcome'], [
-            'activation' => $best['activation'],
+            'activations' => $activations,
         ]);
     }
 
@@ -271,7 +271,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             $gradients = new SplObjectStorage();
 
             foreach ($this->layers[$layer] as $neuron) {
-                if ($neuron instanceof Hidden) {
+                if ($neuron instanceof Neuron) {
                     if ($layer === count($this->layers) - 1) {
                         $expected = $neuron->outcome() === $outcome ? 1.0 : 0.0;
 
@@ -281,7 +281,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
 
                         foreach ($previousGradients as $previousNeuron) {
                             foreach ($previousNeuron->synapses() as $synapse) {
-                                if ($synapse->neuron() === $neuron) {
+                                if ($synapse->node() === $neuron) {
                                     $previousGradient += $synapse->weight() * $previousGradients[$previousNeuron];
                                 }
                             }
@@ -293,7 +293,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                     $gradients->attach($neuron, $gradient);
 
                     foreach ($neuron->synapses() as $synapse) {
-                        $sigma = $gradient * $synapse->neuron()->output();
+                        $sigma = $gradient * $synapse->node()->output();
 
                         if ($sigmas->contains($synapse)) {
                             $sigmas[$synapse] += $sigma;

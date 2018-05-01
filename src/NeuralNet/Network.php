@@ -57,7 +57,7 @@ class Network
             $this->layers[] = new HiddenLayer($layer[0], $layer[1] ?? new Sigmoid());
         }
 
-        $this->layers[] = new OutputLayer($outcomes, new Sigmoid());
+        $this->layers[] = new OutputLayer($outcomes);
 
         for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
             $this->connectLayers($this->layers[$layer], $this->layers[$layer - 1]);
@@ -105,8 +105,10 @@ class Network
 
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $i => $neuron) {
-                foreach ($neuron->synapses() as $j => $synapse) {
-                    $parameters[$layer][$i][$j] = $synapse->weight();
+                if ($neuron instanceof Neuron) {
+                    foreach ($neuron->synapses() as $j => $synapse) {
+                        $parameters[$layer][$i][$j] = $synapse->weight();
+                    }
                 }
             }
         }
@@ -125,8 +127,10 @@ class Network
     {
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $i => $neuron) {
-                foreach ($neuron->synapses() as $j => $synapse) {
-                    $synapse->setWeight($parameters[$layer][$i][$j]);
+                if ($neuron instanceof Neuron) {
+                    foreach ($neuron->synapses() as $j => $synapse) {
+                        $synapse->setWeight($parameters[$layer][$i][$j]);
+                    }
                 }
             }
         }
@@ -157,7 +161,9 @@ class Network
     {
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $neuron) {
-                $neuron->zap();
+                if ($neuron instanceof Neuron) {
+                    $neuron->zap();
+                }
             }
         }
     }
@@ -172,8 +178,10 @@ class Network
     public function connectLayers(Layer $a, Layer $b) : self
     {
         foreach ($a as $next) {
-            foreach ($b as $current) {
-                $next->connect(new Synapse($current));
+            if ($next instanceof Neuron) {
+                foreach ($b as $current) {
+                    $next->connect(new Synapse($current));
+                }
             }
         }
 
@@ -189,7 +197,7 @@ class Network
     {
         for ($layer = 1; $layer < count($this->layers); $layer++) {
             foreach ($this->layers[$layer] as $neuron) {
-                if ($neuron instanceof Hidden) {
+                if ($neuron instanceof Neuron) {
                     $neuron->reset();
                 }
             }

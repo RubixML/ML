@@ -7,11 +7,11 @@ use Rubix\Engine\Prototype;
 use Rubix\Engine\Metrics\Accuracy;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\MultiLayerPerceptron;
-use Rubix\Engine\Persisters\Filesystem;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -26,8 +26,8 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron(23, [6, 6], $dataset->labels(),
-                    3, new Adam(0.01), 0.999, 2, new Accuracy(), 100), [
+$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron(23, [[8, new PReLU()], [8, new PReLU()]], $dataset->labels(),
+                    10, new Adam(0.001), 0.999, 3, new Accuracy(), 100), [
     new OneHotEncoder(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
@@ -40,6 +40,4 @@ var_dump($estimator->progress());
 
 $estimator->test($testing);
 
-$persister = new Filesystem(dirname(__DIR__) . '/models/sentiment.model');
-
-$persister->save($estimator);
+var_dump($estimator->predict($dataset->sample(0)));

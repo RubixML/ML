@@ -2,8 +2,12 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use Rubix\Engine\NeuralNet\Synapse;
+
 interface ActivationFunction
 {
+    const ROOT_2 = 1.41421356237;
+    
     /**
      * Compute the activation of the neuron.
      *
@@ -20,4 +24,13 @@ interface ActivationFunction
      * @return float
      */
     public function differentiate(float $value, float $computed) : float;
+
+
+    /**
+     * Generate an initial synapse weight range.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @return array
+     */
+    public function initialize(int $n) : array;
 }

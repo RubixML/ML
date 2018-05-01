@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use Rubix\Engine\NeuralNet\Synapse;
+
 class Sigmoid implements ActivationFunction
 {
     /**
@@ -25,5 +27,20 @@ class Sigmoid implements ActivationFunction
     public function differentiate(float $value, float $computed) : float
     {
         return $computed * (1 - $computed);
+    }
+
+    /**
+     * Generate an initial synapse weight range based on n, the number of inputs
+     * to a particular neuron.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @param  int  $n
+     * @return array
+     */
+    public function initialize(int $n) : array
+    {
+        $r = sqrt(6 / $n);
+
+        return [-$r, $r];
     }
 }

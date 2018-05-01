@@ -5,6 +5,7 @@ namespace Rubix\Engine;
 use MathPHP\LinearAlgebra\Vector;
 use Rubix\Engine\Datasets\Supervised;
 use MathPHP\LinearAlgebra\MatrixFactory;
+use MathPHP\LinearAlgebra\DiagonalMatrix;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
@@ -38,7 +39,7 @@ class Ridge implements Estimator, Regression, Persistable
      * @param  float  $alpha
      * @return void
      */
-    public function __construct(float $alpha = 0.5)
+    public function __construct(float $alpha = 1.0)
     {
         $this->alpha = $alpha;
     }
@@ -89,8 +90,8 @@ class Ridge implements Estimator, Regression, Persistable
     {
         $outcome = $this->intercept;
 
-        foreach ($this->coefficients as $i => $coefficient) {
-            $outcome += $coefficient * $sample[$i];
+        foreach ($this->coefficients as $column => $coefficient) {
+            $outcome += $coefficient * $sample[$column];
         }
 
         return new Prediction($outcome);
@@ -110,12 +111,15 @@ class Ridge implements Estimator, Regression, Persistable
             array_unshift($sample, 1);
         }
 
-        $samples = MatrixFactory::create($samples);
-        $outcomes = MatrixFactory::create([new Vector($outcomes)]);
+        $x = MatrixFactory::create($samples);
+        $y = new Vector($outcomes);
 
-        return $samples->transpose()->multiply($samples)
-            ->add(MatrixFactory::identity($samples->getN())->scalarMultiply($this->alpha))
-            ->inverse()->multiply($samples->transpose()->multiply($outcomes))
+        $identity = new DiagonalMatrix(array_replace([0], array_fill(1, $x->getN() - 1, 1)));
+
+        return $x->transpose()->multiply($x)
+            ->add($identity->scalarMultiply($this->alpha))
+            ->inverse()
+            ->multiply($x->transpose()->multiply($y))
             ->getColumn(0);
     }
 }

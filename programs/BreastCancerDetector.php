@@ -2,26 +2,23 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\CART;
-use Rubix\Engine\AdaBoost;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\GridSearch;
+use Rubix\Engine\Metrics\Accuracy;
+use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Transformers\L2Regularizer;
-use Rubix\Engine\Transformers\MissingDataImputer;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\DistanceFunctions\Manhattan;
 use League\Csv\Reader;
-
-$minSize = $argv[1] ?? 1;
-$maxDepth = $argv[2] ?? 10;
-$experts = $argv[3] ?? 50;
-$ratio = $argv[4] ?? 0.10;
-$threshold = $argv[5] ?? 0.999;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Breast Cancer Detector using AdaBoost               ║' . "\n";
+echo '║ Breast Cancer Detector using K Nearest Neighbors    ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -33,13 +30,16 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->split(0.8);
 
-$estimator = new Prototype(new Pipeline(new AdaBoost(CART::class, [$minSize, $maxDepth], $experts, $ratio, $threshold), [
-    new MissingDataImputer('?'), new L2Regularizer(),
+$estimator = new Prototype(new Pipeline(new GridSearch(KNearestNeighbors::class, [[1, 3, 5, 10], [new Euclidean(), new Manhattan()]], new Accuracy()), [
+    new MissingDataImputer('?'),
+    new MinMaxNormalizer(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
 ]);
 
 $estimator->train($training);
+
+var_dump($estimator->trials());
 
 $estimator->test($testing);

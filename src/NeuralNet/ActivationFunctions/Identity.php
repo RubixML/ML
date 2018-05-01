@@ -2,33 +2,17 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-class PReLU implements ActivationFunction
+class Identity implements ActivationFunction
 {
     /**
-     * The amount of leakage to allow to pass through when not activated.
-     *
-     * @var float
-     */
-    protected $leakage;
-
-    /**
-     * @param  float  $leakage
-     * @return void
-     */
-    public function __construct(float $leakage = 0.01)
-    {
-        $this->leakage = $leakage;
-    }
-
-    /**
-     * Compute the output value.
+     * Compute the indentity of the input. i.e. the input value is the output.
      *
      * @param  float  $value
      * @return float
      */
     public function compute(float $value) : float
     {
-        return $value >= 0.0 ? $value : $this->leakage * $value;
+        return $value;
     }
 
     /**
@@ -40,7 +24,7 @@ class PReLU implements ActivationFunction
      */
     public function differentiate(float $value, float $computed) : float
     {
-        return $computed >= 0.0 ? 1.0 : $this->leakage;
+        return 1.0;
     }
 
     /**
@@ -53,8 +37,6 @@ class PReLU implements ActivationFunction
      */
     public function initialize(int $n) : array
     {
-        $r = pow(6 / $n, 1 / self::ROOT_2);
-
-        return [-$r, $r];
+        return [-3, 3];
     }
 }

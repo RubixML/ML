@@ -1,16 +1,16 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Transformers\Normalizer;
+use Rubix\Engine\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
 
-class NormalizerTest extends TestCase
+class MinMaxMinMaxNormalizerTest extends TestCase
 {
     protected $preprocessor;
 
     public function setUp()
     {
-        $this->preprocessor = new Normalizer();
+        $this->preprocessor = new MinMaxNormalizer();
 
         $this->preprocessor->fit(new Dataset([
             [50, 100, 1000],
@@ -21,7 +21,7 @@ class NormalizerTest extends TestCase
 
     public function test_build_z_scale_standardizer()
     {
-        $this->assertInstanceOf(Normalizer::class, $this->preprocessor);
+        $this->assertInstanceOf(MinMaxNormalizer::class, $this->preprocessor);
     }
 
     public function test_fit_dataset()

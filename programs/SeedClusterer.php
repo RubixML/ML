@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\KMeans;
 use Rubix\Engine\Datasets\Unsupervised;
+use Rubix\Engine\Transformers\MinMaxNormalizer;
 use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
 use League\Csv\Reader;
 
@@ -16,6 +17,12 @@ echo '╚═══════════════════════�
 $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/seeds.csv')->setDelimiter(',')->getRecords();
 
 $dataset = Unsupervised::fromIterator($dataset);
+
+$transformer = new MinMaxNormalizer();
+
+$transformer->fit($dataset);
+
+$dataset->transform($transformer);
 
 $clusterer = new KMeans(3, new Euclidean());
 

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet;
 
-class Bias extends Neuron
+class Bias implements Node
 {
     /**
      * @return float

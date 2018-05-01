@@ -26,4 +26,17 @@ class Gaussian implements ActivationFunction
     {
         return -2 * $value * $computed;
     }
+
+    /**
+     * Generate an initial synapse weight range based on n, the number of inputs
+     * to a particular neuron.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
+     * @param  int  $n
+     * @return array
+     */
+    public function initialize(int $n) : array
+    {
+        return [4, 4];
+    }
 }

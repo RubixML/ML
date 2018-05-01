@@ -4,7 +4,7 @@ namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
 
-class Normalizer implements Transformer
+class MinMaxNormalizer implements Transformer
 {
     /**
      * The type of each feature column. i.e. categorical or continuous.

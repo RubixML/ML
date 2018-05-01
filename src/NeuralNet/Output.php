@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNet;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
-class Output extends Hidden
+class Output extends Neuron
 {
     /**
      * The outcome that a particular output neuron measures.

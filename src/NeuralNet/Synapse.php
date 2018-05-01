@@ -5,11 +5,11 @@ namespace Rubix\Engine\NeuralNet;
 class Synapse
 {
     /**
-     * The neuron that this synapse connects to.
+     * The node that this synapse connects to.
      *
-     * @var  \Rubix\Engine\NeuralNet\Neuron
+     * @var  \Rubix\Engine\NeuralNet\Node
      */
-    protected $neuron;
+    protected $node;
 
     /**
      * The weight of the connection.
@@ -19,22 +19,22 @@ class Synapse
     protected $weight;
 
     /**
-     * @param  \Rubix\Engine\NeuralNet\Neuron  $neuron
+     * @param  \Rubix\Engine\NeuralNet\Node  $node
      * @param  float  $weight
      * @return void
      */
-    public function __construct(Neuron $neuron, float $weight = 0.0)
+    public function __construct(Node $node, float $weight = 0.0)
     {
-        $this->neuron = $neuron;
+        $this->node = $node;
         $this->weight = $weight;
     }
 
     /**
-     * @return \Rubix\Engine\NeuralNetowkr\Neuron
+     * @return \Rubix\Engine\NeuralNetwork\Node
      */
-    public function neuron() : Neuron
+    public function node() : Node
     {
-        return $this->neuron;
+        return $this->node;
     }
 
     /**
@@ -52,7 +52,7 @@ class Synapse
      */
     public function impulse() : float
     {
-        return $this->weight * $this->neuron->output();
+        return $this->weight * $this->node->output();
     }
 
     /**
@@ -90,7 +90,7 @@ class Synapse
      */
     public function randomize(float $min = -4.0, float $max = 4.0) : self
     {
-        $scale = pow(10, 8);
+        $scale = pow(10, 10);
 
         $this->weight = random_int($min * $scale, $max * $scale) / $scale;
 

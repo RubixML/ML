@@ -43,7 +43,7 @@ class Adam implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.01, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
         if (!$rate > 0.0) {
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
