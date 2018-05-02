@@ -3,12 +3,12 @@
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
 use Rubix\Engine\Regression;
-use Rubix\Engine\KNearestNeighbors;
+use Rubix\Engine\DummyEstimator;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
-class KNearestNeighborsTest extends TestCase
+class DummyEstimatorTest extends TestCase
 {
     protected $estimator;
 
@@ -39,14 +39,14 @@ class KNearestNeighborsTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new KNearestNeighbors(3, new Euclidean());
+        $this->estimator = new DummyEstimator(new PopularityContest());
 
         $this->estimator->train($this->dataset);
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_dummy_estimator()
     {
-        $this->assertInstanceOf(KNearestNeighbors::class, $this->estimator);
+        $this->assertInstanceOf(DummyEstimator::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Regression::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -54,8 +54,8 @@ class KNearestNeighborsTest extends TestCase
 
     public function test_make_prediction()
     {
-        $prediction = $this->estimator->predict([7.1929367, 3.52848298]);
+        $prediction = $this->estimator->predict([7.1, 3.2]);
 
-        $this->assertEquals('male', $prediction->outcome());
+        $this->assertContains($prediction->outcome(), ['male', 'female']);
     }
 }

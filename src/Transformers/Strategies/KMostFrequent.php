@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Imputers;
+namespace Rubix\Engine\Transformers\Strategies;
 
 use InvalidArgumentException;
 
@@ -26,7 +26,7 @@ class KMostFrequent implements Categorical
      * @param  int  $k
      * @return void
      */
-    public function __construct($k = 3)
+    public function __construct($k = 1)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('The value of k cannot be less than 1.');
@@ -55,7 +55,7 @@ class KMostFrequent implements Categorical
      *
      * @return mixed
      */
-    public function impute()
+    public function guess()
     {
         return $this->classes[array_rand($this->classes)];
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\BlanketCharacterFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -18,6 +19,7 @@ class BlanketCharacterFilterTest extends TestCase
     public function test_build_blanket_character_filter()
     {
         $this->assertInstanceOf(BlanketCharacterFilter::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

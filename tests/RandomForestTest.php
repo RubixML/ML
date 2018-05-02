@@ -1,5 +1,8 @@
 <?php
 
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Classifier;
+use Rubix\Engine\Regression;
 use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +45,10 @@ class RandomForestTest extends TestCase
 
     public function test_create_tree()
     {
-        $this->assertTrue($this->estimator instanceof RandomForest);
+        $this->assertInstanceOf(RandomForest::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Regression::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     public function test_make_prediction()

@@ -1,6 +1,9 @@
 <?php
 
 use Rubix\Engine\CART;
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Classifier;
+use Rubix\Engine\Regression;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
@@ -43,6 +46,9 @@ class CARTTest extends TestCase
     public function test_create_tree()
     {
         $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Regression::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     public function test_make_prediction()

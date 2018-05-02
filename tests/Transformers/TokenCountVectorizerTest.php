@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\TokenCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +23,7 @@ class TokenCountVectorizerTest extends TestCase
     public function test_build_count_vectorizer()
     {
         $this->assertInstanceOf(TokenCountVectorizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_transform_dataset()

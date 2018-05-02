@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Imputers;
+namespace Rubix\Engine\Transformers\Strategies;
 
-class RandomCopyPaste implements Continuous
+class RandomCopyPaste implements Categorical, Continuous
 {
     /**
      * The memoized values of the fitted feature column.
@@ -29,7 +29,7 @@ class RandomCopyPaste implements Continuous
      *
      * @return mixed
      */
-    public function impute()
+    public function guess()
     {
         return $this->values[array_rand($this->values)];
     }

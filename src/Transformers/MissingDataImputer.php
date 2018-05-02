@@ -3,9 +3,9 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Transformers\Imputers\Imputer;
-use Rubix\Engine\Transformers\Imputers\BlurryMean;
-use Rubix\Engine\Transformers\Imputers\PopularityContest;
+use Rubix\Engine\Transformers\Strategies\Strategy;
+use Rubix\Engine\Transformers\Strategies\BlurryMean;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Transformer
@@ -112,7 +112,7 @@ class MissingDataImputer implements Transformer
         foreach ($samples as $row => &$sample) {
             foreach ($sample as $column => &$feature) {
                 if ($feature === $this->placeholder) {
-                    $feature = $this->imputers[$column]->impute();
+                    $feature = $this->imputers[$column]->guess();
                 }
             }
         }

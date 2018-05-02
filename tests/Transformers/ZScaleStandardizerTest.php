@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +23,7 @@ class ZScaleStandardizerTest extends TestCase
     public function test_build_z_scale_standardizer()
     {
         $this->assertInstanceOf(ZScaleStandardizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

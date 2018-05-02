@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -18,6 +19,7 @@ class VarianceThresholdFilterTest extends TestCase
     public function test_build_variance_threshold_filter()
     {
         $this->assertInstanceOf(VarianceThresholdFilter::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

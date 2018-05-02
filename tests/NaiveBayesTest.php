@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Classifier;
 use Rubix\Engine\NaiveBayes;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +45,8 @@ class NaiveBayesTest extends TestCase
     public function test_create_classifier()
     {
         $this->assertInstanceOf(NaiveBayes::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     public function test_make_prediction()

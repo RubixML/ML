@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Imputers;
+namespace Rubix\Engine\Transformers\Strategies;
 
 use Rubix\Engine\Datasets\Dataset;
 
-interface Imputer
+interface Strategy
 {
     const EPSILON = 1e-8;
 
@@ -17,9 +17,9 @@ interface Imputer
     public function fit(array $values) : void;
 
     /**
-     * Impute a missing value.
+     * Guess a value.
      *
      * @return mixed
      */
-    public function impute();
+    public function guess();
 }

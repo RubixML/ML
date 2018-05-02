@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\TextNormalizer;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,7 @@ class TextNormalizerTest extends TestCase
     public function test_build_blanket_character_filter()
     {
         $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

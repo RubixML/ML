@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\L2Regularizer;
 use PHPUnit\Framework\TestCase;
 
@@ -18,6 +19,7 @@ class L2RegularizerTest extends TestCase
     public function test_build_l1_regularizer()
     {
         $this->assertInstanceOf(L2Regularizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

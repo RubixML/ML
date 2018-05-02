@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Imputers;
+namespace Rubix\Engine\Transformers\Strategies;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,7 +44,7 @@ class DefaultValue implements Categorical, Continuous
      *
      * @return mixed
      */
-    public function impute()
+    public function guess()
     {
         return $this->value;
     }

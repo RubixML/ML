@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Imputers;
+namespace Rubix\Engine\Transformers\Strategies;
 
 use RuntimeException;
 
@@ -45,7 +45,7 @@ class PopularityContest implements Categorical
      *
      * @return mixed
      */
-    public function impute()
+    public function guess()
     {
         $random = random_int(0, $this->n);
 

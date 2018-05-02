@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Ridge;
+use Rubix\Engine\Regression;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
@@ -28,17 +29,18 @@ class RidgeTest extends TestCase
         ]);
 
         $this->estimator = new Ridge(0.0);
-
-        $this->estimator->train($this->dataset);
     }
 
     public function test_build_ridge_regression()
     {
         $this->assertInstanceOf(Ridge::class, $this->estimator);
+        $this->assertInstanceOf(Regression::class, $this->estimator);
     }
 
     public function test_make_prediction()
     {
+        $this->estimator->train($this->dataset);
+
         $prediction = $this->estimator->predict([6, 150.0, 2825]);
 
         $this->assertEquals(24.8, round($prediction->outcome(), 1));

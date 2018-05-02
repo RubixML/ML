@@ -1,10 +1,11 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
-class MissingDataImputerTest extends TestCase
+class MissingDataStrategyTest extends TestCase
 {
     protected $dataset;
 
@@ -26,6 +27,7 @@ class MissingDataImputerTest extends TestCase
     public function test_build_imputer()
     {
         $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

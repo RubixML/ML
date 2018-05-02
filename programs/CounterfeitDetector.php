@@ -5,12 +5,14 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\Engine\Adaline;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
+use Rubix\Engine\DummyEstimator;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Reports\ClassificationReport;
 use Rubix\Engine\Transformers\ZScaleStandardizer;
 use Rubix\Engine\Transformers\DensePolynomialExpander;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -35,10 +37,17 @@ $estimator = new Prototype(new Pipeline(new Adaline(12, 100, 5, new Adam(0.001),
     new ClassificationReport(),
 ]);
 
+$dummy = new Prototype(new DummyEstimator(new PopularityContest()), [
+    new ConfusionMatrix($dataset->labels()),
+    new ClassificationReport(),
+]);
+
+$dummy->train($training);
 $estimator->train($training);
 
-var_dump($estimator->steps());
-
+$dummy->test($testing);
 $estimator->test($testing);
+
+echo "\n";
 
 var_dump($estimator->predict($dataset->sample(0)));

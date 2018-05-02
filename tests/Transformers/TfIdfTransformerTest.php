@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\TfIdfTransformer;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +25,7 @@ class TfIdfTransformerTest extends TestCase
     public function test_build_tf_idf_transformer()
     {
         $this->assertInstanceOf(TfIdfTransformer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_fit_dataset()

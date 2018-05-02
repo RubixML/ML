@@ -2,6 +2,8 @@
 
 use Rubix\Engine\CART;
 use Rubix\Engine\AdaBoost;
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Classifier;
 use Rubix\Engine\Datasets\Supervised;
 use PHPUnit\Framework\TestCase;
 
@@ -44,6 +46,8 @@ class AdaBoostTest extends TestCase
     public function test_build_ada_boost_classifier()
     {
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     public function test_make_prediction()

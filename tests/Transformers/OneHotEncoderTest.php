@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
 
@@ -25,6 +26,7 @@ class OneHotEncoderTest extends TestCase
     public function test_build_one_hot_vectorizer()
     {
         $this->assertInstanceOf(OneHotEncoder::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_transform_dataset()
