@@ -2,10 +2,11 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Ridge;
+use Rubix\Engine\ElasticNet;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Reports\RegressionAnalysis;
 use Rubix\Engine\Transformers\MinMaxNormalizer;
 use Rubix\Engine\Transformers\DensePolynomialExpander;
@@ -27,14 +28,16 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new Ridge($alpha), [
-    new DensePolynomialExpander(3),
+$estimator = new Prototype(new Pipeline(new ElasticNet(33, $alpha, 1, 100, 1, new Adam(0.001)), [
     new MinMaxNormalizer(),
+    new DensePolynomialExpander(3),
 ]), [
     new RegressionAnalysis(),
 ]);
 
 $estimator->train($training);
+
+var_dump($estimator->steps());
 
 $estimator->test($testing);
 

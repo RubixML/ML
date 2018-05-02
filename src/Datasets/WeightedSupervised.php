@@ -142,14 +142,14 @@ class WeightedSupervised extends Supervised
     public function chooseRandomWeightedSample() : int
     {
         $total = $this->totalWeight();
-        $scale = pow(10, 5);
+        $scale = pow(10, 8);
 
-        $randomWeight = random_int(0, $total * $scale) / $scale;
+        $random = random_int(0, $total * $scale) / $scale;
 
         for ($row = 0; $row < $this->rows(); $row++) {
-            $randomWeight -= $this->weights[$row];
+            $random -= $this->weights[$row];
 
-            if ($randomWeight < 0) {
+            if ($random < 0) {
                 break 1;
             }
         }

@@ -47,13 +47,6 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     protected $threshold;
 
     /**
-     * The function that quantizes the input values into a binary output value.
-     *
-     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
-     */
-    protected $quantizer;
-
-    /**
      * The actual labels of the binary class outcomes.
      *
      * @var array

@@ -6,17 +6,21 @@ use PHPUnit\Framework\TestCase;
 
 class MissingDataImputerTest extends TestCase
 {
+    protected $dataset;
+
     protected $transformer;
 
     public function setUp()
     {
-        $this->transformer = new MissingDataImputer('?');
-
-        $this->transformer->fit(new Dataset([
+        $this->dataset = new Dataset([
             [30, 'friendly'],
-            [40, 'mean'],
+            ['?', 'mean'],
             [50, 'friendly'],
-        ]));
+            [60, '?'],
+            [10, 'mean'],
+        ]);
+
+        $this->transformer = new MissingDataImputer('?');
     }
 
     public function test_build_imputer()
@@ -26,6 +30,8 @@ class MissingDataImputerTest extends TestCase
 
     public function test_fit_dataset()
     {
+        $this->transformer->fit($this->dataset);
+
         $this->assertTrue(true);
     }
 
@@ -35,9 +41,11 @@ class MissingDataImputerTest extends TestCase
             ['?', '?'],
         ];
 
+        $this->transformer->fit($this->dataset);
+
         $this->transformer->transform($data);
 
-        $this->assertTrue($data[0][0] > 37 && $data[0][0] < 43);
-        $this->assertTrue(in_array($data[0][1], ['friendly', 'mean']));
+        $this->assertThat($data[0][0], $this->logicalAnd($this->greaterThan(30), $this->lessThan(45)));
+        $this->assertContains($data[0][1], ['friendly', 'mean']);
     }
 }
