@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\Engine\Strategies;
 
 use Rubix\Engine\Datasets\Dataset;
 

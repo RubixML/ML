@@ -15,7 +15,7 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Autism Screener using Naive Bayes                   ║' . "\n";
+echo '║ Autism Screener using Boosted Naive Bayes           ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 

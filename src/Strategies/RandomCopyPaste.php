@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\Engine\Strategies;
 
 class RandomCopyPaste implements Categorical, Continuous
 {

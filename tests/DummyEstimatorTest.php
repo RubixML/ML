@@ -5,7 +5,8 @@ use Rubix\Engine\Classifier;
 use Rubix\Engine\Regression;
 use Rubix\Engine\DummyEstimator;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
 class DummyEstimatorTest extends TestCase
@@ -50,6 +51,7 @@ class DummyEstimatorTest extends TestCase
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Regression::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()

@@ -34,16 +34,27 @@ class ClassificationReport implements Report
         foreach ($predictions as $i => $prediction) {
             if ($prediction === $outcomes[$i]) {
                 $truePositives[$prediction]++;
-                $trueNegatives[$outcomes[$i]]++;
+
+                foreach ($labels as $label) {
+                    if ($label !== $prediction) {
+                        $trueNegatives[$label]++;
+                    }
+                }
             } else {
                 $falsePositives[$prediction]++;
                 $falseNegatives[$outcomes[$i]]++;
             }
         }
 
-        $overall = array_fill_keys([
-            'accuracy', 'precision', 'recall', 'specificity', 'miss_rate', 'fall_out', 'f1_score', 'informedness',
-        ], 0.0);
+        $overall = [
+            'average' => array_fill_keys([
+                'accuracy', 'precision', 'recall', 'specificity', 'miss_rate', 'fall_out',
+                'f1_score', 'mcc', 'informedness',
+            ], 0.0),
+            'total' => array_fill_keys([
+                'cardinality',
+            ], 0.0),
+        ];
 
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
@@ -57,26 +68,35 @@ class ClassificationReport implements Report
             $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
             $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
             $table[$label]['f1_score'] = 2.0 * (($table[$label]['precision'] * $table[$label]['recall']) / ($table[$label]['precision'] + $table[$label]['recall'] + self::EPSILON));
+            $table[$label]['mcc'] = ($tp * $tn - $fp * $fn) / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON);
             $table[$label]['informedness'] = $table[$label]['recall'] + $table[$label]['specificity'] - 1;
+            $table[$label]['true_positives'] = $tp;
+            $table[$label]['true_negatives'] = $tn;
+            $table[$label]['false_positives'] = $fp;
+            $table[$label]['false_negatives'] = $fn;
             $table[$label]['cardinality'] = $tp + $fn;
             $table[$label]['density'] = $table[$label]['cardinality'] / count($outcomes);
 
-            $overall['accuracy'] += $table[$label]['accuracy'];
-            $overall['precision'] += $table[$label]['precision'];
-            $overall['recall'] += $table[$label]['recall'];
-            $overall['specificity'] += $table[$label]['specificity'];
-            $overall['miss_rate'] += $table[$label]['miss_rate'];
-            $overall['fall_out'] += $table[$label]['fall_out'];
-            $overall['f1_score'] += $table[$label]['f1_score'];
-            $overall['informedness'] += $table[$label]['informedness'];
+            $overall['average']['accuracy'] += $table[$label]['accuracy'];
+            $overall['average']['precision'] += $table[$label]['precision'];
+            $overall['average']['recall'] += $table[$label]['recall'];
+            $overall['average']['specificity'] += $table[$label]['specificity'];
+            $overall['average']['miss_rate'] += $table[$label]['miss_rate'];
+            $overall['average']['fall_out'] += $table[$label]['fall_out'];
+            $overall['average']['f1_score'] += $table[$label]['f1_score'];
+            $overall['average']['mcc'] += $table[$label]['mcc'];
+            $overall['average']['informedness'] += $table[$label]['informedness'];
+            $overall['total']['cardinality'] += $table[$label]['cardinality'];
         }
 
         $n = count($labels);
 
+        $overall['average'] = array_map(function ($metric) use ($n) {
+            return $metric / $n;
+        }, $overall['average']);
+
         return [
-            'overall' => array_map(function ($metric) use ($n) {
-                return $metric / $n;
-            }, $overall),
+            'overall' => $overall,
             'label' => $table,
         ];
     }

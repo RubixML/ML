@@ -11,14 +11,14 @@ class Neuron implements Node
      *
      * @var float
      */
-    protected $z = 0.0;
+    protected $z;
 
     /**
      * The precomputed output of the neuron.
      *
      * @var float|null
      */
-    protected $precomputed = null;
+    protected $precomputed;
 
     /**
      * The function that determines the the neuron's activation as a function of
@@ -43,6 +43,8 @@ class Neuron implements Node
      */
     public function __construct(ActivationFunction $activationFunction)
     {
+        $this->z = 0.0;
+        $this->precomputed = null;
         $this->activationFunction = $activationFunction;
     }
 
@@ -65,6 +67,14 @@ class Neuron implements Node
     }
 
     /**
+     * @return float
+     */
+    public function z() : float
+    {
+        return $this->z;
+    }
+
+    /**
      * The output signal of the neuron.
      *
      * @return float
@@ -83,11 +93,11 @@ class Neuron implements Node
     }
 
     /**
-     * The slope of the gradient at the last output.
+     * The slope of the gradient with respect to the neuron's output.
      *
      * @return float
      */
-    public function derivative() : float
+    public function slope() : float
     {
         return $this->activationFunction->differentiate($this->z, $this->precomputed);
     }
@@ -126,10 +136,8 @@ class Neuron implements Node
      */
     public function zap() : self
     {
-        $n = $this->inDegree();
-
         foreach ($this->synapses as $synapse) {
-            list($min, $max) = $this->activationFunction->initialize($n);
+            list($min, $max) = $this->activationFunction->initialize($this->inDegree());
 
             $synapse->randomize($min, $max);
         }

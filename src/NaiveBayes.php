@@ -67,15 +67,15 @@ class NaiveBayes implements Estimator, Classifier, Persistable
         $classes = $dataset->stratify();
 
         foreach ($classes[0] as $class => $samples) {
-            foreach (array_map(null, ...$samples) as $column => $features) {
+            foreach (array_map(null, ...$samples) as $column => $values) {
                 if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $this->stats[$class][$column] = $this->calculateProbabilities($features);
-                } else {
-                    $this->stats[$class][$column] = $this->calculateStatistics($features);
+                    $this->stats[$class][$column] = $this->calculateProbabilities((array) $values);
+                } else if ($this->columnTypes[$column] === self::CONTINUOUS) {
+                    $this->stats[$class][$column] = $this->calculateStatistics((array) $values);
                 }
             }
 
-            $this->weights[$class] = count($samples) / count($dataset);
+            $this->weights[$class] = count($samples) / $dataset->rows();
         }
     }
 

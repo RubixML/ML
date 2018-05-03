@@ -23,9 +23,9 @@ class F1ScoreTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-        $outcomes = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+        $predictions = ['wolf', 'lamb', 'wolf', 'wolf', 'wolf', 'wolf', 'lamb', 'wolf', 'wolf', 'wolf'];
+        $outcomes = ['wolf', 'lamb', 'wolf', 'wolf', 'wolf', 'lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $this->assertEquals(0.5833333230555557, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(0.8666666766666667, $this->metric->score($predictions, $outcomes));
     }
 }

@@ -3,9 +3,9 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\BlurryMean;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\Engine\Strategies\Strategy;
+use Rubix\Engine\Strategies\BlurryMean;
+use Rubix\Engine\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Transformer
@@ -20,14 +20,14 @@ class MissingDataImputer implements Transformer
     /**
      * The imputer to use when imputing continuous values.
      *
-     * @var \Rubix\Engine\Transformers\Strategies\Continuous
+     * @var \Rubix\Engine\Strategies\Continuous
      */
     protected $continuous;
 
     /**
      * The imputer to use when imputing categorical values.
      *
-     * @var \Rubix\Engine\Transformers\Strategies\Categorical
+     * @var \Rubix\Engine\Strategies\Categorical
      */
     protected $categorical;
 
@@ -51,8 +51,8 @@ class MissingDataImputer implements Transformer
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\Engine\Transformers\Strategies\Continuous|null  $continuous
-     * @param  \Rubix\Engine\Transformers\Strategies\Categorical|null  $categorical
+     * @param  \Rubix\Engine\Strategies\Continuous|null  $continuous
+     * @param  \Rubix\Engine\Strategies\Categorical|null  $categorical
      * @throws \InvalidArgumentException
      * @return void
      */

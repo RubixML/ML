@@ -2,22 +2,23 @@
 
 namespace Rubix\Engine;
 
+use Rubix\Engine\Strategies\Strategy;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\Continuous;
-use Rubix\Engine\Transformers\Strategies\Categorical;
+use Rubix\Engine\Strategies\Continuous;
+use Rubix\Engine\Strategies\Categorical;
+use Rubix\Engine\Persisters\Persistable;
 
-class DummyEstimator implements Estimator, Classifier, Regression
+class DummyEstimator implements Estimator, Classifier, Regression, Persistable
 {
     /**
      * The guessing strategy the estimator employs.
      *
-     * @var \Rubix\Engine\Transformers\Strategies\Strategy
+     * @var \Rubix\Engine\Strategies\Strategy
      */
     protected $strategy;
 
     /**
-     * @param  \Rubix\Engine\Transformers\Strategies\Strategy  $strategy
+     * @param  \Rubix\Engine\Strategies\Strategy  $strategy
      * @return void
      */
     public function __construct(Strategy $strategy)

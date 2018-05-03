@@ -37,20 +37,16 @@ class F1Score implements Classification
             }
         }
 
-        $n = count($labels);
-        $score = 0;
+        $score = 0.0;
 
         foreach ($truePositives as $label => $tp) {
             $fp = $falsePositives[$label];
             $fn = $falseNegatives[$label];
 
-            $precision = $tp / ($tp + $fp + self::EPSILON);
-            $recall = $tp / ($tp + $fn + self::EPSILON);
-
-            $score += 2.0 * (($precision * $recall) / ($precision + $recall + self::EPSILON));
+            $score += ((2 * $tp) / ((2 * $tp) + $fp + $fn) + self::EPSILON);
         }
 
-        return $score / ($n + self::EPSILON);
+        return $score / count($labels);
     }
 
     /**

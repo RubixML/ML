@@ -5,6 +5,7 @@ use Rubix\Engine\AdaBoost;
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Persisters\Persistable;
 use PHPUnit\Framework\TestCase;
 
 class AdaBoostTest extends TestCase
@@ -48,6 +49,7 @@ class AdaBoostTest extends TestCase
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()

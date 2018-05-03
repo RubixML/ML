@@ -7,7 +7,8 @@ use InvalidArgumentException;
 class MCC implements Classification
 {
     /**
-     * Test the Matthews correlation coefficient of the predictions.
+     * Test the Matthews correlation coefficient of the predictions. Outputs a
+     * number between -1 and 1.
      *
      * @param  array  $predictions
      * @param  array  $outcomes
@@ -30,24 +31,29 @@ class MCC implements Classification
         foreach ($predictions as $i => $prediction) {
             if ($prediction === $outcomes[$i]) {
                 $truePositives[$prediction]++;
-                $trueNegatives[$outcomes[$i]]++;
+
+                foreach ($labels as $label) {
+                    if ($label !== $prediction) {
+                        $trueNegatives[$label]++;
+                    }
+                }
             } else {
                 $falsePositives[$prediction]++;
                 $falseNegatives[$outcomes[$i]]++;
             }
         }
 
-        $mcc = 0.0;
+        $score = 0.0;
 
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
             $fp = $falsePositives[$label];
             $fn = $falseNegatives[$label];
 
-            $mcc += ($tp * $tn - $fp * $fn) / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON);
+            $score += (($tp * $tn - $fp * $fn) / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) + self::EPSILON));
         }
 
-        return $mcc / count($labels);
+        return $score / count($labels);
     }
 
     /**

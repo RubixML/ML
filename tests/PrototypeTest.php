@@ -3,6 +3,7 @@
 use Rubix\Engine\Prototype;
 use Rubix\Engine\KNearestNeighbors;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Persisters\Persistable;
 use PHPUnit\Framework\TestCase;
 
 class PrototypeTest extends TestCase
@@ -42,6 +43,7 @@ class PrototypeTest extends TestCase
     public function test_build_ridge_regression()
     {
         $this->assertInstanceOf(Prototype::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()

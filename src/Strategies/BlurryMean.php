@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\Engine\Strategies;
 
 use MathPHP\Statistics\Average;
 use Rubix\Engine\Datasets\Dataset;
 use InvalidArgumentException;
 
-class BlurryMedian implements Continuous
+class BlurryMean implements Continuous
 {
     /**
      * The amount of gaussian noise by ratio of the variance to add to the mean.
@@ -16,11 +16,11 @@ class BlurryMedian implements Continuous
     protected $blurr;
 
     /**
-     * The precomputed median of the fitted feature column.
+     * The precomputed mean of the fitted feature column.
      *
      * @var array
      */
-    protected $median;
+    protected $mean;
 
     /**
      * The precomputed standard deviation of the fitted feature column.
@@ -50,10 +50,10 @@ class BlurryMedian implements Continuous
      */
     public function fit(array $values) : void
     {
-        $this->median = Average::median($values);
+        $this->mean = Average::mean($values);
 
         $this->stddev = sqrt(array_reduce($values, function ($carry, $value) {
-            return $carry += ($value - $this->median) ** 2;
+            return $carry += ($value - $this->mean) ** 2;
         }, 0.0) / count($values)) + self::EPSILON;
     }
 
@@ -64,7 +64,7 @@ class BlurryMedian implements Continuous
      */
     public function guess()
     {
-        return $this->median + ($this->blurr * $this->generateGaussianValue() * $this->stddev);
+        return $this->mean + ($this->blurr * $this->generateGaussianValue() * $this->stddev);
     }
 
     /**

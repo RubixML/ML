@@ -3,12 +3,13 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Datasets\WeightedSupervised;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class AdaBoost implements Estimator, Classifier
+class AdaBoost implements Estimator, Classifier, Persistable
 {
     /**
      * The reflector instance of the base classifier.
@@ -204,7 +205,9 @@ class AdaBoost implements Estimator, Classifier
         $total = 0.0;
 
         foreach ($this->ensemble as $i => $estimator) {
-            $total += $this->influence[$i] * ($estimator->predict($sample)->outcome() === $this->labels[1] ? 1 : -1);
+            $output = $estimator->predict($sample)->outcome() === $this->labels[1] ? 1 : -1;
+
+            $total += $this->influence[$i] * $output;
         }
 
         return new Prediction($this->labels[$total > 0 ? 1 : -1]);

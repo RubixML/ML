@@ -23,9 +23,9 @@ class MCCTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-        $outcomes = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+        $predictions = ['wolf', 'lamb', 'wolf', 'wolf', 'wolf', 'wolf', 'lamb', 'wolf', 'wolf', 'wolf'];
+        $outcomes = ['wolf', 'lamb', 'wolf', 'wolf', 'lamb', 'lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        $this->assertEquals(0.16666666648148146, $this->metric->score($predictions, $outcomes));
+        $this->assertEquals(0.6123724353832946 , $this->metric->score($predictions, $outcomes));
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\Engine\Strategies\Strategy;
+use Rubix\Engine\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
 class PopularityContestTest extends TestCase

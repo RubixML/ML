@@ -2,14 +2,16 @@
 
 namespace Rubix\Engine;
 
-use Rubix\Engine\NeuralNet\Input;
-use Rubix\Engine\Metrics\Accuracy;
+use Rubix\Engine\Metrics\MCC;
 use Rubix\Engine\NeuralNet\Neuron;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Metrics\Classification;
 use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\NeuralNet\Layers\Input;
+use Rubix\Engine\NeuralNet\Layers\Hidden;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -71,19 +73,19 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     ];
 
     /**
-     * @param  int  $inputs
+     * @param  \Rubix\Engine\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
-     * @param  array  $outcomes
+     * @param  \Rubix\Engine\NeuralNet\Layers\Mutlticlass  $output
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $threshold
      * @param  int  $window
-     * @param \Rubi\Engine\Metrics\Classification|null  $metric
+     * @param  \Rubix\Engine\Metrics\Classification|null  $metric
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes,
+    public function __construct(Input $input, array $hidden, Multiclass $output,
                     int $batchSize = 10, Optimizer $optimizer = null, float $threshold = 0.99,
                     int $window = 3, Classification $metric = null, int $epochs = PHP_INT_MAX)
     {
@@ -108,17 +110,17 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         }
 
         if (!isset($metric)) {
-            $metric = new Accuracy();
+            $metric = new MCC();
         }
 
-        $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->threshold = $threshold;
         $this->window = $window;
         $this->metric = $metric;
+        $this->epochs = $epochs;
 
-        parent::__construct($inputs, $hidden, $outcomes);
+        parent::__construct($input, $hidden, $output);
     }
 
     /**
@@ -142,12 +144,12 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             throw new InvalidArgumentException('This estimator only works on continuous features.');
         }
 
-        $this->randomizeWeights();
-
+        $best = ['score' => -INF, 'snapshot' => null];
         $this->progress = [];
-        $best = ['score' => 0.0, 'parameters' => null];
 
-        list($training, $testing) = $dataset->split(0.8);
+        list($training, $testing) = $dataset->stratifiedSplit(0.8);
+
+        $this->randomizeWeights();
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $temp = clone $training;
@@ -158,7 +160,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 foreach ($batch as $row => $sample) {
                     $this->feed($sample);
 
-                    $this->backpropagate($sigmas, $batch->outcome($row));
+                    $this->backpropagate($batch->outcome($row), $sigmas);
                 }
 
                 foreach ($sigmas as $synapse) {
@@ -168,6 +170,8 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
 
             $score = $this->scoreEpoch($testing);
 
+            $this->progress[] = $score;
+
             if ($score > $best['score']) {
                 $best = [
                     'score' => $score,
@@ -175,14 +179,12 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                 ];
             }
 
-            $this->progress[] = $score;
+            if ($score > $this->threshold) {
+                break 1;
+            }
 
             if ($epoch >= $this->window) {
                 $window = array_slice($this->progress, -$this->window);
-
-                if ((array_sum($window) / $this->window) > $this->threshold) {
-                    break 1;
-                }
 
                 $worst = $window;
                 rsort($worst);
@@ -226,71 +228,53 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     }
 
     /**
-     * Feed a sample through the network and calculate the output of each neuron.
-     *
-     * @param  array  $sample
-     * @throws \RuntimeException
-     * @return array
-     */
-    public function feed(array $sample) : array
-    {
-        if (count($sample) !== count($this->layers[0]) - 1) {
-            throw new RuntimeException('The ratio of feature columns to input neurons is unequal, '
-                . (string) count($sample) . ' found, ' . (string) (count($this->layers[0]) - 1) . ' needed.');
-        }
-
-        $this->reset();
-
-        $activations = [];
-        $column = 0;
-
-        foreach ($this->inputs() as $input) {
-            if ($input instanceof Input) {
-                $input->prime($sample[$column++]);
-            }
-        }
-
-        foreach ($this->outputs() as $output) {
-            $activations[$output->outcome()] = $output->fire();
-        }
-
-        return $activations;
-    }
-
-    /**
-     * Backpropgate the error through the network and return the sums of the partial
+     * Backpropagate the error through the network and return the sums of the partial
      * derivatives for each parameter.
      *
+     * @param  string  $outcome
      * @param  \SplObjectStorage  $sigmas
-     * @param  mixed  $outcome
      * @return void
      */
-    protected function backpropagate(SplObjectStorage $sigmas, $outcome) : void
+    protected function backpropagate(string $outcome, SplObjectStorage $sigmas) : void
     {
-        for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
+        $gradients = new SplObjectStorage();
+
+        foreach ($this->outputs() as $i => $neuron) {
+            $expected = $this->outputs()->label($i) === $outcome ? 1.0 : 0.0;
+
+            $gradient = $neuron->slope() * ($expected - $neuron->output());
+
+            foreach ($neuron->synapses() as $synapse) {
+                $sigma = $gradient * $synapse->node()->output();
+
+                if ($sigmas->contains($synapse)) {
+                    $sigmas[$synapse] += $sigma;
+                } else {
+                    $sigmas->attach($synapse, $sigma);
+                }
+            }
+
+            $gradients->attach($neuron, $gradient);
+        }
+
+        $previousGradients = $gradients;
+
+        foreach (array_reverse($this->hiddens()) as $layer) {
             $gradients = new SplObjectStorage();
 
-            foreach ($this->layers[$layer] as $neuron) {
+            foreach ($layer as $neuron) {
                 if ($neuron instanceof Neuron) {
-                    if ($layer === count($this->layers) - 1) {
-                        $expected = $neuron->outcome() === $outcome ? 1.0 : 0.0;
+                    $previousGradient = 0.0;
 
-                        $gradient = $neuron->derivative() * ($expected - $neuron->output());
-                    } else {
-                        $previousGradient = 0.0;
-
-                        foreach ($previousGradients as $previousNeuron) {
-                            foreach ($previousNeuron->synapses() as $synapse) {
-                                if ($synapse->node() === $neuron) {
-                                    $previousGradient += $synapse->weight() * $previousGradients[$previousNeuron];
-                                }
+                    foreach ($previousGradients as $previousNeuron) {
+                        foreach ($previousNeuron->synapses() as $synapse) {
+                            if ($synapse->node() === $neuron) {
+                                $previousGradient += $synapse->weight() * $previousGradients[$previousNeuron];
                             }
                         }
-
-                        $gradient = $neuron->derivative() * $previousGradient;
                     }
 
-                    $gradients->attach($neuron, $gradient);
+                    $gradient = $neuron->slope() * $previousGradient;
 
                     foreach ($neuron->synapses() as $synapse) {
                         $sigma = $gradient * $synapse->node()->output();
@@ -301,6 +285,8 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
                             $sigmas->attach($synapse, $sigma);
                         }
                     }
+
+                    $gradients->attach($neuron, $gradient);
                 }
             }
 

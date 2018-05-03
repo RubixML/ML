@@ -2,8 +2,10 @@
 
 namespace Rubix\Engine\NeuralNet;
 
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\Engine\NeuralNet\Layers\Layer;
+use Rubix\Engine\NeuralNet\Layers\Input;
+use Rubix\Engine\NeuralNet\Layers\Hidden;
+use Rubix\Engine\NeuralNet\Layers\Output;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -19,48 +21,25 @@ class Network
     ];
 
     /**
-     * @param  int  $inputs
+     * @param  \Rubix\Engine\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
-     * @param  array  $outcomes
-     * @throws \InvalidArgumentException
+     * @param  \Rubix\Engine\NeuralNet\Layers\Output  $output
      * @return void
      */
-    public function __construct(int $inputs, array $hidden, array $outcomes)
+    public function __construct(Input $input, array $hidden, Output $output)
     {
-        if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of inputs must be greater than 0.');
-        }
-
-        foreach ($hidden as &$layer) {
-            if (!is_array($layer)) {
-                $layer = [$layer];
-            }
-
-            if (!is_int($layer[0]) || $layer[0] < 1) {
-                throw new InvalidArgumentException('The size parameter of a hidden layer must be an integer greater than 0.');
-            }
-
-            if (isset($layer[1])) {
-                if (!$layer[1] instanceof ActivationFunction) {
-                    throw new InvalidArgumentException('The second hidden layer parameter must be an instance of an ActivationFunction.');
-                }
-            }
-        }
-
-        if (count($outcomes) < 2) {
-            throw new InvalidArgumentException('The number of unique outcomes must be greater than 1.');
-        }
-
-        $this->layers[] = new InputLayer($inputs);
+        $this->layers[] = $input;
 
         foreach ($hidden as $layer) {
-            $this->layers[] = new HiddenLayer($layer[0], $layer[1] ?? new Sigmoid());
+            if ($layer instanceof Hidden) {
+                $this->layers[] = $layer;
+            }
         }
 
-        $this->layers[] = new OutputLayer($outcomes);
+        $this->layers[] = $output;
 
-        for ($layer = count($this->layers) - 1; $layer > 0; $layer--) {
-            $this->connectLayers($this->layers[$layer], $this->layers[$layer - 1]);
+        for ($i = $this->depth() - 1; $i > 0; $i--) {
+            $this->connectLayers($this->layers[$i], $this->layers[$i - 1]);
         }
     }
 
@@ -69,9 +48,19 @@ class Network
      *
      * @return array
      */
-    public function inputs() : InputLayer
+    public function inputs() : Input
     {
         return $this->layers[0];
+    }
+
+    /**
+     * Return an array of hidden layers indexed left to right.
+     *
+     * @return array
+     */
+    public function hiddens() : array
+    {
+        return array_slice($this->layers, 1, count($this->layers) - 2, true);
     }
 
     /**
@@ -79,19 +68,40 @@ class Network
      *
      * @return array
      */
-    public function outputs() : OutputLayer
+    public function outputs() : Output
     {
         return $this->layers[count($this->layers) - 1];
     }
 
     /**
-     * The depth of the network. i.e. the number of hidden layers.
+     * The depth of the network. i.e. the number of layers.
      *
      * @return int
      */
     public function depth() : int
     {
-        return count($this->layers) - 2;
+        return count($this->layers);
+    }
+
+    /**
+     * Feed a sample through the network and return the output activation of each neuron.
+     *
+     * @param  array  $sample
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function feed(array $sample) : array
+    {
+        if (count($sample) !== $this->inputs()->count() - 1) {
+            throw new RuntimeException('The ratio of feature columns to input neurons is unequal, '
+                . (string) count($sample) . ' found, ' . (string) ($this->inputs()->count() - 1) . ' needed.');
+        }
+
+        $this->reset();
+
+        $this->inputs()->prime($sample);
+
+        return $this->outputs()->fire();
     }
 
     /**
@@ -103,11 +113,11 @@ class Network
     {
         $parameters = [];
 
-        for ($layer = 1; $layer < count($this->layers); $layer++) {
-            foreach ($this->layers[$layer] as $i => $neuron) {
+        foreach (array_slice($this->layers, 1) as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
                 if ($neuron instanceof Neuron) {
-                    foreach ($neuron->synapses() as $j => $synapse) {
-                        $parameters[$layer][$i][$j] = $synapse->weight();
+                    foreach ($neuron->synapses() as $k => $synapse) {
+                        $parameters[$i][$j][$k] = $synapse->weight();
                     }
                 }
             }
@@ -125,31 +135,15 @@ class Network
      */
     public function restoreParameters(array $parameters) : void
     {
-        for ($layer = 1; $layer < count($this->layers); $layer++) {
-            foreach ($this->layers[$layer] as $i => $neuron) {
+        foreach (array_slice($this->layers, 1) as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
                 if ($neuron instanceof Neuron) {
-                    foreach ($neuron->synapses() as $j => $synapse) {
-                        $synapse->setWeight($parameters[$layer][$i][$j]);
+                    foreach ($neuron->synapses() as $k => $synapse) {
+                        $synapse->setWeight($parameters[$i][$j][$k]);
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Return the output vector of the network.
-     *
-     * @return array
-     */
-    public function readOutput() : array
-    {
-        $activations = [];
-
-        foreach ($this->outputs() as $neuron) {
-            $activations[] = $neuron->output();
-        }
-
-        return $activations;
     }
 
     /**

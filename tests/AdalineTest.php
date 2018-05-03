@@ -4,6 +4,8 @@ use Rubix\Engine\Adaline;
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +40,7 @@ class AdalineTest extends TestCase
             [6.456749570, 3.324523456, 'male'],
         ]);
 
-        $this->estimator = new Adaline(2, 10, 1, new Adam(0.005));
+        $this->estimator = new Adaline(new Input(2), 20, 1, new Adam(0.001), 1e-3);
     }
 
     public function test_build_adaline_classifier()
@@ -46,11 +48,12 @@ class AdalineTest extends TestCase
         $this->assertInstanceOf(Adaline::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()
     {
-        $this->estimator->train($this->dataset);
+        $this->estimator->train($this->dataset->randomize());
 
         $prediction = $this->estimator->predict([7.1, 3.2]);
 

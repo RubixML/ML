@@ -22,7 +22,7 @@ $dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setD
 
 $dataset = Supervised::fromIterator($dataset);
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+list($training, $testing) = $dataset->randomize()->split(0.8);
 
 $estimator = new Prototype(new KNearestNeighbors(3, new Euclidean()), [
     new ConfusionMatrix($dataset->labels()),

@@ -10,7 +10,8 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Identity;
+use Rubix\Engine\NeuralNet\Layers\Input as InputLayer;
+use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -65,20 +66,16 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
     ];
 
     /**
-     * @param  int  $inputs
+     * @param  \Rubix\Engine\NeuralNet\Layers\Input  $input
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, int $epochs = 100, int $batchSize = 5,
-                                Optimizer $optimizer = null, float $threshold = 1e-8)
+    public function __construct(InputLayer $input, int $epochs = 100, int $batchSize = 5,
+                                Optimizer $optimizer = null, float $threshold = 1e-5)
     {
-        if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of inputs must be greater than 0.');
-        }
-
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at least 1 epoch.');
         }
@@ -95,18 +92,17 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
             $optimizer = new Adam();
         }
 
-        parent::__construct(new Identity());
-
-        for ($i = 0; $i < $inputs; $i++) {
-            $this->connect(new Synapse(new Input()));
-        }
-
-        $this->connect(new Synapse(new Bias()));
-
+        $this->input = $input;
         $this->batchSize = $batchSize;
         $this->epochs = $epochs;
         $this->optimizer = $optimizer;
         $this->threshold = $threshold;
+
+        parent::__construct(new HyperbolicTangent());
+
+        foreach ($input as $node) {
+            $this->connect(new Synapse($node));
+        }
     }
 
     /**
@@ -163,7 +159,9 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
                 $outcomes = $batch->outcomes();
 
                 foreach ($batch as $row => $sample) {
-                    list($z, $activation, $output) = $this->feed($sample);
+                    list($z, $activation) = $this->feed($sample);
+
+                    $output = $activation >= 0 ? 1 : -1;
 
                     $expected = $this->labels[$output] === $outcomes[$row] ? $output : -$output;
 
@@ -186,9 +184,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
             $this->steps[] = $magnitude;
 
-            $change = abs($last - $magnitude);
-
-            if ($change < $this->threshold && $epoch > 1) {
+            if (abs($last - $magnitude) < $this->threshold) {
                 break 1;
             }
 
@@ -204,10 +200,13 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
      */
     public function predict(array $sample) : Prediction
     {
-        list($z, $activation, $output) = $this->feed($sample);
+        list($z, $activation) = $this->feed($sample);
+
+        $output = $activation >= 0 ? 1 : -1;
 
         return new Prediction($this->labels[$output], [
             'activation' => $activation,
+            'z' => $z,
         ]);
     }
 
@@ -225,16 +224,9 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
                 . (string) count($sample) . ' found, ' . (string) (count($this->synapses) - 1) . ' needed.');
         }
 
-        $column = 0;
         $z = 0.0;
 
-        foreach ($this->synapses as $synapse) {
-            $neuron = $synapse->node();
-
-            if ($neuron instanceof Input) {
-                $neuron->prime($sample[$column++]);
-            }
-        }
+        $this->input->prime($sample);
 
         foreach ($this->synapses as $synapse) {
             $z += $synapse->impulse();
@@ -242,9 +234,7 @@ class Adaline extends Neuron implements Estimator, Classifier, Persistable
 
         $activation = $this->activationFunction->compute($z);
 
-        $output = $activation >= 0 ? 1 : -1;
-
-        return [$z, $activation, $output];
+        return [$z, $activation];
     }
 
     /**

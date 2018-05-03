@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\Lottery;
+use Rubix\Engine\Strategies\Strategy;
+use Rubix\Engine\Strategies\Lottery;
 use PHPUnit\Framework\TestCase;
 
 class LotteryTest extends TestCase

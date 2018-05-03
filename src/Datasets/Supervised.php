@@ -208,8 +208,8 @@ class Supervised extends Dataset
         }
 
         return [
-            new static(...$left),
-            new static(...$right),
+            new self(...$left),
+            new self(...$right),
         ];
     }
 
