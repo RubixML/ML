@@ -11,7 +11,7 @@ abstract class Layer extends SplFixedArray
      *
      * @return array
      */
-    public function fire() : array
+    public function output() : array
     {
         $activations = [];
 

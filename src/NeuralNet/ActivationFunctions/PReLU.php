@@ -5,7 +5,8 @@ namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 class PReLU implements ActivationFunction
 {
     /**
-     * The amount of leakage to allow to pass through when not activated.
+     * The amount of leakage as a ratio of the input value to allow to pass
+     * through when not activated.
      *
      * @var float
      */

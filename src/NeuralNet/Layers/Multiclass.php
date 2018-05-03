@@ -60,8 +60,8 @@ class Multiclass extends Output
      *
      * @return array
      */
-    public function fire() : array
+    public function output() : array
     {
-        return array_combine($this->labels, parent::fire());
+        return array_combine($this->labels, parent::output());
     }
 }

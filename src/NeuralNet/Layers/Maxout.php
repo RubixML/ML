@@ -20,9 +20,9 @@ class Maxout extends Hidden
      *
      * @return array
      */
-    public function fire() : array
+    public function output() : array
     {
-        $activations = parent::fire();
+        $activations = parent::output();
 
         $max = max($activations);
 

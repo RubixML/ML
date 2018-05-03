@@ -20,9 +20,9 @@ class Softmax extends Multiclass
      *
      * @return array
      */
-    public function fire() : array
+    public function output() : array
     {
-        $activations = parent::fire();
+        $activations = parent::output();
 
         $total = array_sum($activations);
 

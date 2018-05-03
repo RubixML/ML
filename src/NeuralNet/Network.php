@@ -31,9 +31,12 @@ class Network
         $this->layers[] = $input;
 
         foreach ($hidden as $layer) {
-            if ($layer instanceof Hidden) {
-                $this->layers[] = $layer;
+            if (!$layer instanceof Hidden) {
+                throw new InvalidArgumentException('Hidden layers must only extend the Hidden class, '
+                    . get_class($layer) . ' found.');
             }
+
+            $this->layers[] = $layer;
         }
 
         $this->layers[] = $output;
@@ -101,7 +104,7 @@ class Network
 
         $this->inputs()->prime($sample);
 
-        return $this->outputs()->fire();
+        return $this->outputs()->output();
     }
 
     /**
