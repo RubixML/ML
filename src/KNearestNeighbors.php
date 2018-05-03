@@ -8,7 +8,7 @@ use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNearestNeighbors implements Estimator, Classifier, Regression
+class KNearestNeighbors implements Estimator, Classifier, Regressor
 {
     /**
      * The number of neighbors to consider when making a prediction.

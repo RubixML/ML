@@ -8,7 +8,7 @@ use Rubix\Engine\Strategies\Continuous;
 use Rubix\Engine\Strategies\Categorical;
 use Rubix\Engine\Persisters\Persistable;
 
-class DummyEstimator implements Estimator, Classifier, Regression, Persistable
+class DummyEstimator implements Estimator, Classifier, Regressor, Persistable
 {
     /**
      * The guessing strategy the estimator employs.

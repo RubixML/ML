@@ -6,7 +6,7 @@ use MathPHP\Statistics\Correlation;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class RSquared implements Error
+class RSquared implements Regression
 {
     /**
      * Calculate the coefficient of determination i.e. R^2 from the predictions.

@@ -4,7 +4,7 @@ namespace Rubix\Engine\Metrics;
 
 use InvalidArgumentException;
 
-class RMSError implements Error
+class RMSError implements Regression
 {
     /**
      * Calculate the root mean square error from the predictions.

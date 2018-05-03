@@ -2,7 +2,7 @@
 
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
-use Rubix\Engine\Regression;
+use Rubix\Engine\Regressor;
 use Rubix\Engine\RandomForest;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
@@ -48,7 +48,7 @@ class RandomForestTest extends TestCase
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Regression::class, $this->estimator);
+        $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

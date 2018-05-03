@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Metrics;
 
-interface Error extends Metric
+interface Regression extends Metric
 {
     //
 }

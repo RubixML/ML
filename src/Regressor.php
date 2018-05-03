@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine;
 
-interface Regression
+interface Regressor
 {
     //
 }

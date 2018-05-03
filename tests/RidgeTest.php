@@ -1,7 +1,7 @@
 <?php
 
 use Rubix\Engine\Ridge;
-use Rubix\Engine\Regression;
+use Rubix\Engine\Regressor;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +35,7 @@ class RidgeTest extends TestCase
     public function test_build_ridge_regression()
     {
         $this->assertInstanceOf(Ridge::class, $this->estimator);
-        $this->assertInstanceOf(Regression::class, $this->estimator);
+        $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

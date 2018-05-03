@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Error;
 use Rubix\Engine\Metrics\Metric;
+use Rubix\Engine\Metrics\Regression;
 use Rubix\Engine\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +17,7 @@ class MeanSquaredErrorTest extends TestCase
     public function test_build_mean_squared_error_metric()
     {
         $this->assertInstanceOf(MeanSquaredError::class, $this->metric);
-        $this->assertInstanceOf(Error::class, $this->metric);
+        $this->assertInstanceOf(Regression::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
     }
 

@@ -10,7 +10,7 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class CART extends Tree implements Estimator, Classifier, Regression, Persistable
+class CART extends Tree implements Estimator, Classifier, Regressor, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.

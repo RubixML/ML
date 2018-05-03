@@ -9,7 +9,7 @@ use MathPHP\LinearAlgebra\DiagonalMatrix;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class Ridge implements Estimator, Regression, Persistable
+class Ridge implements Estimator, Regressor, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the

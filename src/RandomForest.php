@@ -7,7 +7,7 @@ use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use InvalidArgumentException;
 
-class RandomForest implements Estimator, Classifier, Regression, Persistable
+class RandomForest implements Estimator, Classifier, Regressor, Persistable
 {
     /**
      * The number of trees to plant (train) in the ensemble.

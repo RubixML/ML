@@ -4,7 +4,7 @@ namespace Rubix\Engine\Metrics;
 
 use InvalidArgumentException;
 
-class MeanAbsoluteError implements Error
+class MeanAbsoluteError implements Regression
 {
     /**
      * Calculate the mean absolute error of the predictions.

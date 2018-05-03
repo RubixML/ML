@@ -4,7 +4,7 @@ namespace Rubix\Engine\Metrics;
 
 use InvalidArgumentException;
 
-class MeanSquaredError implements Error
+class MeanSquaredError implements Regression
 {
     /**
      * Calculate the mean squared error of the predictions.

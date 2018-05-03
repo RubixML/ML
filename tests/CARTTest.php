@@ -3,7 +3,7 @@
 use Rubix\Engine\CART;
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Classifier;
-use Rubix\Engine\Regression;
+use Rubix\Engine\Regressor;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Persisters\Persistable;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +48,7 @@ class CARTTest extends TestCase
     {
         $this->assertInstanceOf(CART::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Regression::class, $this->estimator);
+        $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

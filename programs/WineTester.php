@@ -15,7 +15,7 @@ $alpha = $argv[1] ?? 1.0;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Tester using a Ridge Regression                ║' . "\n";
+echo '║ Wine Tester using a Ridge Regressor                ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
