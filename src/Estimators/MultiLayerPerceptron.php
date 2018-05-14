@@ -17,8 +17,22 @@ use Rubix\Engine\Estimators\Predictions\Prediction;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MultiLayerPerceptron extends Network implements Estimator, Classifier, Persistable
+class MultiLayerPerceptron implements Classifier, Persistable
 {
+    /**
+     * The hidden layer configuration of the neural net.
+     *
+     * @param array
+     */
+    protected $hidden;
+
+    /**
+     * The output layer configuration of the neural net.
+     *
+     * @param \Rubix\Engine\NeuralNet\Layers\Multiclass
+     */
+    protected $output;
+
     /**
      * The number of training samples to consider per iteration of gradient descent.
      *
@@ -27,7 +41,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     protected $batchSize;
 
     /**
-     * The learnign rate to use when adjusting the weights of the synapses.
+     * The gradient descent optimizer used to train the network.
      *
      * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
      */
@@ -69,6 +83,13 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      * @var int
      */
     protected $epochs;
+
+    /**
+     * The underlying computational graph.
+     *
+     * @param \Rubix\Engine\NeuralNet\Network
+     */
+    protected $network;
 
     /**
      * The validation score of each epoch during training.
@@ -125,15 +146,15 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             $metric = new MCC();
         }
 
+        $this->hidden = $hidden;
+        $this->output = $output;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->threshold = $threshold;
+        $this->metric = $metric;
         $this->ratio = $ratio;
         $this->window = $window;
-        $this->metric = $metric;
         $this->epochs = $epochs;
-
-        parent::__construct(new Input(1), $hidden, $output);
     }
 
     /**
@@ -161,31 +182,29 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             throw new InvalidArgumentException('This estimator only works with categorical outcomes.');
         }
 
-        $this->layers[0] = new Input($dataset->columns());
+        $this->network = new Network(new Input($dataset->columns()), $this->hidden, $this->output);
 
-        $this->initialize();
+        $this->network->initialize();
         $this->progress = [];
 
-        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
+        $best = ['score' => -INF, 'snapshot' => null];
 
         $template = array_map(function ($layer) {
             return array_map(function ($inDegree) {
                 return array_fill(0, $inDegree, 0.0);
             }, $layer->inDegrees());
-        }, $this->parametric());
+        }, $this->network->parametric());
 
-        $best = ['score' => -INF, 'snapshot' => null];
+        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $temp = clone $training;
-
-            foreach ($this->generateMiniBatches($temp) as $batch) {
+            foreach ($this->generateMiniBatches(clone $training) as $batch) {
                 $accumulated = $template;
 
                 foreach ($batch as $index => $sample) {
-                    $this->feed($sample);
+                    $this->network->feed($sample);
 
-                    $gradients = $this->backpropagate($batch->outcome($index));
+                    $gradients = $this->network->backpropagate($batch->outcome($index));
 
                     foreach ($gradients as $i => $layer) {
                         foreach ($layer as $j => $neuron) {
@@ -198,7 +217,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
 
                 $steps = $this->optimizer->step($accumulated);
 
-                foreach ($this->parametric() as $i => $layer) {
+                foreach ($this->network->parametric() as $i => $layer) {
                     $layer->update($steps[$i]);
                 };
             }
@@ -210,7 +229,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             if ($score > $best['score']) {
                 $best = [
                     'score' => $score,
-                    'snapshot' => $this->readParameters(),
+                    'snapshot' => $this->network->readParameters(),
                 ];
             }
 
@@ -231,7 +250,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
         }
 
         if ($score !== $best['score']) {
-            $this->restoreParameters($best['snapshot']);
+            $this->network->restoreParameters($best['snapshot']);
         }
     }
 
@@ -246,7 +265,7 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
     {
         $best = ['activation' => -INF, 'outcome' => null];
 
-        $activations = $this->feed($sample);
+        $activations = $this->network->feed($sample);
 
         foreach ($activations as $outcome => $activation) {
             if ($activation > $best['activation']) {
@@ -268,9 +287,9 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
      */
     protected function generateMiniBatches(Supervised $dataset) : array
     {
-        $dataset->randomize();
-
         $batches = [];
+
+        $dataset->randomize();
 
         while (!$dataset->isEmpty()) {
             $batches[] = $dataset->take($this->batchSize);
@@ -293,6 +312,8 @@ class MultiLayerPerceptron extends Network implements Estimator, Classifier, Per
             $predictions[] = $this->predict($sample)->outcome();
         }
 
-        return $this->metric->score($predictions, $dataset->outcomes());
+        $score = $this->metric->score($predictions, $dataset->outcomes());
+
+        return $score;
     }
 }

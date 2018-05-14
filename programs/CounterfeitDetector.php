@@ -5,10 +5,9 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\NeuralNet\Layers\Input;
+use Rubix\Engine\Estimators\Perceptron;
 use Rubix\Engine\Reports\ConfusionMatrix;
 use Rubix\Engine\NeuralNet\Layers\Binary;
-use Rubix\Engine\Estimators\RandomForest;
 use Rubix\Engine\Estimators\DummyEstimator;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Reports\ClassificationReport;
@@ -29,7 +28,7 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
-$estimator = new Prototype(new Pipeline(new RandomForest(20, 0.5, 1, 10), [
+$estimator = new Prototype(new Pipeline(new Perceptron(new Binary($dataset->labels(), 1e-4), 10, 5, new Adam(0.001)), [
     //
 ]), [
     new ConfusionMatrix($dataset->labels()),
