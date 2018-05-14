@@ -30,7 +30,7 @@ class RSquared implements Regression
             $sst += ($outcomes[$i] - $mean) ** 2;
         }
 
-        return 1 - ($ssr / $sst);
+        return 1 - ($ssr / ($sst + self::EPSILON));
     }
 
     /**

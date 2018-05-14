@@ -11,7 +11,7 @@ class PersistentModel
     /**
      * The estimator.
      *
-     * @var \Rubix\Engine\Estimator
+     * @var \Rubix\Engine\Estimators\Estimator
      */
     protected $estimator;
 

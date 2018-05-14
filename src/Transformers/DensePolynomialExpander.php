@@ -34,6 +34,7 @@ class DensePolynomialExpander implements Transformer
 
     /**
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void

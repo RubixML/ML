@@ -27,7 +27,6 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param  array  $samples
-     * @param  array  $outcomes
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -63,18 +62,18 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the sample at the given row.
+     * Return the sample at the given row index.
      *
      * @param  int  $row
      * @return mixed
      */
-    public function sample(int $row) : array
+    public function row(int $index) : array
     {
-        if (!isset($this->samples[$row])) {
-            throw new RuntimeException('Invalid row offset.');
+        if (!isset($this->samples[$index])) {
+            throw new RuntimeException('Invalid row index.');
         }
 
-        return $this->samples[$row];
+        return $this->samples[$index];
     }
 
     /**
@@ -83,6 +82,17 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     public function rows() : int
     {
         return count($this->samples);
+    }
+
+    /**
+     * Extract a column of values from the dataset.
+     *
+     * @param  mixed  $name
+     * @return array
+     */
+    public function column($name) : array
+    {
+        return array_column($this->samples, $name);
     }
 
     /**

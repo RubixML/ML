@@ -33,14 +33,15 @@ class Sigmoid implements ActivationFunction
      * Generate an initial synapse weight range based on n, the number of inputs
      * to a particular neuron.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  int  $n
-     * @return array
+     * @param  int  $inDegree
+     * @return float
      */
-    public function initialize(int $n) : array
+    public function initialize(int $inDegree) : float
     {
-        $r = sqrt(6 / $n);
+        $r = sqrt(6 / $inDegree);
 
-        return [-$r, $r];
+        $scale = pow(10, 10);
+
+        return random_int(-$r * $scale, $r * $scale) / $scale;
     }
 }

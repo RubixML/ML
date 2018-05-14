@@ -5,7 +5,9 @@ namespace Rubix\Engine;
 use League\CLImate\CLImate;
 use Rubix\Engine\Reports\Report;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Estimators\Estimator;
 use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Estimators\Predictions\Prediction;
 use ReflectionClass;
 
 class Prototype implements Estimator, Persistable
@@ -13,7 +15,7 @@ class Prototype implements Estimator, Persistable
     /**
      * The base estimator.
      *
-     * @var \Rubix\Engine\Estimator
+     * @var \Rubix\Engine\Estimators\Estimator
      */
     protected $estimator;
 
@@ -28,7 +30,7 @@ class Prototype implements Estimator, Persistable
     ];
 
     /**
-     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Rubix\Engine\Estimators\Estimator  $estimator
      * @param  array  $reports
      * @return void
      */
@@ -44,7 +46,7 @@ class Prototype implements Estimator, Persistable
     /**
      * Return the underlying estimator instance.
      *
-     * @return \Rubix\Engine\Estimator
+     * @return \Rubix\Engine\Estimators\Estimator
      */
     public function estimator() : Estimator
     {
@@ -62,7 +64,7 @@ class Prototype implements Estimator, Persistable
 
     /**
      * @param  array  $sample
-     * @return \Rubix\Engine\Prediction
+     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
      */
     public function predict(array $sample) : Prediction
     {

@@ -5,7 +5,9 @@ namespace Rubix\Engine;
 use Rubix\Engine\Metrics\Error;
 use Rubix\Engine\Metrics\Metric;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Estimators\Estimator;
 use Rubix\Engine\Metrics\Classification;
+use Rubix\Engine\Estimators\Predictions\Prediction;
 use ReflectionClass;
 
 class GridSearch implements Estimator
@@ -46,7 +48,7 @@ class GridSearch implements Estimator
     /**
      * The best estimator according to the performance metric.
      *
-     * @var \Rubix\Engine\Estimator
+     * @var \Rubix\Engine\Estimators\Estimator
      */
     protected $estimator;
 
@@ -76,7 +78,7 @@ class GridSearch implements Estimator
     /**
      * Return the underlying estimator instance.
      *
-     * @return \Rubix\Engine\Estimator
+     * @return \Rubix\Engine\Estimators\Estimator
      */
     public function estimator() : Estimator
     {
@@ -107,9 +109,15 @@ class GridSearch implements Estimator
             $best = ['score' => -INF, 'estimator' => null];
         }
 
-        foreach ($this->combineParams($this->params) as $params) {
-            list($training, $testing) = $dataset->split(0.8);
+        $dataset->randomize();
 
+        if (!in_array(Classifier::class, $this->reflector->getInterfaceNames())) {
+            list($training, $testing) = $dataset->stratifiedSplit(0.8);
+        } else {
+            list($training, $testing) = $dataset->split(0.8);
+        }
+
+        foreach ($this->combineParams($this->params) as $params) {
             $estimator = $this->reflector->newInstanceArgs($params);
 
             $estimator->train($training);
@@ -140,7 +148,7 @@ class GridSearch implements Estimator
      * Call the best estimator to make a prediction.
      *
      * @param  array  $sample
-     * @return \Rubix\Engine\Prediction
+     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
      */
     public function predict(array $sample) : Prediction
     {

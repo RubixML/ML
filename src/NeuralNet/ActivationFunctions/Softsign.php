@@ -31,14 +31,15 @@ class Softsign implements ActivationFunction
      * Generate an initial synapse weight range based on n, the number of inputs
      * to a particular neuron.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  int  $n
+     * @param  int  $inDegree
      * @return array
      */
-    public function initialize(int $n) : array
+    public function initialize(int $inDegree) : float
     {
-        $r = pow(6 / $n, 1 / 4);
+        $r = pow(6 / $inDegree, 1 / 4);
 
-        return [-$r, $r];
+        $scale = pow(10, 10);
+
+        return random_int(-$r * $scale, $r * $scale) / $scale;
     }
 }

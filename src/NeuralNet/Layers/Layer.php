@@ -2,23 +2,14 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-use SplFixedArray;
-
-abstract class Layer extends SplFixedArray
+interface Layer
 {
     /**
-     * Activate the neurons in the layer and return an array of activations.
+     * Compute the weighted sum of the inputs and return an output matrix containing
+     * the activation of each neuron for each sample.
      *
+     * @param  array  $input
      * @return array
      */
-    public function output() : array
-    {
-        $activations = [];
-
-        for ($this->rewind(); $this->valid(); $this->next()) {
-            $activations[] = $this->current()->output();
-        }
-
-        return $activations;
-    }
+    public function forward(array $input) : array;
 }

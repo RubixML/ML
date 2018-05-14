@@ -7,7 +7,7 @@ use Rubix\Engine\NeuralNet\Synapse;
 interface ActivationFunction
 {
     const ROOT_2 = 1.41421356237;
-    
+
     /**
      * Compute the activation of the neuron.
      *
@@ -29,8 +29,8 @@ interface ActivationFunction
     /**
      * Generate an initial synapse weight range.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @return array
+     * @param  int  $inDegree
+     * @return float
      */
-    public function initialize(int $n) : array;
+    public function initialize(int $inDegree) : float;
 }

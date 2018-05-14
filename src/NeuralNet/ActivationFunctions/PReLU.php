@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use InvalidArgumentException;
+
 class PReLU implements ActivationFunction
 {
     /**
@@ -14,10 +16,15 @@ class PReLU implements ActivationFunction
 
     /**
      * @param  float  $leakage
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $leakage = 0.01)
     {
+        if ($leakage < 0 || $leakage > 1) {
+            throw new InvalidArgumentException('Leakage coefficient must be between 0 and 1.');
+        }
+
         $this->leakage = $leakage;
     }
 
@@ -48,14 +55,15 @@ class PReLU implements ActivationFunction
      * Generate an initial synapse weight range based on n, the number of inputs
      * to a particular neuron.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  int  $n
-     * @return array
+     * @param  int  $inDegree
+     * @return float
      */
-    public function initialize(int $n) : array
+    public function initialize(int $inDegree) : float
     {
-        $r = pow(6 / $n, 1 / self::ROOT_2);
+        $r = pow(6 / $inDegree, 1 / self::ROOT_2);
 
-        return [-$r, $r];
+        $scale = pow(10, 10);
+
+        return random_int(-$r * $scale, $r * $scale) / $scale;
     }
 }

@@ -2,9 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class AdaGrad implements Optimizer
 {
@@ -18,9 +16,11 @@ class AdaGrad implements Optimizer
     /**
      * A cache of the sum of the squared gradients for each paramter.
      *
-     * @var \SplObjectStorage
+     * @var array
      */
-    protected $cache;
+    protected $cache = [
+        //
+    ];
 
     /**
      * @param  float  $rate
@@ -34,24 +34,33 @@ class AdaGrad implements Optimizer
         }
 
         $this->rate = $rate;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the step size for each parameter in the network.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float
+    public function step(array $gradients) : array
     {
-        if (!$this->cache->contains($synapse)) {
-            $this->cache->attach($synapse, 0.0);
+        $steps = [[[]]];
+
+        foreach ($gradients as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
+                foreach ($neuron as $k => $gradient) {
+                    if (!isset($this->cache[$i][$j][$k])) {
+                        $this->cache[$i][$j][$k] = 0.0;
+                    }
+
+                    $this->cache[$i][$j][$k] += $gradient ** 2;
+
+                    $steps[$i][$j][$k] =  $this->rate * $gradient
+                        / (sqrt($this->cache[$i][$j][$k]) + self::EPSILON);
+                }
+            }
         }
 
-        $this->cache[$synapse] += $gradient ** 2;
-
-        return $this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON);
+        return $steps;
     }
 }

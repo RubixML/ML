@@ -2,23 +2,22 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Adaline;
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
-use Rubix\Engine\DummyEstimator;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\Reports\ConfusionMatrix;
+use Rubix\Engine\NeuralNet\Layers\Binary;
+use Rubix\Engine\Estimators\RandomForest;
+use Rubix\Engine\Estimators\DummyEstimator;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Reports\ClassificationReport;
-use Rubix\Engine\Transformers\ZScaleStandardizer;
-use Rubix\Engine\Transformers\DensePolynomialExpander;
-use Rubix\Engine\Strategies\PopularityContest;
+use Rubix\Engine\Estimators\Strategies\PopularityContest;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Counterfeit Detector using Adaline                  ║' . "\n";
+echo '║ Counterfeit Detector using Random Forest            ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -30,9 +29,8 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
-$estimator = new Prototype(new Pipeline(new Adaline(new Input(12), 100, 5, new Adam(0.001), 1e-4), [
-    new DensePolynomialExpander(3),
-    new ZScaleStandardizer(),
+$estimator = new Prototype(new Pipeline(new RandomForest(20, 0.5, 1, 10), [
+    //
 ]), [
     new ConfusionMatrix($dataset->labels()),
     new ClassificationReport(),
@@ -51,4 +49,4 @@ $estimator->test($testing);
 
 echo "\n";
 
-var_dump($estimator->predict($dataset->sample(0)));
+var_dump($estimator->predict($dataset->row(0)));

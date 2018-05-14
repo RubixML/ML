@@ -5,7 +5,7 @@ use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
-class MissingDataStrategyTest extends TestCase
+class MissingDataImputerTest extends TestCase
 {
     protected $dataset;
 

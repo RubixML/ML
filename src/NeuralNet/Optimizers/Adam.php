@@ -2,9 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class Adam implements Optimizer
 {
@@ -32,9 +30,11 @@ class Adam implements Optimizer
     /**
      * A cache of the current rms and velocities of each synapse.
      *
-     * @var \SplObjectStorage
+     * @var array
      */
-    protected $cache;
+    protected $cache = [
+        //
+    ];
 
     /**
      * @param  float  $rate
@@ -60,27 +60,39 @@ class Adam implements Optimizer
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the step size for each parameter in the network.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float
+    public function step(array $gradients) : array
     {
-        if (!$this->cache->contains($synapse)) {
-            $this->cache->attach($synapse, [0.0, 0.0]);
+        $steps = [[[]]];
+
+        foreach ($gradients as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
+                foreach ($neuron as $k => $gradient) {
+                    if (!isset($this->cache[$i][$j][$k])) {
+                        $this->cache[$i][$j][$k] = [0.0, 0.0];
+                    }
+
+                    $this->cache[$i][$j][$k] = [
+                        $this->momentumDecay * $this->cache[$i][$j][$k][0]
+                            + (1 - $this->momentumDecay) * $gradient,
+
+                        $this->rmsDecay * $this->cache[$i][$j][$k][1]
+                            + (1 - $this->rmsDecay) * $gradient ** 2,
+                    ];
+
+                    $steps[$i][$j][$k] = $this->rate * $this->cache[$i][$j][$k][0]
+                        / (sqrt($this->cache[$i][$j][$k][1]) + self::EPSILON);
+                }
+            }
         }
 
-        $this->cache[$synapse] = [
-            $this->momentumDecay * $this->cache[$synapse][0] + (1 - $this->momentumDecay) * $gradient,
-            $this->rmsDecay * $this->cache[$synapse][1] + (1 - $this->rmsDecay) * $gradient ** 2,
-        ];
-
-        return $this->rate * $this->cache[$synapse][0] / (sqrt($this->cache[$synapse][1]) + self::EPSILON);
+        return $steps;
     }
 }

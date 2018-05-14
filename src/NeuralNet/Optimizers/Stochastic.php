@@ -2,7 +2,6 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
 
 class Stochastic implements Optimizer
@@ -29,14 +28,23 @@ class Stochastic implements Optimizer
     }
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the step size for each parameter in the network.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float
+    public function step(array $gradients) : array
     {
-        return $this->rate * $gradient;
+        $steps = [];
+
+        foreach ($gradients as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
+                foreach ($neuron as $k => $gradient) {
+                    $steps[$i][$j][$k] = $this->rate * $gradient;
+                }
+            }
+        }
+
+        return $steps;
     }
 }

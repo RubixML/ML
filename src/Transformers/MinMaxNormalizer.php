@@ -3,18 +3,10 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
+use InvalidArgumentException;
 
 class MinMaxNormalizer implements Transformer
 {
-    /**
-     * The type of each feature column. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
     /**
      * The computed minimums of the fitted data indexed by column.
      *
@@ -34,29 +26,23 @@ class MinMaxNormalizer implements Transformer
     ];
 
     /**
-     * @return array
-     */
-    public function stats() : array
-    {
-        return $this->stats;
-    }
-
-    /**
      * Calculate the minimums and maximums of each feature column in the dataset.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $dataset->columnTypes();
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This transformer only works on continuous features.');
+        }
+
         $this->minimums = $this->maximums = [];
 
         foreach ($dataset->rotate() as $column => $features) {
-            if ($this->columnTypes[$column] === self::CONTINUOUS) {
-                $this->minimums[$column] = min($features);
-                $this->maximums[$column] = max($features);
-            }
+            $this->minimums[$column] = min($features);
+            $this->maximums[$column] = max($features);
         }
     }
 
@@ -72,7 +58,8 @@ class MinMaxNormalizer implements Transformer
             foreach ($this->minimums as $column => $min) {
                 $max = $this->maximums[$column];
 
-                $sample[$column] = ($sample[$column] - $min) / (($max - $min) ? ($max - $min) : self::EPSILON);
+                $sample[$column] = ($sample[$column] - $min)
+                    / (($max - $min) ? ($max - $min) : self::EPSILON);
             }
         }
     }

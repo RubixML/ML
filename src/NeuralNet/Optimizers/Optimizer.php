@@ -2,8 +2,6 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
-
 interface Optimizer
 {
     const EPSILON = 1e-8;
@@ -12,9 +10,8 @@ interface Optimizer
      * Calculate the value of a single step of gradient descent for a given
      * parameter.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float;
+    public function step(array $gradients) : array;
 }

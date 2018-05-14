@@ -2,50 +2,57 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-use Rubix\Engine\NeuralNet\Bias;
-use Rubix\Engine\NeuralNet\Input as InputNode;
 use InvalidArgumentException;
+use RuntimeException;
 
-class Input extends Layer
+class Input implements Layer
 {
     /**
-     * @param  int  $n
+     * The number of input nodes. i.e. feature placeholders.
+     *
+     * @var int
+     */
+    protected $inputs;
+
+    /**
+     * @param  int  $inputs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $n)
+    public function __construct(int $inputs)
     {
-        if ($n < 1) {
-            throw new InvalidArgumentException('The number of inputs must be greater than 0.');
+        if ($inputs < 1) {
+            throw new InvalidArgumentException('The number of input nodes must be greater than 0.');
         }
 
-        parent::__construct($n + 1);
-
-        for ($i = 0; $i < $n; $i++) {
-            $this[$i] = new InputNode();
-        }
-
-        $this[count($this) - 1] = new Bias();
+        $this->inputs = $inputs;
     }
 
     /**
-     * Prime the input layer with the values from a sample vector.
+     * Return the width of the layer.
+     *
+     * @var int
+     */
+    public function width() : int
+    {
+        return $this->inputs + 1;
+    }
+
+    /**
+     * Just return the input vector adding a bias since the input layer does not
+     * have any paramters.
      *
      * @param  array  $sample
-     * @return void
+     * @return array
      */
-    public function prime(array $sample) : void
+    public function forward(array $sample) : array
     {
-        $column = 0;
-
-        for ($this->rewind(); $this->valid(); $this->next()) {
-            $current = $this->current();
-
-            if ($current instanceof Bias) {
-                continue 1;
-            }
-
-            $current->prime($sample[$column++]);
+        if (count($sample) !== $this->inputs) {
+            throw new InvalidArgumentException('The number of sample features must equal the number of inputs.');
         }
+
+        $sample[] = 1.0;
+
+        return $sample;
     }
 }

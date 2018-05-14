@@ -3,8 +3,10 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Estimators\Estimator;
 use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Transformers\Transformer;
+use Rubix\Engine\Estimators\Predictions\Prediction;
 use RuntimeException;
 
 class Pipeline implements Estimator, Persistable
@@ -12,7 +14,7 @@ class Pipeline implements Estimator, Persistable
     /**
      * The estimator.
      *
-     * @var \Rubix\Engine\Estimator
+     * @var \Rubix\Engine\Estimators\Estimator
      */
     protected $estimator;
 
@@ -27,7 +29,7 @@ class Pipeline implements Estimator, Persistable
     ];
 
     /**
-     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Rubix\Engine\Estimators\Estimator  $estimator
      * @param  array  $transformers
      * @return void
      */
@@ -43,7 +45,7 @@ class Pipeline implements Estimator, Persistable
     /**
      * Return the underlying estimator instance.
      *
-     * @return \Rubix\Engine\Estimator
+     * @return \Rubix\Engine\Estimators\Estimator
      */
     public function estimator() : Estimator
     {
@@ -73,7 +75,7 @@ class Pipeline implements Estimator, Persistable
      * Preprocess the sample and make a prediction.
      *
      * @param  array  $sample
-     * @return \Rubix\Engine\Prediction
+     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
      */
     public function predict(array $sample) : Prediction
     {

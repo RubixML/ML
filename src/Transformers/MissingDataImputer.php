@@ -3,9 +3,9 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Strategies\Strategy;
-use Rubix\Engine\Strategies\BlurryMean;
-use Rubix\Engine\Strategies\PopularityContest;
+use Rubix\Engine\Estimators\Strategies\Strategy;
+use Rubix\Engine\Estimators\Strategies\BlurryMean;
+use Rubix\Engine\Estimators\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Transformer

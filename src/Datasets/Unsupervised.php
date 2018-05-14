@@ -41,6 +41,17 @@ class Unsupervised extends Dataset
     }
 
     /**
+     * Return a dataset containing only the last n samples.
+     *
+     * @param  int  $n
+     * @return self
+     */
+    public function tail(int $n = 10) : Dataset
+    {
+        return new self(array_slice($this->samples, -$n));
+    }
+
+    /**
      * Take n samples from this dataset and return them in a new dataset.
      *
      * @param  int  $n

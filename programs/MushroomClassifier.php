@@ -6,14 +6,16 @@ use Rubix\Engine\Pipeline;
 use Rubix\Engine\Prototype;
 use Rubix\Engine\Metrics\MCC;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\Layers\Input;
+use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\Reports\ConfusionMatrix;
-use Rubix\Engine\NeuralNet\Layers\Hidden;
-use Rubix\Engine\NeuralNet\Layers\Softmax;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\Estimators\MultiLayerPerceptron;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -28,9 +30,11 @@ $dataset = Supervised::fromIterator($dataset);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron(new Input(23), [
-    new Hidden(8), new Hidden(8),
-], new Softmax($dataset->labels()), 10, new Adam(0.005), 0.999, 3, new MCC(), 100), [
+$estimator = new Prototype(new Pipeline(new MultiLayerPerceptron([
+    new Dense(10, new PReLU()),
+    new Dense(10, new PReLU()),
+    new Dense(10, new PReLU()),
+], new Multiclass($dataset->labels()), 5, new Adam(0.001), 0.999, new MCC(), 0.2, 3, 30), [
     new OneHotEncoder(),
 ]), [
     new ConfusionMatrix($dataset->labels()),
@@ -43,4 +47,4 @@ var_dump($estimator->progress());
 
 $estimator->test($testing);
 
-var_dump($estimator->predict($dataset->sample(0)));
+var_dump($estimator->predict($dataset->row(0)));

@@ -2,9 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class StepDecay implements Optimizer
 {
@@ -23,11 +21,13 @@ class StepDecay implements Optimizer
     protected $decay;
 
     /**
-     * A cache of the sums of squared gradients for each synapse.
+     * The number of steps each parameter has taken. i.e. the number of updates.
      *
-     * @var \SplObjectStorage
+     * @var array
      */
-    protected $steps;
+    protected $counts = [
+        //
+    ];
 
     /**
      * @param  float  $rate
@@ -43,26 +43,35 @@ class StepDecay implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->steps = new SplObjectStorage();
     }
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the step size for each parameter in the network.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float
+    public function step(array $gradients) : array
     {
-        if (!$this->steps->contains($synapse)) {
-            $this->steps->attach($synapse, 0);
+        $steps = [[[]]];
+
+        foreach ($gradients as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
+                foreach ($neuron as $k => $gradient) {
+                    if (!isset($this->counts[$i][$j][$k])) {
+                        $this->counts[$i][$j][$k] = 0.0;
+                    }
+
+                    if ($gradient !== 0.0) {
+                        $this->counts[$i][$j][$k]++;
+                    }
+
+                    $steps[$i][$j][$k] = $this->rate * $gradient
+                        * (1 / (1 + $this->decay * $this->counts[$i][$j][$k]));
+                }
+            }
         }
 
-        if ($gradient !== 0.0) {
-            $this->steps[$synapse] = $this->steps[$synapse] + 1;
-        }
-
-        return $this->rate * (1 / (1 + $this->decay * $this->steps[$synapse])) * $gradient;
+        return $steps;
     }
 }

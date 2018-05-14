@@ -2,9 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
-use Rubix\Engine\NeuralNet\Synapse;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class RMSProp implements Optimizer
 {
@@ -23,9 +21,11 @@ class RMSProp implements Optimizer
     /**
      * A cache of the sums of squared gradients for each synapse.
      *
-     * @var \SplObjectStorage
+     * @var array
      */
-    protected $cache;
+    protected $cache = [
+        //
+    ];
 
     /**
      * @param  float  $rate
@@ -45,24 +45,35 @@ class RMSProp implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Calculate the amount of a step of gradient descent.
+     * Calculate the step size for each parameter in the network.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  float  $gradient
-     * @return float
+     * @param  array  $gradients
+     * @return array
      */
-    public function step(Synapse $synapse, float $gradient) : float
+    public function step(array $gradients) : array
     {
-        if (!$this->cache->contains($synapse)) {
-            $this->cache->attach($synapse, 0.0);
+        $steps = [[[]]];
+
+        foreach ($gradients as $i => $layer) {
+            foreach ($layer as $j => $neuron) {
+                foreach ($neuron as $k => $gradient) {
+                    if (!isset($this->cache[$i][$j][$k])) {
+                        $this->cache[$i][$j][$k] = 0.0;
+                    }
+
+                    $this->cache[$i][$j][$k] = $this->decay * $this->cache[$i][$j][$k]
+                        + (1 - $this->decay)
+                        * $gradient ** 2;
+
+                    $steps[$i][$j][$k] = $this->rate * $gradient
+                        / (sqrt($this->cache[$i][$j][$k]) + self::EPSILON);
+                }
+            }
         }
 
-        $this->cache[$synapse] = $this->decay * $this->cache[$synapse] + (1 - $this->decay) * $gradient ** 2;
-
-        return $this->rate * $gradient / (sqrt($this->cache[$synapse]) + self::EPSILON);
+        return $steps;
     }
 }

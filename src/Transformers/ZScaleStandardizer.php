@@ -2,20 +2,12 @@
 
 namespace Rubix\Engine\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Dataset;
+use InvalidArgumentException;
 
 class ZScaleStandardizer implements Transformer
 {
-    /**
-     * The type of each feature column. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
     /**
      * The computed means of the fitted data indexed by column.
      *
@@ -35,35 +27,29 @@ class ZScaleStandardizer implements Transformer
     ];
 
     /**
-     * @return array
-     */
-    public function stats() : array
-    {
-        return $this->stats;
-    }
-
-    /**
      * Calculate the means and standard deviations of the dataset.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $dataset->columnTypes();
-        $this->stats = [];
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This transformer only works on continuous features.');
+        }
+
+        $this->means = $this->stddevs = [];
 
         foreach ($dataset->rotate() as $column => $features) {
-            if ($this->columnTypes[$column] === self::CONTINUOUS) {
-                $mean = Average::mean($features);
+            $mean = Average::mean($features);
 
-                $stddev = sqrt(array_reduce($features, function ($carry, $feature) use ($mean) {
-                    return $carry += ($feature - $mean) ** 2;
-                }, 0) / count($features));
+            $stddev = sqrt(array_reduce($features, function ($carry, $feature) use ($mean) {
+                return $carry += ($feature - $mean) ** 2;
+            }, 0) / count($features));
 
-                $this->means[$column] = $mean;
-                $this->stddevs[$column] = $stddev;
-            }
+            $this->means[$column] = $mean;
+            $this->stddevs[$column] = $stddev;
         }
     }
 

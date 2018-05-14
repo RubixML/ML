@@ -2,22 +2,29 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use InvalidArgumentException;
+
 class ELU implements ActivationFunction
 {
     /**
-     * Alpha defines at which negative value the ELU saturates. i.e. a = 1.0 means
-     * that the value will be lower than -1.0.
+     * At which negative value the ELU will saturate. i.e. alpha = 1.0 means
+     * that the leakage will never be more than -1.0.
      *
      * @var float
      */
     protected $alpha;
 
     /**
-     * @param  float  $leakage
+     * @param  float  $alpha
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $alpha = 1.0)
     {
+        if ($alpha < 0) {
+            throw new InvalidArgumentException('Alpha parameter must be a positive value.');
+        }
+
         $this->alpha = $alpha;
     }
 
@@ -48,14 +55,15 @@ class ELU implements ActivationFunction
      * Generate an initial synapse weight range based on n, the number of inputs
      * to a particular neuron.
      *
-     * @param  \Rubix\Engine\NeuralNet\Synapse  $synapse
-     * @param  int  $n
-     * @return array
+     * @param  int  $inDegree
+     * @return float
      */
-    public function initialize(int $n) : array
+    public function initialize(int $inDegree) : float
     {
-        $r = pow(6 / $n, 1 / self::ROOT_2);
+        $r = pow(6 / $inDegree, 1 / self::ROOT_2);
 
-        return [-$r, $r];
+        $scale = pow(10, 10);
+
+        return random_int(-$r * $scale, $r * $scale) / $scale;
     }
 }
