@@ -1,3 +1,4 @@
+A1_Score,A2_Score,A3_Score,A4_Score,A5_Score,A6_Score,A7_Score,A8_Score,A9_Score,A10_Score,age,gender,ethnicity,jundice,austim,country_of_res,used_app_before,result,age_desc,relation,diagnosis
 1,1,0,0,1,1,0,1,0,0,6,m,Others,no,no,Jordan,no,5,'4-11 years',Parent,NO
 1,1,0,0,1,1,0,1,0,0,6,m,'Middle Eastern ',no,no,Jordan,no,5,'4-11 years',Parent,NO
 1,1,0,0,0,1,1,1,0,0,6,m,?,no,no,Jordan,yes,5,'4-11 years',?,NO

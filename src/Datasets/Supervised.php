@@ -7,83 +7,85 @@ use InvalidArgumentException;
 class Supervised extends Dataset
 {
     /**
-     * The labeled outcomes used for supervised training.
+     * The labeled outcomes for each sample in the dataset.
      *
      * @var array
      */
-    protected $outcomes = [
+    protected $labels = [
         //
     ];
 
     /**
-     * Build a supervised dataset used for training and testing models from an
-     * iterator or array of feature vectors. The assumption is that the dataset
-     * contains 0 < n < ∞ feature columns where the last column is always the
-     * labeled outcome.
+     * Factory method to create a supervised dataset from an array of datasets.
      *
-     * @param  iterable  $data
+     * @param  array  $datasets
+     * @throws \InvalidArgumentException
      * @return self
      */
-    public static function fromIterator(iterable $data) : self
+    public static function combine(array $datasets = []) : self
     {
-        $samples = $outcomes = [];
+        $samples = $labels = [];
 
-        foreach ($data as $row) {
-            $outcomes[] = array_pop($row);
-            $samples[] = array_values($row);
+        foreach ($datasets as $dataset) {
+            if (!$dataset instanceof Supervised) {
+                throw new InvalidArgumentException('Cannot merge any non-Supervised'
+                    . ' datasets, ' . get_class($dataset) . ' found.');
+            }
+
+            $samples = array_merge($samples, $dataset->samples());
+            $labels = array_merge($labels, $dataset->labels());
         }
 
-        return new self($samples, $outcomes);
+        return new self($samples, $labels);
     }
 
     /**
      * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples, array $outcomes)
+    public function __construct(array $samples, array $labels)
     {
-        if (count($samples) !== count($outcomes)) {
-            throw new InvalidArgumentException('The ratio of samples to outcomes must be equal.');
+        if (count($samples) !== count($labels)) {
+            throw new InvalidArgumentException('The ratio of samples to labels'
+             . ' must be equal.');
         }
 
-        foreach ($outcomes as &$outcome) {
-            if (!is_string($outcome) && !is_numeric($outcome)) {
-                throw new InvalidArgumentException('Outcome must be a string or numeric type, ' . gettype($outcome) . ' found.');
-            }
-
-            if (is_string($outcome) && is_numeric($outcome)) {
-                $outcome = $this->convertNumericString($outcome);
+        foreach ($labels as $label) {
+            if (!is_string($label) && !is_numeric($label)) {
+                throw new InvalidArgumentException('Label must be a string or'
+                    . ' numeric type, ' . gettype($label) . ' found.');
             }
         }
+
+        $this->labels = array_values($labels);
 
         parent::__construct($samples);
-
-        $this->outcomes = $outcomes;
     }
 
     /**
      * @return array
      */
-    public function outcomes() : array
+    public function labels() : array
     {
-        return $this->outcomes;
+        return $this->labels;
     }
 
     /**
-     * Return the outcome at the given row.
+     * Return the label at a given index.
      *
-     * @param  int  $row
+     * @param  mixed  $index
      * @return mixed
      */
-    public function outcome(int $row)
+    public function outcome($index)
     {
-        if (!isset($this->outcomes[$row])) {
-            throw new RuntimeException('Invalid row offset.');
+        if (!isset($this->labels[$index])) {
+            throw new RuntimeException('Label not found at the given index '
+                . (string) $index . '.');
         }
 
-        return $this->outcomes[$row];
+        return $this->labels[$index];
     }
 
     /**
@@ -91,35 +93,9 @@ class Supervised extends Dataset
      *
      * @return array
      */
-    public function labels() : array
+    public function possibleOutcomes() : array
     {
-        return array_values(array_unique($this->outcomes));
-    }
-
-    /**
-     * The type of data of the outcomes. i.e. categorical or continuous.
-     *
-     * @return int
-     */
-    public function outcomeType() : int
-    {
-        return is_string(reset($this->outcomes)) ? self::CATEGORICAL : self::CONTINUOUS;
-    }
-
-    /**
-     * Randomize the dataset.
-     *
-     * @return self
-     */
-    public function randomize() : Dataset
-    {
-        $order = range(0, $this->rows() - 1);
-
-        shuffle($order);
-
-        array_multisort($order, $this->samples, $this->outcomes);
-
-        return $this;
+        return array_values(array_unique($this->labels));
     }
 
     /**
@@ -128,9 +104,10 @@ class Supervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function head(int $n = 10) : Dataset
+    public function head(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, 0, $n), array_slice($this->outcomes, 0, $n));
+        return new self(array_slice($this->samples, 0, $n),
+            array_slice($this->labels, 0, $n));
     }
 
     /**
@@ -139,31 +116,62 @@ class Supervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function tail(int $n = 10) : Dataset
+    public function tail(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, -$n), array_slice($this->outcomes, -$n));
+        return new self(array_slice($this->samples, -$n),
+            array_slice($this->labels, -$n));
     }
 
     /**
-     * Take n samples and outcomes from this dataset and return them in a new dataset.
+     * Take n samples and labels from this dataset and return them in a new
+     * dataset.
      *
      * @param  int  $n
+     * @throws \InvalidArgumentException
      * @return self
      */
-    public function take(int $n = 1) : Dataset
+    public function take(int $n = 1) : self
     {
-        return new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
+        if ($n < 0) {
+            throw new InvalidArgumentException('Cannot take less than 0 samples.');
+        }
+
+        return new self(array_splice($this->samples, 0, $n),
+            array_splice($this->labels, 0, $n));
     }
 
     /**
-     * Leave n samples and outcomes on this dataset and return the rest in a new dataset.
+     * Leave n samples and labels on this dataset and return the rest in a new
+     * dataset.
      *
      * @param  int  $n
+     * @throws \InvalidArgumentException
      * @return self
      */
-    public function leave(int $n = 1) : Dataset
+    public function leave(int $n = 1) : self
     {
-        return new self(array_splice($this->samples, $n), array_splice($this->outcomes, $n));
+        if ($n < 0) {
+            throw new InvalidArgumentException('Cannot leave less than 0 samples.');
+        }
+
+        return new self(array_splice($this->samples, $n),
+            array_splice($this->labels, $n));
+    }
+
+    /**
+     * Randomize the dataset.
+     *
+     * @return self
+     */
+    public function randomize() : self
+    {
+        $order = range(0, $this->numRows() - 1);
+
+        shuffle($order);
+
+        array_multisort($order, $this->samples, $this->labels);
+
+        return $this;
     }
 
     /**
@@ -175,15 +183,18 @@ class Supervised extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be a float value between 0.0 and 1.0.');
+        if ($ratio <= 0 || $ratio >= 1) {
+            throw new InvalidArgumentException('Split ratio must be strictly'
+            . ' between 0 and 1.');
         }
 
-        $n = round($ratio * $this->rows());
+        $n = round($ratio * $this->numRows());
 
         return [
-            new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n)),
-            new self($this->samples, $this->outcomes),
+            new self(array_slice($this->samples, 0, $n),
+                array_slice($this->labels, 0, $n)),
+            new self(array_slice($this->samples, $n),
+                array_slice($this->labels, $n)),
         ];
     }
 
@@ -191,31 +202,26 @@ class Supervised extends Dataset
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param  float  $ratio
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Split ratio must be between 0.0 and 1.0.');
+        if ($ratio <= 0 || $ratio >= 1) {
+            throw new InvalidArgumentException('Split ratio must be strictly'
+            . ' between 0 and 1.');
         }
-
-        $strata = $this->stratify();
 
         $left = $right = [[], []];
-        $totals = [];
 
-        foreach ($strata[0] as $label => $stratum) {
-            $totals[$label] = count($stratum);
-        }
-
-        foreach ($strata[0] as $label => $stratum) {
-            $n = round($ratio * $totals[$label]);
+        foreach ($this->stratify() as $label => $stratum) {
+            $n = round($ratio * count($stratum));
 
             $left[0] = array_merge($left[0], array_splice($stratum, 0, $n));
-            $left[1] = array_merge($left[1], array_splice($strata[1][$label], 0, $n));
+            $left[1] = array_merge($left[1], array_fill(0, $n, $label));
 
             $right[0] = array_merge($right[0], $stratum);
-            $right[1] = array_merge($right[1], $strata[1][$label]);
+            $right[1] = array_merge($right[1], array_fill(0, count($stratum), $label));
         }
 
         return [
@@ -225,88 +231,85 @@ class Supervised extends Dataset
     }
 
     /**
-     * Fold the dataset k times to form k + 1 equal size datasets.
+     * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param  int  $k
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function fold(int $k = 2) : array
+    public function fold(int $k = 10) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
+        if ($k < 2) {
+            throw new InvalidArgumentException('Cannot fold the dataset less than'
+            . '1 time.');
         }
 
-        $n = round(count($this->samples) / ($k + 1));
-        $subsets = [];
+        list($samples, $labels) = [$this->samples, $this->labels];
 
-        for ($i = 0; $i < $k + 1; $i++) {
-            $subsets[] = new self(array_splice($this->samples, 0, $n), array_splice($this->outcomes, 0, $n));
+        $n = round(count($samples) / $k);
+
+        $folds = [];
+
+        for ($i = 0; $i < $k; $i++) {
+            $folds[] = new self(array_splice($samples, 0, $n),
+                array_splice($labels, 0, $n));
         }
 
-        return $subsets;
+        return $folds;
     }
 
     /**
-     * Fold the dataset k times to form k + 1 equal size stratified datasets.
+     * Fold the dataset k - 1 times to form k equal size stratified datasets.
      *
      * @param  int  $k
+     * @throws \InvalidArgumentException
      * @return array
      */
-    public function stratifiedFold(int $k = 2) : array
+    public function stratifiedFold(int $k = 10) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
+        if ($k < 2) {
+            throw new InvalidArgumentException('Cannot fold the dataset less'
+                . ' than 1 time.');
         }
 
-        $strata = $this->stratify();
+        $folds = [];
 
-        $subsets = $totals = [];
+        for ($i = 0; $i < $k; $i++) {
+            $fold = [[], []];
 
-        foreach ($strata[0] as $label => $stratum) {
-            $totals[$label] = count($stratum);
-        }
+            foreach ($this->stratify() as $label => $stratum) {
+                $n = round(count($stratum) / $k);
 
-        for ($i = 0; $i < $k + 1; $i++) {
-            $samples = $outcomes = [];
-
-            foreach ($strata[0] as $label => $stratum) {
-                $n = $totals[$label] / ($k + 1);
-
-                $samples = array_merge($samples, array_splice($stratum, 0, $n));
-                $outcomes = array_merge($outcomes, array_splice($strata[1][$label], 0, $n));
+                $fold[0] = array_merge($fold[0], array_splice($stratum, 0, $n));
+                $fold[1] = array_merge($fold[1], array_fill(0, $n, $label));
             }
 
-            $subsets[] = new self($samples, $outcomes);
+            $folds[] = new self(...$fold);
         }
 
-        return $subsets;
+        return $folds;
     }
 
     /**
-     * Generate a random subset without replacement.
+     * Generate a collection of batches of size n from the dataset. If there are
+     * not enough samples to fill an entire batch, then the dataset will contain
+     * as many samples and labels as possible.
      *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return self
+     * @param  int  $n
+     * @return array
      */
-    public function generateRandomSubset(float $ratio = 0.1) : Dataset
+    public function batch(int $n = 50) : array
     {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
+        $batches = [];
+
+        list($samples, $labels) = $this->all();
+
+        while (!empty($samples)) {
+            $batches[] = new self(array_splice($samples, 0, $n),
+                array_splice($labels, 0, $n));
         }
 
-        $n = round($ratio * $this->rows());
-
-        list($samples, $outcomes) = [$this->samples, $this->outcomes];
-
-        $order = range(0, count($outcomes) - 1);
-
-        shuffle($order);
-
-        array_multisort($order, $samples, $outcomes);
-
-        return new self(array_slice($samples, 0, $n), array_slice($outcomes, 0, $n));
+        return $batches;
     }
 
     /**
@@ -316,53 +319,50 @@ class Supervised extends Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : Dataset
+    public function randomSubsetWithReplacement(float $ratio = 0.1) : self
     {
-        if ($ratio <= 0.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
+        if ($ratio <= 0.0 || $ratio > 1.0) {
+            throw new InvalidArgumentException('Sample ratio must be strictly'
+            . ' between 0 and 1.');
         }
 
-        $n = round($ratio * $this->rows());
-        $max = $this->rows() - 1;
+        $n = round($ratio * $this->numRows());
+
         $subset = [[], []];
 
         for ($i = 0; $i < $n; $i++) {
-            $row = random_int(0, $max);
+            $index = array_rand($this->samples);
 
-            $subset[0][] = $this->samples[$row];
-            $subset[1][] = $this->outcomes[$row];
+            $subset[0][] = $this->samples[$index];
+            $subset[1][] = $this->labels[$index];
         }
 
         return new self(...$subset);
     }
 
     /**
-     * Group samples by outcome and return an array of strata.
+     * Group rows by label and return an array of stratified sets.
      *
      * @return array
      */
     public function stratify() : array
     {
-        $strata = [[], []];
+        $strata = [];
 
-        foreach ($this->outcomes as $i => $outcome) {
-            $strata[0][$outcome][] = $this->samples[$i];
-            $strata[1][$outcome][] = $outcome;
+        foreach ($this->labels as $index => $label) {
+            $strata[$label][] = $this->samples[$index];
         }
 
         return $strata;
     }
 
     /**
-     * Return an array of all the samples and outcomes with the last column of each
-     * row being the labeled outcome of the supervised dataset.
+     * Return an array with all the samples and labels.
      *
      * @return array
      */
     public function all() : array
     {
-        return array_map(function ($sample, $outcome) {
-            return array_merge($sample, (array) $outcome);
-        }, $this->samples, $this->outcomes);
+        return [$this->samples, $this->labels];
     }
 }

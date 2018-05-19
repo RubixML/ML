@@ -2,15 +2,16 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Prototype;
-use Rubix\Engine\GridSearch;
-use Rubix\Engine\Metrics\MCC;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Reports\ConfusionMatrix;
-use Rubix\Engine\Reports\ClassificationReport;
+use Rubix\Engine\Metrics\Validation\MCC;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Metrics\Distance\Manhattan;
 use Rubix\Engine\Estimators\KNearestNeighbors;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\Manhattan;
+use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\ModelSelection\CrossValidator;
+use Rubix\Engine\Transformers\NumericStringConverter;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -21,17 +22,21 @@ echo '╚═══════════════════════�
 
 echo "\n";
 
-$dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')->setDelimiter(',');
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')
+    ->setDelimiter(',')->setEnclosure('"')->setHeaderOffset(0);
 
-$dataset = Supervised::fromIterator($dataset);
+$samples = iterator_to_array($reader->getRecords([
+    'sepal_length', 'sepal_width', 'petal_length', 'petal_width'
+]));
 
-list($training, $testing) = $dataset->randomize()->split(0.8);
+$labels = iterator_to_array($reader->fetchColumn('class'));
 
-$estimator = new Prototype(new GridSearch(KNearestNeighbors::class, [[1, 3, 5], [new Euclidean(), new Manhattan()]], new MCC()), [
-    new ConfusionMatrix($dataset->labels()),
-    new ClassificationReport(),
+$dataset = new Supervised($samples, $labels);
+
+$estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
+    new NumericStringConverter(),
 ]);
 
-$estimator->train($training);
+$validator = new CrossValidator(new MCC());
 
-$estimator->test($testing);
+var_dump($validator->validate($estimator, $dataset->stratifiedFold(5)));

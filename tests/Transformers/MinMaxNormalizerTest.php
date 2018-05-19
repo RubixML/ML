@@ -48,8 +48,8 @@ class MinMaxMinMaxNormalizerTest extends TestCase
         $this->transformer->transform($data);
 
         $this->assertEquals([
-            [1, 0, 0],
-            [0.5238095238095238, 0.5, 1],
+            [0.9999999995238095, 0.0, 0.0],
+            [0.5238095235600907, 0.499999999975, 0.999999999995],
             [0, 0.735, 0.4995],
         ], $data);
     }

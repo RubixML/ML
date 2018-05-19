@@ -3,13 +3,14 @@
 namespace Rubix\Engine\Estimators;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Prediction;
 use Rubix\Engine\Estimators\Predictions\Probabalistic;
 use InvalidArgumentException;
 
-class NaiveBayes implements Estimator, Classifier, Persistable
+class NaiveBayes implements Classifier, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard
@@ -22,7 +23,7 @@ class NaiveBayes implements Estimator, Classifier, Persistable
     ];
 
     /**
-     * The weights of the unique outcomes of the training set.
+     * The weight of each class as a proportion of the entire training set.
      *
      * @var array
      */
@@ -66,18 +67,20 @@ class NaiveBayes implements Estimator, Classifier, Persistable
         $this->columnTypes = $dataset->columnTypes();
         $this->stats = $this->weights = [];
 
-        $classes = $dataset->stratify();
+        $strata = $dataset->stratify();
 
-        foreach ($classes[0] as $class => $samples) {
+        foreach ($strata as $class => $samples) {
             foreach (array_map(null, ...$samples) as $column => $values) {
                 if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $this->stats[$class][$column] = $this->calculateProbabilities((array) $values);
-                } else if ($this->columnTypes[$column] === self::CONTINUOUS) {
-                    $this->stats[$class][$column] = $this->calculateStatistics((array) $values);
+                    $this->stats[$class][$column]
+                        = $this->calculateProbabilities((array) $values);
+                } else {
+                    $this->stats[$class][$column]
+                        = $this->calculateStatistics((array) $values);
                 }
             }
 
-            $this->weights[$class] = count($samples) / $dataset->rows();
+            $this->weights[$class] = count($samples) / $dataset->numRows();
         }
     }
 
@@ -85,38 +88,45 @@ class NaiveBayes implements Estimator, Classifier, Persistable
      * Calculate the probabilities of the sample being a member of all trained
      * classes and chose the highest probaility outcome as the prediction.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $best = ['probability' => -INF, 'outcome' => null];
+        $predictions = [];
 
-        foreach ($this->stats as $class => $stats) {
-            $probability = $this->weights[$class];
+        foreach ($samples as $sample) {
+            $best = ['probability' => -INF, 'outcome' => null];
 
-            foreach ($sample as $column => $feature) {
-                if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $probability += $stats[$column][$feature] ?? 0.0;
-                } else {
-                    list($mean, $stddev) = $stats[$column];
+            foreach ($this->stats as $class => $stats) {
+                $probability = $this->weights[$class];
 
-                    $pdf = -0.5 * log(2.0 * M_PI * $stddev ** 2);
-                    $pdf -= 0.5 * ($feature - $mean) ** 2 / ($stddev ** 2);
+                foreach ($sample as $column => $feature) {
+                    if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                        $probability += $stats[$column][$feature] ?? 0.0;
+                    } else {
+                        list($mean, $stddev) = $stats[$column];
 
-                    $probability += $pdf;
+                        $pdf = -0.5 * log(2.0 * M_PI * $stddev ** 2);
+                        $pdf -= 0.5 * ($feature - $mean) ** 2 / ($stddev ** 2);
+
+                        $probability += $pdf;
+                    }
+                }
+
+                if ($probability > $best['probability']) {
+                    $best = [
+                        'outcome' => $class,
+                        'probability' => $probability,
+                    ];
                 }
             }
 
-            if ($probability > $best['probability']) {
-                $best = [
-                    'outcome' => $class,
-                    'probability' => $probability,
-                ];
-            }
+            $predictions[] = new Probabalistic($best['outcome'],
+                $best['probability']);
         }
 
-        return new Probabalistic($best['outcome'], $best['probability']);
+        return $predictions;
     }
 
     /**

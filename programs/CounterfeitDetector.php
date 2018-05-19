@@ -2,50 +2,50 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Prototype;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Estimators\Perceptron;
-use Rubix\Engine\Reports\ConfusionMatrix;
-use Rubix\Engine\NeuralNet\Layers\Binary;
-use Rubix\Engine\Estimators\DummyEstimator;
+use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Reports\ClassificationReport;
-use Rubix\Engine\Estimators\Strategies\PopularityContest;
+use Rubix\Engine\Estimators\DummyClassifier;
+use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\ModelSelection\CrossValidator;
+use Rubix\Engine\Transformers\NumericStringConverter;
+use Rubix\Engine\ModelSelection\Reports\ConfusionMatrix;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\Engine\ModelSelection\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Counterfeit Detector using Random Forest            ║' . "\n";
+echo '║ Counterfeit Detector using Perceptron               ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 echo "\n";
 
-$dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/banknotes.csv')->setDelimiter(',');
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/banknotes.csv')
+    ->setDelimiter(',')->setEnclosure('"')->setHeaderOffset(0);
 
-$dataset = Supervised::fromIterator($dataset);
+$header = [
+    'variance', 'skewness', 'curtosis', 'entropy',
+];
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
+$samples = iterator_to_array($reader->getRecords($header));
 
-$estimator = new Prototype(new Pipeline(new Perceptron(new Binary($dataset->labels(), 1e-4), 10, 5, new Adam(0.001)), [
-    //
-]), [
-    new ConfusionMatrix($dataset->labels()),
-    new ClassificationReport(),
+$labels = iterator_to_array($reader->fetchColumn('label'));
+
+$dataset = new Supervised($samples, $labels);
+
+$dummy = new DummyClassifier(new PopularityContest());
+
+$estimator = new Pipeline(new Perceptron(10, 5, new Adam(0.001), 0), [
+    new NumericStringConverter(),
 ]);
 
-$dummy = new Prototype(new DummyEstimator(new PopularityContest()), [
-    new ConfusionMatrix($dataset->labels()),
-    new ClassificationReport(),
-]);
+$validator = new CrossValidator(new MCC());
 
-$dummy->train($training);
-$estimator->train($training);
-
-$dummy->test($testing);
-$estimator->test($testing);
+var_dump($validator->validate($dummy, $dataset->stratifiedFold(10)));
 
 echo "\n";
 
-var_dump($estimator->predict($dataset->row(0)));
+var_dump($validator->validate($estimator, $dataset->stratifiedFold(10)));

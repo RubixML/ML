@@ -2,10 +2,11 @@
 
 namespace Rubix\Engine\Estimators;
 
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
@@ -21,7 +22,7 @@ class KNNRegression implements Regressor
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Contracts\DistanceFunction
+     * @var \Rubix\Engine\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -39,17 +40,17 @@ class KNNRegression implements Regressor
      *
      * @var array
      */
-    protected $outcomes = [
+    protected $labels = [
         //
     ];
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, DistanceFunction $distanceFunction = null)
+    public function __construct(int $k = 3, Distance $distanceFunction = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required to make a prediction.');
@@ -74,30 +75,30 @@ class KNNRegression implements Regressor
     public function train(Supervised $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous samples.');
         }
 
-        $this->samples = $dataset->samples();
-        $this->outcomes = $dataset->outcomes();
+        list($this->samples, $this->labels) = $dataset->all();
     }
 
     /**
      * Compute the distances and locate the k nearest neighboring values.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $outcomes = $this->findNearestNeighbors($sample);
+        $predictions = [];
 
-        $mean = Average::mean($outcomes);
+        foreach ($samples as $sample) {
+            $neighbors = $this->findNearestNeighbors($sample);
 
-        $variance = array_reduce($outcomes, function ($carry, $outcome) use ($mean) {
-            return $carry += ($outcome - $mean) ** 2;
-        }, 0.0) / count($outcomes);
+            $predictions[] = new Prediction(Average::mean($neigbors));
+        }
 
-        return new Prediction($mean);
+        return $predictions;
     }
 
     /**

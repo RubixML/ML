@@ -3,7 +3,6 @@
 namespace Rubix\Engine\NeuralNet\Layers;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class Input implements Layer
 {
@@ -22,7 +21,8 @@ class Input implements Layer
     public function __construct(int $inputs)
     {
         if ($inputs < 1) {
-            throw new InvalidArgumentException('The number of input nodes must be greater than 0.');
+            throw new InvalidArgumentException('The number of input nodes must'
+            . ' be greater than 0.');
         }
 
         $this->inputs = $inputs;
@@ -48,7 +48,8 @@ class Input implements Layer
     public function forward(array $sample) : array
     {
         if (count($sample) !== $this->inputs) {
-            throw new InvalidArgumentException('The number of sample features must equal the number of inputs.');
+            throw new InvalidArgumentException('The number of sample features'
+            . ' must equal the number of inputs.');
         }
 
         $sample[] = 1.0;

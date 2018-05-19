@@ -17,13 +17,6 @@ class Binary implements Output
     ];
 
     /**
-     * The L2 regularization term.
-     *
-     * @var float
-     */
-    protected $alpha;
-
-    /**
      * The function that outputs the activation or implulse of each neuron.
      *
      * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
@@ -64,11 +57,10 @@ class Binary implements Output
 
     /**
      * @param  array  $labels
-     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $labels, float $alpha = 1e-4)
+    public function __construct(array $labels)
     {
         $labels = array_values(array_unique($labels));
 
@@ -77,7 +69,6 @@ class Binary implements Output
         }
 
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
-        $this->alpha = $alpha;
         $this->activationFunction = new HyperbolicTangent();
     }
 
@@ -117,7 +108,8 @@ class Binary implements Output
     public function initialize(Layer $previous) : void
     {
         for ($i = 0; $i < $previous->width(); $i++) {
-            $this->weights[$i] = $this->activationFunction->initialize($previous->width());
+            $this->weights[$i] = $this->activationFunction
+                ->initialize($previous->width());
         }
     }
 
@@ -161,7 +153,8 @@ class Binary implements Output
 
         $expected = array_search($outcome, $this->labels);
 
-        $slope = $this->activationFunction->differentiate($this->z, $this->computed);
+        $slope = $this->activationFunction
+            ->differentiate($this->z, $this->computed);
 
         $error = $slope * ($expected - $this->computed);
 
@@ -181,7 +174,6 @@ class Binary implements Output
     public function update(array $steps) : void
     {
         foreach ($this->weights as $i => &$weight) {
-            $weight -= $this->alpha * $weight;
             $weight += $steps[0][$i];
         }
     }

@@ -1,3 +1,4 @@
+variance,skewness,curtosis,entropy,label
 3.6216,8.6661,-2.8073,-0.44699,fake
 4.5459,8.1674,-2.4586,-1.4621,fake
 3.866,-2.6383,1.9242,0.10645,fake

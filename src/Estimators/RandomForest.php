@@ -3,13 +3,13 @@
 namespace Rubix\Engine\Estimators;
 
 use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\Estimators\Predictions\Prediction;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Probabalistic;
 use InvalidArgumentException;
 
-class RandomForest implements Estimator, Classifier, Persistable
+class RandomForest implements Classifier, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -19,28 +19,29 @@ class RandomForest implements Estimator, Classifier, Persistable
     protected $trees;
 
     /**
-     * The ratio of training samples to include in each subset of training data.
+     * The ratio of training samples to train each decision tree on.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     *  The minimum number of samples that form a consensus to make a prediction.
+     * The minimum number of samples that each node must contain in order to
+     * form a consensus to make a prediction.
      *
      * @var int
      */
     protected $minSamples;
 
     /**
-     * The maximum depth of a branch before it is terminated.
+     * The maximum depth of a branch before the tree is terminated.
      *
      * @var int
      */
     protected $maxDepth;
 
     /**
-     * The CART trees that make up the forest.
+     * The decision trees that make up the forest.
      *
      * @var array
      */
@@ -51,19 +52,22 @@ class RandomForest implements Estimator, Classifier, Persistable
     /**
      * @param  int  $trees
      * @param  float  $ratio
-     * @param  int  $minSize
-     * @param  int  $maxHeight
+     * @param  int  $minSamples
+     * @param  int  $maxDepth
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 10, float $ratio = 0.1, int $minSamples = 5, int $maxDepth = 10)
+    public function __construct(int $trees = 50, float $ratio = 0.1, int $minSamples = 5,
+                                int $maxDepth = 10)
     {
         if ($trees < 1) {
-            throw new InvalidArgumentException('The number of trees cannot be less than 1.');
+            throw new InvalidArgumentException('The number of trees cannot be'
+                . ' less than 1.');
         }
 
         if ($ratio < 0.01 || $ratio > 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0.01 and 1.0.');
+            throw new InvalidArgumentException('Sample ratio must be a float'
+                . ' value between 0.01 and 1.0.');
         }
 
         $this->trees = $trees;
@@ -87,7 +91,6 @@ class RandomForest implements Estimator, Classifier, Persistable
      * subsets of the training data.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(Supervised $dataset) : void
@@ -97,7 +100,9 @@ class RandomForest implements Estimator, Classifier, Persistable
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new DecisionTree($this->minSamples, $this->maxDepth);
 
-            $tree->train($dataset->generateRandomSubsetWithReplacement($this->ratio));
+            $subset = $dataset->randomSubsetWithReplacement($this->ratio);
+
+            $tree->train($subset);
 
             $this->forest[] = $tree;
         }
@@ -106,23 +111,29 @@ class RandomForest implements Estimator, Classifier, Persistable
     /**
      * Make a prediction on a given sample.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimators\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $outcomes = [];
+        $predictions = $results = [];
 
         foreach ($this->forest as $tree) {
-            $outcomes[] = $tree->predict($sample)->outcome();
+            foreach ($tree->predict($samples) as $i => $prediction) {
+                $results[$i][] = $prediction->outcome();
+            }
         }
 
-        $counts = array_count_values($outcomes);
+        foreach ($results as $outcomes) {
+            $counts = array_count_values($outcomes);
 
-        $outcome = array_search(max($counts), $counts);
+            $outcome = array_search(max($counts), $counts);
 
-        $probability = $counts[$outcome] / count($outcomes);
+            $probability = $counts[$outcome] / count($outcomes);
 
-        return new Probabalistic($outcome, $probability);
+            $predictions[] = new Probabalistic($outcome, $probability);
+        }
+
+        return $predictions;
     }
 }

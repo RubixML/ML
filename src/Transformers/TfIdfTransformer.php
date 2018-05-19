@@ -21,9 +21,9 @@ class TfIdfTransformer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->idfs = array_fill(0, $dataset->columns(), 0);
+        $this->idfs = array_fill(0, $dataset->numColumns(), 0);
 
-        foreach ($dataset->samples() as $sample) {
+        foreach ($dataset as $sample) {
             foreach ($sample as $i => $count) {
                 if ($count > 0) {
                     $this->idfs[$i]++;
@@ -32,7 +32,7 @@ class TfIdfTransformer implements Transformer
         }
 
         foreach ($this->idfs as &$idf) {
-            $idf = log10($dataset->rows() / ($idf + self::EPSILON));
+            $idf = log10($dataset->numRows() / ($idf + self::EPSILON));
         }
     }
 

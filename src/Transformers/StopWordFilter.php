@@ -56,7 +56,7 @@ class StopWordFilter implements Transformer
         foreach ($samples as &$sample) {
             foreach ($this->columnTypes as $column => $type) {
                 if ($type === self::CATEGORICAL) {
-                    $sample[$column] = preg_replace('/\b(' . implode('|', $this->stopWords) . ')\b/', '', $sample[$column]);
+                    $sample[$column] = preg_replace('/\b('. implode('|', $this->stopWords) . ')\b/', '', $sample[$column]);
                 }
             }
         }

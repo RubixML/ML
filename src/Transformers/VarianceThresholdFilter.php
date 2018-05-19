@@ -60,7 +60,7 @@ class VarianceThresholdFilter implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $n = $dataset->rows();
+        $n = $dataset->numRows();
         
         foreach ($dataset->rotate() as $column => $values) {
             if (Descriptive::variance($values, $n) > $this->threshold) {

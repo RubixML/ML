@@ -2,7 +2,6 @@
 
 namespace Rubix\Engine\Datasets;
 
-use Rubix\Engine\Persisters\Persistable;
 use Rubix\Engine\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -11,13 +10,13 @@ use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
-class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
+class Dataset implements ArrayAccess, IteratorAggregate, Countable
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
 
     /**
-     * The feature vectors or columns of a data table.
+     * The feature vectors of the dataset. i.e the data table.
      *
      * @var array
      */
@@ -32,25 +31,28 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
      */
     public function __construct(array $samples)
     {
-        foreach ($samples as $i => &$sample) {
-            $sample = (array) $sample;
+        foreach ($samples as &$sample) {
+            $sample = array_values((array) $sample);
 
-            if (count($sample) !== count($samples[0])) {
-                throw new InvalidArgumentException('The number of feature columns must be equal for all samples.');
+            if (count($sample) !== count(current($samples))) {
+
+                var_dump(count($sample));
+                var_dump(count(current($samples)));
+                die();
+
+                throw new InvalidArgumentException('The number of feature columns'
+                 . ' must be equal for all samples.');
             }
 
             foreach ($sample as &$feature) {
                 if (!is_string($feature) && !is_numeric($feature)) {
-                    throw new InvalidArgumentException('Feature values must be a string or numeric type, ' . gettype($feature) . ' found.');
-                }
-
-                if (is_string($feature) && is_numeric($feature)) {
-                    $feature = $this->convertNumericString($feature);
+                    throw new InvalidArgumentException('Feature must be a string'
+                    . ' or numeric, ' . gettype($feature) . ' found.');
                 }
             }
         }
 
-        $this->samples = $samples;
+        $this->samples = array_values($samples);
     }
 
     /**
@@ -64,48 +66,48 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param  int  $row
-     * @return mixed
+     * @param  mixed  $index
+     * @return array
      */
-    public function row(int $index) : array
+    public function row($index) : array
     {
         if (!isset($this->samples[$index])) {
-            throw new RuntimeException('Invalid row index.');
+            throw new RuntimeException('Sample not found at the given index '
+                . (string) $index . '.');
         }
 
         return $this->samples[$index];
     }
 
     /**
+     * Return the number of rows in the datasets.
+     *
      * @return int
      */
-    public function rows() : int
+    public function numRows() : int
     {
         return count($this->samples);
     }
 
     /**
-     * Extract a column of values from the dataset.
+     * Return the feature column at the given index.
      *
-     * @param  mixed  $name
+     * @param  mixed  $index
      * @return array
      */
-    public function column($name) : array
+    public function column(mixed $index) : array
     {
-        return array_column($this->samples, $name);
+        if (!$this->offsetExists($index)) {
+            throw new RuntimeException('Feature column not found at the given'
+            . ' index ' . (string) $index . '.');
+        }
+
+        return array_column($this->samples, $index);
     }
 
     /**
-     * The number of feature columns in this dataset.
+     * Return an array of autodetected column types.
      *
-     * @return int
-     */
-    public function columns() : int
-    {
-        return count($this->samples[0] ?? []);
-    }
-
-    /**
      * @return array
      */
     public function columnTypes() : array
@@ -116,9 +118,19 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return the number of feature columns in the datasets.
+     *
+     * @return int
+     */
+    public function numColumns() : int
+    {
+        return count($this->samples[0] ?? []);
+    }
+
+    /**
      * Have a transformer transform the dataset.
      *
-     * @param  \Rubix\Engine\Contracts\Transformer  $transformer
+     * @param  \Rubix\Engine\Transformers\Transformer  $transformer
      * @return void
      */
     public function transform(Transformer $transformer) : void
@@ -127,7 +139,7 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Rotates the table of samples into columns of feature values.
+     * Returns an array of feature columns.
      *
      * @return array
      */
@@ -137,51 +149,11 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Remove a feature column from the dataset given by the column's offset.
-     *
-     * @param  int  $offset
-     * @return self
-     */
-    public function removeColumn(int $offset) : self
-    {
-        foreach ($this->samples as &$sample) {
-            unset($sample[$offset]);
-
-            $sample = array_values($sample);
-        }
-
-        unset($this->types[$offset]);
-
-        $this->types = array_values($this->types);
-    }
-
-    /**
-     * Convert a numeric string into its appropriate data type.
-     *
-     * @param  string  $string
-     * @return mixed
-     */
-    public function convertNumericString(string $string)
-    {
-        return is_float($string + 0) ? (float) $string : (int) $string;
-    }
-
-    /**
-     * Return an array containing all of the samples.
-     *
-     * @return array
-     */
-    public function all() : array
-    {
-        return $this->samples;
-    }
-
-    /**
      * @return int
      */
     public function count() : int
     {
-        return $this->rows();
+        return $this->numRows();
     }
 
     /**
@@ -191,47 +163,61 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
      */
     public function isEmpty() : bool
     {
-        return $this->rows() === 0;
+        return $this->numRows() === 0;
     }
 
     /**
-     * @param  int  $row
-     * @param  array  $sample
+     * @param  mixed  $index
+     * @param  array  $values
      * @throws \RuntimeException
      * @return void
      */
-    public function offsetSet($row, $sample) : void
+    public function offsetSet($index, $values) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
 
     /**
-     * @param  int  $row
+     * Does a given column exist in the dataset.
+     *
+     * @param  mixed  $index
      * @return bool
      */
-    public function offsetExists($row) : bool
+    public function offsetExists($index) : bool
     {
-        return isset($this->samples[$row]);
+        return isset($this->samples[0][$index]);
     }
 
     /**
-     * @param  int  $row
+     * @param  mixed  $index
      * @throws \RuntimeException
      * @return void
      */
-    public function offsetUnset($row) : void
+    public function offsetUnset($index) : void
     {
         throw new RuntimeException('Datasets cannot be mutated directly.');
     }
 
     /**
-     * @param  int  $row
-     * @throws \RuntimeException
+     * Return a column from the dataset given by index or if an array is passed
+     * return an array of columns by their index.
+     *
+     * @param  mixed  $indices
      * @return array
      */
-    public function offsetGet($row) : array
+    public function offsetGet($indices) : array
     {
-        return $this->sample($row);
+        if (is_array($index)) {
+            $columns = [];
+
+            foreach ($indices as $index) {
+                $columns[] = $this->column($index);
+            }
+
+            return $columns;
+        }
+
+        return $this->column($indices);
     }
 
     /**
@@ -242,23 +228,5 @@ class Dataset implements Persistable, ArrayAccess, IteratorAggregate, Countable
     public function getIterator()
     {
         return new ArrayIterator($this->samples);
-    }
-
-    /**
-     * @param  int  $row
-     * @return mixed
-     */
-    public function __get(int $row)
-    {
-        return $this->sample($row);
-    }
-
-    /**
-     * @param  int  $row
-     * @return bool
-     */
-    public function __isset(int $row)
-    {
-        return isset($this->samples[$row]);
     }
 }

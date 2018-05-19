@@ -4,13 +4,13 @@ namespace Rubix\Engine\Estimators;
 
 use Rubix\Engine\Graph\Tree;
 use Rubix\Engine\Graph\BinaryNode;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
-use Rubix\Engine\Estimators\Predictions\Prediction;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Probabalistic;
 use InvalidArgumentException;
 
-class DecisionTree extends Tree implements Estimator, Classifier, Persistable
+class DecisionTree extends Tree implements Classifier, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.
@@ -32,6 +32,15 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
      * @var int
      */
     protected $splits;
+
+    /**
+     * The column labels.
+     *
+     * @var array
+     */
+    protected $columns = [
+        //
+    ];
 
     /**
      * The type of each feature column. i.e. categorical or continuous.
@@ -61,14 +70,6 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
         $this->splits = 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function columns() : int
-    {
-        return count($this->columnTypes);
     }
 
     /**
@@ -111,34 +112,35 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
      */
     public function train(Supervised $dataset) : void
     {
-        if ($dataset->outcomeType() !== self::CATEGORICAL) {
-            throw new InvalidArgumentException('This estimator only works with categorical outcomes.');
-        }
-
         $this->columnTypes = $dataset->columnTypes();
 
-        $this->root = $this->findBestSplit($dataset->all());
+        $data = array_map(function ($sample, $label) {
+            return array_merge($sample, (array) $label);
+        }, ...$dataset->all());
+
+        $this->root = $this->findBestSplit($data);
         $this->splits = 1;
 
         $this->split($this->root);
     }
 
     /**
-     * Make a prediction on a given sample.
+     * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  array  $sample
-     * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        if (count($sample) !== $this->columns()) {
-            throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
+        $predictions = [];
+
+        foreach ($samples as $sample) {
+            $node = $this->_predict($sample, $this->root);
+
+            $predictions[] = new Probabalistic($node->value(), $node->probability);
         }
 
-        $node = $this->_predict($sample, $this->root);
-
-        return new Probabalistic($node->value(), $node->probability);
+        return $predictions;
     }
 
     /**
@@ -154,7 +156,7 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
             return $root;
         }
 
-        if ($this->columnTypes[$root->index] === self::CATEGORICAL) {
+        if ($root->type === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value()) {
                 return $this->_predict($sample, $root->left());
             } else {
@@ -229,11 +231,13 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
-        $best = ['gini' => INF, 'index' => null, 'value' => null, 'groups' => []];
+        $best = [
+            'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
+        ];
 
-        $outcomes = array_unique(array_column($data, count($data[0]) - 1));
+        $outcomes = array_unique(array_column($data, count(current($data)) - 1));
 
-        for ($index = 0; $index < $this->columns() - 1; $index++) {
+        for ($index = 0; $index < count(current($data)) - 1; $index++) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -254,6 +258,8 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
 
         return new BinaryNode($best['value'], [
             'index' => $best['index'],
+            'type' => $this->columnTypes[$best['index']],
+            'gini' => $best['gini'],
             'groups' => $best['groups'],
         ]);
     }
@@ -267,7 +273,7 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
      */
     protected function terminate(array $data) : BinaryNode
     {
-        $outcomes = array_column($data, count($data[0]) - 1);
+        $outcomes = array_column($data, count(current($data)) - 1);
 
         $counts = array_count_values($outcomes);
 
@@ -285,11 +291,11 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
      * Partition a dataset into left and right subsets. O(N)
      *
      * @param  array  $data
-     * @param  int  $index
+     * @param  mixed  $index
      * @param  mixed  $value
      * @return array
      */
-    protected function partition(array $data, int $index, $value) : array
+    protected function partition(array $data, $index, $value) : array
     {
         $left = $right = [];
 
@@ -331,8 +337,8 @@ class DecisionTree extends Tree implements Estimator, Classifier, Persistable
                 continue 1;
             }
 
-            $values = array_column($group, count($group[0]) - 1);
-            $counts = array_count_values($values);
+            $counts = array_count_values(array_column($group,
+                count(current($group)) - 1));
             $score = 0.0;
 
             foreach ($outcomes as $outcome) {

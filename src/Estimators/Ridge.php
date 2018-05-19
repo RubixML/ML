@@ -3,18 +3,19 @@
 namespace Rubix\Engine\Estimators;
 
 use MathPHP\LinearAlgebra\Vector;
+use MathPHP\LinearAlgebra\Matrix;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use MathPHP\LinearAlgebra\DiagonalMatrix;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Prediction;
 use InvalidArgumentException;
 
-class Ridge implements Estimator, Regressor, Persistable
+class Ridge implements Regressor, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the
-     * coeffecients.
+     * coeffecients. i.e. the ridge penalty.
      *
      * @var float
      */
@@ -62,8 +63,8 @@ class Ridge implements Estimator, Regressor, Persistable
     }
 
     /**
-     * Learn the coefficients of the training data. i.e. compute the line that best
-     * fits the training data.
+     * Calculate the coefficients of the training data. i.e. compute the line
+     * that best fits the training data.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
@@ -72,30 +73,37 @@ class Ridge implements Estimator, Regressor, Persistable
     public function train(Supervised $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous samples.');
         }
 
-        $coefficients = $this->computeCoefficients($dataset->samples(), $dataset->outcomes());
+        $coefficients = $this->computeCoefficients(...$dataset->all());
 
         $this->intercept = array_shift($coefficients);
         $this->coefficients = $coefficients;
     }
 
     /**
-     * Make a prediction of a given sample.
+     * Make a prediction based on the line calculated from the training data.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $outcome = $this->intercept;
+        $predictions = [];
 
-        foreach ($this->coefficients as $column => $coefficient) {
-            $outcome += $coefficient * $sample[$column];
+        foreach ($samples as $sample) {
+            $outcome = $this->intercept;
+
+            foreach ($this->coefficients as $column => $coefficient) {
+                $outcome += $coefficient * $sample[$column];
+            }
+
+            $predictions[] = new Prediction($outcome);
         }
 
-        return new Prediction($outcome);
+        return $predictions;
     }
 
     /**
@@ -103,23 +111,20 @@ class Ridge implements Estimator, Regressor, Persistable
      * however add a regularization term to the equation.
      *
      * @param  array  $samples
-     * @param  array  $outcomes
+     * @param  array  $labels
      * @return array
      */
-    protected function computeCoefficients(array $samples, array $outcomes) : array
+    protected function computeCoefficients(array $samples, array $labels) : array
     {
         foreach ($samples as &$sample) {
             array_unshift($sample, 1);
         }
 
-        $x = MatrixFactory::create($samples);
-        $y = new Vector($outcomes);
+        $x = new Matrix($samples);
+        $y = new Vector($labels);
+        $a = MatrixFactory::identity($x->getN())->scalarMultiply($this->alpha);
 
-        $identity = new DiagonalMatrix(array_replace([0], array_fill(1, $x->getN() - 1, 1)));
-
-        return $x->transpose()->multiply($x)
-            ->add($identity->scalarMultiply($this->alpha))
-            ->inverse()
+        return $x->transpose()->multiply($x)->add($a)->inverse()
             ->multiply($x->transpose()->multiply($y))
             ->getColumn(0);
     }

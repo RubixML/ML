@@ -2,15 +2,15 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Ridge;
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Prototype;
-use Rubix\Engine\GridSearch;
-use Rubix\Engine\Metrics\RSquared;
+use Rubix\Engine\Estimators\Ridge;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Reports\RegressionAnalysis;
+use Rubix\Engine\Metrics\Validation\RSquared;
+use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\ModelSelection\CrossValidator;
 use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\DensePolynomialExpander;
+use Rubix\Engine\ModelSelection\Reports\RegressionAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -21,25 +21,25 @@ echo '╚═══════════════════════�
 
 echo  "\n";
 
-$dataset = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')->setDelimiter(';')->getRecords();
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')
+    ->setDelimiter(';')->setEnclosure('"')->setHeaderOffset(0);
 
-$dataset = Supervised::fromIterator($dataset);
+$samples = iterator_to_array($reader->getRecords([
+    'fixed_acidity', 'volatile_acidity', 'citric_acid', 'residual_sugar',
+    'chlorides', 'free_sulfur_dioxide', 'total_sulfur_dioxide', 'density', 'pH',
+    'sulphates', 'alcohol',
+]));
 
-list($training, $testing) = $dataset->randomize()->split(0.8);
+$labels = iterator_to_array($reader->fetchColumn('quality'));
 
-$estimator = new Prototype(new Pipeline(new GridSearch(Ridge::class, [[0, 0.5, 1, 2, 3, 5]], new RSquared()), [
+$dataset = new Supervised($samples, $labels);
+
+$estimator = new Pipeline(new Ridge(0.05), [
+    new NumericStringConverter(),
     new MinMaxNormalizer(),
     new DensePolynomialExpander(3),
-]), [
-    new RegressionAnalysis(),
 ]);
 
-$estimator->train($training);
+$validator = new CrossValidator(new RSquared());
 
-var_dump($estimator->trials());
-
-$estimator->test($testing);
-
-echo "\n";
-
-var_dump($estimator->predict($dataset->row(1)));
+var_dump($validator->validate($estimator, $dataset->fold(10)));

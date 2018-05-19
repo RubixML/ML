@@ -40,10 +40,11 @@ class DensePolynomialExpander implements Transformer
     public function fit(Dataset $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This transformer only works on continuous features.');
+            throw new InvalidArgumentException('This transformer only works on'
+                . ' continuous features.');
         }
 
-        $this->columns = $dataset->columns();
+        $this->columns = $dataset->numColumns();
     }
 
     /**

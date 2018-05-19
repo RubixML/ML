@@ -7,26 +7,26 @@ use InvalidArgumentException;
 class Unsupervised extends Dataset
 {
     /**
-     * Build a dataset from an iterator.
+     * Factory method to create an unsupervised dataset from an array of datasets.
      *
-     * @param  iterable  $data
+     * @param  array  $datasets
+     * @throws \InvalidArgumentException
      * @return self
      */
-    public static function fromIterator(iterable $data) : self
+    public static function combine(array $datasets = []) : self
     {
-        return new self(is_array($data) ? $data : iterator_to_array($data));
-    }
+        $samples = [];
 
-    /**
-     * Randomize the dataset.
-     *
-     * @return self
-     */
-    public function randomize() : self
-    {
-        shuffle($this->samples);
+        foreach ($datasets as $dataset) {
+            if (!$dataset instanceof Dataset) {
+                throw new InvalidArgumentException('Cannot merge any non'
+                    . ' datasets, ' . get_class($dataset) . ' found.');
+            }
 
-        return $this;
+            $samples = array_merge($samples, $dataset->samples());
+        }
+
+        return new self($samples);
     }
 
     /**
@@ -46,7 +46,7 @@ class Unsupervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function tail(int $n = 10) : Dataset
+    public function tail(int $n = 10) : self
     {
         return new self(array_slice($this->samples, -$n));
     }
@@ -57,7 +57,7 @@ class Unsupervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function take(int $n = 1) : Dataset
+    public function take(int $n = 1) : self
     {
         return new self(array_splice($this->samples, 0, $n));
     }
@@ -68,9 +68,21 @@ class Unsupervised extends Dataset
      * @param  int  $n
      * @return self
      */
-    public function leave(int $n = 1) : Dataset
+    public function leave(int $n = 1) : self
     {
         return new self(array_splice($this->samples, $n));
+    }
+
+    /**
+     * Randomize the dataset.
+     *
+     * @return self
+     */
+    public function randomize() : self
+    {
+        shuffle($this->samples);
+
+        return $this;
     }
 
     /**
@@ -82,37 +94,65 @@ class Unsupervised extends Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
+        if ($ratio <= 0 || $ratio >= 1) {
+            throw new InvalidArgumentException('Split ratio must be strictly'
+            . ' between 0 and 1.');
         }
 
+        $n = round($ratio * $this->numRows());
+
         return [
-            new self(array_splice($this->samples, round($ratio * $this->rows()))),
-            new self($this->samples),
+            new self(array_slice($this->samples, 0, $n)),
+            new self(array_slice($this->samples, $n)),
         ];
     }
 
     /**
-     * Fold the dataset k times to form k + 1 equal size datasets.
+     * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param  int  $k
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function fold(int $k = 2) : array
+    public function fold(int $k = 3) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('Cannot fold the dataset less than 1 time.');
+        if ($k < 2) {
+            throw new InvalidArgumentException('Cannot fold the dataset less'
+                . ' than 1 time.');
         }
 
-        $n = round(count($this->samples) / ($k + 1));
-        $datasets = [];
+        $samples = $this->samples;
 
-        for ($i = 0; $i < $k + 1; $i++) {
-            $datasets[] = new self(array_splice($this->samples, 0, $n));
+        $n = round(count($samples) / $k);
+
+        $folds = [];
+
+        for ($i = 0; $i < $k; $i++) {
+            $folds[] = new self(array_splice($samples, 0, $n));
         }
 
-        return $datasets;
+        return $folds;
+    }
+
+    /**
+     * Generate a collection of batches of size n from the dataset. If there are
+     * not enough samples to fill an entire batch, then the dataset will contain
+     * as many samples as possible.
+     *
+     * @param  int  $n
+     * @return array
+     */
+    public function batch(int $n = 50) : array
+    {
+        $batches = [];
+
+        $samples = $this->samples;
+
+        while (!empty($samples)) {
+            $batches[] = new self(array_splice($samples, 0, $n));
+        }
+
+        return $batches;
     }
 
     /**
@@ -122,38 +162,31 @@ class Unsupervised extends Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomSubset(float $ratio = 0.1) : Dataset
+    public function randomSubsetWithReplacement(float $ratio = 0.1) : self
     {
-        if ($ratio <= 0.0 || $ratio >= 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value between 0 and 1.');
+        if ($ratio <= 0 || $ratio >= 1) {
+            throw new InvalidArgumentException('Sample ratio must be strictly'
+            . ' between 0 and 1.');
         }
 
-        $subset = $this->samples;
-
-        shuffle($subset);
-
-        return new self(array_slice($subset, 0, round($ratio * $this->rows())));
-    }
-
-    /**
-     * Generate a random subset with replacement.
-     *
-     * @param  float  $ratio
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function generateRandomSubsetWithReplacement(float $ratio = 0.1) : Dataset
-    {
-        if ($ratio <= 0.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float value greater than 0.');
-        }
+        $n = round($ratio * $this->numRows());
 
         $subset = [];
 
-        for ($i = 0; $i < round($ratio * $this->rows()); $i++) {
+        for ($i = 0; $i < $n; $i++) {
             $subset[] = $this->samples[array_rand($this->samples)];
         }
 
         return new self($subset);
+    }
+
+    /**
+     * Return an array with all the samples.
+     *
+     * @return array
+     */
+    public function all() : array
+    {
+        return $this->samples;
     }
 }

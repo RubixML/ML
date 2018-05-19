@@ -3,8 +3,8 @@
 namespace Rubix\Engine\Clusterers;
 
 use Rubix\Engine\Datasets\Unsupervised;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Metrics\Distance\Distance;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -20,7 +20,7 @@ class KMeans implements Clusterer
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Contracts\DistanceFunction
+     * @var \Rubix\Engine\Contracts\Distance
      */
     protected $distanceFunction;
 
@@ -33,12 +33,12 @@ class KMeans implements Clusterer
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, DistanceFunction $distanceFunction = null, int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, Distance $distanceFunction = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('Parameter K must be an integer larger than 1.');

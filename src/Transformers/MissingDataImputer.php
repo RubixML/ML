@@ -3,9 +3,10 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Estimators\Strategies\Strategy;
-use Rubix\Engine\Estimators\Strategies\BlurryMean;
-use Rubix\Engine\Estimators\Strategies\PopularityContest;
+use Rubix\Engine\Transformers\Strategies\Continuous;
+use Rubix\Engine\Transformers\Strategies\BlurryMean;
+use Rubix\Engine\Transformers\Strategies\Categorical;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Transformer
@@ -32,15 +33,6 @@ class MissingDataImputer implements Transformer
     protected $categorical;
 
     /**
-     * The type of each feature column. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
-    /**
      * The fitted data imputers.
      *
      * @var array
@@ -56,7 +48,8 @@ class MissingDataImputer implements Transformer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($placeholder = '?', Continuous $continuous = null, Categorical $categorical = null)
+    public function __construct($placeholder = '?', Continuous $continuous = null,
+                                Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) && !is_string($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string or numeric type, '

@@ -2,47 +2,27 @@
 
 namespace Rubix\Engine\Graph;
 
-use Rubix\Engine\Persisters\Persister;
-use Rubix\Engine\Persisters\Persistable;
 use RuntimeException;
 use SplObjectStorage;
 use SplPriorityQueue;
 use Countable;
 use SplQueue;
 
-class Graph implements Persistable, Countable
+class Graph implements Countable
 {
     /**
      * An index of the nodes in the graph.
      *
-     * @var \Rubix\Engine\ObjectIndex
+     * @var \Rubix\Engine\Graph\ObjectIndex
      */
     protected $nodes;
 
     /**
-     * Restore the graph from persistence.
-     *
-     * @param \Rubix\Engine\Persisters\Persister  $connector
-     * @return self|null
-     */
-    public static function restore(Connector $connector) : self
-    {
-        $graph = $connector->restore();
-
-        if (!$graph instanceof Graph) {
-            throw new InvalidargumentException('The restored model is not a Graph instance.');
-        }
-
-        return $graph;
-    }
-
-    /**
      * @return void
      */
-    public function __construct(Connector $connector = null)
+    public function __construct()
     {
         $this->nodes = new ObjectIndex();
-        $this->connector = $connector;
     }
 
     /**

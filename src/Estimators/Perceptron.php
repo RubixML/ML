@@ -2,14 +2,14 @@
 
 namespace Rubix\Engine\Estimators;
 
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\NeuralNet\Layers\Binary;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use Rubix\Engine\Estimators\Predictions\Probabalistic;
 use InvalidArgumentException;
 use RuntimeException;
@@ -53,28 +53,30 @@ class Perceptron implements BinaryClassifier, Persistable
     protected $network;
 
     /**
-     * @param  \Rubix\Engine\NeuralNet\Layers\Binary  $output
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Binary $output, int $epochs = 10, int $batchSize = 5, Optimizer $optimizer = null)
+    public function __construct(int $epochs = 10, int $batchSize = 5,
+                                Optimizer $optimizer = null)
     {
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at least 1 epoch.');
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size cannot be less than 1.');
+            throw new InvalidArgumentException('Batch size cannot be less than'
+                . ' 1.');
         }
 
         if (!isset($optimizer)) {
             $optimizer = new Adam();
         }
 
-        $this->output = $output;
         $this->batchSize = $batchSize;
         $this->epochs = $epochs;
         $this->optimizer = $optimizer;
@@ -85,16 +87,12 @@ class Perceptron implements BinaryClassifier, Persistable
      * set and update the input weights accordingly.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(Supervised $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous features.');
-        }
-
-        $this->network = new Network(new Input($dataset->columns()), [], $this->output);
+        $this->network = new Network(new Input($dataset->numColumns()),
+            [], new Binary($dataset->possibleOutcomes()));
 
         $this->network->initialize();
 
@@ -128,18 +126,24 @@ class Perceptron implements BinaryClassifier, Persistable
     /**
      * Read the activation of the neuron and make a prediction.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $activations = $this->network->feed($sample);
+        $predictions = [];
 
-        $outcome = current(array_keys($activations));
+        foreach ($samples as $sample) {
+            $activations = $this->network->feed($sample);
 
-        $activation = current($activations);
+            $outcome = current(array_keys($activations));
 
-        return new Probabalistic($outcome, $activation);
+            $activation = current($activations);
+
+            $predictions[] = new Probabalistic($outcome, $activation);
+        }
+
+        return $predictions;
     }
 
     /**

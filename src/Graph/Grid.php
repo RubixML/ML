@@ -2,8 +2,8 @@
 
 namespace Rubix\Engine\Graph;
 
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Metrics\Distance\Distance;
 use InvalidArgumentException;
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -20,17 +20,17 @@ class Grid extends Graph
     /**
      * The distance function that describes the grid space.
      *
-     * @var \Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction
+     * @var \Rubix\Engine\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
     /**
      * @param  array  $axes
-     * @param  \Rubix\Engine\Contracts\DistanceFunction|null  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\Distance|null  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $axes = ['x', 'y'], DistanceFunction $distanceFunction = null)
+    public function __construct(array $axes = ['x', 'y'], Distance $distanceFunction = null)
     {
         if ($axes !== array_filter($axes, 'is_string')) {
             throw new InvalidArgumentException('Axis label must be a string type.');

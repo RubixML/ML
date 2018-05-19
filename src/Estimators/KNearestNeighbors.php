@@ -2,11 +2,11 @@
 
 namespace Rubix\Engine\Estimators;
 
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
+use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Estimators\Predictions\Probabalistic;
-use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
@@ -22,12 +22,12 @@ class KNearestNeighbors implements Classifier
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Contracts\DistanceFunction
+     * @var \Rubix\Engine\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
     /**
-     * The coordinate vectors of the training data.
+     * The memoized coordinate vectors of the training data.
      *
      * @var array
      */
@@ -36,24 +36,25 @@ class KNearestNeighbors implements Classifier
     ];
 
     /**
-     * The training outcomes.
+     * The memoized labels.
      *
      * @var array
      */
-    protected $outcomes = [
+    protected $labels = [
         //
     ];
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
+     * @param  \Rubix\Engine\Metrics\Distance\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, DistanceFunction $distanceFunction = null)
+    public function __construct(int $k = 3, Distance $distanceFunction = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required to make a prediction.');
+            throw new InvalidArgumentException('At least 1 neighbor is required'
+                . ' to make a prediction.');
         }
 
         if (!isset($distanceFunction)) {
@@ -75,30 +76,36 @@ class KNearestNeighbors implements Classifier
     public function train(Supervised $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous samples.');
         }
 
-        $this->samples = $dataset->samples();
-        $this->outcomes = $dataset->outcomes();
+        list($this->samples, $this->labels) = $dataset->all();
     }
 
     /**
      * Compute the distances and locate the k nearest neighboring values.
      *
-     * @param  array  $sample
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        $outcomes = $this->findNearestNeighbors($sample);
+        $predictions = [];
 
-        $counts = array_count_values($outcomes);
+        foreach ($samples as $sample) {
+            $neighbors = $this->findNearestNeighbors($sample);
 
-        $outcome = array_search(max($counts), $counts);
+            $counts = array_count_values($neighbors);
 
-        $probability = $counts[$outcome] / count($outcomes);
+            $outcome = array_search(max($counts), $counts);
 
-        return new Probabalistic($outcome, $probability);
+            $probability = $counts[$outcome] / count($neighbors);
+
+            $predictions[] = new Probabalistic($outcome, $probability);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -112,13 +119,14 @@ class KNearestNeighbors implements Classifier
         $computed = new SplPriorityQueue();
         $neighbors = [];
 
-        foreach ($this->samples as $row => $neighbor) {
+        foreach ($this->samples as $index => $neighbor) {
             $distance = $this->distanceFunction->compute($sample, $neighbor);
 
-            $computed->insert($this->outcomes[$row], -$distance);
+            $computed->insert($this->labels[$index], -$distance);
         }
 
-        $n = (count($this->samples) >= $this->k ? $this->k : count($this->samples));
+        $n = (count($this->samples) >= $this->k
+            ? $this->k : count($this->samples));
 
         for ($i = 0; $i < $n; $i++) {
             $neighbors[] = $computed->extract();

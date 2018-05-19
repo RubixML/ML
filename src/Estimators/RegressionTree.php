@@ -5,13 +5,14 @@ namespace Rubix\Engine\Estimators;
 use Rubix\Engine\Graph\Tree;
 use MathPHP\Statistics\Average;
 use Rubix\Engine\Graph\BinaryNode;
+use Rubix\Engine\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
 use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Persisters\Persistable;
+use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Prediction;
 use InvalidArgumentException;
 
-class RegressionTree extends Tree implements Estimator, Regressor, Persistable
+class RegressionTree extends Tree implements Regressor, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.
@@ -52,24 +53,18 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
     public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX)
     {
         if ($minSamples < 1) {
-            throw new InvalidArgumentException('At least one sample is required to make a decision.');
+            throw new InvalidArgumentException('At least one sample is required'
+                . ' to make a decision.');
         }
 
         if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have depth less than 1.');
+            throw new InvalidArgumentException('A tree cannot have depth less'
+                . ' than 1.');
         }
 
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
         $this->splits = 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function columns() : int
-    {
-        return count($this->columnTypes);
     }
 
     /**
@@ -103,7 +98,8 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
     }
 
     /**
-     * Train the regression tree by learning the most optimal splits in the training set.
+     * Train the regression tree by learning the most optimal splits in the
+     * training set.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @throws \InvalidArgumentException
@@ -111,34 +107,35 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
      */
     public function train(Supervised $dataset) : void
     {
-        if ($dataset->outcomeType() !== self::CONTINUOUS) {
-            throw new InvalidArgumentException('This estimator only works with continuous outcomes.');
-        }
-
         $this->columnTypes = $dataset->columnTypes();
 
-        $this->root = $this->findBestSplit($dataset->all());
+        $data = array_map(function ($sample, $label) {
+            return array_merge($sample, (array) $label);
+        }, ...$dataset->all());
+
+        $this->root = $this->findBestSplit($data);
         $this->splits = 1;
 
         $this->split($this->root);
     }
 
     /**
-     * Make a prediction on a given sample.
+     * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  array  $sample
-     * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\Estimaotors\Predictions\Prediction
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
      */
-    public function predict(array $sample) : Prediction
+    public function predict(Dataset $samples) : array
     {
-        if (count($sample) !== $this->columns()) {
-            throw new InvalidArgumentException('Input data must have the same number of columns as the training data.');
+        $predictions = [];
+
+        foreach ($samples as $sample) {
+            $node = $this->_predict($sample, $this->root);
+
+            $predictions[] = new Prediction($node->value());
         }
 
-        $node = $this->_predict($sample, $this->root);
-
-        return new Prediction($node->value());
+        return $predictions;
     }
 
     /**
@@ -154,7 +151,7 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
             return $root;
         }
 
-        if ($this->columnTypes[$root->index] === self::CATEGORICAL) {
+        if ($root->type === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value()) {
                 return $this->_predict($sample, $root->left());
             } else {
@@ -229,13 +226,16 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
-        $best = ['variance' => INF, 'index' => null, 'value' => null, 'groups' => []];
+        $best = [
+            'variance' => INF, 'index' => null, 'value' => null, 'groups' => [],
+        ];
 
         $outcomes = array_column($data, count($data[0]) - 1);
 
-        for ($index = 0; $index < $this->columns() - 1; $index++) {
+        for ($index = 0; $index < count(current($data)) - 1; $index++) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
+
                 $variance = 0.0;
 
                 foreach ($groups as $group) {
@@ -255,7 +255,7 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
                     ];
                 }
 
-                if ($variance <= 0.0) {
+                if ($variance === 0.0) {
                     break 2;
                 }
             }
@@ -263,6 +263,8 @@ class RegressionTree extends Tree implements Estimator, Regressor, Persistable
 
         return new BinaryNode($best['value'], [
             'index' => $best['index'],
+            'type' => $this->columnTypes[$best['index']],
+            'variance' => $best['variance'],
             'groups' => $best['groups'],
         ]);
     }

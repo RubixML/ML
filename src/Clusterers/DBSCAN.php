@@ -3,8 +3,8 @@
 namespace Rubix\Engine\Clusterers;
 
 use Rubix\Engine\Datasets\Unsupervised;
-use Rubix\Engine\Metrics\DistanceFunctions\Euclidean;
-use Rubix\Engine\Metrics\DistanceFunctions\DistanceFunction;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Metrics\Distance\Distance;
 use InvalidArgumentException;
 
 class DBSCAN implements Clusterer
@@ -29,18 +29,18 @@ class DBSCAN implements Clusterer
     /**
      * The distance function to use when computing the distances between points.
      *
-     * @var \Rubix\Engine\Contracts\DistanceFunction
+     * @var \Rubix\Engine\Contracts\Distance
      */
     protected $distanceFunction;
 
     /**
      * @param  float  $epsilon
      * @param  int  $minDensity
-     * @param  \Rubix\Engine\Contracts\DistanceFunction  $distanceFunction
+     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon, int $minDensity = 5, DistanceFunction $distanceFunction = null)
+    public function __construct(float $epsilon, int $minDensity = 5, Distance $distanceFunction = null)
     {
         if ($epsilon < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0.');

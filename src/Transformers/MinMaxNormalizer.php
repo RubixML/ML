@@ -35,7 +35,8 @@ class MinMaxNormalizer implements Transformer
     public function fit(Dataset $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This transformer only works on continuous features.');
+            throw new InvalidArgumentException('This transformer only works on'
+                . ' continuous features.');
         }
 
         $this->minimums = $this->maximums = [];
@@ -59,7 +60,7 @@ class MinMaxNormalizer implements Transformer
                 $max = $this->maximums[$column];
 
                 $sample[$column] = ($sample[$column] - $min)
-                    / (($max - $min) ? ($max - $min) : self::EPSILON);
+                    / (($max - $min) + self::EPSILON);
             }
         }
     }
