@@ -6,22 +6,22 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Estimators\Persistable;
 use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\Transformers\Strategies\Categorical;
+use Rubix\Engine\Transformers\Strategies\Continuous;
 
-class DummyClassifier implements Classifier, Persistable
+class DummyRegressor implements Regressor, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.
      *
-     * @var \Rubix\Engine\Transformers\Strategies\Categorical
+     * @var \Rubix\Engine\Transformers\Strategies\Continuous
      */
     protected $strategy;
 
     /**
-     * @param  \Rubix\Engine\Transformers\Strategies\Categorical  $strategy
+     * @param  \Rubix\Engine\Transformers\Strategies\Continuous  $strategy
      * @return void
      */
-    public function __construct(Categorical $strategy)
+    public function __construct(Continuous $strategy)
     {
         $this->strategy = $strategy;
     }
