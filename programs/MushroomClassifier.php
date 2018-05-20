@@ -8,13 +8,13 @@ use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use Rubix\Engine\Estimators\Wrappers\Pipeline;
-use Rubix\Engine\ModelSelection\CrossValidator;
+use Rubix\Engine\CrossValidation\KFold;
 use Rubix\Engine\Estimators\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\Engine\ModelSelection\Reports\AggregateReport;
-use Rubix\Engine\ModelSelection\Reports\ConfusionMatrix;
-use Rubix\Engine\ModelSelection\Reports\ClassificationReport;
+use Rubix\Engine\CrossValidation\Reports\AggregateReport;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

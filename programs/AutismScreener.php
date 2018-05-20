@@ -7,13 +7,13 @@ use Rubix\Engine\Estimators\AdaBoost;
 use Rubix\Engine\Estimators\NaiveBayes;
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\Estimators\Wrappers\Pipeline;
-use Rubix\Engine\ModelSelection\CrossValidator;
-use Rubix\Engine\ModelSelection\ReportGenerator;
+use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\ModelSelection\Reports\AggregateReport;
-use Rubix\Engine\ModelSelection\Reports\ConfusionMatrix;
-use Rubix\Engine\ModelSelection\Reports\ClassificationReport;
+use Rubix\Engine\CrossValidation\Reports\AggregateReport;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -37,23 +37,17 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 $dataset = new Supervised($samples, $labels);
 
 $estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 20, 0.1), [
-    new MissingDataImputer('?'),
     new NumericStringConverter(),
+    new MissingDataImputer('?'),
 ]);
 
-$validator = new CrossValidator(new MCC());
+$validator = new KFold(new MCC(), 10);
 
-$report = new AggregateReport([
+$report = new ReportGenerator(new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]);
+]), 0.2);
 
-var_dump($validator->validate($estimator, $dataset->stratifiedFold(10)));
+var_dump($validator->score($estimator, $dataset));
 
-list($training, $testing) = $dataset->stratifiedSplit(0.8);
-
-$estimator->train($training);
-
-$predictions = $estimator->predict($testing);
-
-var_dump($report->generate($predictions, $testing->labels()));
+var_dump($report->generate($estimator, $dataset));

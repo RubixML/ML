@@ -56,7 +56,8 @@ class MultiLayerPerceptron implements Classifier, Persistable
     protected $metric;
 
     /**
-     * The ratio of training samples to use for monitoring.
+     * The ratio of training samples to use for validation. i.e. the holdout
+     * ratio.
      *
      * @var float
      */
@@ -121,8 +122,8 @@ class MultiLayerPerceptron implements Classifier, Persistable
         }
 
         if ($ratio < 0.01 || $ratio > 1.0) {
-            throw new InvalidArgumentException('Validation ratio must be a'
-                . ' float value between 0.01 and 1.0.');
+            throw new InvalidArgumentException('Holdout ratio must be'
+                . ' between 0.01 and 1.0.');
         }
 
         if ($window < 1) {

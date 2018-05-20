@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\ModelSelection\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\ModelSelection\Reports\RegressionAnalysis;
+use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use PHPUnit\Framework\TestCase;
 
 class RegressionAnalysisTest extends TestCase

@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\ModelSelection\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\ModelSelection\Reports\ClassificationReport;
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
 use PHPUnit\Framework\TestCase;
 
 class ClassificationReportTest extends TestCase

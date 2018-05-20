@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\ModelSelection\Reports;
+namespace Rubix\Engine\CrossValidation\Reports;
 
 use MathPHP\Statistics\Average;
 

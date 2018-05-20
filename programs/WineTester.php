@@ -6,11 +6,11 @@ use Rubix\Engine\Estimators\Ridge;
 use Rubix\Engine\Datasets\Supervised;
 use Rubix\Engine\Metrics\Validation\RSquared;
 use Rubix\Engine\Estimators\Wrappers\Pipeline;
-use Rubix\Engine\ModelSelection\CrossValidator;
+use Rubix\Engine\CrossValidation\KFold;
 use Rubix\Engine\Transformers\MinMaxNormalizer;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\DensePolynomialExpander;
-use Rubix\Engine\ModelSelection\Reports\RegressionAnalysis;
+use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -40,6 +40,6 @@ $estimator = new Pipeline(new Ridge(0.05), [
     new DensePolynomialExpander(3),
 ]);
 
-$validator = new CrossValidator(new RSquared());
+$validator = new KFold(new RSquared());
 
-var_dump($validator->validate($estimator, $dataset->fold(10)));
+var_dump($validator->score($estimator, $dataset->fold(10)));

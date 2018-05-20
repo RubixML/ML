@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\ModelSelection\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\Estimators\Predictions\Prediction;
-use Rubix\Engine\ModelSelection\Reports\ConfusionMatrix;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
 class ConfusionMatrixTest extends TestCase

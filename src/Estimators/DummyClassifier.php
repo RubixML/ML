@@ -27,7 +27,7 @@ class DummyClassifier implements Classifier, Persistable
     }
 
     /**
-     * Train the estimator.
+     * Fit the training set to the given guessing strategy.
      *
      * @param  \Rubix\Engine\Datasets\Supervised  $dataset
      * @return void
