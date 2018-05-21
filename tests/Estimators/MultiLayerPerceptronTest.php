@@ -47,7 +47,7 @@ class MultiLayerPerceptronTest extends TestCase
 
         $this->estimator = new MultiLayerPerceptron([
             new Dense(5, new Sigmoid()), new Dense(5, new Sigmoid()),
-        ], 1, new Adam(0.01), 0.975);
+        ], 1, new Adam(0.005), 0.0, 0.99);
     }
 
     public function test_build_multi_layer_perceptron()

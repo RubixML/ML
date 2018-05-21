@@ -45,7 +45,7 @@ $estimator = new Pipeline(new MultiLayerPerceptron([
     new Dense(10, new PReLU()),
     new Dense(10, new PReLU()),
     new Dense(10, new PReLU()),
-], 5, new Adam(0.001), 0.999, new MCC(), 0.2, 3, 30), [
+], 5, new Adam(0.001), 1e-4, 0.999, new MCC(), 0.2, 3, 30), [
     new OneHotEncoder(),
 ]);
 

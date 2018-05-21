@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-interface Parametric
+interface Parametric extends Layer
 {
     /**
      * Generate a random weight for each synapse in the layer.

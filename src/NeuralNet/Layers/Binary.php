@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class Binary implements Output
 {
     /**
-     * The labels of either possible outcome.
+     * The labels of either of the possible outcomes.
      *
      * @var array
      */
@@ -22,6 +22,13 @@ class Binary implements Output
      * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
+
+    /**
+     * The L2 regularization parameter.
+     *
+     * @var float
+     */
+    protected $alpha;
 
     /**
      * The array of weight vectors for each synapse in the layer.
@@ -57,10 +64,11 @@ class Binary implements Output
 
     /**
      * @param  array  $labels
+     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $labels)
+    public function __construct(array $labels, float $alpha = 1e-4)
     {
         $labels = array_values(array_unique($labels));
 
@@ -70,6 +78,7 @@ class Binary implements Output
 
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
         $this->activationFunction = new HyperbolicTangent();
+        $this->alpha = $alpha;
     }
 
     /**
@@ -156,7 +165,8 @@ class Binary implements Output
         $slope = $this->activationFunction
             ->differentiate($this->z, $this->computed);
 
-        $error = $slope * ($expected - $this->computed);
+        $error = $slope * ($expected - $this->computed)
+            + 0.5 * $this->alpha * array_sum($this->weights) ** 2;
 
          foreach ($this->weights as $i => $weight) {
              $gradient[$i] = $error * $this->inputs[$i];

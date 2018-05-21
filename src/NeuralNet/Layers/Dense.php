@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNet\Layers;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
-class Dense implements Hidden, Parametric
+class Dense implements Hidden
 {
     /**
      * The number of neurons in this layer.
@@ -20,13 +20,6 @@ class Dense implements Hidden, Parametric
      * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
-
-    /**
-     * The L2 regularization term.
-     *
-     * @var float
-     */
-    protected $alpha;
 
     /**
      * An array of n-d weight vectors, one per neuron in the layer, where n is
@@ -69,11 +62,10 @@ class Dense implements Hidden, Parametric
     /**
      * @param  int  $neurons
      * @param  \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
-     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction, float $alpha = 1e-4)
+    public function __construct(int $neurons, ActivationFunction $activationFunction)
     {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons must be greater than 0.');
@@ -81,7 +73,6 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
-        $this->alpha = $alpha;
     }
 
     /**
@@ -123,7 +114,8 @@ class Dense implements Hidden, Parametric
     {
         for ($i = 0; $i < $this->neurons; $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $this->weights[$i][$j] = $this->activationFunction->initialize($previous->width());
+                $this->weights[$i][$j] = $this->activationFunction
+                    ->initialize($previous->width());
             }
         }
     }
@@ -176,7 +168,8 @@ class Dense implements Hidden, Parametric
                 $previousError += $neuron[$i] * $previousErrors[$j];
             }
 
-            $slope = $this->activationFunction->differentiate($this->sigmas[$i], $this->computed[$i]);
+            $slope = $this->activationFunction
+                ->differentiate($this->sigmas[$i], $this->computed[$i]);
 
             $errors[$i] = $slope * $previousError;
 
@@ -198,7 +191,6 @@ class Dense implements Hidden, Parametric
     {
         foreach ($this->weights as $i => &$neuron) {
             foreach ($neuron as $j => &$weight) {
-                $weight -= $this->alpha * $weight;
                 $weight += $steps[$i][$j];
             }
         }

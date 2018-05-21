@@ -17,13 +17,6 @@ use RuntimeException;
 class Perceptron implements BinaryClassifier, Persistable
 {
     /**
-     * The output layer of the network.
-     *
-     * @var \Rubix\Engine\NeuralNet\Layers\Binary
-     */
-    protected $output;
-
-    /**
      * The maximum number of training epochs. i.e. the number of times to iterate
      * over the entire training set.
      *
@@ -46,6 +39,13 @@ class Perceptron implements BinaryClassifier, Persistable
     protected $optimizer;
 
     /**
+     * The L2 regularization parameter.
+     *
+     * @var float
+     */
+    protected $alpha;
+
+    /**
      * The underlying computational graph.
      *
      * @param \Rubix\Engine\NeuralNet\Network
@@ -56,12 +56,11 @@ class Perceptron implements BinaryClassifier, Persistable
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
-     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $epochs = 10, int $batchSize = 5,
-                                Optimizer $optimizer = null)
+    public function __construct(int $epochs = 10, int $batchSize = 5, Optimizer $optimizer = null,
+                                float $alpha = 1e-4)
     {
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at'
@@ -69,8 +68,8 @@ class Perceptron implements BinaryClassifier, Persistable
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size cannot be less than'
-                . ' 1.');
+            throw new InvalidArgumentException('Batch cannot have less than'
+                . ' 1 sample.');
         }
 
         if (!isset($optimizer)) {
@@ -80,6 +79,7 @@ class Perceptron implements BinaryClassifier, Persistable
         $this->batchSize = $batchSize;
         $this->epochs = $epochs;
         $this->optimizer = $optimizer;
+        $this->alpha = $alpha;
     }
 
     /**
@@ -92,7 +92,7 @@ class Perceptron implements BinaryClassifier, Persistable
     public function train(Supervised $dataset) : void
     {
         $this->network = new Network(new Input($dataset->numColumns()),
-            [], new Binary($dataset->possibleOutcomes()));
+            [], new Binary($dataset->possibleOutcomes(), $this->alpha));
 
         $this->network->initialize();
 

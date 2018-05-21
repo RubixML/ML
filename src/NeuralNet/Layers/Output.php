@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-interface Output extends Layer
+interface Output extends Parametric
 {
     /**
      * Calculate a backward pass and return an array of erros and gradients.

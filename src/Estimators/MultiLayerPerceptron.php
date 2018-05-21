@@ -42,6 +42,13 @@ class MultiLayerPerceptron implements Classifier, Persistable
     protected $optimizer;
 
     /**
+     * The L2 regularization parameter.
+     *
+     * @var float
+     */
+    protected $alpha;
+
+    /**
      * The minimum validation score needed to early stop training.
      *
      * @var float
@@ -99,6 +106,7 @@ class MultiLayerPerceptron implements Classifier, Persistable
      * @param  array  $hidden
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
+     * @param  float  $alpha
      * @param  float  $threshold
      * @param  \Rubix\Engine\Metrics\Validation\Classification|null  $metric
      * @param  float $ratio
@@ -108,8 +116,8 @@ class MultiLayerPerceptron implements Classifier, Persistable
      * @return void
      */
     public function __construct(array $hidden, int $batchSize = 5, Optimizer $optimizer = null,
-                    float $threshold = 0.99, Classification $metric = null, float $ratio = 0.2,
-                    int $window = 3, int $epochs = PHP_INT_MAX)
+                    float $alpha = 1e-4, float $threshold = 0.99, Classification $metric = null,
+                    float $ratio = 0.2, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Batch size cannot be less than'
@@ -147,6 +155,7 @@ class MultiLayerPerceptron implements Classifier, Persistable
         $this->hidden = $hidden;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
+        $this->alpha = $alpha;
         $this->threshold = $threshold;
         $this->metric = $metric;
         $this->ratio = $ratio;
@@ -177,7 +186,8 @@ class MultiLayerPerceptron implements Classifier, Persistable
         }
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Multiclass($dataset->possibleOutcomes()));
+            $this->hidden, new Multiclass($dataset->possibleOutcomes(),
+            $this->alpha));
 
         $this->network->initialize();
 

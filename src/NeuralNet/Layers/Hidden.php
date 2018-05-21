@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-interface Hidden extends Layer
+interface Hidden extends Parametric
 {
     /**
      * Backpropagate the error from the previous layer.

@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNet\Layers;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
-class Multiclass implements Output, Parametric
+class Multiclass implements Output
 {
     /**
      * The labels of each possible outcome.
@@ -24,7 +24,7 @@ class Multiclass implements Output, Parametric
     protected $activationFunction;
 
     /**
-     * The L2 regularization term.
+     * The L2 regularization parameter.
      *
      * @var float
      */
@@ -76,8 +76,9 @@ class Multiclass implements Output, Parametric
     {
         $labels = array_values(array_unique($labels));
 
-        if (count($labels) < 1) {
-            throw new InvalidArgumentException('The number of unique labeled outcomes must be greater than 0.');
+        if (count($labels) < 2) {
+            throw new InvalidArgumentException('The number of unique outcomes'
+                . ' must be 2 or more.');
         }
 
         $this->labels = $labels;
@@ -124,7 +125,8 @@ class Multiclass implements Output, Parametric
     {
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $this->weights[$i][$j] = $this->activationFunction->initialize($previous->width());
+                $this->weights[$i][$j] = $this->activationFunction
+                    ->initialize($previous->width());
             }
         }
     }
@@ -170,9 +172,11 @@ class Multiclass implements Output, Parametric
          foreach ($this->labels as $i => $label) {
              $expected = $label === $outcome ? 1.0 : 0.0;
 
-             $slope = $this->activationFunction->differentiate($this->sigmas[$i], $this->computed[$i]);
+             $slope = $this->activationFunction
+                ->differentiate($this->sigmas[$i], $this->computed[$i]);
 
-             $errors[$i] = $slope * ($expected - $this->computed[$i]);
+             $errors[$i] = $slope * ($expected - $this->computed[$i])
+                + 0.5 * $this->alpha * array_sum($this->weights[$i]) ** 2;
 
              for ($j = 0; $j < count($this->weights[$i]); $j++) {
                  $gradients[$i][$j] = $errors[$i] * $this->inputs[$j];
@@ -192,7 +196,6 @@ class Multiclass implements Output, Parametric
     {
         foreach ($this->weights as $i => &$neuron) {
             foreach ($neuron as $j => &$weight) {
-                $weight -= $this->alpha * $weight;
                 $weight += $steps[$i][$j];
             }
         }

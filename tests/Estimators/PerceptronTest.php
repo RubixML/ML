@@ -42,7 +42,7 @@ class PerceptronTest extends TestCase
 
         $this->testing = new Supervised([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new Perceptron(20, 1, new Adam(0.005));
+        $this->estimator = new Perceptron(30, 1, new Adam(0.001), 0.0);
     }
 
     public function test_build_perceptron_classifier()
