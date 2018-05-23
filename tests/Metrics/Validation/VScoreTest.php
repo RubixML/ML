@@ -2,21 +2,21 @@
 
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Clustering;
-use Rubix\Engine\Metrics\Validation\Completeness;
+use Rubix\Engine\Metrics\Validation\VScore;
 use PHPUnit\Framework\TestCase;
 
-class CompletenessTest extends TestCase
+class VScoreTest extends TestCase
 {
     protected $metric;
 
     public function setUp()
     {
-        $this->metric = new Completeness();
+        $this->metric = new VScore();
     }
 
-    public function test_build_completeness_metric()
+    public function test_build_v_score_metric()
     {
-        $this->assertInstanceOf(Completeness::class, $this->metric);
+        $this->assertInstanceOf(VScore::class, $this->metric);
         $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
