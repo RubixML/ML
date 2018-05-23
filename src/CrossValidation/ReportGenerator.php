@@ -2,8 +2,10 @@
 
 namespace Rubix\Engine\CrossValidation;
 
-use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Estimators\Estimator;
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\CrossValidation\Reports\Report;
 use InvalidArgumentException;
 
@@ -31,7 +33,7 @@ class ReportGenerator
      */
     public function __construct(Report $report, float $ratio = 0.2)
     {
-        if ($ratio < 0.01 || $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.0) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
@@ -43,13 +45,13 @@ class ReportGenerator
     /**
      * Generate the report.
      *
-     * @param  \Rubix\Engine\Estimators\Estimator  $estimator
-     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
+     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
      * @return array
      */
-    public function generate(Estimator $estimator, Supervised $dataset) : array
+    public function generate(Estimator $estimator, Labeled $dataset) : array
     {
-        if ($estimator instanceof Classifier) {
+        if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
             list($training, $testing) = $dataset->randomize()
                 ->stratifiedSplit(1 - $this->ratio);
         } else {

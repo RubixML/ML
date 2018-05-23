@@ -1,8 +1,8 @@
 <?php
 
 use Rubix\Engine\Clusterers\DBSCAN;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ class DBSCANTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Unsupervised([
+        $this->dataset = new Unlabeled([
             [2.771244718, 1.784783929], [1.728571309, 1.169761413],
             [3.678319846, 2.812813570], [3.961043357, 2.619950320],
             [2.999208922, 2.209014212], [2.345634564, 1.345634563],
@@ -27,7 +27,7 @@ class DBSCANTest extends TestCase
             [10.56785567, 3.123412342], [6.456749570, 3.324523456],
         ]);
 
-        $this->clusterer = new DBSCAN(2, 3, new Euclidean());
+        $this->clusterer = new DBSCAN(2.5, 5, new Euclidean());
     }
 
     public function test_build_DBSCAN_clusterer()
@@ -38,8 +38,14 @@ class DBSCANTest extends TestCase
 
     public function test_cluster()
     {
-        $clusters = $this->clusterer->cluster($this->dataset);
+        $this->clusterer->train($this->dataset);
 
-        $this->assertCount(2, $clusters);
+        $results = $this->clusterer->predict($this->dataset);
+
+        $clusters = array_count_values($results);
+
+        $this->assertEquals(10, $clusters[0]);
+        $this->assertEquals(9, $clusters[1]);
+        $this->assertEquals(1, $clusters['na']);
     }
 }

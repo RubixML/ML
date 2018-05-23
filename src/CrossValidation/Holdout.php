@@ -2,10 +2,10 @@
 
 namespace Rubix\Engine\CrossValidation;
 
-use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Estimators\Estimator;
-use Rubix\Engine\Estimators\Regressor;
-use Rubix\Engine\Estimators\Classifier;
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Regressors\Regressor;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Regression;
 use Rubix\Engine\Metrics\Validation\Classification;
@@ -35,7 +35,7 @@ class Holdout implements Validator
      */
     public function __construct(Validation $metric, float $ratio = 0.2)
     {
-        if ($ratio < 0.01 || $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.0) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
@@ -50,10 +50,10 @@ class Holdout implements Validator
      * score for each training round.
      *
      * @param  \Rubix\Engine\Estimator\Estimator  $estimator
-     * @param  \Rubix\Engine\Datasets\Supervised  $dataset
+     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
      * @return float
      */
-    public function score(Estimator $estimator, Supervised $dataset) : float
+    public function score(Estimator $estimator, Labeled $dataset) : float
     {
         if ($estimator instanceof Classifier) {
             if (!$this->metric instanceof Classfication) {
@@ -71,9 +71,17 @@ class Holdout implements Validator
             }
         }
 
+        if ($estimator instanceof Clusterer) {
+            if (!$this->metric instanceof Clustering) {
+                throw new InvalidArgumentException('Clustering metric only'
+                    . ' works on Clusterers, ' . get_class($estimator)
+                    . ' found.');
+            }
+        }
+
         $dataset->randomize();
 
-        if ($estimator instanceof Classifier) {
+        if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
             list($training, $testing) =
                 $dataset->stratifiedSplit(1 - $this->ratio);
         } else {

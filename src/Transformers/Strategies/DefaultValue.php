@@ -21,7 +21,7 @@ class DefaultValue implements Categorical, Continuous
      */
     public function __construct($value)
     {
-        if (!is_int($value) && !is_float($value) && !is_string($value)) {
+        if (!is_int($value) and !is_float($value) and !is_string($value)) {
             throw new InvalidArgumentException('Default value must be either a string, integer, or float.');
         }
 

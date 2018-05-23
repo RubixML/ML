@@ -3,7 +3,6 @@
 use Rubix\Engine\Metrics\Validation\Accuracy;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Classification;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use PHPUnit\Framework\TestCase;
 
 class AccuracyTest extends TestCase
@@ -24,11 +23,7 @@ class AccuracyTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = [
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'),
-        ];
+        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 
         $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 

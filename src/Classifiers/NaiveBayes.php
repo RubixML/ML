@@ -1,0 +1,164 @@
+<?php
+
+namespace Rubix\Engine\Classifiers;
+
+use Rubix\Engine\Supervised;
+use Rubix\Engine\Persistable;
+use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Labeled;
+use InvalidArgumentException;
+
+class NaiveBayes implements Supervised, Classifier, Persistable
+{
+    /**
+     * The precomputed probabilities for categorical data and means and standard
+     * deviations for continuous data per outcome.
+     *
+     * @var array
+     */
+    protected $stats = [
+        //
+    ];
+
+    /**
+     * The weight of each class as a proportion of the entire training set.
+     *
+     * @var array
+     */
+    protected $weights = [
+        //
+    ];
+
+    /**
+     * The data type for each feature column. i.e. categorical or continuous.
+     *
+     * @var array
+     */
+    protected $columnTypes = [
+        //
+    ];
+
+    /**
+     * @return array
+     */
+    public function stats() : array
+    {
+        return $this->stats;
+    }
+
+    /**
+     * @return array
+     */
+    public function weights() : array
+    {
+        return $this->weights;
+    }
+
+    /**
+     * Compute the means and standard deviations of the values per class.
+     *
+     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @return void
+     */
+    public function train(Labeled $dataset) : void
+    {
+        $this->columnTypes = $dataset->columnTypes();
+
+        $this->stats = $this->weights = [];
+
+        foreach ($dataset->stratify() as $class => $samples) {
+            foreach (array_map(null, ...$samples) as $column => $values) {
+                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                    $this->stats[$class][$column]
+                        = $this->calculateProbabilities((array) $values);
+                } else {
+                    $this->stats[$class][$column]
+                        = $this->calculateStatistics((array) $values);
+                }
+            }
+
+            $this->weights[$class] = count($samples) / $dataset->numRows();
+        }
+    }
+
+    /**
+     * Calculate the probabilities of the sample being a member of all trained
+     * classes and chose the highest probaility outcome as the prediction.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function predict(Dataset $samples) : array
+    {
+        $predictions = [];
+
+        foreach ($samples as $sample) {
+            $best = ['probability' => -INF, 'outcome' => null];
+
+            foreach ($this->stats as $class => $stats) {
+                $probability = $this->weights[$class];
+
+                foreach ($sample as $column => $feature) {
+                    if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                        $probability += $stats[$column][$feature] ?? 0.0;
+                    } else {
+                        list($mean, $stddev) = $stats[$column];
+
+                        $pdf = -0.5 * log(2.0 * M_PI * $stddev ** 2);
+                        $pdf -= 0.5 * ($feature - $mean) ** 2 / ($stddev ** 2);
+
+                        $probability += $pdf;
+                    }
+                }
+
+                if ($probability > $best['probability']) {
+                    $best = [
+                        'outcome' => $class,
+                        'probability' => $probability,
+                    ];
+                }
+            }
+
+            $predictions[] = $best['outcome'];
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Calculate the probabilities of a column of features.
+     *
+     * @param  array  $values
+     * @return array
+     */
+    protected function calculateProbabilities(array $values) : array
+    {
+        $counts = array_count_values($values);
+
+        $probabilities = [];
+
+        foreach ($counts as $label => $count) {
+            $probabilities[$label] = $count / count($values);
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Calculate the mean and standard deviation of a column of features.
+     *
+     * @param  array  $values
+     * @return array
+     */
+    protected function calculateStatistics(array $values) : array
+    {
+        $mean = Average::mean($values);
+
+        $stddev = sqrt(array_reduce($values, function ($carry, $value) use ($mean) {
+            return $carry += ($value - $mean) ** 2;
+        }, 0.0) / count($values)) + self::EPSILON;
+
+        return [$mean, $stddev];
+    }
+}

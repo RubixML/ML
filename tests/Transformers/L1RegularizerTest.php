@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\L1Regularizer;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ class L1RegularizerTest extends TestCase
     {
         $this->transformer = new L1Regularizer();
 
-        $this->transformer->fit(new Dataset([[1, 2, 3, 4]]));
+        $this->transformer->fit(new Unlabeled([[1, 2, 3, 4]]));
     }
 
     public function test_build_l1_regularizer()

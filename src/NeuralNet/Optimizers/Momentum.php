@@ -41,7 +41,7 @@ class Momentum implements Optimizer
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
         }
 
-        if ($decay < 0.0 || $decay > 1.0) {
+        if ($decay < 0.0 or $decay > 1.0) {
             throw new InvalidArgumentException('Decay parameter must be a float value between 0 and 1.');
         }
 

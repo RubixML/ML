@@ -2,14 +2,15 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Datasets\Supervised;
+use Rubix\Engine\Pipeline;
+use Rubix\Engine\PersistentModel;
+use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
-use Rubix\Engine\Estimators\Wrappers\Pipeline;
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Estimators\MultiLayerPerceptron;
+use Rubix\Engine\CrossValidation\ReportGenerator;
+use Rubix\Engine\Classifiers\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
@@ -39,7 +40,7 @@ $samples = iterator_to_array($reader->getRecords($header));
 
 $labels = iterator_to_array($reader->fetchColumn('class'));
 
-$dataset = new Supervised($samples, $labels);
+$dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MultiLayerPerceptron([
     new Dense(10, new PReLU()),
@@ -49,15 +50,13 @@ $estimator = new Pipeline(new MultiLayerPerceptron([
     new OneHotEncoder(),
 ]);
 
-$report = new AggregateReport([
+$report = new ReportGenerator(new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]);
+]), 0.2);
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+$model = new PersistentModel($estimator);
 
-$estimator->train($training);
+var_dump($report->generate($estimator, $dataset));
 
-$predictions = $estimator->predict($testing);
-
-var_dump($report->generate($predictions, $testing->labels()));
+$model->save(dirname(__DIR__) . '/models/mushroom.model');

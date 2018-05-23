@@ -56,7 +56,7 @@ class Binary implements Output
     protected $z;
 
     /**
-     * The memoized actvations pf the output neuron.
+     * The memoized actvations of the output neuron.
      *
      * @var float
      */

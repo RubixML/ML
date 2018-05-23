@@ -15,8 +15,8 @@ class Accuracy implements Classification
     {
         $score = 0.0;
 
-        foreach ($predictions as $i => $prediction) {
-            if ($prediction->outcome() === $labels[$i]) {
+        foreach ($predictions as $i => $outcome) {
+            if ($outcome === $labels[$i]) {
                 $score++;
             }
         }

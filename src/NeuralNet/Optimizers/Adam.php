@@ -49,11 +49,11 @@ class Adam implements Optimizer
             throw new InvalidArgumentException('The learning rate must be set to a positive value.');
         }
 
-        if ($momentumDecay < 0.0 || $momentumDecay > 1.0) {
+        if ($momentumDecay < 0.0 or $momentumDecay > 1.0) {
             throw new InvalidArgumentException('Momentum decay parameter must be a float between 0 and 1.');
         }
 
-        if ($rmsDecay < 0.0 || $rmsDecay > 1.0) {
+        if ($rmsDecay < 0.0 or $rmsDecay > 1.0) {
             throw new InvalidArgumentException('RMS decay parameter must be a float between 0 and 1.');
         }
 

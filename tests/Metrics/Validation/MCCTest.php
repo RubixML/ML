@@ -3,7 +3,6 @@
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Classification;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use PHPUnit\Framework\TestCase;
 
 class MCCTest extends TestCase
@@ -24,11 +23,7 @@ class MCCTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = [
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'),
-        ];
+        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 
         $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 

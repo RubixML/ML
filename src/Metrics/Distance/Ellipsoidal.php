@@ -17,7 +17,7 @@ class Ellipsoidal implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        if (count($a) !== 3 && count($b) !== 3) {
+        if (count($a) !== 3 and count($b) !== 3) {
             throw new InvalidArgumentException('This distance function only'
                 . ' works in 3 dimensions.');
         }

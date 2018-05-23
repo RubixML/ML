@@ -170,10 +170,10 @@ class Multiclass implements Output
         $errors = $gradients = [];
 
          foreach ($this->labels as $i => $label) {
-             $expected = $label === $outcome ? 1.0 : 0.0;
-
              $slope = $this->activationFunction
                 ->differentiate($this->sigmas[$i], $this->computed[$i]);
+
+            $expected = $label === $outcome ? 1.0 : 0.0;
 
              $errors[$i] = $slope * ($expected - $this->computed[$i])
                 + 0.5 * $this->alpha * array_sum($this->weights[$i]) ** 2;

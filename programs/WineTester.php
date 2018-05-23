@@ -2,12 +2,13 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Estimators\Ridge;
-use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Metrics\Validation\RSquared;
-use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\Pipeline;
+use Rubix\Engine\Regressors\Ridge;
+use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Metrics\Validation\RSquared;
 use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\DensePolynomialExpander;
 use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
@@ -32,14 +33,18 @@ $samples = iterator_to_array($reader->getRecords([
 
 $labels = iterator_to_array($reader->fetchColumn('quality'));
 
-$dataset = new Supervised($samples, $labels);
+$dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new Ridge(0.05), [
+$estimator = new Pipeline(new Ridge(0.5), [
     new NumericStringConverter(),
     new MinMaxNormalizer(),
     new DensePolynomialExpander(3),
 ]);
 
-$validator = new KFold(new RSquared());
+$validator = new KFold(new RSquared(), 10);
 
-var_dump($validator->score($estimator, $dataset->fold(10)));
+$report = new ReportGenerator(new RegressionAnalysis(), 0.2);
+
+var_dump($validator->score($estimator, $dataset));
+
+var_dump($report->generate($estimator, $dataset));

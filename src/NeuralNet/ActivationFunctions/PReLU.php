@@ -21,7 +21,7 @@ class PReLU implements ActivationFunction
      */
     public function __construct(float $leakage = 0.01)
     {
-        if ($leakage < 0 || $leakage > 1) {
+        if ($leakage < 0 or $leakage > 1) {
             throw new InvalidArgumentException('Leakage coefficient must be between 0 and 1.');
         }
 

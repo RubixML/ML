@@ -1,7 +1,6 @@
 <?php
 
 use Rubix\Engine\CrossValidation\Reports\Report;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
@@ -22,11 +21,7 @@ class ConfusionMatrixTest extends TestCase
 
     public function test_generate_report()
     {
-        $predictions = [
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'), new Prediction('lamb'),
-            new Prediction('wolf'),
-        ];
+        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 
         $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 

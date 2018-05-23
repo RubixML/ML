@@ -13,13 +13,7 @@ class F1Score implements Classification
      */
     public function score(array $predictions, array $labels) : float
     {
-        $outcomes = [];
-
-        foreach ($predictions as $prediction) {
-            $outcomes[] = $prediction->outcome();
-        }
-
-        $classes = array_unique(array_merge($outcomes, $labels));
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $truePositives = $falsePositives = $falseNegatives = [];
 
@@ -28,7 +22,7 @@ class F1Score implements Classification
                 = $falseNegatives[$class] = 0;
         }
 
-        foreach ($outcomes as $i => $outcome) {
+        foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {
                 $truePositives[$outcome]++;
             } else {

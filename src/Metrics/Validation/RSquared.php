@@ -18,8 +18,8 @@ class RSquared implements Regression
         $mean = Average::mean($labels);
         $ssr = $sst = 0.0;
 
-        foreach ($predictions as $i => $prediction) {
-            $ssr += ($labels[$i] - $prediction->outcome()) ** 2;
+        foreach ($predictions as $i => $outcome) {
+            $ssr += ($labels[$i] - $outcome) ** 2;
             $sst += ($labels[$i] - $mean) ** 2;
         }
 

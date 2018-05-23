@@ -48,7 +48,7 @@ class ObjectIndex implements IteratorAggregate, Countable
      */
     public function put($key, GraphObject $object) : ObjectIndex
     {
-        if (!is_int($key) && !is_string($key)) {
+        if (!is_int($key) and !is_string($key)) {
             throw new InvalidArgumentException('Key must be an integer or string, ' . gettype($key) . ' found.');
         }
 
@@ -110,11 +110,11 @@ class ObjectIndex implements IteratorAggregate, Countable
 
             if ($operator === '===') {
                 return $object->get($property) === $value;
-            } else if ($operator === '==' || $operator === '=') {
+            } else if ($operator === '==' or $operator === '=') {
                 return $object->get($property) == $value;
             } else if ($operator === '!==') {
                 return $object->get($property) !== $value;
-            } else if ($operator === '!=' || $operator === '<>') {
+            } else if ($operator === '!=' or $operator === '<>') {
                 return $object->get($property) != $value;
             } else if ($operator === '>') {
                 return $object->get($property) > $value;

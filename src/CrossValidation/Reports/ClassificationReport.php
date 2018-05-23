@@ -14,13 +14,7 @@ class ClassificationReport implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        $outcomes = [];
-
-        foreach ($predictions as $prediction) {
-            $outcomes[] = $prediction->outcome();
-        }
-
-        $classes = array_unique(array_merge($outcomes, $labels));
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $table = $truePositives = $trueNegatives
             = $falsePositives = $falseNegatives = [];
@@ -32,7 +26,7 @@ class ClassificationReport implements Report
             $table[$class] = [];
         }
 
-        foreach ($outcomes as $i => $outcome) {
+        foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {
                 $truePositives[$outcome]++;
 
@@ -82,7 +76,7 @@ class ClassificationReport implements Report
             $table[$label]['false_negatives'] = $fn;
             $table[$label]['cardinality'] = $tp + $fn;
             $table[$label]['density'] = $table[$label]['cardinality']
-                / count($outcomes);
+                / count($predictions);
 
             $overall['average']['accuracy'] += $table[$label]['accuracy'];
             $overall['average']['precision'] += $table[$label]['precision'];

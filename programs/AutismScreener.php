@@ -2,12 +2,12 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Estimators\AdaBoost;
-use Rubix\Engine\Estimators\NaiveBayes;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\Pipeline;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\AdaBoost;
 use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Classifiers\NaiveBayes;
+use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use Rubix\Engine\Transformers\NumericStringConverter;
@@ -34,7 +34,7 @@ $samples = iterator_to_array($reader->getRecords([
 
 $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
-$dataset = new Supervised($samples, $labels);
+$dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 20, 0.1), [
     new NumericStringConverter(),

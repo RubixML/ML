@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ class ZScaleStandardizerTest extends TestCase
     {
         $this->transformer = new ZScaleStandardizer();
 
-        $this->transformer->fit(new Dataset([
+        $this->transformer->fit(new Unlabeled([
             [1, 2, 3, 4],
             [40, 20, 30, 10],
             [100, 300, 200, 400],

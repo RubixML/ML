@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +11,7 @@ class VarianceThresholdFilterTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Dataset([[0, 0, 1], [0, 1, 0], [0, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]]);
+        $this->dataset = new Unlabeled([[0, 0, 1], [0, 1, 0], [0, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]]);
 
         $this->transformer = new VarianceThresholdFilter(0.0);
     }

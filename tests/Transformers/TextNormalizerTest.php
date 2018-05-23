@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\TextNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,7 @@ class TextNormalizerTest extends TestCase
 
     public function test_fit_dataset()
     {
-        $this->transformer->fit(new Dataset([]));
+        $this->transformer->fit(new Unlabeled([]));
 
         $this->assertTrue(true);
     }

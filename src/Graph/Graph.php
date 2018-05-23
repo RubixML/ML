@@ -286,7 +286,7 @@ class Graph implements Countable
                 foreach ($current->edges() as $edge) {
                     $distance = $discovered[$current]['distance'] + $edge->get($weight, $default);
 
-                    if ($discovered[$current]['distance'] != INF && $distance < $discovered[$edge->node()]['distance']) {
+                    if ($discovered[$current]['distance'] != INF and $distance < $discovered[$edge->node()]['distance']) {
                         $discovered[$edge->node()] = [
                             'parent' => $current,
                             'distance' => $distance,
@@ -301,7 +301,7 @@ class Graph implements Countable
         // be computed.
         foreach ($this->nodes as $current) {
             foreach ($current->edges() as $edge) {
-                if ($discovered[$current]['distance'] != INF && $discovered[$current]['distance'] + $edge->$weight < $discovered[$edge->node()]['distance']) {
+                if ($discovered[$current]['distance'] != INF and $discovered[$current]['distance'] + $edge->$weight < $discovered[$edge->node()]['distance']) {
                     throw new RuntimeException('Graph contains an infinite negative weight cycle.');
                 }
             }

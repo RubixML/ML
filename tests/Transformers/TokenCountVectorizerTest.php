@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\TokenCountVectorizer;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +11,7 @@ class TokenCountVectorizerTest extends TestCase
 
     public function setUp()
     {
-        $data = new Dataset([
+        $data = new Unlabeled([
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
         ]);
 

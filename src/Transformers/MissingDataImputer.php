@@ -51,7 +51,7 @@ class MissingDataImputer implements Transformer
     public function __construct($placeholder = '?', Continuous $continuous = null,
                                 Categorical $categorical = null)
     {
-        if (!is_numeric($placeholder) && !is_string($placeholder)) {
+        if (!is_numeric($placeholder) and !is_string($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string or numeric type, '
                 . gettype($placeholder) . ' found.');
         }

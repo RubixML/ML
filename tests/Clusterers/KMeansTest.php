@@ -1,8 +1,8 @@
 <?php
 
 use Rubix\Engine\Clusterers\KMeans;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Datasets\Unsupervised;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ class KMeansTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Unsupervised([
+        $this->dataset = new Unlabeled([
             [2.771244718, 1.784783929], [1.728571309, 1.169761413],
             [3.678319846, 2.812813570], [3.961043357, 2.619950320],
             [2.999208922, 2.209014212], [2.345634564, 1.345634563],
@@ -30,7 +30,7 @@ class KMeansTest extends TestCase
         $this->estimator = new KMeans(2, new Euclidean(), 100);
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_k_means_estimator()
     {
         $this->assertInstanceOf(KMeans::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
@@ -38,9 +38,13 @@ class KMeansTest extends TestCase
 
     public function test_cluster_samples()
     {
-        $clusters = $this->estimator->cluster($this->dataset);
+        $this->estimator->train($this->dataset);
 
-        $this->assertEquals(10, count($clusters[0]));
-        $this->assertEquals(10, count($clusters[1]));
+        $results = $this->estimator->predict($this->dataset);
+
+        $clusters = array_count_values($results);
+
+        $this->assertEquals(10, $clusters[0]);
+        $this->assertEquals(10, $clusters[1]);
     }
 }

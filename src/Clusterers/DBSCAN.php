@@ -2,14 +2,15 @@
 
 namespace Rubix\Engine\Clusterers;
 
-use Rubix\Engine\Datasets\Unsupervised;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Unsupervised;
+use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\Engine\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class DBSCAN implements Clusterer
+class DBSCAN implements Unsupervised, Clusterer
 {
-    const NOISE = null;
+    const NOISE = 'na';
 
     /**
      * The maximum distance between two points to be considered neighbors. The
@@ -40,14 +41,15 @@ class DBSCAN implements Clusterer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon, int $minDensity = 5, Distance $distanceFunction = null)
+    public function __construct(float $epsilon = 0.5, int $minDensity = 5, Distance $distanceFunction = null)
     {
         if ($epsilon < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0.');
         }
 
         if ($minDensity < 0) {
-            throw new InvalidArgumentException('Minimum density must be a number greater than 0.');
+            throw new InvalidArgumentException('Minimum density must be a'
+                . ' number greater than 0.');
         }
 
         if (!isset($distanceFunction)) {
@@ -60,76 +62,78 @@ class DBSCAN implements Clusterer
     }
 
     /**
-     * @param  \Rubix\Engine\Datasets\Unsupervised  $dataset
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function cluster(Unsupervised $dataset) : array
+    public function train(Dataset $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with continuous samples.');
+            throw new InvalidArgumentException('This clusterer only works with'
+                . ' continuous samples.');
         }
+    }
 
+    /**
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function predict(Dataset $samples) : array
+    {
         $labels = [];
         $current = 0;
 
-        foreach ($dataset as $id => $sample) {
-            if (isset($labels[$id])) {
+        foreach ($samples as $index => $sample) {
+            if (isset($labels[$index])) {
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighborsByDistance($sample, $dataset->samples());
+            $neighbors = $this->groupNeighborsByDistance($sample, $samples);
 
             if (count($neighbors) < $this->minDensity) {
-                $labels[$id] = self::NOISE;
+                $labels[$index] = self::NOISE;
 
                 continue 1;
             }
 
-            $labels[$id] = $current;
+            $labels[$index] = $current;
 
-            $this->expand($dataset->samples(), $neighbors, $labels, $current);
+            $this->expand($samples, $neighbors, $labels, $current);
 
             $current++;
         }
 
-        $clusters = array_fill(0, $current, []);
-
-        foreach ($dataset as $id => $sample) {
-            if ($labels[$id] !== self::NOISE) {
-                $clusters[$labels[$id]][] = $sample;
-            }
-        }
-
-        return $clusters;
+        return $labels;
     }
 
     /**
      * Expand the cluster by computing the distance between a sample and each
      * member of the cluster.
      *
-     * @param  array  $samples
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @param  array  $neighbors
      * @param  array  $labels
-     * @param  int  $label
+     * @param  int  $current
      * @return void
      */
-    protected function expand(array $samples, array $neighbors, array &$labels, int $current) : void
+    protected function expand(Dataset $samples, array $neighbors, array &$labels,
+                            int $current) : void
     {
         while (!empty($neighbors)) {
-            $id = array_pop($neighbors);
+            $index = array_pop($neighbors);
 
-            if (isset($labels[$id])) {
-                if ($labels[$id] === self::NOISE) {
-                    $labels[$id] = $label;
+            if (isset($labels[$index])) {
+                if ($labels[$index] === self::NOISE) {
+                    $labels[$index] = $current;
                 }
 
                 continue 1;
             }
 
-            $labels[$id] = $current;
+            $labels[$index] = $current;
 
-            $seeds = $this->groupNeighborsByDistance($samples[$id], $samples);
+            $seeds = $this->groupNeighborsByDistance($samples->row($index),
+                $samples);
 
             if (count($seeds) >= $this->minDensity) {
                 $neighbors = array_unique(array_merge($neighbors, $seeds));
@@ -142,18 +146,18 @@ class DBSCAN implements Clusterer
      * centroid.
      *
      * @param  array  $neighbor
-     * @param  array  $samples
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
      */
-    protected function groupNeighborsByDistance(array $neighbor, array $samples) : array
+    protected function groupNeighborsByDistance(array $neighbor, Dataset $samples) : array
     {
         $neighbors = [];
 
-        foreach ($samples as $id => $sample) {
+        foreach ($samples as $index => $sample) {
             $distance = $this->distanceFunction->compute($neighbor, $sample);
 
             if ($distance <= $this->epsilon) {
-                $neighbors[] = $id;
+                $neighbors[] = $index;
             }
         }
 

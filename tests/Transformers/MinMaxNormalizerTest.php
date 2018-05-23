@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ class MinMaxMinMaxNormalizerTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Dataset([
+        $this->dataset = new Unlabeled([
             [50, 100, 1000],
             [40, 200, 3000],
             [29, 300, 2000],

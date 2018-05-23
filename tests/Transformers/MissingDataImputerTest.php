@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ class MissingDataImputerTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Dataset([
+        $this->dataset = new Unlabeled([
             [30, 'friendly'],
             ['?', 'mean'],
             [50, 'friendly'],

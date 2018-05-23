@@ -207,6 +207,6 @@ class BinaryNode extends GraphObject implements Node
      */
     public function isLeaf() : bool
     {
-        return !isset($this->left) && !isset($this->right);
+        return !isset($this->left) and !isset($this->right);
     }
 }

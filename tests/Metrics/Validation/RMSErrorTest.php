@@ -3,7 +3,6 @@
 use Rubix\Engine\Metrics\Validation\RMSError;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Regression;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use PHPUnit\Framework\TestCase;
 
 class RMSErrorTest extends TestCase
@@ -24,11 +23,7 @@ class RMSErrorTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = [
-            new Prediction(9), new Prediction(15),
-            new Prediction(9), new Prediction(12),
-            new Prediction(8),
-        ];
+        $predictions = [9, 15, 9, 12, 8];
 
         $outcomes = [10, 10, 6, 14, 8];
 

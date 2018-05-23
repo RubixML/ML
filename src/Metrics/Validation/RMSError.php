@@ -15,8 +15,8 @@ class RMSError implements Regression
     {
         $error = 0.0;
 
-        foreach ($predictions as $i => $prediction) {
-            $error += ($labels[$i] - $prediction->outcome()) ** 2;
+        foreach ($predictions as $i => $outcome) {
+            $error += ($labels[$i] - $outcome) ** 2;
         }
 
         return -sqrt($error / (count($predictions) + self::EPSILON));

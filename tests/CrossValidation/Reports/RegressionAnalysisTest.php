@@ -1,7 +1,6 @@
 <?php
 
 use Rubix\Engine\CrossValidation\Reports\Report;
-use Rubix\Engine\Estimators\Predictions\Prediction;
 use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use PHPUnit\Framework\TestCase;
 
@@ -23,13 +22,7 @@ class RegressionAnalysisTest extends TestCase
     public function test_generate_report()
     {
 
-        $predictions = [
-            new Prediction(10), new Prediction(12),
-            new Prediction(15), new Prediction(42),
-            new Prediction(56), new Prediction(12),
-            new Prediction(17), new Prediction(9),
-            new Prediction(1), new Prediction(7),
-        ];
+        $predictions = [10, 12, 15, 42, 56, 12, 17, 9, 1, 7];
 
         $labels = [11, 12, 14, 40, 55, 12, 16, 10, 2, 7];
 

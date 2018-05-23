@@ -32,7 +32,7 @@ class Spherical implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        if (count($a) !== 2 && count($b) !== 2) {
+        if (count($a) !== 2 and count($b) !== 2) {
             throw new InvalidArgumentException('This distance function only'
                 . ' works in 2 dimensions.');
         }

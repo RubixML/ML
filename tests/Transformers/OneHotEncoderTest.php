@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +11,7 @@ class OneHotEncoderTest extends TestCase
 
     public function setUp()
     {
-        $data = new Dataset([
+        $data = new Unlabeled([
             ['nice', 'furry', 'friendly'],
             ['mean', 'furry', 'loner'],
             ['nice', 'rough', 'friendly'],

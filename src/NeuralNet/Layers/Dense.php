@@ -151,7 +151,7 @@ class Dense implements Hidden
     }
 
     /**
-     * Calculate a backward pass and return an array of erros and gradients.
+     * Calculate a backward pass and return an array of errors and gradients.
      *
      * @param  array  $previousWeights
      * @param  array  $previousErrors

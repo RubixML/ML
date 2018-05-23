@@ -19,12 +19,12 @@ class RegressionAnalysis implements Report
 
         $mean = Average::mean($labels);
 
-        foreach ($predictions as $i => $prediction) {
-            $error = $labels[$i] - $prediction->outcome();
+        foreach ($predictions as $i => $outcome) {
+            $error = $labels[$i] - $outcome;
 
             $metrics['sae'] += abs($error);
             $metrics['sse'] += $error ** 2;
-            $metrics['sst'] += ($prediction->outcome() - $mean) ** 2;
+            $metrics['sst'] += ($outcome - $mean) ** 2;
         }
 
         $n = count($labels);

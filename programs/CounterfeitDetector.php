@@ -2,13 +2,13 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Datasets\Supervised;
-use Rubix\Engine\Estimators\Perceptron;
+use Rubix\Engine\Pipeline;
+use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Classifiers\Perceptron;
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Estimators\DummyClassifier;
-use Rubix\Engine\Estimators\Wrappers\Pipeline;
+use Rubix\Engine\Classifiers\DummyClassifier;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;
@@ -32,7 +32,7 @@ $samples = iterator_to_array($reader->getRecords($header));
 
 $labels = iterator_to_array($reader->fetchColumn('label'));
 
-$dataset = new Supervised($samples, $labels);
+$dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 

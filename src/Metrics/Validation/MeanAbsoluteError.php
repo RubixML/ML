@@ -15,8 +15,8 @@ class MeanAbsoluteError implements Regression
     {
         $error = 0.0;
 
-        foreach ($predictions as $i => $prediction) {
-            $error += abs($labels[$i] - $prediction->outcome());
+        foreach ($predictions as $i => $outcome) {
+            $error += abs($labels[$i] - $outcome);
         }
 
         return -($error / (count($predictions) + self::EPSILON));

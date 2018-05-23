@@ -31,14 +31,8 @@ class ConfusionMatrix implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        $outcomes = [];
-
-        foreach ($predictions as $prediction) {
-            $outcomes[] = $prediction->outcome();
-        }
-
         if (!isset($this->classes)) {
-            $classes = array_unique(array_merge($outcomes, $labels));
+            $classes = array_unique(array_merge($predictions, $labels));
         } else {
             $classes = $this->classes;
         }
@@ -49,8 +43,8 @@ class ConfusionMatrix implements Report
             $matrix[$class] = array_fill_keys($classes, 0);
         }
 
-        foreach ($outcomes as $i => $outcome) {
-            if (!isset($matrix[$outcome]) || !isset($matrix[$labels[$i]])) {
+        foreach ($predictions as $i => $outcome) {
+            if (!isset($matrix[$outcome]) or !isset($matrix[$labels[$i]])) {
                 continue 1;
             }
 
