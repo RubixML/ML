@@ -2,14 +2,16 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
+use MathPHP\LinearAlgebra\Matrix;
+
 interface Layer
 {
     /**
-     * Compute the weighted sum of the inputs and return an output matrix containing
-     * the activation of each neuron for each sample.
+     * Compute the input sum and activation of each nueron in the layer and return
+     * an activation matrix.
      *
-     * @param  array  $input
-     * @return array
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function forward(array $input) : array;
+    public function forward(Matrix $input) : Matrix;
 }

@@ -188,53 +188,34 @@ class MultiLayerPerceptron implements Supervised, Classifier, Persistable
             $this->hidden, new Multiclass($dataset->possibleOutcomes(),
             $this->alpha));
 
-        $this->network->initialize();
-
-        $best = ['score' => -INF, 'snapshot' => null];
-
-        $template = array_map(function ($layer) {
-            return array_map(function ($inDegree) {
-                return array_fill(0, $inDegree, 0.0);
-            }, $layer->inDegrees());
-        }, $this->network->parametric());
+        foreach ($this->network->initialize()->parametric() as $layer) {
+            $this->optimizer->initialize($layer);
+        }
 
         list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
+
+        $best = ['score' => -INF, 'snapshot' => null];
 
         $this->progress = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($training->randomize()->batch($this->batchSize) as $batch) {
-                $accumulated = $template;
+                $this->network->feed($batch->samples())
+                    ->backpropagate($batch->labels());
 
-                foreach ($batch as $index => $sample) {
-                    $this->network->feed($sample);
-
-                    $gradients = $this->network->backpropagate($batch->outcome($index));
-
-                    foreach ($gradients as $i => $layer) {
-                        foreach ($layer as $j => $neuron) {
-                            foreach ($neuron as $k => $gradient) {
-                                $accumulated[$i][$j][$k] += $gradient;
-                            }
-                        }
-                    }
+                foreach ($this->network->parametric() as $layer) {
+                    $layer->update($this->optimizer->step($layer));
                 }
-
-                $steps = $this->optimizer->step($accumulated);
-
-                foreach ($this->network->parametric() as $i => $layer) {
-                    $layer->update($steps[$i]);
-                };
             }
 
             $score = $this->scoreEpoch($testing);
 
-            $this->progress[] = $score;
+            $this->progress[$epoch] = $score;
 
             if ($score > $best['score']) {
                 $best = [
                     'score' => $score,
-                    'snapshot' => $this->network->readParameters(),
+                    'snapshot' => $this->network->read(),
                 ];
             }
 
@@ -255,7 +236,7 @@ class MultiLayerPerceptron implements Supervised, Classifier, Persistable
         }
 
         if ($score !== $best['score']) {
-            $this->network->restoreParameters($best['snapshot']);
+            $this->network->restore($best['snapshot']);
         }
     }
 
@@ -268,23 +249,23 @@ class MultiLayerPerceptron implements Supervised, Classifier, Persistable
      */
     public function predict(Dataset $samples) : array
     {
+        $this->network->feed($samples->samples());
+
         $predictions = [];
 
-        foreach ($samples as $sample) {
-            $best = ['activation' => -INF, 'outcome' => null];
+        foreach ($this->network->output()->activations() as $activations) {
+            $best = ['activation' => -INF, 'class' => null];
 
-            $activations = $this->network->feed($sample);
-
-            foreach ($activations as $outcome => $activation) {
+            foreach ($activations as $class => $activation) {
                 if ($activation > $best['activation']) {
                     $best = [
                         'activation' => $activation,
-                        'outcome' => $outcome,
+                        'class' => $class,
                     ];
                 }
             }
 
-            $predictions[] = $best['outcome'];
+            $predictions[] = $best['class'];
         }
 
         return $predictions;

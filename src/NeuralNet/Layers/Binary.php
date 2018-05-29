@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use InvalidArgumentException;
 
@@ -31,36 +33,46 @@ class Binary implements Output
     protected $alpha;
 
     /**
-     * The array of weight vectors for each synapse in the layer.
+     * The previous layer in the network.
      *
-     * @var array
+     * @var \Rubix\Engine\NeuralNet\Layers\Layer
      */
-    protected $weights = [
-        //
-    ];
+    protected $previous;
 
     /**
-     * The memoized inputs to the layer.
+     * The weight matrix.
      *
-     * @var array
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
-    protected $inputs = [
-        //
-    ];
+    protected $weights;
 
     /**
-     * The memoized sum of the weighted inputs.
+     * The memoized z matrix.
      *
-     * @var float
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $z;
 
     /**
-     * The memoized actvations of the output neuron.
+     * The memoized output activations matrix.
      *
-     * @var float
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
+
+    /**
+     * The memoized error matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $errors;
+
+    /**
+     * The memoized gradient matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $gradients;
 
     /**
      * @param  array  $labels
@@ -73,7 +85,8 @@ class Binary implements Output
         $labels = array_values(array_unique($labels));
 
         if (count($labels) !== 2) {
-            throw new InvalidArgumentException('The number of unique class labels must be exactly 2.');
+            throw new InvalidArgumentException('The number of unique class'
+                . ' labels must be exactly 2.');
         }
 
         $this->labels = [1 => $labels[0], -1 => $labels[1]];
@@ -90,114 +103,139 @@ class Binary implements Output
     }
 
     /**
-     * Return the in degree for each neuron in the layer.
-     *
-     * @return array
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function inDegrees() : array
+    public function weights() : Matrix
     {
-        return [count($this->weights)];
+        return $this->weights;
     }
 
     /**
-     * @return array
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function parameters() : array
+    public function computed() : Matrix
     {
-        return [$this->weights];
+        return $this->computed;
+    }
+
+    /**
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function errors() : Matrix
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function gradients() : Matrix
+    {
+        return $this->gradients;
     }
 
     /**
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer
+     * @param  \Rubix\Engine\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void
     {
-        for ($i = 0; $i < $previous->width(); $i++) {
-            $this->weights[$i] = $this->activationFunction
-                ->initialize($previous->width());
-        }
+        $this->weights = MatrixFactory::zero($this->width(),
+            $previous->width())->map(function ($weight) use ($previous) {
+                return $this->activationFunction
+                    ->initialize($previous->width());
+            });
+
+        $this->previous = $previous;
     }
 
     /**
-     * Compute the input sum and activation of each nueron in the layer and return
-     * an activation vector.
+     * Compute the input sum and activation of each neuron in the layer and return
+     * an activation matrix.
      *
-     * @param  array  $inputs
-     * @return array
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function forward(array $inputs) : array
+    public function forward(Matrix $input) : Matrix
     {
-        $this->inputs = $inputs;
-        $activation = 0.0;
-        $z = 0.0;
+        $activations = $this->previous->forward($input);
 
-        foreach ($inputs as $i => $input) {
-            $z += $this->weights[$i] * $input;
-        }
+        $this->z = $this->weights->multiply($activations);
 
-        $activation = $this->activationFunction->compute($z);
+        $this->computed = $this->activationFunction->compute($this->z);
 
-        $this->z = $z;
-        $this->computed = $activation;
-
-        $outcome = $this->labels[($activation >= 0 ? 1 : -1)];
-
-        return [$outcome => abs($activation)];
+        return $this->computed;
     }
 
     /**
-     * Calculate the error for each neuron based on the outcome and return a
-     * gradient vector.
+     * Calculate the errors and gradients for each output neuron.
      *
-     * @param  mixed  $outcome
+     * @param  array  $labels
+     * @return void
+     */
+    public function back(array $labels) : void
+    {
+        $errors = [[]];
+
+        foreach ($labels as $i => $label) {
+            $expected = array_search($label, $this->labels);
+
+            $errors[0][$i] = ($expected - $this->computed[0][$i])
+                + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
+        }
+
+        $this->errors = $this->activationFunction
+            ->differentiate($this->z, $this->computed)
+            ->hadamardProduct(new Matrix($errors));
+
+        $this->gradients = $this->errors->multiply($this->previous->computed()
+            ->transpose());
+
+        $this->previous->back($this);
+    }
+
+    /**
+     * Return an array with the output activations for each class.
+     *
      * @return array
      */
-    public function back($outcome) : array
+    public function activations() : array
     {
-        $gradient = [];
+        $activations = [];
 
-        $expected = array_search($outcome, $this->labels);
+        foreach ($this->computed->getMatrix() as $i => $neuron) {
+            foreach ($neuron as $j => $activation) {
+                $class = $this->labels[($activation >= 0 ? 1 : -1)];
 
-        $slope = $this->activationFunction
-            ->differentiate($this->z, $this->computed);
+                $activations[$j][$class] = $activation;
+            }
+        }
 
-        $error = $slope * ($expected - $this->computed)
-            + 0.5 * $this->alpha * array_sum($this->weights) ** 2;
-
-         foreach ($this->weights as $i => $weight) {
-             $gradient[$i] = $error * $this->inputs[$i];
-         }
-
-         return [[$error], [$gradient]];
+        return $activations;
     }
 
     /**
      * Update the parameters in the layer.
      *
-     * @param  array  $steps
+     * @param  \MathPHP\LinearAlgebra\Matrix  $steps
      * @return void
      */
-    public function update(array $steps) : void
+    public function update(Matrix $steps) : void
     {
-        foreach ($this->weights as $i => &$weight) {
-            $weight += $steps[0][$i];
-        }
+        $this->weights = $this->weights->add($steps);
     }
 
     /**
-     * Set the parameters in the layer.
+     * Restore the parameters in the layer.
      *
-     * @param  array  $weights
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function setParameters(array $weights) : void
+    public function restore(Matrix $weights) : void
     {
-        foreach ($this->weights as $i => &$weight) {
-            $weight = $weights[0][$i];
-        }
+        $this->weights = $weights;
     }
 }

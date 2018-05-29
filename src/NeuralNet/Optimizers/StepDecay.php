@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
+use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
 class StepDecay implements Optimizer
@@ -23,11 +24,9 @@ class StepDecay implements Optimizer
     /**
      * The number of steps each parameter has taken. i.e. the number of updates.
      *
-     * @var array
+     * @var int
      */
-    protected $counts = [
-        //
-    ];
+    protected $steps;
 
     /**
      * @param  float  $rate
@@ -37,8 +36,9 @@ class StepDecay implements Optimizer
      */
     public function __construct(float $rate = 0.001, float $decay = 1e-8)
     {
-        if (!$rate > 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set to a positive value.');
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('The learning rate must be set'
+                . ' to a positive value.');
         }
 
         $this->rate = $rate;
@@ -46,32 +46,28 @@ class StepDecay implements Optimizer
     }
 
     /**
-     * Calculate the step size for each parameter in the network.
+     * Initialize the optimizer for a particular layer.
      *
-     * @param  array  $gradients
-     * @return array
+     * @param  \Rubix\Engine\NeuralNet\Network  $network
+     * @return void
      */
-    public function step(array $gradients) : array
+    public function initialize(Parametric $layer) : void
     {
-        $steps = [[[]]];
+        $this->steps = 0;
+    }
 
-        foreach ($gradients as $i => $layer) {
-            foreach ($layer as $j => $neuron) {
-                foreach ($neuron as $k => $gradient) {
-                    if (!isset($this->counts[$i][$j][$k])) {
-                        $this->counts[$i][$j][$k] = 0.0;
-                    }
+    /**
+     * Calculate the step for a parametric layer.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function step(Parametric $layer) : Matrix
+    {
+        $this->steps++;
 
-                    if ($gradient !== 0.0) {
-                        $this->counts[$i][$j][$k]++;
-                    }
-
-                    $steps[$i][$j][$k] = $this->rate * $gradient
-                        * (1 / (1 + $this->decay * $this->counts[$i][$j][$k]));
-                }
-            }
-        }
-
-        return $steps;
+        return $layer->gradients()
+            ->scalarMultiply((1 / (1 + $this->decay * $this->steps)))
+            ->scalarMultiply($this->rate);
     }
 }

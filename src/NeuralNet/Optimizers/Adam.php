@@ -2,7 +2,11 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\Engine\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 class Adam implements Optimizer
 {
@@ -14,7 +18,7 @@ class Adam implements Optimizer
     protected $rate;
 
     /**
-     * The decay rate of the momentum.
+     * The decay rate of the momentum property.
      *
      * @var float
      */
@@ -28,13 +32,18 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
-     * A cache of the current rms and velocities of each synapse.
+     * The RMS matrices for each layer.
      *
-     * @var array
+     * @var \SplObjectStorage
      */
-    protected $cache = [
-        //
-    ];
+    protected $cache;
+
+    /**
+     * The velocity matrices per layer.
+     *
+     * @var \SplObjectStorage
+     */
+    protected $velocities;
 
     /**
      * @param  float  $rate
@@ -45,54 +54,74 @@ class Adam implements Optimizer
      */
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
-        if (!$rate > 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set to a positive value.');
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('The learning rate must be set'
+                . ' to a positive value.');
         }
 
         if ($momentumDecay < 0.0 or $momentumDecay > 1.0) {
-            throw new InvalidArgumentException('Momentum decay parameter must be a float between 0 and 1.');
+            throw new InvalidArgumentException('Momentum decay must be between'
+                . ' 0 and 1.');
         }
 
         if ($rmsDecay < 0.0 or $rmsDecay > 1.0) {
-            throw new InvalidArgumentException('RMS decay parameter must be a float between 0 and 1.');
+            throw new InvalidArgumentException('RMS decay rate must be between'
+                . ' 0 and 1.');
         }
 
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
+        $this->velocities = new SplObjectStorage();
+        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Calculate the step size for each parameter in the network.
+     * Initialize the optimizer for a particular layer.
      *
-     * @param  array  $gradients
-     * @return array
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return void
      */
-    public function step(array $gradients) : array
+    public function initialize(Parametric $layer) : void
     {
-        $steps = [[[]]];
+        $this->velocities->attach($layer, MatrixFactory::zero($layer->weights()
+            ->getM(), $layer->weights()->getN()));
 
-        foreach ($gradients as $i => $layer) {
-            foreach ($layer as $j => $neuron) {
-                foreach ($neuron as $k => $gradient) {
-                    if (!isset($this->cache[$i][$j][$k])) {
-                        $this->cache[$i][$j][$k] = [0.0, 0.0];
-                    }
+        $this->cache->attach($layer, MatrixFactory::zero($layer->weights()
+            ->getM(), $layer->weights()->getN()));
+    }
 
-                    $this->cache[$i][$j][$k] = [
-                        $this->momentumDecay * $this->cache[$i][$j][$k][0]
-                            + (1 - $this->momentumDecay) * $gradient,
+    /**
+     * Calculate the step for a parametric layer.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function step(Parametric $layer) : Matrix
+    {
+        $velocities = $this->velocities[$layer]
+            ->scalarMultiply($this->momentumDecay)
+            ->add($layer->gradients()
+                ->scalarMultiply(1 - $this->momentumDecay));
 
-                        $this->rmsDecay * $this->cache[$i][$j][$k][1]
-                            + (1 - $this->rmsDecay) * $gradient ** 2,
-                    ];
+        $cache = $this->cache[$layer]
+            ->scalarMultiply($this->rmsDecay)
+            ->add($layer->gradients()
+                ->hadamardProduct($layer->gradients()
+                ->scalarMultiply(1 - $this->rmsDecay)));
 
-                    $steps[$i][$j][$k] = $this->rate * $this->cache[$i][$j][$k][0]
-                        / (sqrt($this->cache[$i][$j][$k][1]) + self::EPSILON);
-                }
+        $steps = [];
+
+        foreach ($layer->gradients()->getMatrix() as $i => $row) {
+            foreach ($row as $j => $column) {
+                $steps[$i][$j] = $this->rate * $velocities[$i][$j]
+                    / (sqrt($cache[$i][$j]) + self::EPSILON);
             }
         }
 
-        return $steps;
+        $this->velocities[$layer] = $velocities;
+        $this->cache[$layer] = $cache;
+
+        return new Matrix($steps);
     }
 }

@@ -13,7 +13,7 @@
         "php": ">=7.1.3",
         "league/climate": "^3.3",
         "league/csv": "^9.1",
-        "markrogoyski/math-php": "^0.40.0"
+        "markrogoyski/math-php": "^0.43.0"
     },
     "require-dev": {
         "phpunit/phpunit": "7.0.*"

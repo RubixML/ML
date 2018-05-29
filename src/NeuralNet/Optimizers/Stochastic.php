@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
+use MathPHP\LinearAlgebra\Matrix;
+use Rubix\Engine\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
 
 class Stochastic implements Optimizer
@@ -20,31 +22,33 @@ class Stochastic implements Optimizer
      */
     public function __construct(float $rate = 0.001)
     {
-        if (!$rate > 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set to a positive value.');
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('The learning rate must be set'
+                . ' to a positive value.');
         }
 
         $this->rate = $rate;
     }
 
     /**
-     * Calculate the step size for each parameter in the network.
+     * Initialize the optimizer for a particular layer.
      *
-     * @param  array  $gradients
-     * @return array
+     * @param  \Rubix\Engine\NeuralNet\Network  $network
+     * @return void
      */
-    public function step(array $gradients) : array
+    public function initialize(Parametric $layer) : void
     {
-        $steps = [];
+        //
+    }
 
-        foreach ($gradients as $i => $layer) {
-            foreach ($layer as $j => $neuron) {
-                foreach ($neuron as $k => $gradient) {
-                    $steps[$i][$j][$k] = $this->rate * $gradient;
-                }
-            }
-        }
-
-        return $steps;
+    /**
+     * Calculate the step for a parametric layer.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function step(Parametric $layer) : Matrix
+    {
+        return $layer->gradients()->scalarMultiply($this->rate);
     }
 }

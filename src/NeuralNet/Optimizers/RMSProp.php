@@ -2,7 +2,11 @@
 
 namespace Rubix\Engine\NeuralNet\Optimizers;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\Engine\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 class RMSProp implements Optimizer
 {
@@ -14,18 +18,18 @@ class RMSProp implements Optimizer
     protected $rate;
 
     /**
+     * The decay rate parameter.
+     *
      * @var float
      */
     protected $decay;
 
     /**
-     * A cache of the sums of squared gradients for each synapse.
+     * A cache of the sums of squared gradients for each layer.
      *
-     * @var array
+     * @var \SplObjectStorage
      */
-    protected $cache = [
-        //
-    ];
+    protected $cache;
 
     /**
      * @param  float  $rate
@@ -35,45 +39,58 @@ class RMSProp implements Optimizer
      */
     public function __construct(float $rate = 0.001, float $decay = 0.9)
     {
-        if (!$rate > 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set to a positive value.');
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('The learning rate must be set'
+                . ' to a positive value.');
         }
 
         if ($decay < 0.0 or $decay > 1.0) {
-            throw new InvalidArgumentException('Decay parameter must be a float value between 0 and 1.');
+            throw new InvalidArgumentException('Decay rate must be between 0'
+                . ' and 1.');
         }
 
         $this->rate = $rate;
         $this->decay = $decay;
+        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Calculate the step size for each parameter in the network.
+     * Initialize the optimizer for a particular layer.
      *
-     * @param  array  $gradients
-     * @return array
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return void
      */
-    public function step(array $gradients) : array
+    public function initialize(Parametric $layer) : void
     {
-        $steps = [[[]]];
+        $this->cache->attach($layer, MatrixFactory::zero($layer->weights()
+            ->getM(), $layer->weights()->getN()));
+    }
 
-        foreach ($gradients as $i => $layer) {
-            foreach ($layer as $j => $neuron) {
-                foreach ($neuron as $k => $gradient) {
-                    if (!isset($this->cache[$i][$j][$k])) {
-                        $this->cache[$i][$j][$k] = 0.0;
-                    }
+    /**
+     * Calculate the step for a parametric layer.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function step(Parametric $layer) : Matrix
+    {
+        $cache = $this->cache[$layer]
+            ->scalarMultiply($this->decay)
+            ->add($layer->gradients()
+                ->hadamardProduct($layer->gradients()
+                ->scalarMultiply(1 - $this->decay)));
 
-                    $this->cache[$i][$j][$k] = $this->decay * $this->cache[$i][$j][$k]
-                        + (1 - $this->decay)
-                        * $gradient ** 2;
+        $steps = [];
 
-                    $steps[$i][$j][$k] = $this->rate * $gradient
-                        / (sqrt($this->cache[$i][$j][$k]) + self::EPSILON);
-                }
+        foreach ($layer->gradients()->getMatrix() as $i => $row) {
+            foreach ($row as $j => $column) {
+                $steps[$i][$j] = $this->rate * $column
+                    / (sqrt($cache[$i][$j]) + self::EPSILON);
             }
         }
 
-        return $steps;
+        $this->cache[$layer] = $cache;
+
+        return new Matrix($steps);
     }
 }

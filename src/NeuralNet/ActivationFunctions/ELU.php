@@ -2,6 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
 class ELU implements ActivationFunction
@@ -22,7 +23,8 @@ class ELU implements ActivationFunction
     public function __construct(float $alpha = 1.0)
     {
         if ($alpha < 0) {
-            throw new InvalidArgumentException('Alpha parameter must be a positive value.');
+            throw new InvalidArgumentException('Alpha parameter must be a'
+                . ' positive value.');
         }
 
         $this->alpha = $alpha;
@@ -31,36 +33,39 @@ class ELU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param  float  $value
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function compute(float $value) : float
+    public function compute(Matrix $z) : Matrix
     {
-        return $value >= 0.0 ? $value : $this->alpha * (exp($value) - 1);
+        return $z->map(function ($value) {
+            return $value >= 0.0 ? $value : $this->alpha * (exp($value) - 1);
+        });
     }
 
     /**
-     * Calculate the partial derivative with respect to the computed output.
+     * Calculate the derivative of the activation function at a given output.
      *
-     * @param  float  $value
-     * @param  float  $computed
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function differentiate(float $value, float $computed) : float
+    public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed >= 0.0 ? 1.0 : $computed + $this->alpha;
+        return $computed->map(function ($output) {
+            return $output >= 0.0 ? 1.0 : $output + $this->alpha;
+        });
     }
 
     /**
-     * Generate an initial synapse weight range based on n, the number of inputs
-     * to a particular neuron.
+     * Generate an initial synapse weight range.
      *
-     * @param  int  $inDegree
+     * @param  int  $in
      * @return float
      */
-    public function initialize(int $inDegree) : float
+    public function initialize(int $in) : float
     {
-        $r = pow(6 / $inDegree, 1 / self::ROOT_2);
+        $r = pow(6 / $in, 1 / self::ROOT_2);
 
         $scale = pow(10, 10);
 

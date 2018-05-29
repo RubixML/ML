@@ -3,7 +3,6 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
-use Rubix\Engine\GridSearch;
 use Rubix\Engine\PersistentModel;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Clusterers\KMeans;
@@ -11,6 +10,7 @@ use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\CrossValidation\KFold;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Metrics\Validation\Homogeneity;
+use Rubix\Engine\Transformers\ZScaleStandardizer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\ContingencyTable;
@@ -36,6 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new KMeans(3), [
     new NumericStringConverter(),
+    new ZScaleStandardizer(),
 ]);
 
 $validator = new KFold(new Homogeneity(), 10);

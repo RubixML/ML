@@ -2,6 +2,8 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
 class Input implements Layer
@@ -29,7 +31,7 @@ class Input implements Layer
     }
 
     /**
-     * Return the width of the layer.
+     * Return the width of the input layer.
      *
      * @var int
      */
@@ -39,21 +41,42 @@ class Input implements Layer
     }
 
     /**
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function computed() : Matrix
+    {
+        return $this->computed;
+    }
+
+    /**
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *
-     * @param  array  $sample
-     * @return array
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function forward(array $sample) : array
+    public function forward(Matrix $input) : Matrix
     {
-        if (count($sample) !== $this->inputs) {
-            throw new InvalidArgumentException('The number of sample features'
-            . ' must equal the number of inputs.');
+        if ($input->getM() !== $this->inputs) {
+            throw new InvalidArgumentException('The number of feature columns'
+            . ' must equal the number of input nodes.');
         }
 
-        $sample[] = 1.0;
+        $biases = MatrixFactory::one(1, $input->getN());
 
-        return $sample;
+        $this->computed = $input->augmentBelow($biases);
+
+        return $this->computed;
+    }
+
+    /**
+     * Do nothing since placeholder layers do not have parameters.
+     *
+     * @param  \Rubix\Engine\NerualNet\Layers\Layer  $next
+     * @return void
+     */
+    public function back(Layer $next) : void
+    {
+        //
     }
 }

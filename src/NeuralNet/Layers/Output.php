@@ -5,10 +5,10 @@ namespace Rubix\Engine\NeuralNet\Layers;
 interface Output extends Parametric
 {
     /**
-     * Calculate a backward pass and return an array of erros and gradients.
+     * Calculate a backward pass of the network from the output layer.
      *
-     * @param  mixed  $outcome
-     * @return array
+     * @param  array  $labels
+     * @return void
      */
-    public function back($outcome) : array;
+    public function back(array $labels) : void;
 }

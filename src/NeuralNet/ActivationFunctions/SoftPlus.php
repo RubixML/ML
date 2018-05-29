@@ -2,41 +2,46 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use MathPHP\LinearAlgebra\Matrix;
+
 class SoftPlus implements ActivationFunction
 {
     /**
      * Compute the output value.
      *
-     * @param  float  $value
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function compute(float $value) : float
+    public function compute(Matrix $z) : Matrix
     {
-        return log(1 + exp($value));
+        return $z->map(function ($value) {
+            return log(1 + exp($value));
+        });
     }
 
     /**
-     * Calculate the partial derivative with respect to the computed output.
+     * Calculate the derivative of the activation function at a given output.
      *
-     * @param  float  $value
-     * @param  float  $computed
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function differentiate(float $value, float $computed) : float
+    public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return 1 / (1 + exp(-$computed));
+        return $computed->map(function ($output) {
+            return 1 / (1 + exp(-$output));
+        });
     }
 
     /**
-     * Generate an initial synapse weight range based on n, the number of inputs
-     * to a particular neuron.
+     * Generate an initial synapse weight range.
      *
-     * @param  int  $inDegree
+     * @param  int  $in
      * @return float
      */
-    public function initialize(int $inDegree) : float
+    public function initialize(int $in) : float
     {
-        $r = pow(6 / $inDegree, 1 / self::ROOT_2);
+        $r = pow(6 / $in, 1 / self::ROOT_2);
 
         $scale = pow(10, 10);
 

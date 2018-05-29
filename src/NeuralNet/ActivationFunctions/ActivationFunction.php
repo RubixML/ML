@@ -2,35 +2,35 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
-use Rubix\Engine\NeuralNet\Synapse;
+use MathPHP\LinearAlgebra\Matrix;
 
 interface ActivationFunction
 {
     const ROOT_2 = 1.41421356237;
 
     /**
-     * Compute the activation of the neuron.
+     * Compute the output value.
      *
-     * @param  float  $value
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function compute(float $value) : float;
+    public function compute(Matrix $z) : Matrix;
 
     /**
-     * Compute the derivative.
+     * Calculate the derivative of the activation function at a given output.
      *
-     * @param  float  $value
-     * @param  float  $computed
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function differentiate(float $value, float $computed) : float;
+    public function differentiate(Matrix $z, Matrix $computed) : Matrix;
 
 
     /**
      * Generate an initial synapse weight range.
      *
-     * @param  int  $inDegree
+     * @param  int  $in
      * @return float
      */
-    public function initialize(int $inDegree) : float;
+    public function initialize(int $in) : float;
 }

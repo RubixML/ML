@@ -1,15 +1,20 @@
 <?php
 
+use MathPHP\LinearAlgebra\Matrix;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class ELUTest extends TestCase
 {
+    protected $input;
+
     protected $activationFunction;
 
     public function setUp()
     {
+        $this->input = new Matrix([[1.0], [-0.5]]);
+
         $this->activationFunction = new ELU(1.0);
     }
 
@@ -21,13 +26,19 @@ class ELUTest extends TestCase
 
     public function test_compute()
     {
-        $this->assertEquals(1.0, $this->activationFunction->compute(1.0));
-        $this->assertEquals(-0.3934693402873666, $this->activationFunction->compute(-0.5));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $this->assertEquals(1.0, $activations[0][0]);
+        $this->assertEquals(-0.3934693402873666, $activations[1][0]);
     }
 
     public function test_differentiate()
     {
-        $this->assertEquals(1.0, $this->activationFunction->differentiate(1.0, 1.0));
-        $this->assertEquals(0.6065306597126334, $this->activationFunction->differentiate(-0.5, -0.3934693402873666));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $slopes = $this->activationFunction->differentiate($this->input, $activations);
+
+        $this->assertEquals(1.0, $slopes[0][0]);
+        $this->assertEquals(0.6065306597126334, $slopes[1][0]);
     }
 }

@@ -5,11 +5,10 @@ namespace Rubix\Engine\NeuralNet\Layers;
 interface Hidden extends Parametric
 {
     /**
-     * Backpropagate the error from the previous layer.
+     * Calculate the errors and gradients of the layer for each neuron.
      *
-     * @param  array  $previousWeights
-     * @param  array  $previousErrors
-     * @return array
+     * @param  \Rubix\Engine\NerualNet\Layers\Layer  $next
+     * @return void
      */
-    public function back(array $previousWeights, array $previousErrors) : array;
+    public function back(Layer $next) : void;
 }

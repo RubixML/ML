@@ -1,15 +1,20 @@
 <?php
 
+use MathPHP\LinearAlgebra\Matrix;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class PReLUTest extends TestCase
 {
+    protected $input;
+
     protected $activationFunction;
 
     public function setUp()
     {
+        $this->input = new Matrix([[1.0], [-0.5]]);
+
         $this->activationFunction = new PReLU(0.01);
     }
 
@@ -21,13 +26,19 @@ class PReLUTest extends TestCase
 
     public function test_compute()
     {
-        $this->assertEquals(1.0, $this->activationFunction->compute(1.0));
-        $this->assertEquals(-0.005, $this->activationFunction->compute(-0.5));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $this->assertEquals(1.0, $activations[0][0]);
+        $this->assertEquals(-0.005, $activations[1][0]);
     }
 
     public function test_differentiate()
     {
-        $this->assertEquals(1.0, $this->activationFunction->differentiate(1.0, 1.0));
-        $this->assertEquals(0.01, $this->activationFunction->differentiate(-0.5, -0.005));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $slopes = $this->activationFunction->differentiate($this->input, $activations);
+
+        $this->assertEquals(1.0, $slopes[0][0]);
+        $this->assertEquals(0.01, $slopes[1][0]);
     }
 }

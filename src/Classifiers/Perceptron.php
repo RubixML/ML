@@ -94,30 +94,17 @@ class Perceptron implements Supervised, BinaryClassifier, Persistable
         $this->network = new Network(new Input($dataset->numColumns()),
             [], new Binary($dataset->possibleOutcomes(), $this->alpha));
 
-        $this->network->initialize();
-
-        $template = [1 => [array_fill(0, $this->network->input()->width(), 0.0)]];
+        foreach ($this->network->initialize()->parametric() as $layer) {
+            $this->optimizer->initialize($layer);
+        }
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            foreach ($this->generateMiniBatches(clone $dataset) as $batch) {
-                $accumulated = $template;
+            foreach ($dataset->randomize()->batch($this->batchSize) as $batch) {
+                $this->network->feed($batch->samples())
+                    ->backpropagate($batch->labels());
 
-                foreach ($batch as $index => $sample) {
-                    $this->network->feed($sample);
-
-                    $gradients = $this->network->backpropagate($batch->outcome($index));
-
-                    foreach ($gradients as $i => $layer) {
-                        foreach ($layer as $j => $neuron) {
-                            foreach ($neuron as $k => $gradient) {
-                                $accumulated[$i][$j][$k] += $gradient;
-                            }
-                        }
-                    }
-
-                    $steps = $this->optimizer->step($accumulated);
-
-                    $this->network->output()->update($steps[1]);
+                foreach ($this->network->parametric() as $layer) {
+                    $layer->update($this->optimizer->step($layer));
                 }
             }
         }
@@ -131,33 +118,16 @@ class Perceptron implements Supervised, BinaryClassifier, Persistable
      */
     public function predict(Dataset $samples) : array
     {
+        $this->network->feed($samples->samples());
+
         $predictions = [];
 
-        foreach ($samples as $sample) {
-            $activations = $this->network->feed($sample);
-
-            $predictions[] = current(array_keys($activations));
+        foreach ($this->network->output()->activations() as $activations) {
+            foreach ($activations as $class => $activation) {
+                $predictions[] = $class;
+            }
         }
 
         return $predictions;
-    }
-
-    /**
-     * Generate a collection of mini batches from the training data.
-     *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
-     * @return array
-     */
-    protected function generateMiniBatches(Labeled $dataset) : array
-    {
-        $batches = [];
-
-        $dataset->randomize();
-
-        while (!$dataset->isEmpty()) {
-            $batches[] = $dataset->take($this->batchSize);
-        }
-
-        return $batches;
     }
 }

@@ -2,14 +2,19 @@
 
 namespace Rubix\Engine\NeuralNet;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\Engine\NeuralNet\Layers\Layer;
 use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\NeuralNet\Layers\Hidden;
 use Rubix\Engine\NeuralNet\Layers\Output;
+use Rubix\Engine\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
 use RuntimeException;
+use ArrayAccess;
+use Countable;
 
-class Network
+class Network implements ArrayAccess, Countable
 {
     /**
      * The layers of the network.
@@ -32,8 +37,8 @@ class Network
 
         foreach ($hidden as $layer) {
             if (!$layer instanceof Hidden) {
-                throw new InvalidArgumentException('Hidden layers must only extend the Hidden class, '
-                    . get_class($layer) . ' found.');
+                throw new InvalidArgumentException('Cannot use '
+                    . get_class($layer) . ' as a hidden layer.');
             }
 
             $this->layers[] = $layer;
@@ -79,7 +84,7 @@ class Network
      */
     public function parametric() : array
     {
-        return array_slice($this->layers, 1, count($this->layers), true);
+        return array_slice($this->layers, 1);
     }
 
     /**
@@ -96,53 +101,38 @@ class Network
      * Feed a sample through the network and return the output activations
      * of each output neuron.
      *
-     * @param  array  $sample
-     * @return array
+     * @param  array  $samples
+     * @return self
      */
-    public function feed(array $sample) : array
+    public function feed(array $samples) : self
     {
-        $activations = $sample;
+        $input = MatrixFactory::create($samples)->transpose();
 
-        foreach ($this->layers as $layer) {
-            $activations = $layer->forward($activations);
-        }
+        $this->output()->forward($input);
 
-        return $activations;
+        return $this;
     }
 
     /**
      * Backpropagate the error determined by the given outcome and return the
      * gradients at each layer.
      *
-     * @param  mixed  $outcome
-     * @return array
+     * @param  array  $labels
+     * @return self
      */
-    public function backpropagate($outcome) : array
+    public function backpropagate(array $labels) : self
     {
-        $layers = [];
+        $this->output()->back($labels);
 
-        foreach (array_reverse($this->parametric(), true) as $i => $layer) {
-            if ($layer instanceof Output) {
-                list($errors, $gradients) = $layer->back($outcome);
-            } else {
-                list($errors, $gradients) = $layer->back($previousWeights, $previousErrors);
-            }
-
-            $previousWeights = $layer->parameters();
-            $previousErrors = $errors;
-
-            $layers[$i] = $gradients;
-        }
-
-        return $layers;
+        return $this;
     }
 
     /**
-     * Randomize the weights for all synapses in the network.
+     * Initialize the weights for all synapses in the network.
      *
-     * @return void
+     * @return self
      */
-    public function initialize() : void
+    public function initialize() : self
     {
         for ($i = 1; $i < count($this->layers); $i++) {
             $current = $this->layers[$i];
@@ -150,19 +140,22 @@ class Network
 
             $current->initialize($previous);
         }
+
+        return $this;
     }
 
     /**
-     * Return an array of paramters. i.e. the weights of each synapse in the network.
+     * Read the weight paramters of the network and return an array of weight
+     * matrices.
      *
      * @return array
      */
-    public function readParameters() : array
+    public function read() : array
     {
         $layers = [];
 
         foreach ($this->parametric() as $i => $layer) {
-            $layers[$i] = $layer->parameters();
+            $layers[$i] = $layer->weights();
         }
 
         return $layers;
@@ -175,10 +168,66 @@ class Network
      * @param  array  $parameters
      * @return void
      */
-    public function restoreParameters(array $parameters) : void
+    public function restore(array $parameters) : void
     {
         foreach ($this->parametric() as $i => $layer) {
-            $layer->setParameters($parameters[$i]);
+            $layer->restore($parameters[$i]);
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function count() : int
+    {
+        return $this->depth();
+    }
+
+    /**
+     * @param  mixed  $index
+     * @param  array  $values
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function offsetSet($index, $values) : void
+    {
+        throw new RuntimeException('Network layers cannot be mutated directly.');
+    }
+
+    /**
+     * Does a given layer exist in the network.
+     *
+     * @param  mixed  $index
+     * @return bool
+     */
+    public function offsetExists($index) : bool
+    {
+        return isset($this->layers[$index]);
+    }
+
+    /**
+     * @param  mixed  $index
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function offsetUnset($index) : void
+    {
+        throw new RuntimeException('Network layers cannot be mutated directly.');
+    }
+
+    /**
+     * Return a layer from the network given by index.
+     *
+     * @param  mixed  $index
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function offsetGet($index) : array
+    {
+        if (!isset($this->layers[$index])) {
+            throw new InvalidArgumentException('Network layer does not exist.');
+        }
+
+        return $this->layers[$index];
     }
 }

@@ -36,7 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new Perceptron(10, 5, new Adam(0.001), 0.0), [
+$estimator = new Pipeline(new Perceptron(30, 10, new Adam(0.001), 1e-4), [
     new NumericStringConverter(),
 ]);
 

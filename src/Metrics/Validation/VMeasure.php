@@ -2,10 +2,11 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
-class VScore implements Clustering
+class VMeasure implements Clustering
 {
     /**
-     * Calculate the completeness of a clustering.
+     * Calculate the V score of a clustering. V Score is the harmonic mean of
+     * homogeneity and completness.
      *
      * @param  array  $predictions
      * @param  array  $labels

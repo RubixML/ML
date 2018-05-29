@@ -2,39 +2,42 @@
 
 namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
+use MathPHP\LinearAlgebra\Matrix;
+use MathPHP\LinearAlgebra\MatrixFactory;
+
 class Identity implements ActivationFunction
 {
     /**
-     * Compute the indentity of the input. i.e. the input value is the output.
+     * Compute the output value.
      *
-     * @param  float  $value
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function compute(float $value) : float
+    public function compute(Matrix $z) : Matrix
     {
-        return $value;
+        return $z;
     }
 
     /**
-     * Calculate the partial derivative with respect to the computed output.
+     * Calculate the derivative of the activation function at a given output.
      *
-     * @param  float  $value
-     * @param  float  $computed
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $z
+     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function differentiate(float $value, float $computed) : float
+    public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return 1.0;
+        return MatrixFactory::one($computed->getM(), $computed->getN());
     }
 
     /**
-     * Generate an initial synapse weight range based on n, the number of inputs
-     * to a particular neuron.
+     * Generate an initial synapse weight range based on the indegree of a
+     * single neuron. i.e. the number of inputs it has.
      *
      * @param  int  $inDegree
      * @return float
      */
-    public function initialize(int $inDegree) : float
+    public function initialize(int $in) : float
     {
         $scale = pow(10, 10);
 

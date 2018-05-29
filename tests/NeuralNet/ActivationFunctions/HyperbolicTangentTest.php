@@ -1,15 +1,20 @@
 <?php
 
+use MathPHP\LinearAlgebra\Matrix;
 use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class HyperbolicTangentTest extends TestCase
 {
+    protected $input;
+
     protected $activationFunction;
 
     public function setUp()
     {
+        $this->input = new Matrix([[1.0], [-0.5]]);
+
         $this->activationFunction = new HyperbolicTangent();
     }
 
@@ -21,13 +26,19 @@ class HyperbolicTangentTest extends TestCase
 
     public function test_compute()
     {
-        $this->assertEquals(0.7615941559557649, $this->activationFunction->compute(1.0));
-        $this->assertEquals(-0.46211715726000974, $this->activationFunction->compute(-0.5));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $this->assertEquals(0.7615941559557649, $activations[0][0]);
+        $this->assertEquals(-0.46211715726000974, $activations[1][0]);
     }
 
     public function test_differentiate()
     {
-        $this->assertEquals(0.41997434161402614, $this->activationFunction->differentiate(1.0, 0.7615941559557649));
-        $this->assertEquals(0.7864477329659274, $this->activationFunction->differentiate(-0.5, -0.46211715726000974));
+        $activations = $this->activationFunction->compute($this->input);
+
+        $slopes = $this->activationFunction->differentiate($this->input, $activations);
+
+        $this->assertEquals(0.41997434161402614, $slopes[0][0]);
+        $this->assertEquals(0.7864477329659274, $slopes[1][0]);
     }
 }

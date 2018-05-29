@@ -35,8 +35,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             $sample = array_values((array) $sample);
 
             if (count($sample) !== count(current($samples))) {
-                throw new InvalidArgumentException('The number of feature columns'
-                 . ' must be equal for all samples.');
+                throw new InvalidArgumentException('The number of feature'
+                    . ' columns must be equal for all samples.');
             }
 
             foreach ($sample as &$feature) {
@@ -92,12 +92,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function column($index) : array
     {
-        if (!$this->offsetExists($index)) {
-            throw new RuntimeException('Feature column not found at the given'
-            . ' index ' . (string) $index . '.');
-        }
-
-        return array_column($this->samples, $index);
+        return $this->offsetGet($index);
     }
 
     /**
@@ -194,25 +189,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a column from the dataset given by index or if an array is passed
-     * return an array of columns by their index.
+     * Return a column from the dataframe given by index.
      *
-     * @param  mixed  $indices
+     * @param  mixed  $index
+     * @throws \InvalidArgumentException
      * @return array
      */
-    public function offsetGet($indices) : array
+    public function offsetGet($index) : array
     {
-        if (is_array($indices)) {
-            $columns = [];
-
-            foreach ($indices as $index) {
-                $columns[] = $this->column($index);
-            }
-
-            return $columns;
+        if (!$this->offsetExists($index)) {
+            throw new InvalidArgumentException('Feature column does not exist.');
         }
 
-        return $this->column($indices);
+        return array_column($this->samples, $index);
     }
 
     /**
