@@ -5,17 +5,17 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Classifiers\Perceptron;
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\DummyClassifier;
+use Rubix\Engine\Classifiers\LogisticRegression;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Counterfeit Detector using Perceptron               ║' . "\n";
+echo '║ Counterfeit Detector using Logistic Regression      ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -36,7 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new Perceptron(30, 10, new Adam(0.001), 1e-4), [
+$estimator = new Pipeline(new LogisticRegression(30, 10, new Adam(0.001), 1e-4), [
     new NumericStringConverter(),
 ]);
 

@@ -8,6 +8,8 @@ interface ActivationFunction
 {
     const ROOT_2 = 1.41421356237;
 
+    const EPSILON = 1e-8;
+
     /**
      * Compute the output value.
      *

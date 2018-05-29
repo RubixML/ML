@@ -4,7 +4,7 @@ namespace Rubix\Engine\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
 class Binary implements Output
@@ -14,7 +14,7 @@ class Binary implements Output
      *
      * @var array
      */
-    protected $labels = [
+    protected $classes = [
         //
     ];
 
@@ -82,15 +82,15 @@ class Binary implements Output
      */
     public function __construct(array $labels, float $alpha = 1e-4)
     {
-        $labels = array_values(array_unique($labels));
+        $labels = array_unique($labels);
 
         if (count($labels) !== 2) {
             throw new InvalidArgumentException('The number of unique class'
                 . ' labels must be exactly 2.');
         }
 
-        $this->labels = [1 => $labels[0], -1 => $labels[1]];
-        $this->activationFunction = new HyperbolicTangent();
+        $this->classes = array_values($labels);
+        $this->activationFunction = new Sigmoid();
         $this->alpha = $alpha;
     }
 
@@ -181,7 +181,7 @@ class Binary implements Output
         $errors = [[]];
 
         foreach ($labels as $i => $label) {
-            $expected = array_search($label, $this->labels);
+            $expected = array_search($label, $this->classes);
 
             $errors[0][$i] = ($expected - $this->computed[0][$i])
                 + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
@@ -208,7 +208,7 @@ class Binary implements Output
 
         foreach ($this->computed->getMatrix() as $i => $neuron) {
             foreach ($neuron as $j => $activation) {
-                $class = $this->labels[($activation >= 0 ? 1 : -1)];
+                $class = $this->classes[($activation >= 0.5 ? 1 : 0)];
 
                 $activations[$j][$class] = $activation;
             }

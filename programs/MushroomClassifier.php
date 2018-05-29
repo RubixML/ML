@@ -42,13 +42,16 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new MultiLayerPerceptron([
+$hidden = [
     new Dense(10, new PReLU()),
     new Dense(10, new PReLU()),
     new Dense(10, new PReLU()),
-], 10, new Adam(0.001), 1e-4, 0.999, new MCC(), 0.2, 3, 30), [
-    new OneHotEncoder(),
-]);
+];
+
+$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 10, new Adam(0.001),
+    1e-4, 0.999, new MCC(), 0.2, 3, 30), [
+        new OneHotEncoder(),
+    ]);
 
 $report = new ReportGenerator(new AggregateReport([
     new ConfusionMatrix(),

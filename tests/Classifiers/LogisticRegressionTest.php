@@ -4,12 +4,12 @@ use Rubix\Engine\Estimator;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\Perceptron;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\BinaryClassifier;
+use Rubix\Engine\Classifiers\LogisticRegression;
 use PHPUnit\Framework\TestCase;
 
-class PerceptronTest extends TestCase
+class LogisticRegressionTest extends TestCase
 {
     protected $estimator;
 
@@ -42,12 +42,12 @@ class PerceptronTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new Perceptron(50, 3, new Adam(0.001), 0.0);
+        $this->estimator = new LogisticRegression(50, 3, new Adam(0.001), 0.0);
     }
 
     public function test_build_perceptron_classifier()
     {
-        $this->assertInstanceOf(Perceptron::class, $this->estimator);
+        $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(BinaryClassifier::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

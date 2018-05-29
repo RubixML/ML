@@ -14,7 +14,7 @@ use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class Perceptron implements Supervised, BinaryClassifier, Persistable
+class LogisticRegression implements Supervised, BinaryClassifier, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate

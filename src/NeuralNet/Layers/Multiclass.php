@@ -4,7 +4,7 @@ namespace Rubix\Engine\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Softmax;
 use InvalidArgumentException;
 
 class Multiclass implements Output
@@ -90,7 +90,7 @@ class Multiclass implements Output
         }
 
         $this->classes = $classes;
-        $this->activationFunction = new Sigmoid();
+        $this->activationFunction = new Softmax();
         $this->alpha = $alpha;
     }
 
