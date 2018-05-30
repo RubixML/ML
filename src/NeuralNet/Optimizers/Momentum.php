@@ -80,6 +80,6 @@ class Momentum implements Optimizer
 
         $this->velocities[$layer] = $velocities;
 
-        return $this->velocities;
+        return $velocities;
     }
 }

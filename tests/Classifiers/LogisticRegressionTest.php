@@ -42,7 +42,7 @@ class LogisticRegressionTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new LogisticRegression(20, 1, new Adam(0.001), 1e-4);
+        $this->estimator = new LogisticRegression(20, 1, new Adam(0.01), 1e-4);
     }
 
     public function test_build_perceptron_classifier()

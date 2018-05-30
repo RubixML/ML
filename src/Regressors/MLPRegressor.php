@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\Engine\Regressors;
 
 use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
@@ -10,14 +10,14 @@ use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\NeuralNet\Layers\Hidden;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Metrics\Validation\Accuracy;
-use Rubix\Engine\NeuralNet\Layers\Multiclass;
+use Rubix\Engine\NeuralNet\Layers\Continuous;
+use Rubix\Engine\Metrics\Validation\Regression;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
-use Rubix\Engine\Metrics\Validation\Classification;
+use Rubix\Engine\Metrics\Validation\MeanSquaredError;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Persistable
+class MLPRegressor implements Supervised, Regressor, Persistable
 {
     /**
      * The hidden layer configuration of the neural net.
@@ -55,9 +55,9 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
     protected $threshold;
 
     /**
-     * The classification metric used to validate the performance of the model.
+     * The regression metric used to validate the performance of the model.
      *
-     * @var \Rubix\Engine\Metrics\Validation\Classification
+     * @var \Rubix\Engine\Metrics\Validation\Regression
      */
     protected $metric;
 
@@ -106,7 +106,7 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\Engine\Metrics\Validation\Classification|null  $metric
+     * @param  \Rubix\Engine\Metrics\Validation\Regression|null  $metric
      * @param  float $ratio
      * @param  int  $window
      * @param  int  $epochs
@@ -114,7 +114,7 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
      * @return void
      */
     public function __construct(array $hidden, int $batchSize = 10, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, Classification $metric = null, float $ratio = 0.2,
+                    float $alpha = 1e-4, Regression $metric = null, float $ratio = 0.2,
                     int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
@@ -142,7 +142,7 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
         }
 
         if (!isset($metric)) {
-            $metric = new Accuracy();
+            $metric = new MeanSquaredError();
         }
 
         $this->hidden = $hidden;
@@ -180,8 +180,7 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
         list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Multiclass($dataset->possibleOutcomes(),
-            $this->alpha));
+            $this->hidden, new Continuous($this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);
@@ -236,39 +235,19 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
      */
     public function predict(Dataset $samples) : array
     {
+        $this->network->feed($samples->samples());
+
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
-            $best = ['probability' => -INF, 'outcome' => null];
-
-            foreach ($probabilities as $class => $probability) {
-                if ($probability > $best['probability']) {
-                    $best['probability'] = $probability;
-                    $best['outcome'] = $class;
-                }
-            }
-
-            $predictions[] = $best['outcome'];
-        }
+        foreach ($this->network->output()->activations() as $activations) {
+            $predictions[] = $activations[0];
+        };
 
         return $predictions;
     }
 
     /**
-     * Output a vector of class probabilities per sample.
-     *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
-     * @return array
-     */
-    public function proba(Dataset $samples) : array
-    {
-        $this->network->feed($samples->samples());
-
-        return $this->network->output()->activations();
-    }
-
-    /**
-     * Score the training round with supplied classification metric.
+     * Score the training round with supplied regression metric.
      *
      * @param  \Rubix\Engine\Dataset\Labeled  $dataset
      * @return float

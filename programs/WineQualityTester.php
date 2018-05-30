@@ -3,20 +3,22 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
-use Rubix\Engine\Regressors\Ridge;
 use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Metrics\Validation\RSquared;
-use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\Engine\NeuralNet\Layers\Dense;
+use Rubix\Engine\Regressors\MLPRegressor;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\Transformers\ZScaleStandardizer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\Transformers\DensePolynomialExpander;
+use Rubix\Engine\Metrics\Validation\MeanSquaredError;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Tester using a Ridge Regressor                 ║' . "\n";
+echo '║ Wine Quality Tester using an MLP Regressor          ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -35,16 +37,22 @@ $labels = iterator_to_array($reader->fetchColumn('quality'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new Ridge(0.5), [
-    new NumericStringConverter(),
-    new MinMaxNormalizer(),
-    new DensePolynomialExpander(3),
-]);
+$hidden = [
+    new Dense(10, new Softmax()),
+    new Dense(30, new PReLU()),
+    new Dense(50, new PReLU()),
+];
 
-$validator = new KFold(new RSquared(), 10);
+$estimator = new Pipeline(new MLPRegressor($hidden, 10, new Adam(0.001),
+    1e-4, new MeanSquaredError(), 0.2, 3, 100), [
+        new NumericStringConverter(),
+        new ZScaleStandardizer(),
+    ]);
 
 $report = new ReportGenerator(new RegressionAnalysis(), 0.2);
 
-var_dump($validator->score($estimator, $dataset));
-
 var_dump($report->generate($estimator, $dataset));
+
+var_dump($estimator->progress());
+
+var_dump($estimator->predict($dataset->randomize()->head(5)));

@@ -12,7 +12,6 @@ use Rubix\Engine\Transformers\OneHotEncoder;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Classifiers\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
@@ -48,8 +47,8 @@ $hidden = [
     new Dense(10, new PReLU()),
 ];
 
-$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 20, new Adam(0.001),
-    1e-4, 0.999, new MCC(), 0.2, 3, 30), [
+$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 10, new Adam(0.001),
+    1e-4, new MCC(), 0.2, 3, 100), [
         new OneHotEncoder(),
     ]);
 

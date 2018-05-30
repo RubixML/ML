@@ -1,16 +1,14 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Estimator;
-use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\Classifiers\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use PHPUnit\Framework\TestCase;
-use League\Csv\Reader;
 
 class MultiLayerPerceptronTest extends TestCase
 {
@@ -47,7 +45,7 @@ class MultiLayerPerceptronTest extends TestCase
 
         $this->estimator = new MultiLayerPerceptron([
             new Dense(5, new Sigmoid()), new Dense(5, new Sigmoid()),
-        ], 1, new Adam(0.005), 0.0, 0.99);
+        ], 1, new Adam(0.01), 1e-4);
     }
 
     public function test_build_multi_layer_perceptron()

@@ -4,11 +4,13 @@ use Rubix\Engine\Estimator;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Regressors\DummyRegressor;
-use Rubix\Engine\Transformers\Strategies\BlurryMean;
+use Rubix\Engine\NeuralNet\Layers\Dense;
+use Rubix\Engine\Regressors\MLPRegressor;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use PHPUnit\Framework\TestCase;
 
-class DummyRegressorTest extends TestCase
+class MLPRegressorTest extends TestCase
 {
     protected $estimator;
 
@@ -44,12 +46,14 @@ class DummyRegressorTest extends TestCase
 
         $this->testing = new Labeled([[6, 150.0, 2825]], [20]);
 
-        $this->estimator = new DummyRegressor(new BlurryMean());
+        $this->estimator = new MLPRegressor([
+            new Dense(5, new Sigmoid()), new Dense(5, new Sigmoid()),
+        ], 1, new Adam(0.01), 0.0);
     }
 
-    public function test_build_dummy_regressor()
+    public function test_build_tree()
     {
-        $this->assertInstanceOf(DummyRegressor::class, $this->estimator);
+        $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
@@ -61,6 +65,6 @@ class DummyRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals(23, $predictions[0], '', INF);
+        $this->assertEquals(20, $predictions[0], '', 3);
     }
 }
