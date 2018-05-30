@@ -43,8 +43,6 @@ class Sigmoid implements ActivationFunction
     {
         $r = sqrt(6 / $in);
 
-        $scale = pow(10, 10);
-
-        return random_int(-$r * $scale, $r * $scale) / $scale;
+        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
     }
 }

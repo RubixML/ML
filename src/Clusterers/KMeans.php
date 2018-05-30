@@ -22,7 +22,7 @@ class KMeans implements Unsupervised, Clusterer, Persistable
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Contracts\Distance
+     * @var \Rubix\Engine\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 

@@ -56,6 +56,7 @@ class LogisticRegression implements Supervised, BinaryClassifier, Persistable
      * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */

@@ -17,14 +17,14 @@ class Softmax implements ActivationFunction
     {
         $outputs = $cache = [[]];
 
-        foreach ($z->asVectors() as $i => $vector) {
-            for ($j = 0; $j < $vector->getN(); $j++) {
-                $cache[$i][$j] = exp($vector[$j]);
+        foreach ($z->asVectors() as $i => $activations) {
+            for ($j = 0; $j < $activations->getN(); $j++) {
+                $cache[$i][$j] = exp($activations[$j]);
             }
 
             $sigma = array_sum($cache[$i]);
 
-            for ($j = 0; $j < $vector->getN(); $j++) {
+            for ($j = 0; $j < $activations->getN(); $j++) {
                 $outputs[$j][$i] = $cache[$i][$j] / ($sigma + self::EPSILON);
             }
         }
@@ -55,8 +55,6 @@ class Softmax implements ActivationFunction
     {
         $r = sqrt(6 / $in);
 
-        $scale = pow(10, 10);
-
-        return random_int(-$r * $scale, $r * $scale) / $scale;
+        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
     }
 }

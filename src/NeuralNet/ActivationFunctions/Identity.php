@@ -34,13 +34,11 @@ class Identity implements ActivationFunction
      * Generate an initial synapse weight range based on the indegree of a
      * single neuron. i.e. the number of inputs it has.
      *
-     * @param  int  $inDegree
+     * @param  int  $in
      * @return float
      */
     public function initialize(int $in) : float
     {
-        $scale = pow(10, 10);
-
-        return random_int(-3 * $scale, 3 * $scale) / $scale;
+        return random_int(-4 * 1e8, 4 * 1e8) / 1e8;
     }
 }
