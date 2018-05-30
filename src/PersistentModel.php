@@ -68,4 +68,16 @@ class PersistentModel
         return file_put_contents($path, serialize($this->model), LOCK_EX)
             ? true : false;
     }
+
+    /**
+     * Allow methods to be called on the model from the wrapper.
+     *
+     * @param  string  $name
+     * @param  array  $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->model->$name(...$arguments);
+    }
 }
