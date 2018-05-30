@@ -48,3 +48,7 @@ $report = new ReportGenerator(new AggregateReport([
 ]), 0.2);
 
 var_dump($report->generate($estimator, $dataset));
+
+$estimator->train($dataset->randomize()->leave(5));
+
+var_dump($estimator->proba($dataset));

@@ -74,9 +74,7 @@ class Pipeline implements Estimator, Persistable
      */
     public function predict(Dataset $samples) : array
     {
-        foreach ($this->transformers as $transformer) {
-            $samples->transform($transformer);
-        }
+        $this->preprocess($samples);
 
         return $this->estimator->predict($samples);
     }
@@ -95,6 +93,19 @@ class Pipeline implements Estimator, Persistable
     }
 
     /**
+     * Run the transformer middleware over a dataset.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @return void
+     */
+    public function preprocess(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            $dataset->transform($transformer);
+        }
+    }
+
+    /**
      * Allow methods to be called on the estimator from the wrapper.
      *
      * @param  string  $name
@@ -103,6 +114,12 @@ class Pipeline implements Estimator, Persistable
      */
     public function __call(string $name, array $arguments)
     {
+        foreach ($arguments as $argument) {
+            if ($argument instanceof Dataset) {
+                $this->preprocess($argument);
+            }
+        }
+
         return $this->estimator->$name(...$arguments);
     }
 }

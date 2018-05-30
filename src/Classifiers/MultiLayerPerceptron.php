@@ -17,7 +17,7 @@ use Rubix\Engine\Metrics\Validation\Classification;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MultiLayerPerceptron implements Supervised, Classifier, Persistable
+class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
      * The hidden layer configuration of the neural net.
@@ -181,7 +181,7 @@ class MultiLayerPerceptron implements Supervised, Classifier, Persistable
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous feature values.');
+            . ' continuous features.');
         }
 
         $this->network = new Network(new Input($dataset->numColumns()),
@@ -249,26 +249,35 @@ class MultiLayerPerceptron implements Supervised, Classifier, Persistable
      */
     public function predict(Dataset $samples) : array
     {
-        $this->network->feed($samples->samples());
-
         $predictions = [];
 
-        foreach ($this->network->output()->activations() as $activations) {
-            $best = ['activation' => -INF, 'class' => null];
+        foreach ($this->proba($samples) as $probabilities) {
+            $best = ['probability' => -INF, 'outcome' => null];
 
-            foreach ($activations as $class => $activation) {
-                if ($activation > $best['activation']) {
-                    $best = [
-                        'activation' => $activation,
-                        'class' => $class,
-                    ];
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
                 }
             }
 
-            $predictions[] = $best['class'];
+            $predictions[] = $best['outcome'];
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $this->network->feed($samples->samples());
+
+        return $this->network->output()->activations();
     }
 
     /**

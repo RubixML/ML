@@ -10,7 +10,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class DecisionTree extends Tree implements Supervised, Classifier, Persistable
+class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
      * The minimum number of samples that form a consensus to make a prediction.
@@ -138,12 +138,28 @@ class DecisionTree extends Tree implements Supervised, Classifier, Persistable
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $node = $this->_predict($sample, $this->root);
-
-            $predictions[] = $node->value();
+            $predictions[] = $this->_predict($sample, $this->root)->value();
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $probabilities = [];
+
+        foreach ($samples as $sample) {
+            $probabilities[] = $this->_predict($sample, $this->root)
+                ->get('probabilities', []);
+        }
+
+        return $probabilities;
     }
 
     /**
@@ -278,14 +294,18 @@ class DecisionTree extends Tree implements Supervised, Classifier, Persistable
     {
         $outcomes = array_column($data, count(current($data)) - 1);
 
-        $counts = array_count_values($outcomes);
+        $n = count($outcomes);
 
-        $outcome = array_search(max($counts), $counts);
+        $probabilities = [];
 
-        $probability = $counts[$outcome] / count($outcomes);
+        foreach (array_count_values($outcomes) as $class => $count) {
+            $probabilities[$class] = $count / $n;
+        }
+
+        $outcome = array_search(max($probabilities), $probabilities);
 
         return new BinaryNode($outcome, [
-            'probability' =>  $probability,
+            'probabilities' =>  $probabilities,
             'terminal' => true,
         ]);
     }

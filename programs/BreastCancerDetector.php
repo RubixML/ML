@@ -35,7 +35,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new RandomForest(10, 0.3, 5, 10), [
+$estimator = new Pipeline(new RandomForest(20, 0.3, 5, 10), [
     new MissingDataImputer('?'),
     new NumericStringConverter(),
 ]);
@@ -50,3 +50,5 @@ $report = new ReportGenerator(new AggregateReport([
 var_dump($validator->score($estimator, $dataset));
 
 var_dump($report->generate($estimator, $dataset));
+
+var_dump($estimator->proba($dataset->randomize()->head(5)));

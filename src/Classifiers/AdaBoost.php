@@ -174,9 +174,7 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
         for ($epoch = 1; $epoch <= $this->experts; $epoch++) {
             $estimator = $this->reflector->newInstanceArgs($this->params);
 
-            $subset = $this->generateRandomWeightedSubset($dataset);
-
-            $estimator->train($subset);
+            $estimator->train($this->generateRandomWeightedSubset($dataset));
 
             $predictions = $estimator->predict($dataset);
 

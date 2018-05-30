@@ -9,7 +9,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class NaiveBayes implements Supervised, Classifier, Persistable
+class NaiveBayes implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard
@@ -83,8 +83,7 @@ class NaiveBayes implements Supervised, Classifier, Persistable
     }
 
     /**
-     * Calculate the probabilities of the sample being a member of all trained
-     * classes and chose the highest probaility outcome as the prediction.
+     * Make a prediction based on the class probabilities.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
@@ -93,9 +92,34 @@ class NaiveBayes implements Supervised, Classifier, Persistable
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
+        foreach ($this->proba($samples) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
+                }
+            }
+
+            $predictions[] = $best['outcome'];
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Calculate the probabilities of the sample being a member of all trained
+     * classes and chose the highest probaility outcome as the prediction.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $probabilities = [];
+
+        foreach ($samples as $i => $sample) {
             foreach ($this->stats as $class => $stats) {
                 $probability = $this->weights[$class];
 
@@ -112,18 +136,11 @@ class NaiveBayes implements Supervised, Classifier, Persistable
                     }
                 }
 
-                if ($probability > $best['probability']) {
-                    $best = [
-                        'outcome' => $class,
-                        'probability' => $probability,
-                    ];
-                }
+                $probabilities[$i][$class] = $probability;
             }
-
-            $predictions[] = $best['outcome'];
         }
 
-        return $predictions;
+        return $probabilities;
     }
 
     /**

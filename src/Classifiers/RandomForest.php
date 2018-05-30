@@ -9,7 +9,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class RandomForest implements Supervised, Classifier, Persistable
+class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -39,6 +39,15 @@ class RandomForest implements Supervised, Classifier, Persistable
      * @var int
      */
     protected $maxDepth;
+
+    /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * The decision trees that make up the forest.
@@ -95,9 +104,11 @@ class RandomForest implements Supervised, Classifier, Persistable
      */
     public function train(Labeled $dataset) : void
     {
-        $this->forest = [];
+        $this->classes = $dataset->possibleOutcomes();
 
         $n = $this->ratio * count($dataset);
+
+        $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new DecisionTree($this->minSamples, $this->maxDepth);
@@ -109,27 +120,58 @@ class RandomForest implements Supervised, Classifier, Persistable
     }
 
     /**
-     * Make a prediction on a given sample.
+     * Make a prediction based on the class probabilities.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
     {
-        $predictions = $results = [];
+        $predictions = [];
 
-        foreach ($this->forest as $tree) {
-            foreach ($tree->predict($samples) as $i => $outcome) {
-                $results[$i][] = $outcome;
+        foreach ($this->proba($samples) as $probabilities) {
+            $best = ['probability' => -INF, 'outcome' => null];
+
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
+                }
             }
-        }
 
-        foreach ($results as $outcomes) {
-            $counts = array_count_values($outcomes);
-
-            $predictions[] = array_search(max($counts), $counts);
+            $predictions[] = $best['outcome'];
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $probabilities = array_fill(0, $samples->numRows(),
+            array_fill_keys($this->classes, 0.0));
+
+        $n = $this->trees();
+
+        foreach ($this->forest as $tree) {
+            foreach ($tree->proba($samples) as $i => $results) {
+                foreach ($results as $class => $probability) {
+                    $probabilities[$i][$class] += $probability;
+                }
+            }
+        }
+
+        for ($i = 0; $i < count($probabilities); $i++) {
+            foreach ($probabilities[$i] as &$probability) {
+                $probability /= $n;
+            }
+        }
+
+        return $probabilities;
     }
 }

@@ -11,7 +11,7 @@ use Rubix\Engine\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNearestNeighbors implements Supervised, Classifier
+class KNearestNeighbors implements Supervised, Probabilistic, Classifier
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -26,6 +26,15 @@ class KNearestNeighbors implements Supervised, Classifier
      * @var \Rubix\Engine\Metrics\Distance\Distance
      */
     protected $distanceFunction;
+
+    /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * The memoized coordinate vectors of the training data.
@@ -78,14 +87,16 @@ class KNearestNeighbors implements Supervised, Classifier
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous samples.');
+                . ' continuous features.');
         }
+
+        $this->classes = $dataset->possibleOutcomes();
 
         list($this->samples, $this->labels) = $dataset->all();
     }
 
     /**
-     * Compute the distances and locate the k nearest neighboring values.
+     * Make a prediction based on the class probabilities.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
@@ -94,15 +105,44 @@ class KNearestNeighbors implements Supervised, Classifier
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
-            $neighbors = $this->findNearestNeighbors($sample);
+        foreach ($this->proba($samples) as $probabilities) {
+            $best = ['probability' => -INF, 'outcome' => null];
 
-            $counts = array_count_values($neighbors);
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
+                }
+            }
 
-            $predictions[] = array_search(max($counts), $counts);
+            $predictions[] = $best['outcome'];
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $probabilities = array_fill(0, $samples->numRows(),
+            array_fill_keys($this->classes, 0.0));
+
+        foreach ($samples as $i => $sample) {
+            $neighbors = $this->findNearestNeighbors($sample);
+
+            $n = count($neighbors);
+
+            foreach (array_count_values($neighbors) as $class => $count) {
+                $probabilities[$i][$class] = $count / ($n + self::EPSILON);
+            }
+        }
+
+        return $probabilities;
     }
 
     /**

@@ -48,7 +48,7 @@ $hidden = [
     new Dense(10, new PReLU()),
 ];
 
-$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 10, new Adam(0.001),
+$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 20, new Adam(0.001),
     1e-4, 0.999, new MCC(), 0.2, 3, 30), [
         new OneHotEncoder(),
     ]);
@@ -63,5 +63,7 @@ $model = new PersistentModel($estimator);
 var_dump($report->generate($estimator, $dataset));
 
 var_dump($estimator->progress());
+
+var_dump($estimator->proba($dataset->randomize()->head(5)));
 
 $model->save(dirname(__DIR__) . '/models/mushroom.model');

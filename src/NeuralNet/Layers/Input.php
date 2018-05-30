@@ -13,7 +13,7 @@ class Input implements Layer
      *
      * @var int
      */
-    protected $inputs;
+    protected $placeholders;
 
     /**
      * @param  int  $inputs
@@ -27,7 +27,7 @@ class Input implements Layer
             . ' be greater than 0.');
         }
 
-        $this->inputs = $inputs;
+        $this->placeholders = $inputs;
     }
 
     /**
@@ -37,7 +37,7 @@ class Input implements Layer
      */
     public function width() : int
     {
-        return $this->inputs + 1;
+        return $this->placeholders + 1;
     }
 
     /**
@@ -57,9 +57,11 @@ class Input implements Layer
      */
     public function forward(Matrix $input) : Matrix
     {
-        if ($input->getM() !== $this->inputs) {
+        if ($input->getM() !== $this->placeholders) {
             throw new InvalidArgumentException('The number of feature columns'
-            . ' must equal the number of input nodes.');
+            . ' must equal the number of input placeholders. '
+            . (string) $input->getM() . ' found, '
+            . (string) $this->placeholders . ' needed.');
         }
 
         $biases = MatrixFactory::one(1, $input->getN());
