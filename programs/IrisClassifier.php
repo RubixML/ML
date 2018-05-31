@@ -3,13 +3,10 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
-use Rubix\Engine\GridSearch;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Metrics\Distance\Manhattan;
-use Rubix\Engine\Classifiers\KNearestNeighbors;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\Classifiers\SoftmaxClassifier;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
@@ -36,9 +33,7 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new GridSearch(KNearestNeighbors::class, [
-    [1, 3, 5, 10], [new Euclidean(), new Manhattan()],
-], new KFold(new MCC(), 10)), [
+$estimator = new Pipeline(new SoftmaxClassifier(100, 10, new Adam(0.001), 1e-4), [
     new NumericStringConverter(),
 ]);
 

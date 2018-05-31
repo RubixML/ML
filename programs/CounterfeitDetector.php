@@ -36,7 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new LogisticRegression(30, 10, new Adam(0.001), 1e-4), [
+$estimator = new Pipeline(new LogisticRegression(50, 10, new Adam(0.001), 1e-4), [
     new NumericStringConverter(),
 ]);
 

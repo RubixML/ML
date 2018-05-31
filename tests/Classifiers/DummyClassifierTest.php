@@ -1,9 +1,9 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Estimator;
-use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\DummyClassifier;
 use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;

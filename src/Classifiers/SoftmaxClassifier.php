@@ -8,13 +8,13 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\NeuralNet\Layers\Input;
-use Rubix\Engine\NeuralNet\Layers\Binary;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class LogisticRegression implements Supervised, BinaryClassifier, Persistable
+class SoftmaxClassifier implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -93,7 +93,7 @@ class LogisticRegression implements Supervised, BinaryClassifier, Persistable
     public function train(Labeled $dataset) : void
     {
         $this->network = new Network(new Input($dataset->numColumns()),
-            [], new Binary($dataset->possibleOutcomes(), $this->alpha));
+            [], new Multiclass($dataset->possibleOutcomes(), $this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);
@@ -112,23 +112,42 @@ class LogisticRegression implements Supervised, BinaryClassifier, Persistable
     }
 
     /**
-     * Read the activation of the neuron and make a prediction.
+     * Feed a sample through the network and make a prediction based on the highest
+     * activated output neuron.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
     {
-        $this->network->feed($samples->samples());
-
         $predictions = [];
 
-        foreach ($this->network->output()->activations() as $activations) {
-            foreach ($activations as $class => $activation) {
-                $predictions[] = $class;
+        foreach ($this->proba($samples) as $probabilities) {
+            $best = ['probability' => -INF, 'outcome' => null];
+
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
+                }
             }
+
+            $predictions[] = $best['outcome'];
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $this->network->feed($samples->samples());
+
+        return $this->network->output()->activations();
     }
 }

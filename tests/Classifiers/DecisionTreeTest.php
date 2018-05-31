@@ -1,10 +1,12 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Estimator;
-use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\DecisionTree;
+use Rubix\Engine\Classifiers\Probabilistic;
+
 use PHPUnit\Framework\TestCase;
 
 class DecisionTreeTest extends TestCase
@@ -47,6 +49,7 @@ class DecisionTreeTest extends TestCase
     {
         $this->assertInstanceOf(DecisionTree::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

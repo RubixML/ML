@@ -1,10 +1,11 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Estimator;
-use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\RandomForest;
+use Rubix\Engine\Classifiers\Probabilistic;
 use PHPUnit\Framework\TestCase;
 
 class RandomForestTest extends TestCase
@@ -47,6 +48,7 @@ class RandomForestTest extends TestCase
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

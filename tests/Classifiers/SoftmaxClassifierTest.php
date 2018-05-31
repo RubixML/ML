@@ -1,14 +1,15 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\Probabilistic;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Classifiers\KNearestNeighbors;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\Classifiers\SoftmaxClassifier;
 use PHPUnit\Framework\TestCase;
 
-class KNearestNeighborsTest extends TestCase
+class SoftmaxClassifierTest extends TestCase
 {
     protected $estimator;
 
@@ -41,15 +42,16 @@ class KNearestNeighborsTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new KNearestNeighbors(3, new Euclidean());
+        $this->estimator = new SoftmaxClassifier(20, 1, new Adam(0.01), 1e-4);
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_perceptron_classifier()
     {
-        $this->assertInstanceOf(KNearestNeighbors::class, $this->estimator);
-        $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(SoftmaxClassifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()
