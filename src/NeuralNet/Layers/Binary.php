@@ -223,9 +223,8 @@ class Binary implements Output
 
         foreach ($this->computed->getMatrix() as $i => $neuron) {
             foreach ($neuron as $j => $activation) {
-                $class = $this->classes[($activation >= 0.5 ? 1 : 0)];
-
-                $activations[$j][$class] = $activation;
+                $activations[$j][$this->classes[0]] = 1 - $activation;
+                $activations[$j][$this->classes[1]] = $activation;
             }
         }
 

@@ -36,7 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new LogisticRegression(50, 10, new Adam(0.001), 1e-4), [
+$estimator = new Pipeline(new LogisticRegression(100, 10, new Adam(0.001), 1e-4), [
     new NumericStringConverter(),
 ]);
 
@@ -47,3 +47,5 @@ var_dump($validator->score($dummy, $dataset));
 echo "\n";
 
 var_dump($validator->score($estimator, $dataset));
+
+var_dump($estimator->proba($dataset->randomize()->head(5)));

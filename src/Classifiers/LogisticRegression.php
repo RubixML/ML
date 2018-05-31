@@ -14,7 +14,7 @@ use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class LogisticRegression implements Supervised, BinaryClassifier, Persistable
+class LogisticRegression implements Supervised, Probabilistic, BinaryClassifier, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -112,23 +112,42 @@ class LogisticRegression implements Supervised, BinaryClassifier, Persistable
     }
 
     /**
-     * Read the activation of the neuron and make a prediction.
+     * Feed a sample through the network and make a prediction based on the highest
+     * activated output neuron.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
     {
-        $this->network->feed($samples->samples());
-
         $predictions = [];
 
-        foreach ($this->network->output()->activations() as $activations) {
-            foreach ($activations as $class => $activation) {
-                $predictions[] = $class;
+        foreach ($this->proba($samples) as $probabilities) {
+            $best = ['probability' => -INF, 'outcome' => null];
+
+            foreach ($probabilities as $class => $probability) {
+                if ($probability > $best['probability']) {
+                    $best['probability'] = $probability;
+                    $best['outcome'] = $class;
+                }
             }
+
+            $predictions[] = $best['outcome'];
         }
 
         return $predictions;
+    }
+
+    /**
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function proba(Dataset $samples) : array
+    {
+        $this->network->feed($samples->samples());
+
+        return $this->network->output()->activations();
     }
 }
