@@ -34,15 +34,6 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
     protected $splits;
 
     /**
-     * The column labels.
-     *
-     * @var array
-     */
-    protected $columns = [
-        //
-    ];
-
-    /**
      * The type of each feature column. i.e. categorical or continuous.
      *
      * @var array
@@ -292,13 +283,13 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
      */
     protected function terminate(array $data) : BinaryNode
     {
-        $outcomes = array_column($data, count(current($data)) - 1);
+        $classes = array_column($data, count(current($data)) - 1);
 
-        $n = count($outcomes);
+        $n = count($classes);
 
         $probabilities = [];
 
-        foreach (array_count_values($outcomes) as $class => $count) {
+        foreach (array_count_values($classes) as $class => $count) {
             $probabilities[$class] = $count / $n;
         }
 

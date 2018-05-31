@@ -143,12 +143,17 @@ class Binary implements Output
      */
     public function initialize(Layer $previous) : void
     {
-        $this->weights = MatrixFactory::zero($this->width(),
-            $previous->width())->map(function ($weight) use ($previous) {
-                return $this->activationFunction
-                    ->initialize($previous->width());
-            });
+        $weights = array_fill(0, $this->width(),
+            array_fill(0, $previous->width(), 0.0));
 
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < $previous->width(); $j++) {
+                $weights[$i][$j] = $this->activationFunction
+                    ->initialize($previous->width());
+            }
+        }
+
+        $this->weights = MatrixFactory::create($weights);
         $this->previous = $previous;
     }
 
@@ -187,12 +192,22 @@ class Binary implements Output
                 + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
         }
 
+        $n = count($labels);
+
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < count($labels); $j++) {
+                $errors[$i][$j] /= $n;
+            }
+        }
+
+        $errors = MatrixFactory::create($errors);
+
         $this->errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct(new Matrix($errors));
+            ->hadamardProduct($errors);
 
-        $this->gradients = $this->errors->multiply($this->previous->computed()
-            ->transpose());
+        $this->gradients = $this->errors
+            ->multiply($this->previous->computed()->transpose());
 
         $this->previous->back($this);
     }

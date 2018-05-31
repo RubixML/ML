@@ -4,7 +4,6 @@ namespace Rubix\Engine\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Softmax;
 use InvalidArgumentException;
 
 class Multiclass implements Output
@@ -17,13 +16,6 @@ class Multiclass implements Output
     protected $classes = [
         //
     ];
-
-    /**
-     * The function that outputs the activation or implulse of each neuron.
-     *
-     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
-     */
-    protected $activationFunction;
 
     /**
      * The L2 regularization parameter.
@@ -90,7 +82,6 @@ class Multiclass implements Output
         }
 
         $this->classes = $classes;
-        $this->activationFunction = new Softmax();
         $this->alpha = $alpha;
     }
 
@@ -143,12 +134,18 @@ class Multiclass implements Output
      */
     public function initialize(Layer $previous) : void
     {
-        $this->weights = MatrixFactory::zero($this->width(),
-            $previous->width())->map(function ($weight) use ($previous) {
-                return $this->activationFunction
-                    ->initialize($previous->width());
-            });
+        $weights = array_fill(0, $this->width(),
+            array_fill(0, $previous->width(), 0.0));
 
+        $r = sqrt(6 / $previous->width());
+
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < $previous->width(); $j++) {
+                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
+            }
+        }
+
+        $this->weights = MatrixFactory::create($weights);
         $this->previous = $previous;
     }
 
@@ -165,7 +162,21 @@ class Multiclass implements Output
 
         $this->z = $this->weights->multiply($activations);
 
-        $this->computed = $this->activationFunction->compute($this->z);
+        $outputs = $cache = [[]];
+
+        foreach ($this->z->asVectors() as $i => $z) {
+            for ($j = 0; $j < $z->getN(); $j++) {
+                $cache[$i][$j] = exp($z[$j]);
+            }
+
+            $sigma = array_sum($cache[$i]);
+
+            for ($j = 0; $j < $z->getN(); $j++) {
+                $outputs[$j][$i] = $cache[$i][$j] / ($sigma + self::EPSILON);
+            }
+        }
+
+        $this->computed = MatrixFactory::create($outputs);
 
         return $this->computed;
     }
@@ -189,12 +200,18 @@ class Multiclass implements Output
             }
         }
 
-        $this->errors = $this->activationFunction
-            ->differentiate($this->z, $this->computed)
-            ->hadamardProduct(new Matrix($errors));
+        $n = count($labels);
 
-        $this->gradients = $this->errors->multiply($this->previous->computed()
-            ->transpose());
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < count($labels); $j++) {
+                $errors[$i][$j] /= $n;
+            }
+        }
+
+        $this->errors = MatrixFactory::create($errors);
+
+        $this->gradients = $this->errors
+            ->multiply($this->previous->computed()->transpose());
 
         $this->previous->back($this);
     }

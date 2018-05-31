@@ -130,9 +130,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $node = $this->_predict($sample, $this->root);
-
-            $predictions[] = $node->value();
+            $predictions[] = $this->_predict($sample, $this->root)->value();
         }
 
         return $predictions;

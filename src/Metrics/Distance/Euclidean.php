@@ -15,8 +15,8 @@ class Euclidean implements Distance
     {
         $distance = 0.0;
 
-        foreach ($a as $i => $coordinate) {
-            $distance += ($coordinate - $b[$i]) ** 2;
+        foreach ($a as $index => $coordinate) {
+            $distance += ($coordinate - $b[$index]) ** 2;
         }
 
         return sqrt($distance);

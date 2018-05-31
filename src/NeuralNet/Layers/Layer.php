@@ -6,6 +6,8 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface Layer
 {
+    const EPSILON = 1e-8;
+
     /**
      * Compute the input sum and activation of each nueron in the layer and return
      * an activation matrix.

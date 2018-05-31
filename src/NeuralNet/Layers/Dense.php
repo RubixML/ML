@@ -124,12 +124,17 @@ class Dense implements Hidden
      */
     public function initialize(Layer $previous) : void
     {
-        $this->weights = MatrixFactory::zero($this->width(),
-            $previous->width())->map(function ($weight) use ($previous) {
-                return $this->activationFunction
-                    ->initialize($previous->width());
-            });
+        $weights = array_fill(0, $this->width(),
+            array_fill(0, $previous->width(), 0.0));
 
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < $previous->width(); $j++) {
+                $weights[$i][$j] = $this->activationFunction
+                    ->initialize($previous->width());
+            }
+        }
+
+        $this->weights = MatrixFactory::create($weights);
         $this->previous = $previous;
     }
 
@@ -163,12 +168,13 @@ class Dense implements Hidden
      */
     public function back(Layer $next) : void
     {
-        $this->errors = $next->weights()->transpose()->multiply($next->errors())
-            ->hadamardProduct($this->activationFunction
-                ->differentiate($this->z, $this->computed));
+        $this->errors = $this->activationFunction
+            ->differentiate($this->z, $this->computed)
+            ->hadamardProduct($next->weights()->transpose()
+                ->multiply($next->errors()));
 
-        $this->gradients = $this->errors->multiply($this->previous->computed()
-            ->transpose());
+        $this->gradients = $this->errors
+            ->multiply($this->previous->computed()->transpose());
 
         $this->previous->back($this);
     }

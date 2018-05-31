@@ -12,7 +12,6 @@ use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Metrics\Validation\MeanSquaredError;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Softmax;
 use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use League\Csv\Reader;
 
@@ -38,9 +37,9 @@ $labels = iterator_to_array($reader->fetchColumn('quality'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new Softmax()),
-    new Dense(30, new PReLU()),
-    new Dense(50, new PReLU()),
+    new Dense(10, new PReLU()),
+    new Dense(10, new PReLU()),
+    new Dense(10, new PReLU()),
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 10, new Adam(0.001),

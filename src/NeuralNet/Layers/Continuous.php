@@ -4,18 +4,10 @@ namespace Rubix\Engine\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Identity;
 use InvalidArgumentException;
 
 class Continuous implements Output
 {
-    /**
-     * The function that outputs the activation or implulse of each neuron.
-     *
-     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
-     */
-    protected $activationFunction;
-
     /**
      * The L2 regularization parameter.
      *
@@ -72,7 +64,6 @@ class Continuous implements Output
      */
     public function __construct(float $alpha = 1e-4)
     {
-        $this->activationFunction = new Identity();
         $this->alpha = $alpha;
     }
 
@@ -125,12 +116,16 @@ class Continuous implements Output
      */
     public function initialize(Layer $previous) : void
     {
-        $this->weights = MatrixFactory::zero($this->width(),
-            $previous->width())->map(function ($weight) use ($previous) {
-                return $this->activationFunction
-                    ->initialize($previous->width());
-            });
+        $weights = array_fill(0, $this->width(),
+            array_fill(0, $previous->width(), 0.0));
 
+        for ($i = 0; $i < $this->width(); $i++) {
+            for ($j = 0; $j < $previous->width(); $j++) {
+                $weights[$i][$j] = random_int(-4 * 1e8, 4 * 1e8) / 1e8;
+            }
+        }
+
+        $this->weights = MatrixFactory::create($weights);
         $this->previous = $previous;
     }
 
@@ -147,7 +142,7 @@ class Continuous implements Output
 
         $this->z = $this->weights->multiply($activations);
 
-        $this->computed = $this->activationFunction->compute($this->z);
+        $this->computed = $this->z;
 
         return $this->computed;
     }
@@ -163,12 +158,11 @@ class Continuous implements Output
         $errors = [[]];
 
         foreach ($labels as $i => $label) {
-            $errors[0][$i] = ($label - $this->computed[0][$i]);
+            $errors[0][$i] = ($label - $this->computed[0][$i])
+                + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
         }
 
-        $this->errors = $this->activationFunction
-            ->differentiate($this->z, $this->computed)
-            ->hadamardProduct(new Matrix($errors));
+        $this->errors = MatrixFactory::create($errors);
 
         $this->gradients = $this->errors->multiply($this->previous->computed()
             ->transpose());
