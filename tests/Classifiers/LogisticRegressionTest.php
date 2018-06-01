@@ -3,6 +3,7 @@
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
@@ -43,7 +44,7 @@ class LogisticRegressionTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new LogisticRegression(30, 1, new Adam(0.01), 1e-4);
+        $this->estimator = new LogisticRegression(100, 1, new Adam(0.005), 1e-4);
     }
 
     public function test_build_perceptron_classifier()
@@ -52,6 +53,7 @@ class LogisticRegressionTest extends TestCase
         $this->assertInstanceOf(BinaryClassifier::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

@@ -3,9 +3,9 @@
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\Probabilistic;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\SoftmaxClassifier;
 use PHPUnit\Framework\TestCase;

@@ -2,9 +2,9 @@
 
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Supervised;
+use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\Probabilistic;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;

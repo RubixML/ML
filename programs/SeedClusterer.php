@@ -5,11 +5,11 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\PersistentModel;
 use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Clusterers\KMeans;
 use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Clusterers\FuzzyCMeans;
 use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Metrics\Validation\Homogeneity;
+use Rubix\Engine\Metrics\Validation\VMeasure;
 use Rubix\Engine\Transformers\ZScaleStandardizer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
@@ -34,12 +34,14 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new KMeans(3), [
+$estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);
 
-$validator = new KFold(new Homogeneity(), 10);
+$validator = new KFold(new VMeasure(), 10);
+
+$estimator->train($dataset);
 
 $report = new ReportGenerator(new ContingencyTable(), 0.2);
 
@@ -47,6 +49,4 @@ var_dump($validator->score($estimator, $dataset));
 
 var_dump($report->generate($estimator, $dataset));
 
-$model = new PersistentModel($estimator);
-
-$model->save(dirname(__DIR__) . '/models/seed_detector.model');
+var_dump($estimator->proba($dataset->randomize()->head(5)));

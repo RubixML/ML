@@ -6,7 +6,7 @@ use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\DecisionTree;
-use Rubix\Engine\Classifiers\Probabilistic;
+use Rubix\Engine\Probabilistic;
 
 use PHPUnit\Framework\TestCase;
 

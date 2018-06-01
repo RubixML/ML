@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Dataset;
 

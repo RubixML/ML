@@ -3,10 +3,10 @@
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\NaiveBayes;
-use Rubix\Engine\Classifiers\Probabilistic;
 use PHPUnit\Framework\TestCase;
 
 class NaiveBayesTest extends TestCase

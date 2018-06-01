@@ -4,6 +4,7 @@ namespace Rubix\Engine\Classifiers;
 
 use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
+use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Metrics\Distance\Distance;
