@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Unsupervised;
 use Rubix\Engine\Clusterers\DBSCAN;
 use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Clusterers\Clusterer;
@@ -8,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase
 {
-    protected $clusterer;
+    protected $estimator;
 
     protected $dataset;
 
@@ -27,20 +29,22 @@ class DBSCANTest extends TestCase
             [10.56785567, 3.123412342], [6.456749570, 3.324523456],
         ]);
 
-        $this->clusterer = new DBSCAN(2.5, 5, new Euclidean());
+        $this->estimator = new DBSCAN(2.5, 5, new Euclidean());
     }
 
     public function test_build_DBSCAN_clusterer()
     {
-        $this->assertInstanceOf(DBSCAN::class, $this->clusterer);
-        $this->assertInstanceOf(Clusterer::class, $this->clusterer);
+        $this->assertInstanceOf(DBSCAN::class, $this->estimator);
+        $this->assertInstanceOf(Clusterer::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Unsupervised::class, $this->estimator);
     }
 
     public function test_cluster()
     {
-        $this->clusterer->train($this->dataset);
+        $this->estimator->train($this->dataset);
 
-        $results = $this->clusterer->predict($this->dataset);
+        $results = $this->estimator->predict($this->dataset);
 
         $clusters = array_count_values($results);
 

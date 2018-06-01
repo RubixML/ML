@@ -192,14 +192,6 @@ class Binary implements Output
                 + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
         }
 
-        $n = count($labels);
-
-        for ($i = 0; $i < $this->width(); $i++) {
-            for ($j = 0; $j < count($labels); $j++) {
-                $errors[$i][$j] /= $n;
-            }
-        }
-
         $errors = MatrixFactory::create($errors);
 
         $this->errors = $this->activationFunction

@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Regressors\Regressor;
@@ -43,7 +44,7 @@ class RegressionTreeTest extends TestCase
 
         $this->testing = new Labeled([[6, 150.0, 2825]], [20]);
 
-        $this->estimator = new RegressionTree(3, 10);
+        $this->estimator = new RegressionTree(10, 5);
     }
 
     public function test_build_tree()
@@ -51,6 +52,7 @@ class RegressionTreeTest extends TestCase
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

@@ -2,13 +2,13 @@
 
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Ridge;
 use Rubix\Engine\Regressors\Regressor;
+use Rubix\Engine\Regressors\KNNRegressor;
+use Rubix\Engine\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-class RidgeTest extends TestCase
+class KNNRegressorTest extends TestCase
 {
     protected $estimator;
 
@@ -44,16 +44,15 @@ class RidgeTest extends TestCase
 
         $this->testing = new Labeled([[6, 150.0, 2825]], [20]);
 
-        $this->estimator = new Ridge(0.0);
+        $this->estimator = new KNNRegressor(3, new Euclidean());
     }
 
-    public function test_build_ridge_regressor()
+    public function test_build_knn_regressor()
     {
-        $this->assertInstanceOf(Ridge::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Supervised::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()
@@ -62,6 +61,6 @@ class RidgeTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals(20, $predictions[0], '', 5);
+        $this->assertEquals(27, $predictions[0], '', 3);
     }
 }

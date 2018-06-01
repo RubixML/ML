@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
@@ -55,6 +56,7 @@ class MultiLayerPerceptronTest extends TestCase
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
@@ -65,5 +67,15 @@ class MultiLayerPerceptronTest extends TestCase
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals('male', $predictions[0]);
+    }
+
+    public function test_predict_proba()
+    {
+        $this->estimator->train($this->training);
+
+        $probabilities = $this->estimator->proba($this->testing);
+
+        $this->assertGreaterThan(0.5, $probabilities[0]['male']);
+        $this->assertLessThan(0.5, $probabilities[0]['female']);
     }
 }

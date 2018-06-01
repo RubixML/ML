@@ -200,14 +200,6 @@ class Multiclass implements Output
             }
         }
 
-        $n = count($labels);
-
-        for ($i = 0; $i < $this->width(); $i++) {
-            for ($j = 0; $j < count($labels); $j++) {
-                $errors[$i][$j] /= $n;
-            }
-        }
-
         $this->errors = MatrixFactory::create($errors);
 
         $this->gradients = $this->errors

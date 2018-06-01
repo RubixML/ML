@@ -118,8 +118,13 @@ class MLPRegressor implements Supervised, Regressor, Persistable
                     int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch size cannot be less than'
-                . ' 1.');
+            throw new InvalidArgumentException('Cannot have less than 1 sample'
+                . ' per batch.');
+        }
+
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('L2 regularization term must'
+                . ' be non-negative.');
         }
 
         if ($ratio < 0.01 or $ratio > 1.0) {
@@ -128,13 +133,13 @@ class MLPRegressor implements Supervised, Regressor, Persistable
         }
 
         if ($window < 1) {
-            throw new InvalidArgumentException('Early stopping window must be 2'
-                . ' epochs or more.');
+            throw new InvalidArgumentException('Stopping criteria window must'
+                . ' be at least 2 epochs.');
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Epoch parameter must be greater'
-                . ' than 0.');
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
         }
 
         if (!isset($optimizer)) {

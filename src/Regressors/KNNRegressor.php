@@ -3,6 +3,7 @@
 namespace Rubix\Engine\Regressors;
 
 use Rubix\Engine\Supervised;
+use MathPHP\Statistics\Average;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Metrics\Distance\Distance;
@@ -96,7 +97,7 @@ class KNNRegressor implements Supervised, Regressor
         foreach ($samples as $sample) {
             $neighbors = $this->findNearestNeighbors($sample);
 
-            $predictions[] = Average::mean($neigbors);
+            $predictions[] = Average::mean($neighbors);
         }
 
         return $predictions;
@@ -113,10 +114,10 @@ class KNNRegressor implements Supervised, Regressor
         $computed = new SplPriorityQueue();
         $neighbors = [];
 
-        foreach ($this->samples as $row => $neighbor) {
+        foreach ($this->samples as $index => $neighbor) {
             $distance = $this->distanceFunction->compute($sample, $neighbor);
 
-            $computed->insert($this->outcomes[$row], -$distance);
+            $computed->insert($this->labels[$index], -$distance);
         }
 
         $n = (count($this->samples) >= $this->k ? $this->k : count($this->samples));

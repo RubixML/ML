@@ -26,19 +26,19 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
     protected $ratio;
 
     /**
+     * The maximum depth of a branch before the tree is terminated.
+     *
+     * @var int
+     */
+    protected $maxDepth;
+
+    /**
      * The minimum number of samples that each node must contain in order to
      * form a consensus to make a prediction.
      *
      * @var int
      */
     protected $minSamples;
-
-    /**
-     * The maximum depth of a branch before the tree is terminated.
-     *
-     * @var int
-     */
-    protected $maxDepth;
 
     /**
      * The possible class outcomes.
@@ -61,13 +61,13 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
     /**
      * @param  int  $trees
      * @param  float  $ratio
-     * @param  int  $minSamples
      * @param  int  $maxDepth
+     * @param  int  $minSamples
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 50, float $ratio = 0.1, int $minSamples = 5,
-                                int $maxDepth = 10)
+    public function __construct(int $trees = 50, float $ratio = 0.1, int $maxDepth = 10,
+                                int $minSamples = 5)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -111,7 +111,7 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
         $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
-            $tree = new DecisionTree($this->minSamples, $this->maxDepth);
+            $tree = new DecisionTree($this->maxDepth, $this->minSamples);
 
             $tree->train($dataset->randomSubset($n));
 
@@ -153,22 +153,16 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
      */
     public function proba(Dataset $samples) : array
     {
+        $n = $this->trees() + self::EPSILON;
+
         $probabilities = array_fill(0, $samples->numRows(),
             array_fill_keys($this->classes, 0.0));
-
-        $n = $this->trees();
 
         foreach ($this->forest as $tree) {
             foreach ($tree->proba($samples) as $i => $results) {
                 foreach ($results as $class => $probability) {
-                    $probabilities[$i][$class] += $probability;
+                    $probabilities[$i][$class] += $probability / $n;
                 }
-            }
-        }
-
-        for ($i = 0; $i < count($probabilities); $i++) {
-            foreach ($probabilities[$i] as &$probability) {
-                $probability /= $n;
             }
         }
 

@@ -151,12 +151,12 @@ class NaiveBayes implements Supervised, Probabilistic, Classifier, Persistable
      */
     protected function calculateProbabilities(array $values) : array
     {
-        $counts = array_count_values($values);
+        $n = count($values);
 
         $probabilities = [];
 
-        foreach ($counts as $label => $count) {
-            $probabilities[$label] = $count / count($values);
+        foreach (array_count_values($values) as $category => $count) {
+            $probabilities[$category] = $count / $n;
         }
 
         return $probabilities;

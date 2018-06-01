@@ -49,16 +49,15 @@ class KMeans implements Unsupervised, Clusterer, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, Distance $distanceFunction = null,
-                                int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, Distance $distanceFunction = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Parameter K must be an integer'
-                . ' larger than 1.');
+            throw new InvalidArgumentException('Target clusters must be'
+                . ' greater than 1.');
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Max epochs must be larger than'
+            throw new InvalidArgumentException('Max epochs must be greater than'
                 . ' 1.');
         }
 

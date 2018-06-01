@@ -13,6 +13,13 @@ use InvalidArgumentException;
 class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier, Persistable
 {
     /**
+     * The maximum depth of a branch before it is forced to terminate.
+     *
+     * @var int
+     */
+    protected $maxDepth;
+    
+    /**
      * The minimum number of samples that form a consensus to make a prediction.
      *
      * @var int
@@ -20,18 +27,20 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
     protected $minSamples;
 
     /**
-     * The maximum depth of a branch before it is forced to terminate.
-     *
-     * @var int
-     */
-    protected $maxDepth;
-
-    /**
      * The number of times the tree has split. i.e. a comparison is made.
      *
      * @var int
      */
     protected $splits;
+
+    /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * The type of each feature column. i.e. categorical or continuous.
@@ -43,12 +52,12 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
     ];
 
     /**
-     * @param  int  $minSamples
      * @param  int  $maxDepth
+     * @param  int  $minSamples
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -60,8 +69,8 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
                 . ' than 1.');
         }
 
-        $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
+        $this->minSamples = $minSamples;
         $this->splits = 0;
     }
 
@@ -106,13 +115,16 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
      */
     public function train(Labeled $dataset) : void
     {
+        $this->classes = $dataset->possibleOutcomes();
         $this->columnTypes = $dataset->columnTypes();
 
-        $data = array_map(function ($sample, $label) {
-            return array_merge($sample, (array) $label);
-        }, ...$dataset->all());
+        list ($samples, $labels) = $dataset->all();
 
-        $this->root = $this->findBestSplit($data);
+        foreach ($samples as $index => &$sample) {
+            array_push($sample, $labels[$index]);
+        }
+
+        $this->root = $this->findBestSplit($samples);
         $this->splits = 1;
 
         $this->split($this->root);
@@ -285,9 +297,9 @@ class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier
     {
         $classes = array_column($data, count(current($data)) - 1);
 
-        $n = count($classes);
+        $probabilities = array_fill_keys($this->classes, 0.0);
 
-        $probabilities = [];
+        $n = count($classes);
 
         foreach (array_count_values($classes) as $class => $count) {
             $probabilities[$class] = $count / $n;

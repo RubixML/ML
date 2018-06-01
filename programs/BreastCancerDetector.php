@@ -35,7 +35,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new RandomForest(20, 0.3, 5, 10), [
+$estimator = new Pipeline(new RandomForest(50, 0.1, 10, 5), [
     new MissingDataImputer('?'),
     new NumericStringConverter(),
 ]);

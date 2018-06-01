@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Regressors\Regressor;
@@ -52,6 +53,7 @@ class DummyRegressorTest extends TestCase
         $this->assertInstanceOf(DummyRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

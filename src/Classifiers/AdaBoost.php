@@ -29,12 +29,13 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
     ];
 
     /**
-     * The number of experts to train. Note that the algorithm will terminate early
-     * if it can train a classifier that exceeds the threshold hyperparameter.
+     * The number of training epochs to execute. Note that the algorithm will
+     * terminate early if it can train a classifier that exceeds the threshold
+     * hyperparameter.
      *
      * @var int
      */
-    protected $experts;
+    protected $epochs;
 
     /**
      * The ratio of samples to train each classifier on.
@@ -91,13 +92,13 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
     /**
      * @param  string  $base
      * @param  array  $params
-     * @param  int  $experts
+     * @param  int  $epochs
      * @param  float  $ratio
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params = [], int $experts = 100,
+    public function __construct(string $base, array $params = [], int $epochs = 100,
                                 float $ratio = 0.1, float $threshold = 0.999)
     {
         $this->reflector = new ReflectionClass($base);
@@ -107,9 +108,9 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
                 . ' classifier interface.');
         }
 
-        if ($experts < 1) {
-            throw new InvalidArgumentException('Must have at least 1 expert in'
-                . ' the ensemble.');
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
         }
 
         if ($ratio < 0.01 or $ratio > 1) {
@@ -123,7 +124,7 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
         }
 
         $this->params = $params;
-        $this->experts = $experts;
+        $this->epochs = $epochs;
         $this->ratio = $ratio;
         $this->threshold = $threshold;
     }
@@ -171,7 +172,7 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
 
         $this->ensemble = $this->influence = [];
 
-        for ($epoch = 1; $epoch <= $this->experts; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $estimator = $this->reflector->newInstanceArgs($this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));
@@ -245,14 +246,13 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
     {
         $n = round($this->ratio * $dataset->numRows());
         $total = array_sum($this->weights);
-        $scale = pow(10, 8);
 
         list($samples, $labels) = $dataset->all();
 
         $subset = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $random = random_int(0, $total * $scale) / $scale;
+            $random = random_int(0, $total * 1e8) / 1e8;
 
             for ($index = 0; $index < $dataset->numRows(); $index++) {
                 $random -= $this->weights[$index];

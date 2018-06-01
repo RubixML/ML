@@ -15,18 +15,18 @@ use InvalidArgumentException;
 class RegressionTree extends Tree implements Supervised, Regressor, Persistable
 {
     /**
-     * The minimum number of samples that form a consensus to make a prediction.
-     *
-     * @var int
-     */
-    protected $minSamples;
-
-    /**
      * The maximum depth of a branch before it is forced to terminate.
      *
      * @var int
      */
     protected $maxDepth;
+
+    /**
+     * The minimum number of samples that form a consensus to make a prediction.
+     *
+     * @var int
+     */
+    protected $minSamples;
 
     /**
      * The number of times the tree has split. i.e. a comparison is made.
@@ -45,12 +45,12 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
     ];
 
     /**
-     * @param  int  $minSamples
      * @param  int  $maxDepth
+     * @param  int  $minSamples
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $minSamples = 5, int $maxDepth = PHP_INT_MAX)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -62,8 +62,8 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
                 . ' than 1.');
         }
 
-        $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
+        $this->minSamples = $minSamples;
         $this->splits = 0;
     }
 
@@ -109,11 +109,13 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
     {
         $this->columnTypes = $dataset->columnTypes();
 
-        $data = array_map(function ($sample, $label) {
-            return array_merge($sample, (array) $label);
-        }, ...$dataset->all());
+        list ($samples, $labels) = $dataset->all();
 
-        $this->root = $this->findBestSplit($data);
+        foreach ($samples as $index => &$sample) {
+            array_push($sample, $labels[$index]);
+        }
+
+        $this->root = $this->findBestSplit($samples);
         $this->splits = 1;
 
         $this->split($this->root);

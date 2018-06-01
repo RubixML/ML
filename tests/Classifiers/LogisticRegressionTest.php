@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Classifiers\Classifier;
@@ -42,15 +43,16 @@ class LogisticRegressionTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new LogisticRegression(20, 1, new Adam(0.01), 1e-4);
+        $this->estimator = new LogisticRegression(30, 1, new Adam(0.01), 1e-4);
     }
 
     public function test_build_perceptron_classifier()
     {
         $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(BinaryClassifier::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
@@ -61,5 +63,15 @@ class LogisticRegressionTest extends TestCase
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals('male', $predictions[0]);
+    }
+
+    public function test_predict_proba()
+    {
+        $this->estimator->train($this->training);
+
+        $probabilities = $this->estimator->proba($this->testing);
+
+        $this->assertGreaterThan(0.5, $probabilities[0]['male']);
+        $this->assertLessThan(0.5, $probabilities[0]['female']);
     }
 }

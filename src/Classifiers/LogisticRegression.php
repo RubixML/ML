@@ -69,8 +69,13 @@ class LogisticRegression implements Supervised, Probabilistic, BinaryClassifier,
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Batch cannot have less than'
-                . ' 1 sample.');
+            throw new InvalidArgumentException('Cannot have less than 1 sample'
+                . ' per batch.');
+        }
+
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('L2 regularization term must'
+                . ' be non-negative.');
         }
 
         if (!isset($optimizer)) {
