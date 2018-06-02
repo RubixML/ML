@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class PReLU implements ActivationFunction
+class PReLU implements Rectifier
 {
     /**
      * The amount of leakage as a ratio of the input value to allow to pass
@@ -55,18 +55,5 @@ class PReLU implements ActivationFunction
         return $computed->map(function ($output) {
             return $output >= 0.0 ? 1.0 : $this->leakage;
         });
-    }
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        $r = pow(6 / $in, 1 / self::ROOT_2);
-
-        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
     }
 }

@@ -9,7 +9,7 @@ use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\MultiLayerPerceptron;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use PHPUnit\Framework\TestCase;
 
 class MultiLayerPerceptronTest extends TestCase
@@ -46,8 +46,9 @@ class MultiLayerPerceptronTest extends TestCase
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
         $this->estimator = new MultiLayerPerceptron([
-            new Dense(5, new Sigmoid()), new Dense(5, new Sigmoid()),
-        ], 1, new Adam(0.001), 1e-4);
+            new Dense(6, new HyperbolicTangent()),
+            new Dense(6, new HyperbolicTangent()),
+        ], 1, new Adam(0.005), 1e-4);
     }
 
     public function test_build_multi_layer_perceptron()

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-interface Output extends Parametric
+interface Output extends Layer
 {
     /**
      * Calculate a backward pass of the network from the output layer.

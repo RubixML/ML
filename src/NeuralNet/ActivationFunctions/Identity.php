@@ -29,16 +29,4 @@ class Identity implements ActivationFunction
     {
         return MatrixFactory::one($computed->getM(), $computed->getN());
     }
-
-    /**
-     * Generate an initial synapse weight range based on the indegree of a
-     * single neuron. i.e. the number of inputs it has.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        return random_int(-4 * 1e8, 4 * 1e8) / 1e8;
-    }
 }

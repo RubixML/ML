@@ -6,8 +6,6 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface ActivationFunction
 {
-    const ROOT_2 = 1.41421356237;
-
     const EPSILON = 1e-8;
 
     /**
@@ -26,13 +24,4 @@ interface ActivationFunction
      * @return \MathPHP\LinearAlgebra\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix;
-
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float;
 }

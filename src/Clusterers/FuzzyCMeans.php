@@ -62,7 +62,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
 
     /**
      * An array holding the progress of the last training session. i.e. the
-     * absolute distance between all the centroids and data points.
+     * total distance between all the centroids and data points.
      *
      * @var array
      */

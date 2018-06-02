@@ -49,6 +49,17 @@ class Input implements Layer
     }
 
     /**
+     * Initialize the layer.
+     *
+     * @param  \Rubix\Engine\NeuralNet\Layers\Layer
+     * @return void
+     */
+    public function initialize(Layer $previous) : void
+    {
+        //
+    }
+
+    /**
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *

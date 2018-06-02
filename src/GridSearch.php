@@ -18,15 +18,6 @@ class GridSearch implements Estimator, Persistable
     protected $reflector;
 
     /**
-     * The argument names for the base estimator's constructor.
-     *
-     * @var array
-     */
-    protected $args = [
-        //
-    ];
-
-    /**
      * The grid of hyperparameters i.e. constructor arguments of the base
      * estimator.
      *
@@ -42,6 +33,15 @@ class GridSearch implements Estimator, Persistable
      * @var \Rubix\Engine\CrossValidation\Validator
      */
     protected $validator;
+
+    /**
+     * The argument names for the base estimator's constructor.
+     *
+     * @var array
+     */
+    protected $args = [
+        //
+    ];
 
     /**
      * The results of a grid search.
@@ -115,7 +115,8 @@ class GridSearch implements Estimator, Persistable
             $score = $this->validator->score($estimator, $dataset);
 
             if ($score > $best['score']) {
-                $best = ['score' => $score, 'estimator' => $estimator];
+                $best['score'] = $score;
+                $best['estimator'] = $estimator;
             }
 
             $this->results[] = [

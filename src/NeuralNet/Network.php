@@ -84,7 +84,9 @@ class Network implements ArrayAccess, Countable
      */
     public function parametric() : array
     {
-        return array_slice($this->layers, 1);
+        return array_filter($this->layers, function ($layer) {
+            return $layer instanceof Parametric;
+        });
     }
 
     /**
@@ -95,6 +97,23 @@ class Network implements ArrayAccess, Countable
     public function depth() : int
     {
         return count($this->layers);
+    }
+
+    /**
+     * Initialize the network.
+     *
+     * @return self
+     */
+    public function initialize() : self
+    {
+        for ($i = 1; $i < count($this->layers); $i++) {
+            $current = $this->layers[$i];
+            $previous = $this->layers[$i - 1];
+
+            $current->initialize($previous);
+        }
+
+        return $this;
     }
 
     /**
@@ -123,23 +142,6 @@ class Network implements ArrayAccess, Countable
     public function backpropagate(array $labels) : self
     {
         $this->output()->back($labels);
-
-        return $this;
-    }
-
-    /**
-     * Initialize the weights for all synapses in the network.
-     *
-     * @return self
-     */
-    public function initialize() : self
-    {
-        for ($i = 1; $i < count($this->layers); $i++) {
-            $current = $this->layers[$i];
-            $previous = $this->layers[$i - 1];
-
-            $current->initialize($previous);
-        }
 
         return $this;
     }

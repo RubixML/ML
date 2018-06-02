@@ -6,7 +6,7 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
-class Continuous implements Output
+class Continuous implements Output, Parametric
 {
     /**
      * The L2 regularization parameter.
@@ -121,7 +121,7 @@ class Continuous implements Output
 
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = random_int(-4 * 1e8, 4 * 1e8) / 1e8;
+                $weights[$i][$j] = random_int(-3 * 1e8, 3 * 1e8) / 1e8;
             }
         }
 

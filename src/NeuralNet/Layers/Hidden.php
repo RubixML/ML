@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\NeuralNet\Layers;
 
-interface Hidden extends Parametric
+interface Hidden extends Layer
 {
     /**
      * Calculate the errors and gradients of the layer for each neuron.

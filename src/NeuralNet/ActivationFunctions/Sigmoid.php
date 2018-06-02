@@ -32,17 +32,4 @@ class Sigmoid implements ActivationFunction
             return $output * (1 - $output);
         });
     }
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        $r = sqrt(6 / $in);
-
-        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
-    }
 }

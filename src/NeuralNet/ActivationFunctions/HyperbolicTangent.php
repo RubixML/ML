@@ -32,17 +32,4 @@ class HyperbolicTangent implements ActivationFunction
             return 1 - ($output ** 2);
         });
     }
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        $r = pow(6 / $in, 1 / 4);
-
-        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
-    }
 }

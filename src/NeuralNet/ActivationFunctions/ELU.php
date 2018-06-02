@@ -5,7 +5,7 @@ namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class ELU implements ActivationFunction
+class ELU implements Rectifier
 {
     /**
      * At which negative value the ELU will saturate. i.e. alpha = 1.0 means
@@ -55,18 +55,5 @@ class ELU implements ActivationFunction
         return $computed->map(function ($output) {
             return $output >= 0.0 ? 1.0 : $output + $this->alpha;
         });
-    }
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        $r = pow(6 / $in, 1 / self::ROOT_2);
-
-        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
     }
 }

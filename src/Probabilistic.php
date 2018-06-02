@@ -7,7 +7,7 @@ use Rubix\Engine\Datasets\Dataset;
 interface Probabilistic
 {
     /**
-     * Output a vector of class probabilities per sample.
+     * Output a vector of probabilities per sample.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $samples
      * @return array

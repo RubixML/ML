@@ -6,7 +6,7 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
-class Multiclass implements Output
+class Multiclass implements Output, Parametric
 {
     /**
      * The unique class labels.

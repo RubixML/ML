@@ -4,10 +4,13 @@ namespace Rubix\Engine\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\Engine\NeuralNet\ActivationFunctions\Rectifier;
+use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
-class Dense implements Hidden
+class Dense implements Hidden, Parametric
 {
     /**
      * The number of neurons in this layer.
@@ -38,13 +41,6 @@ class Dense implements Hidden
     protected $weights;
 
     /**
-     * The memoized input matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $inputs;
-
-    /**
      * The memoized z matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
@@ -57,6 +53,20 @@ class Dense implements Hidden
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
+
+    /**
+     * The memoized error matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $errors;
+
+    /**
+     * The memoized gradient matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $gradients;
 
     /**
      * @param  int  $neurons
@@ -127,10 +137,17 @@ class Dense implements Hidden
         $weights = array_fill(0, $this->width(),
             array_fill(0, $previous->width(), 0.0));
 
+        if ($this->activationFunction instanceof Rectifier) {
+            $r = pow(6 / $previous->width(), 1 / self::ROOT_2);
+        } else if ($this->activationFunction instanceof HyperbolicTangent) {
+            $r = pow(6 / $previous->width(), 1 / 4);
+        } else if ($this->activationFunction instanceof Sigmoid) {
+            $r = sqrt(6 / $previous->width());
+        } else { $r = 3; }
+
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = $this->activationFunction
-                    ->initialize($previous->width());
+                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
             }
         }
 
@@ -153,8 +170,8 @@ class Dense implements Hidden
 
         $biases = MatrixFactory::one(1, $activations->getN());
 
-        $this->computed = $this->activationFunction->compute($this->z
-            ->rowExclude($this->z->getM() - 1))
+        $this->computed = $this->activationFunction
+            ->compute($this->z->rowExclude($this->z->getM() - 1))
             ->augmentBelow($biases);
 
         return $this->computed;

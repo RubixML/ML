@@ -7,7 +7,7 @@ use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
-class Binary implements Output
+class Binary implements Output, Parametric
 {
     /**
      * The labels of either of the possible outcomes.
@@ -146,10 +146,11 @@ class Binary implements Output
         $weights = array_fill(0, $this->width(),
             array_fill(0, $previous->width(), 0.0));
 
+        $r = sqrt(6 / $previous->width());
+
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = $this->activationFunction
-                    ->initialize($previous->width());
+                $weights[$i][$j] =  random_int(-$r * 1e8, $r * 1e8) / 1e8;
             }
         }
 

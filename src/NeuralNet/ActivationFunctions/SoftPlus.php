@@ -4,7 +4,7 @@ namespace Rubix\Engine\NeuralNet\ActivationFunctions;
 
 use MathPHP\LinearAlgebra\Matrix;
 
-class SoftPlus implements ActivationFunction
+class SoftPlus implements Rectifier
 {
     /**
      * Compute the output value.
@@ -31,18 +31,5 @@ class SoftPlus implements ActivationFunction
         return $computed->map(function ($output) {
             return 1 / (1 + exp(-$output));
         });
-    }
-
-    /**
-     * Generate an initial synapse weight range.
-     *
-     * @param  int  $in
-     * @return float
-     */
-    public function initialize(int $in) : float
-    {
-        $r = pow(6 / $in, 1 / self::ROOT_2);
-
-        return random_int(-$r * 1e8, $r * 1e8) / 1e8;
     }
 }
