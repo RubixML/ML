@@ -5,8 +5,8 @@ namespace Rubix\Engine\Clusterers;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Unsupervised;
 use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\Engine\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -87,10 +87,16 @@ class KMeans implements Unsupervised, Clusterer, Persistable
      * mean of the new cluster.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function train(Dataset $dataset) : void
     {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if ($dataset->numRows() < $this->k) {
             throw new RuntimeException('The number of samples cannot be less'
                 . ' than the parameter K.');

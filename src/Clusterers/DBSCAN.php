@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class DBSCAN implements Unsupervised, Clusterer
 {
-    const NOISE = 'na';
+    const NOISE = 'noise';
 
     /**
      * The maximum distance between two points to be considered neighbors. The
@@ -18,7 +18,7 @@ class DBSCAN implements Unsupervised, Clusterer
      *
      * @var float
      */
-    protected $epsilon;
+    protected $radius;
 
     /**
      * The minimum number of points to from a dense region or cluster.
@@ -43,7 +43,7 @@ class DBSCAN implements Unsupervised, Clusterer
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $distanceFunction = null)
     {
-        if ($epsilon < 0.0) {
+        if ($radius < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0.');
         }
 
@@ -56,7 +56,7 @@ class DBSCAN implements Unsupervised, Clusterer
             $distanceFunction = new Euclidean();
         }
 
-        $this->epsilon = $epsilon;
+        $this->radius = $radius;
         $this->minDensity = $minDensity;
         $this->distanceFunction = $distanceFunction;
     }
@@ -69,8 +69,8 @@ class DBSCAN implements Unsupervised, Clusterer
     public function train(Dataset $dataset) : void
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This clusterer only works with'
-                . ' continuous samples.');
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
         }
     }
 
@@ -116,8 +116,7 @@ class DBSCAN implements Unsupervised, Clusterer
      * @param  int  $current
      * @return void
      */
-    protected function expand(Dataset $samples, array $neighbors, array &$labels,
-                            int $current) : void
+    protected function expand(Dataset $samples, array $neighbors, array &$labels, int $current) : void
     {
         while (!empty($neighbors)) {
             $index = array_pop($neighbors);
@@ -156,7 +155,7 @@ class DBSCAN implements Unsupervised, Clusterer
         foreach ($samples as $index => $sample) {
             $distance = $this->distanceFunction->compute($neighbor, $sample);
 
-            if ($distance <= $this->epsilon) {
+            if ($distance <= $this->radius) {
                 $neighbors[] = $index;
             }
         }

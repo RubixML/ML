@@ -107,7 +107,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
         }
 
         $this->c = $c;
-        $this->fuzz = $fuzz;
+        $this->fuzz = $fuzz + self::EPSILON;
         $this->distanceFunction = $distanceFunction;
         $this->threshold = $threshold;
         $this->epochs = $epochs;
@@ -140,10 +140,16 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
      * mean of the new cluster.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function train(Dataset $dataset) : void
     {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if ($dataset->numRows() < $this->c) {
             throw new RuntimeException('The number of samples cannot be less'
                 . ' than the parameter C.');
@@ -236,16 +242,16 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
         foreach ($this->centroids as $label => $centroid1) {
             $a = $this->distanceFunction->compute($sample, $centroid1);
 
-            $total = 0.0;
+            $total = self::EPSILON;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->distanceFunction->compute($sample, $centroid2);
 
                 $total += pow($a / ($b + self::EPSILON),
-                    2 / ($this->fuzz - 1 + self::EPSILON));
+                    2 / ($this->fuzz - 1));
             }
 
-            $membership[$label] = 1 / ($total + self::EPSILON);
+            $membership[$label] = 1 / $total;
         }
 
         return $membership;
@@ -262,7 +268,8 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
     {
         foreach ($this->centroids as $label => &$centroid) {
             foreach ($centroid as $j => &$mean) {
-                $a = $total = 0.0;
+                $total = self::EPSILON;
+                $a = 0.0;
 
                 foreach ($dataset as $k => $sample) {
                     $weight = pow($memberships[$k][$label], $this->fuzz);
@@ -271,7 +278,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
                     $total += $weight;
                 }
 
-                $mean = $a / ($total + self::EPSILON);
+                $mean = $a / $total;
             }
         }
     }

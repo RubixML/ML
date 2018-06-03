@@ -1,7 +1,7 @@
 # Rubix for PHP
 Rubix is a library that lets you build intelligent programs that learn from data in PHP.
 
-### Our Goal
+### Our Mission
 The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is primarily optimized to deliver performance on the web, we believe this should *not* prevent PHP programmers from taking advantage of the major advances in AI and machine learning today. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
 ## Installation
@@ -147,6 +147,14 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | threshold | 0.999 | float | The minimum accuracy an epoch must score before the algorithm terminates. |
 
+Example:
+```php
+use Rubix\Engine\Classifiers\AdaBoost;
+use Rubix\Engine\Classifiers\DecisionTree;
+
+$estimator = new AdaBoost(DecisionTree::class, [1, 10], 100, 0.1, 0.999);
+```
+
 #### Decision Tree
 Binary Tree based algorithm that works by intelligently splitting the training data at various decision nodes until a terminating condition is met.
 
@@ -155,12 +163,27 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 
+Example:
+```php
+use Rubix\Engine\Classifiers\DecisionTree;
+
+$estimator = new DecisionTree(10, 3);
+```
+
 #### Dummy Classifier
 A classifier based on a given imputer strategy. Used to compare performance with an actual classifier.
 
 | Parameter | Default | Type | Description |
 |--|--|--|--|
 | strategy | PopularityContest | object | The imputer strategy to employ when guessing the outcome of a sample. |
+
+Example:
+```php
+use Rubix\Engine\Classifiers\DummyClassifier;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
+
+$estimator = new DummyClassifier(new PopularityContest());
+```
 
 #### K Nearest Neighbors
 A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
@@ -169,6 +192,14 @@ A lazy learning algorithm that locates the K nearest samples from the training s
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+Example:
+```php
+use Rubix\Engine\Classifiers\KNearestNeighbors;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new KNearestNeighbors(3, new Euclidean());
+```
 
 #### Logistic Regression
 A type of regression analysis that uses the logistic function to classify between two possible outcomes.
@@ -179,6 +210,14 @@ A type of regression analysis that uses the logistic function to classify betwee
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
+
+Example:
+```php
+use Rubix\Engine\Classifers\LogisticRegression;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+
+$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
+```
 
 #### Multi Layer Perceptron
 Multiclass neural network model that uses a series of user-defined hidden layers as intermediate computational units equipped with non-linear activation functions.
@@ -194,10 +233,36 @@ Multiclass neural network model that uses a series of user-defined hidden layers
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
+
+
+Example:
+```php
+use Rubix\Engine\Classifiers\MultiLayerPerceptron;
+use Rubix\Engine\NeuralNet\Layers\Dense;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
+use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\Engine\Metrics\Validation\MCC;
+
+$hidden = [
+	new Dense(10, new ELU()),
+	new Dense(10, new ELU()),
+	new Dense(10, new ELU()),
+];
+
+$estimator = new MultiLayerPerceptron($hidden, 10, new Adam(0.001), 1e-4, new MCC(), 0.2, 3, PHP_INT_MAX);
+```
+
 #### Naive Bayes
 Probability-based classifier that used probabilistic inference to derive the predicted class.
 
 This estimator does not have any hyperparameters.
+
+Example:
+```php
+use Rubix\Engine\Classifiers\NaiveBayes;
+
+$estimator = new NaiveBayes();
+```
 
 #### Random Forest
 Ensemble classifier that trains Decision Trees on a random subset of the training data.
@@ -206,8 +271,15 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 |--|--|--|--|
 | trees | 50 | int | The number of Decision Trees to train in the ensemble. |
 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+
+Example:
+```php
+use Rubix\Engine\Classifiers\RandomForest;
+
+$estimator = new RandomForest(100, 0.2, 5, 3);
+```
 
 #### Softmax Classifier
 A generalization of logistic regression to multiple classes.
@@ -219,6 +291,14 @@ A generalization of logistic regression to multiple classes.
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
 
+Example:
+```php
+use Rubix\Engine\Classifiers\SoftmaxClassifier;
+use Rubix\Engine\NeuralNet\Optimizers\Momentum;
+
+$estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
+```
+
 ### Regressors
 
 #### Dummy Regressor
@@ -228,6 +308,14 @@ Regressor that guesses the output values based on an imputer strategy. Used to c
 |--|--|--|--|
 | strategy | BlurryMean | object | The imputer strategy to employ when guessing the outcome of a sample. |
 
+Example:
+```php
+use Rubix\Engine\Regressors\DummyRegressor;
+use Rubix\Engine\Tranformers\Strategies\BlurryMean;
+
+$estimator = new DummyRegressor(new BlurryMean());
+```
+
 #### KNN Regressor
 A version of K Nearest Neighbors that uses the mean of K nearest data points to make a prediction.
 
@@ -235,6 +323,14 @@ A version of K Nearest Neighbors that uses the mean of K nearest data points to 
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+Example:
+```php
+use Rubix\Engine\Regressors\KNNRegressor;
+use Rubix\Engine\Metrics\Distance\Minkowski;
+
+$estimator = new KNNRegressor(2, new Minkowski(3.0));
+```
 
 #### MLP Regressor
 A neural network with a continuous output layer suitable for regression problems.
@@ -250,6 +346,23 @@ A neural network with a continuous output layer suitable for regression problems
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
+Example:
+```php
+use Rubix\Engine\Regressors\MLPRegressor;
+use Rubix\Engine\NeuralNet\Layers\Dense;
+use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\Engine\NeuralNet\Optimizers\RMSProp;
+use Rubix\Engine\Metrics\Validation\RSquared;
+
+$hidden = [
+	new Dense(30, new HyperbolicTangent()),
+	new Dense(50, new PReLU()),
+];
+
+$estimator = new MLPRegressor($hidden, 10, new RMSProp(0.001), 1e-2, new RSquared(), 0.2, 3, PHP_INT_MAX);
+```
+
 #### Regression Tree
 A binary tree learning algorithm that minimizes the variance between decision node splits.
 
@@ -258,12 +371,26 @@ A binary tree learning algorithm that minimizes the variance between decision no
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 
+Example:
+```php
+use Rubix\Engine\Regressors\RegressionTree;
+
+$estimator = new RegressionTree(50, 1);
+```
+
 #### Ridge
 L2 penalized least squares regression whose predictions are based on the closed-form solution to the training data.
 
 | Parameter | Default | Type | Description |
 |--|--|--|--|
 | alpha | 1.0 | float | The L2 regularization term. |
+
+Example:
+```php
+use Rubix\Engine\Regressors\Ridge;
+
+$estimator = new Ridge(2.0);
+```
 
 ### Clusterers
 
@@ -276,6 +403,14 @@ Density-based spatial clustering of applications with noise is a clustering algo
 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
+Example:
+```php
+use Rubix\Engine\Clusterers\DBSCAN;
+use Rubix\Engine\Metrics\Distance\Manhattan;
+
+$estimator = new DBSCAN(4.0, 5, new Manhattan());
+```
+
 #### Fuzzy C Means
 Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region.
 
@@ -287,6 +422,14 @@ Clusterer that allows data points to belong to multiple clusters if they fall wi
 | threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
+Example:
+```php
+use Rubix\Engine\Clusterers\FuzzyCMeans;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
+```
+
 #### K Means
 A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
 
@@ -295,6 +438,14 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 | k | None | int | The number of target clusters. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+Example:
+```php
+use Rubix\Engine\Clusterers\KMeans;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new KMeans(3, new Euclidean());
+```
 
 ### Data Preprocessing
 Documentation in the works ...

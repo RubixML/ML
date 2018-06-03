@@ -12,7 +12,8 @@ class TokenCountVectorizerTest extends TestCase
     public function setUp()
     {
         $data = new Unlabeled([
-            ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
+            ['the quick brown fox jumped over the lazy man sitting at a bus'
+                . ' stop drinking a can of coke'],
         ]);
 
         $this->transformer = new TokenCountVectorizer();
@@ -36,8 +37,8 @@ class TokenCountVectorizerTest extends TestCase
         $this->transformer->transform($data);
 
         $this->assertEquals([
-            [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ], $data);
     }
 
@@ -45,6 +46,6 @@ class TokenCountVectorizerTest extends TestCase
     {
         $vector = $this->transformer->vectorize('stop drinking coke stop');
 
-        $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 1], $vector);
+        $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 1], $vector);
     }
 }

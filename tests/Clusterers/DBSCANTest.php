@@ -50,6 +50,6 @@ class DBSCANTest extends TestCase
 
         $this->assertEquals(10, $clusters[0]);
         $this->assertEquals(9, $clusters[1]);
-        $this->assertEquals(1, $clusters['na']);
+        $this->assertEquals(1, $clusters['noise']);
     }
 }
