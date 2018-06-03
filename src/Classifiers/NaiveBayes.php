@@ -130,8 +130,8 @@ class NaiveBayes implements Supervised, Probabilistic, Classifier, Persistable
                     } else {
                         list($mean, $stddev) = $stats[$column];
 
-                        $pdf = -0.5 * log(2.0 * M_PI * $stddev ** 2);
-                        $pdf -= 0.5 * ($feature - $mean) ** 2 / ($stddev ** 2);
+                        $pdf = -0.5 * log(2.0 * M_PI * $stddev);
+                        $pdf -= 0.5 * ($feature - $mean) ** 2 / $stddev;
 
                         $probability += $pdf;
                     }

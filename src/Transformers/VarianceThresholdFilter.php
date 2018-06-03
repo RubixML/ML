@@ -30,18 +30,11 @@ class VarianceThresholdFilter implements Transformer
     public function __construct(float $threshold = 0.0)
     {
         if ($threshold < 0.0) {
-            throw new InvalidArgumentException('Threshold must be a float value greater than 0.');
+            throw new InvalidArgumentException('Threshold must be a positive'
+                . ' value.');
         }
 
         $this->threshold = $threshold;
-    }
-
-    /**
-     * @return float
-     */
-    public function threshold() : float
-    {
-        return $this->threshold;
     }
 
     /**
@@ -60,10 +53,16 @@ class VarianceThresholdFilter implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $n = $dataset->numRows();
-        
-        foreach ($dataset->rotate() as $column => $values) {
-            if (Descriptive::variance($values, $n) > $this->threshold) {
+        foreach ($dataset->columnTypes() as $column => $type) {
+            if ($type === self::CATEGORICAL) {
+                $counts = array_count_values($dataset[$column]);
+
+                $variance = Descriptive::populationVariance($counts);
+            } else {
+                $variance = Descriptive::populationVariance($dataset[$column]);
+            }
+
+            if ($variance > $this->threshold) {
                 $this->selected[$column] = true;
             }
         }

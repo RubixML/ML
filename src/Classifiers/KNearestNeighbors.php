@@ -61,7 +61,7 @@ class KNearestNeighbors implements Supervised, Probabilistic, Classifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, Distance $distanceFunction = null)
+    public function __construct(int $k = 5, Distance $distanceFunction = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

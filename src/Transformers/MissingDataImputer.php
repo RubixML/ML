@@ -52,8 +52,8 @@ class MissingDataImputer implements Transformer
                                 Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
-            throw new InvalidArgumentException('Placeholder must be a string or numeric type, '
-                . gettype($placeholder) . ' found.');
+            throw new InvalidArgumentException('Placeholder must be a string or'
+                . ' numeric, ' . gettype($placeholder) . ' found.');
         }
 
         if (!isset($continuous)) {
@@ -75,16 +75,14 @@ class MissingDataImputer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $types = $dataset->columnTypes();
-
-        foreach ($dataset->rotate() as $column => $values) {
-            if ($types[$column] === self::CATEGORICAL) {
+        foreach ($dataset->columnTypes() as $column => $type) {
+            if ($type === self::CATEGORICAL) {
                 $imputer = clone $this->categorical;
-            } else if ($types[$column] === self::CONTINUOUS) {
+            } else if ($type === self::CONTINUOUS) {
                 $imputer = clone $this->continuous;
             }
 
-            $values = array_filter($values, function ($value) {
+            $values = array_filter($dataset[$column], function ($value) {
                 return $value !== $this->placeholder;
             });
 

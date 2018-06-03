@@ -34,16 +34,15 @@ class MinMaxNormalizer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This transformer only works on'
-                . ' continuous features.');
-        }
-
         $this->minimums = $this->maximums = [];
 
-        foreach ($dataset->rotate() as $column => $features) {
-            $this->minimums[$column] = min($features);
-            $this->maximums[$column] = max($features);
+        foreach ($dataset->ColumnTypes() as $column => $type) {
+            if ($type === self::CONTINUOUS) {
+                $values = $dataset[$column];
+
+                $this->minimums[$column] = min($values);
+                $this->maximums[$column] = max($values);
+            }
         }
     }
 
@@ -57,10 +56,8 @@ class MinMaxNormalizer implements Transformer
     {
         foreach ($samples as &$sample) {
             foreach ($this->minimums as $column => $min) {
-                $max = $this->maximums[$column];
-
                 $sample[$column] = ($sample[$column] - $min)
-                    / (($max - $min) + self::EPSILON);
+                    / (($this->maximums[$column] - $min) + self::EPSILON);
             }
         }
     }

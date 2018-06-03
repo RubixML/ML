@@ -8,6 +8,8 @@ use Rubix\Engine\Classifiers\AdaBoost;
 use Rubix\Engine\CrossValidation\KFold;
 use Rubix\Engine\Classifiers\NaiveBayes;
 use Rubix\Engine\Metrics\Validation\MCC;
+use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\Engine\Transformers\MinMaxNormalizer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use Rubix\Engine\Transformers\NumericStringConverter;
@@ -36,7 +38,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 20, 0.1), [
+$estimator = new Pipeline(new NaiveBayes(), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
 ]);
@@ -51,3 +53,5 @@ $report = new ReportGenerator(new AggregateReport([
 var_dump($validator->score($estimator, $dataset));
 
 var_dump($report->generate($estimator, $dataset));
+
+var_dump($estimator->proba($dataset->randomize()->head(5)));

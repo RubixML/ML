@@ -16,15 +16,6 @@ class StopWordFilter implements Transformer
     ];
 
     /**
-     * The column types of the fitted dataset. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
-    /**
      * @param  array  $stopWords
      * @return void
      */
@@ -41,7 +32,7 @@ class StopWordFilter implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $dataset->columnTypes();
+        //
     }
 
     /**
@@ -54,9 +45,11 @@ class StopWordFilter implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($this->columnTypes as $column => $type) {
-                if ($type === self::CATEGORICAL) {
-                    $sample[$column] = preg_replace('/\b('. implode('|', $this->stopWords) . ')\b/', '', $sample[$column]);
+            foreach ($sample as &$feature) {
+                if (is_string($feature)) {
+                    $feature = preg_replace('/\b('
+                        . implode('|', $this->stopWords)
+                        . ')\b/', '', $feature);
                 }
             }
         }

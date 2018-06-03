@@ -4,7 +4,7 @@ namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
-use Rubix\Engine\Transformers\Tokenizers\WhitespaceTokenizer;
+use Rubix\Engine\Transformers\Tokenizers\WordTokenizer;
 use InvalidArgumentException;
 
 class TokenCountVectorizer implements Transformer
@@ -24,15 +24,6 @@ class TokenCountVectorizer implements Transformer
     protected $tokenizer;
 
     /**
-     * The column types of the fitted dataset. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
-    /**
      * The vocabulary of the fitted training set.
      *
      * @var array
@@ -49,11 +40,12 @@ class TokenCountVectorizer implements Transformer
     public function __construct(int $maxVocabulary = PHP_INT_MAX, Tokenizer $tokenizer = null)
     {
         if ($maxVocabulary < 1) {
-            throw new InvalidArgumentException('Max vocabulary must be greater than 0.');
+            throw new InvalidArgumentException('The size of the vocabulary must'
+                . ' be at least 1 word.');
         }
 
         if (!isset($tokenizer)) {
-            $tokenizer = new WhitespaceTokenizer();
+            $tokenizer = new WordTokenizer();
         }
 
         $this->maxVocabulary = $maxVocabulary;
@@ -84,13 +76,11 @@ class TokenCountVectorizer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->columnTypes = $dataset->columnTypes();
-        $this->vocabulary = [];
-        $counts = [];
+        $this->vocabulary = $counts = [];
 
         foreach ($dataset->samples() as $sample) {
             foreach ($sample as $column => $feature) {
-                if ($this->columnTypes[$column] === self::CATEGORICAL) {
+                if (is_string($feature)) {
                     foreach ($this->tokenizer->tokenize($feature) as $token) {
                         if (isset($counts[$token])) {
                             $counts[$token]++;
@@ -123,14 +113,14 @@ class TokenCountVectorizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($this->columnTypes as $column => $type) {
-                $vectors = [];
+            $vectors = [];
 
-                if ($type === self::CATEGORICAL) {
-                    $vectors[] = $this->vectorize($sample[$column]);
+            foreach ($sample as $j => &$feature) {
+                if (is_string($feature)) {
+                    $vectors[] = $this->vectorize($feature);
+
+                    unset($sample[$j]);
                 }
-
-                unset($sample[$column]);
             }
 
             $sample = array_merge(array_values($sample), ...$vectors);
@@ -145,7 +135,7 @@ class TokenCountVectorizer implements Transformer
      */
     public function vectorize(string $string) : array
     {
-        $vector = array_fill_keys($this->vocabulary, 0);
+        $vector = array_fill(0, $this->vocabularySize(), 0);
 
         foreach ($this->tokenizer->tokenize($string) as $token) {
             if (isset($this->vocabulary[$token])) {

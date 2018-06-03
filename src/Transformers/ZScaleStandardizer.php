@@ -30,26 +30,26 @@ class ZScaleStandardizer implements Transformer
      * Calculate the means and standard deviations of the dataset.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This transformer only works on continuous features.');
-        }
-
         $this->means = $this->stddevs = [];
 
-        foreach ($dataset->rotate() as $column => $features) {
-            $mean = Average::mean($features);
+        foreach ($dataset->columnTypes() as $column => $type) {
+            if ($type === self::CONTINUOUS) {
+                $values = $dataset[$column];
 
-            $stddev = sqrt(array_reduce($features, function ($carry, $feature) use ($mean) {
-                return $carry += ($feature - $mean) ** 2;
-            }, 0) / count($features));
+                $mean = Average::mean($values);
 
-            $this->means[$column] = $mean;
-            $this->stddevs[$column] = $stddev;
+                $stddev = sqrt(array_reduce($values,
+                    function ($carry, $feature) use ($mean) {
+                        return $carry += ($feature - $mean) ** 2;
+                    }, 0) / count($values));
+
+                $this->means[$column] = $mean;
+                $this->stddevs[$column] = $stddev;
+            }
         }
     }
 
@@ -63,9 +63,8 @@ class ZScaleStandardizer implements Transformer
     {
         foreach ($samples as &$sample) {
             foreach ($this->means as $column => $mean) {
-                $stddev = $this->stddevs[$column];
-
-                $sample[$column] = ($sample[$column] - $mean) / ($stddev ? $stddev : self::EPSILON);
+                $sample[$column] = ($sample[$column] - $mean)
+                    / ($this->stddevs[$column] + self::EPSILON);
             }
         }
     }

@@ -15,8 +15,8 @@ class Manhattan implements Distance
     {
         $distance = 0.0;
 
-        foreach ($a as $index => $coordinate) {
-            $distance += abs($coordinate - $b[$index]);
+        foreach ($a as $i => $coordinate) {
+            $distance += abs($coordinate - $b[$i]);
         }
 
         return $distance;
