@@ -7,6 +7,7 @@ use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Transformers\Strategies\Categorical;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
 
 class DummyClassifier implements Supervised, Classifier, Persistable
 {
@@ -21,8 +22,12 @@ class DummyClassifier implements Supervised, Classifier, Persistable
      * @param  \Rubix\Engine\Transformers\Strategies\Categorical  $strategy
      * @return void
      */
-    public function __construct(Categorical $strategy)
+    public function __construct(Categorical $strategy = null)
     {
+        if (!isset($strategy)) {
+            $strategy = new PopularityContest();
+        }
+
         $this->strategy = $strategy;
     }
 

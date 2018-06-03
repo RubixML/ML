@@ -35,13 +35,13 @@ class DBSCAN implements Unsupervised, Clusterer
     protected $distanceFunction;
 
     /**
-     * @param  float  $epsilon
+     * @param  float  $radius
      * @param  int  $minDensity
      * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon = 0.5, int $minDensity = 5, Distance $distanceFunction = null)
+    public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $distanceFunction = null)
     {
         if ($epsilon < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0.');

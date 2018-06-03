@@ -32,7 +32,8 @@ class PopularityContest implements Categorical
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new RuntimeException('This strategy requires at least 1 data point.');
+            throw new RuntimeException('This strategy requires at least 1 data'
+                . ' point.');
         }
 
         $this->n = count($values);

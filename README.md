@@ -54,10 +54,10 @@ Like most Estimators, the K Nearest Neighbors Classifier requires a number of pa
 
 Here are the hyperparameters for K Nearest Neighbors:
 
-| Parameter | Default | Description |
-|--|--|--|
-| k | 5 | The number of neighboring training samples to consider when making a prediction. |
-| Distance | Euclidean | The distance metric used to measure the distance between two sample points. |
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 The K Nearest Neighbors algorithm works by comparing the "distance" between a given sample and each of the training samples. It will then use the K nearest samples to base its prediction on. For example, if the 5 closest neighbors to a sample are 4 married and 1 divorced, the algorithm will output a prediction of married with a probability of 0.80.
 
@@ -132,7 +132,169 @@ Now that we've gone through a brief introduction of a simple machine learning pr
 ## API Reference
 
 ### Estimators
-Documentation in the works ...
+Estimators are at the heart of the Rubix library and consist of various Classifiers, Regressors, and Clusterers.
+
+### Classifiers
+
+#### AdaBoost
+Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| base | None | string | The fully qualified class name of the base "weak" classifier. |
+| params | [ ] | array | The parameters of the base classifer. |
+| epochs | 100 | int | The maximum number of training rounds to execute before the algorithm terminates. |
+| ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| threshold | 0.999 | float | The minimum accuracy an epoch must score before the algorithm terminates. |
+
+#### Decision Tree
+Binary Tree based algorithm that works by intelligently splitting the training data at various decision nodes until a terminating condition is met.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+
+#### Dummy Classifier
+A classifier based on a given imputer strategy. Used to compare performance with an actual classifier.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| strategy | PopularityContest | object | The imputer strategy to employ when guessing the outcome of a sample. |
+
+#### K Nearest Neighbors
+A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+#### Logistic Regression
+A type of regression analysis that uses the logistic function to classify between two possible outcomes.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| epochs | 100 | int | The number of training epochs to execute. |
+| batch size | 10 | int | The number of training samples to process at a time. |
+| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| alpha | 1e-4 | float | The L2 regularization term. |
+
+#### Multi Layer Perceptron
+Multiclass neural network model that uses a series of user-defined hidden layers as intermediate computational units equipped with non-linear activation functions.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| hidden | [ ] | array | An array of hidden layers of the neural network. |
+| batch size | 10 | int | The number of training samples to process at a time. |
+| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| alpha | 1e-4 | float | The L2 regularization term. |
+| metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| ratio | 0.2 | float | The ratio of sample data to hold out for validation during training. |
+| window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+
+#### Naive Bayes
+Probability-based classifier that used probabilistic inference to derive the predicted class.
+
+This estimator does not have any hyperparameters.
+
+#### Random Forest
+Ensemble classifier that trains Decision Trees on a random subset of the training data.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| trees | 50 | int | The number of Decision Trees to train in the ensemble. |
+| ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+
+#### Softmax Classifier
+A generalization of logistic regression to multiple classes.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| epochs | 100 | int | The number of training epochs to execute. |
+| batch size | 10 | int | The number of training samples to process at a time. |
+| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| alpha | 1e-4 | float | The L2 regularization term. |
+
+### Regressors
+
+#### Dummy Regressor
+Regressor that guesses the output values based on an imputer strategy. Used to compare performance against actual regressors.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| strategy | BlurryMean | object | The imputer strategy to employ when guessing the outcome of a sample. |
+
+#### KNN Regressor
+A version of K Nearest Neighbors that uses the mean of K nearest data points to make a prediction.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+#### MLP Regressor
+A neural network with a continuous output layer suitable for regression problems.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| hidden | [ ] | array | An array of hidden layers of the neural network. |
+| batch size | 10 | int | The number of training samples to process at a time. |
+| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| alpha | 1e-4 | float | The L2 regularization term. |
+| metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| ratio | 0.2 | float | The ratio of sample data to hold out for validation during training. |
+| window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+
+#### Regression Tree
+A binary tree learning algorithm that minimizes the variance between decision node splits.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+
+#### Ridge
+L2 penalized least squares regression whose predictions are based on the closed-form solution to the training data.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| alpha | 1.0 | float | The L2 regularization term. |
+
+### Clusterers
+
+#### DBSCAN
+Density-based spatial clustering of applications with noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
+| min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+#### Fuzzy C Means
+Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| c | None | int | The number of target clusters. |
+| fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+#### K Means
+A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
+
+| Parameter | Default | Type | Description |
+|--|--|--|--|
+| k | None | int | The number of target clusters. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
 ### Data Preprocessing
 Documentation in the works ...

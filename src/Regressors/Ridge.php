@@ -39,10 +39,16 @@ class Ridge implements Supervised, Regressor, Persistable
 
     /**
      * @param  float  $alpha
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $alpha = 1.0)
     {
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('L2 regularization term must'
+                . ' be non-negative.');
+        }
+
         $this->alpha = $alpha;
     }
 
@@ -74,7 +80,7 @@ class Ridge implements Supervised, Regressor, Persistable
     {
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous samples.');
+                . ' continuous features.');
         }
 
         $coefficients = $this->computeCoefficients(...$dataset->all());

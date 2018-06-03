@@ -7,6 +7,7 @@ use Rubix\Engine\Persistable;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Transformers\Strategies\Continuous;
+use Rubix\Engine\Transformers\Strategies\BlurryMean;
 
 class DummyRegressor implements Supervised, Regressor, Persistable
 {
@@ -21,8 +22,12 @@ class DummyRegressor implements Supervised, Regressor, Persistable
      * @param  \Rubix\Engine\Transformers\Strategies\Continuous  $strategy
      * @return void
      */
-    public function __construct(Continuous $strategy)
+    public function __construct(Continuous $strategy = null)
     {
+        if (!isset($strategy)) {
+            $strategy = new BlurryMean();
+        }
+
         $this->strategy = $strategy;
     }
 
