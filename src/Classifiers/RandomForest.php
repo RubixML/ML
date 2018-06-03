@@ -87,16 +87,6 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
     }
 
     /**
-     * The number of trees in the forest.
-     *
-     * @return int
-     */
-    public function trees() : int
-    {
-        return count($this->forest);
-    }
-
-    /**
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
@@ -154,7 +144,7 @@ class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
      */
     public function proba(Dataset $samples) : array
     {
-        $n = $this->trees() + self::EPSILON;
+        $n = count($this->forest) + self::EPSILON;
 
         $probabilities = array_fill(0, $samples->numRows(),
             array_fill_keys($this->classes, 0.0));

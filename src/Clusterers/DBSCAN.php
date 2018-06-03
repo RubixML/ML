@@ -2,13 +2,14 @@
 
 namespace Rubix\Engine\Clusterers;
 
+use Rubix\Engine\Persistable;
 use Rubix\Engine\Unsupervised;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Metrics\Distance\Distance;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class DBSCAN implements Unsupervised, Clusterer
+class DBSCAN implements Unsupervised, Clusterer, Persistable
 {
     const NOISE = 'noise';
 

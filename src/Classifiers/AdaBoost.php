@@ -242,7 +242,7 @@ class AdaBoost implements Supervised, BinaryClassifier, Persistable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function generateRandomWeightedSubset(Labeled $dataset) : Labeled
+    protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
     {
         $n = round($this->ratio * $dataset->numRows());
         $total = array_sum($this->weights);

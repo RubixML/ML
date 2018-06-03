@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\Estimator;
+use Rubix\Engine\Persistable;
 use Rubix\Engine\Unsupervised;
 use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Unlabeled;
@@ -40,6 +41,7 @@ class FuzzyCMeansTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Unsupervised::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_cluster_samples()
