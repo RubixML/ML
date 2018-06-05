@@ -119,9 +119,11 @@ class Continuous implements Output, Parametric
         $weights = array_fill(0, $this->width(),
             array_fill(0, $previous->width(), 0.0));
 
+        $r = pow(6 / $previous->width(), 1 / 4);
+
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = random_int(-3 * 1e8, 3 * 1e8) / 1e8;
+                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
             }
         }
 

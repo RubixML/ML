@@ -28,21 +28,16 @@ class TfIdfTransformerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_dataset()
-    {
-        $this->transformer->fit($this->dataset);
-
-        $this->assertTrue(true);
-    }
-
     public function test_transform_dataset()
     {
         $this->transformer->fit($this->dataset);
 
-        $samples = $this->dataset->samples();
+        $this->dataset->transform($this->transformer);
 
-        $this->transformer->transform($samples);
-
-        $this->assertTrue(true);
+        $this->assertEquals([
+            [0.4771212503767177, 0.5282737706526266, 0, 0, 0.17609125688420885, 0, 0, 0, 0.17609125688420885, 0.3521825137684177, 0, 0.3521825137684177, 0, 0, 0, 1.9084850015068708, 0.17609125688420885, 0, 0.4771212503767177],
+            [0, 0.17609125688420885, 0.4771212503767177, 0, 0, 0.3521825137684177, 0.4771212503767177, 0, 0, 0, 0, 0.5282737706526266, 0, 0.4771212503767177, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0.4771212503767177, 0.3521825137684177, 0.5282737706526266, 0, 0, 0.7043650275368354, 0.3521825137684177, 0, 0, 0.4771212503767177, 0, 0.9542425007534354, 0, 0.17609125688420885, 0, 0],
+        ], $this->dataset->samples());
     }
 }

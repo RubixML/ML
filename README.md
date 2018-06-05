@@ -566,7 +566,7 @@ Probability-based classifier that used probabilistic inference to derive the pre
 This estimator does not have any hyperparameters.
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1216,8 +1216,10 @@ $report = new ReportGenerator(new ConfusionMatrix(), 0.4);
 
 $results = $report->generate($estimator, $dataset);
 ```
-#### Reports
 
+---
+#### Reports
+Coming soon to a documentation near you ...
 
 ---
 ### Model Selection
@@ -1261,7 +1263,7 @@ It is possible to persist a computer model to disk by wrapping the Estimator ins
 ```php
 public save(string $path) : bool
 ```
-Where path is the location of the directory where you want the model saved. `Save()` will return true if the model was successfully persisted and false if it failed.
+Where path is the location of the directory where you want the model saved. `save()` will return true if the model was successfully persisted and false if it failed.
 
 ```php
 public static restore(string $path) : self
@@ -1281,7 +1283,7 @@ $estimator = PersistentModel::restore('path/to/persisted/model');
 ```
 
 ## Acknowledgements
-Thank you in no particular order to Andrej Karpathy, Andrew Ng, Arkadiusz Kondas, Grant Sanderson, Jessica Noss, Patrick Winston, Sal Khan, and Tom Leighton. Your wisdom and dedication to learning has been the driving force behind this project.
+Thank you in no particular order to Andrej Karpathy, Andrew Ng, Arkadiusz Kondas, Grant Sanderson, Jessica Noss, Lex Fridman, Patrick Winston, Sal Khan, and Tom Leighton. Your wisdom and dedication to mathematics and machine learning has been the driving force behind this project.
 
 
 ## License

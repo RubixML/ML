@@ -14,9 +14,9 @@ class MinMaxMinMaxNormalizerTest extends TestCase
     public function setUp()
     {
         $this->dataset = new Unlabeled([
-            [50, 100, 1000],
-            [40, 200, 3000],
-            [29, 300, 2000],
+            [1, 2, 3, 4],
+            [40, 20, 30, 10],
+            [100, 300, 200, 400],
         ]);
 
         $this->transformer = new MinMaxNormalizer();
@@ -28,29 +28,16 @@ class MinMaxMinMaxNormalizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_dataset()
-    {
-        $this->transformer->fit($this->dataset);
-
-        $this->assertTrue(true);
-    }
-
     public function test_transform_dataset()
     {
         $this->transformer->fit($this->dataset);
 
-        $data = [
-            [50, 100, 1000],
-            [40, 200, 3000],
-            [29, 247, 1999],
-        ];
-
-        $this->transformer->transform($data);
+        $this->dataset->transform($this->transformer);
 
         $this->assertEquals([
-            [0.9999999995238095, 0.0, 0.0],
-            [0.5238095235600907, 0.499999999975, 0.999999999995],
-            [0, 0.735, 0.4995],
-        ], $data);
+            [0.0, 0.0, 0.0, 0.0],
+            [0.3939393938996021, 0.06040268456173145, 0.13705583755649461, 0.015151515151132538],
+            [0.9999999998989899, 0.999999999966443, 0.9999999999492385, 0.9999999999747474],
+        ], $this->dataset->samples());
     }
 }

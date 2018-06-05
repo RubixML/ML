@@ -2,10 +2,10 @@
 
 use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\NumericStringConverter;
+use Rubix\Engine\Transformers\SparseRandomProjector;
 use PHPUnit\Framework\TestCase;
 
-class NumericStringConverterTest extends TestCase
+class SparseRandomProjectorTest extends TestCase
 {
     protected $transformer;
 
@@ -14,17 +14,17 @@ class NumericStringConverterTest extends TestCase
     public function setUp()
     {
         $this->dataset = new Unlabeled([
-            ['1', '2', '3', 4],
-            ['4.0', '2.0', 3.0, 1.0],
-            ['100', '3.0', '200', 1.0],
+            [1, 2, 3, 4],
+            [40, 20, 30, 10],
+            [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new NumericStringConverter();
+        $this->transformer = new SparseRandomProjector(2);
     }
 
     public function test_build_l1_regularizer()
     {
-        $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
+        $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -34,10 +34,6 @@ class NumericStringConverterTest extends TestCase
 
         $this->dataset->transform($this->transformer);
 
-        $this->assertEquals([
-            [1, 2, 3, 4],
-            [4.0, 2.0, 3.0, 1.0],
-            [100, 3.0, 200, 1.0],
-        ], $this->dataset->samples());
+        $this->assertEquals(2, $this->dataset->numColumns());
     }
 }

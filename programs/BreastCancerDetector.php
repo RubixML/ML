@@ -9,6 +9,7 @@ use Rubix\Engine\CrossValidation\Holdout;
 use Rubix\Engine\Classifiers\RandomForest;
 use Rubix\Engine\Transformers\MissingDataImputer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
+use Rubix\Engine\Transformers\SparseRandomProjector;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;

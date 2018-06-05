@@ -30,24 +30,13 @@ class MissingDataImputerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_dataset()
-    {
-        $this->transformer->fit($this->dataset);
-
-        $this->assertTrue(true);
-    }
-
     public function test_transform_dataset()
     {
-        $data = [
-            ['?', '?'],
-        ];
-
         $this->transformer->fit($this->dataset);
 
-        $this->transformer->transform($data);
+        $this->dataset->transform($this->transformer);
 
-        $this->assertThat($data[0][0], $this->logicalAnd($this->greaterThan(30), $this->lessThan(45)));
-        $this->assertContains($data[0][1], ['friendly', 'mean']);
+        $this->assertThat($this->dataset[0][1], $this->logicalAnd($this->greaterThan(30), $this->lessThan(45)));
+        $this->assertContains($this->dataset[1][3], ['friendly', 'mean']);
     }
 }

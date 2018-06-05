@@ -32,6 +32,14 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
+     * The smoothing parameter. i.e. a tiny number that helps provide numerical
+     * stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * The RMS matrices for each layer.
      *
      * @var \SplObjectStorage
@@ -49,10 +57,12 @@ class Adam implements Optimizer
      * @param  float  $rate
      * @param  float  $momentumDecay
      * @param  float  $rmsDecay
+     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9,
+                                float $rmsDecay = 0.999, float $epsilon = 1e-8)
     {
         if ($rate <= 0.0) {
             throw new InvalidArgumentException('The learning rate must be set'
@@ -69,9 +79,14 @@ class Adam implements Optimizer
                 . ' 0 and 1.');
         }
 
+        if ($epsilon === 0.0) {
+            throw new InvalidArgumentException('Epsilon cannot be 0.');
+        }
+
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
+        $this->epsilon = $epsilon;
         $this->velocities = new SplObjectStorage();
         $this->cache = new SplObjectStorage();
     }
@@ -115,7 +130,7 @@ class Adam implements Optimizer
         foreach ($layer->gradients()->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {
                 $steps[$i][$j] = $this->rate * $velocities[$i][$j]
-                    / (sqrt($cache[$i][$j]) + self::EPSILON);
+                    / (sqrt($cache[$i][$j]) + $this->epsilon);
             }
         }
 

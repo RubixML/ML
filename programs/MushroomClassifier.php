@@ -11,7 +11,8 @@ use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Classifiers\MultiLayerPerceptron;
-use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
+use Rubix\Engine\Transformers\SparseRandomProjector;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
@@ -42,14 +43,16 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new PReLU()),
-    new Dense(10, new PReLU()),
-    new Dense(10, new PReLU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
     1e-4, new MCC(), 0.2, 3, 100), [
         new OneHotEncoder(),
+        new SparseRandomProjector(30),
     ]);
 
 $report = new ReportGenerator(new AggregateReport([

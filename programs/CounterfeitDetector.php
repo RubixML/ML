@@ -9,6 +9,7 @@ use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\DummyClassifier;
 use Rubix\Engine\Classifiers\LogisticRegression;
+use Rubix\Engine\Transformers\SparseRandomProjector;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;

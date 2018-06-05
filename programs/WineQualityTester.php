@@ -8,9 +8,8 @@ use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\Regressors\MLPRegressor;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Metrics\Validation\RSquared;
-use Rubix\Engine\Transformers\ZScaleStandardizer;
 use Rubix\Engine\CrossValidation\ReportGenerator;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
+use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
 use League\Csv\Reader;
@@ -37,15 +36,14 @@ $labels = iterator_to_array($reader->fetchColumn('quality'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
+    new Dense(30, new PReLU()),
+    new Dense(30, new PReLU()),
+    new Dense(30, new PReLU()),
 ];
 
-$estimator = new Pipeline(new MLPRegressor($hidden, 10, new Adam(0.001),
-    1e-4, new RSquared(), 0.2, 3, 50), [
+$estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
+    1e-4, new RSquared(), 0.2, 3, 100), [
         new NumericStringConverter(),
-        new ZScaleStandardizer(),
     ]);
 
 $report = new ReportGenerator(new RegressionAnalysis(), 0.2);

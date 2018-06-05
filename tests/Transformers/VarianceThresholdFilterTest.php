@@ -9,9 +9,14 @@ class VarianceThresholdFilterTest extends TestCase
 {
     protected $transformer;
 
+    protected $dataset;
+
     public function setUp()
     {
-        $this->dataset = new Unlabeled([[0, 0, 1], [0, 1, 0], [0, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]]);
+        $this->dataset = new Unlabeled([
+            [0, 0, 1], [0, 1, 0], [0, 0, 0],
+            [0, 1, 1], [0, 1, 0], [0, 1, 1]
+        ]);
 
         $this->transformer = new VarianceThresholdFilter(0.0);
     }
@@ -22,21 +27,14 @@ class VarianceThresholdFilterTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_dataset()
-    {
-        $this->transformer->fit($this->dataset);
-
-        $this->assertEquals([1, 2], $this->transformer->selected());
-    }
-
     public function test_transform_dataset()
     {
         $this->transformer->fit($this->dataset);
 
-        $data = [[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 1, 1], [0, 1, 0], [0, 1, 1]];
+        $this->dataset->transform($this->transformer);
 
-        $this->transformer->transform($data);
-
-        $this->assertEquals([[0, 1], [1, 0], [0, 0], [1, 1], [1, 0], [1, 1]], $data);
+        $this->assertEquals([
+            [0, 1], [1, 0], [0, 0], [1, 1], [1, 0], [1, 1]
+        ], $this->dataset->samples());
     }
 }

@@ -113,7 +113,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $hidden, int $batchSize = 10, Optimizer $optimizer = null,
+    public function __construct(array $hidden, int $batchSize = 50, Optimizer $optimizer = null,
                     float $alpha = 1e-4, Regression $metric = null, float $ratio = 0.2,
                     int $window = 3, int $epochs = PHP_INT_MAX)
     {

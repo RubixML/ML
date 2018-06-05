@@ -9,9 +9,11 @@ class OneHotEncoderTest extends TestCase
 {
     protected $transformer;
 
+    protected $dataset;
+
     public function setUp()
     {
-        $data = new Unlabeled([
+        $this->dataset = new Unlabeled([
             ['nice', 'furry', 'friendly'],
             ['mean', 'furry', 'loner'],
             ['nice', 'rough', 'friendly'],
@@ -19,8 +21,6 @@ class OneHotEncoderTest extends TestCase
         ]);
 
         $this->transformer = new OneHotEncoder();
-
-        $this->transformer->fit($data);
     }
 
     public function test_build_one_hot_vectorizer()
@@ -31,16 +31,15 @@ class OneHotEncoderTest extends TestCase
 
     public function test_transform_dataset()
     {
-        $data = [
-            ['nice', 'furry', 'loner'],
-            ['warm', 'cuddly', 'pink'],
-        ];
+        $this->transformer->fit($this->dataset);
 
-        $this->transformer->transform($data);
+        $this->dataset->transform($this->transformer);
 
         $this->assertEquals([
-            [1, 0, 1, 0, 0, 1],
-            [0, 0, 0 ,0, 0, 0],
-        ], $data);
+            [1, 0, 1, 0, 1, 0],
+            [0, 1, 1, 0, 0, 1],
+            [1, 0, 0, 1, 1, 0],
+            [0, 1, 0, 1, 1, 0],
+        ], $this->dataset->samples());
     }
 }
