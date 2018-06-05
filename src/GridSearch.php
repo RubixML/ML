@@ -23,7 +23,7 @@ class GridSearch implements Estimator, Persistable
      *
      * @var array
      */
-    protected $grid = [
+    protected $params = [
         //
     ];
 
@@ -54,12 +54,12 @@ class GridSearch implements Estimator, Persistable
 
     /**
      * @param  string  $base
-     * @param  array  $grid
+     * @param  array  $params
      * @param  \Rubix\Engine\CrossValidation\Validator  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $grid, Validator $validator)
+    public function __construct(string $base, array $params, Validator $validator)
     {
         $reflector = new ReflectionClass($base);
 
@@ -71,18 +71,18 @@ class GridSearch implements Estimator, Persistable
         $args = array_column($reflector->getConstructor()
             ->getParameters(), 'name');
 
-        if (count($grid) > count($args)) {
+        if (count($params) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
-                . count($grid) . ' given, only ' . count($args) . ' needed.');
+                . count($params) . ' given, only ' . count($args) . ' needed.');
         }
 
-        foreach ($grid as &$params) {
+        foreach ($params as &$params) {
             $params = (array) $params;
         }
 
         $this->reflector = $reflector;
-        $this->args = array_slice($args, 0, count($grid));
-        $this->grid = $grid;
+        $this->args = array_slice($args, 0, count($params));
+        $this->params = $params;
         $this->validator = $validator;
     }
 
@@ -109,7 +109,7 @@ class GridSearch implements Estimator, Persistable
 
         $this->results = [];
 
-        foreach ($this->combineParams($this->grid) as $params) {
+        foreach ($this->combineParams($this->params) as $params) {
             $estimator = $this->reflector->newInstanceArgs($params);
 
             $score = $this->validator->score($estimator, $dataset);
@@ -143,14 +143,14 @@ class GridSearch implements Estimator, Persistable
      * Return an array of all possible combinations of parameters. i.e. the
      * Cartesian product of the supplied parameter grid.
      *
-     * @param  array  $grid
+     * @param  array  $params
      * @return array
      */
-    protected function combineParams(array $grid) : array
+    protected function combineParams(array $params) : array
     {
         $params = [[]];
 
-        foreach ($grid as $i => $options) {
+        foreach ($params as $i => $options) {
             $append = [];
 
             foreach ($params as $product) {

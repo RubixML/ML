@@ -4,18 +4,19 @@ Rubix is a library that lets you build intelligent programs that learn from data
 ### Our Mission
 The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is primarily optimized to deliver performance on the web, we believe this should *not* prevent PHP programmers from taking advantage of the major advances in AI and machine learning today. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
-### Index
+### Table of Contents
 
  - [Installation](#installation)
- - Introduction
+ - [Requirements](#requirements)
+ - [Introduction](#an-introduction-to-machine-learning-in-rubix)
 	 - [Obtaining Data](#obtaining-data)
 	 - [Choosing an Estimator](#choosing-an-estimator)
 	 - [Training and Prediction](#training-and-prediction)
 	 - [Evaluation](#evaluating-model-performance)
 	 - [Next Steps](#what-next)
-- API Reference
+- [API Reference](#api-reference)
 	- [Estimators](#estimators)
-		- Classifiers
+		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Decision Tree](#decision-tree)
 			- [Dummy Classifier](#dummy-classifier)
@@ -25,17 +26,17 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Naive Bayes](#naive-bayes)
 			- [Random Forest](#random-forest)
 			- [Softmax Classifier](#softmax-classifier)
-		- Regressors
+		- [Regressors](#regressors)
 			- [Dummy Regressor](#dummy-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
-		- Clusterers
+		- [Clusterers](#clusterers)
 			- [DBSCAN](#dbscan)
 			- [Fuzzy C Means](#fuzzy-c-means)
 			- [K Means](#k-means)
-	- Data Preprocessing
+	- [Data Preprocessing](#data-preprocessing)
 		- [Pipeline](#pipeline)
 		- [Transformers](#transformers)
 			- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
@@ -49,17 +50,27 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Token Count Vectorizer](#token-count-vectorizer)
 			- [Variance Threshold Filter](#variance-threshold-filter)
 			- [Z Scale Standardizer](#z-scale-standardizer)
-	- Cross Validation
-	- Model Selection
-	- Model Persistence
-- Requirements
-- Licence
+	- [Cross Validation](#cross-validation)
+		- [Validators](#validators)
+			- [Hold Out](#hold-out)
+			- [K Fold](#k-fold)
+		- [Metrics](#validation-metrics)
+			- [Classification](#classification)
+			- [Regression](#regression)
+			- [Clustering](#clustering)
+		- [Reports](#reports)
+	- [Model Selection](#model-selection)
+	- [Model Persistence](#model-persistence)
+- [Licence](#licence)
 
 ## Installation
 Install Rubix using composer:
 ```sh
 composer require rubix/engine
 ```
+
+## Requirements
+- PHP CLI 7.1.3 or above
 
 ## An Introduction to Machine Learning in Rubix
 Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of learning techniques that Rubix offers out of the box, **Supervised** and **Unsupervised**.
@@ -171,7 +182,7 @@ $score = $validator->score($estimator, $dataset);
 
 var_dump($score);
 ```
-Outputs:
+##### Outputs:
 ```sh
 float(0.945)
 ```
@@ -236,11 +247,12 @@ array(3) {
 ```
 ---
 ### Classifiers
+Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - **Binary** and **Multiclass**. Binary Classifiers can only distinguish between two classes (ex. Male/Female, Yes/No, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
 #### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
 
-##### Supervised, Binary Classifier, Persistable
+##### Supervised, Binary, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -272,7 +284,7 @@ $estimator->influence(); // [0.7522, 0.7945, ...]
 #### Decision Tree
 Binary Tree based algorithm that works by intelligently splitting the training data at various decision nodes until a terminating condition is met.
 
-##### Supervised, Probabilistic, Persistable
+##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -301,7 +313,7 @@ $estimator->balance(); // -1
 #### Dummy Classifier
 A classifier based on a given imputer strategy. Used to compare performance with an actual classifier.
 
-##### Supervised, Persistable
+##### Supervised, Multiclass, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -322,7 +334,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 #### K Nearest Neighbors
 A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
 
-##### Supervised, Probabilistic
+##### Supervised, Multiclass, Probabilistic
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -344,7 +356,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 #### Logistic Regression
 A type of regression analysis that uses the logistic function to classify between two possible outcomes.
 
-##### Supervised, Binary Classifier, Probabilistic, Persistable
+##### Supervised, Binary, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -368,7 +380,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
 #### Multi Layer Perceptron
 Multiclass neural network model that uses a series of user-defined hidden layers as intermediate computational units equipped with non-linear activation functions.
 
-##### Supervised, Probabilistic, Persistable
+##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -409,7 +421,7 @@ $estimator->progress(); // [0.45, 0.59, 0.72, 0.88, ...]
 #### Naive Bayes
 Probability-based classifier that used probabilistic inference to derive the predicted class.
 
-##### Supervised, Probabilistic, Persistable
+##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 This estimator does not have any hyperparameters.
@@ -427,7 +439,7 @@ $estimator = new NaiveBayes();
 #### Random Forest
 Ensemble classifier that trains Decision Trees on a random subset of the training data.
 
-##### Supervised, Probabilistic, Persistable
+##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -450,7 +462,7 @@ $estimator = new RandomForest(100, 0.2, 5, 3);
 #### Softmax Classifier
 A generalization of logistic regression to multiple classes.
 
-##### Supervised, Probabilistic, Persistable
+##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -470,9 +482,9 @@ use Rubix\Engine\NeuralNet\Optimizers\Momentum;
 
 $estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
 ```
-
-### Regressors
 ---
+### Regressors
+A Regressor estimates the continuous expected output value of a given sample. Regression analysis is often used to predict the outcome of an experiment where the outcome can range over a continuous spectrum of values.
 
 #### Dummy Regressor
 Regressor that guesses the output values based on an imputer strategy. Used to compare performance against actual regressors.
@@ -613,8 +625,9 @@ $estimator->intercept(); // 5.298226
 $estimator->coefficients(); // [2.023, 3.122, 5.401, ...]
 ```
 
-### Clusterers
 ---
+### Clusterers
+Clusterers take Unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to.
 
 #### DBSCAN
 Density-based spatial clustering of applications with noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
@@ -959,18 +972,151 @@ $transformer = new ZScaleStandardizer();
 ```
 ---
 ### Cross Validation
-Documentation in the works ...
+Cross validation is the process of testing the generalization performance of a computer model using various techniques. Rubix has a number of classes that run cross validation on an instantiated Estimator for you. Each **Validator** outputs a single score based on a chosen metric, while **Reports** output an array of values based on the type of Report.
+
+---
+#### Validators
+Validators take an Estimator instance and Labeled Dataset object and return a score that measures the generalization performance using a user-defined validation metric.
+
+```php
+public score(Estimator $estimator, Labeled $dataset) : float
+```
+
+##### Example:
+```php
+$score = $validator->score($estimator, $dataset);
+
+var_dump($score);
+```
+
+##### Outputs:
+```sh
+float(0.869)
+```
+
+#### Hold Out
+Hold Out is the simplest form of cross validation available in Rubix. It uses a "hold out" set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is fast, but it doesn't allow the model to train on the entire training set.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| metric | None | object | The metric for the validator to measure. |
+| ratio | 0.2 | float | The ratio of samples to hold out for testing. |
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\HoldOut;
+use Rubix\Engine\Metrics\Validation\Accuracy;
+
+$validator = new HoldOut(new Accuracy(), 0.25);
+```
+
+#### K Fold
+K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| metric | None | object | The metric for the validator to measure. |
+| folds | 10 | int | The number of times to split the training set into equal sized folds. |
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Metrics\Validation\F1Score;
+
+$validator = new KFold(new F1Score(), 5);
+```
+
+---
+#### Reports
+Coming soon ...
+
+---
+#### Validation Metrics
+
+##### Classification
+| Metric | Range |  Description |
+|--|--|--|
+| Accuracy | (0, 1) | A quick metric that computes the average accuracy over the entire testing set. |
+| F1 Score | (0, 1) | A classification metric that takes the precision and recall of each class outcome into consideration. |
+| Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
+| MCC | (0, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. It returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
+
+##### Regression
+| Metric | Range | Description |
+|--|--|--|
+| Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
+| Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
+| RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
+| R-Squared | (0, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
+
+##### Clustering
+| Metric | Range | Description |
+|--|--|--|
+| Completeness | (0, 1) | A measure of the class outcomes that are predicted to be in the same cluster. |
+| Homogeneity | (0, 1) | A measure of the predicted labels that are known to be in the same class. |
+| V Measure | (0, 1) | The harmonic mean between Homogeneity and Completeness. |
 
 ---
 ### Model Selection
-Documentation in the works ...
+Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the **Grid Search** meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
+
+From the user's perspective, the process for training and predicting is the same, however, under the hood, Grid Search actually trains many Estimators and the predictions are done using the best one. You can access the scores of each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| base | None | string | The fully qualified class name of the base Estimator. |
+| params | [ ] | array | An array containing n-tuples (represented as PHP arrays) of parameters to search across for a given constructor argument position. |
+| validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to score each parameter combination. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `results() : array` | An array containing the score of each combination of parameters. |
+
+##### Example:
+```php
+use Rubix\Engine\GridSearch;
+use Rubix\Engine\Classifiers\KNearestNeighbors;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\Engine\Metrics\Distance\Manhattan;
+use Rubix\Engine\CrossValidation\KFold;
+use Rubix\Engine\Metrics\Validation\Accuracy;
+
+$params = [
+	[1, 3, 5, 10, 20], [new Euclidean(), new Manhattan()],
+];
+
+$estimator = new GridSearch(KNearestNeightbors::class, $params, new KFold(new Accuracy(), 10);
+```
 
 ---
 ### Model Persistence
-Documentation in the works ...
+It is possible to persist a computer model to disk by wrapping the Estimator instance in a **Persistent Model** meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface, as certain models scale better than others on disk.
 
-## Requirements
-- PHP 7.1.3 or above
+```php
+public save(string $path) : bool
+```
+Where path is the location of the directory where you want the model saved. `Save()` will return true if the model was successfully persisted and false if it failed.
+
+```php
+public static restore(string $path) : self
+```
+The restore method will return an instantiated model from the save path.
+
+##### Example:
+```php
+use Rubix\Engine\PersistentModel;
+use Rubix\Engine\Classifiers\RandomForest;
+
+$estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3));
+
+$estimator->save('path/to/models/folder/');
+
+$estimator = PersistentModel::restore('path/to/persisted/model');
+```
 
 ## License
 MIT
