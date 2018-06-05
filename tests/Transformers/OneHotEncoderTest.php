@@ -39,15 +39,8 @@ class OneHotEncoderTest extends TestCase
         $this->transformer->transform($data);
 
         $this->assertEquals([
-            [1, 1, 0, 0, 1, 0],
+            [1, 0, 1, 0, 0, 1],
             [0, 0, 0 ,0, 0, 0],
         ], $data);
-    }
-
-    public function test_encode_sample()
-    {
-        $vector = $this->transformer->encode(['nice', 'rough', 'loner']);
-
-        $this->assertEquals([1, 0, 0, 0, 1, 1], $vector);
     }
 }

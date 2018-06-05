@@ -36,6 +36,19 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Fuzzy C Means](#fuzzy-c-means)
 			- [K Means](#k-means)
 	- Data Preprocessing
+		- [Pipeline](#pipeline)
+		- [Transformers](#transformers)
+			- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
+			- [Min Max Normalizer](#min-max-normalizer)
+			- [Missing Data Imputer](#missing-data-imputer)
+			- [Numeric String Converter](#numeric-string-converter)
+			- [One Hot Encoder](#one-hot-encoder)
+			- [Stop Word Filter](#stop-word-filter)
+			- [Text Normalizer](#text-normalizer)
+			- [TF-IDF Transformer](#tf---idf-transformer)
+			- [Token Count Vectorizer](#token-count-vectorizer)
+			- [Variance Threshold Filter](#variance-threshold-filter)
+			- [Z Scale Standardizer](#z-scale-standardizer)
 	- Cross Validation
 	- Model Selection
 	- Model Persistence
@@ -92,7 +105,7 @@ Like most Estimators, the K Nearest Neighbors Classifier requires a number of pa
 
 Here are the hyperparameters for K Nearest Neighbors:
 
-| Parameter | Default | Type | Description |
+| Param | Default | Type | Description |
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
@@ -221,9 +234,8 @@ array(3) {
 	...
 }
 ```
-
-### Classifiers
 ---
+### Classifiers
 
 #### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
@@ -296,6 +308,9 @@ A classifier based on a given imputer strategy. Used to compare performance with
 |--|--|--|--|
 | strategy | PopularityContest | object | The imputer strategy to employ when guessing the outcome of a sample. |
 
+##### Additional Methods:
+This Estimator does not have any additional methods.|
+
 ##### Example:
 ```php
 use Rubix\Engine\Classifiers\DummyClassifier;
@@ -314,6 +329,9 @@ A lazy learning algorithm that locates the K nearest samples from the training s
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
@@ -335,6 +353,9 @@ A type of regression analysis that uses the logistic function to classify betwee
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
@@ -393,6 +414,9 @@ Probability-based classifier that used probabilistic inference to derive the pre
 ##### Parameters:
 This estimator does not have any hyperparameters.
 
+##### Additional Methods:
+This Estimator does not have any additional methods.|
+
 ##### Example:
 ```php
 use Rubix\Engine\Classifiers\NaiveBayes;
@@ -413,6 +437,9 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 
+##### Additional Methods:
+This Estimator does not have any additional methods.|
+
 ##### Example:
 ```php
 use Rubix\Engine\Classifiers\RandomForest;
@@ -432,6 +459,9 @@ A generalization of logistic regression to multiple classes.
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
@@ -454,6 +484,9 @@ Regressor that guesses the output values based on an imputer strategy. Used to c
 |--|--|--|--|
 | strategy | BlurryMean | object | The imputer strategy to employ when guessing the outcome of a sample. |
 
+##### Additional Methods:
+This Estimator does not have any additional methods.|
+
 ##### Example:
 ```php
 use Rubix\Engine\Regressors\DummyRegressor;
@@ -472,6 +505,9 @@ A version of K Nearest Neighbors that uses the mean of K nearest data points to 
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
@@ -590,7 +626,10 @@ Density-based spatial clustering of applications with noise is a clustering algo
 |--|--|--|--|
 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points.
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
@@ -657,16 +696,276 @@ $estimator = new KMeans(3, new Euclidean());
 
 $estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
 ```
-
+---
 ### Data Preprocessing
-Documentation in the works ...
+Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the **Pipeline** meta-Estimator and the various **Transformers** that it employs to fit the input data to suit the requirements and preferences of the Estimator that it feeds.
 
+#### Pipeline
+A Pipeline is an Estimator that wraps another Estimator with additional functionality. For this reason, a Pipeline is called a *meta-Estimator*. As arguments, a Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, the Pipeline will automatically fit the training set upon training and transform any Dataset object supplied as an argument to one of the base Estimator's methods, including `predict()`.
+
+##### Example:
+```php
+use Rubix\Engine\Pipeline;
+use Rubix\Engine\Classifiers\SoftmaxClassifier;
+use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\Engine\Transformers\OneHotEncoder;
+
+$estimator = new Pipeline(new SoftmaxClassifier(200, 50), [
+	new MissingDataImputer(),
+	new OneHotEncoder(),
+]);
+
+$estimator->train($dataset); // Dataset objects are fit and
+$estimator->predict($samples); // transformed automatically.
+```
+
+Transformer middleware will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since Tranformers are run sequentially, the order in which they run *matters*. For example, a Transformer near the end of the stack may depend on a previous Transformer to convert all categorical features into continuous ones before it can run.
+
+In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data. Below is a list of the available Transformers in Rubix.
+
+### Transformers
+Transformers are generally designed to be used by the Pipeline meta-Estimator, however they can be used manually as well.
+
+The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt do it anyways, it won't hurt.
+```php
+public fit(Dataset $dataset) : void
+```
+
+The transform method on the Transformer is not meant to be called directly. This is done to force transformations to be done on the Dataset object in place so to deal with large datasets. To transform a dataset you can simply pass the instantiated transformer to a Dataset object's `transform()` method.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\MinMaxNormalizer;
+
+$transformer = new MinMaxNormalizer();
+
+$dataset->transform($transformer);
+```
+
+#### L1 and L2 Regularizers
+Regularization terms are used to augment the input vector of each sample such that each feature is divided over the L1 or L2 norm (or "magnitude") of the vector.
+
+##### Continuous *Only*
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\L1Regularizer;
+use Rubix\Engine\Transformers\L2Regularizer;
+
+$transformer = new L1Regularizer();
+$transformer = new L2Regularizer();
+```
+
+#### Min Max Normalizer
+Min Max Normalization scales the input features from a range of 0 to 1 by dividing the feature value over the maximum value for that feature column.
+
+##### Continuous
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\MinMaxNormalizer;
+
+$transformer = new MinMaxNormalizer();
+```
+
+#### Missing Data Imputer
+In the real world, it is common to have to deal with datasets that are missing a few values here and there. The Missing Data Imputer searches for any missing value placeholders and replaces it with a guess based on a given imputer **Strategy**.
+
+##### Categorical or Continuous
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
+| continuous strategy | BlurryMean | object | The imputer strategy to employ for continuous feature columns. |
+| categorical strategy | PopularityContest | object | The imputer strategy to employ for categorical feature columns. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\Engine\Transformers\Strategies\BlurryMean;
+use Rubix\Engine\Transformers\Strategies\PopularityContest;
+
+$transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityContest());
+```
+
+#### Numeric String Converter
+This handy little Transformer will convert all numeric strings into their integer or float counterparts. Useful for when extracting from a source that only recognizes data as string types.
+
+##### Categorical
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\NumericStringConverter;
+
+$transformer = new NumericStringConverter();
+```
+
+#### One Hot Encoder
+The One Hot Encoder takes a column of categorical features, such as the country a person was born in, and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories of the feature column.
+
+##### Categorical
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| columns | Null | array | The user-specified columns to encode indicated by numeric index starting at 0. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\OneHotEncoder;
+
+$transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
+```
+
+#### Stop Word Filter
+For certain natural language processing (NLP) tasks it can be advantageous to remove common or ambiguous words from the dataset before being fed to the Estimator. The Stop Word Filter lets you do just that.
+
+##### Categorical
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| stop words | None | array | An array containing the words in their exact form to filter from the dataset. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\StopWordFilter;
+
+$transformer = new StopWordFilter(['bad', 'words', ...]);
+```
+
+#### Text Normalizer
+This Transformer will convert all strings to lowercase and remove excess whitespace.
+
+##### Categorical
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| lowercase | True | boolean | Should the text be converted to all lowercase? |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\TextNormalizer;
+
+$transformer = new TextNormalizer(true);
+```
+
+#### TF-IDF Transformer
+Term Frequency - Inverse Document Frequency is the measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the Token Count Vectorizer.
+
+##### Continuous *Only*
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+$transformer = new TfIdfTransformer();
+```
+
+#### Token Count Vectorizer
+Word counts are often used to represent natural language as numerical vectors. The Token Count Vectorizer builds a vocabulary from the entire training set and then transforms every sample text column into a vector consisting of one column per vocabulary word having the value of the number of times that word appears in the column text.
+
+##### Categorical
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
+| tokenizer | Word | object | The method of turning samples of text into individual tokens. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `vocabulary() : array` | Returns the vocabulary array. |
+| `size() : int` | Returns the size of the vocabulary in number of tokens.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\TokenCountVectorizer;
+use Rubix\Engine\Transformers\Tokenizers\Word;
+
+$transformer = new TokenCountVectorizer(5000, new Word());
+
+$transformer->vocabulary(); // ['i', 'would', 'like', 'to', 'die', 'on', 'mars', 'just', 'not', 'on', 'impact', ...]
+$transformer->size(); // 4722
+```
+
+#### Variance Threshold Filter
+A type of feature selector that removes all columns that have a lower variance than the threshold. Variance is computed as the population variance of all the values in the feature column.
+
+##### Categorical and Continuous
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| threshold | 0.0 | float | The threshold at which lower scoring columns will be dropped from the dataset. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `selected() : array` | An array containing the columns that were selected during fitting. |
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\VarianceThresholdFilter;
+
+$transformer = new VarianceThresholdFilter(500);
+```
+
+#### Z Scale Standardizer
+A way of centering and scaling an input vector such that the values range from 0 to 1 with a unit variance.
+
+##### Continuous
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `means() : array` | Return the means calculated by fitting the training set. |
+| `stddevs() : array` | Return the standard deviations calculated during fitting. |
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\ZScaleStandardizer;
+
+$transformer = new ZScaleStandardizer();
+```
+---
 ### Cross Validation
 Documentation in the works ...
 
+---
 ### Model Selection
 Documentation in the works ...
 
+---
 ### Model Persistence
 Documentation in the works ...
 

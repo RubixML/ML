@@ -3,6 +3,7 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
+use InvalidArgumentException;
 
 class TfIdfTransformer implements Transformer
 {
@@ -14,19 +15,25 @@ class TfIdfTransformer implements Transformer
     protected $idfs;
 
     /**
-     * Calculate the inverse document frequency values for each feature.
+     * Calculate the inverse document frequency values for each feature column.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
     {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This transformer only works on'
+                . ' continuous features.');
+        }
+
         $this->idfs = array_fill(0, $dataset->numColumns(), 0);
 
         foreach ($dataset as $sample) {
-            foreach ($sample as $i => $count) {
-                if ($count > 0) {
-                    $this->idfs[$i]++;
+            foreach ($sample as $column => $feature) {
+                if ($feature > 0) {
+                    $this->idfs[$column]++;
                 }
             }
         }
@@ -37,7 +44,7 @@ class TfIdfTransformer implements Transformer
     }
 
     /**
-     * Transform an array of samples into an array of vectors.
+     * Multiply the term frequency by the inverse document frequency.
      *
      * @param  array  $samples
      * @return void

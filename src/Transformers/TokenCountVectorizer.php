@@ -3,8 +3,8 @@
 namespace Rubix\Engine\Transformers;
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Transformers\Tokenizers\Word;
 use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
-use Rubix\Engine\Transformers\Tokenizers\WordTokenizer;
 use InvalidArgumentException;
 
 class TokenCountVectorizer implements Transformer
@@ -45,7 +45,7 @@ class TokenCountVectorizer implements Transformer
         }
 
         if (!isset($tokenizer)) {
-            $tokenizer = new WordTokenizer();
+            $tokenizer = new Word();
         }
 
         $this->maxVocabulary = $maxVocabulary;
@@ -53,6 +53,8 @@ class TokenCountVectorizer implements Transformer
     }
 
     /**
+     * Return an array of words in the vocabulary.
+     *
      * @return array
      */
     public function vocabulary() : array
@@ -61,9 +63,11 @@ class TokenCountVectorizer implements Transformer
     }
 
     /**
+     * Return the size of the vocabulary.
+     *
      * @return int
      */
-    public function vocabularySize() : int
+    public function size() : int
     {
         return count($this->vocabulary);
     }
@@ -135,7 +139,7 @@ class TokenCountVectorizer implements Transformer
      */
     public function vectorize(string $string) : array
     {
-        $vector = array_fill(0, $this->vocabularySize(), 0);
+        $vector = array_fill(0, count($this->vocabulary), 0);
 
         foreach ($this->tokenizer->tokenize($string) as $token) {
             if (isset($this->vocabulary[$token])) {

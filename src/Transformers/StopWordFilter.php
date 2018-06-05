@@ -19,7 +19,7 @@ class StopWordFilter implements Transformer
      * @param  array  $stopWords
      * @return void
      */
-    public function __construct(array $stopWords = [])
+    public function __construct(array $stopWords)
     {
         $this->stopWords = array_values($stopWords);
     }

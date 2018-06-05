@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers\Tokenizers;
 
-class WhitespaceTokenizer implements Tokenizer
+class Whitespace implements Tokenizer
 {
     /**
      * The whitespace character that delimits each token.

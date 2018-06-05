@@ -14,21 +14,13 @@ class TextNormalizer implements Transformer
     protected $lowercase;
 
     /**
-     * Should we trim excess whitespace?
-     *
-     * @var bool
-     */
-    protected $whitespace;
-
-    /**
      * @param  bool  $lowercase
      * @param  bool  $whitespace
      * @return void
      */
-    public function __construct(bool $lowercase = true, bool $whitespace = true)
+    public function __construct(bool $lowercase = true)
     {
         $this->lowercase = $lowercase;
-        $this->whitespace = $whitespace;
     }
 
     /**
@@ -55,9 +47,7 @@ class TextNormalizer implements Transformer
                         $feature = strtolower($feature);
                     }
 
-                    if ($this->whitespace) {
-                        $feature = preg_replace('/\s+/', ' ', trim($feature));
-                    }
+                    $feature = preg_replace('/\s+/', ' ', trim($feature));
                 }
             }
         }

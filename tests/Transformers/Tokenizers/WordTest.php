@@ -1,21 +1,22 @@
 <?php
 
+use Rubix\Engine\Transformers\Tokenizers\Word;
 use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
-use Rubix\Engine\Transformers\Tokenizers\WordTokenizer;
+
 use PHPUnit\Framework\TestCase;
 
-class WordTokenizerTest extends TestCase
+class WordTest extends TestCase
 {
     protected $tokenizer;
 
     public function setUp()
     {
-        $this->tokenizer = new WordTokenizer();
+        $this->tokenizer = new Word();
     }
 
     public function test_build_word_tokenizer()
     {
-        $this->assertInstanceOf(WordTokenizer::class, $this->tokenizer);
+        $this->assertInstanceOf(Word::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Transformers\Tokenizers;
 
-class WordTokenizer implements Tokenizer
+class Word implements Tokenizer
 {
     /**
      * Tokenize a string.

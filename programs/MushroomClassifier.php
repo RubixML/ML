@@ -47,7 +47,7 @@ $hidden = [
     new Dense(10, new PReLU()),
 ];
 
-$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 10, new Adam(0.001),
+$estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
     1e-4, new MCC(), 0.2, 3, 100), [
         new OneHotEncoder(),
     ]);

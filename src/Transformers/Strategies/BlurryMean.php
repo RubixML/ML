@@ -36,7 +36,8 @@ class BlurryMean implements Continuous
     public function __construct(float $blurr = 0.1)
     {
         if ($blurr < 0.0 or $blurr > 1.0) {
-            throw new InvalidArgumentException('Blurr factor must be between 0 and 1.');
+            throw new InvalidArgumentException('Blurr factor must be between 0'
+                . ' and 1.');
         }
 
         $this->blurr = $blurr;
@@ -64,7 +65,9 @@ class BlurryMean implements Continuous
      */
     public function guess()
     {
-        return $this->mean + ($this->blurr * $this->generateGaussianValue() * $this->stddev);
+        return $this->mean + $this->blurr
+            * $this->generateGaussianValue()
+            * $this->stddev;
     }
 
     /**
@@ -74,8 +77,6 @@ class BlurryMean implements Continuous
      */
     protected function generateGaussianValue() : float
     {
-        $scale = pow(10, 10);
-
-        return random_int(-1 * $scale, 1 * $scale) / $scale;
+        return random_int(-1 * 1e8, 1 * 1e8) / 1e8;
     }
 }

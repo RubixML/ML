@@ -27,6 +27,26 @@ class ZScaleStandardizer implements Transformer
     ];
 
     /**
+     * Return the means calculated by fitting the training set.
+     *
+     * @return  array
+     */
+    public function means() : array
+    {
+        return $this->means;
+    }
+
+    /**
+     * Return the standard deviations calculated during fitting.
+     *
+     * @return  array
+     */
+    public function stddevs() : array
+    {
+        return $this->stddevs;
+    }
+
+    /**
      * Calculate the means and standard deviations of the dataset.
      *
      * @param  \Rubix\Engine\Datasets\Dataset  $dataset
