@@ -15,6 +15,9 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	 - [Evaluation](#evaluating-model-performance)
 	 - [Next Steps](#what-next)
 - [API Reference](#api-reference)
+	- [Dataset Objects](#dataset-objects)
+		- [Labeled](#labeled)
+		- [Unlabeled](#unlabeled)
 	- [Estimators](#estimators)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
@@ -58,9 +61,17 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Classification](#classification)
 			- [Regression](#regression)
 			- [Clustering](#clustering)
-		- [Reports](#reports)
+		- [Report Generator](#report-generator)
+			- [Reports](#reports)
+				- Aggregate Report
+				- Classfication Report
+				- Confusion Matrix
+				- Contingency Table
+				- Regression Analysis
 	- [Model Selection](#model-selection)
+		- [Grid Search](#grid-search)
 	- [Model Persistence](#model-persistence)
+- [Acknowledgements](#acknowledgements)
 - [Licence](#licence)
 
 ## Installation
@@ -193,8 +204,137 @@ Now that we've gone through a brief introduction of a simple machine learning pr
 
 ## API Reference
 
+### Dataset Objects
+In Rubix, data is passed around using specialized data structures called Dataset objects. There are two types of Dataset objects that one can instantiate - **Labeled** and **Unlabeled**.
+
+Return the *first* n rows of data in a new Dataset object:
+```php
+public head(int $n = 10) : self
+```
+
+Return the *last* n rows of data in a new Dataset object:
+```php
+public tail(int $n = 10) : self
+```
+
+Remove n rows from the Dataset and return them in a new Dataset:
+```php
+public take(int $n = 1) : self
+```
+
+Leave n samples on the Dataset and return the rest in a new Dataset:
+```php
+public leave(int $n = 1) : self
+```
+
+Randomize the order of the Dataset:
+```php
+public randomize() : self
+```
+
+Split the Dataset into left and right subsets by a given ratio:
+```php
+public split(float $ratio = 0.5) : array
+```
+
+Fold the Dataset k - 1 times to form k equal size Datasets:
+```php
+public fold(int $k = 10) : array
+```
+
+Batch the Dataset into subsets of n rows per batch:
+```php
+public batch(int $n = 50) : array
+```
+
+Generate a random subset with replacement of size n:
+```php
+public randomSubset($n = 1) : self
+```
+
+Combine an array of Dataset objects into one Dataset object:
+```php
+public static combine(array $datasets) : self
+```
+
+Return the 2-dimensional sample matrix:
+```php
+public samples() : array
+```
+
+Dump all of the data into an array:
+```php
+public all() : array
+```
+
+##### Example:
+```php
+$head = $dataset->head(5);
+$tail = $dataset->tail(20);
+$taken = $dataset->take(1);
+$taken = $dataset->leave(100);
+$dataset = $dataset->randomize();
+list($left, $right) = $dataset->split(0.5);
+$folds = $dataset->fold(8);
+$batches = $dataset->batch(100);
+$subset = $dataset->randomSubset(20);
+$dataset = Dataset::combine($datasets);
+$samples = $dataset->samples();
+$dump = $dataset->all();
+```
+---
+#### Labeled
+For Supervised Estimators you will need to pass it a Labeled Dataset that consists of a sample matrix where each row is a sample and each column is a feature, and an accompanying array of labels that correspond to the observed outcome of the sample.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
+| labels | None | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `stratifiedSplit($ratio = 0.5) : array` | Split the Dataset into left and right stratified subsets with a given ratio of samples and labels. |
+| `stratifiedFold($k = 10) : array` | Fold the Dataset k - 1 times to form k equal size stratified Datasets. |
+| `labels() : array` | Return the 1-dimensional array of labels. |
+| `possibleOutcomes() : array` | Return all of the possible outcomes given the labels. |
+
+##### Example:
+```php
+use Rubix\Engine\Datasets\Labeled;
+
+$dataset = new Labeled($samples, $labels);
+
+list($left, $right) = $dataset->stratifiedSplit(0.6);
+
+$folds = $dataset->stratifiedFold(5);
+
+$labels = $dataset->labels(); // All labels
+$outcomes = $dataset->possibleOutcomes(); // All unique labels
+```
+
+#### Unlabeled
+Unlabeled Datasets are useful for training Unsupervised Estimators and making predictions on new samples.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
+
+##### Additional Methods:
+This Dataset does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Datasets\Unlabeled;
+
+$dataset = new Unlabeled($samples);
+```
+
+---
 ### Estimators
-Estimators are at the core of the Rubix library and consist of various Classifiers, Regressors, and Clusterers that make *predictions* based on the data they have been trained with. Estimators come in one of two types depending on how they are trained -  **Supervised** and **Unsupervised**.
+Estimators are the core of the Rubix library and consist of various Classifiers, Regressors, and Clusterers that make *predictions* based on the data they have been trained with. Estimators come in one of two types depending on how they are trained -  **Supervised** and **Unsupervised**.
 
 The only difference to the API of either type of Estimator is the type of Dataset the model can be trained with.
 
@@ -253,7 +393,6 @@ Classifiers are a type of Estimator that predict discrete outcomes such as class
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
 
 ##### Supervised, Binary, Persistable
-
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
@@ -321,7 +460,7 @@ A classifier based on a given imputer strategy. Used to compare performance with
 | strategy | PopularityContest | object | The imputer strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1029,10 +1168,6 @@ $validator = new KFold(new F1Score(), 5);
 ```
 
 ---
-#### Reports
-Coming soon ...
-
----
 #### Validation Metrics
 
 ##### Classification
@@ -1055,14 +1190,41 @@ Coming soon ...
 | Metric | Range | Description |
 |--|--|--|
 | Completeness | (0, 1) | A measure of the class outcomes that are predicted to be in the same cluster. |
-| Homogeneity | (0, 1) | A measure of the predicted labels that are known to be in the same class. |
+| Homogeneity | (0, 1) | A measure of the cluster assignments that are known to be in the same class. |
 | V Measure | (0, 1) | The harmonic mean between Homogeneity and Completeness. |
+
+---
+#### Report Generator
+The Report Generator is a type of Validator that ouputs a report instead of a single scalar score. To generate a report, simply pass an Estimator and a Labeled Dataset to the Report Generator's `generate()` method. The output of a report can be used to generate visualizations of the performance of a prototype.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| report | None | object | The report to generate. |
+| ratio | 0.2 | float | The ratio of data used to generate the report. |
+
+To generate a report:
+```php
+public generate(Estimator $estimator, Labeled $dataset) : array
+```
+##### Example:
+```php
+use Rubix\Engine\CorssValidation\ReportGenerator;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+
+$report = new ReportGenerator(new ConfusionMatrix(), 0.4);
+
+$results = $report->generate($estimator, $dataset);
+```
+#### Reports
+
 
 ---
 ### Model Selection
 Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the **Grid Search** meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
 
-From the user's perspective, the process for training and predicting is the same, however, under the hood, Grid Search actually trains many Estimators and the predictions are done using the best one. You can access the scores of each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator.
+#### Grid Search
+Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search actually trains one Estimator per combination of parameters and the predictions are done using the single best Estimator. You can access the scores of each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1117,6 +1279,10 @@ $estimator->save('path/to/models/folder/');
 
 $estimator = PersistentModel::restore('path/to/persisted/model');
 ```
+
+## Acknowledgements
+Thank you in no particular order to Andrej Karpathy, Andrew Ng, Arkadiusz Kondas, Grant Sanderson, Jessica Noss, Patrick Winston, Sal Khan, and Tom Leighton. Your wisdom and dedication to learning has been the driving force behind this project.
+
 
 ## License
 MIT

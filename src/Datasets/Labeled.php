@@ -22,7 +22,7 @@ class Labeled extends DataFrame implements Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public static function combine(array $datasets = []) : self
+    public static function combine(array $datasets) : self
     {
         $samples = $labels = [];
 
@@ -70,22 +70,6 @@ class Labeled extends DataFrame implements Dataset
     public function labels() : array
     {
         return $this->labels;
-    }
-
-    /**
-     * Return the label at a given index.
-     *
-     * @param  mixed  $index
-     * @return mixed
-     */
-    public function outcome($index)
-    {
-        if (!isset($this->labels[$index])) {
-            throw new RuntimeException('Label not found at the given index '
-                . (string) $index . '.');
-        }
-
-        return $this->labels[$index];
     }
 
     /**

@@ -7,14 +7,14 @@ use ArrayAccess;
 use Countable;
 
 interface Dataset extends ArrayAccess, IteratorAggregate, Countable
-{    
+{
     /**
      * Factory method to create a dataset from an array of datasets.
      *
      * @param  array  $datasets
      * @return self
      */
-    public static function combine(array $datasets = []);
+    public static function combine(array $datasets);
 
     /**
      * Return a dataset containing only the first n samples.
@@ -88,6 +88,13 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     public function randomSubset(int $n = 1);
+
+    /**
+     * Return the 2-dimensional sample matrix.
+     *
+     * @return array
+     */
+    public function samples() : array;
 
     /**
      * Return an array with all the data.
