@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\CrossValidation\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Regression;
 use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,7 @@ class ResidualAnalysisTest extends TestCase
     public function test_build_regression_analysis()
     {
         $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
+        $this->assertInstanceOf(Regression::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

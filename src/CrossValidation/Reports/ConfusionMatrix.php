@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
-class ConfusionMatrix implements Report
+class ConfusionMatrix implements Classification
 {
     /**
      * The classes to compare in the matrix.

@@ -1,6 +1,7 @@
 <?php
 
 use Rubix\Engine\CrossValidation\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Classification;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,7 @@ class ConfusionMatrixTest extends TestCase
     public function test_build_confusion_matrix()
     {
         $this->assertInstanceOf(ConfusionMatrix::class, $this->report);
+        $this->assertInstanceOf(Classification::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

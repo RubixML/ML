@@ -7,6 +7,9 @@ use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Clusterers\Clusterer;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\CrossValidation\Reports\Report;
+use Rubix\Engine\CrossValidation\Reports\Regression;
+use Rubix\Engine\CrossValidation\Reports\Clustering;
+use Rubix\Engine\CrossValidation\Reports\Classification;
 use InvalidArgumentException;
 
 class ReportGenerator
@@ -47,10 +50,35 @@ class ReportGenerator
      *
      * @param  \Rubix\Engine\Estimator  $estimator
      * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function generate(Estimator $estimator, Labeled $dataset) : array
     {
+        if ($estimator instanceof Classifier) {
+            if (!$this->report instanceof Classification) {
+                throw new InvalidArgumentException('Classification report only'
+                    . ' works on Classifiers, ' . get_class($estimator)
+                    . ' found.');
+            }
+        }
+
+        if ($estimator instanceof Regressor) {
+            if (!$this->report instanceof Regression) {
+                throw new InvalidArgumentException('Regression report only'
+                    . ' works on Regressors, ' . get_class($estimator)
+                    . ' found.');
+            }
+        }
+
+        if ($estimator instanceof Clusterer) {
+            if (!$this->report instanceof Clustering) {
+                throw new InvalidArgumentException('Clustering report only'
+                    . ' works on Clusterers, ' . get_class($estimator)
+                    . ' found.');
+            }
+        }
+
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
             list($training, $testing) = $dataset->randomize()
                 ->stratifiedSplit(1 - $this->ratio);

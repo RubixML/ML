@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
-class ClassificationReport implements Report
+class ClassificationReport implements Classification
 {
     /**
      * Prepare the classification report. This involves calculating a number of

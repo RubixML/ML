@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
-class ContingencyTable implements Report
+class ContingencyTable implements Clustering
 {
     /**
      * Generate a contingency table for the clustering given a ground truth.
