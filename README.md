@@ -2,7 +2,7 @@
 Rubix is a library that lets you build intelligent programs that learn from data in PHP.
 
 ### Our Mission
-The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is known best for its performance on the web, we believe PHP programmers should be able to take advantage of the major advances in AI and machine learning today. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
+The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is known best for its performance on the web, we believe PHP engineers should be able to take advantage of the major advances in AI and machine learning today also. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
 ### Table of Contents
 
@@ -42,6 +42,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Data Preprocessing](#data-preprocessing)
 		- [Pipeline](#pipeline)
 		- [Transformers](#transformers)
+			- [Dense Polynomial Expander](#dense-polynomial-expander)
 			- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
 			- [Min Max Normalizer](#min-max-normalizer)
 			- [Missing Data Imputer](#missing-data-imputer)
@@ -894,6 +895,25 @@ use Rubix\Engine\Transformers\MinMaxNormalizer;
 $transformer = new MinMaxNormalizer();
 
 $dataset->transform($transformer);
+```
+
+#### Dense Polynomial Expander
+This Transformer will generate polynomial features of specified degrees. Polynomial expansion is often used to fit data to a non-linear curve using standard linear regression.
+
+##### Continuous *Only*
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\DensePolynomialExpander;
+
+$transformer = new DensePolynomialExpander(3);
 ```
 
 #### L1 and L2 Regularizers

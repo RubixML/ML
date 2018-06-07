@@ -9,7 +9,7 @@ class DensePolynomialExpander implements Transformer
 {
     /**
      * The degree of the polynomials to generate. Higher order polynomials are
-     * able to fit nonlinear data better, however require extra features to be added
+     * able to fit data better, however require extra features to be added
      * to the dataset.
      *
      * @var int
@@ -17,27 +17,18 @@ class DensePolynomialExpander implements Transformer
     protected $degree;
 
     /**
-     * Should we add a bias term to the feature vector?
-     *
-     * @var bool
-     */
-    protected $bias;
-
-    /**
-     * The number of columns in the fitted dataset.
-     *
-     * @var int
-     */
-    protected $columns;
-
-    /**
      * @param  int  $degree
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $degree = 2, bool $bias = true)
+    public function __construct(int $degree = 2)
     {
+        if ($degree <= 0) {
+            throw new InvalidArgumentException('The degree of the polynomial'
+                . ' must be greater than 0.');
+        }
+
         $this->degree = $degree;
-        $this->bias = $bias;
     }
 
     /**
@@ -51,8 +42,6 @@ class DensePolynomialExpander implements Transformer
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
-
-        $this->columns = $dataset->numColumns();
     }
 
     /**
@@ -67,12 +56,8 @@ class DensePolynomialExpander implements Transformer
         foreach ($samples as &$sample) {
             $vector = [];
 
-            if ($this->bias) {
-                $vector[] = 1.0;
-            }
-
-            for ($i = 0; $i < $this->columns; $i++) {
-                for ($j = $this->degree; $j > 0; $j--) {
+            for ($i = 0; $i < count($sample); $i++) {
+                for ($j = 1; $j <= $this->degree; $j++) {
                     $vector[] = pow($sample[$i], $j);
                 }
             }
