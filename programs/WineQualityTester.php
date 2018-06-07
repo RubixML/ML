@@ -11,7 +11,7 @@ use Rubix\Engine\Metrics\Validation\RSquared;
 use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\CrossValidation\Reports\RegressionAnalysis;
+use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -46,7 +46,7 @@ $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
         new NumericStringConverter(),
     ]);
 
-$report = new ReportGenerator(new RegressionAnalysis(), 0.2);
+$report = new ReportGenerator(new ResidualAnalysis(), 0.2);
 
 var_dump($report->generate($estimator, $dataset));
 

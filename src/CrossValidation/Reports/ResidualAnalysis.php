@@ -4,10 +4,10 @@ namespace Rubix\Engine\CrossValidation\Reports;
 
 use MathPHP\Statistics\Average;
 
-class RegressionAnalysis implements Report
+class ResidualAnalysis implements Report
 {
     /**
-     * Generate a regression analysis.
+     * Generate a residual analysis of a regression.
      *
      * @param  array  $predictions
      * @param  array  $labels

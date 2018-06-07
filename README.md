@@ -2,7 +2,7 @@
 Rubix is a library that lets you build intelligent programs that learn from data in PHP.
 
 ### Our Mission
-The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is primarily optimized to deliver performance on the web, we believe this should *not* prevent PHP programmers from taking advantage of the major advances in AI and machine learning today. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
+The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is known best for its performance on the web, we believe PHP programmers should be able to take advantage of the major advances in AI and machine learning today. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
 ### Table of Contents
 
@@ -47,6 +47,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Missing Data Imputer](#missing-data-imputer)
 			- [Numeric String Converter](#numeric-string-converter)
 			- [One Hot Encoder](#one-hot-encoder)
+			- [Sparse Random Projector](#sparse-random-projector)
 			- [Stop Word Filter](#stop-word-filter)
 			- [Text Normalizer](#text-normalizer)
 			- [TF-IDF Transformer](#tf---idf-transformer)
@@ -63,11 +64,11 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Clustering](#clustering)
 		- [Report Generator](#report-generator)
 			- [Reports](#reports)
-				- Aggregate Report
-				- Classfication Report
-				- Confusion Matrix
-				- Contingency Table
-				- Regression Analysis
+				- [Aggregate Report](#aggregate-report)
+				- [Classification Report](#classification-report)
+				- [Confusion Matrix](#confusion-matrix)
+				- [Contingency Table](#contingency-table)
+				- [Residual Analysis](#residual-analysis)
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
 	- [Model Persistence](#model-persistence)
@@ -203,6 +204,7 @@ Since we are measuring accuracy, this output means that our Estimator is about 9
 Now that we've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started with Rubix and are comfortable with machine learning a great place to get started is with one of the many datasets available for free on the [University of California Irvine Machine Learning repository](https://archive.ics.uci.edu/ml/datasets.html) website.
 
 ## API Reference
+
 
 ### Dataset Objects
 In Rubix, data is passed around using specialized data structures called Dataset objects. There are two types of Dataset objects that one can instantiate - **Labeled** and **Unlabeled**.
@@ -989,6 +991,25 @@ use Rubix\Engine\Transformers\OneHotEncoder;
 $transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
 ```
 
+#### Sparse Random Projector
+The Sparse Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma "Johnson-Lindenstrauss lemma") that uses a sparse random matrix to project a sample vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance.
+
+##### Continuous *Only*
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| dimensions | None | int | The number of target dimensions to project onto. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Transformers\SparseRandomProjector;
+
+$transformer = new SparseRandomProjector(20);
+```
+
 #### Stop Word Filter
 For certain natural language processing (NLP) tasks it can be advantageous to remove common or ambiguous words from the dataset before being fed to the Estimator. The Stop Word Filter lets you do just that.
 
@@ -1219,7 +1240,85 @@ $results = $report->generate($estimator, $dataset);
 
 ---
 #### Reports
-Coming soon to a documentation near you ...
+
+#### Aggregate Report
+A Report that aggregates the results of multiple reports.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| reports | None | array | An array of Report objects to aggregate. |
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\Reports\AggregateReport;
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+
+$report = new AggregateReport([
+	new ConfusionMatrix(),
+	new ClassificationReport(),
+]);
+```
+
+#### Classification Report
+A Report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Cardinality, Miss Rate, and more.
+
+##### Classification
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+
+$report = new ClassificationReport();
+```
+
+#### Confusion Matrix
+A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a Classifier. The name stems from the fact that the matrix makes it easy to see the classes that the Classifier might be confusing.
+
+##### Classification
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| classes | All | array | The classes to compare in the matrix. |
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+
+$report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
+```
+
+#### Contingency Table
+
+A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
+
+##### Clustering
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\Reports\ContingencyTable;
+
+$report = new ContingencyTable();
+```
+
+#### Residual Analysis
+Residual Analysis is a type of Report that measures the total differences between the predicted and actual values of a Regression.
+
+##### Regression
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
+
+$report = new ResidualAnalysis();
+```
 
 ---
 ### Model Selection

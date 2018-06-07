@@ -41,8 +41,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
             foreach ($sample as &$feature) {
                 if (!is_string($feature) and !is_numeric($feature)) {
-                    throw new InvalidArgumentException('Feature must be a string'
-                    . ' or numeric, ' . gettype($feature) . ' found.');
+                    throw new InvalidArgumentException('Feature must be a'
+                        . ' string, or numeric type, '
+                        . gettype($feature) . ' found.');
                 }
             }
         }

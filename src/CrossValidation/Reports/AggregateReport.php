@@ -18,7 +18,7 @@ class AggregateReport implements Report
      * @param  array  $reports
      * @return void
      */
-    public function __construct(array $reports = [])
+    public function __construct(array $reports)
     {
         foreach ($reports as $index => $report) {
             $this->addReport($report, $index);
