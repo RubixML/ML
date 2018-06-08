@@ -11,7 +11,7 @@ class SparseRandomProjector implements Transformer
 {
     const ROOT_3 = 1.73205080757;
 
-    const DIRECTIONS = [-1, 0, 0, 0, 0, 1];
+    const DISTRIBUTION = [-1, 0, 0, 0, 0, 1];
 
     /**
      * The target number of dimensions.
@@ -58,7 +58,8 @@ class SparseRandomProjector implements Transformer
 
         for ($i = 0; $i < $dataset->numColumns(); $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = self::ROOT_3 * self::DIRECTIONS[random_int(0, 5)];
+                $r[$i][$j] = self::ROOT_3
+                    * self::DISTRIBUTION[random_int(0, 5)];
             }
         }
 

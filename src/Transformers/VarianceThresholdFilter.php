@@ -54,14 +54,14 @@ class VarianceThresholdFilter implements Transformer
     public function fit(Dataset $dataset) : void
     {
         $this->selected = [];
-        
+
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === self::CATEGORICAL) {
-                $counts = array_count_values($dataset[$column]);
+                $counts = array_count_values($dataset->column($column));
 
                 $variance = Descriptive::populationVariance($counts);
             } else {
-                $variance = Descriptive::populationVariance($dataset[$column]);
+                $variance = Descriptive::populationVariance($dataset->column($column));
             }
 
             if ($variance > $this->threshold) {

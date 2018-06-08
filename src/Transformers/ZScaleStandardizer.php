@@ -58,7 +58,7 @@ class ZScaleStandardizer implements Transformer
 
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === self::CONTINUOUS) {
-                $values = $dataset[$column];
+                $values = $dataset->column($column);
 
                 $mean = Average::mean($values);
 

@@ -82,9 +82,10 @@ class MissingDataImputer implements Transformer
                 $imputer = clone $this->continuous;
             }
 
-            $values = array_filter($dataset[$column], function ($value) {
-                return $value !== $this->placeholder;
-            });
+            $values = array_filter($dataset->column($column),
+                function ($value) {
+                    return $value !== $this->placeholder;
+                });
 
             $imputer->fit($values);
 

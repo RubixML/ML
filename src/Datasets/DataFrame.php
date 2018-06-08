@@ -67,12 +67,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function row($index) : array
     {
-        if (!isset($this->samples[$index])) {
-            throw new RuntimeException('Sample not found at the given index '
-                . (string) $index . '.');
-        }
-
-        return $this->samples[$index];
+        return $this->offsetGet($index);
     }
 
     /**
@@ -93,7 +88,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function column($index) : array
     {
-        return $this->offsetGet($index);
+        return array_column($this->samples, $index);
     }
 
     /**
@@ -176,7 +171,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetExists($index) : bool
     {
-        return isset($this->samples[0][$index]);
+        return isset($this->samples[$index]);
     }
 
     /**
@@ -198,11 +193,12 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetGet($index) : array
     {
-        if (!$this->offsetExists($index)) {
-            throw new InvalidArgumentException('Feature column does not exist.');
+        if (!isset($this->samples[$index])) {
+            throw new InvalidArgumentException('Sample not found at the given'
+                . ' index ' . (string) $index . '.');
         }
 
-        return array_column($this->samples, $index);
+        return $this->samples[$index];
     }
 
     /**

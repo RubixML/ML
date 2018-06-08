@@ -61,7 +61,7 @@ class MeanShift implements Unsupervised, Clusterer, Persistable
      * @return void
      */
     public function __construct(float $radius, Distance $distanceFunction = null,
-                                float $threshold = 1e-10, int $epochs = PHP_INT_MAX)
+                                float $threshold = 1e-8, int $epochs = PHP_INT_MAX)
     {
         if ($radius <= 0) {
             throw new InvalidArgumentException('Radius must be greater than'
