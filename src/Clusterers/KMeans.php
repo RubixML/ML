@@ -57,8 +57,8 @@ class KMeans implements Unsupervised, Clusterer, Persistable
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Max epochs must be greater than'
-                . ' 1.');
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
         }
 
         if (!isset($distanceFunction)) {

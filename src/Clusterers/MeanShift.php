@@ -1,0 +1,209 @@
+<?php
+
+namespace Rubix\Engine\Clusterers;
+
+use Rubix\Engine\Persistable;
+use Rubix\Engine\Unsupervised;
+use MathPHP\Statistics\Average;
+use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+use InvalidArgumentException;
+use RuntimeException;
+
+class MeanShift implements Unsupervised, Clusterer, Persistable
+{
+    /**
+     * The bandwidth of the radial basis function kernel. i.e. The maximum
+     * distance between two points to be considered neighbors.
+     *
+     * @var float
+     */
+    protected $radius;
+
+    /**
+     * The distance function to use when computing the distances.
+     *
+     * @var \Rubix\Engine\Metrics\Distance\Distance
+     */
+    protected $distanceFunction;
+
+    /**
+     * The sensitivity threshold. i.e. the minimum change in the centroid means
+     * necessary for the algorithm to continue learning.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
+     * The maximum number of iterations to run until the algorithm terminates.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
+     * The computed centroid vectors of the training data.
+     *
+     * @var int
+     */
+    protected $centroids = [
+        //
+    ];
+
+    /**
+     * @param  float  $radius
+     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  float  $threshold
+     * @param  int  $epochs
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(float $radius, Distance $distanceFunction = null,
+                                float $threshold = 1e-10, int $epochs = PHP_INT_MAX)
+    {
+        if ($radius <= 0) {
+            throw new InvalidArgumentException('Radius must be greater than'
+                . ' 0');
+        }
+
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Threshold cannot be set to less'
+                . ' than 0.');
+        }
+
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
+        }
+
+        if (!isset($distanceFunction)) {
+            $distanceFunction = new Euclidean();
+        }
+
+        $this->radius = $radius;
+        $this->distanceFunction = $distanceFunction;
+        $this->threshold = $threshold;
+        $this->epochs = $epochs;
+    }
+
+    /**
+     * Return the computed cluster centroids of the training data.
+     *
+     * @return array
+     */
+    public function centroids() : array
+    {
+        return $this->centroids;
+    }
+
+    /**
+     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function train(Dataset $dataset) : void
+    {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
+        $this->centroids = $dataset->samples();
+
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+            $previous = $this->centroids;
+
+            foreach ($this->centroids as $i => &$centroid) {
+                $weighted = array_fill(0, $dataset->numColumns(), 0.0);
+                $total = array_fill(0, $dataset->numColumns(), 0.0);
+
+                foreach ($dataset as $sample) {
+                    $distance = $this->distanceFunction->compute($sample,
+                        $centroid);
+
+                    if ($distance <= $this->radius) {
+                        foreach ($sample as $column => $feature) {
+                            $weight = exp(-(($distance ** 2)
+                                / (2 * $this->radius ** 2)));
+
+                            $weighted[$column] += $weight * $feature;
+                            $total[$column] += $weight;
+                        }
+                    }
+                }
+
+                foreach ($centroid as $column => &$mean) {
+                    $mean = $weighted[$column] / $total[$column];
+                }
+
+                foreach ($this->centroids as $j => $target) {
+                    if ($i !== $j) {
+                        $distance = $this->distanceFunction->compute($centroid,
+                            $target);
+
+                        if ($distance < $this->radius) {
+                            unset($this->centroids[$j]);
+                        }
+                    }
+                }
+            }
+
+            $this->centroids = array_map('unserialize',
+                array_unique(array_map('serialize', $this->centroids)));
+
+            $change = 0.0;
+
+            foreach ($this->centroids as $i => $centroid) {
+                foreach ($centroid as $j => $mean) {
+                    $change += abs($previous[$i][$j] - $mean);
+                }
+            }
+
+            if ($change < $this->threshold) {
+                break 1;
+            }
+        }
+
+        $this->centroids = array_values($this->centroids);
+    }
+
+    /**
+     * Cluster the dataset by assigning a label to each sample.
+     *
+     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @return array
+     */
+    public function predict(Dataset $samples) : array
+    {
+        $predictions = [];
+
+        foreach ($samples as $sample) {
+            $predictions[] = $this->label($sample);
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Label a given sample based on its distance from a particular centroid.
+     *
+     * @param  array  $sample
+     * @return int
+     */
+    protected function label(array $sample) : int
+    {
+        $best = ['distance' => INF, 'label' => null];
+
+        foreach ($this->centroids as $label => $centroid) {
+            $distance = $this->distanceFunction->compute($sample, $centroid);
+
+            if ($distance < $best['distance']) {
+                $best = ['distance' => $distance, 'label' => $label];
+            }
+        }
+
+        return $best['label'];
+    }
+}

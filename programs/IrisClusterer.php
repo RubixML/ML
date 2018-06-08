@@ -4,9 +4,8 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\Engine\Pipeline;
 use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Datasets\Unlabeled;
+use Rubix\Engine\Clusterers\MeanShift;
 use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Clusterers\FuzzyCMeans;
 use Rubix\Engine\Metrics\Distance\Euclidean;
 use Rubix\Engine\Metrics\Validation\VMeasure;
 use Rubix\Engine\Transformers\ZScaleStandardizer;
@@ -17,23 +16,22 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Seed Clusterer using Fuzzy C Means                  ║' . "\n";
+echo '║ Iris Clusterer using Mean Shift                     ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
-$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/seeds.csv')
+echo "\n";
+
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')
     ->setDelimiter(',')->setEnclosure('"')->setHeaderOffset(0);
 
 $samples = iterator_to_array($reader->getRecords([
-    'area', 'perimeter', 'compactness', 'length_of_kernel', 'width_of_kernel',
-    'asymmetry_coefficient', 'length_of_kernel_grove',
+    'sepal_length', 'sepal_width', 'petal_length', 'petal_width',
 ]));
-
-$labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
+$estimator = new Pipeline(new MeanShift(1.3, new Euclidean(), 1e-8), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);
@@ -48,4 +46,4 @@ var_dump($validator->score($estimator, $dataset));
 
 var_dump($report->generate($estimator, $dataset));
 
-var_dump($estimator->proba($dataset->randomize()->head(5)));
+var_dump($estimator->predict($dataset->randomize()->head(5)));
