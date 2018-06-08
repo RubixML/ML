@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class AdaBoost implements Supervised, BinaryClassifier, Persistable
+class AdaBoost implements Supervised, Binary, Persistable
 {
     /**
      * The reflector instance of the base classifier.

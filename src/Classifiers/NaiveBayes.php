@@ -10,7 +10,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class NaiveBayes implements Supervised, Probabilistic, Classifier, Persistable
+class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard

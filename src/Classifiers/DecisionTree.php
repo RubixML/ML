@@ -11,7 +11,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class DecisionTree extends Tree implements Supervised, Probabilistic, Classifier, Persistable
+class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum depth of a branch before it is forced to terminate.

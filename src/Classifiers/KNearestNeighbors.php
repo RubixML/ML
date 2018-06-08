@@ -12,7 +12,7 @@ use Rubix\Engine\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNearestNeighbors implements Supervised, Probabilistic, Classifier
+class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
 {
     /**
      * The number of neighbors to consider when making a prediction.

@@ -29,16 +29,17 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Naive Bayes](#naive-bayes)
 			- [Random Forest](#random-forest)
 			- [Softmax Classifier](#softmax-classifier)
+		- [Clusterers](#clusterers)
+			- [DBSCAN](#dbscan)
+			- [Fuzzy C Means](#fuzzy-c-means)
+			- [K Means](#k-means)
+			- [Mean Shift](#mean-shift)
 		- [Regressors](#regressors)
 			- [Dummy Regressor](#dummy-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
-		- [Clusterers](#clusterers)
-			- [DBSCAN](#dbscan)
-			- [Fuzzy C Means](#fuzzy-c-means)
-			- [K Means](#k-means)
 	- [Data Preprocessing](#data-preprocessing)
 		- [Pipeline](#pipeline)
 		- [Transformers](#transformers)
@@ -625,6 +626,117 @@ use Rubix\Engine\NeuralNet\Optimizers\Momentum;
 $estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
 ```
 ---
+### Clusterers
+Clusterers take Unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to.
+
+#### DBSCAN
+Density-based spatial clustering of applications with noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
+
+##### Unsupervised, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
+| min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points.
+
+##### Additional Methods:
+This Estimator does not have any additional methods.|
+
+##### Example:
+```php
+use Rubix\Engine\Clusterers\DBSCAN;
+use Rubix\Engine\Metrics\Distance\Manhattan;
+
+$estimator = new DBSCAN(4.0, 5, new Manhattan());
+```
+
+#### Fuzzy C Means
+Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region.
+
+##### Unsupervised, Probabilistic, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| c | None | int | The number of target clusters. |
+| fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `centroids() : array` | Returns an array of the C computed centroids of the training data. |
+| `progress() : array` | Returns the progress of each epoch as the total distance between each sample and centroid. |
+
+##### Example:
+```php
+use Rubix\Engine\Clusterers\FuzzyCMeans;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
+
+$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
+$estimator->progress(); // [5878.01, 5200.50, 4960.28, ...]
+```
+
+#### K Means
+A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
+
+##### Unsupervised, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| k | None | int | The number of target clusters. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `centroids() : array` | Returns an array of the K computed centroids of the training data. |
+
+##### Example:
+```php
+use Rubix\Engine\Clusterers\KMeans;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new KMeans(3, new Euclidean());
+
+$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
+```
+
+#### Mean Shift
+A hierarchical clustering technique that uses peak finding to locate the local maxima (Centroids) of a training set given by a radius constraint.
+
+##### Unsupervised, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| radius | None | float | The radius of each cluster centroid. |
+| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `centroids() : array` | Returns an array of the K computed centroids of the training data. |
+
+##### Example:
+```php
+use Rubix\Engine\Clusterers\MeanShift;
+use Rubix\Engine\Metrics\Distance\Euclidean;
+
+$estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
+```
+
+---
 ### Regressors
 A Regressor estimates the continuous expected output value of a given sample. Regression analysis is often used to predict the outcome of an experiment where the outcome can range over a continuous spectrum of values.
 
@@ -767,90 +879,6 @@ $estimator->intercept(); // 5.298226
 $estimator->coefficients(); // [2.023, 3.122, 5.401, ...]
 ```
 
----
-### Clusterers
-Clusterers take Unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to.
-
-#### DBSCAN
-Density-based spatial clustering of applications with noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
-
-##### Unsupervised, Persistable
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
-| min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points.
-
-##### Additional Methods:
-This Estimator does not have any additional methods.|
-
-##### Example:
-```php
-use Rubix\Engine\Clusterers\DBSCAN;
-use Rubix\Engine\Metrics\Distance\Manhattan;
-
-$estimator = new DBSCAN(4.0, 5, new Manhattan());
-```
-
-#### Fuzzy C Means
-Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region.
-
-##### Unsupervised, Probabilistic, Persistable
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| c | None | int | The number of target clusters. |
-| fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
-
-##### Additional Methods:
-| Method | Description |
-|--|--|
-| `centroids() : array` | Returns an array of the C computed centroids of the training data. |
-| `progress() : array` | Returns the progress of each epoch as the total distance between each sample and centroid. |
-
-##### Example:
-```php
-use Rubix\Engine\Clusterers\FuzzyCMeans;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-
-$estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
-
-$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
-$estimator->progress(); // [5878.01, 5200.50, 4960.28, ...]
-```
-
-#### K Means
-A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
-
-##### Unsupervised, Persistable
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | None | int | The number of target clusters. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
-
-##### Additional Methods:
-| Method | Description |
-|--|--|
-| `centroids() : array` | Returns an array of the K computed centroids of the training data. |
-
-##### Example:
-```php
-use Rubix\Engine\Clusterers\KMeans;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-
-$estimator = new KMeans(3, new Euclidean());
-
-$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
-```
 ---
 ### Data Preprocessing
 Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the **Pipeline** meta-Estimator and the various **Transformers** that it employs to fit the input data to suit the requirements and preferences of the Estimator that it feeds.

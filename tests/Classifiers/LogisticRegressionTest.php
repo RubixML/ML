@@ -5,9 +5,9 @@ use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Binary;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Classifiers\BinaryClassifier;
 use Rubix\Engine\Classifiers\LogisticRegression;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +50,7 @@ class LogisticRegressionTest extends TestCase
     public function test_build_perceptron_classifier()
     {
         $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
-        $this->assertInstanceOf(BinaryClassifier::class, $this->estimator);
+        $this->assertInstanceOf(Binary::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);

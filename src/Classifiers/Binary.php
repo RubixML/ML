@@ -2,7 +2,7 @@
 
 namespace Rubix\Engine\Classifiers;
 
-interface BinaryClassifier extends Classifier
+interface Binary extends Classifier
 {
     //
 }

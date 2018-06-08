@@ -82,7 +82,7 @@ class Pipeline implements Estimator, Persistable
     /**
      * Add a transformer middleware to the pipeline.
      *
-     * @param  \Rubix\Engine\Contracts\Transformer  $transformer
+     * @param  \Rubix\Engine\Transformers\Transformer  $transformer
      * @return self
      */
     public function addTransformer(Transformer $transformer) : self

@@ -9,13 +9,13 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\NeuralNet\Layers\Input;
+use Rubix\Engine\NeuralNet\Layers\Softmax;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class SoftmaxClassifier implements Supervised, Probabilistic, Classifier, Persistable
+class SoftmaxClassifier implements Supervised, Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -99,7 +99,7 @@ class SoftmaxClassifier implements Supervised, Probabilistic, Classifier, Persis
     public function train(Labeled $dataset) : void
     {
         $this->network = new Network(new Input($dataset->numColumns()),
-            [], new Multiclass($dataset->possibleOutcomes(), $this->alpha));
+            [], new Softmax($dataset->possibleOutcomes(), $this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);

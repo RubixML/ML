@@ -10,7 +10,7 @@ use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
 use InvalidArgumentException;
 
-class RandomForest implements Supervised, Probabilistic, Classifier, Persistable
+class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
 {
     /**
      * The number of trees to train in the ensemble.

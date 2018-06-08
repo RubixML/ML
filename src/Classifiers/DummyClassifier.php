@@ -9,7 +9,7 @@ use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\Transformers\Strategies\Categorical;
 use Rubix\Engine\Transformers\Strategies\PopularityContest;
 
-class DummyClassifier implements Supervised, Classifier, Persistable
+class DummyClassifier implements Supervised, Multiclass, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.

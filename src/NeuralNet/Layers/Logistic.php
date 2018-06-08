@@ -7,7 +7,7 @@ use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
-class Binary implements Output, Parametric
+class Logistic implements Output, Parametric
 {
     /**
      * The labels of either of the possible outcomes.

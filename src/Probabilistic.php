@@ -4,7 +4,7 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Dataset;
 
-interface Probabilistic
+interface Probabilistic extends Estimator
 {
     /**
      * Output a vector of probabilities per sample.

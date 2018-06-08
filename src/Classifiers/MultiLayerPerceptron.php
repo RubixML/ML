@@ -10,15 +10,15 @@ use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\NeuralNet\Network;
 use Rubix\Engine\NeuralNet\Layers\Input;
 use Rubix\Engine\NeuralNet\Layers\Hidden;
+use Rubix\Engine\NeuralNet\Layers\Softmax;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Metrics\Validation\Accuracy;
-use Rubix\Engine\NeuralNet\Layers\Multiclass;
 use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
 use Rubix\Engine\Metrics\Validation\Classification;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Persistable
+class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Persistable
 {
     /**
      * The hidden layer configuration of the neural net.
@@ -186,7 +186,7 @@ class MultiLayerPerceptron implements Supervised, Probabilistic, Classifier, Per
         list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Multiclass($dataset->possibleOutcomes(),
+            $this->hidden, new Softmax($dataset->possibleOutcomes(),
             $this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
