@@ -2,7 +2,7 @@
 Rubix is a library that lets you build intelligent programs that learn from data in PHP.
 
 ### Our Mission
-The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is known best for its performance on the web, we believe PHP engineers should be able to take advantage of the major advances in AI and machine learning today also. Our intent is to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
+The goal of the Rubix project is to bring state-of-the-art machine learning capabilities to the PHP language. Although the language is best known for its web potential, we believe PHP engineers should be able to take advantage of the advances in machine learning today as well. We aspire to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
 ### Table of Contents
 
@@ -62,8 +62,19 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [K Fold](#k-fold)
 		- [Metrics](#validation-metrics)
 			- [Classification](#classification)
+                - Accuracy
+                - F1 Score
+                - Informedness
+                - MCC
 			- [Regression](#regression)
+                - Mean Absolute Error
+                - Mean Squared Error
+                - RMS Error
+                - R Squared
 			- [Clustering](#clustering)
+                - Completeness
+                - Homogeneity
+                - V Measure
 		- [Report Generator](#report-generator)
 			- [Reports](#reports)
 				- [Aggregate Report](#aggregate-report)
@@ -504,13 +515,14 @@ A type of regression analysis that uses the logistic function to classify betwee
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| epochs | 100 | int | The number of training epochs to execute. |
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
+| threshold | 1e-4 | float | The minimum change in the weights necessary to continue training. |
+| epochs | 100 | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -593,7 +605,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -610,13 +622,14 @@ A generalization of logistic regression to multiple classes.
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| epochs | 100 | int | The number of training epochs to execute. |
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
+| threshold | 1e-4 | float | The minimum change in the weights necessary to continue training. |
+| epochs | 100 | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -642,7 +655,7 @@ Density-based spatial clustering of applications with noise is a clustering algo
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points.
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -751,7 +764,7 @@ Regressor that guesses the output values based on an imputer strategy. Used to c
 | strategy | BlurryMean | object | The imputer strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -773,7 +786,7 @@ A version of K Nearest Neighbors that uses the mean of K nearest data points to 
 | distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1239,11 +1252,13 @@ $validator = new KFold(new F1Score(), 5);
 ---
 #### Validation Metrics
 
+Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. There are different metrics for different types of Estimators.
+
 ##### Classification
 | Metric | Range |  Description |
 |--|--|--|
 | Accuracy | (0, 1) | A quick metric that computes the average accuracy over the entire testing set. |
-| F1 Score | (0, 1) | A classification metric that takes the precision and recall of each class outcome into consideration. |
+| F1 Score | (0, 1) | A metric that takes the precision and recall of each class outcome into consideration. |
 | Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
 | MCC | (0, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. It returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
 
@@ -1262,9 +1277,16 @@ $validator = new KFold(new F1Score(), 5);
 | Homogeneity | (0, 1) | A measure of the cluster assignments that are known to be in the same class. |
 | V Measure | (0, 1) | The harmonic mean between Homogeneity and Completeness. |
 
+##### Example:
+```php
+use Rubix\Engine\Metrics\Validation\Accuracy;
+
+$metric =  new Accuracy();
+```
+
 ---
 #### Report Generator
-The Report Generator is a type of Validator that ouputs a report instead of a single scalar score. To generate a report, simply pass an Estimator and a Labeled Dataset to the Report Generator's `generate()` method. The output of a report can be used to generate visualizations of the performance of a prototype.
+The Report Generator is a type of Validator that ouputs a report instead of a scalar score. To generate a report, simply pass an Estimator and a Labeled Dataset to the Report Generator's `generate()` method. The output of a report can be used to generate visualizations of the performance of a prototype.
 
 ##### Parameters:
 | Param | Default | Type | Description |
