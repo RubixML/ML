@@ -33,14 +33,14 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new SoftmaxClassifier(100, 10, new Adam(0.001), 1e-4), [
+$estimator = new Pipeline(new SoftmaxClassifier(10, new Adam(0.001), 1e-4, 1e-4, 300), [
     new NumericStringConverter(),
 ]);
 
 $report = new ReportGenerator(new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]), 0.2);
+]), 0.1);
 
 var_dump($report->generate($estimator, $dataset));
 

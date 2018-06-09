@@ -5,6 +5,7 @@ use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Multiclass;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
@@ -55,6 +56,7 @@ class MultiLayerPerceptronTest extends TestCase
     {
         $this->assertInstanceOf(MultiLayerPerceptron::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Supervised::class, $this->estimator);

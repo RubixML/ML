@@ -5,6 +5,7 @@ use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Multiclass;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\SoftmaxClassifier;
@@ -43,15 +44,16 @@ class SoftmaxClassifierTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new SoftmaxClassifier(20, 1, new Adam(0.01), 1e-4);
+        $this->estimator = new SoftmaxClassifier(1, new Adam(0.01), 1e-4, 1e-4, 100);
     }
 
     public function test_build_perceptron_classifier()
     {
         $this->assertInstanceOf(SoftmaxClassifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

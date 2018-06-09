@@ -1429,9 +1429,5 @@ $estimator->save('path/to/models/folder/');
 $estimator = PersistentModel::restore('path/to/persisted/model');
 ```
 
-## Acknowledgements
-Thank you in no particular order to Andrej Karpathy, Andrew Ng, Arkadiusz Kondas, Grant Sanderson, Jessica Noss, Lex Fridman, Patrick Winston, Sal Khan, and Tom Leighton. Your wisdom and dedication to mathematics and machine learning has been the driving force behind this project.
-
-
 ## License
 MIT

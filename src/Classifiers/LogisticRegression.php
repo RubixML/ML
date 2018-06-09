@@ -18,14 +18,6 @@ use RuntimeException;
 class LogisticRegression implements Supervised, Binary, Probabilistic, Persistable
 {
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
-     *
-     * @var int
-     */
-    protected $epochs;
-
-    /**
      * The number of training samples to consider per iteration of gradient descent.
      *
      * @var int
@@ -47,6 +39,21 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
     protected $alpha;
 
     /**
+     * The minimum change in the weights necessary to continue training.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
      * The underlying computational graph.
      *
      * @param \Rubix\Engine\NeuralNet\Network
@@ -54,21 +61,18 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
     protected $network;
 
     /**
-     * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
+     * @param  float  $threshold
+     * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null,
-                                float $alpha = 1e-4)
+    public function __construct(int $batchSize = 10, Optimizer $optimizer = null,
+                                float $alpha = 1e-4, float $threshold = 1e-4,
+                                int $epochs = PHP_INT_MAX)
     {
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
-        }
-
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
                 . ' per batch.');
@@ -79,14 +83,25 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
                 . ' be non-negative.');
         }
 
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Threshold cannot be set to less'
+                . ' than 0.');
+        }
+
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
+        }
+
         if (!isset($optimizer)) {
             $optimizer = new Adam();
         }
 
         $this->batchSize = $batchSize;
-        $this->epochs = $epochs;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
+        $this->threshold = $threshold;
+        $this->epochs = $epochs;
     }
 
     /**
@@ -105,15 +120,27 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
             $this->optimizer->initialize($layer);
         }
 
+        $previous = 0.0;
+
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+            $change = 0.0;
+
             foreach ($dataset->randomize()->batch($this->batchSize) as $batch) {
                 $this->network->feed($batch->samples())
                     ->backpropagate($batch->labels());
 
-                foreach ($this->network->parametric() as $layer) {
-                    $layer->update($this->optimizer->step($layer));
-                }
+                $step = $this->optimizer->step($this->network->output());
+
+                $this->network->output()->update($step);
+
+                $change += $step->oneNorm();
             }
+
+            if (abs($change - $previous) < $this->threshold) {
+                break 1;
+            }
+
+            $previous = $change;
         }
     }
 

@@ -5,6 +5,7 @@ use Rubix\Engine\Supervised;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Probabilistic;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Multiclass;
 use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Classifiers\NaiveBayes;
 use PHPUnit\Framework\TestCase;
@@ -49,6 +50,7 @@ class NaiveBayesTest extends TestCase
     {
         $this->assertInstanceOf(NaiveBayes::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Supervised::class, $this->estimator);

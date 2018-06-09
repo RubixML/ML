@@ -6,9 +6,9 @@ use Rubix\Engine\Supervised;
 use Rubix\Engine\Graph\Tree;
 use Rubix\Engine\Persistable;
 use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Graph\BinaryNode;
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Graph\BinaryNode;
 use InvalidArgumentException;
 
 class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic, Persistable
