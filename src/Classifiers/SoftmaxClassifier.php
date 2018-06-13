@@ -113,8 +113,8 @@ class SoftmaxClassifier implements Supervised, Multiclass, Probabilistic, Persis
      */
     public function train(Labeled $dataset) : void
     {
-        $this->network = new Network(new Input($dataset->numColumns()),
-            [], new Softmax($dataset->possibleOutcomes(), $this->alpha));
+        $this->network = new Network(new Input($dataset->numColumns()), [],
+            new Softmax($dataset->possibleOutcomes(), $this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);

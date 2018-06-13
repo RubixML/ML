@@ -29,7 +29,7 @@ class Pipeline implements Estimator, Persistable
      * @param  array  $transformers
      * @return void
      */
-    public function __construct(Estimator $estimator, array $transformers = [])
+    public function __construct(Estimator $estimator, array $transformers)
     {
         foreach ($transformers as $transformer) {
             $this->addTransformer($transformer);

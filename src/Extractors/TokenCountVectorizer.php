@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\Engine\Extractors;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Transformers\Tokenizers\Word;
-use Rubix\Engine\Transformers\Tokenizers\Tokenizer;
+use Rubix\Engine\Extractors\Tokenizers\Word;
+use Rubix\Engine\Extractors\Tokenizers\Tokenizer;
 use InvalidArgumentException;
+use RuntimeException;
 
-class TokenCountVectorizer implements Transformer
+class TokenCountVectorizer implements Extractor
 {
     /**
      * The maximum size of the vocabulary.
@@ -19,7 +19,7 @@ class TokenCountVectorizer implements Transformer
     /**
      * The tokenizer used to extract text data into tokenable values.
      *
-     * @var \Rubix\Engine\Transformers\Tokenizers\Tokenizer
+     * @var \Rubix\Engine\Extractors\Tokenizers\Tokenizer
      */
     protected $tokenizer;
 
@@ -34,7 +34,7 @@ class TokenCountVectorizer implements Transformer
 
     /**
      * @param  int  $maxVocabulary
-     * @param  \Rubix\Engine\Transformers\Tokenizers\Tokenizer  $tokenizer
+     * @param  \Rubix\Engine\Extractors\Tokenizers\Tokenizer  $tokenizer
      * @return void
      */
     public function __construct(int $maxVocabulary = PHP_INT_MAX, Tokenizer $tokenizer = null)
@@ -75,34 +75,32 @@ class TokenCountVectorizer implements Transformer
     /**
      * Build the vocabulary for the vectorizer.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  array  $samples
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(array $samples) : void
     {
-        $this->vocabulary = $counts = [];
+        $this->vocabulary = $frequencies = [];
 
-        foreach ($dataset->samples() as $sample) {
-            foreach ($sample as $column => $feature) {
-                if (is_string($feature)) {
-                    foreach ($this->tokenizer->tokenize($feature) as $token) {
-                        if (isset($counts[$token])) {
-                            $counts[$token]++;
-                        } else {
-                            $counts[$token] = 1;
-                        }
+        foreach ($samples as $sample) {
+            if (is_string($sample)) {
+                foreach ($this->tokenizer->tokenize($sample) as $token) {
+                    if (isset($frequencies[$token])) {
+                        $frequencies[$token]++;
+                    } else {
+                        $frequencies[$token] = 1;
                     }
                 }
             }
         }
 
-        if (count($counts) > $this->maxVocabulary) {
-            arsort($counts);
+        if (count($frequencies) > $this->maxVocabulary) {
+            arsort($frequencies);
 
-            $counts = array_splice($counts, 0, $this->maxVocabulary);
+            $frequencies = array_splice($frequencies, 0, $this->maxVocabulary);
         }
 
-        foreach ($counts as $token => $count) {
+        foreach ($frequencies as $token => $count) {
             $this->vocabulary[$token] = count($this->vocabulary);
         }
     }
@@ -112,27 +110,29 @@ class TokenCountVectorizer implements Transformer
      * is equal to the number of times that word appears in the sample.
      *
      * @param  array  $samples
-     * @return void
+     * @throws \RuntimeException
+     * @return array
      */
-    public function transform(array &$samples) : void
+    public function extract(array $samples) : array
     {
-        foreach ($samples as &$sample) {
-            $vectors = [];
-
-            foreach ($sample as $j => &$feature) {
-                if (is_string($feature)) {
-                    $vectors[] = $this->vectorize($feature);
-
-                    unset($sample[$j]);
-                }
-            }
-
-            $sample = array_merge(array_values($sample), ...$vectors);
+        if (empty($this->vocabulary)) {
+            throw new RuntimeException('Vocabulary is empty, try fitting a'
+                . ' dataset first.');
         }
+
+        $vectors = [];
+
+        foreach ($samples as $sample) {
+            if (is_string($sample)) {
+                $vectors[] = $this->vectorize($sample);
+            }
+        }
+
+        return $vectors;
     }
 
     /**
-     * Convert a string into a vector where the scalars are token counts.
+     * Convert a string into a vector where the scalars are token frequencies.
      *
      * @param  string  $sample
      * @return array

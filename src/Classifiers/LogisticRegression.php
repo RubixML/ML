@@ -113,8 +113,8 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
      */
     public function train(Labeled $dataset) : void
     {
-        $this->network = new Network(new Input($dataset->numColumns()),
-            [], new Logistic($dataset->possibleOutcomes(), $this->alpha));
+        $this->network = new Network(new Input($dataset->numColumns()), [],
+            new Logistic($dataset->possibleOutcomes(), $this->alpha));
 
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);

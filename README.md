@@ -18,6 +18,8 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
+	- [Feature Extractors](#feature-extractors)
+		- [Token Count Vectorizer](#token-count-vectorizer)
 	- [Estimators](#estimators)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
@@ -53,7 +55,6 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Stop Word Filter](#stop-word-filter)
 			- [Text Normalizer](#text-normalizer)
 			- [TF-IDF Transformer](#tf---idf-transformer)
-			- [Token Count Vectorizer](#token-count-vectorizer)
 			- [Variance Threshold Filter](#variance-threshold-filter)
 			- [Z Scale Standardizer](#z-scale-standardizer)
 	- [Cross Validation](#cross-validation)
@@ -345,6 +346,62 @@ This Dataset does not have any additional methods.
 use Rubix\Engine\Datasets\Unlabeled;
 
 $dataset = new Unlabeled($samples);
+```
+---
+### Feature Extractors
+Feature Extractors are objects that help you encode raw data into feature vectors so they can be used by an Estimator.
+
+Extractors have an API similar to Transformers, however, they are designed to be used on the raw data before it is inserted into a Dataset Object. The output of the `extract()` method is a sample matrix that can be used to build a Dataset Object.
+
+Fit the Extractor to the training samples:
+```php
+public fit(array $samples) : void
+```
+
+Return a 2-d array of extracted sample vectors:
+```php
+public extract(array $samples) : array
+```
+
+##### Example:
+```php
+use Rubix\Engine\Datasets\Unlabeled;
+use Rubix\Engine\Datasets\Labeled;
+
+$extractor->fit($samples);
+
+$matrix = $extractor->extract($samples);
+
+$dataset = new Unlabeled($matrix);
+
+$dataset = new Labeled($matrix, $labels);
+```
+
+---
+#### Token Count Vectorizer
+Word counts are often used to represent natural language as numerical vectors. The Token Count Vectorizer builds a vocabulary from the training samples and transforms text into sparse vectors consisting of the number of times a vocabulary words appears in the sample.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
+| tokenizer | Word | object | The method of turning samples of text into individual tokens. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `vocabulary() : array` | Returns the vocabulary array. |
+| `size() : int` | Returns the size of the vocabulary in number of tokens.
+
+##### Example:
+```php
+use Rubix\Engine\Extractors\TokenCountVectorizer;
+use Rubix\Engine\Extractors\Tokenizers\Word;
+
+$extractor = new TokenCountVectorizer(5000, new Word());
+
+$extractor->vocabulary(); // ['i', 'would', 'like', 'to', 'die', 'on', 'mars', 'just', 'not', 'on', 'impact', ...]
+$extractor->size(); // 4722
 ```
 
 ---
@@ -1122,33 +1179,6 @@ This Transformer does not have any additional methods.
 ##### Example:
 ```php
 $transformer = new TfIdfTransformer();
-```
-
-#### Token Count Vectorizer
-Word counts are often used to represent natural language as numerical vectors. The Token Count Vectorizer builds a vocabulary from the entire training set and then transforms every sample text column into a vector consisting of one column per vocabulary word having the value of the number of times that word appears in the column text.
-
-##### Categorical
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
-| tokenizer | Word | object | The method of turning samples of text into individual tokens. |
-
-##### Additional Methods:
-| Method | Description |
-|--|--|
-| `vocabulary() : array` | Returns the vocabulary array. |
-| `size() : int` | Returns the size of the vocabulary in number of tokens.
-
-##### Example:
-```php
-use Rubix\Engine\Transformers\TokenCountVectorizer;
-use Rubix\Engine\Transformers\Tokenizers\Word;
-
-$transformer = new TokenCountVectorizer(5000, new Word());
-
-$transformer->vocabulary(); // ['i', 'would', 'like', 'to', 'die', 'on', 'mars', 'just', 'not', 'on', 'impact', ...]
-$transformer->size(); // 4722
 ```
 
 #### Variance Threshold Filter
