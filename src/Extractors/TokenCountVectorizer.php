@@ -137,11 +137,11 @@ class TokenCountVectorizer implements Extractor
      * @param  string  $sample
      * @return array
      */
-    public function vectorize(string $string) : array
+    public function vectorize(string $sample) : array
     {
         $vector = array_fill(0, count($this->vocabulary), 0);
 
-        foreach ($this->tokenizer->tokenize($string) as $token) {
+        foreach ($this->tokenizer->tokenize($sample) as $token) {
             if (isset($this->vocabulary[$token])) {
                 $vector[$this->vocabulary[$token]] += 1;
             }

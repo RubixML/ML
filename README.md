@@ -52,8 +52,6 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Numeric String Converter](#numeric-string-converter)
 			- [One Hot Encoder](#one-hot-encoder)
 			- [Sparse Random Projector](#sparse-random-projector)
-			- [Stop Word Filter](#stop-word-filter)
-			- [Text Normalizer](#text-normalizer)
 			- [TF-IDF Transformer](#tf---idf-transformer)
 			- [Variance Threshold Filter](#variance-threshold-filter)
 			- [Z Scale Standardizer](#z-scale-standardizer)
@@ -1126,44 +1124,6 @@ This Transformer does not have any additional methods.
 use Rubix\Engine\Transformers\SparseRandomProjector;
 
 $transformer = new SparseRandomProjector(20);
-```
-
-#### Stop Word Filter
-For certain natural language processing (NLP) tasks it can be advantageous to remove common or ambiguous words from the dataset before being fed to the Estimator. The Stop Word Filter lets you do just that.
-
-##### Categorical
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| stop words | None | array | An array containing the words in their exact form to filter from the dataset. |
-
-##### Additional Methods:
-This Transformer does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\Engine\Transformers\StopWordFilter;
-
-$transformer = new StopWordFilter(['bad', 'words', ...]);
-```
-
-#### Text Normalizer
-This Transformer will convert all strings to lowercase and remove excess whitespace.
-
-##### Categorical
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| lowercase | True | boolean | Should the text be converted to all lowercase? |
-
-##### Additional Methods:
-This Transformer does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\Engine\Transformers\TextNormalizer;
-
-$transformer = new TextNormalizer(true);
 ```
 
 #### TF-IDF Transformer
