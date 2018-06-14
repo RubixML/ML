@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\KMostFrequent;
+use Rubix\ML\Transformers\Strategies\Strategy;
+use Rubix\ML\Transformers\Strategies\KMostFrequent;
 use PHPUnit\Framework\TestCase;
 
 class KMostFrequentTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
@@ -51,7 +51,7 @@ class Input implements Layer
     /**
      * Initialize the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer
      * @return void
      */
     public function initialize(Layer $previous) : void
@@ -85,7 +85,7 @@ class Input implements Layer
     /**
      * Do nothing since placeholder layers do not have parameters.
      *
-     * @param  \Rubix\Engine\NerualNet\Layers\Layer  $next
+     * @param  \Rubix\ML\NerualNet\Layers\Layer  $next
      * @return void
      */
     public function back(Layer $next) : void

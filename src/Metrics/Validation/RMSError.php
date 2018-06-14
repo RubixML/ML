@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
 
 class RMSError implements Regression
 {
     /**
      * Calculate the negative root mean square error from the predictions.
      *
-     * @param  \Rubix\Engine\Regressors\Regressor  $estimator
+     * @param  \Rubix\ML\Regressors\Regressor  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

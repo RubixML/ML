@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\Clusterers;
+namespace Rubix\ML\Clusterers;
 
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
 class DBSCAN implements Unsupervised, Clusterer, Persistable
@@ -31,14 +31,14 @@ class DBSCAN implements Unsupervised, Clusterer, Persistable
     /**
      * The distance function to use when computing the distances between points.
      *
-     * @var \Rubix\Engine\Contracts\Distance
+     * @var \Rubix\ML\Contracts\Distance
      */
     protected $distanceFunction;
 
     /**
      * @param  float  $radius
      * @param  int  $minDensity
-     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -63,7 +63,7 @@ class DBSCAN implements Unsupervised, Clusterer, Persistable
     }
 
     /**
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -76,7 +76,7 @@ class DBSCAN implements Unsupervised, Clusterer, Persistable
     }
 
     /**
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -111,7 +111,7 @@ class DBSCAN implements Unsupervised, Clusterer, Persistable
      * Expand the cluster by computing the distance between a sample and each
      * member of the cluster.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @param  array  $neighbors
      * @param  array  $labels
      * @param  int  $current
@@ -146,7 +146,7 @@ class DBSCAN implements Unsupervised, Clusterer, Persistable
      * centroid.
      *
      * @param  array  $neighbor
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     protected function groupNeighborsByDistance(array $neighbor, Dataset $samples) : array

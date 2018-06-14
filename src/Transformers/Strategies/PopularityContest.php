@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\ML\Transformers\Strategies;
 
 use RuntimeException;
 

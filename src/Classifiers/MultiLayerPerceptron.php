@@ -1,20 +1,20 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\NeuralNet\Network;
-use Rubix\Engine\NeuralNet\Layers\Input;
-use Rubix\Engine\NeuralNet\Layers\Hidden;
-use Rubix\Engine\NeuralNet\Layers\Softmax;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Metrics\Validation\Accuracy;
-use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
-use Rubix\Engine\Metrics\Validation\Classification;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Softmax;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Metrics\Validation\Classification;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -37,7 +37,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * The gradient descent optimizer used to train the network.
      *
-     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
@@ -58,7 +58,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * The classification metric used to validate the performance of the model.
      *
-     * @var \Rubix\Engine\Metrics\Validation\Classification
+     * @var \Rubix\ML\Metrics\Validation\Classification
      */
     protected $metric;
 
@@ -89,7 +89,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\Engine\NeuralNet\Network
+     * @param \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 
@@ -105,9 +105,9 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * @param  array  $hidden
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\Engine\Metrics\Validation\Classification|null  $metric
+     * @param  \Rubix\ML\Metrics\Validation\Classification|null  $metric
      * @param  float $ratio
      * @param  int  $window
      * @param  int  $epochs
@@ -172,7 +172,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -237,7 +237,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
      * Feed a sample through the network and make a prediction based on the highest
      * activated output neuron.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -263,7 +263,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array

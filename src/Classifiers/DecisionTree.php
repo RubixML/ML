@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Graph\Tree;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Graph\BinaryNode;
+use Rubix\ML\Supervised;
+use Rubix\ML\Graph\Tree;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\BinaryNode;
 use InvalidArgumentException;
 
 class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic, Persistable
@@ -110,7 +110,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * Train the decision tree by learning the most optimal splits in the
      * training set.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -134,7 +134,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -151,7 +151,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array
@@ -170,8 +170,8 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * Recursive function to traverse the tree and return a terminal node.
      *
      * @param  array  $sample
-     * @param  \Rubix\Engine\BinaryNode  $root
-     * @return \Rubix\Engine\BinaryNode
+     * @param  \Rubix\ML\BinaryNode  $root
+     * @return \Rubix\ML\BinaryNode
      */
     protected function _predict(array $sample, BinaryNode $root) : BinaryNode
     {
@@ -199,7 +199,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * way. The terminating conditions are a) split would make node responsible
      * for less values than $minSamples or b) the max depth of the branch has been reached.
      *
-     * @param  \Rubix\Engine\BinaryNode  $root
+     * @param  \Rubix\ML\BinaryNode  $root
      * @param  int  $depth
      * @return void
      */
@@ -250,7 +250,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * finds a homogenous split. i.e. a gini score of 0.
      *
      * @param  array  $data
-     * @return \Rubix\Engine\BinaryNode
+     * @return \Rubix\ML\BinaryNode
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
@@ -292,7 +292,7 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * probability.
      *
      * @param  array  $data
-     * @return \Rubix\Engine\Graph\BinaryNode
+     * @return \Rubix\ML\Graph\BinaryNode
      */
     protected function terminate(array $data) : BinaryNode
     {

@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\MissingDataImputer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
 
 class MissingDataImputerTest extends TestCase

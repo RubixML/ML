@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
 
 interface Regression extends Validation
 {
     /**
      * Score a regressor using a labeled testing set.
      *
-     * @param  \Rubix\Engine\Regressors\Regressor  $estimator
+     * @param  \Rubix\ML\Regressors\Regressor  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

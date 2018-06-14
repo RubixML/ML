@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Extractors\Tokenizers;
+namespace Rubix\ML\Extractors\Tokenizers;
 
 class Whitespace implements Tokenizer
 {

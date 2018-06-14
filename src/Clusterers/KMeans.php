@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\Clusterers;
+namespace Rubix\ML\Clusterers;
 
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -22,7 +22,7 @@ class KMeans implements Unsupervised, Clusterer, Persistable
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -44,7 +44,7 @@ class KMeans implements Unsupervised, Clusterer, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
@@ -86,7 +86,7 @@ class KMeans implements Unsupervised, Clusterer, Persistable
      * from one of the k centroids, then recompute the centroid coordinate as the
      * mean of the new cluster.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -134,7 +134,7 @@ class KMeans implements Unsupervised, Clusterer, Persistable
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array

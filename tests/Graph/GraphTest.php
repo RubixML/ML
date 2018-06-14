@@ -1,9 +1,9 @@
 <?php
 
-use Rubix\Engine\Graph\Graph;
-use Rubix\Engine\Graph\GraphNode;
-use Rubix\Engine\Graph\Edge;
-use Rubix\Engine\Graph\Path;
+use Rubix\ML\Graph\Graph;
+use Rubix\ML\Graph\GraphNode;
+use Rubix\ML\Graph\Edge;
+use Rubix\ML\Graph\Path;
 use PHPUnit\Framework\TestCase;
 
 class GraphTest extends TestCase

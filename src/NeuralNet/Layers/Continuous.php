@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
@@ -18,7 +18,7 @@ class Continuous implements Output, Parametric
     /**
      * The previous layer in the network.
      *
-     * @var \Rubix\Engine\NeuralNet\Layers\Layer
+     * @var \Rubix\ML\NeuralNet\Layers\Layer
      */
     protected $previous;
 
@@ -111,7 +111,7 @@ class Continuous implements Output, Parametric
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer  $previous
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void

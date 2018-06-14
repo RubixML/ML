@@ -1,11 +1,11 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Regressors\KNNRegressor;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\Regressors\KNNRegressor;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class KNNRegressorTest extends TestCase

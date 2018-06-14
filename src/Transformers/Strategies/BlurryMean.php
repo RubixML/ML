@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\ML\Transformers\Strategies;
 
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 class BlurryMean implements Continuous

@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Regressors;
+namespace Rubix\ML\Regressors;
 
-use Rubix\Engine\Estimator;
+use Rubix\ML\Estimator;
 
 interface Regressor extends Estimator
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet;
+namespace Rubix\ML\NeuralNet;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\Layers\Layer;
-use Rubix\Engine\NeuralNet\Layers\Input;
-use Rubix\Engine\NeuralNet\Layers\Hidden;
-use Rubix\Engine\NeuralNet\Layers\Output;
-use Rubix\Engine\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Layers\Layer;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
 use RuntimeException;
 use ArrayAccess;
@@ -26,9 +26,9 @@ class Network implements ArrayAccess, Countable
     ];
 
     /**
-     * @param  \Rubix\Engine\NeuralNet\Layers\Input  $input
+     * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
-     * @param  \Rubix\Engine\NeuralNet\Layers\Output  $output
+     * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
      * @return void
      */
     public function __construct(Input $input, array $hidden, Output $output)

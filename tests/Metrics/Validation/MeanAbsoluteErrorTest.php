@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
-use Rubix\Engine\Metrics\Validation\Validation;
-use Rubix\Engine\Metrics\Validation\Regression;
-use Rubix\Engine\Metrics\Validation\MeanAbsoluteError;
+use Rubix\ML\Metrics\Validation\Validation;
+use Rubix\ML\Metrics\Validation\Regression;
+use Rubix\ML\Metrics\Validation\MeanAbsoluteError;
 use PHPUnit\Framework\TestCase;
 
 class MeanAbsoluteErrorTest extends TestCase

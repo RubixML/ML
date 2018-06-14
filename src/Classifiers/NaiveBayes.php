@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
@@ -59,7 +59,7 @@ class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
     /**
      * Compute the means and standard deviations of the values per class.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
     public function train(Labeled $dataset) : void
@@ -86,7 +86,7 @@ class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -113,7 +113,7 @@ class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
      * Calculate the probabilities of the sample being a member of all trained
      * classes and chose the highest probaility outcome as the prediction.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array

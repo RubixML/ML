@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\ML;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\CrossValidation\Validator;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\CrossValidation\Validator;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -33,7 +33,7 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     /**
      * The validator used to score each trained estimator.
      *
-     * @var \Rubix\Engine\CrossValidation\Validator
+     * @var \Rubix\ML\CrossValidation\Validator
      */
     protected $validator;
 
@@ -58,7 +58,7 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     /**
      * @param  string  $base
      * @param  array  $params
-     * @param  \Rubix\Engine\CrossValidation\Validator  $validator
+     * @param  \Rubix\ML\CrossValidation\Validator  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -103,7 +103,7 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
     public function train(Labeled $dataset) : void
@@ -134,7 +134,7 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array

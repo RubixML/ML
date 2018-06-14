@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Regressors;
+namespace Rubix\ML\Regressors;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\Matrix;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
@@ -72,7 +72,7 @@ class Ridge implements Supervised, Regressor, Persistable
      * Calculate the coefficients of the training data. i.e. compute the line
      * that best fits the training data.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -92,7 +92,7 @@ class Ridge implements Supervised, Regressor, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array

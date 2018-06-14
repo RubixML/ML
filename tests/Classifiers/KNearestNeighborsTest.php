@@ -1,13 +1,13 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Multiclass;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Classifiers\KNearestNeighbors;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Multiclass;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 
 class KNearestNeighborsTest extends TestCase

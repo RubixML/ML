@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\DefaultValue;
+use Rubix\ML\Transformers\Strategies\Strategy;
+use Rubix\ML\Transformers\Strategies\DefaultValue;
 use PHPUnit\Framework\TestCase;
 
 class DefaultValueTest extends TestCase

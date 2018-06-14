@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 interface Rectifier extends ActivationFunction
 {

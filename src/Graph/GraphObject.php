@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Graph;
+namespace Rubix\ML\Graph;
 
 use InvalidArgumentException;
 

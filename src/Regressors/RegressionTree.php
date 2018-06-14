@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\Regressors;
+namespace Rubix\ML\Regressors;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Graph\Tree;
-use Rubix\Engine\Persistable;
+use Rubix\ML\Supervised;
+use Rubix\ML\Graph\Tree;
+use Rubix\ML\Persistable;
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Graph\BinaryNode;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Graph\BinaryNode;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
@@ -101,7 +101,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * Train the regression tree by learning the most optimal splits in the
      * training set.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -124,7 +124,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -142,8 +142,8 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * Recursive function to traverse the tree and return a terminal node.
      *
      * @param  array  $sample
-     * @param  \Rubix\Engine\BinaryNode  $root
-     * @return \Rubix\Engine\BinaryNode
+     * @param  \Rubix\ML\BinaryNode  $root
+     * @return \Rubix\ML\BinaryNode
      */
     protected function _predict(array $sample, BinaryNode $root) : BinaryNode
     {
@@ -171,7 +171,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * way. The terminating conditions are a) split would make node responsible
      * for less values than $minSamples or b) the max depth of the branch has been reached.
      *
-     * @param  \Rubix\Engine\BinaryNode  $root
+     * @param  \Rubix\ML\BinaryNode  $root
      * @param  int  $depth
      * @return void
      */
@@ -222,7 +222,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * finds a perfect split. i.e. a variance score of 0.
      *
      * @param  array  $data
-     * @return \Rubix\Engine\BinaryNode
+     * @return \Rubix\ML\BinaryNode
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
@@ -273,7 +273,7 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * Terminate the branch with the most likely outcome.
      *
      * @param  array  $data
-     * @return \Rubix\Engine\Graph\BinaryNode
+     * @return \Rubix\ML\Graph\BinaryNode
      */
     protected function terminate(array $data) : BinaryNode
     {

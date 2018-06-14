@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Estimator;
+use Rubix\ML\Estimator;
 
 interface Classifier extends Estimator
 {

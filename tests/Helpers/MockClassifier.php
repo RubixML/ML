@@ -2,9 +2,9 @@
 
 namespace Rubix\Tests\Helpers;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 class MockClassifier implements Classifier
 {

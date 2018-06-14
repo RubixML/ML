@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 class F1Score implements Classification
 {
     /**
      * Score the average F1 score of the predictions.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

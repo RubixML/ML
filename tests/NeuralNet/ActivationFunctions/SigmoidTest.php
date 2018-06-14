@@ -1,8 +1,8 @@
 <?php
 
 use MathPHP\LinearAlgebra\Matrix;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
 class SigmoidTest extends TestCase

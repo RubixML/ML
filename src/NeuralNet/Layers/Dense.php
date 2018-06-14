@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Rectifier;
-use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
 class Dense implements Hidden, Parametric
@@ -22,14 +22,14 @@ class Dense implements Hidden, Parametric
     /**
      * The function that outputs the activation or implulse of each neuron.
      *
-     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
 
     /**
      * The previous layer in the network.
      *
-     * @var \Rubix\Engine\NeuralNet\Layers\Layer
+     * @var \Rubix\ML\NeuralNet\Layers\Layer
      */
     protected $previous;
 
@@ -70,7 +70,7 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param  int  $neurons
-     * @param  \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
+     * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -129,7 +129,7 @@ class Dense implements Hidden, Parametric
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer  $previous
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void
@@ -180,7 +180,7 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer.
      *
-     * @param  \Rubix\Engine\NerualNet\Layers\Layer  $next
+     * @param  \Rubix\ML\NerualNet\Layers\Layer  $next
      * @return void
      */
     public function back(Layer $next) : void

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\Graph;
+namespace Rubix\ML\Graph;
 
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Metrics\Distance\Distance;
 use InvalidArgumentException;
 use SplObjectStorage;
 use SplPriorityQueue;
@@ -20,13 +20,13 @@ class Grid extends Graph
     /**
      * The distance function that describes the grid space.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
     /**
      * @param  array  $axes
-     * @param  \Rubix\Engine\Contracts\Distance|null  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance|null  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -71,7 +71,7 @@ class Grid extends Graph
      *
      * @param  array  $properties
      * @throws \InvalidArgumentException
-     * @return \Rubix\Engine\GraphNode
+     * @return \Rubix\ML\GraphNode
      */
     public function insert(array $properties = []) : GraphNode
     {
@@ -87,8 +87,8 @@ class Grid extends Graph
     /**
      * Compute the distance between two given nodes on the grid.
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\ML\GraphNode  $start
+     * @param  \Rubix\ML\GraphNode  $end
      * @return float
      */
     public function distance(GraphNode $a, GraphNode $b) : float
@@ -106,10 +106,10 @@ class Grid extends Graph
     /**
      * Find the K nearest neighbors of a given node. O(V logV)
      *
-     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  \Rubix\ML\Graph\GraphNode  $node
      * @param  int  $k
      * @param  bool  $self
-     * @return \Rubix\Engine\Graph\ObjectIndex
+     * @return \Rubix\ML\Graph\ObjectIndex
      */
     public function findNearestNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
@@ -144,10 +144,10 @@ class Grid extends Graph
     /**
      * Find the K farthest neighbors of a given node. O(V logV)
      *
-     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  \Rubix\ML\Graph\GraphNode  $node
      * @param  int  $k
      * @param  bool  $self
-     * @return \Rubix\Engine\Graph\ObjectIndex
+     * @return \Rubix\ML\Graph\ObjectIndex
      */
     public function findFarthestNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
@@ -182,10 +182,10 @@ class Grid extends Graph
     /**
      * Find the K nearest reachable neighbors of a given node.
      *
-     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  \Rubix\ML\Graph\GraphNode  $node
      * @param  int  $k
      * @param  bool  $self
-     * @return \Rubix\Engine\Graph\ObjectIndex
+     * @return \Rubix\ML\Graph\ObjectIndex
      */
     public function findNearestReachableNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
@@ -238,9 +238,9 @@ class Grid extends Graph
     /**
      * Find the K farthest reachable neighbors of a given node.
      *
-     * @param  \Rubix\Engine\Graph\GraphNode  $node
+     * @param  \Rubix\ML\Graph\GraphNode  $node
      * @param  int  $k
-     * @return \Rubix\Engine\Graph\ObjectIndex
+     * @return \Rubix\ML\Graph\ObjectIndex
      */
     public function findFarthestReachableNeighbors(GraphNode $node, int $k = 3, bool $self = false) : ObjectIndex
     {
@@ -293,9 +293,9 @@ class Grid extends Graph
      * Uses a distance function to compute a heuristic that prioritizes the direction
      * of the traversal. Returns null if no path can be found. O(VlogV + ElogV)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
-     * @return \Rubix\Engine\Path|null
+     * @param  \Rubix\ML\GraphNode  $start
+     * @param  \Rubix\ML\GraphNode  $end
+     * @return \Rubix\ML\Path|null
      */
     public function findShortestSmartPath(GraphNode $start, GraphNode $end) : ?Path
     {
@@ -354,11 +354,11 @@ class Grid extends Graph
      * node in a grid. Uses a euclidian distance heuristic to prioritize the direction
      * of the traversal. Returns null if no path can be found. O(VlogV+ElogV)
      *
-     * @param  \Rubix\Engine\GraphNode  $start
-     * @param  \Rubix\Engine\GraphNode  $end
+     * @param  \Rubix\ML\GraphNode  $start
+     * @param  \Rubix\ML\GraphNode  $end
      * @param  string  $weight
      * @param  mixed  $default
-     * @return \Rubix\Engine\Path|null
+     * @return \Rubix\ML\Path|null
      */
     public function findShortestUnsignedWeightedSmartPath(GraphNode $start, GraphNode $end, string $weight, $default = INF) : ?Path
     {

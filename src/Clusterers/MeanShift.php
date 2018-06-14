@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Clusterers;
+namespace Rubix\ML\Clusterers;
 
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -24,7 +24,7 @@ class MeanShift implements Unsupervised, Clusterer, Persistable
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -54,7 +54,7 @@ class MeanShift implements Unsupervised, Clusterer, Persistable
 
     /**
      * @param  float  $radius
-     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
@@ -99,7 +99,7 @@ class MeanShift implements Unsupervised, Clusterer, Persistable
     }
 
     /**
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -172,7 +172,7 @@ class MeanShift implements Unsupervised, Clusterer, Persistable
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array

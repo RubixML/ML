@@ -1,13 +1,13 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Multiclass;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\RandomForest;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Multiclass;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Classifiers\RandomForest;
 use PHPUnit\Framework\TestCase;
 
 class RandomForestTest extends TestCase

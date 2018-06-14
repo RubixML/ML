@@ -90,7 +90,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 ## Installation
 Install Rubix using composer:
 ```sh
-composer require rubix/engine
+composer require rubix/ml
 ```
 
 ## Requirements
@@ -117,7 +117,7 @@ All of the machine learning algorithms (called *Estimators*) in Rubix require a 
 For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate (between 1 and 5) their similarity, communication, and partner attractiveness. We can construct a Labeled Dataset object from the data you collected in the following way:
 
 ```php
-use \Rubix\Engine\Datasets\Labeled;
+use \Rubix\ML\Datasets\Labeled;
 
 $samples = [[3, 4, 2], [1, 5, 3], [4, 4, 3], [2, 1, 5], ...];
 
@@ -151,8 +151,8 @@ It is important to understand the effect that each parameter has on the performa
 
 To create a K Nearest Neighbors Classifier instance:
 ```php
-use Rubix\Engine\Classifiers\KNearestNeighbors;
-use Rubix\Engine\Metrics\Distance\Manhattan;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Metrics\Distance\Manhattan;
 
 // Using the default parameters
 $estimator = new KNearestNeighbors();
@@ -171,7 +171,7 @@ For our 100 sample dataset, this will only take a few milliseconds, but larger d
 
 Once our Estimator has been trained we can feed in some new sample points to see what the model predicts. Suppose that we went out and collected  new data points from our friends using the same questions we asked the married and divorced couples. We could make a prediction on whether they look more like the class of love birds or the class of divorcees by taking their answers and doing the following:
 ```php
-use Rubix\Engine\Dataset\Unlabeled;
+use Rubix\ML\Dataset\Unlabeled;
 
 $samples = [[4, 1, 3], [2, 2, 1], [2, 4, 5], [5, 2, 4]];
 
@@ -197,8 +197,8 @@ We can make predictions but how do we know that the predictions our model makes 
 
 We need to supply a validation metric to measure suited to our Classifier. In this case we will use the Accuracy metric, but many more exist depending on your purpose.
 ```php
-use Rubix\Engine\CrossValidation\HoldOut;
-use Rubix\Engine\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\Metrics\Validation\Accuracy;
 
 $validator = new HoldOut(new Accuracy(), 0.2);
 
@@ -316,7 +316,7 @@ For Supervised Estimators you will need to pass it a Labeled Dataset that consis
 
 ##### Example:
 ```php
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 
 $dataset = new Labeled($samples, $labels);
 
@@ -341,7 +341,7 @@ This Dataset does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Unlabeled;
 
 $dataset = new Unlabeled($samples);
 ```
@@ -363,9 +363,9 @@ public extract(array $samples) : array
 
 ##### Example:
 ```php
-use Rubix\Engine\Extractors\TokenCountVectorizer;
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Extractors\TokenCountVectorizer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 
 ...
 $estractor = new TokenCountVectorizer(5000);
@@ -394,7 +394,7 @@ This Extractor does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Extractors\PixelEncoder;
+use Rubix\ML\Extractors\PixelEncoder;
 
 $extractor = new PixelEncoder([28, 28], false);
 ```
@@ -416,8 +416,8 @@ Word counts are often used to represent natural language as numerical vectors. T
 
 ##### Example:
 ```php
-use Rubix\Engine\Extractors\TokenCountVectorizer;
-use Rubix\Engine\Extractors\Tokenizers\Word;
+use Rubix\ML\Extractors\TokenCountVectorizer;
+use Rubix\ML\Extractors\Tokenizers\Word;
 
 $extractor = new TokenCountVectorizer(5000, new Word());
 
@@ -451,8 +451,8 @@ The return array of a prediction is 0 indexed containing the predicted values of
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\RandomForest;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Datasets\Labeled;
 
 ...
 $dataset = new Labeled($samples, $labels);
@@ -527,8 +527,8 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\AdaBoost;
-use Rubix\Engine\Classifiers\DecisionTree;
+use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Classifiers\DecisionTree;
 
 $estimator = new AdaBoost(DecisionTree::class, [1, 10], 100, 0.1, 0.999);
 
@@ -556,7 +556,7 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\DecisionTree;
+use Rubix\ML\Classifiers\DecisionTree;
 
 $estimator = new DecisionTree(10, 3);
 
@@ -580,8 +580,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\DummyClassifier;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Transformers\Strategies\PopularityContest;
 
 $estimator = new DummyClassifier(new PopularityContest());
 ```
@@ -602,8 +602,8 @@ This Estimator does not have any additional methods.|
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\KNearestNeighbors;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Metrics\Distance\Euclidean;
 
 $estimator = new KNearestNeighbors(3, new Euclidean());
 ```
@@ -627,8 +627,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifers\LogisticRegression;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifers\LogisticRegression;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
 ```
@@ -657,11 +657,11 @@ Multiclass neural network model that uses a series of user-defined hidden layers
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\MultiLayerPerceptron;
-use Rubix\Engine\NeuralNet\Layers\Dense;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Metrics\Validation\MCC;
+use Rubix\ML\Classifiers\MultiLayerPerceptron;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Metrics\Validation\MCC;
 
 $hidden = [
 	new Dense(10, new ELU()),
@@ -687,7 +687,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\NaiveBayes;
+use Rubix\ML\Classifiers\NaiveBayes;
 
 $estimator = new NaiveBayes();
 ```
@@ -710,7 +710,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\RandomForest;
 
 $estimator = new RandomForest(100, 0.2, 5, 3);
 ```
@@ -734,8 +734,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\SoftmaxClassifier;
-use Rubix\Engine\NeuralNet\Optimizers\Momentum;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
 $estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
 ```
@@ -760,8 +760,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Clusterers\DBSCAN;
-use Rubix\Engine\Metrics\Distance\Manhattan;
+use Rubix\ML\Clusterers\DBSCAN;
+use Rubix\ML\Metrics\Distance\Manhattan;
 
 $estimator = new DBSCAN(4.0, 5, new Manhattan());
 ```
@@ -788,8 +788,8 @@ Clusterer that allows data points to belong to multiple clusters if they fall wi
 
 ##### Example:
 ```php
-use Rubix\Engine\Clusterers\FuzzyCMeans;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Metrics\Distance\Euclidean;
 
 $estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
 
@@ -816,8 +816,8 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 
 ##### Example:
 ```php
-use Rubix\Engine\Clusterers\KMeans;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Metrics\Distance\Euclidean;
 
 $estimator = new KMeans(3, new Euclidean());
 
@@ -844,8 +844,8 @@ A hierarchical clustering technique that uses peak finding to locate the local m
 
 ##### Example:
 ```php
-use Rubix\Engine\Clusterers\MeanShift;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Metrics\Distance\Euclidean;
 
 $estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
 ```
@@ -869,8 +869,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Regressors\DummyRegressor;
-use Rubix\Engine\Tranformers\Strategies\BlurryMean;
+use Rubix\ML\Regressors\DummyRegressor;
+use Rubix\ML\Tranformers\Strategies\BlurryMean;
 
 $estimator = new DummyRegressor(new BlurryMean());
 ```
@@ -891,8 +891,8 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Regressors\KNNRegressor;
-use Rubix\Engine\Metrics\Distance\Minkowski;
+use Rubix\ML\Regressors\KNNRegressor;
+use Rubix\ML\Metrics\Distance\Minkowski;
 
 $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
@@ -921,12 +921,12 @@ A neural network with a continuous output layer suitable for regression problems
 
 ##### Example:
 ```php
-use Rubix\Engine\Regressors\MLPRegressor;
-use Rubix\Engine\NeuralNet\Layers\Dense;
-use Rubix\Engine\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
-use Rubix\Engine\NeuralNet\Optimizers\RMSProp;
-use Rubix\Engine\Metrics\Validation\RSquared;
+use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+use Rubix\ML\Metrics\Validation\RSquared;
 
 $hidden = [
 	new Dense(30, new HyperbolicTangent()),
@@ -958,7 +958,7 @@ A binary tree learning algorithm that minimizes the variance between decision no
 
 ##### Example:
 ```php
-use Rubix\Engine\Regressors\RegressionTree;
+use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new RegressionTree(50, 1);
 
@@ -985,7 +985,7 @@ L2 penalized least squares regression whose predictions are based on the closed-
 
 ##### Example:
 ```php
-use Rubix\Engine\Regressors\Ridge;
+use Rubix\ML\Regressors\Ridge;
 
 $estimator = new Ridge(2.0);
 
@@ -1002,10 +1002,10 @@ A Pipeline is an Estimator that wraps another Estimator with additional function
 
 ##### Example:
 ```php
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Classifiers\SoftmaxClassifier;
-use Rubix\Engine\Transformers\MissingDataImputer;
-use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\ML\Pipeline;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\OneHotEncoder;
 
 $estimator = new Pipeline(new SoftmaxClassifier(200, 50), [
 	new MissingDataImputer(),
@@ -1032,7 +1032,7 @@ The transform method on the Transformer is not meant to be called directly. This
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\ML\Transformers\MinMaxNormalizer;
 
 $transformer = new MinMaxNormalizer();
 
@@ -1053,7 +1053,7 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\DensePolynomialExpander;
+use Rubix\ML\Transformers\DensePolynomialExpander;
 
 $transformer = new DensePolynomialExpander(3);
 ```
@@ -1070,8 +1070,8 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\L1Regularizer;
-use Rubix\Engine\Transformers\L2Regularizer;
+use Rubix\ML\Transformers\L1Regularizer;
+use Rubix\ML\Transformers\L2Regularizer;
 
 $transformer = new L1Regularizer();
 $transformer = new L2Regularizer();
@@ -1089,7 +1089,7 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\ML\Transformers\MinMaxNormalizer;
 
 $transformer = new MinMaxNormalizer();
 ```
@@ -1110,9 +1110,9 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\MissingDataImputer;
-use Rubix\Engine\Transformers\Strategies\BlurryMean;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Transformers\Strategies\PopularityContest;
 
 $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityContest());
 ```
@@ -1129,7 +1129,7 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\NumericStringConverter;
+use Rubix\ML\Transformers\NumericStringConverter;
 
 $transformer = new NumericStringConverter();
 ```
@@ -1148,7 +1148,7 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\OneHotEncoder;
 
 $transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
 ```
@@ -1167,7 +1167,7 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\SparseRandomProjector;
 
 $transformer = new SparseRandomProjector(20);
 ```
@@ -1203,7 +1203,7 @@ A type of feature selector that removes all columns that have a lower variance t
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\VarianceThresholdFilter;
+use Rubix\ML\Transformers\VarianceThresholdFilter;
 
 $transformer = new VarianceThresholdFilter(500);
 ```
@@ -1223,7 +1223,7 @@ This Transformer does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\Engine\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $transformer = new ZScaleStandardizer();
 ```
@@ -1262,8 +1262,8 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\HoldOut;
-use Rubix\Engine\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\Metrics\Validation\Accuracy;
 
 $validator = new HoldOut(new Accuracy(), 0.25);
 ```
@@ -1279,8 +1279,8 @@ K Fold is a technique that splits the training set into K individual sets and fo
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Metrics\Validation\F1Score;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Metrics\Validation\F1Score;
 
 $validator = new KFold(new F1Score(), 5);
 ```
@@ -1315,7 +1315,7 @@ Validation metrics are for evaluating the performance of an Estimator given some
 
 ##### Example:
 ```php
-use Rubix\Engine\Metrics\Validation\Accuracy;
+use Rubix\ML\Metrics\Validation\Accuracy;
 
 $metric =  new Accuracy();
 ```
@@ -1330,9 +1330,9 @@ public generate(Estimator $estimator, Labeled $dataset) : array
 ```
 ##### Example:
 ```php
-use Rubix\Engine\Classifiers\KNearestNeighbors;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\Datasets\Labeled;
 
 ...
 $dataset = new Labeled($samples, $labels);
@@ -1394,9 +1394,9 @@ A Report that aggregates the results of multiple reports.
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\Reports\AggregateReport;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 
 $report = new AggregateReport([
 	new ConfusionMatrix(),
@@ -1413,7 +1413,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 
 $report = new ClassificationReport();
 ```
@@ -1429,7 +1429,7 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
 $report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
 ```
@@ -1444,7 +1444,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\Reports\ContingencyTable;
+use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
 $report = new ContingencyTable();
 ```
@@ -1458,7 +1458,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 
 $report = new ResidualAnalysis();
 ```
@@ -1484,12 +1484,12 @@ Grid Search is an algorithm that optimizes hyperparameter selection. From the us
 
 ##### Example:
 ```php
-use Rubix\Engine\GridSearch;
-use Rubix\Engine\Classifiers\KNearestNeighbors;
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Metrics\Distance\Manhattan;
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Metrics\Validation\Accuracy;
+use Rubix\ML\GridSearch;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Metrics\Distance\Manhattan;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Metrics\Validation\Accuracy;
 
 $params = [
 	[1, 3, 5, 10, 20], [new Euclidean(), new Manhattan()],
@@ -1514,8 +1514,8 @@ The restore method will return an instantiated model from the save path.
 
 ##### Example:
 ```php
-use Rubix\Engine\PersistentModel;
-use Rubix\Engine\Classifiers\RandomForest;
+use Rubix\ML\PersistentModel;
+use Rubix\ML\Classifiers\RandomForest;
 
 $estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3));
 

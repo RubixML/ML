@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
-use Rubix\Engine\CrossValidation\Reports\Report;
-use Rubix\Engine\CrossValidation\Reports\Regression;
-use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\CrossValidation\Reports\Report;
+use Rubix\ML\CrossValidation\Reports\Regression;
+use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 
 class ResidualAnalysisTest extends TestCase

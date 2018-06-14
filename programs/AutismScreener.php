@@ -2,19 +2,19 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\AdaBoost;
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Classifiers\NaiveBayes;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\Transformers\OneHotEncoder;
-use Rubix\Engine\Transformers\MinMaxNormalizer;
-use Rubix\Engine\Transformers\MissingDataImputer;
-use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\CrossValidation\Reports\AggregateReport;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\Pipeline;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Classifiers\NaiveBayes;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\MinMaxNormalizer;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

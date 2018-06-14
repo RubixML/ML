@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\Engine\CrossValidation\Reports\Report;
-use Rubix\Engine\CrossValidation\Reports\Classification;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\Report;
+use Rubix\ML\CrossValidation\Reports\Classification;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
 class ConfusionMatrixTest extends TestCase

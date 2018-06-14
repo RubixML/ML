@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 class TfIdfTransformer implements Transformer
@@ -17,7 +17,7 @@ class TfIdfTransformer implements Transformer
     /**
      * Calculate the inverse document frequency values for each feature column.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */

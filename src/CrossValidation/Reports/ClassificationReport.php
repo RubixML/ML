@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 class ClassificationReport implements Classification
 {
@@ -11,7 +11,7 @@ class ClassificationReport implements Classification
      * Prepare the classification report. This involves calculating a number of
      * useful metrics on a per outcome basis.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */

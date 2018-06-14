@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
 
 class VarianceThresholdFilter implements Transformer
@@ -48,7 +48,7 @@ class VarianceThresholdFilter implements Transformer
     /**
      * Chose the columns with a variance greater than the given threshold.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void

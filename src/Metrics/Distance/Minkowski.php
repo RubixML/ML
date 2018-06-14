@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Distance;
+namespace Rubix\ML\Metrics\Distance;
 
 class Minkowski implements Distance
 {

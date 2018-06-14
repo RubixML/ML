@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Clusterers;
+namespace Rubix\ML\Clusterers;
 
-use Rubix\Engine\Estimator;
+use Rubix\ML\Estimator;
 
 interface Clusterer extends Estimator
 {

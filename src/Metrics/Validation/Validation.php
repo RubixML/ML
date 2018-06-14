@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
 interface Validation
 {

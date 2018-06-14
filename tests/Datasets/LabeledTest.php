@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use PHPUnit\Framework\TestCase;
 
 class LabeledTest extends TestCase

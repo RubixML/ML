@@ -1,14 +1,14 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\NeuralNet\Layers\Dense;
-use Rubix\Engine\Regressors\MLPRegressor;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use PHPUnit\Framework\TestCase;
 
 class MLPRegressorTest extends TestCase

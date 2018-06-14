@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 interface Classification extends Report
 {
     /**
      * Generate the classification report.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */

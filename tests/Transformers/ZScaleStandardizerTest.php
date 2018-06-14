@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\ZScaleStandardizer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 
 class ZScaleStandardizerTest extends TestCase

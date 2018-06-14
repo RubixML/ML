@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Extractors\Tokenizers\Tokenizer;
-use Rubix\Engine\Extractors\Tokenizers\Whitespace;
+use Rubix\ML\Extractors\Tokenizers\Tokenizer;
+use Rubix\ML\Extractors\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase

@@ -1,12 +1,12 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Regressors\DummyRegressor;
-use Rubix\Engine\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\Regressors\DummyRegressor;
+use Rubix\ML\Transformers\Strategies\BlurryMean;
 use PHPUnit\Framework\TestCase;
 
 class DummyRegressorTest extends TestCase

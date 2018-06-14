@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\RandomCopyPaste;
+use Rubix\ML\Transformers\Strategies\Strategy;
+use Rubix\ML\Transformers\Strategies\RandomCopyPaste;
 use PHPUnit\Framework\TestCase;
 
 class RandomCopyPasteTest extends TestCase

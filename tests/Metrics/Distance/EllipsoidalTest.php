@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Distance\Ellipsoidal;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Ellipsoidal;
+use Rubix\ML\Metrics\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
 class ElliposoidalTest extends TestCase

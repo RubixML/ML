@@ -2,9 +2,9 @@
 
 namespace Rubix\Tests\Helpers;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
 
 class MockRegressor implements Regressor
 {

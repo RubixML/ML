@@ -1,15 +1,15 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\ML;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 
 interface Unsupervised
 {
     /**
      * Train the estimator with an unlabeled dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function train(Dataset $dataset) : void;

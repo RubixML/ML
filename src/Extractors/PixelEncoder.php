@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Extractors;
+namespace Rubix\ML\Extractors;
 
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager as Intervention;

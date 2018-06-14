@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 

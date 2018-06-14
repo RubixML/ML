@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\Clusterer;
 
 class VMeasure implements Clustering
 {
@@ -11,7 +11,7 @@ class VMeasure implements Clustering
      * Calculate the V score of a clustering. V Score is the harmonic mean of
      * homogeneity and completness.
      *
-     * @param  \Rubix\Engine\Clusterers\Clusterer  $estimator
+     * @param  \Rubix\ML\Clusterers\Clusterer  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

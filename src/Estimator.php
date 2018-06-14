@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\ML;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 
 interface Estimator
 {
@@ -14,7 +14,7 @@ interface Estimator
     /**
      * Make a prediction on a dataset of samples.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array;

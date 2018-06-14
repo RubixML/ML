@@ -1,12 +1,12 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
-use Rubix\Engine\Clusterers\DBSCAN;
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
+use Rubix\ML\Clusterers\DBSCAN;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase

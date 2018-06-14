@@ -2,19 +2,19 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\PersistentModel;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\NeuralNet\Layers\Dense;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Transformers\OneHotEncoder;
-use Rubix\Engine\Classifiers\MultiLayerPerceptron;
-use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
-use Rubix\Engine\Transformers\SparseRandomProjector;
-use Rubix\Engine\CrossValidation\Reports\AggregateReport;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\Pipeline;
+use Rubix\ML\PersistentModel;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Classifiers\MultiLayerPerceptron;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

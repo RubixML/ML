@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Distance\Manhattan;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Manhattan;
+use Rubix\ML\Metrics\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
 class ManhattanTest extends TestCase

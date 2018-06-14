@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Datasets;
+namespace Rubix\ML\Datasets;
 
-use Rubix\Engine\Transformers\Transformer;
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -116,7 +116,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Have a transformer transform the dataset.
      *
-     * @param  \Rubix\Engine\Transformers\Transformer  $transformer
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
      * @return void
      */
     public function transform(Transformer $transformer) : void

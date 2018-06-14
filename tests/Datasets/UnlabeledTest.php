@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 
 class UnlabeledTest extends TestCase

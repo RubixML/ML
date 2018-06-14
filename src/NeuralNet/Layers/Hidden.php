@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 interface Hidden extends Layer
 {
     /**
      * Calculate the errors and gradients of the layer for each neuron.
      *
-     * @param  \Rubix\Engine\NerualNet\Layers\Layer  $next
+     * @param  \Rubix\ML\NerualNet\Layers\Layer  $next
      * @return void
      */
     public function back(Layer $next) : void;

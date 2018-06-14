@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 class ZScaleStandardizer implements Transformer
@@ -49,7 +49,7 @@ class ZScaleStandardizer implements Transformer
     /**
      * Calculate the means and standard deviations of the dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void

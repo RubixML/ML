@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
 interface Multiclass extends Classifier
 {

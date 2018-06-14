@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Clusterers;
+namespace Rubix\ML\Clusterers;
 
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -32,7 +32,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
      * The distance function to use when computing the distances between
      * samples.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -73,7 +73,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
     /**
      * @param  int  $c
      * @param  float  $fuzz
-     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
@@ -139,7 +139,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
      * from one of the C centroids, then recompute the centroid coordinate as the
      * mean of the new cluster.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -188,7 +188,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
     /**
      * Make a prediction based on the cluster probabilities.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -214,7 +214,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
     /**
      * Return an array of cluster probabilities for each sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array
@@ -260,7 +260,7 @@ class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
     /**
      * Update the cluster centroids with a new membership matrix.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  array  $memberships
      * @return void
      */

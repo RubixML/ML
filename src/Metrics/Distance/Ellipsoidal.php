@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Distance;
+namespace Rubix\ML\Metrics\Distance;
 
 use MathPHP\LinearAlgebra\Vector;
 use InvalidArgumentException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 
@@ -20,7 +20,7 @@ interface Layer
     /**
      * Initialize the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer
      * @return void
      */
     public function initialize(Layer $previous) : void;

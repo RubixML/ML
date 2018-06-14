@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers\Strategies;
+namespace Rubix\ML\Transformers\Strategies;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 
 interface Strategy
 {

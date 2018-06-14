@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Labeled;
 
 class AggregateReport implements Report
 {
@@ -31,7 +31,7 @@ class AggregateReport implements Report
     /**
      * Generate an aggregated report consisting of 1 or more individual reports.
      *
-     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */
@@ -49,7 +49,7 @@ class AggregateReport implements Report
     /**
      * Add a report to the stack.
      *
-     * @param  \Rubix\Engine\ModelSeletion\Reports\Report  $report
+     * @param  \Rubix\ML\ModelSeletion\Reports\Report  $report
      * @param  mixed  $index
      * @return void
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
 interface Report
 {

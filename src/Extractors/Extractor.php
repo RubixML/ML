@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Extractors;
+namespace Rubix\ML\Extractors;
 
 interface Extractor
 {

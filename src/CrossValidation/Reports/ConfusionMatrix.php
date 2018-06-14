@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 class ConfusionMatrix implements Classification
 {
@@ -28,7 +28,7 @@ class ConfusionMatrix implements Classification
     /**
      * Generate a confusion matrix.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */

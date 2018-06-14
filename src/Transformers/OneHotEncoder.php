@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 
 class OneHotEncoder implements Transformer
 {
@@ -37,7 +37,7 @@ class OneHotEncoder implements Transformer
     /**
      * Build the list of categories.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void

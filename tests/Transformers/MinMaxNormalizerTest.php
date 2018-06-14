@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\MinMaxNormalizer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
 
 class MinMaxMinMaxNormalizerTest extends TestCase

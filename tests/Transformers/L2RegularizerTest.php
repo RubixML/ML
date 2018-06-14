@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\L2Regularizer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Transformers\L2Regularizer;
 use PHPUnit\Framework\TestCase;
 
 class L2RegularizerTest extends TestCase

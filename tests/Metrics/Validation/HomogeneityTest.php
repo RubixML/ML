@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClusterer;
-use Rubix\Engine\Metrics\Validation\Validation;
-use Rubix\Engine\Metrics\Validation\Clustering;
-use Rubix\Engine\Metrics\Validation\Homogeneity;
+use Rubix\ML\Metrics\Validation\Validation;
+use Rubix\ML\Metrics\Validation\Clustering;
+use Rubix\ML\Metrics\Validation\Homogeneity;
 use PHPUnit\Framework\TestCase;
 
 class HomogeneityTest extends TestCase

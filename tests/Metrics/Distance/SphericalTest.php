@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Distance\Spherical;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Spherical;
+use Rubix\ML\Metrics\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
 class SphericalTest extends TestCase

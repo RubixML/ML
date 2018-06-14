@@ -1,9 +1,9 @@
 <?php
 
-use Rubix\Engine\Graph\Grid;
-use Rubix\Engine\Graph\Path;
-use Rubix\Engine\Graph\GraphNode;
-use Rubix\Engine\Metrics\Distance\Manhattan;
+use Rubix\ML\Graph\Grid;
+use Rubix\ML\Graph\Path;
+use Rubix\ML\Graph\GraphNode;
+use Rubix\ML\Metrics\Distance\Manhattan;
 use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase

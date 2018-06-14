@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
@@ -90,7 +90,7 @@ class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
     public function train(Labeled $dataset) : void
@@ -113,7 +113,7 @@ class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -139,7 +139,7 @@ class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array

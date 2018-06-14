@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 
 interface Transformer
 {
@@ -12,7 +12,7 @@ interface Transformer
     const EPSILON = 1e-8;
 
     /**
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void;

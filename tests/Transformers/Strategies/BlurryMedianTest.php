@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Transformers\Strategies\Strategy;
-use Rubix\Engine\Transformers\Strategies\BlurryMedian;
+use Rubix\ML\Transformers\Strategies\Strategy;
+use Rubix\ML\Transformers\Strategies\BlurryMedian;
 use PHPUnit\Framework\TestCase;
 
 class BlurryMedianTest extends TestCase

@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
@@ -24,7 +24,7 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -57,7 +57,7 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Metrics\Distance\Distance  $distanceFunction
+     * @param  \Rubix\ML\Metrics\Distance\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -80,7 +80,7 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
      * Store the sample and outcome arrays. No other work to be done as this is
      * a lazy learning algorithm.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -99,7 +99,7 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -125,7 +125,7 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array

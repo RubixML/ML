@@ -2,16 +2,16 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\CrossValidation\KFold;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Classifiers\DummyClassifier;
-use Rubix\Engine\Classifiers\LogisticRegression;
-use Rubix\Engine\Transformers\SparseRandomProjector;
-use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Pipeline;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

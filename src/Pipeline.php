@@ -1,19 +1,19 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\ML;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Transformers\Transformer;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Transformers\Transformer;
 
 class Pipeline implements Classifier, Clusterer, Regressor, Persistable
 {
     /**
      * The wrapped estimator instance.
      *
-     * @var \Rubix\Engine\Estimator
+     * @var \Rubix\ML\Estimator
      */
     protected $estimator;
 
@@ -28,7 +28,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
     ];
 
     /**
-     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  array  $transformers
      * @return void
      */
@@ -44,7 +44,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
     /**
      * Return the underlying model instance.
      *
-     * @return \Rubix\Engine\Estimator
+     * @return \Rubix\ML\Estimator
      */
     public function estimator() : Estimator
     {
@@ -55,7 +55,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
      * Run the training dataset through all transformers in order and use the
      * transformed dataset to train the estimator.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function train(Dataset $dataset) : void
@@ -72,7 +72,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
     /**
      * Preoprecess the sample dataset and make a prediction.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -85,7 +85,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
     /**
      * Add a transformer middleware to the pipeline.
      *
-     * @param  \Rubix\Engine\Transformers\Transformer  $transformer
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
      * @return self
      */
     public function addTransformer(Transformer $transformer) : self
@@ -98,7 +98,7 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
     /**
      * Run the transformer middleware over a dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function preprocess(Dataset $dataset) : void

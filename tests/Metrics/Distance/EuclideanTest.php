@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Distance\Euclidean;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Metrics\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
 class EuclideanTest extends TestCase

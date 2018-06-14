@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine;
+namespace Rubix\ML;
 
-use Rubix\Engine\Persistable;
+use Rubix\ML\Persistable;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -37,7 +37,7 @@ class PersistentModel
     }
 
     /**
-     * @param  \Rubix\Engine\Persistable  $model
+     * @param  \Rubix\ML\Persistable  $model
      * @return void
      */
     public function __construct(Persistable $model)

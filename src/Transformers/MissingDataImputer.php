@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Transformers\Strategies\Continuous;
-use Rubix\Engine\Transformers\Strategies\BlurryMean;
-use Rubix\Engine\Transformers\Strategies\Categorical;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Transformers\Strategies\Continuous;
+use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Transformers\Strategies\Categorical;
+use Rubix\ML\Transformers\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class MissingDataImputer implements Transformer
@@ -21,14 +21,14 @@ class MissingDataImputer implements Transformer
     /**
      * The imputer to use when imputing continuous values.
      *
-     * @var \Rubix\Engine\Strategies\Continuous
+     * @var \Rubix\ML\Strategies\Continuous
      */
     protected $continuous;
 
     /**
      * The imputer to use when imputing categorical values.
      *
-     * @var \Rubix\Engine\Strategies\Categorical
+     * @var \Rubix\ML\Strategies\Categorical
      */
     protected $categorical;
 
@@ -43,8 +43,8 @@ class MissingDataImputer implements Transformer
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\Engine\Strategies\Continuous|null  $continuous
-     * @param  \Rubix\Engine\Strategies\Categorical|null  $categorical
+     * @param  \Rubix\ML\Strategies\Continuous|null  $continuous
+     * @param  \Rubix\ML\Strategies\Categorical|null  $categorical
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -70,7 +70,7 @@ class MissingDataImputer implements Transformer
     }
 
     /**
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void

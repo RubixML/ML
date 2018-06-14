@@ -1,10 +1,10 @@
 <?php
 
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\Engine\Metrics\Validation\Accuracy;
-use Rubix\Engine\Metrics\Validation\Validation;
-use Rubix\Engine\Metrics\Validation\Classification;
+use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\Metrics\Validation\Validation;
+use Rubix\ML\Metrics\Validation\Classification;
 use PHPUnit\Framework\TestCase;
 
 class AccuracyTest extends TestCase

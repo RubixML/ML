@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Extractors\Extractor;
-use Rubix\Engine\Extractors\PixelEncoder;
+use Rubix\ML\Extractors\Extractor;
+use Rubix\ML\Extractors\PixelEncoder;
 use PHPUnit\Framework\TestCase;
 
 class PixelEncoderTest extends TestCase

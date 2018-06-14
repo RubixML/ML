@@ -2,9 +2,9 @@
 
 namespace Rubix\Tests\Helpers;
 
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\Clusterer;
 
 class MockClusterer implements Clusterer
 {

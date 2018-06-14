@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Extractors\Tokenizers\Word;
-use Rubix\Engine\Extractors\Tokenizers\Tokenizer;
+use Rubix\ML\Extractors\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Tokenizer;
 
 use PHPUnit\Framework\TestCase;
 

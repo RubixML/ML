@@ -1,8 +1,8 @@
 <?php
 
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Transformers\Transformer;
-use Rubix\Engine\Transformers\TfIdfTransformer;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Transformers\TfIdfTransformer;
 use PHPUnit\Framework\TestCase;
 
 class TfIdfTransformerTest extends TestCase

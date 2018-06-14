@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
@@ -154,7 +154,7 @@ class AdaBoost implements Supervised, Binary, Persistable
      * to each one and re-weighting the training data according to reflect how
      * difficult a particular sample is to classify.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -211,7 +211,7 @@ class AdaBoost implements Supervised, Binary, Persistable
      * Make a prediction by consulting the ensemble of experts and chosing the class
      * label closest to the value of the weighted sum of each expert's prediction.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -238,7 +238,7 @@ class AdaBoost implements Supervised, Binary, Persistable
     /**
      * Generate a random weighted subset with replacement.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return self
      */

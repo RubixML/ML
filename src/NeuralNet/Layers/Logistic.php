@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Layers;
+namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
 class Logistic implements Output, Parametric
@@ -21,7 +21,7 @@ class Logistic implements Output, Parametric
     /**
      * The function that outputs the activation or implulse of each neuron.
      *
-     * @var \Rubix\Engine\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
 
@@ -35,7 +35,7 @@ class Logistic implements Output, Parametric
     /**
      * The previous layer in the network.
      *
-     * @var \Rubix\Engine\NeuralNet\Layers\Layer
+     * @var \Rubix\ML\NeuralNet\Layers\Layer
      */
     protected $previous;
 
@@ -138,7 +138,7 @@ class Logistic implements Output, Parametric
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Layer  $previous
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void

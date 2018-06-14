@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Engine\Transformers;
+namespace Rubix\ML\Transformers;
 
-use Rubix\Engine\Datasets\Dataset;
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 class MinMaxNormalizer implements Transformer
@@ -28,7 +28,7 @@ class MinMaxNormalizer implements Transformer
     /**
      * Calculate the minimums and maximums of each feature column in the dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */

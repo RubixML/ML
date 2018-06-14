@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Extractors\Extractor;
-use Rubix\Engine\Extractors\TokenCountVectorizer;
+use Rubix\ML\Extractors\Extractor;
+use Rubix\ML\Extractors\TokenCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
 class TokenCountVectorizerTest extends TestCase

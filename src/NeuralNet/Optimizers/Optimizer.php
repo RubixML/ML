@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
-use Rubix\Engine\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 
 interface Optimizer
 {
@@ -12,7 +12,7 @@ interface Optimizer
     /**
      * Initialize the optimizer for a particular layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Network  $network
+     * @param  \Rubix\ML\NeuralNet\Network  $network
      * @return void
      */
     public function initialize(Parametric $layer) : void;
@@ -20,7 +20,7 @@ interface Optimizer
     /**
      * Calculate the step for a parametric layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
      * @return \MathPHP\LinearAlgebra\Matrix
      */
     public function step(Parametric $layer) : Matrix;

@@ -1,12 +1,12 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\DummyClassifier;
-use Rubix\Engine\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
 class DummyClassifierTest extends TestCase

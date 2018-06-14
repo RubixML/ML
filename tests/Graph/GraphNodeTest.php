@@ -1,6 +1,6 @@
 <?php
 
-use Rubix\Engine\Graph\GraphNode;
+use Rubix\ML\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class GraphNodeTest extends TestCase

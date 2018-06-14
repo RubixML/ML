@@ -2,15 +2,15 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\NeuralNet\Layers\Dense;
-use Rubix\Engine\Regressors\MLPRegressor;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\Metrics\Validation\RSquared;
-use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
-use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\Pipeline;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Metrics\Validation\RSquared;
+use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

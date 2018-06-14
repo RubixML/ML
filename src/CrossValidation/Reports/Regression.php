@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
 
 interface Regression extends Report
 {
     /**
      * Generate the regression report.
      *
-     * @param  \Rubix\Engine\Regressors\Regressor  $estimator
+     * @param  \Rubix\ML\Regressors\Regressor  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */

@@ -1,13 +1,13 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Binary;
-use Rubix\Engine\Classifiers\AdaBoost;
-use Rubix\Engine\Classifiers\Classifier;
-use Rubix\Engine\Classifiers\DecisionTree;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Binary;
+use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Classifiers\DecisionTree;
 use PHPUnit\Framework\TestCase;
 
 class AdaBoostTest extends TestCase

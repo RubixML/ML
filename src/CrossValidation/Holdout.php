@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\CrossValidation;
+namespace Rubix\ML\CrossValidation;
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Metrics\Validation\Validation;
+use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Metrics\Validation\Validation;
 use InvalidArgumentException;
 
 class Holdout implements Validator
@@ -12,7 +12,7 @@ class Holdout implements Validator
     /**
      * The metric used to score the predictions.
      *
-     * @var \Rubix\Engine\Metrics\Validation
+     * @var \Rubix\ML\Metrics\Validation
      */
     protected $metric;
 
@@ -24,7 +24,7 @@ class Holdout implements Validator
     protected $ratio;
 
     /**
-     * @param  \Rubix\Engine\Metrics\Validation\Validation  $metric
+     * @param  \Rubix\ML\Metrics\Validation\Validation  $metric
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
@@ -45,8 +45,8 @@ class Holdout implements Validator
      * one fold for testing and the rest to train the model. Return the average
      * score for each training round.
      *
-     * @param  \Rubix\Engine\Estimator\Estimator  $estimator
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Estimator\Estimator  $estimator
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return float
      */
     public function score(Estimator $estimator, Labeled $dataset) : float

@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Graph\Path;
-use Rubix\Engine\Graph\GraphNode;
+use Rubix\ML\Graph\Path;
+use Rubix\ML\Graph\GraphNode;
 use PHPUnit\Framework\TestCase;
 
 class PathTest extends TestCase

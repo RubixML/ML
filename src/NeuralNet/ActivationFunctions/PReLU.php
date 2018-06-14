@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\ActivationFunctions;
+namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;

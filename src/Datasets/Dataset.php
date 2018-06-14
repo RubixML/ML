@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Engine\Datasets;
+namespace Rubix\ML\Datasets;
 
 use IteratorAggregate;
 use ArrayAccess;

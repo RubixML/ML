@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Classifiers\Classifier;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\Classifier;
 
 class Informedness implements Classification
 {
@@ -11,7 +11,7 @@ class Informedness implements Classification
      * Calculate the informedness score of the predicted classes. Informedness
      * is determined by recall + specificity - 1.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

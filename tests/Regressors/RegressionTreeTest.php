@@ -1,11 +1,11 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Regressors\RegressionTree;
+use Rubix\ML\Estimator;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Regressor;
+use Rubix\ML\Regressors\RegressionTree;
 use PHPUnit\Framework\TestCase;
 
 class RegressionTreeTest extends TestCase

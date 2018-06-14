@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Engine\Regressors;
+namespace Rubix\ML\Regressors;
 
-use Rubix\Engine\Supervised;
+use Rubix\ML\Supervised;
 use MathPHP\Statistics\Average;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Metrics\Distance\Distance;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
@@ -23,7 +23,7 @@ class KNNRegressor implements Supervised, Regressor
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\Engine\Metrics\Distance\Distance
+     * @var \Rubix\ML\Metrics\Distance\Distance
      */
     protected $distanceFunction;
 
@@ -47,7 +47,7 @@ class KNNRegressor implements Supervised, Regressor
 
     /**
      * @param  int  $k
-     * @param  \Rubix\Engine\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -70,7 +70,7 @@ class KNNRegressor implements Supervised, Regressor
      * Store the sample and outcome arrays. No other work to be done as this is
      * a lazy learning algorithm.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -87,7 +87,7 @@ class KNNRegressor implements Supervised, Regressor
     /**
      * Compute the distances and locate the k nearest neighboring values.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array

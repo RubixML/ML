@@ -1,16 +1,16 @@
 <?php
 
-namespace Rubix\Engine\Metrics\Validation;
+namespace Rubix\ML\Metrics\Validation;
 
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\Clusterer;
 
 class Completeness implements Clustering
 {
     /**
      * Calculate the completeness of a clustering.
      *
-     * @param  \Rubix\Engine\Clusterers\Clusterer  $estimator
+     * @param  \Rubix\ML\Clusterers\Clusterer  $estimator
      * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */

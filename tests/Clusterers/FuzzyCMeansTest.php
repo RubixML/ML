@@ -1,13 +1,13 @@
 <?php
 
-use Rubix\Engine\Estimator;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Unsupervised;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Unlabeled;
-use Rubix\Engine\Clusterers\Clusterer;
-use Rubix\Engine\Clusterers\FuzzyCMeans;
-use Rubix\Engine\Metrics\Distance\Euclidean;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Unsupervised;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Metrics\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class FuzzyCMeansTest extends TestCase

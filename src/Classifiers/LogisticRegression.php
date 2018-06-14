@@ -1,17 +1,17 @@
 <?php
 
-namespace Rubix\Engine\Classifiers;
+namespace Rubix\ML\Classifiers;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Probabilistic;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\NeuralNet\Network;
-use Rubix\Engine\NeuralNet\Layers\Input;
-use Rubix\Engine\NeuralNet\Layers\Logistic;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Logistic;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -27,7 +27,7 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
     /**
      * The gradient descent optimizer.
      *
-     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
@@ -56,13 +56,13 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\Engine\NeuralNet\Network
+     * @param \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 
     /**
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
      * @param  float  $threshold
      * @param  int  $epochs
@@ -108,7 +108,7 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
      * Perform mini-batch gradient descent with given optimizer over the training
      * set and update the input weights accordingly.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
     public function train(Labeled $dataset) : void
@@ -148,7 +148,7 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
      * Feed a sample through the network and make a prediction based on the highest
      * activated output neuron.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -174,7 +174,7 @@ class LogisticRegression implements Supervised, Binary, Probabilistic, Persistab
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function proba(Dataset $samples) : array

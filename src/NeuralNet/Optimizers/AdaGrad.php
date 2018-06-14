@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Engine\NeuralNet\Optimizers;
+namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\Engine\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -43,7 +43,7 @@ class AdaGrad implements Optimizer
     /**
      * Initialize the optimizer for a particular layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
      * @return void
      */
     public function initialize(Parametric $layer) : void
@@ -55,7 +55,7 @@ class AdaGrad implements Optimizer
     /**
      * Calculate the step for a parametric layer.
      *
-     * @param  \Rubix\Engine\NeuralNet\Layers\Parametric  $layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
      * @return \MathPHP\LinearAlgebra\Matrix
      */
     public function step(Parametric $layer) : Matrix

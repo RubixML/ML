@@ -2,17 +2,17 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\Engine\Pipeline;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Metrics\Validation\MCC;
-use Rubix\Engine\CrossValidation\Holdout;
-use Rubix\Engine\Classifiers\RandomForest;
-use Rubix\Engine\Transformers\MissingDataImputer;
-use Rubix\Engine\Transformers\SparseRandomProjector;
-use Rubix\Engine\Transformers\NumericStringConverter;
-use Rubix\Engine\CrossValidation\Reports\AggregateReport;
-use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\Pipeline;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\CrossValidation\Holdout;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

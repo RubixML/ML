@@ -1,7 +1,7 @@
 <?php
 
-use Rubix\Engine\Metrics\Distance\Minkowski;
-use Rubix\Engine\Metrics\Distance\Distance;
+use Rubix\ML\Metrics\Distance\Minkowski;
+use Rubix\ML\Metrics\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
 class MinkowskiTest extends TestCase

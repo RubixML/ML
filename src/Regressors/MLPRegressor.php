@@ -1,19 +1,19 @@
 <?php
 
-namespace Rubix\Engine\Regressors;
+namespace Rubix\ML\Regressors;
 
-use Rubix\Engine\Supervised;
-use Rubix\Engine\Persistable;
-use Rubix\Engine\Datasets\Dataset;
-use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\NeuralNet\Network;
-use Rubix\Engine\NeuralNet\Layers\Input;
-use Rubix\Engine\NeuralNet\Layers\Hidden;
-use Rubix\Engine\NeuralNet\Optimizers\Adam;
-use Rubix\Engine\NeuralNet\Layers\Continuous;
-use Rubix\Engine\Metrics\Validation\Regression;
-use Rubix\Engine\NeuralNet\Optimizers\Optimizer;
-use Rubix\Engine\Metrics\Validation\MeanSquaredError;
+use Rubix\ML\Supervised;
+use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\Metrics\Validation\Regression;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\Metrics\Validation\MeanSquaredError;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -36,7 +36,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
     /**
      * The gradient descent optimizer used to train the network.
      *
-     * @var \Rubix\Engine\NeuralNet\Optimizers\Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
 
@@ -57,7 +57,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
     /**
      * The regression metric used to validate the performance of the model.
      *
-     * @var \Rubix\Engine\Metrics\Validation\Regression
+     * @var \Rubix\ML\Metrics\Validation\Regression
      */
     protected $metric;
 
@@ -88,7 +88,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\Engine\NeuralNet\Network
+     * @param \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 
@@ -104,9 +104,9 @@ class MLPRegressor implements Supervised, Regressor, Persistable
     /**
      * @param  array  $hidden
      * @param  int  $batchSize
-     * @param  \Rubix\Engine\NeuralNet\Optimizers\Optimizer|null  $optimizer
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\Engine\Metrics\Validation\Regression|null  $metric
+     * @param  \Rubix\ML\Metrics\Validation\Regression|null  $metric
      * @param  float $ratio
      * @param  int  $window
      * @param  int  $epochs
@@ -171,7 +171,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param  \Rubix\Engine\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -235,7 +235,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
      * Feed a sample through the network and make a prediction based on the highest
      * activated output neuron.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
