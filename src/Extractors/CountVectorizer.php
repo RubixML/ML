@@ -7,7 +7,7 @@ use Rubix\ML\Extractors\Tokenizers\Tokenizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class TokenCountVectorizer implements Extractor
+class CountVectorizer implements Extractor
 {
     /**
      * The maximum size of the vocabulary.

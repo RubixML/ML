@@ -1,10 +1,10 @@
 <?php
 
 use Rubix\ML\Extractors\Extractor;
-use Rubix\ML\Extractors\TokenCountVectorizer;
+use Rubix\ML\Extractors\CountVectorizer;
 use PHPUnit\Framework\TestCase;
 
-class TokenCountVectorizerTest extends TestCase
+class CountVectorizerTest extends TestCase
 {
     protected $extractor;
 
@@ -18,12 +18,12 @@ class TokenCountVectorizerTest extends TestCase
             'with an ubrella',
         ];
 
-        $this->extractor = new TokenCountVectorizer();
+        $this->extractor = new CountVectorizer();
     }
 
     public function test_build_count_vectorizer()
     {
-        $this->assertInstanceOf(TokenCountVectorizer::class, $this->extractor);
+        $this->assertInstanceOf(CountVectorizer::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 

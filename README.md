@@ -19,8 +19,8 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
 	- [Feature Extractors](#feature-extractors)
+    	- [Count Vectorizer](#count-vectorizer)
 		- [Pixel Encoder](#pixel-encoder)
-		- [Token Count Vectorizer](#token-count-vectorizer)
 	- [Estimators](#estimators)
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
@@ -95,7 +95,8 @@ composer require rubix/ml
 ```
 
 ## Requirements
-- PHP CLI 7.1.3 or above
+- [PHP](https://php.net) CLI 7.1.3 or above
+- [GD extension](https://php.net/manual/en/book.image.php) for Image Vectorization
 
 ## An Introduction to Machine Learning in Rubix
 Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of learning techniques that Rubix offers out of the box, **Supervised** and **Unsupervised**.
@@ -387,12 +388,12 @@ public extract(array $samples) : array
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\TokenCountVectorizer;
+use Rubix\ML\Extractors\CountVectorizer;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Labeled;
 
 ...
-$estractor = new TokenCountVectorizer(5000);
+$estractor = new CountVectorizer(5000);
 
 $extractor->fit($samples);
 
@@ -403,28 +404,8 @@ $dataset = new Unlabeled($matrix);
 $dataset = new Labeled($matrix, $labels);
 ```
 
----
-#### Pixel Encoder
-Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically.
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| rgb | True | bool | True to use RGB color channel data and False to use Greyscale. |
-
-##### Additional Methods:
-This Extractor does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\Extractors\PixelEncoder;
-
-$extractor = new PixelEncoder([28, 28], false);
-```
-
-#### Token Count Vectorizer
-Word counts are often used to represent natural language as numerical vectors. The Token Count Vectorizer builds a vocabulary from the training samples and transforms text into sparse vectors consisting of the number of times a vocabulary words appears in the sample.
+#### Count Vectorizer
+Word counts are often used to represent natural language as numerical vectors. The Count Vectorizer builds a vocabulary from the training samples and transforms text into sparse vectors consisting of the number of times a vocabulary words appears in the sample.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -446,16 +427,35 @@ Word counts are often used to represent natural language as numerical vectors. T
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\TokenCountVectorizer;
+use Rubix\ML\Extractors\CountVectorizer;
 use Rubix\ML\Extractors\Tokenizers\Word;
 
-$extractor = new TokenCountVectorizer(5000, new Word());
+$extractor = new CountVectorizer(5000, new Word());
 
 // Return the vocabulary of the vectorizer
 $extractor->vocabulary();
 
 // Return the size of the fitted vocabulary
 $extractor->size();
+```
+
+#### Pixel Encoder
+Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| rgb | True | bool | True to use RGB color channel data and False to use Greyscale. |
+
+##### Additional Methods:
+This Extractor does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Extractors\PixelEncoder;
+
+$extractor = new PixelEncoder([28, 28], false);
 ```
 
 ---
