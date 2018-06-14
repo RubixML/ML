@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\Engine\Metrics\Validation\F1Score;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Classification;
@@ -11,6 +13,13 @@ class F1ScoreTest extends TestCase
 
     public function setUp()
     {
+        $this->testing = new Labeled([[], [], [], [], []],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+
+        $this->estimator = new MockClassifier([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        ]);
+
         $this->metric = new F1Score();
     }
 
@@ -23,11 +32,7 @@ class F1ScoreTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $score = $this->metric->score($predictions, $labels);
+        $score = $this->metric->score($this->estimator, $this->testing);
 
         $this->assertEquals(0.5833333404166667, $score);
     }

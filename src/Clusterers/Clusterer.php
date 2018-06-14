@@ -2,7 +2,9 @@
 
 namespace Rubix\Engine\Clusterers;
 
-interface Clusterer
+use Rubix\Engine\Estimator;
+
+interface Clusterer extends Estimator
 {
     //
 }

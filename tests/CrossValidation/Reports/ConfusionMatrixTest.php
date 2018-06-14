@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\CrossValidation\Reports\Classification;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
@@ -11,6 +13,13 @@ class ConfusionMatrixTest extends TestCase
 
     public function setUp()
     {
+        $this->testing = new Labeled([[], [], [], [], []],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+
+        $this->estimator = new MockClassifier([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        ]);
+
         $this->report = new ConfusionMatrix(['wolf', 'lamb']);
     }
 
@@ -23,11 +32,7 @@ class ConfusionMatrixTest extends TestCase
 
     public function test_generate_report()
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $matrix = [
+        $actual = [
             'wolf' => [
                 'wolf' => 2,
                 'lamb' => 1,
@@ -38,8 +43,8 @@ class ConfusionMatrixTest extends TestCase
             ],
         ];
 
-        $report = $this->report->generate($predictions, $labels);
+        $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($matrix, $report);
+        $this->assertEquals($actual, $result);
     }
 }

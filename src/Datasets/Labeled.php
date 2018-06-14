@@ -73,6 +73,23 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Return a label given by row index.
+     *
+     * @param  int  $index
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    public function label(int $index)
+    {
+        if (!isset($this->labels[$index])) {
+            throw new \InvalidArgumentException('Row at offset '
+                . (string) $index . ' does not exist.');
+        }
+
+        return $this->labels[$index];
+    }
+
+    /**
      * The set of all possible labeled outcomes.
      *
      * @return array

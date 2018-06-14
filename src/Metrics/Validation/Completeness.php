@@ -2,26 +2,31 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Clusterers\Clusterer;
+
 class Completeness implements Clustering
 {
     /**
      * Calculate the completeness of a clustering.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Clusterers\Clusterer  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Clusterer $estimator, Labeled $testing) : float
     {
+        $predictions = $estimator->predict($testing);
+
         $clusters = array_unique($predictions);
 
         $table = [];
 
-        foreach (array_unique($labels) as $class) {
+        foreach ($testing->possibleOutcomes() as $class) {
             $table[$class] = array_fill_keys($clusters, 0);
         }
 
-        foreach ($labels as $i => $class) {
+        foreach ($testing->labels() as $i => $class) {
             $table[$class][$predictions[$i]] += 1;
         }
 

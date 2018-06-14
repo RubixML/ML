@@ -4,7 +4,7 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Labeled;
 
-interface Supervised extends Estimator
+interface Supervised
 {
     /**
      * Train the estimator with a labeled dataset.

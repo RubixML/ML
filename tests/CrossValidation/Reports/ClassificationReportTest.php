@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\CrossValidation\Reports\Classification;
 use Rubix\Engine\CrossValidation\Reports\ClassificationReport;
@@ -11,6 +13,13 @@ class ClassificationReportTest extends TestCase
 
     public function setUp()
     {
+        $this->testing = new Labeled([[], [], [], [], []],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+
+        $this->estimator = new MockClassifier([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        ]);
+
         $this->report = new ClassificationReport();
     }
 
@@ -23,11 +32,7 @@ class ClassificationReportTest extends TestCase
 
     public function test_generate_report()
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $result = [
+        $actual = [
             'overall' => [
                 'average' => [
                     'accuracy' => 0.6,
@@ -82,8 +87,8 @@ class ClassificationReportTest extends TestCase
             ],
         ];
 
-        $report = $this->report->generate($predictions, $labels);
+        $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($result, $report);
+        $this->assertEquals($actual, $result);
     }
 }

@@ -8,7 +8,6 @@ use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\Regressors\MLPRegressor;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Metrics\Validation\RSquared;
-use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
@@ -46,9 +45,13 @@ $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
         new NumericStringConverter(),
     ]);
 
-$report = new ReportGenerator(new ResidualAnalysis(), 0.2);
+$report = new ResidualAnalysis();
 
-var_dump($report->generate($estimator, $dataset));
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+
+$estimator->train($training);
+
+var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->progress());
 

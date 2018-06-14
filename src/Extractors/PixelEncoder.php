@@ -7,7 +7,7 @@ use Intervention\Image\ImageManager as Intervention;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ImageScanner implements Extractor
+class PixelEncoder implements Extractor
 {
     const DRIVER = 'gd';
 

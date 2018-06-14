@@ -207,7 +207,7 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
                 }
             }
 
-            $score = $this->scoreEpoch($testing);
+            $score = $this->metric->score($this, $testing);
 
             $this->progress[$epoch] = $score;
 
@@ -271,20 +271,5 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
         $this->network->feed($samples->samples());
 
         return $this->network->output()->activations();
-    }
-
-    /**
-     * Score the training round with supplied classification metric.
-     *
-     * @param  \Rubix\Engine\Dataset\Labeled  $dataset
-     * @return float
-     */
-    protected function scoreEpoch(Labeled $dataset) : float
-    {
-        $predictions = $this->predict($dataset);
-
-        $score = $this->metric->score($predictions, $dataset->labels());
-
-        return $score;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Rubix\Engine\Regressors;
 
-interface Regressor
+use Rubix\Engine\Estimator;
+
+interface Regressor extends Estimator
 {
     //
 }

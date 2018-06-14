@@ -2,23 +2,26 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Regressors\Regressor;
+
 class MeanAbsoluteError implements Regression
 {
     /**
      * Calculate the negative mean absolute error of the predictions.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Regressors\Regressor  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Regressor $estimator, Labeled $testing) : float
     {
         $error = 0.0;
 
-        foreach ($predictions as $i => $outcome) {
-            $error += abs($labels[$i] - $outcome);
+        foreach ($estimator->predict($testing) as $i => $prediction) {
+            $error += abs($testing->label($i) - $prediction);
         }
 
-        return -($error / (count($predictions) + self::EPSILON));
+        return -($error / ($testing->numRows() + self::EPSILON));
     }
 }

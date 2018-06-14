@@ -1,6 +1,6 @@
 {
     "name": "rubix/engine",
-    "description": "A library for building intelligent systems with PHP.",
+    "description": "Rubix is a library that lets you build intelligent programs that learn from data in PHP.",
     "license": "MIT",
     "keywords": ["data", "science", "mining", "machine", "learning", "predictive", "modeling", "ai", "classification", "regression", "clustering"],
     "authors": [
@@ -21,6 +21,11 @@
     "autoload": {
         "psr-4": {
             "Rubix\\Engine\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rubix\\Tests\\": "tests/"
         }
     },
     "config": {

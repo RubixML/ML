@@ -2,18 +2,25 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
+
 class ClassificationReport implements Classification
 {
     /**
      * Prepare the classification report. This involves calculating a number of
      * useful metrics on a per outcome basis.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(Classifier $estimator, Labeled $testing) : array
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         $classes = array_unique(array_merge($predictions, $labels));
 
         $table = $truePositives = $trueNegatives

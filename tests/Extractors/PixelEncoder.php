@@ -1,10 +1,10 @@
 <?php
 
 use Rubix\Engine\Extractors\Extractor;
-use Rubix\Engine\Extractors\ImageScanner;
+use Rubix\Engine\Extractors\PixelEncoder;
 use PHPUnit\Framework\TestCase;
 
-class ImageScannerTest extends TestCase
+class PixelEncoderTest extends TestCase
 {
     protected $extractor;
 
@@ -16,12 +16,12 @@ class ImageScannerTest extends TestCase
             imagecreatefromjpeg(__DIR__ . '/space.jpg'),
         ];
 
-        $this->extractor = new ImageScanner([3, 3], true);
+        $this->extractor = new PixelEncoder([3, 3], true);
     }
 
     public function test_build_count_vectorizer()
     {
-        $this->assertInstanceOf(ImageScanner::class, $this->extractor);
+        $this->assertInstanceOf(PixelEncoder::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 

@@ -2,6 +2,9 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
+use Rubix\Engine\Estimator;
+use Rubix\Engine\Datasets\Labeled;
+
 class AggregateReport implements Report
 {
     /**
@@ -28,16 +31,16 @@ class AggregateReport implements Report
     /**
      * Generate an aggregated report consisting of 1 or more individual reports.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Estimator  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(Estimator $estimator, Labeled $testing) : array
     {
         $reports = [];
 
         foreach ($this->reports as $index => $report) {
-            $reports[$index] = $report->generate($predictions, $labels);
+            $reports[$index] = $report->generate($estimator, clone $testing);
         }
 
         return $reports;

@@ -3,9 +3,12 @@
 namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Dataset;
+use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\Engine\Regressors\Regressor;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Transformers\Transformer;
 
-class Pipeline implements Estimator, Persistable
+class Pipeline implements Classifier, Clusterer, Regressor, Persistable
 {
     /**
      * The wrapped estimator instance.

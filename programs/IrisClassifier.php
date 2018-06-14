@@ -7,7 +7,6 @@ use Rubix\Engine\Datasets\Labeled;
 use Rubix\Engine\CrossValidation\KFold;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Classifiers\SoftmaxClassifier;
-use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
@@ -16,7 +15,7 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Iris Classifier using K Nearest Neighbors           ║' . "\n";
+echo '║ Iris Classifier using Softmax Classifier            ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -33,16 +32,20 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new SoftmaxClassifier(10, new Adam(0.001), 1e-4, 1e-4, 300), [
+$estimator = new Pipeline(new SoftmaxClassifier(10, new Adam(0.001), 1e-4, 1e-5, 300), [
     new NumericStringConverter(),
 ]);
 
-$report = new ReportGenerator(new AggregateReport([
+$report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]), 0.1);
+]);
 
-var_dump($report->generate($estimator, $dataset));
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+
+$estimator->train($training);
+
+var_dump($report->generate($estimator, $testing));
 
 $estimator->train($dataset->randomize()->leave(5));
 

@@ -205,7 +205,7 @@ class MLPRegressor implements Supervised, Regressor, Persistable
                 }
             }
 
-            $score = $this->scoreEpoch($testing);
+            $score = $this->metric->score($this, $testing);
 
             $this->progress[$epoch] = $score;
 
@@ -249,20 +249,5 @@ class MLPRegressor implements Supervised, Regressor, Persistable
         };
 
         return $predictions;
-    }
-
-    /**
-     * Score the training round with supplied regression metric.
-     *
-     * @param  \Rubix\Engine\Dataset\Labeled  $dataset
-     * @return float
-     */
-    protected function scoreEpoch(Labeled $dataset) : float
-    {
-        $predictions = $this->predict($dataset);
-
-        $score = $this->metric->score($predictions, $dataset->labels());
-
-        return $score;
     }
 }

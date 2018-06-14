@@ -19,6 +19,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
 	- [Feature Extractors](#feature-extractors)
+		- [Pixel Encoder](#pixel-encoder)
 		- [Token Count Vectorizer](#token-count-vectorizer)
 	- [Estimators](#estimators)
 		- [Classifiers](#classifiers)
@@ -74,13 +75,12 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
                 - Completeness
                 - Homogeneity
                 - V Measure
-		- [Report Generator](#report-generator)
-			- [Reports](#reports)
-				- [Aggregate Report](#aggregate-report)
-				- [Classification Report](#classification-report)
-				- [Confusion Matrix](#confusion-matrix)
-				- [Contingency Table](#contingency-table)
-				- [Residual Analysis](#residual-analysis)
+		- [Reports](#reports)
+			- [Aggregate Report](#aggregate-report)
+			- [Classification Report](#classification-report)
+			- [Confusion Matrix](#confusion-matrix)
+			- [Contingency Table](#contingency-table)
+			- [Residual Analysis](#residual-analysis)
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
 	- [Model Persistence](#model-persistence)
@@ -363,8 +363,12 @@ public extract(array $samples) : array
 
 ##### Example:
 ```php
+use Rubix\Engine\Extractors\TokenCountVectorizer;
 use Rubix\Engine\Datasets\Unlabeled;
 use Rubix\Engine\Datasets\Labeled;
+
+...
+$estractor = new TokenCountVectorizer(5000);
 
 $extractor->fit($samples);
 
@@ -376,6 +380,25 @@ $dataset = new Labeled($matrix, $labels);
 ```
 
 ---
+#### Pixel Encoder
+Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel values. Scaling and cropping is handled automatically.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| rgb | True | bool | Should we extract RGB color channel data or false for greyscale. |
+
+##### Additional Methods:
+This Extractor does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\Engine\Extractors\PixelEncoder;
+
+$extractor = new PixelEncoder([28, 28], false);
+```
+
 #### Token Count Vectorizer
 Word counts are often used to represent natural language as numerical vectors. The Token Count Vectorizer builds a vocabulary from the training samples and transforms text into sparse vectors consisting of the number of times a vocabulary words appears in the sample.
 
@@ -427,6 +450,23 @@ public predict(Dataset $samples) : array
 The return array of a prediction is 0 indexed containing the predicted values of the supplied Dataset object in the same order.
 
 ##### Example:
+```php
+use Rubix\Engine\Classifiers\RandomForest;
+use Rubix\Engine\Datasets\Labeled;
+
+...
+$dataset = new Labeled($samples, $labels);
+
+$estimator = new RandomForest(200, 0.5, 5, 3);
+
+$estimator->train($dataset);
+
+$result = $estimator->predict($dataset->head(3));
+
+var_dump($result);
+```
+
+##### Output:
 ```sh
 array(3) {
 	[0] => 'married',
@@ -442,6 +482,13 @@ public proba(Dataset $samples) : array
 ```
 
 ##### Example:
+```php
+$result = $estimator->proba($dataset->head(2));  
+
+var_dump($result);
+```
+
+##### Output:
 ```sh
 array(3) {
 	[0] => array(2) {
@@ -452,7 +499,6 @@ array(3) {
 		['married'] => 0.200,
 		['divorced'] => 0.800,
 	}
-	...
 }
 ```
 ---
@@ -1275,14 +1321,8 @@ $metric =  new Accuracy();
 ```
 
 ---
-#### Report Generator
-The Report Generator is a type of Validator that ouputs a report instead of a scalar score. To generate a report, simply pass an Estimator and a Labeled Dataset to the Report Generator's `generate()` method. The output of a report can be used to generate visualizations of the performance of a prototype.
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| report | None | object | The report to generate. |
-| ratio | 0.2 | float | The ratio of data used to generate the report. |
+### Reports
+Reports offer deeper insight into the performance of an Estimator than a standard scalar metric. To generate a report, pass an Estimator and a Labeled Dataset to the Report's `generate()` method. The output is an array that can be used to generate visualizations or other useful statistics.
 
 To generate a report:
 ```php
@@ -1290,17 +1330,60 @@ public generate(Estimator $estimator, Labeled $dataset) : array
 ```
 ##### Example:
 ```php
-use Rubix\Engine\CorssValidation\ReportGenerator;
+use Rubix\Engine\Classifiers\KNearestNeighbors;
 use Rubix\Engine\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\Engine\Datasets\Labeled;
 
-$report = new ReportGenerator(new ConfusionMatrix(), 0.4);
+...
+$dataset = new Labeled($samples, $labels);
 
-$results = $report->generate($estimator, $dataset);
+list($training, $testing) = $dataset->randomize()->split(0.8);
+
+$estimator = new KNearestNeighbors(7);
+
+$report = new ConfusionMatrix(['Iris-versicolor', 'Iris-virginica', 'Iris-setosa']);
+
+$estimator->train($training);
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+  array(3) {
+    ["Iris-versicolor"]=>
+    array(3) {
+      ["Iris-versicolor"]=>
+      int(9)
+      ["Iris-virginica"]=>
+      int(2)
+      ["Iris-setosa"]=>
+      int(0)
+    }
+    ["Iris-virginica"]=>
+    array(3) {
+      ["Iris-versicolor"]=>
+      int(1)
+      ["Iris-virginica"]=>
+      int(8)
+      ["Iris-setosa"]=>
+      int(0)
+    }
+    ["Iris-setosa"]=>
+    array(3) {
+      ["Iris-versicolor"]=>
+      int(0)
+      ["Iris-virginica"]=>
+      int(0)
+      ["Iris-setosa"]=>
+      int(10)
+    }
+  }
 ```
 
 ---
-#### Reports
-
 #### Aggregate Report
 A Report that aggregates the results of multiple reports.
 

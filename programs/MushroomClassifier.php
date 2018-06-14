@@ -9,7 +9,6 @@ use Rubix\Engine\NeuralNet\Layers\Dense;
 use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\NeuralNet\Optimizers\Adam;
 use Rubix\Engine\Transformers\OneHotEncoder;
-use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Classifiers\MultiLayerPerceptron;
 use Rubix\Engine\NeuralNet\ActivationFunctions\ELU;
 use Rubix\Engine\Transformers\SparseRandomProjector;
@@ -55,14 +54,18 @@ $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
         new SparseRandomProjector(30),
     ]);
 
-$report = new ReportGenerator(new AggregateReport([
+$report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]), 0.2);
+]);
+
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+
+$estimator->train($training);
 
 $model = new PersistentModel($estimator);
 
-var_dump($report->generate($estimator, $dataset));
+var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->progress());
 

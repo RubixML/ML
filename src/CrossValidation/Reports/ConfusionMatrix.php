@@ -2,6 +2,9 @@
 
 namespace Rubix\Engine\CrossValidation\Reports;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
+
 class ConfusionMatrix implements Classification
 {
     /**
@@ -25,12 +28,16 @@ class ConfusionMatrix implements Classification
     /**
      * Generate a confusion matrix.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return array
      */
-    public function generate(array $predictions, array $labels) : array
+    public function generate(Classifier $estimator, Labeled $testing) : array
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         if (!isset($this->classes)) {
             $classes = array_unique(array_merge($predictions, $labels));
         } else {

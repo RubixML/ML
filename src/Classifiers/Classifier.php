@@ -2,7 +2,9 @@
 
 namespace Rubix\Engine\Classifiers;
 
-interface Classifier
+use Rubix\Engine\Estimator;
+
+interface Classifier extends Estimator
 {
     //
 }

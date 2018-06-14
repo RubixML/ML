@@ -4,7 +4,7 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Dataset;
 
-interface Unsupervised extends Estimator
+interface Unsupervised
 {
     /**
      * Train the estimator with an unlabeled dataset.

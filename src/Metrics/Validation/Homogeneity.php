@@ -2,17 +2,24 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Clusterers\Clusterer;
+
 class Homogeneity implements Clustering
 {
     /**
      * Calculate the homogeneity of a clustering.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Clusterers\Clusterer  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Clusterer $estimator, Labeled $testing) : float
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         $classes = array_unique($labels);
 
         $table = [];

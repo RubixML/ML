@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Tests\Helpers\MockClusterer;
 use Rubix\Engine\Metrics\Validation\Validation;
 use Rubix\Engine\Metrics\Validation\Clustering;
 use Rubix\Engine\Metrics\Validation\VMeasure;
@@ -11,6 +13,11 @@ class VMeasureTest extends TestCase
 
     public function setUp()
     {
+        $this->testing = new Labeled([[], [], [], [], []],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+
+        $this->estimator = new MockClusterer([1, 2, 2, 1, 2]);
+
         $this->metric = new VMeasure();
     }
 
@@ -23,11 +30,7 @@ class VMeasureTest extends TestCase
 
     public function test_score_predictions()
     {
-        $predictions = [1, 2, 2, 1, 2];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $score = $this->metric->score($predictions, $labels);
+        $score = $this->metric->score($this->estimator, $this->testing);
 
         $this->assertEquals(0.5833333280555556, $score);
     }

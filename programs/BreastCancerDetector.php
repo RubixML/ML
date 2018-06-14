@@ -8,7 +8,6 @@ use Rubix\Engine\Metrics\Validation\MCC;
 use Rubix\Engine\CrossValidation\Holdout;
 use Rubix\Engine\Classifiers\RandomForest;
 use Rubix\Engine\Transformers\MissingDataImputer;
-use Rubix\Engine\CrossValidation\ReportGenerator;
 use Rubix\Engine\Transformers\SparseRandomProjector;
 use Rubix\Engine\Transformers\NumericStringConverter;
 use Rubix\Engine\CrossValidation\Reports\AggregateReport;
@@ -43,13 +42,17 @@ $estimator = new Pipeline(new RandomForest(50, 0.1, 10, 5), [
 
 $validator = new Holdout(new MCC(), 0.2);
 
-$report = new ReportGenerator(new AggregateReport([
+$report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
-]), 0.2);
+]);
 
 var_dump($validator->score($estimator, $dataset));
 
-var_dump($report->generate($estimator, $dataset));
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+
+$estimator->train($training);
+
+var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->proba($dataset->randomize()->head(5)));

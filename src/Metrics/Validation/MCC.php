@@ -2,18 +2,25 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
+
 class MCC implements Classification
 {
     /**
      * Score the Matthews correlation coefficient of the predicted classes.
      * Score is a number between -1 and 1.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Classifier $estimator, Labeled $testing) : float
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         $classes = array_unique(array_merge($predictions, $labels));
 
         $truePositives = $trueNegatives = $falsePositives

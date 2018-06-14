@@ -4,11 +4,14 @@ namespace Rubix\Engine;
 
 use Rubix\Engine\Datasets\Dataset;
 use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Clusterers\Clusterer;
+use Rubix\Engine\Regressors\Regressor;
+use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\CrossValidation\Validator;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class GridSearch implements Estimator, Persistable
+class GridSearch implements Classifier, Clusterer, Regressor, Persistable
 {
     /**
      * The reflector instance of the base estimator.
@@ -68,8 +71,8 @@ class GridSearch implements Estimator, Persistable
                 . ' estimator inteferace.');
         }
 
-        $args = array_column($reflector->getConstructor()
-            ->getParameters(), 'name');
+        $args = array_column($reflector->getConstructor()->getParameters(),
+            'name');
 
         if (count($params) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'

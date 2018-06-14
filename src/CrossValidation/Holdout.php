@@ -4,11 +4,7 @@ namespace Rubix\Engine\CrossValidation;
 
 use Rubix\Engine\Estimator;
 use Rubix\Engine\Datasets\Labeled;
-use Rubix\Engine\Regressors\Regressor;
-use Rubix\Engine\Classifiers\Classifier;
 use Rubix\Engine\Metrics\Validation\Validation;
-use Rubix\Engine\Metrics\Validation\Regression;
-use Rubix\Engine\Metrics\Validation\Classification;
 use InvalidArgumentException;
 
 class Holdout implements Validator
@@ -55,30 +51,6 @@ class Holdout implements Validator
      */
     public function score(Estimator $estimator, Labeled $dataset) : float
     {
-        if ($estimator instanceof Classifier) {
-            if (!$this->metric instanceof Classfication) {
-                throw new InvalidArgumentException('Classification metric only'
-                    . ' works on Classifiers, ' . get_class($estimator)
-                    . ' found.');
-            }
-        }
-
-        if ($estimator instanceof Regressor) {
-            if (!$this->metric instanceof Regression) {
-                throw new InvalidArgumentException('Regression metric only'
-                    . ' works on Regressors, ' . get_class($estimator)
-                    . ' found.');
-            }
-        }
-
-        if ($estimator instanceof Clusterer) {
-            if (!$this->metric instanceof Clustering) {
-                throw new InvalidArgumentException('Clustering metric only'
-                    . ' works on Clusterers, ' . get_class($estimator)
-                    . ' found.');
-            }
-        }
-
         $dataset->randomize();
 
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
@@ -91,9 +63,7 @@ class Holdout implements Validator
 
         $estimator->train($training);
 
-        $predictions = $estimator->predict($testing);
-
-        $score = $this->metric->score($predictions, $testing->labels());
+        $score = $this->metric->score($estimator, $testing);
 
         return $score;
     }

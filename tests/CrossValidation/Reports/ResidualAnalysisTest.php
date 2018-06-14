@@ -1,5 +1,7 @@
 <?php
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\Engine\CrossValidation\Reports\Report;
 use Rubix\Engine\CrossValidation\Reports\Regression;
 use Rubix\Engine\CrossValidation\Reports\ResidualAnalysis;
@@ -11,6 +13,13 @@ class ResidualAnalysisTest extends TestCase
 
     public function setUp()
     {
+        $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
+            [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
+
+        $this->estimator = new MockRegressor([
+            10, 12, 15, 42, 56, 12, 17, 9, 1, 7,
+        ]);
+
         $this->report = new ResidualAnalysis();
     }
 
@@ -23,20 +32,15 @@ class ResidualAnalysisTest extends TestCase
 
     public function test_generate_report()
     {
-
-        $predictions = [10, 12, 15, 42, 56, 12, 17, 9, 1, 7];
-
-        $labels = [11, 12, 14, 40, 55, 12, 16, 10, 2, 7];
-
-        $result = [
-            'mean_absolute_error' => 0.8000000100000001,
-            'mean_squared_error' => 1.00000001,
+        $actual = [
+            'mean_absolute_error' => 0.7999999992,
+            'mean_squared_error' => 0.9999999989999999,
             'rms_error' => 0.9999999995,
-            'r_squared' => 0.9962367716957061,
+            'r_squared' => 0.9962367816957203,
         ];
 
-        $report = $this->report->generate($predictions, $labels);
+        $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($result, $report);
+        $this->assertEquals($actual, $result);
     }
 }

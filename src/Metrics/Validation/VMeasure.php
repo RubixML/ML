@@ -2,18 +2,25 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Clusterers\Clusterer;
+
 class VMeasure implements Clustering
 {
     /**
      * Calculate the V score of a clustering. V Score is the harmonic mean of
      * homogeneity and completness.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Clusterers\Clusterer  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Clusterer $estimator, Labeled $testing) : float
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         $clusters = array_unique($predictions);
         $classes = array_unique($labels);
 

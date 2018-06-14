@@ -2,17 +2,24 @@
 
 namespace Rubix\Engine\Metrics\Validation;
 
+use Rubix\Engine\Datasets\Labeled;
+use Rubix\Engine\Classifiers\Classifier;
+
 class F1Score implements Classification
 {
     /**
      * Score the average F1 score of the predictions.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Runix\Engine\Datasets\Labeled  $testing
      * @return float
      */
-    public function score(array $predictions, array $labels) : float
+    public function score(Classifier $estimator, Labeled $testing) : float
     {
+        $predictions = $estimator->predict($testing);
+
+        $labels = $testing->labels();
+
         $classes = array_unique(array_merge($predictions, $labels));
 
         $truePositives = $falsePositives = $falseNegatives = [];
