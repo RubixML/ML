@@ -2,10 +2,10 @@
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\DensePolynomialExpander;
+use Rubix\ML\Transformers\PolynomialExpander;
 use PHPUnit\Framework\TestCase;
 
-class DensePolynomialExpanderTest extends TestCase
+class PolynomialExpanderTest extends TestCase
 {
     protected $transformer;
 
@@ -19,12 +19,12 @@ class DensePolynomialExpanderTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new DensePolynomialExpander(2, true);
+        $this->transformer = new PolynomialExpander(2, true);
     }
 
     public function test_build_l1_regularizer()
     {
-        $this->assertInstanceOf(DensePolynomialExpander::class, $this->transformer);
+        $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 

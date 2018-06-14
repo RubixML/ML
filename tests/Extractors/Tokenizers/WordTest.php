@@ -26,6 +26,7 @@ class WordTest extends TestCase
 
         $value = $this->tokenizer->tokenize($data);
 
-        $this->assertEquals($value, ['would', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on', 'impact']);
+        $this->assertEquals($value, ['would', 'like', 'to', 'die', 'on', 'mars',
+            'just', 'not', 'on', 'impact']);
     }
 }

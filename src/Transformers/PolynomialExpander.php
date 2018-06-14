@@ -5,7 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
-class DensePolynomialExpander implements Transformer
+class PolynomialExpander implements Transformer
 {
     /**
      * The degree of the polynomials to generate. Higher order polynomials are

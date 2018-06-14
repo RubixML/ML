@@ -46,13 +46,13 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Data Preprocessing](#data-preprocessing)
 		- [Pipeline](#pipeline)
 		- [Transformers](#transformers)
-			- [Dense Polynomial Expander](#dense-polynomial-expander)
+			- [Dense and Sparse Random Projectors](#dense-and-sparse-random-projectors)
 			- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
 			- [Min Max Normalizer](#min-max-normalizer)
 			- [Missing Data Imputer](#missing-data-imputer)
 			- [Numeric String Converter](#numeric-string-converter)
 			- [One Hot Encoder](#one-hot-encoder)
-			- [Sparse Random Projector](#sparse-random-projector)
+            - [Polynomial Expander](#polynomial-expander)
 			- [TF-IDF Transformer](#tf---idf-transformer)
 			- [Variance Threshold Filter](#variance-threshold-filter)
 			- [Z Scale Standardizer](#z-scale-standardizer)
@@ -219,7 +219,7 @@ Now that we've gone through a brief introduction of a simple machine learning pr
 
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. There are two types of Dataset objects that one can instantiate - **Labeled** and **Unlabeled**.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects make it easy to slice and transport data in a canonical way.
 
 Return the *first* n rows of data in a new Dataset object:
 ```php
@@ -283,18 +283,31 @@ public all() : array
 
 ##### Example:
 ```php
-$head = $dataset->head(5);
-$tail = $dataset->tail(20);
-$taken = $dataset->take(1);
-$taken = $dataset->leave(100);
-$dataset = $dataset->randomize();
+use Rubix\ML\Datasets\Labeled;
+
+...
+$dataset = new Labeled($samples, $labels);
+
+// Return just the first 5 rows in a new dataset
+$subset = $dataset->head(5);
+
+// Remove the first 5 rows and return them in a new dataset
+$subset = $dataset->take(5);
+
+// Split the dataset into left and right subsets
 list($left, $right) = $dataset->split(0.5);
+
+// Fold the dataset into 8 equal size datasets
 $folds = $dataset->fold(8);
-$batches = $dataset->batch(100);
-$subset = $dataset->randomSubset(20);
-$dataset = Dataset::combine($datasets);
+
+// Generate a dataset of 500 random samples with replacement
+$subset = $dataset->randomSubset(500);
+
+// Randomize and split the dataset into two subsets
+list($left, $right) = $dataset->randomize()->split(0.8);
+
+// Return the sample matrix
 $samples = $dataset->samples();
-$dump = $dataset->all();
 ```
 ---
 #### Labeled
@@ -312,20 +325,30 @@ For Supervised Estimators you will need to pass it a Labeled Dataset that consis
 | `stratifiedSplit($ratio = 0.5) : array` | Split the Dataset into left and right stratified subsets with a given ratio of samples and labels. |
 | `stratifiedFold($k = 10) : array` | Fold the Dataset k - 1 times to form k equal size stratified Datasets. |
 | `labels() : array` | Return the 1-dimensional array of labels. |
+| `label(int $index) : mixed` | Return the label at the given row index. |
 | `possibleOutcomes() : array` | Return all of the possible outcomes given the labels. |
 
 ##### Example:
 ```php
 use Rubix\ML\Datasets\Labeled;
 
+...
 $dataset = new Labeled($samples, $labels);
 
-list($left, $right) = $dataset->stratifiedSplit(0.6);
-
+// Fold the dataset into 5 equal size stratified subsets
 $folds = $dataset->stratifiedFold(5);
 
-$labels = $dataset->labels(); // All labels
-$outcomes = $dataset->possibleOutcomes(); // All unique labels
+// Randomize and split the dataset into two stratified subsets
+list($left, $right) = $dataset->randomize()->stratifiedSplit(0.6);
+
+// Return the label array
+$labels = $dataset->labels();
+
+// Return the label at the 200 index
+$label = $dataset->label(200);
+
+// Return all possible unique labels
+$outcomes = $dataset->possibleOutcomes();
 ```
 
 #### Unlabeled
@@ -334,7 +357,7 @@ Unlabeled Datasets are useful for training Unsupervised Estimators and making pr
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
+| samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
 
 ##### Additional Methods:
 This Dataset does not have any additional methods.
@@ -381,13 +404,13 @@ $dataset = new Labeled($matrix, $labels);
 
 ---
 #### Pixel Encoder
-Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel values. Scaling and cropping is handled automatically.
+Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically.
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| rgb | True | bool | Should we extract RGB color channel data or false for greyscale. |
+| rgb | True | bool | True to use RGB color channel data and False to use Greyscale. |
 
 ##### Additional Methods:
 This Extractor does not have any additional methods.
@@ -408,6 +431,12 @@ Word counts are often used to represent natural language as numerical vectors. T
 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
 | tokenizer | Word | object | The method of turning samples of text into individual tokens. |
 
+##### Available Tokenizers:
+| Tokenizer | Description |
+|--|--|
+| Whitespace | Tokens are exploded by a user-specified whitespace character. |
+| Word | Tokenize strings that meet the criteria of a word. Optionally normalize the input text with `$normalize` parameter (boolean). |
+
 ##### Additional Methods:
 | Method | Description |
 |--|--|
@@ -421,8 +450,11 @@ use Rubix\ML\Extractors\Tokenizers\Word;
 
 $extractor = new TokenCountVectorizer(5000, new Word());
 
-$extractor->vocabulary(); // ['i', 'would', 'like', 'to', 'die', 'on', 'mars', 'just', 'not', 'on', 'impact', ...]
-$extractor->size(); // 4722
+// Return the vocabulary of the vectorizer
+$extractor->vocabulary();
+
+// Return the size of the fitted vocabulary
+$extractor->size();
 ```
 
 ---
@@ -459,8 +491,10 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new RandomForest(200, 0.5, 5, 3);
 
+// Train the estimator with the labeled dataset
 $estimator->train($dataset);
 
+// Make some predictions on the first 3 samples of the dataset
 $result = $estimator->predict($dataset->head(3));
 
 var_dump($result);
@@ -483,6 +517,7 @@ public proba(Dataset $samples) : array
 
 ##### Example:
 ```php
+// Return the probabilities of the outcomes of the first 2 samples in the dataset
 $result = $estimator->proba($dataset->head(2));  
 
 var_dump($result);
@@ -503,7 +538,7 @@ array(3) {
 ```
 ---
 ### Classifiers
-Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - **Binary** and **Multiclass**. Binary Classifiers can only distinguish between two classes (ex. Male/Female, Yes/No, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
+Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - **Binary** and **Multiclass**. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
 #### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
@@ -533,6 +568,7 @@ use Rubix\ML\Classifiers\DecisionTree;
 $estimator = new AdaBoost(DecisionTree::class, [1, 10], 100, 0.1, 0.999);
 
 $estimator->weights(); // [0.25, 0.35, 0.1, ...]
+
 $estimator->influence(); // [0.7522, 0.7945, ...]
 ```
 
@@ -1039,27 +1075,31 @@ $transformer = new MinMaxNormalizer();
 $dataset->transform($transformer);
 ```
 
-#### Dense Polynomial Expander
-This Transformer will generate polynomial features of specified degrees. Polynomial expansion is often used to fit data to a non-linear curve using standard linear regression.
+#### Dense and Sparse Random Projectors
+A Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma "Johnson-Lindenstrauss lemma") that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance.
+
+The difference between the Dense and Sparse Random Projectors are that the Dense version uses a dense random guassian distribution and the Sparse version uses a sparse matrix (mostly 0's).
 
 ##### Continuous *Only*
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
+| dimensions | None | int | The number of target dimensions to project onto. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\Transformers\DensePolynomialExpander;
+use Rubix\ML\Transformers\DenseRandomProjector;
+use Rubix\ML\Transformers\SparseRandomProjector;
 
-$transformer = new DensePolynomialExpander(3);
+$transformer = new DenseRandomProjector(50);
+$transformer = new SparseRandomProjector(100);
 ```
 
 #### L1 and L2 Regularizers
-Regularization terms are used to augment the input vector of each sample such that each feature is divided over the L1 or L2 norm (or "magnitude") of the vector.
+Augment the input vector of each sample such that each feature is divided over the L1 or L2 norm (or "magnitude") of the feature vector.
 
 ##### Continuous *Only*
 ##### Parameters:
@@ -1153,23 +1193,23 @@ use Rubix\ML\Transformers\OneHotEncoder;
 $transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
 ```
 
-#### Sparse Random Projector
-The Sparse Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma "Johnson-Lindenstrauss lemma") that uses a sparse random matrix to project a sample vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance.
+#### Polynomial Expander
+This Transformer will generate polynomial features of specified degrees. Polynomial expansion is often used to fit data to a non-linear curve using standard linear regression.
 
 ##### Continuous *Only*
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| dimensions | None | int | The number of target dimensions to project onto. |
+| degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\PolynomialExpander;
 
-$transformer = new SparseRandomProjector(20);
+$transformer = new PolynomialExpander(3);
 ```
 
 #### TF-IDF Transformer

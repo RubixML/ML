@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 class SparseRandomProjector implements Transformer
 {
-    const ROOT_3 = 1.73205080757;
+    const MULTIPLIER = 1.73205080757;
 
     const DISTRIBUTION = [-1, 0, 0, 0, 0, 1];
 
@@ -54,12 +54,14 @@ class SparseRandomProjector implements Transformer
                 . ' with continuous features.');
         }
 
+        $n = count(static::DISTRIBUTION) - 1;
+
         $r = [[]];
 
         for ($i = 0; $i < $dataset->numColumns(); $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = self::ROOT_3
-                    * self::DISTRIBUTION[random_int(0, 5)];
+                $r[$i][$j] = static::MULTIPLIER
+                    * static::DISTRIBUTION[random_int(0, $n)];
             }
         }
 
