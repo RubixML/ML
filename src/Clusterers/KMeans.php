@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Online;
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KMeans implements Unsupervised, Clusterer, Persistable
+class KMeans implements Clusterer, Online, Persistable
 {
     /**
      * The target number of clusters.
@@ -52,8 +52,8 @@ class KMeans implements Unsupervised, Clusterer, Persistable
     public function __construct(int $k, Distance $distanceFunction = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Target clusters must be'
-                . ' greater than 1.');
+            throw new InvalidArgumentException('Must target at least one'
+                . ' cluster.');
         }
 
         if ($epochs < 1) {
@@ -81,11 +81,6 @@ class KMeans implements Unsupervised, Clusterer, Persistable
     }
 
     /**
-     * Pick K random samples and assign them as centroids. Compute the coordinates
-     * of the centroids by clustering the points based on each sample's distance
-     * from one of the k centroids, then recompute the centroid coordinate as the
-     * mean of the new cluster.
-     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return array
@@ -103,6 +98,30 @@ class KMeans implements Unsupervised, Clusterer, Persistable
         }
 
         $this->centroids = $dataset->randomize()->tail($this->k)->samples();
+
+        $this->partial($dataset);
+    }
+
+    /**
+     * Pick K random samples and assign them as centroids. Compute the coordinates
+     * of the centroids by clustering the points based on each sample's distance
+     * from one of the k centroids, then recompute the centroid coordinate as the
+     * mean of the new cluster.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
+        if (empty($this->centroids)) {
+            $this->train($dataset);
+        }
 
         $labels = array_fill(0, $dataset->numRows(), null);
         $sizes = array_fill(0, $this->k, 0);

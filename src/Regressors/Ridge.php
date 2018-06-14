@@ -2,16 +2,15 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
-use MathPHP\LinearAlgebra\Vector;
-use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\LinearAlgebra\Vector;
+use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
-class Ridge implements Supervised, Regressor, Persistable
+class Ridge implements Regressor, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the
@@ -72,12 +71,17 @@ class Ridge implements Supervised, Regressor, Persistable
      * Calculate the coefficients of the training data. i.e. compute the line
      * that best fits the training data.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');

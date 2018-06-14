@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -10,7 +9,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class AdaBoost implements Supervised, Binary, Persistable
+class AdaBoost implements Binary, Persistable
 {
     /**
      * The reflector instance of the base classifier.
@@ -154,12 +153,17 @@ class AdaBoost implements Supervised, Binary, Persistable
      * to each one and re-weighting the training data according to reflect how
      * difficult a particular sample is to classify.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {

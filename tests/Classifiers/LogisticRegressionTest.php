@@ -1,7 +1,7 @@
 <?php
 
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
@@ -53,8 +53,8 @@ class LogisticRegressionTest extends TestCase
         $this->assertInstanceOf(Binary::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

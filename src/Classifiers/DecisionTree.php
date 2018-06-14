@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Graph\Tree;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -11,7 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\BinaryNode;
 use InvalidArgumentException;
 
-class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic, Persistable
+class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -110,12 +109,17 @@ class DecisionTree extends Tree implements Supervised, Multiclass, Probabilistic
      * Train the decision tree by learning the most optimal splits in the
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->classes = $dataset->possibleOutcomes();
         $this->columnTypes = $dataset->columnTypes();
 

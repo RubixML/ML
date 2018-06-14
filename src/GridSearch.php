@@ -103,11 +103,17 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
      * Train one estimator per combination of parameters given by the grid and
      * assign the best one as the base estimator of this instance.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $best = ['score' => -INF, 'estimator' => null];
 
         $this->results = [];

@@ -53,7 +53,7 @@ class MissingDataImputer implements Transformer
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string or'
-                . ' numeric, ' . gettype($placeholder) . ' found.');
+                . ' numeric type, ' . gettype($placeholder) . ' found.');
         }
 
         if (!isset($continuous)) {

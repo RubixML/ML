@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
+use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -12,7 +12,7 @@ use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
+class KNearestNeighbors implements Multiclass, Online, Probabilistic
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -77,23 +77,45 @@ class KNearestNeighbors implements Supervised, Multiclass, Probabilistic
     }
 
     /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
+        $this->classes = $this->samples = $this->labels = [];
+
+        $this->partial($dataset);
+    }
+
+    /**
+     * Store the sample and outcome arrays. No other work to be done as this is
+     * a lazy learning algorithm.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
-
-        list($this->samples, $this->labels) = $dataset->all();
+        $this->classes = array_merge($this->classes, $dataset->possibleOutcomes());
+        $this->samples = array_merge($this->samples, $dataset->samples());
+        $this->labels = array_merge($this->labels, $dataset->labels());
     }
 
     /**

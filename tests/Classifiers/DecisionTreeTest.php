@@ -1,7 +1,6 @@
 <?php
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Multiclass;
@@ -54,7 +53,6 @@ class DecisionTreeTest extends TestCase
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

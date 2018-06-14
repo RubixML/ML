@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
-use MathPHP\Statistics\Average;
 use Rubix\ML\Datasets\Dataset;
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
 class ZScaleStandardizer implements Transformer

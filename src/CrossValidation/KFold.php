@@ -3,8 +3,8 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Estimator;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use Rubix\ML\Metrics\Validation\Validation;
 use InvalidArgumentException;
 

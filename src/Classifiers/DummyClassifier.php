@@ -2,14 +2,14 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Transformers\Strategies\Categorical;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
+use InvalidArgumentException;
 
-class DummyClassifier implements Supervised, Multiclass, Persistable
+class DummyClassifier implements Multiclass, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.
@@ -34,11 +34,17 @@ class DummyClassifier implements Supervised, Multiclass, Persistable
     /**
      * Fit the training set to the given guessing strategy.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->strategy->fit($dataset->labels());
     }
 

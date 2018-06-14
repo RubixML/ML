@@ -1,7 +1,7 @@
 <?php
 
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Regressor;
@@ -52,12 +52,12 @@ class MLPRegressorTest extends TestCase
         ], 1, new Adam(0.01), 0.0);
     }
 
-    public function test_build_tree()
+    public function test_build_mlp_regressor()
     {
         $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Supervised::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

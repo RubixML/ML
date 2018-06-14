@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
+use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -16,9 +16,8 @@ use Rubix\ML\Metrics\Validation\Accuracy;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\Metrics\Validation\Classification;
 use InvalidArgumentException;
-use RuntimeException;
 
-class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Persistable
+class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
      * The hidden layer configuration of the neural net.
@@ -170,20 +169,16 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
     }
 
     /**
-     * Train the network using mini-batch gradient descent with backpropagation.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function train(Labeled $dataset) : void
+    * @param  \Rubix\ML\Datasets\Dataset  $dataset
+    * @throws \InvalidArgumentException
+    * @return void
+    */
+    public function train(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
         }
-
-        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
         $this->network = new Network(new Input($dataset->numColumns()),
             $this->hidden, new Softmax($dataset->possibleOutcomes(),
@@ -192,6 +187,34 @@ class MultiLayerPerceptron implements Supervised, Multiclass, Probabilistic, Per
         foreach ($this->network->initialize()->parametric() as $layer) {
             $this->optimizer->initialize($layer);
         }
+
+        $this->partial($dataset);
+    }
+
+    /**
+     * Train the network using mini-batch gradient descent with backpropagation.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
+        if (!isset($this->network)) {
+            $this->train($dataset);
+        }
+
+        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
         $best = ['score' => -INF, 'snapshot' => null];
 

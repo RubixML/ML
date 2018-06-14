@@ -1,7 +1,6 @@
 <?php
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
@@ -50,7 +49,6 @@ class DummyClassifierTest extends TestCase
         $this->assertInstanceOf(DummyClassifier::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

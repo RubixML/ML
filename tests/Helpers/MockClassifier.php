@@ -3,7 +3,6 @@
 namespace Rubix\Tests\Helpers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
 
 class MockClassifier implements Classifier
@@ -13,6 +12,11 @@ class MockClassifier implements Classifier
     public function __construct(array $predictions)
     {
         $this->predictions = $predictions;
+    }
+
+    public function train(Dataset $dataset) : void
+    {
+        //
     }
 
     public function predict(Dataset $samples) : array

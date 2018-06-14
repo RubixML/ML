@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 class SparseRandomProjector implements Transformer

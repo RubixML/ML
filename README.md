@@ -22,6 +22,8 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Pixel Encoder](#pixel-encoder)
 		- [Token Count Vectorizer](#token-count-vectorizer)
 	- [Estimators](#estimators)
+		- [Online](#online)
+		- [Probabilistic](#probabilistic)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Decision Tree](#decision-tree)
@@ -84,7 +86,6 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
 	- [Model Persistence](#model-persistence)
-- [Acknowledgements](#acknowledgements)
 - [Licence](#licence)
 
 ## Installation
@@ -459,22 +460,14 @@ $extractor->size();
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various Classifiers, Regressors, and Clusterers that make *predictions* based on the data they have been trained with. Estimators come in one of two types depending on how they are trained -  **Supervised** and **Unsupervised**.
+Estimators are the core of the Rubix library and consist of various Classifiers, Regressors, and Clusterers that make *predictions* based on the data they have been trained with.
 
-The only difference to the API of either type of Estimator is the type of Dataset the model can be trained with.
-
-##### Supervised:
-```php
-public train(Labeled $dataset) : void
-```
-##### Unsupervised:
+To train an Estimator simply pass it a training set:
 ```php
 public train(Dataset $dataset) : void
 ```
 
-Both types of Estimator share the same prediction API, however.
-
-##### Supervised and Unsupervised:
+To make predictions, pass it another dataset:
 ```php
 public predict(Dataset $samples) : array
 ```
@@ -491,11 +484,14 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new RandomForest(200, 0.5, 5, 3);
 
+// Take 3 samples out of the dataset to use later
+$testing = $dataset->take(3);
+
 // Train the estimator with the labeled dataset
 $estimator->train($dataset);
 
-// Make some predictions on the first 3 samples of the dataset
-$result = $estimator->predict($dataset->head(3));
+// Make some predictions on the holdout set
+$result = $estimator->predict($testing);
 
 var_dump($result);
 ```
@@ -509,8 +505,31 @@ array(3) {
 }
 ```
 
-Some Estimators may implement the **Probabilistic** interface, in which case, they will have an additional method that returns an array of probability scores for each class, cluster, etc. per sample in the given Dataset object.
+#### Online
 
+Certain Estimators that implement the **Online** interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory.
+
+You can partially train an Online Estimator as such:
+```php
+public partial(Dataset $dataset) : void
+```
+
+##### Example:
+```php
+...
+$datasets = $dataset->fold(3);
+
+$estimator->partial($dataset[0]);
+
+$estimator->partial($dataset[1]);
+
+$estimator->partial($dataset[2]);
+```
+#### Probabalistic
+
+Some Estimators may implement the **Probabilistic** interface, in which case, they will have an additional method that returns an array of probability scores of each class, cluster, etc.
+
+Calculate probability estimates:
 ```php
 public proba(Dataset $samples) : array
 ```
@@ -625,7 +644,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 #### K Nearest Neighbors
 A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
 
-##### Supervised, Multiclass, Probabilistic
+##### Supervised, Multiclass, Online, Probabilistic
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -647,7 +666,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 #### Logistic Regression
 A type of regression analysis that uses the logistic function to classify between two possible outcomes.
 
-##### Supervised, Binary, Probabilistic, Persistable
+##### Supervised, Binary, Online, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -672,7 +691,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
 #### Multi Layer Perceptron
 Multiclass neural network model that uses a series of user-defined hidden layers as intermediate computational units equipped with non-linear activation functions.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised, Multiclass, Online, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -752,9 +771,9 @@ $estimator = new RandomForest(100, 0.2, 5, 3);
 ```
 
 #### Softmax Classifier
-A generalization of logistic regression to multiple classes.
+A generalization of logistic regression for multiple class outcomes.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised, Multiclass, Online, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -777,7 +796,7 @@ $estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
 ```
 ---
 ### Clusterers
-Clusterers take Unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to.
+Clusterers take Unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to. Clustering is a common technique in data mining that focuses on grouping samples in a way such that the groups are similar.
 
 #### DBSCAN
 Density-based spatial clustering of applications with noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
@@ -836,7 +855,7 @@ $estimator->progress(); // [5878.01, 5200.50, 4960.28, ...]
 #### K Means
 A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
 
-##### Unsupervised, Persistable
+##### Unsupervised, Online, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |

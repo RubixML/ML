@@ -3,15 +3,14 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class DBSCAN implements Unsupervised, Clusterer, Persistable
+class DBSCAN implements Clusterer, Persistable
 {
-    const NOISE = 'noise';
+    const NOISE = -1;
 
     /**
      * The maximum distance between two points to be considered neighbors. The

@@ -1,7 +1,8 @@
 <?php
 
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
-use Rubix\ML\Unsupervised;
+use Rubix\ML\Persistable;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
@@ -37,7 +38,8 @@ class KMeansTest extends TestCase
         $this->assertInstanceOf(KMeans::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Unsupervised::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_cluster_samples()

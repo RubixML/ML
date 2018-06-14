@@ -2,15 +2,14 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
+class RandomForest implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -90,11 +89,17 @@ class RandomForest implements Supervised, Multiclass, Probabilistic, Persistable
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->classes = $dataset->possibleOutcomes();
 
         $n = $this->ratio * count($dataset);

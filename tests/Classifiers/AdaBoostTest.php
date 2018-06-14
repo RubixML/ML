@@ -1,7 +1,6 @@
 <?php
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Binary;
@@ -52,7 +51,6 @@ class AdaBoostTest extends TestCase
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Binary::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Supervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

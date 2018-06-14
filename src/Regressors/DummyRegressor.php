@@ -2,14 +2,13 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Transformers\Strategies\Continuous;
 use Rubix\ML\Transformers\Strategies\BlurryMean;
 
-class DummyRegressor implements Supervised, Regressor, Persistable
+class DummyRegressor implements Regressor, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.
@@ -37,7 +36,7 @@ class DummyRegressor implements Supervised, Regressor, Persistable
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
         $this->strategy->fit($dataset->labels());
     }

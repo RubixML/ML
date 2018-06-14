@@ -2,17 +2,16 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Graph\Tree;
 use Rubix\ML\Persistable;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Graph\BinaryNode;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
-class RegressionTree extends Tree implements Supervised, Regressor, Persistable
+class RegressionTree extends Tree implements Regressor, Persistable
 {
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -101,12 +100,17 @@ class RegressionTree extends Tree implements Supervised, Regressor, Persistable
      * Train the regression tree by learning the most optimal splits in the
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->columnTypes = $dataset->columnTypes();
 
         list ($samples, $labels) = $dataset->all();

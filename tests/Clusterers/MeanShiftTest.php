@@ -2,7 +2,6 @@
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
@@ -39,7 +38,6 @@ class MeanShiftTest extends TestCase
         $this->assertInstanceOf(MeanShift::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Unsupervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 

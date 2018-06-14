@@ -2,15 +2,14 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
+class NaiveBayes implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The precomputed probabilities for categorical data and means and standard
@@ -59,11 +58,17 @@ class NaiveBayes implements Supervised, Multiclass, Probabilistic, Persistable
     /**
      * Compute the means and standard deviations of the values per class.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->columnTypes = $dataset->columnTypes();
 
         $this->stats = $this->weights = [];

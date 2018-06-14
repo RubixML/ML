@@ -3,15 +3,14 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Datasets\Dataset;
+use MathPHP\Statistics\Average;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
-class MeanShift implements Unsupervised, Clusterer, Persistable
+class MeanShift implements Clusterer, Persistable
 {
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum

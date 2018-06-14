@@ -2,7 +2,6 @@
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
@@ -38,7 +37,6 @@ class DBSCANTest extends TestCase
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-        $this->assertInstanceOf(Unsupervised::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
@@ -52,6 +50,6 @@ class DBSCANTest extends TestCase
 
         $this->assertEquals(10, $clusters[0]);
         $this->assertEquals(9, $clusters[1]);
-        $this->assertEquals(1, $clusters['noise']);
+        $this->assertEquals(1, $clusters[-1]);
     }
 }

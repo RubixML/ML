@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Supervised;
+use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -13,9 +13,8 @@ use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
-use RuntimeException;
 
-class SoftmaxClassifier implements Supervised, Multiclass, Probabilistic, Persistable
+class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
      * The number of training samples to consider per iteration of gradient descent.
@@ -105,19 +104,49 @@ class SoftmaxClassifier implements Supervised, Multiclass, Probabilistic, Persis
     }
 
     /**
+    * @param  \Rubix\ML\Datasets\Dataset  $dataset
+    * @throws \InvalidArgumentException
+    * @return void
+    */
+   public function train(Dataset $dataset) : void
+   {
+       if (!$dataset instanceof Labeled) {
+           throw new InvalidArgumentException('This Estimator requires a'
+               . ' Labeled training set.');
+       }
+
+       $this->network = new Network(new Input($dataset->numColumns()), [],
+           new Softmax($dataset->possibleOutcomes(), $this->alpha));
+
+       foreach ($this->network->initialize()->parametric() as $layer) {
+           $this->optimizer->initialize($layer);
+       }
+
+       $this->partial($dataset);
+   }
+
+    /**
      * Perform mini-batch gradient descent with given optimizer over the training
      * set and update the input weights accordingly.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function partial(Dataset $dataset) : void
     {
-        $this->network = new Network(new Input($dataset->numColumns()), [],
-            new Softmax($dataset->possibleOutcomes(), $this->alpha));
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
 
-        foreach ($this->network->initialize()->parametric() as $layer) {
-            $this->optimizer->initialize($layer);
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
+        if (!isset($this->network)) {
+            $this->train($dataset);
         }
 
         $previous = 0.0;

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Persistable;
-use Rubix\ML\Unsupervised;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Metrics\Distance\Distance;
@@ -11,7 +10,7 @@ use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
-class FuzzyCMeans implements Unsupervised, Probabilistic, Clusterer, Persistable
+class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 {
     /**
      * The target number of clusters.

@@ -2,16 +2,16 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Supervised;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Online;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 use SplPriorityQueue;
 
-class KNNRegressor implements Supervised, Regressor
+class KNNRegressor implements Regressor, Online
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -67,21 +67,45 @@ class KNNRegressor implements Supervised, Regressor
     }
 
     /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function train(Labeled $dataset) : void
+    public function train(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous samples.');
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
         }
 
-        list($this->samples, $this->labels) = $dataset->all();
+        $this->classes = $this->samples = $this->labels = [];
+
+        $this->partial($dataset);
+    }
+
+    /**
+     * Store the sample and outcome arrays. No other work to be done as this is
+     * a lazy learning algorithm.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
+        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
+        $this->classes = array_merge($this->classes, $dataset->possibleOutcomes());
+        $this->samples = array_merge($this->samples, $dataset->samples());
+        $this->labels = array_merge($this->labels, $dataset->labels());
     }
 
     /**
