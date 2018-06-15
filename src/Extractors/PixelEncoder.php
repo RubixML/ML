@@ -43,10 +43,8 @@ class PixelEncoder implements Extractor
     public function __construct(array $size = [32, 32], bool $rgb = true)
     {
         if (!extension_loaded(self::DRIVER)) {
-            if (!dl('gd.so')) {
-                throw new RuntimeException('The ' . self::DRIVER . ' extension'
-                    . ' could not be loaded.');
-            }
+            throw new RuntimeException('The ' . self::DRIVER . ' extension'
+                . ' could not be loaded.');
         }
 
         if (count($size) !== 2) {

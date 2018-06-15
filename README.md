@@ -24,6 +24,8 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Estimators](#estimators)
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
+		- [Anomaly Detection](#anomaly-detection)
+			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Decision Tree](#decision-tree)
@@ -103,8 +105,9 @@ Machine learning is the process by which a computer program is able to progressi
  - **Supervised** learning is a technique to train computer models with a dataset in which the outcome of each sample data point has been *labeled* either by a human expert or another ML model prior to training. There are two types of supervised learning to consider in Rubix:
 	 - **Classification** is the problem of identifying which *class* a particular sample belongs to among a set of categories. For example, one task may be in determining a particular species of Iris flower based on its sepal and petal dimensions.
 	 - **Regression** involves predicting continuous *values* rather than discrete classes. An example in which a regression model is appropriate would be predicting the life expectancy of a population based on economic factors.
-- **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and instead relies on discovering information through the features of the training samples alone.
+- **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and instead relies on discovering information through just the features of the training samples.
 	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering might be used is in differentiating tissues in PET scan images.
+	- **Anomaly Detection** is the flagging of samples that do not conform to an expected pattern. Anomalous samples can often indicate adversarial activity, bad data, or exceptional performance.
 
 ### Obtaining Data
 Machine learning projects typically begin with a question. For example, who of my friends are most likely to stay married to their spouse? One way to go about answering this question with machine learning would be to go out and ask a bunch of long-time married and divorced couples the same set of questions and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers from your friends.
@@ -411,13 +414,14 @@ Word counts are often used to represent natural language as numerical vectors. T
 | Param | Default | Type | Description |
 |--|--|--|--|
 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
+| normalize | true | bool | Should we remove extra whitespace and lowercase? |
 | tokenizer | Word | object | The method of turning samples of text into individual tokens. |
 
 ##### Available Tokenizers:
 | Tokenizer | Description |
 |--|--|
 | Whitespace | Tokens are exploded by a user-specified whitespace character. |
-| Word | Tokenize strings that meet the criteria of a word. Optionally normalize the input text with `$normalize` parameter (boolean). |
+| Word | Tokenize strings that meet the criteria of a word. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -430,7 +434,7 @@ Word counts are often used to represent natural language as numerical vectors. T
 use Rubix\ML\Extractors\CountVectorizer;
 use Rubix\ML\Extractors\Tokenizers\Word;
 
-$extractor = new CountVectorizer(5000, new Word());
+$extractor = new CountVectorizer(5000, true, new Word());
 
 // Return the vocabulary of the vectorizer
 $extractor->vocabulary();
@@ -446,7 +450,7 @@ Images must first be converted to color channel values in order to be passed to 
 | Param | Default | Type | Description |
 |--|--|--|--|
 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| rgb | True | bool | True to use RGB color channel data and False to use Greyscale. |
+| rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
 
 ##### Additional Methods:
 This Extractor does not have any additional methods.
@@ -555,6 +559,35 @@ array(3) {
 	}
 }
 ```
+
+---
+### Anomaly Detection
+
+Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
+
+#### Robust Z Score
+The Robust Z Score Detector uses a modified Z score threshold to detect outliers within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation as the former are more robust to noisy data than the latter.
+
+##### Unsupervised, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| threshold | 3.5 | float | The threshold Z score to flag an outlier. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `medians() : array` | Return the medians of each feature column in the training set. |
+| `mads() : array` | Return the median absolute deviations (MAD) of each feature column in the training set. |
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\RobustZScore;
+
+$estimator = new RobustZScore(3.0);
+```
+
 ---
 ### Classifiers
 Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - **Binary** and **Multiclass**. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
@@ -1232,7 +1265,7 @@ $transformer = new PolynomialExpander(3);
 ```
 
 #### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is the measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the Token Count Vectorizer.
+Term Frequency - Inverse Document Frequency is the measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Count Vectorizer](#count-vectorizer).
 
 ##### Continuous *Only*
 ##### Parameters:

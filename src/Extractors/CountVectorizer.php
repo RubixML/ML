@@ -17,6 +17,14 @@ class CountVectorizer implements Extractor
     protected $maxVocabulary;
 
     /**
+     * Should the text be normalized before tokenized? i.e. remove extra
+     * whitespace and lowercase.
+     *
+     * @var bool
+     */
+    protected $normalize;
+
+    /**
      * The tokenizer used to extract text data into tokenable values.
      *
      * @var \Rubix\ML\Extractors\Tokenizers\Tokenizer
@@ -34,10 +42,12 @@ class CountVectorizer implements Extractor
 
     /**
      * @param  int  $maxVocabulary
+     * @param  bool  $normalize
      * @param  \Rubix\ML\Extractors\Tokenizers\Tokenizer  $tokenizer
      * @return void
      */
-    public function __construct(int $maxVocabulary = PHP_INT_MAX, Tokenizer $tokenizer = null)
+    public function __construct(int $maxVocabulary = PHP_INT_MAX, bool $normalize = true,
+                                Tokenizer $tokenizer = null)
     {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabulary must'
@@ -49,6 +59,7 @@ class CountVectorizer implements Extractor
         }
 
         $this->maxVocabulary = $maxVocabulary;
+        $this->normalize = $normalize;
         $this->tokenizer = $tokenizer;
     }
 
@@ -84,6 +95,11 @@ class CountVectorizer implements Extractor
 
         foreach ($samples as $sample) {
             if (is_string($sample)) {
+                if ($this->normalize) {
+                    $sample = preg_replace('/\s+/', ' ',
+                        trim(strtolower($sample)));
+                }
+
                 foreach ($this->tokenizer->tokenize($sample) as $token) {
                     if (isset($frequencies[$token])) {
                         $frequencies[$token]++;
@@ -140,6 +156,11 @@ class CountVectorizer implements Extractor
     public function vectorize(string $sample) : array
     {
         $vector = array_fill(0, count($this->vocabulary), 0);
+
+        if ($this->normalize) {
+            $sample = preg_replace('/\s+/', ' ',
+                trim(strtolower($sample)));
+        }
 
         foreach ($this->tokenizer->tokenize($sample) as $token) {
             if (isset($this->vocabulary[$token])) {
