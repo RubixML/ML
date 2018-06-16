@@ -1,6 +1,8 @@
 <?php
 
+use Rubix\ML\Graph\Node;
 use Rubix\ML\Graph\BinaryNode;
+use Rubix\ML\Graph\GraphObject;
 use PHPUnit\Framework\TestCase;
 
 class BinaryNodeTest extends TestCase
@@ -9,12 +11,15 @@ class BinaryNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new BinaryNode(40, ['coolness_factor' => 'medium']);
+        $this->node = new BinaryNode(['coolness_factor' => 'medium']);
     }
 
     public function test_create_binary_node()
     {
-        $this->assertTrue($this->node instanceof BinaryNode);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+        $this->assertInstanceOf(GraphObject::class, $this->node);
+
         $this->assertEquals('medium', $this->node->coolness_factor);
 
         $this->assertEquals(1, $this->node->height());
@@ -23,23 +28,18 @@ class BinaryNodeTest extends TestCase
         $this->assertTrue($this->node->isLeaf());
     }
 
-    public function test_get_node_value()
-    {
-        $this->assertEquals(40, $this->node->value());
-    }
-
     public function test_attach_left_child()
     {
         $this->assertNull($this->node->left());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachLeft(new BinaryNode(16, ['coolness_factor' => 'low']));
+        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'low']));
 
-        $this->assertNotNull($node->left());
-        $this->assertTrue($node->left() instanceof BinaryNode);
-        $this->assertEquals(2, $node->height());
-        $this->assertEquals(1, $node->left()->height());
-        $this->assertFalse($node->isLeaf());
+        $this->assertNotNull($this->node->left());
+        $this->assertInstanceOf(BinaryNode::class, $this->node->left());
+        $this->assertEquals(2, $this->node->height());
+        $this->assertEquals(1, $this->node->left()->height());
+        $this->assertFalse($this->node->isLeaf());
     }
 
     public function test_attach_right_child()
@@ -47,21 +47,21 @@ class BinaryNodeTest extends TestCase
         $this->assertNull($this->node->right());
         $this->assertTrue($this->node->isLeaf());
 
-        $node = $this->node->attachRight(new BinaryNode(19, ['coolness_factor' => 'high']));
+        $this->node->attachRight(new BinaryNode(['coolness_factor' => 'high']));
 
-        $this->assertNotNull($node->right());
-        $this->assertTrue($node->right() instanceof BinaryNode);
-        $this->assertEquals(2, $node->height());
-        $this->assertEquals(1, $node->right()->height());
-        $this->assertFalse($node->isLeaf());
+        $this->assertNotNull($this->node->right());
+        $this->assertInstanceOf(BinaryNode::class, $this->node->right());
+        $this->assertEquals(2, $this->node->height());
+        $this->assertEquals(1, $this->node->right()->height());
+        $this->assertFalse($this->node->isLeaf());
     }
 
     public function test_detach_left_child()
     {
-        $this->node->attachLeft(new BinaryNode(9, ['coolness_factor' => 'high']));
+        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'high']));
 
         $this->assertNotNull($this->node->left());
-        $this->assertTrue($this->node->left() instanceof BinaryNode);
+        $this->assertInstanceOf(BinaryNode::class, $this->node->left());
         $this->assertEquals('high', $this->node->left()->coolness_factor);
         $this->assertEquals($this->node, $this->node->left()->parent());
 
@@ -72,10 +72,10 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_right_child()
     {
-        $this->node->attachRight(new BinaryNode(12, ['coolness_factor' => 'low']));
+        $this->node->attachRight(new BinaryNode(['coolness_factor' => 'low']));
 
         $this->assertNotNull($this->node->right());
-        $this->assertTrue($this->node->right() instanceof BinaryNode);
+        $this->assertInstanceOf(BinaryNode::class, $this->node->right());
         $this->assertEquals('low', $this->node->right()->coolness_factor);
         $this->assertEquals($this->node, $this->node->right()->parent());
 

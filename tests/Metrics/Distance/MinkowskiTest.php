@@ -6,21 +6,21 @@ use PHPUnit\Framework\TestCase;
 
 class MinkowskiTest extends TestCase
 {
-    protected $distanceFunction;
+    protected $kernel;
 
     public function setUp()
     {
-        $this->distanceFunction = new Minkowski();
+        $this->kernel = new Minkowski();
     }
 
     public function test_build_distance_function()
     {
-        $this->assertTrue($this->distanceFunction instanceof Minkowski);
-        $this->assertTrue($this->distanceFunction instanceof Distance);
+        $this->assertTrue($this->kernel instanceof Minkowski);
+        $this->assertTrue($this->kernel instanceof Distance);
     }
 
     public function test_compute_distance()
     {
-        $this->assertEquals(8.6, round($this->distanceFunction->compute(['x' => 2, 'y' => 1], ['x' => 7, 'y' => 9]), 2));
+        $this->assertEquals(8.6, round($this->kernel->compute(['x' => 2, 'y' => 1], ['x' => 7, 'y' => 9]), 2));
     }
 }

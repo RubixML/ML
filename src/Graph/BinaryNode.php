@@ -9,75 +9,44 @@ class BinaryNode extends GraphObject implements Node
     /**
      * The parent node.
      *
-     * @var \Rubix\ML\BinaryNode|null
+     * @var \Rubix\ML\Graph\BinaryNode|null
      */
     protected $parent;
 
     /**
-     * The value of the node.
-     *
-     * @var mixed
-     */
-    protected $value;
-
-    /**
      * The left child node.
      *
-     * @var \Rubix\ML\BinaryNode|null
+     * @var \Rubix\ML\Graph\BinaryNode|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var \Rubix\ML\BinaryNode|null
+     * @var \Rubix\ML\Graph\BinaryNode|null
      */
     protected $right;
 
     /**
-     * @param  mixed  $value
-     * @param  array  $properties
-     * @return void
+     * @return \Rubix\ML\Graph\BinaryNode|null
      */
-    public function __construct($value, array $properties = [])
-    {
-        $this->changeValue($value);
-
-        $this->parent = null;
-        $this->left = null;
-        $this->right = null;
-
-        parent::__construct($properties);
-    }
-
-    /**
-     * @return \Rubix\ML\BinaryNode|null
-     */
-    public function parent() : ?BinaryNode
+    public function parent() : ?self
     {
         return $this->parent;
     }
 
     /**
-     * @return mixed
+     * @return \Rubix\ML\Graph\BinaryNode|null
      */
-    public function value()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return \Rubix\ML\BinaryNode|null
-     */
-    public function left() : ?BinaryNode
+    public function left() : ?self
     {
         return $this->left;
     }
 
     /**
-     * @return \Rubix\ML\BinaryNode|null
+     * @return \Rubix\ML\Graph\BinaryNode|null
      */
-    public function right() : ?BinaryNode
+    public function right() : ?self
     {
         return $this->right;
     }
@@ -105,99 +74,72 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
-     * Set the parent of this node.
+     * Set the parent node.
      *
-     * @param  \Rubix\ML\BinaryNode|null  $node
-     * @return self
+     * @param  \Rubix\ML\Graph\BinaryNode|null  $node
+     * @return void
      */
-    public function setParent(BinaryNode $node = null) : self
+    public function setParent(BinaryNode $node = null) : void
     {
         $this->parent = $node;
-
-        return $this;
-    }
-
-    /**
-     * Change the value of the node.
-     *
-     * @param  mixed  $values
-     * @return self
-     */
-    public function changeValue($value) : self
-    {
-        $this->value = $value;
-
-        return $this;
     }
 
     /**
      * Set the left child node.
      *
-     * @param  \Rubix\ML\BinaryNode|null  $node
-     * @return self
+     * @param  \Rubix\ML\Graph\BinaryNode|null  $node
+     * @return void
      */
-    public function attachLeft(BinaryNode $node = null) : self
+    public function attachLeft(BinaryNode $node) : void
     {
         $this->detachLeft();
 
-        if (isset($node)) {
-            $node->setParent($this);
+        $node->setParent($this);
 
-            $this->left = $node;
-        }
-
-        return $this;
+        $this->left = $node;
     }
 
     /**
      * Set the right child node.
      *
-     * @param  \Rubix\ML\BinaryNode|null  $node
-     * @return self
+     * @param  \Rubix\ML\Graph\BinaryNode|null  $node
+     * @return void
      */
-    public function attachRight(BinaryNode $node = null) : self
+    public function attachRight(BinaryNode $node) : void
     {
         $this->detachRight();
 
-        if (isset($node)) {
-            $node->setParent($this);
+        $node->setParent($this);
 
-            $this->right = $node;
-        }
-
-        return $this;
+        $this->right = $node;
     }
 
     /**
      * Detach the left child node.
      *
-     * @return self
+     * @return void
      */
-    public function detachLeft() : self
+    public function detachLeft() : void
     {
         if (isset($this->left)) {
             $this->left->setParent(null);
 
             $this->left = null;
         }
-
-        return $this;
     }
 
     /**
      * Detach the right child node.
      *
-     * @return self
+     * @return void
      */
-    public function detachRight() : self
+    public function detachRight() : void
     {
         if (isset($this->right)) {
             $this->right->setParent(null);
 
             $this->right = null;
         }
-
-        return $this;
     }
 
     /**

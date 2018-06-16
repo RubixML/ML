@@ -10,7 +10,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
-use SplPriorityQueue;
 
 class KNearestNeighbors implements Multiclass, Online, Probabilistic
 {
@@ -26,7 +25,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * The possible class outcomes.
@@ -57,23 +56,23 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Metrics\Distance\Distance  $distanceFunction
+     * @param  \Rubix\ML\Metrics\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 5, Distance $distanceFunction = null)
+    public function __construct(int $k = 5, Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . ' to make a prediction.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->k = $k;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -179,8 +178,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
         $distances = [];
 
         foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->distanceFunction
-                ->compute($sample, $neighbor);
+            $distances[$index] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);

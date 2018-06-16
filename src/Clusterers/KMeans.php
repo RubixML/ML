@@ -24,7 +24,7 @@ class KMeans implements Clusterer, Online, Persistable
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
@@ -44,12 +44,12 @@ class KMeans implements Clusterer, Online, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $kernel
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, Distance $distanceFunction = null, int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, Distance $kernel = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('Must target at least one'
@@ -61,12 +61,12 @@ class KMeans implements Clusterer, Online, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->k = $k;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
         $this->epochs = $epochs;
     }
 
@@ -178,7 +178,7 @@ class KMeans implements Clusterer, Online, Persistable
         $best = ['distance' => INF, 'label' => null];
 
         foreach ($this->centroids as $label => $centroid) {
-            $distance = $this->distanceFunction->compute($sample, $centroid);
+            $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $best['distance']) {
                 $best = ['distance' => $distance, 'label' => $label];

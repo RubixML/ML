@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Graph\Tree;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Graph\BinaryNode;
+use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\BinaryNode;
 use InvalidArgumentException;
 
-class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistable
+class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -85,27 +85,6 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
     }
 
     /**
-     * The height of the tree. O(V) because node heights are not memoized.
-     *
-     * @return int
-     */
-    public function height() : int
-    {
-        return $this->root->height();
-    }
-
-    /**
-     * The balance factor of the tree. O(V) because balance requires height of
-     * each node.
-     *
-     * @return int
-     */
-    public function balance() : int
-    {
-        return $this->root->balance();
-    }
-
-    /**
      * Train the decision tree by learning the most optimal splits in the
      * training set.
      *
@@ -129,7 +108,7 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
             array_push($sample, $labels[$index]);
         }
 
-        $this->root = $this->findBestSplit($samples);
+        $this->setRoot($this->findBestSplit($samples));
         $this->splits = 1;
 
         $this->split($this->root);
@@ -146,7 +125,8 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $predictions[] = $this->_predict($sample, $this->root)->value();
+            $predictions[] = $this->_predict($sample, $this->root)
+                ->get('class');
         }
 
         return $predictions;
@@ -164,7 +144,7 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
 
         foreach ($samples as $sample) {
             $probabilities[] = $this->_predict($sample, $this->root)
-                ->get('probabilities', []);
+                ->get('probabilities');
         }
 
         return $probabilities;
@@ -184,13 +164,13 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
         }
 
         if ($root->type === self::CATEGORICAL) {
-            if ($sample[$root->index] === $root->value()) {
+            if ($sample[$root->index] === $root->value) {
                 return $this->_predict($sample, $root->left());
             } else {
                 return $this->_predict($sample, $root->right());
             }
         } else {
-            if ($sample[$root->index] < $root->value()) {
+            if ($sample[$root->index] < $root->value) {
                 return $this->_predict($sample, $root->left());
             } else {
                 return $this->_predict($sample, $root->right());
@@ -283,8 +263,9 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
             }
         }
 
-        return new BinaryNode($best['value'], [
+        return new BinaryNode([
             'index' => $best['index'],
+            'value' => $best['value'],
             'type' => $this->columnTypes[$best['index']],
             'gini' => $best['gini'],
             'groups' => $best['groups'],
@@ -312,7 +293,8 @@ class DecisionTree extends Tree implements Multiclass, Probabilistic, Persistabl
 
         $outcome = array_search(max($probabilities), $probabilities);
 
-        return new BinaryNode($outcome, [
+        return new BinaryNode([
+            'class' => $outcome,
             'probabilities' =>  $probabilities,
             'terminal' => true,
         ]);

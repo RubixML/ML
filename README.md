@@ -207,7 +207,7 @@ use Rubix\ML\Metrics\Validation\Accuracy;
 
 $validator = new HoldOut(new Accuracy(), 0.2);
 
-$score = $validator->score($estimator, $dataset);
+$score = $validator->test($estimator, $dataset);
 
 var_dump($score);
 ```
@@ -221,7 +221,6 @@ Since we are measuring accuracy, this output means that our Estimator is about 9
 Now that we've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started with Rubix and are comfortable with machine learning a great place to get started is with one of the many datasets available for free on the [University of California Irvine Machine Learning repository](https://archive.ics.uci.edu/ml/datasets.html) website.
 
 ## API Reference
-
 
 ### Dataset Objects
 In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects make it easy to slice and transport data in a canonical way.
@@ -1321,19 +1320,19 @@ $transformer = new ZScaleStandardizer();
 ```
 ---
 ### Cross Validation
-Cross validation is the process of testing the generalization performance of a computer model using various techniques. Rubix has a number of classes that run cross validation on an instantiated Estimator for you. Each **Validator** outputs a single score based on a chosen metric, while **Reports** output an array of values based on the type of Report.
+Cross validation is the process of testing the generalization performance of a computer model using various techniques. Rubix has a number of classes that run cross validation on an instantiated Estimator for you. Each **Validator** outputs a scalar score based on the chosen metric.
 
 ---
 #### Validators
 Validators take an Estimator instance and Labeled Dataset object and return a score that measures the generalization performance using a user-defined validation metric.
 
 ```php
-public score(Estimator $estimator, Labeled $dataset) : float
+public test(Estimator $estimator, Labeled $dataset) : float
 ```
 
 ##### Example:
 ```php
-$score = $validator->score($estimator, $dataset);
+$score = $validator->test($estimator, $dataset);
 
 var_dump($score);
 ```

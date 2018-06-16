@@ -32,16 +32,16 @@ class DBSCAN implements Clusterer, Persistable
      *
      * @var \Rubix\ML\Contracts\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * @param  float  $radius
      * @param  int  $minDensity
-     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $distanceFunction = null)
+    public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $kernel = null)
     {
         if ($radius < 0.0) {
             throw new InvalidArgumentException('Epsilon cannot be less than 0.');
@@ -52,13 +52,13 @@ class DBSCAN implements Clusterer, Persistable
                 . ' number greater than 0.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->radius = $radius;
         $this->minDensity = $minDensity;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -153,7 +153,7 @@ class DBSCAN implements Clusterer, Persistable
         $neighbors = [];
 
         foreach ($samples as $index => $sample) {
-            $distance = $this->distanceFunction->compute($neighbor, $sample);
+            $distance = $this->kernel->compute($neighbor, $sample);
 
             if ($distance <= $this->radius) {
                 $neighbors[] = $index;

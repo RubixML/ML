@@ -25,7 +25,7 @@ class MeanShift implements Clusterer, Persistable
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * The sensitivity threshold. i.e. the minimum change in the centroid means
@@ -53,13 +53,13 @@ class MeanShift implements Clusterer, Persistable
 
     /**
      * @param  float  $radius
-     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $kernel
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius, Distance $distanceFunction = null,
+    public function __construct(float $radius, Distance $kernel = null,
                                 float $threshold = 1e-8, int $epochs = PHP_INT_MAX)
     {
         if ($radius <= 0) {
@@ -77,12 +77,12 @@ class MeanShift implements Clusterer, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->radius = $radius;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
         $this->threshold = $threshold;
         $this->epochs = $epochs;
     }
@@ -119,8 +119,7 @@ class MeanShift implements Clusterer, Persistable
                 $total = array_fill(0, $dataset->numColumns(), 0.0);
 
                 foreach ($dataset as $sample) {
-                    $distance = $this->distanceFunction->compute($sample,
-                        $centroid);
+                    $distance = $this->kernel->compute($sample, $centroid);
 
                     if ($distance <= $this->radius) {
                         foreach ($sample as $column => $feature) {
@@ -139,8 +138,7 @@ class MeanShift implements Clusterer, Persistable
 
                 foreach ($this->centroids as $j => $target) {
                     if ($i !== $j) {
-                        $distance = $this->distanceFunction->compute($centroid,
-                            $target);
+                        $distance = $this->kernel->compute($centroid, $target);
 
                         if ($distance < $this->radius) {
                             unset($this->centroids[$j]);
@@ -196,7 +194,7 @@ class MeanShift implements Clusterer, Persistable
         $best = ['distance' => INF, 'label' => null];
 
         foreach ($this->centroids as $label => $centroid) {
-            $distance = $this->distanceFunction->compute($sample, $centroid);
+            $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $best['distance']) {
                 $best = ['distance' => $distance, 'label' => $label];

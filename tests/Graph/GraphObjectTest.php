@@ -16,9 +16,9 @@ class GraphObjectTest extends TestCase
         ]);
     }
 
-    public function test_create_object()
+    public function test_create_graph_object()
     {
-        $this->assertTrue($this->object instanceof GraphObject);
+        $this->assertInstanceOf(GraphObject::class, $this->object);
     }
 
     public function test_object_has_property()

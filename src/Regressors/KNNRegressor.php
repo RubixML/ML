@@ -24,7 +24,7 @@ class KNNRegressor implements Regressor, Online
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * The coordinate vectors of the training data.
@@ -46,23 +46,23 @@ class KNNRegressor implements Regressor, Online
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, Distance $distanceFunction = null)
+    public function __construct(int $k = 3, Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . ' to make a prediction.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->k = $k;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -137,8 +137,7 @@ class KNNRegressor implements Regressor, Online
         $distances = [];
 
         foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->distanceFunction
-                ->compute($sample, $neighbor);
+            $distances[$index] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);

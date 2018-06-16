@@ -2,16 +2,16 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Graph\Tree;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\BinaryNode;
+use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
-class RegressionTree extends Tree implements Regressor, Persistable
+class RegressionTree extends BinaryTree implements Regressor, Persistable
 {
     /**
      * The maximum depth of a branch before it is forced to terminate.
@@ -77,26 +77,6 @@ class RegressionTree extends Tree implements Regressor, Persistable
     }
 
     /**
-     * The height of the tree. O(V) because heights are not memoized.
-     *
-     * @return int
-     */
-    public function height() : int
-    {
-        return $this->root->height();
-    }
-
-    /**
-     * The balance factor of the tree. O(V)
-     *
-     * @return int
-     */
-    public function balance() : int
-    {
-        return $this->root->balance();
-    }
-
-    /**
      * Train the regression tree by learning the most optimal splits in the
      * training set.
      *
@@ -119,7 +99,7 @@ class RegressionTree extends Tree implements Regressor, Persistable
             array_push($sample, $labels[$index]);
         }
 
-        $this->root = $this->findBestSplit($samples);
+        $this->setRoot($this->findBestSplit($samples));
         $this->splits = 1;
 
         $this->split($this->root);
@@ -136,7 +116,8 @@ class RegressionTree extends Tree implements Regressor, Persistable
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $predictions[] = $this->_predict($sample, $this->root)->value();
+            $predictions[] = $this->_predict($sample, $this->root)
+                ->get('output');
         }
 
         return $predictions;
@@ -156,13 +137,13 @@ class RegressionTree extends Tree implements Regressor, Persistable
         }
 
         if ($root->type === self::CATEGORICAL) {
-            if ($sample[$root->index] === $root->value()) {
+            if ($sample[$root->index] === $root->value) {
                 return $this->_predict($sample, $root->left());
             } else {
                 return $this->_predict($sample, $root->right());
             }
         } else {
-            if ($sample[$root->index] < $root->value()) {
+            if ($sample[$root->index] < $root->value) {
                 return $this->_predict($sample, $root->left());
             } else {
                 return $this->_predict($sample, $root->right());
@@ -265,8 +246,9 @@ class RegressionTree extends Tree implements Regressor, Persistable
             }
         }
 
-        return new BinaryNode($best['value'], [
+        return new BinaryNode([
             'index' => $best['index'],
+            'value' => $best['value'],
             'type' => $this->columnTypes[$best['index']],
             'variance' => $best['variance'],
             'groups' => $best['groups'],
@@ -289,7 +271,8 @@ class RegressionTree extends Tree implements Regressor, Persistable
             return $carry += ($outcome - $mean) ** 2;
         }, 0.0) / count($outcomes);
 
-        return new BinaryNode($mean, [
+        return new BinaryNode([
+            'output' => $mean,
             'variance' =>  $variance,
             'terminal' => true,
         ]);

@@ -33,7 +33,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
-    protected $distanceFunction;
+    protected $kernel;
 
     /**
      * The sensitivity threshold. i.e. the minimum change in the centroid means
@@ -72,13 +72,13 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     /**
      * @param  int  $c
      * @param  float  $fuzz
-     * @param  \Rubix\ML\Contracts\Distance  $distanceFunction
+     * @param  \Rubix\ML\Contracts\Distance  $kernel
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2.0, Distance $distanceFunction = null,
+    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
                             float $threshold = 1e-4, int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
@@ -101,13 +101,13 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($distanceFunction)) {
-            $distanceFunction = new Euclidean();
+        if (!isset($kernel)) {
+            $kernel = new Euclidean();
         }
 
         $this->c = $c;
         $this->fuzz = $fuzz + self::EPSILON;
-        $this->distanceFunction = $distanceFunction;
+        $this->kernel = $kernel;
         $this->threshold = $threshold;
         $this->epochs = $epochs;
     }
@@ -239,12 +239,12 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         $membership = [];
 
         foreach ($this->centroids as $label => $centroid1) {
-            $a = $this->distanceFunction->compute($sample, $centroid1);
+            $a = $this->kernel->compute($sample, $centroid1);
 
             $total = self::EPSILON;
 
             foreach ($this->centroids as $centroid2) {
-                $b = $this->distanceFunction->compute($sample, $centroid2);
+                $b = $this->kernel->compute($sample, $centroid2);
 
                 $total += pow($a / ($b + self::EPSILON),
                     2 / ($this->fuzz - 1));
@@ -323,7 +323,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
         foreach ($dataset as $sample) {
             foreach ($this->centroids as $centroid) {
-                $score += $this->distanceFunction->compute($sample, $centroid);
+                $score += $this->kernel->compute($sample, $centroid);
             }
         }
 

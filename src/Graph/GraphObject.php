@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Graph;
 
-use InvalidArgumentException;
-
 class GraphObject
 {
     /**
@@ -33,31 +31,6 @@ class GraphObject
     }
 
     /**
-     * Check to see if a given property is set on the object. O(1)
-     *
-     * @param  string  $property
-     * @return bool
-     */
-    public function has(string $property) : bool
-    {
-        return array_key_exists($property, $this->properties);
-    }
-
-    /**
-     * Set a given property on the object. O(1)
-     *
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return self
-     */
-    public function set(string $property, $value = null) : GraphObject
-    {
-        $this->properties[$property] = $value;
-
-        return $this;
-    }
-
-    /**
      * Update the object with properties from an associative array. O(P)
      *
      * @param  array  $properties
@@ -70,6 +43,17 @@ class GraphObject
         }
 
         return $this;
+    }
+
+    /**
+     * Check to see if a given property is set on the object. O(1)
+     *
+     * @param  string  $property
+     * @return bool
+     */
+    public function has(string $property) : bool
+    {
+        return array_key_exists($property, $this->properties);
     }
 
     /**
@@ -92,18 +76,28 @@ class GraphObject
     }
 
     /**
+     * Set a property on the object.
+     *
+     * @param  string  $property
+     * @param  mixed  $value
+     * @return void
+     */
+    public function set(string $property, $value = null) : void
+    {
+        $this->properties[$property] = $value;
+    }
+
+    /**
      * Remove a property from the object.
      *
      * @param  string  $property
      * @return self
      */
-    public function remove(string $property) : self
+    public function remove(string $property) : void
     {
         if ($this->has($property)) {
             unset($this->properties[$property]);
         }
-
-        return $this;
     }
 
     /**
@@ -126,27 +120,5 @@ class GraphObject
     public function __get(string $property)
     {
         return $this->get($property);
-    }
-
-    /**
-     * Determine if a property is set, i.e. present and not null.
-     *
-     * @param  string  $property
-     * @return bool
-     */
-    public function __isset(string $property)
-    {
-        return isset($this->properties[$property]);
-    }
-
-    /**
-     * Remove a property from the object via unset().
-     *
-     * @param  string  $property
-     * @return bool
-     */
-    public function __unset(string $property)
-    {
-        return $this->remove($property);
     }
 }
