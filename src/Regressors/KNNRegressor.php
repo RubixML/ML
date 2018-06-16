@@ -9,7 +9,6 @@ use MathPHP\Statistics\Average;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
-use SplPriorityQueue;
 
 class KNNRegressor implements Regressor, Online
 {
@@ -135,21 +134,17 @@ class KNNRegressor implements Regressor, Online
      */
     protected function findNearestNeighbors(array $sample) : array
     {
-        $computed = new SplPriorityQueue();
-        $neighbors = [];
+        $distances = [];
 
         foreach ($this->samples as $index => $neighbor) {
-            $distance = $this->distanceFunction->compute($sample, $neighbor);
-
-            $computed->insert($this->labels[$index], -$distance);
+            $distances[$index] = $this->distanceFunction
+                ->compute($sample, $neighbor);
         }
 
-        $n = (count($this->samples) >= $this->k ? $this->k : count($this->samples));
+        asort($distances);
 
-        for ($i = 0; $i < $n; $i++) {
-            $neighbors[] = $computed->extract();
-        }
+        $neighbors = array_slice($distances, 0, $this->k, true);
 
-        return $neighbors;
+        return array_intersect_key($this->labels, $neighbors);
     }
 }

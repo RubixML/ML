@@ -41,7 +41,7 @@ $validator = new KFold(new VMeasure(), 10);
 
 $report = new ContingencyTable();
 
-var_dump($validator->score($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 

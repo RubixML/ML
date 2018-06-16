@@ -16,7 +16,7 @@ class RobustZScore implements Detector, Persistable
      *
      * @var float
      */
-    protected $threshold;
+    protected $tolerance;
 
     /**
      * The median of each training feature column.
@@ -37,18 +37,18 @@ class RobustZScore implements Detector, Persistable
     ];
 
     /**
-     * @param  float  $threshold
+     * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $threshold = 3.5)
+    public function __construct(float $tolerance = 3.5)
     {
-        if ($threshold <= 0) {
-            throw new InvalidArgumentException('Threshold Z score must be'
-                . ' greater than 0.');
+        if ($tolerance <= 0) {
+            throw new InvalidArgumentException('Tolerance must be greater than'
+                . ' 0.');
         }
 
-        $this->threshold = $threshold;
+        $this->tolerance = $tolerance;
     }
 
     /**
@@ -94,10 +94,9 @@ class RobustZScore implements Detector, Persistable
                 $deviations[] = abs($value - $median);
             }
 
-            $mad = Average::median($deviations);
+            $this->mads[$column] = Average::median($deviations);
 
             $this->medians[$column] = $median;
-            $this->mads[$column] = $mad;
         }
     }
 
@@ -114,7 +113,7 @@ class RobustZScore implements Detector, Persistable
                 $score = self::LAMBDA * ($feature - $this->medians[$column])
                     / $this->mads[$column];
 
-                if ($score > $this->threshold) {
+                if ($score > $this->tolerance) {
                     $predictions[] = 1;
 
                     continue 2;

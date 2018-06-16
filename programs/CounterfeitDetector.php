@@ -43,10 +43,10 @@ $estimator = new Pipeline(new LogisticRegression(10, new Adam(0.001), 1e-4, 1e-4
 
 $validator = new KFold(new MCC(), 10);
 
-var_dump($validator->score($dummy, $dataset));
+var_dump($validator->test($dummy, $dataset));
 
 echo "\n";
 
-var_dump($validator->score($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset));
 
 var_dump($estimator->proba($dataset->randomize()->head(5)));

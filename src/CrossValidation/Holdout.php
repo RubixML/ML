@@ -49,7 +49,7 @@ class Holdout implements Validator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $dataset) : float
+    public function test(Estimator $estimator, Labeled $dataset) : float
     {
         $dataset->randomize();
 

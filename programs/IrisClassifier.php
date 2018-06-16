@@ -5,17 +5,17 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Metrics\Validation\F1Score;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Iris Classifier using Softmax Classifier            ║' . "\n";
+echo '║ Iris Classifier using K Nearest Neighbors           ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -32,21 +32,19 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new SoftmaxClassifier(10, new Adam(0.001), 1e-4, 1e-5, 300), [
+$estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
     new NumericStringConverter(),
+    new ZScaleStandardizer(),
 ]);
 
-$report = new AggregateReport([
-    new ConfusionMatrix(),
-    new ClassificationReport(),
-]);
+$validator = new KFold(new F1Score(), 10);
+
+$report = new ConfusionMatrix();
+
+var_dump($validator->test($estimator, $dataset));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
 $estimator->train($training);
 
 var_dump($report->generate($estimator, $testing));
-
-$estimator->train($dataset->randomize()->leave(5));
-
-var_dump($estimator->proba($dataset));
