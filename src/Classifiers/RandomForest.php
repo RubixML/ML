@@ -41,12 +41,11 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     protected $minSamples;
 
     /**
-     * The threshold gini score needed to stop split searching
-     * early.
+     * The amount of gini impurity to tolerate when choosing a perfect split.
      *
      * @var float
      */
-    protected $threshold;
+    protected $tolerance;
 
     /**
      * The possible class outcomes.
@@ -75,7 +74,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      * @return void
      */
     public function __construct(int $trees = 50, float $ratio = 0.1, int $maxDepth = 10,
-                                int $minSamples = 5, float $threshold = 1e-2)
+                                int $minSamples = 5, float $tolerance = 1e-2)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -97,8 +96,8 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
                 . ' than 1.');
         }
 
-        if ($threshold < 0 or $threshold > 1) {
-            throw new InvalidArgumentException('Gini threshold must be between'
+        if ($tolerance < 0 or $tolerance > 1) {
+            throw new InvalidArgumentException('Gini tolerance must be between'
                 . ' 0 and 1.');
         }
 
@@ -106,7 +105,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
         $this->ratio = $ratio;
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
-        $this->threshold = $threshold;
+        $this->tolerance = $tolerance;
     }
 
     /**
@@ -132,7 +131,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
 
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new DecisionTree($this->maxDepth, $this->minSamples,
-                $this->threshold);
+                $this->tolerance);
 
             $tree->train($dataset->randomSubset($n));
 

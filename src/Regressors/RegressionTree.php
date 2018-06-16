@@ -28,11 +28,11 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     protected $minSamples;
 
     /**
-     * The threshold variance needed to stop split searching early.
+     * The amount of variance to tolerate when choosing a perfect split.
      *
      * @var float
      */
-    protected $threshold;
+    protected $tolerance;
 
     /**
      * The number of times the tree has split. i.e. a comparison is made.
@@ -53,12 +53,12 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
-     * @param  float  $threshold
+     * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                float $threshold = 1e-2)
+                                float $tolerance = 1e-2)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -70,14 +70,14 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                 . ' than 1.');
         }
 
-        if ($threshold < 0) {
-            throw new InvalidArgumentException('Variance threshold must be 0 or'
+        if ($tolerance < 0) {
+            throw new InvalidArgumentException('Variance tolerance must be 0 or'
                 . ' greater.');
         }
 
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
-        $this->threshold = $threshold;
+        $this->tolerance = $tolerance;
         $this->splits = 0;
     }
 
@@ -259,7 +259,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                     $best['groups'] = $groups;
                 }
 
-                if ($variance <= $this->threshold) {
+                if ($variance <= $this->tolerance) {
                     break 2;
                 }
             }

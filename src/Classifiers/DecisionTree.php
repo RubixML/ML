@@ -27,11 +27,11 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     protected $minSamples;
 
     /**
-     * The threshold gini score needed to stop split searching early.
+     * The amount of gini impurity to tolerate when choosing a perfect split.
      *
      * @var float
      */
-    protected $threshold;
+    protected $tolerance;
 
     /**
      * The number of times the tree has split. i.e. a comparison is made.
@@ -61,12 +61,12 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
-     * @param  float  $threshold
+     * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                float $threshold = 1e-2)
+                                float $tolerance = 1e-2)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -78,14 +78,14 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                 . ' than 1.');
         }
 
-        if ($threshold < 0 or $threshold > 1) {
-            throw new InvalidArgumentException('Gini threshold must be between'
+        if ($tolerance < 0 or $tolerance > 1) {
+            throw new InvalidArgumentException('Gini tolerance must be between'
                 . ' 0 and 1.');
         }
 
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
-        $this->threshold = $threshold;
+        $this->tolerance = $tolerance;
         $this->splits = 0;
     }
 
@@ -276,7 +276,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                     $best['groups'] = $groups;
                 }
 
-                if ($gini <= $this->threshold) {
+                if ($gini <= $this->tolerance) {
                     break 2;
                 }
             }

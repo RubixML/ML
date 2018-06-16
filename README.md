@@ -633,7 +633,7 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| threshold | 1e-2 | float | The threshold gini score needed to stop split searching early. |
+| tolerance | 1e-2 | float | The amount of gini impurity to tolerate when choosing a perfect split. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -792,7 +792,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| threshold | 1e-2 | float | The threshold gini score needed to stop split searching early. |
+| tolerance | 1e-2 | float | The amount of gini impurity to tolerate when choosing a perfect split. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1037,7 +1037,7 @@ A binary tree learning algorithm that minimizes the variance between decision no
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| threshold | 1e-2 | float | The threshold variance needed to stop split searching early. |
+| tolerance | 1e-2 | float | The amount of variance to tolerate when choosing a perfect split. |
 
 ##### Additional Methods:
 | Method | Description |
