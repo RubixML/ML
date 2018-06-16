@@ -43,7 +43,7 @@ class RegressionTreeTest extends TestCase
 
         $this->testing = new Labeled([[6, 150.0, 2825]], [20]);
 
-        $this->estimator = new RegressionTree(10, 5);
+        $this->estimator = new RegressionTree(10, 5, 1e-4);
     }
 
     public function test_build_regression_tree()

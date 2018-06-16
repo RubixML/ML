@@ -28,6 +28,13 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     protected $minSamples;
 
     /**
+     * The threshold variance needed to stop split searching early.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * The number of times the tree has split. i.e. a comparison is made.
      *
      * @var int
@@ -46,10 +53,12 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
+     * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
+                                float $threshold = 1e-2)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -61,8 +70,14 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                 . ' than 1.');
         }
 
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Variance threshold must be 0 or'
+                . ' greater.');
+        }
+
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
+        $this->threshold = $threshold;
         $this->splits = 0;
     }
 
@@ -211,13 +226,17 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
+        $outcomes = array_unique(array_column($data, count($data[0]) - 1));
+
+        $indices = range(0, count($data[0]) - 2);
+
+        shuffle($indices);
+
         $best = [
             'variance' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
-        $outcomes = array_column($data, count($data[0]) - 1);
-
-        for ($index = 0; $index < count(current($data)) - 1; $index++) {
+        foreach ($indices as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -234,13 +253,13 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                 }
 
                 if ($variance < $best['variance']) {
-                    $best = [
-                        'variance' => $variance, 'index' => $index,
-                        'value' => $row[$index], 'groups' => $groups,
-                    ];
+                    $best['variance'] = $variance;
+                    $best['index'] = $index;
+                    $best['value'] = $row[$index];
+                    $best['groups'] = $groups;
                 }
 
-                if ($variance === 0.0) {
+                if ($variance <= $this->threshold) {
                     break 2;
                 }
             }

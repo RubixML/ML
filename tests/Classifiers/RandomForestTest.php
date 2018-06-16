@@ -42,7 +42,7 @@ class RandomForestTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new RandomForest(10, 0.8, 10, 5);
+        $this->estimator = new RandomForest(10, 0.8, 10, 5, 1e-4);
     }
 
     public function test_create_tree()

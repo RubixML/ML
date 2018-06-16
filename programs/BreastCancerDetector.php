@@ -35,12 +35,12 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new RandomForest(50, 0.1, 10, 5), [
+$estimator = new Pipeline(new RandomForest(100, 0.2, 20, 3, 1e-2), [
     new MissingDataImputer('?'),
     new NumericStringConverter(),
 ]);
 
-$validator = new Holdout(new MCC(), 0.2);
+$validator = new Holdout(new MCC(), 0.1);
 
 $report = new AggregateReport([
     new ConfusionMatrix(),

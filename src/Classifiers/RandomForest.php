@@ -41,6 +41,14 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     protected $minSamples;
 
     /**
+     * The threshold gini score needed to stop split searching
+     * early.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * The possible class outcomes.
      *
      * @var array
@@ -67,7 +75,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      * @return void
      */
     public function __construct(int $trees = 50, float $ratio = 0.1, int $maxDepth = 10,
-                                int $minSamples = 5)
+                                int $minSamples = 5, float $threshold = 1e-2)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -79,10 +87,26 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
                 . ' value between 0.01 and 1.0.');
         }
 
+        if ($minSamples < 1) {
+            throw new InvalidArgumentException('At least one sample is required'
+                . ' to make a decision.');
+        }
+
+        if ($maxDepth < 1) {
+            throw new InvalidArgumentException('A tree cannot have depth less'
+                . ' than 1.');
+        }
+
+        if ($threshold < 0 or $threshold > 1) {
+            throw new InvalidArgumentException('Gini threshold must be between'
+                . ' 0 and 1.');
+        }
+
         $this->trees = $trees;
         $this->ratio = $ratio;
         $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
+        $this->threshold = $threshold;
     }
 
     /**
@@ -107,7 +131,8 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
         $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
-            $tree = new DecisionTree($this->maxDepth, $this->minSamples);
+            $tree = new DecisionTree($this->maxDepth, $this->minSamples,
+                $this->threshold);
 
             $tree->train($dataset->randomSubset($n));
 
@@ -149,16 +174,14 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      */
     public function proba(Dataset $samples) : array
     {
-        $n = count($this->forest) + self::EPSILON;
-
         $probabilities = array_fill(0, $samples->numRows(),
             array_fill_keys($this->classes, 0.0));
 
+        $n = count($this->forest) + self::EPSILON;
+
         foreach ($this->forest as $tree) {
-            foreach ($tree->proba($samples) as $i => $results) {
-                foreach ($results as $class => $probability) {
-                    $probabilities[$i][$class] += $probability / $n;
-                }
+            foreach ($tree->predict($samples) as $i => $class) {
+                $probabilities[$i][$class] += 1 / $n;
             }
         }
 

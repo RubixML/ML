@@ -633,6 +633,7 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+| threshold | 1e-2 | float | The threshold gini score needed to stop split searching early. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -645,7 +646,7 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 ```php
 use Rubix\ML\Classifiers\DecisionTree;
 
-$estimator = new DecisionTree(10, 3);
+$estimator = new DecisionTree(10, 3, 1e-4);
 
 $estimator->complexity(); // 20
 $estimator->height(); // 9
@@ -791,6 +792,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+| threshold | 1e-2 | float | The threshold gini score needed to stop split searching early. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -799,7 +801,7 @@ This Estimator does not have any additional methods.
 ```php
 use Rubix\ML\Classifiers\RandomForest;
 
-$estimator = new RandomForest(100, 0.2, 5, 3);
+$estimator = new RandomForest(100, 0.2, 5, 3, 1e-2);
 ```
 
 #### Softmax Classifier
@@ -1035,6 +1037,7 @@ A binary tree learning algorithm that minimizes the variance between decision no
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+| threshold | 1e-2 | float | The threshold variance needed to stop split searching early. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -1047,7 +1050,7 @@ A binary tree learning algorithm that minimizes the variance between decision no
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(50, 1);
+$estimator = new RegressionTree(50, 1, 0.0);
 
 $estimator->complexity(); // 36
 $estimator->height(); // 18

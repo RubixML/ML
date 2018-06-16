@@ -43,7 +43,7 @@ class DecisionTreeTest extends TestCase
 
         $this->testing = new Labeled([[7.1929367, 3.52848298]], ['male']);
 
-        $this->estimator = new DecisionTree(10, 5);
+        $this->estimator = new DecisionTree(10, 5, 1e-4);
     }
 
     public function test_create_tree()
