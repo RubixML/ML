@@ -28,7 +28,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     protected $fuzz;
 
     /**
-     * The distance function to use when computing the distances between
+     * The distance kernel to use when computing the distances between
      * samples.
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
@@ -241,7 +241,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         foreach ($this->centroids as $label => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
-            $total = self::EPSILON;
+            $total = 0.0;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
@@ -250,7 +250,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                     2 / ($this->fuzz - 1));
             }
 
-            $membership[$label] = 1 / $total;
+            $membership[$label] = 1 / ($total + self::EPSILON);
         }
 
         return $membership;

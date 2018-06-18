@@ -21,7 +21,7 @@ class MeanShift implements Clusterer, Persistable
     protected $radius;
 
     /**
-     * The distance function to use when computing the distances.
+     * The distance kernel to use when computing the distances.
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */

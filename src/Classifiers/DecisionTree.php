@@ -371,6 +371,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
 
             $counts = array_count_values(array_column($group,
                 count(current($group)) - 1));
+                
             $score = 0.0;
 
             foreach ($outcomes as $outcome) {

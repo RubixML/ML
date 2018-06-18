@@ -182,9 +182,8 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
         }
 
         asort($distances);
-
-        $neighbors = array_slice($distances, 0, $this->k, true);
-
-        return array_intersect_key($this->labels, $neighbors);
+        
+        return array_intersect_key($this->labels,
+            array_slice($distances, 0, $this->k, true));
     }
 }

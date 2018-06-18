@@ -25,6 +25,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
 		- [Anomaly Detection](#anomaly-detection)
+			- [Local Outlier Factor](#local-outlier-factor)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
@@ -148,7 +149,7 @@ Here are the hyperparameters for K Nearest Neighbors:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 The K Nearest Neighbors algorithm works by comparing the "distance" between a given sample and each of the training samples. It will then use the K nearest samples to base its prediction on. For example, if the 5 closest neighbors to a sample are 4 married and 1 divorced, the algorithm will output a prediction of married with a probability of 0.80.
 
@@ -562,10 +563,34 @@ array(3) {
 ---
 ### Anomaly Detection
 
-Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
+Anomaly detection is the process of identifying samples that do not conform to the expected pattern. Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
+
+#### Local Outlier Factor
+The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the density ratio of the sample over the median of the local region.
+
+##### Unsupervised, Online
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| k | 10 | int | The k nearest neighbors that form a local region. |
+| neighbors | 20 | int | The number of neighbors considered when computing the radius of a centroid. |
+| threshold | 0.5 | float | The threshold density ratio of the sample to the median of the local region. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\Metrics\Distance\Minkowski;
+
+$estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
+```
 
 #### Robust Z Score
-The Robust Z Score Detector uses a modified Z score threshold to detect outliers within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation as the former are more robust to noisy data than the latter.
+A quick global anomaly Detector, Robust Z Score uses a modified Z score threshold to detect outliers within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation as the former are more robust to noise than the latter.
 
 ##### Unsupervised, Persistable
 
@@ -683,7 +708,7 @@ A lazy learning algorithm that locates the K nearest samples from the training s
 | Param | Default | Type | Description |
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.|
@@ -842,7 +867,7 @@ Density-based spatial clustering of applications with noise is a clustering algo
 |--|--|--|--|
 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points.
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -865,7 +890,7 @@ Clusterer that allows data points to belong to multiple clusters if they fall wi
 |--|--|--|--|
 | c | None | int | The number of target clusters. |
 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 | threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
@@ -895,7 +920,7 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 | Param | Default | Type | Description |
 |--|--|--|--|
 | k | None | int | The number of target clusters. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
 ##### Additional Methods:
@@ -922,7 +947,7 @@ A hierarchical clustering technique that uses peak finding to locate the local m
 | Param | Default | Type | Description |
 |--|--|--|--|
 | radius | None | float | The radius of each cluster centroid. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
@@ -973,7 +998,7 @@ A version of K Nearest Neighbors that uses the mean of K nearest data points to 
 | Param | Default | Type | Description |
 |--|--|--|--|
 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| distance | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.

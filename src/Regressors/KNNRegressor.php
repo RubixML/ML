@@ -20,7 +20,7 @@ class KNNRegressor implements Regressor, Online
     protected $k;
 
     /**
-     * The distance function to use when computing the distances.
+     * The distance kernel to use when computing the distances.
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
      */
@@ -36,7 +36,7 @@ class KNNRegressor implements Regressor, Online
     ];
 
     /**
-     * The training outcomes.
+     * The training labels.
      *
      * @var array
      */
@@ -77,7 +77,7 @@ class KNNRegressor implements Regressor, Online
                 . ' Labeled training set.');
         }
 
-        $this->classes = $this->samples = $this->labels = [];
+        $this->samples = $this->labels = [];
 
         $this->partial($dataset);
     }
@@ -102,7 +102,6 @@ class KNNRegressor implements Regressor, Online
                 . ' continuous features.');
         }
 
-        $this->classes = array_merge($this->classes, $dataset->possibleOutcomes());
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
     }
@@ -142,8 +141,7 @@ class KNNRegressor implements Regressor, Online
 
         asort($distances);
 
-        $neighbors = array_slice($distances, 0, $this->k, true);
-
-        return array_intersect_key($this->labels, $neighbors);
+        return array_intersect_key($this->labels,
+            array_slice($distances, 0, $this->k, true));
     }
 }

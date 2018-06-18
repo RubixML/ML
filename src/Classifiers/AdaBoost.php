@@ -44,7 +44,8 @@ class AdaBoost implements Binary, Persistable
     protected $ratio;
 
     /**
-     * The threshold accuracy of a single classifier before the algorithm stops early.
+     * The threshold accuracy of a single classifier before the algorithm stops
+     * early.
      *
      * @var float
      */
@@ -60,8 +61,7 @@ class AdaBoost implements Binary, Persistable
     ];
 
     /**
-     * The ensemble of experts that specialize in classifying certain aspects of
-     * the training set.
+     * The ensemble of "weak" classifiers.
      *
      * @var array
      */
@@ -185,9 +185,9 @@ class AdaBoost implements Binary, Persistable
 
             $error = 0.0;
 
-            foreach ($dataset->labels() as $index => $outcome) {
-                if ($predictions[$index] !== $outcome) {
-                    $error += $this->weights[$index];
+            foreach ($predictions as $i => $prediction) {
+                if ($prediction !== $dataset->label($i)) {
+                    $error += $this->weights[$i];
                 }
             }
 
@@ -195,11 +195,11 @@ class AdaBoost implements Binary, Persistable
             $error /= $total;
             $influence = 0.5 * log((1 - $error) / ($error + self::EPSILON));
 
-            foreach ($dataset->labels() as $index => $outcome) {
-                $x = $predictions[$index] === $this->classes[1] ? 1 : -1;
-                $y = $outcome === $this->classes[1] ? 1 : -1;
+            foreach ($predictions as $i => $prediction) {
+                $x = $prediction === $this->classes[1] ? 1 : -1;
+                $y = $dataset->label($i) === $this->classes[1] ? 1 : -1;
 
-                $this->weights[$index] *= exp(-$influence * $x * $y) / $total;
+                $this->weights[$i] *= exp(-$influence * $x * $y) / $total;
             }
 
             $this->influence[] = $influence;
@@ -248,17 +248,19 @@ class AdaBoost implements Binary, Persistable
      */
     protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
     {
-        $n = round($this->ratio * $dataset->numRows());
-        $total = array_sum($this->weights);
+        $n = $dataset->numRows();
+        $k = round($this->ratio * $n);
 
         list($samples, $labels) = $dataset->all();
 
+        $total = array_sum($this->weights);
+
         $subset = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        for ($i = 0; $i < $k; $i++) {
             $random = random_int(0, $total * 1e8) / 1e8;
 
-            for ($index = 0; $index < $dataset->numRows(); $index++) {
+            for ($index = 0; $index < $n; $index++) {
                 $random -= $this->weights[$index];
 
                 if ($random < 0) {
