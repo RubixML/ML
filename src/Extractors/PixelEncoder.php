@@ -38,7 +38,8 @@ class PixelEncoder implements Extractor
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
+    public function __construct(array $size = [32, 32], bool $rgb = true,
+                                int $sharpen = 0, string $driver = 'gd')
     {
         if (count($size) !== 2) {
             throw new InvalidArgumentException('Size must have a width and a'
@@ -52,8 +53,14 @@ class PixelEncoder implements Extractor
             }
         }
 
+        if ($sharpen < 0 or $sharpen > 100) {
+            throw new InvalidArgumentException('Sharpness factor must be'
+                . ' between 0 and 100');
+        }
+
         $this->size = $size;
         $this->channels = $rgb ? 3 : 1;
+        $this->sharpen = $sharpen;
         $this->intervention = new Intervention(['driver' => $driver]);
     }
 
@@ -81,7 +88,7 @@ class PixelEncoder implements Extractor
         foreach ($samples as $sample) {
             if (is_resource($sample)) {
                 $image = $this->intervention->make($sample)
-                    ->fit(...$this->size);
+                    ->fit(...$this->size)->sharpen($this->sharpen);
 
                 if ($this->channels === 1) {
                     $image = $image->greyscale();

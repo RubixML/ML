@@ -451,6 +451,7 @@ Images must first be converted to color channel values in order to be passed to 
 |--|--|--|--|
 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
 | rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
+| sharpen | 0 | int | A value between 0 and 100 indicating the amount of sharpness to add to each sample. |
 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:

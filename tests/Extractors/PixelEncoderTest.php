@@ -16,7 +16,7 @@ class PixelEncoderTest extends TestCase
             imagecreatefromjpeg(__DIR__ . '/space.jpg'),
         ];
 
-        $this->extractor = new PixelEncoder([3, 3], true, 'gd');
+        $this->extractor = new PixelEncoder([3, 3], true, 0, 'gd');
     }
 
     public function test_build_count_vectorizer()
