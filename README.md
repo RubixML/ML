@@ -451,6 +451,7 @@ Images must first be converted to color channel values in order to be passed to 
 |--|--|--|--|
 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
 | rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
+| driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:
 This Extractor does not have any additional methods.
@@ -459,7 +460,7 @@ This Extractor does not have any additional methods.
 ```php
 use Rubix\ML\Extractors\PixelEncoder;
 
-$extractor = new PixelEncoder([28, 28], false);
+$extractor = new PixelEncoder([28, 28], false, 'imagick');
 ```
 
 ---

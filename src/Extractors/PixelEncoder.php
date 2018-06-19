@@ -9,8 +9,6 @@ use RuntimeException;
 
 class PixelEncoder implements Extractor
 {
-    const DRIVER = 'gd';
-
     /**
      * The size of the output vector. The image will be scaled and cropped
      * according to the setting of this parameter.
@@ -36,25 +34,27 @@ class PixelEncoder implements Extractor
     /**
      * @param  array  $size
      * @param  bool  $rgb
-     * @throws \RuntimeException
+     * @param  string  $driver
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $size = [32, 32], bool $rgb = true)
+    public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
-        if (!extension_loaded(self::DRIVER)) {
-            throw new RuntimeException('The ' . self::DRIVER . ' extension'
-                . ' could not be loaded.');
-        }
-
         if (count($size) !== 2) {
             throw new InvalidArgumentException('Size must have a width and a'
                 . ' height.');
         }
 
+        foreach ($size as $dimension) {
+            if ($dimension < 1) {
+                throw new InvalidArgumentException('Width and height must be'
+                    . ' greater than 1 pixel.');
+            }
+        }
+
         $this->size = $size;
         $this->channels = $rgb ? 3 : 1;
-        $this->intervention = new Intervention(['driver' => self::DRIVER]);
+        $this->intervention = new Intervention(['driver' => $driver]);
     }
 
     /**
