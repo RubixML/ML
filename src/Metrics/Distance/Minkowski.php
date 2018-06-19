@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Metrics\Distance;
 
+use InvalidArgumentException;
+
 class Minkowski implements Distance
 {
     /**
@@ -11,10 +13,15 @@ class Minkowski implements Distance
 
     /**
      * @param  float  $lambda
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $lambda = 3.0)
     {
+        if ($lambda < 1) {
+            throw new InvalidArgumentException('Lambda must be 1 or greater');
+        }
+
         $this->lambda = $lambda;
     }
 

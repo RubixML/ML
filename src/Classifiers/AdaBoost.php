@@ -215,15 +215,15 @@ class AdaBoost implements Binary, Persistable
      * Make a prediction by consulting the ensemble of experts and chosing the class
      * label closest to the value of the weighted sum of each expert's prediction.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
-        $totals = array_fill(0, $samples->numRows(), 0.0);
+        $totals = array_fill(0, $dataset->numRows(), 0.0);
 
         foreach ($this->ensemble as $i => $estimator) {
-            foreach ($estimator->predict($samples) as $j => $prediction) {
+            foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $output = $prediction === $this->classes[1] ? 1 : -1;
 
                 $totals[$j] += $this->influence[$i] * $output;

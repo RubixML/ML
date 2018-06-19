@@ -108,13 +108,13 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
         $this->columnTypes = $dataset->columnTypes();
 
-        $samples = $dataset->samples();
+        $data = $dataset->samples();
 
-        foreach ($samples as $index => &$sample) {
+        foreach ($data as $index => &$sample) {
             array_push($sample, $dataset->label($index));
         }
 
-        $this->setRoot($this->findBestSplit($samples));
+        $this->setRoot($this->findBestSplit($data));
         $this->splits = 1;
 
         $this->split($this->root);
@@ -123,19 +123,29 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
-            $predictions[] = $this->search($sample, $this->root)
-                ->get('output');
+        foreach ($dataset as $sample) {
+            $predictions[] = $this->search($sample)->get('output');
         }
 
         return $predictions;
+    }
+
+    /**
+     * Search the tree for a terminal node.
+     *
+     * @param  array  $sample
+     * @return \Rubix\ML\Graph\BinaryNode
+     */
+    public function search(array $sample) : BinaryNode
+    {
+        return $this->_search($sample, $this->root);
     }
 
     /**
@@ -145,7 +155,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      * @param  \Rubix\ML\BinaryNode  $root
      * @return \Rubix\ML\BinaryNode
      */
-    protected function search(array $sample, BinaryNode $root) : BinaryNode
+    protected function _search(array $sample, BinaryNode $root) : BinaryNode
     {
         if ($root->terminal) {
             return $root;
@@ -153,15 +163,15 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
         if ($root->type === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value) {
-                return $this->search($sample, $root->left());
+                return $this->_search($sample, $root->left());
             } else {
-                return $this->search($sample, $root->right());
+                return $this->_search($sample, $root->right());
             }
         } else {
             if ($sample[$root->index] < $root->value) {
-                return $this->search($sample, $root->left());
+                return $this->_search($sample, $root->left());
             } else {
-                return $this->search($sample, $root->right());
+                return $this->_search($sample, $root->right());
             }
         }
     }

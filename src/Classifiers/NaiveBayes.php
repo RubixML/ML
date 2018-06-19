@@ -12,12 +12,32 @@ use InvalidArgumentException;
 class NaiveBayes implements Multiclass, Probabilistic, Persistable
 {
     /**
-     * The precomputed probabilities for categorical data and means and standard
-     * deviations for continuous data per outcome.
+     * The precomputed means for the continuous feature columns of the training
+     * set.
      *
      * @var array
      */
-    protected $stats = [
+    protected $means = [
+        //
+    ];
+
+    /**
+     * The precomputed standard deviations for the continuous feature columns
+     * of the training set.
+     *
+     * @var array
+     */
+    protected $stddevs = [
+        //
+    ];
+
+    /**
+     * The precomputed probabilities for the categorical feature columns of the
+     * training set.
+     *
+     * @var array
+     */
+    protected $probabilities = [
         //
     ];
 
@@ -27,6 +47,15 @@ class NaiveBayes implements Multiclass, Probabilistic, Persistable
      * @var array
      */
     protected $weights = [
+        //
+    ];
+
+    /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
         //
     ];
 
@@ -42,9 +71,25 @@ class NaiveBayes implements Multiclass, Probabilistic, Persistable
     /**
      * @return array
      */
-    public function stats() : array
+    public function means() : array
     {
-        return $this->stats;
+        return $this->means;
+    }
+
+    /**
+     * @return array
+     */
+    public function stddevs() : array
+    {
+        return $this->stddevs;
+    }
+
+    /**
+     * @return array
+     */
+    public function probabilities() : array
+    {
+        return $this->probabilities;
     }
 
     /**
@@ -70,35 +115,41 @@ class NaiveBayes implements Multiclass, Probabilistic, Persistable
         }
 
         $this->columnTypes = $dataset->columnTypes();
+        $this->classes = $dataset->possibleOutcomes();
+
+        $n = $dataset->numRows();
 
         $this->stats = $this->weights = [];
 
-        foreach ($dataset->stratify() as $class => $samples) {
-            foreach (array_map(null, ...$samples) as $column => $values) {
+        foreach ($dataset->stratify() as $class => $dataset) {
+            foreach (array_map(null, ...$dataset) as $column => $values) {
                 if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                    $this->stats[$class][$column]
+                    $this->probabilities[$class][$column]
                         = $this->calculateProbabilities((array) $values);
                 } else {
-                    $this->stats[$class][$column]
+                    list($mean, $stddev)
                         = $this->calculateStatistics((array) $values);
+
+                    $this->means[$class][$column] = $mean;
+                    $this->stddevs[$class][$column] = $stddev;
                 }
             }
 
-            $this->weights[$class] = count($samples) / $dataset->numRows();
+            $this->weights[$class] = log(count($dataset) / $n);
         }
     }
 
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
+        foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
             foreach ($probabilities as $class => $probability) {
@@ -118,25 +169,27 @@ class NaiveBayes implements Multiclass, Probabilistic, Persistable
      * Calculate the probabilities of the sample being a member of all trained
      * classes and chose the highest probaility outcome as the prediction.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function proba(Dataset $samples) : array
+    public function proba(Dataset $dataset) : array
     {
         $probabilities = [];
 
-        foreach ($samples as $i => $sample) {
-            foreach ($this->stats as $class => $stats) {
+        foreach ($dataset as $i => $sample) {
+            foreach ($this->classes as $class) {
                 $probability = $this->weights[$class];
 
                 foreach ($sample as $column => $feature) {
                     if ($this->columnTypes[$column] === self::CATEGORICAL) {
-                        $probability += $stats[$column][$feature] ?? 0.0;
+                        $probability +=
+                            $this->probabilities[$class][$column][$feature] ?? 0.0;
                     } else {
-                        list($mean, $stddev) = $stats[$column];
+                        $mean = $this->means[$class][$column];
+                        $stddev = $this->stddevs[$class][$column];
 
                         $pdf = -0.5 * log(2.0 * M_PI * $stddev);
-                        $pdf -= 0.5 * ($feature - $mean) ** 2 / $stddev;
+                        $pdf -= 0.5 * (($feature - $mean) ** 2) / $stddev;
 
                         $probability += $pdf;
                     }

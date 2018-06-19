@@ -19,7 +19,7 @@ class MockClassifier implements Classifier
         //
     }
 
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         return $this->predictions;
     }

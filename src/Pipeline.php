@@ -75,11 +75,11 @@ class Pipeline implements Classifier, Clusterer, Regressor, Persistable
      * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
-        $this->preprocess($samples);
+        $this->preprocess($dataset);
 
-        return $this->estimator->predict($samples);
+        return $this->estimator->predict($dataset);
     }
 
     /**

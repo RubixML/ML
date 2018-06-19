@@ -75,20 +75,20 @@ class DBSCAN implements Clusterer, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $labels = [];
         $current = 0;
 
-        foreach ($samples as $index => $sample) {
+        foreach ($dataset as $index => $sample) {
             if (isset($labels[$index])) {
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighborsByDistance($sample, $samples);
+            $neighbors = $this->groupNeighborsByDistance($sample, $dataset);
 
             if (count($neighbors) < $this->minDensity) {
                 $labels[$index] = self::NOISE;
@@ -98,7 +98,7 @@ class DBSCAN implements Clusterer, Persistable
 
             $labels[$index] = $current;
 
-            $this->expand($samples, $neighbors, $labels, $current);
+            $this->expand($dataset, $neighbors, $labels, $current);
 
             $current++;
         }
@@ -110,13 +110,13 @@ class DBSCAN implements Clusterer, Persistable
      * Expand the cluster by computing the distance between a sample and each
      * member of the cluster.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  array  $neighbors
      * @param  array  $labels
      * @param  int  $current
      * @return void
      */
-    protected function expand(Dataset $samples, array $neighbors, array &$labels, int $current) : void
+    protected function expand(Dataset $dataset, array $neighbors, array &$labels, int $current) : void
     {
         while (!empty($neighbors)) {
             $index = array_pop($neighbors);
@@ -131,8 +131,8 @@ class DBSCAN implements Clusterer, Persistable
 
             $labels[$index] = $current;
 
-            $seeds = $this->groupNeighborsByDistance($samples->row($index),
-                $samples);
+            $seeds = $this->groupNeighborsByDistance($dataset->row($index),
+                $dataset);
 
             if (count($seeds) >= $this->minDensity) {
                 $neighbors = array_unique(array_merge($neighbors, $seeds));
@@ -145,14 +145,14 @@ class DBSCAN implements Clusterer, Persistable
      * centroid.
      *
      * @param  array  $neighbor
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    protected function groupNeighborsByDistance(array $neighbor, Dataset $samples) : array
+    protected function groupNeighborsByDistance(array $neighbor, Dataset $dataset) : array
     {
         $neighbors = [];
 
-        foreach ($samples as $index => $sample) {
+        foreach ($dataset as $index => $sample) {
             $distance = $this->kernel->compute($neighbor, $sample);
 
             if ($distance <= $this->radius) {

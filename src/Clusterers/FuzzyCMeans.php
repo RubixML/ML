@@ -187,14 +187,14 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     /**
      * Make a prediction based on the cluster probabilities.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
+        foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
             foreach ($probabilities as $label => $probability) {
@@ -213,14 +213,14 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     /**
      * Return an array of cluster probabilities for each sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function proba(Dataset $samples) : array
+    public function proba(Dataset $dataset) : array
     {
         $probabilities = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $probabilities[] = $this->calculateMembership($sample);
         }
 

@@ -111,12 +111,14 @@ class MeanShift implements Clusterer, Persistable
 
         $this->centroids = $dataset->samples();
 
+        $n = $dataset->numColumns();
+
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $previous = $this->centroids;
 
             foreach ($this->centroids as $i => &$centroid) {
-                $weighted = array_fill(0, $dataset->numColumns(), 0.0);
-                $total = array_fill(0, $dataset->numColumns(), 0.0);
+                $weighted = array_fill(0, $n, 0.0);
+                $total = array_fill(0, $n, 0.0);
 
                 foreach ($dataset as $sample) {
                     $distance = $this->kernel->compute($sample, $centroid);
@@ -169,14 +171,14 @@ class MeanShift implements Clusterer, Persistable
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $predictions[] = $this->label($sample);
         }
 

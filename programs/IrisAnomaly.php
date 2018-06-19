@@ -5,6 +5,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\AnomalyDetection\IsolationTree;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
 use Rubix\ML\Transformers\NumericStringConverter;
@@ -27,7 +28,7 @@ $samples = iterator_to_array($reader->getRecords([
 
 $dataset = new Unlabeled($samples);
 
-$estimator = new Pipeline(new LocalOutlierFactor(10, 20, 0.7, new Euclidean()), [
+$estimator = new Pipeline(new IsolationTree(50), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);

@@ -29,6 +29,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
+			- [Committee Machine](#committee-machine)
 			- [Decision Tree](#decision-tree)
 			- [Dummy Classifier](#dummy-classifier)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
@@ -475,7 +476,7 @@ public train(Dataset $dataset) : void
 
 To make predictions, pass it another dataset:
 ```php
-public predict(Dataset $samples) : array
+public predict(Dataset $dataset) : array
 ```
 
 The return array of a prediction is 0 indexed containing the predicted values of the supplied Dataset object in the same order.
@@ -537,7 +538,7 @@ Some Estimators may implement the **Probabilistic** interface, in which case, th
 
 Calculate probability estimates:
 ```php
-public proba(Dataset $samples) : array
+public proba(Dataset $dataset) : array
 ```
 
 ##### Example:
@@ -648,6 +649,33 @@ $estimator = new AdaBoost(DecisionTree::class, [1, 10], 100, 0.1, 0.999);
 $estimator->weights(); // [0.25, 0.35, 0.1, ...]
 
 $estimator->influence(); // [0.7522, 0.7945, ...]
+```
+
+#### Committee Machine
+Ensemble classifier that aggregates the class probability predictions of a committee of user-specified, heterogeneous Probabilistic classifiers (MultiLayerPerceptron, Random Forest, etc.).
+
+##### Supervised, Multiclass, Probabilistic, Persistable
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| experts | None | array | The probabilistic classifier instances that comprise the committee. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\CommitteeMachine;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+
+$estimator = new CommitteeMachine([
+	new RandomForest(100, 0.3, 50, 3, 1e-2),
+	new SoftmaxClassifier(50, new Adam(0.001), 1e-4),
+	new KNearestNeighbors(3),
+]);
 ```
 
 #### Decision Tree

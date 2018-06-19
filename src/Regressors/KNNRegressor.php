@@ -31,7 +31,7 @@ class KNNRegressor implements Regressor, Online
      *
      * @var array
      */
-    protected $samples = [
+    protected $dataset = [
         //
     ];
 
@@ -109,14 +109,14 @@ class KNNRegressor implements Regressor, Online
     /**
      * Compute the distances and locate the k nearest neighboring values.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $neighbors = $this->findNearestNeighbors($sample);
 
             $predictions[] = Average::mean($neighbors);

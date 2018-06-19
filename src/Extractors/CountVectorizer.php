@@ -55,7 +55,7 @@ class CountVectorizer implements Extractor
         }
 
         if (!isset($tokenizer)) {
-            $tokenizer = new Word(true);
+            $tokenizer = new Word();
         }
 
         $this->maxVocabulary = $maxVocabulary;

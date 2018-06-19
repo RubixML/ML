@@ -258,12 +258,12 @@ class MLPRegressor implements Regressor, Online, Persistable
      * Feed a sample through the network and make a prediction based on the highest
      * activated output neuron.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
-        $this->network->feed($samples->samples());
+        $this->network->feed($dataset->samples());
 
         $predictions = [];
 

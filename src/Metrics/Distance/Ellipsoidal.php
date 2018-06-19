@@ -25,6 +25,7 @@ class Ellipsoidal implements Distance
         $a = new Vector(array_values($a));
         $b = new Vector(array_values($b));
 
-        return atan($a->crossProduct($b)->length() / $a->dotProduct($b));
+        return atan($a->crossProduct($b)->length()
+            / $a->dotProduct($b));
     }
 }

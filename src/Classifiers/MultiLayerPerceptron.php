@@ -260,14 +260,14 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * Feed a sample through the network and make a prediction based on the highest
      * activated output neuron.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
+        foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
             foreach ($probabilities as $class => $probability) {
@@ -286,12 +286,12 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function proba(Dataset $samples) : array
+    public function proba(Dataset $dataset) : array
     {
-        $this->network->feed($samples->samples());
+        $this->network->feed($dataset->samples());
 
         return $this->network->output()->activations();
     }

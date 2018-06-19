@@ -12,5 +12,5 @@ interface Probabilistic extends Estimator
      * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
-    public function proba(Dataset $samples) : array;
+    public function proba(Dataset $dataset) : array;
 }

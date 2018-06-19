@@ -41,7 +41,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
      *
      * @var array
      */
-    protected $samples = [
+    protected $dataset = [
         //
     ];
 
@@ -120,14 +120,14 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
+        foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
             foreach ($probabilities as $class => $probability) {
@@ -146,15 +146,15 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function proba(Dataset $samples) : array
+    public function proba(Dataset $dataset) : array
     {
-        $probabilities = array_fill(0, $samples->numRows(),
+        $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.0));
 
-        foreach ($samples as $i => $sample) {
+        foreach ($dataset as $i => $sample) {
             $neighbors = $this->findNearestNeighbors($sample);
 
             $n = count($neighbors);

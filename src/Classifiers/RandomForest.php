@@ -125,7 +125,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $n = $this->ratio * count($dataset);
+        $n = $this->ratio * $dataset->numRows();
 
         $this->forest = [];
 
@@ -142,14 +142,14 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     /**
      * Make a prediction based on the class probabilities.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($this->proba($samples) as $probabilities) {
+        foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
             foreach ($probabilities as $class => $probability) {
@@ -168,19 +168,21 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function proba(Dataset $samples) : array
+    public function proba(Dataset $dataset) : array
     {
-        $probabilities = array_fill(0, $samples->numRows(),
-            array_fill_keys($this->classes, 0.0));
-
         $n = count($this->forest) + self::EPSILON;
 
+        $probabilities = array_fill(0, $dataset->numRows(),
+            array_fill_keys($this->classes, 0.0));
+
         foreach ($this->forest as $tree) {
-            foreach ($tree->predict($samples) as $i => $class) {
-                $probabilities[$i][$class] += 1 / $n;
+            foreach ($tree->proba($dataset) as $i => $distribution) {
+                foreach ($distribution as $class => $probability) {
+                    $probabilities[$i][$class] += $probability / $n;
+                }
             }
         }
 

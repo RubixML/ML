@@ -97,14 +97,14 @@ class Ridge implements Regressor, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $outcome = $this->intercept;
 
             foreach ($this->coefficients as $column => $coefficient) {
@@ -121,17 +121,17 @@ class Ridge implements Regressor, Persistable
      * Compute the coefficients of the training data like ordinary least squares,
      * however add a regularization term to the equation.
      *
-     * @param  array  $samples
+     * @param  array  $dataset
      * @param  array  $labels
      * @return array
      */
-    protected function computeCoefficients(array $samples, array $labels) : array
+    protected function computeCoefficients(array $dataset, array $labels) : array
     {
-        foreach ($samples as &$sample) {
+        foreach ($dataset as &$sample) {
             array_unshift($sample, 1);
         }
 
-        $x = new Matrix($samples);
+        $x = new Matrix($dataset);
         $y = new Vector($labels);
         $a = MatrixFactory::identity($x->getN())->scalarMultiply($this->alpha);
 

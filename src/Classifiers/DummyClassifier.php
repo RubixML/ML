@@ -51,14 +51,14 @@ class DummyClassifier implements Multiclass, Persistable
     /**
      * Make a prediction of a given sample dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function predict(Dataset $samples) : array
+    public function predict(Dataset $dataset) : array
     {
         $predictions = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $predictions[] = $this->strategy->guess();
         }
 
