@@ -35,13 +35,6 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     protected $tolerance;
 
     /**
-     * The number of times the tree has split. i.e. a comparison is made.
-     *
-     * @var int
-     */
-    protected $splits;
-
-    /**
      * The type of each feature column. i.e. categorical or continuous.
      *
      * @var array
@@ -49,6 +42,13 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     protected $columnTypes = [
         //
     ];
+
+    /**
+     * The number of times the tree has split. i.e. a comparison is made.
+     *
+     * @var int
+     */
+    protected $splits;
 
     /**
      * @param  int  $maxDepth
@@ -108,10 +108,10 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
         $this->columnTypes = $dataset->columnTypes();
 
-        list ($samples, $labels) = $dataset->all();
+        $samples = $dataset->samples();
 
         foreach ($samples as $index => &$sample) {
-            array_push($sample, $labels[$index]);
+            array_push($sample, $dataset->label($index));
         }
 
         $this->setRoot($this->findBestSplit($samples));
@@ -131,7 +131,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $predictions[] = $this->_predict($sample, $this->root)
+            $predictions[] = $this->search($sample, $this->root)
                 ->get('output');
         }
 
@@ -145,7 +145,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      * @param  \Rubix\ML\BinaryNode  $root
      * @return \Rubix\ML\BinaryNode
      */
-    protected function _predict(array $sample, BinaryNode $root) : BinaryNode
+    protected function search(array $sample, BinaryNode $root) : BinaryNode
     {
         if ($root->terminal) {
             return $root;
@@ -153,15 +153,15 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
         if ($root->type === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value) {
-                return $this->_predict($sample, $root->left());
+                return $this->search($sample, $root->left());
             } else {
-                return $this->_predict($sample, $root->right());
+                return $this->search($sample, $root->right());
             }
         } else {
             if ($sample[$root->index] < $root->value) {
-                return $this->_predict($sample, $root->left());
+                return $this->search($sample, $root->left());
             } else {
-                return $this->_predict($sample, $root->right());
+                return $this->search($sample, $root->right());
             }
         }
     }

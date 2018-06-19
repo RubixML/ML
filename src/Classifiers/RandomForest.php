@@ -133,7 +133,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
             $tree = new DecisionTree($this->maxDepth, $this->minSamples,
                 $this->tolerance);
 
-            $tree->train($dataset->randomSubset($n));
+            $tree->train($dataset->randomSubsetWithReplacement($n));
 
             $this->forest[] = $tree;
         }

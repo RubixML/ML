@@ -156,13 +156,36 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Generate a random subset with replacement.
+     * Generate a random subset.
      *
      * @param  int  $n
      * @throws \InvalidArgumentException
      * @return self
      */
     public function randomSubset(int $n = 1) : self
+    {
+        if ($n < 1) {
+            throw new InvalidArgumentException('Cannot generate a subset of'
+                . ' less than 1 sample.');
+        }
+
+        if ($n > $this->numRows()) {
+            throw new InvalidArgumentException('Cannot generate a larger subset'
+                . ' than the sample size.');
+        }
+
+        return new self(array_intersect_key($this->samples,
+            array_rand($this->samples, $n)));
+    }
+
+    /**
+     * Generate a random subset with replacement.
+     *
+     * @param  int  $n
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function randomSubsetWithReplacement(int $n = 1) : self
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
@@ -176,15 +199,5 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return new self($subset);
-    }
-
-    /**
-     * Return an array with all the samples.
-     *
-     * @return array
-     */
-    public function all() : array
-    {
-        return $this->samples;
     }
 }

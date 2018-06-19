@@ -87,7 +87,8 @@ class Ridge implements Regressor, Persistable
                 . ' continuous features.');
         }
 
-        $coefficients = $this->computeCoefficients(...$dataset->all());
+        $coefficients = $this->computeCoefficients($dataset->samples(),
+            $dataset->labels());
 
         $this->intercept = array_shift($coefficients);
         $this->coefficients = $coefficients;

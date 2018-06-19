@@ -251,7 +251,8 @@ class AdaBoost implements Binary, Persistable
         $n = $dataset->numRows();
         $k = round($this->ratio * $n);
 
-        list($samples, $labels) = $dataset->all();
+        $samples = $dataset->samples();
+        $labels = $dataset->labels();
 
         $total = array_sum($this->weights);
 

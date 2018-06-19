@@ -268,7 +268,7 @@ public batch(int $n = 50) : array
 
 Generate a random subset with replacement of size n:
 ```php
-public randomSubset($n = 1) : self
+public randomSubsetWithReplacement($n = 1) : self
 ```
 
 Combine an array of Dataset objects into one Dataset object:
@@ -306,7 +306,7 @@ list($left, $right) = $dataset->split(0.5);
 $folds = $dataset->fold(8);
 
 // Generate a dataset of 500 random samples with replacement
-$subset = $dataset->randomSubset(500);
+$subset = $dataset->randomSubsetWithReplacement(500);
 
 // Randomize and split the dataset into two subsets
 list($left, $right) = $dataset->randomize()->split(0.8);

@@ -34,13 +34,6 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     protected $tolerance;
 
     /**
-     * The number of times the tree has split. i.e. a comparison is made.
-     *
-     * @var int
-     */
-    protected $splits;
-
-    /**
      * The possible class outcomes.
      *
      * @var array
@@ -57,6 +50,13 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     protected $columnTypes = [
         //
     ];
+
+    /**
+     * The number of times the tree has split. i.e. a comparison is made.
+     *
+     * @var int
+     */
+    protected $splits;
 
     /**
      * @param  int  $maxDepth
@@ -117,10 +117,10 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $this->classes = $dataset->possibleOutcomes();
         $this->columnTypes = $dataset->columnTypes();
 
-        list ($samples, $labels) = $dataset->all();
+        $samples = $dataset->samples();
 
         foreach ($samples as $index => &$sample) {
-            array_push($sample, $labels[$index]);
+            array_push($sample, $dataset->label($index));
         }
 
         $this->setRoot($this->findBestSplit($samples));
@@ -140,7 +140,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $predictions = [];
 
         foreach ($samples as $sample) {
-            $predictions[] = $this->_predict($sample, $this->root)
+            $predictions[] = $this->search($sample, $this->root)
                 ->get('class');
         }
 
@@ -158,7 +158,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $probabilities = [];
 
         foreach ($samples as $sample) {
-            $probabilities[] = $this->_predict($sample, $this->root)
+            $probabilities[] = $this->search($sample, $this->root)
                 ->get('probabilities');
         }
 
@@ -172,7 +172,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
      * @param  \Rubix\ML\BinaryNode  $root
      * @return \Rubix\ML\BinaryNode
      */
-    protected function _predict(array $sample, BinaryNode $root) : BinaryNode
+    protected function search(array $sample, BinaryNode $root) : BinaryNode
     {
         if ($root->terminal) {
             return $root;
@@ -180,15 +180,15 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
 
         if ($root->type === self::CATEGORICAL) {
             if ($sample[$root->index] === $root->value) {
-                return $this->_predict($sample, $root->left());
+                return $this->search($sample, $root->left());
             } else {
-                return $this->_predict($sample, $root->right());
+                return $this->search($sample, $root->right());
             }
         } else {
             if ($sample[$root->index] < $root->value) {
-                return $this->_predict($sample, $root->left());
+                return $this->search($sample, $root->left());
             } else {
-                return $this->_predict($sample, $root->right());
+                return $this->search($sample, $root->right());
             }
         }
     }
@@ -292,7 +292,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     }
 
     /**
-     * Terminate the branch with the selecting the outcome with the highest
+     * Terminate the branch by selecting the outcome with the highest
      * probability.
      *
      * @param  array  $data
@@ -320,7 +320,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     }
 
     /**
-     * Partition a dataset into left and right subsets. O(N)
+     * Partition a dataset into left and right subsets.
      *
      * @param  array  $data
      * @param  mixed  $index
@@ -371,7 +371,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
 
             $counts = array_count_values(array_column($group,
                 count(current($group)) - 1));
-                
+
             $score = 0.0;
 
             foreach ($outcomes as $outcome) {

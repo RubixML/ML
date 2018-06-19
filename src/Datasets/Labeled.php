@@ -303,7 +303,8 @@ class Labeled extends DataFrame implements Dataset
     {
         $batches = [];
 
-        list($samples, $labels) = $this->all();
+        $samples = $this->samples;
+        $labels = $this->labels;
 
         while (!empty($samples)) {
             $batches[] = new self(array_splice($samples, 0, $n),
@@ -314,13 +315,38 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Generate a random subset with replacement.
+     * Generate a random subset.
      *
      * @param  int  $n
      * @throws \InvalidArgumentException
      * @return self
      */
     public function randomSubset(int $n = 1) : self
+    {
+        if ($n < 1) {
+            throw new InvalidArgumentException('Cannot generate a subset of'
+                . ' less than 1 sample.');
+        }
+
+        if ($n > $this->numRows()) {
+            throw new InvalidArgumentException('Cannot generate a larger subset'
+                . ' than the sample size.');
+        }
+
+        $indices = array_rand($this->samples, $n);
+
+        return new self(array_intersect_key($this->samples, $indices),
+            array_intersect_key($this->labels, $indices));
+    }
+
+    /**
+     * Generate a random subset with replacement.
+     *
+     * @param  int  $n
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function randomSubsetWithReplacement(int $n = 1) : self
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
@@ -353,15 +379,5 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return $strata;
-    }
-
-    /**
-     * Return an array with all the samples and labels.
-     *
-     * @return array
-     */
-    public function all() : array
-    {
-        return [$this->samples, $this->labels];
     }
 }

@@ -17,6 +17,13 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public static function combine(array $datasets);
 
     /**
+     * Return the 2-dimensional sample matrix.
+     *
+     * @return array
+     */
+    public function samples() : array;
+
+    /**
      * Return a dataset containing only the first n samples.
      *
      * @param  int  $n
@@ -82,7 +89,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function batch(int $n = 50) : array;
 
     /**
-     * Generate a random subset of n samples with replacement.
+     * Generate a random subset of n samples.
      *
      * @param  int  $n
      * @return self
@@ -90,16 +97,10 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function randomSubset(int $n = 1);
 
     /**
-     * Return the 2-dimensional sample matrix.
+     * Generate a random subset of n samples with replacement.
      *
-     * @return array
+     * @param  int  $n
+     * @return self
      */
-    public function samples() : array;
-
-    /**
-     * Return an array with all the data.
-     *
-     * @return array
-     */
-    public function all() : array;
+    public function randomSubsetWithReplacement(int $n = 1);
 }
