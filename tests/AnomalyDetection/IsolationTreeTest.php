@@ -1,14 +1,14 @@
 <?php
 
-use Rubix\ML\Online;
 use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetection\Detector;
-use Rubix\ML\Metrics\Distance\Euclidean;
-use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\AnomalyDetection\IsolationTree;
 use PHPUnit\Framework\TestCase;
 
-class LocalOutlierFactorTest extends TestCase
+class IsolationTreeTest extends TestCase
 {
     protected $estimator;
 
@@ -34,14 +34,15 @@ class LocalOutlierFactorTest extends TestCase
             [1.0177273113, 4.727491941], [9.293847293, 3.293847293],
         ]);
 
-        $this->estimator = new LocalOutlierFactor(5, 4, 0.5, new Euclidean());
+        $this->estimator = new IsolationTree(50, 0.45);
     }
 
-    public function test_build_local_outlier_factor_detector()
+    public function test_build_isolation_tree_detector()
     {
-        $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
+        $this->assertInstanceOf(IsolationTree::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
@@ -51,6 +52,6 @@ class LocalOutlierFactorTest extends TestCase
 
         $results = $this->estimator->predict($this->dirty);
 
-        $this->assertEquals([1, 0, 1, 0], $results);
+        $this->assertEquals(4, count($results));
     }
 }

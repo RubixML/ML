@@ -11,7 +11,7 @@ use InvalidArgumentException;
 class CommitteeMachine implements Multiclass, Probabilistic, Persistable
 {
     /**
-     * The committee of experts.
+     * The committee of experts. i.e. the ensemble of probabilistic classifiers.
      *
      * @var array
      */
@@ -40,8 +40,8 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
                 . ' the committee.');
         }
 
-        foreach ($experts as $expert) {
-            $this->addExpert($expert);
+        foreach ($experts as $estimator) {
+            $this->addExpert($estimator);
         }
     }
 
@@ -71,8 +71,8 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        foreach ($this->experts as $expert) {
-            $expert->train(clone $dataset);
+        foreach ($this->experts as $estimator) {
+            $estimator->train(clone $dataset);
         }
     }
 
@@ -128,19 +128,19 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
     }
 
     /**
-     * Add a expert middleware to the pipeline.
+     * Add an expert to the committee.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier
+     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function addExpert(Classifier $expert) : void
+    protected function addExpert(Classifier $estimator) : void
     {
-        if (!$expert instanceof Probabilistic) {
+        if (!$estimator instanceof Probabilistic) {
             throw new InvalidArgumentException('Estimator must be a'
                 . ' probabilistic classifier.');
         }
 
-        $this->experts[] = $expert;
+        $this->experts[] = $estimator;
     }
 }

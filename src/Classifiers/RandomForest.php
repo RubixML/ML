@@ -73,7 +73,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 50, float $ratio = 0.1, int $maxDepth = 10,
+    public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 50,
                                 int $minSamples = 5, float $tolerance = 1e-2)
     {
         if ($trees < 1) {

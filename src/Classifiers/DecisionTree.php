@@ -68,14 +68,14 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
                                 float $tolerance = 1e-2)
     {
-        if ($minSamples < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
-        }
-
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
                 . ' than 1.');
+        }
+
+        if ($minSamples < 1) {
+            throw new InvalidArgumentException('At least one sample is required'
+                . ' to make a decision.');
         }
 
         if ($tolerance < 0 or $tolerance > 1) {

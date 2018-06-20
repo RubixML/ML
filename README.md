@@ -25,6 +25,8 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
 		- [Anomaly Detection](#anomaly-detection)
+			- [Isolation Forest](#isolation-forest)
+			- [Isolation Tree](#isolation-tree)
 			- [Local Outlier Factor](#local-outlier-factor)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
@@ -568,6 +570,52 @@ array(3) {
 
 Anomaly detection is the process of identifying samples that do not conform to the expected pattern. Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
 
+#### Isolation Forest
+An Ensemble Anomaly Detector comprised of Isolation Trees each trained on a different subset of the training set.
+
+##### Unsupervised, Probabilistic, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| trees | 100 | int | The number of Isolation Trees to train in the ensemble. |
+| ratio | 0.1 | float | The ratio of random samples to train each Isolation with. |
+| threshold | 0.6 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\IsolationForest;
+
+$estimator = new IsolationForest(500, 0.1, 0.7);
+```
+#### Isolation Tree
+Isolation Trees detect anomalous data by separating them out early during traversal. The shorter the path that a sample takes from the root to a terminal node, the more likely it is to be an outlier. *Note* that this Estimator is considered a weak learner and is typically only used within the context of an ensemble (such as Isolation Forest).
+
+##### Unsupervised, Probabilistic, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
+| threshold | 0.6 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `complexity() : int` | Returns the number of splits in the tree. |
+| `height() : int` | Return the height of the tree. |
+| `balance() : int` | Return the balance factor of the tree. |
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\IsolationTree;
+
+$estimator = new IsolationTree(1000, 0.65);
+```
+
 #### Local Outlier Factor
 The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the density ratio of the sample over the median of the local region.
 
@@ -843,7 +891,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| trees | 50 | int | The number of Decision Trees to train in the ensemble. |
+| trees | 100 | int | The number of Decision Trees to train in the ensemble. |
 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |

@@ -3,13 +3,14 @@
 namespace Rubix\ML\AnomalyDetection;
 
 use Rubix\ML\Online;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class LocalOutlierFactor implements Detector, Online
+class LocalOutlierFactor implements Detector, Probabilistic, Online
 {
     /**
      * The number of nearest neighbors to consider a local region.
@@ -34,7 +35,7 @@ class LocalOutlierFactor implements Detector, Online
     protected $threshold;
 
     /**
-     * The distance kernel to use when computing the distances bwtween two
+     * The distance kernel to use when computing the distances between two
      * data points.
      *
      * @var \Rubix\ML\Metrics\Distance\Distance
@@ -119,6 +120,24 @@ class LocalOutlierFactor implements Detector, Online
     {
         $predictions = [];
 
+        foreach ($this->proba($dataset) as $probability) {
+            $predictions[] = $probability > $this->threshold ? 1 : 0;
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Return a probability estimate based on the density of the sample over the
+     * median density of the local region.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        $probablities = [];
+
         foreach ($dataset as $sample) {
             $radii = [];
 
@@ -128,12 +147,11 @@ class LocalOutlierFactor implements Detector, Online
 
             $radius = $this->calculateRadius($sample);
 
-            $score = Average::median($radii) / ($radius + self::EPSILON);
-
-            $predictions[] = $score < $this->threshold ? 1 : 0;
+            $probablities[] = 2.0 ** -(Average::median($radii)
+                / ($radius + self::EPSILON));
         }
 
-        return $predictions;
+        return $probablities;
     }
 
     /**

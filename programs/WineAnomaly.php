@@ -4,36 +4,37 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Metrics\Distance\Euclidean;
 use Rubix\ML\AnomalyDetection\IsolationTree;
+use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\AnomalyDetection\IsolationForest;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Iris Anomaly Detector using Local Outlier Factor    ║' . "\n";
+echo '║ Wine Anomaly Detector using Isolation Forest        ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 echo "\n";
 
-$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/iris.csv')
-    ->setDelimiter(',')->setEnclosure('"')->setHeaderOffset(0);
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')
+    ->setDelimiter(';')->setEnclosure('"')->setHeaderOffset(0);
 
 $samples = iterator_to_array($reader->getRecords([
-    'sepal_length', 'sepal_width', 'petal_length', 'petal_width',
+    'fixed_acidity', 'volatile_acidity', 'citric_acid', 'residual_sugar',
+    'chlorides', 'free_sulfur_dioxide', 'total_sulfur_dioxide', 'density', 'pH',
+    'sulphates', 'alcohol',
 ]));
 
 $dataset = new Unlabeled($samples);
 
-$estimator = new Pipeline(new IsolationTree(50), [
+$estimator = new Pipeline(new IsolationForest(300, 0.2, 0.55), [
     new NumericStringConverter(),
-    new ZScaleStandardizer(),
 ]);
 
-list($training, $testing) = $dataset->randomize()->split(0.8);
+list($training, $testing) = $dataset->split(0.8);
 
 $estimator->train($training);
 
