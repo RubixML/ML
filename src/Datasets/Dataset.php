@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Transformers\Transformer;
 use IteratorAggregate;
 use ArrayAccess;
 use Countable;
@@ -22,6 +23,58 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return array
      */
     public function samples() : array;
+
+    /**
+     * Return the sample at the given row index.
+     *
+     * @param  mixed  $index
+     * @return array
+     */
+    public function row(int $index) : array;
+
+    /**
+     * Return the number of rows in the datasets.
+     *
+     * @return int
+     */
+    public function numRows() : int;
+
+    /**
+     * Return the feature column at the given index.
+     *
+     * @param  mixed  $index
+     * @return array
+     */
+    public function column(int $index) : array;
+
+    /**
+     * Return an array of column indices.
+     *
+     * @return array
+     */
+    public function indices() : array;
+
+    /**
+     * Return an array of autodetected feature column types.
+     *
+     * @return array
+     */
+    public function columnTypes() : array;
+
+    /**
+     * Return the number of feature columns in the datasets.
+     *
+     * @return int
+     */
+    public function numColumns() : int;
+
+    /**
+     * Have a transformer transform the dataset.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return void
+     */
+    public function transform(Transformer $transformer) : void;
 
     /**
      * Return a dataset containing only the first n samples.

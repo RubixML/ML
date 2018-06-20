@@ -65,7 +65,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * @param  mixed  $index
      * @return array
      */
-    public function row($index) : array
+    public function row(int $index) : array
     {
         return $this->offsetGet($index);
     }
@@ -86,13 +86,23 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * @param  mixed  $index
      * @return array
      */
-    public function column($index) : array
+    public function column(int $index) : array
     {
         return array_column($this->samples, $index);
     }
 
     /**
-     * Return an array of autodetected column types.
+     * Return an array of column indices.
+     *
+     * @return array
+     */
+    public function indices() : array
+    {
+        return array_keys($this->samples[0] ?? []);
+    }
+
+    /**
+     * Return an array of autodetected feature column types.
      *
      * @return array
      */
@@ -125,7 +135,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Returns an array of feature columns.
+     * Rotate the sample matrix.
      *
      * @return array
      */

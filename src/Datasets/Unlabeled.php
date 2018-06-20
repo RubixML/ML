@@ -19,8 +19,8 @@ class Unlabeled extends DataFrame implements Dataset
 
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Cannot merge any non'
-                    . ' datasets, ' . get_class($dataset) . ' found.');
+                throw new InvalidArgumentException('Cannot merge a non'
+                    . ' dataset, ' . get_class($dataset) . ' found.');
             }
 
             $samples = array_merge($samples, $dataset->samples());

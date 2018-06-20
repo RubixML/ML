@@ -32,7 +32,16 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      *
      * @var float
      */
-    protected $tolerance;
+    protected $epsilon;
+
+    /**
+     * The memoized random column index array.
+     *
+     * @var array
+     */
+    protected $indices = [
+        //
+    ];
 
     /**
      * The type of each feature column. i.e. categorical or continuous.
@@ -53,12 +62,12 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
-     * @param  float  $tolerance
+     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                float $tolerance = 1e-2)
+                                float $epsilon = 1e-2)
     {
         if ($minSamples < 1) {
             throw new InvalidArgumentException('At least one sample is required'
@@ -70,14 +79,14 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                 . ' than 1.');
         }
 
-        if ($tolerance < 0) {
-            throw new InvalidArgumentException('Variance tolerance must be 0 or'
+        if ($epsilon < 0) {
+            throw new InvalidArgumentException('Split tolerance must be 0 or'
                 . ' greater.');
         }
 
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
-        $this->tolerance = $tolerance;
+        $this->epsilon = $epsilon;
         $this->splits = 0;
     }
 
@@ -106,6 +115,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                 . ' Labeled training set.');
         }
 
+        $this->indices = $dataset->indices();
         $this->columnTypes = $dataset->columnTypes();
 
         $data = $dataset->samples();
@@ -118,6 +128,8 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
         $this->splits = 1;
 
         $this->split($this->root);
+
+        $this->indices = [];
     }
 
     /**
@@ -238,15 +250,13 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     {
         $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
-        $indices = range(0, count($data[0]) - 2);
-
-        shuffle($indices);
+        shuffle($this->indices);
 
         $best = [
             'variance' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
-        foreach ($indices as $index) {
+        foreach ($this->indices as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -269,7 +279,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
                     $best['groups'] = $groups;
                 }
 
-                if ($variance <= $this->tolerance) {
+                if ($variance <= $this->epsilon) {
                     break 2;
                 }
             }

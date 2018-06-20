@@ -31,7 +31,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
      *
      * @var float
      */
-    protected $tolerance;
+    protected $epsilon;
 
     /**
      * The possible class outcomes.
@@ -39,6 +39,15 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
      * @var array
      */
     protected $classes = [
+        //
+    ];
+
+    /**
+     * The memoized random column index array.
+     *
+     * @var array
+     */
+    protected $indices = [
         //
     ];
 
@@ -61,12 +70,12 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
-     * @param  float  $tolerance
+     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                float $tolerance = 1e-2)
+                                float $epsilon = 1e-2)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
@@ -78,14 +87,14 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                 . ' to make a decision.');
         }
 
-        if ($tolerance < 0 or $tolerance > 1) {
-            throw new InvalidArgumentException('Gini tolerance must be between'
+        if ($epsilon < 0 or $epsilon > 1) {
+            throw new InvalidArgumentException('Split tolerance must be between'
                 . ' 0 and 1.');
         }
-
+        
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
-        $this->tolerance = $tolerance;
+        $this->epsilon = $epsilon;
         $this->splits = 0;
     }
 
@@ -115,6 +124,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         }
 
         $this->classes = $dataset->possibleOutcomes();
+        $this->indices = $dataset->indices();
         $this->columnTypes = $dataset->columnTypes();
 
         $data = $dataset->samples();
@@ -127,6 +137,8 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $this->splits = 1;
 
         $this->split($this->root);
+
+        $this->indices = [];
     }
 
     /**
@@ -264,15 +276,13 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     {
         $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
-        $indices = range(0, count($data[0]) - 2);
-
-        shuffle($indices);
+        shuffle($this->indices);
 
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
-        foreach ($indices as $index) {
+        foreach ($this->indices as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -285,7 +295,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                     $best['groups'] = $groups;
                 }
 
-                if ($gini <= $this->tolerance) {
+                if ($gini <= $this->epsilon) {
                     break 2;
                 }
             }
