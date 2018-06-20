@@ -54,4 +54,13 @@ class IsolationTreeTest extends TestCase
 
         $this->assertEquals(4, count($results));
     }
+
+    public function test_predict_proba()
+    {
+        $this->estimator->train($this->clean);
+
+        $results = $this->estimator->proba($this->dirty);
+
+        $this->assertEquals(4, count($results));
+    }
 }

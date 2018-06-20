@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
@@ -10,7 +11,7 @@ use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class KNNRegressor implements Regressor, Online
+class KNNRegressor implements Regressor, Online, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.

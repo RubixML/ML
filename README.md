@@ -579,8 +579,8 @@ An Ensemble Anomaly Detector comprised of Isolation Trees each trained on a diff
 | Param | Default | Type | Description |
 |--|--|--|--|
 | trees | 100 | int | The number of Isolation Trees to train in the ensemble. |
-| ratio | 0.1 | float | The ratio of random samples to train each Isolation with. |
-| threshold | 0.6 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+| ratio | 0.1 | float | The ratio of random samples to train each Isolation Tree with. |
+| threshold | 0.5 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -600,7 +600,7 @@ Isolation Trees detect anomalous data by separating them out early during traver
 | Param | Default | Type | Description |
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| threshold | 0.6 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+| threshold | 0.5 | float | The minimum isolation score. i.e. the probability that a sample is an outlier. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -619,14 +619,14 @@ $estimator = new IsolationTree(1000, 0.65);
 #### Local Outlier Factor
 The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the density ratio of the sample over the median of the local region.
 
-##### Unsupervised, Online
+##### Unsupervised, Probabilistic, Online, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | k | 10 | int | The k nearest neighbors that form a local region. |
 | neighbors | 20 | int | The number of neighbors considered when computing the radius of a centroid. |
-| threshold | 0.5 | float | The threshold density ratio of the sample to the median of the local region. |
+| threshold | 0.5 | float | The minimum density score. i.e. the probability that a sample is an outlier. |
 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
@@ -780,7 +780,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 #### K Nearest Neighbors
 A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
 
-##### Supervised, Multiclass, Online, Probabilistic
+##### Supervised, Multiclass, Probabilistic, Online, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1070,7 +1070,7 @@ $estimator = new DummyRegressor(new BlurryMean());
 #### KNN Regressor
 A version of K Nearest Neighbors that uses the mean of K nearest data points to make a prediction.
 
-##### Supervised
+##### Supervised, Online, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |

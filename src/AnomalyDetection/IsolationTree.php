@@ -56,7 +56,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, float $threshold = 0.6)
+    public function __construct(int $maxDepth = PHP_INT_MAX, float $threshold = 0.5)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
@@ -251,7 +251,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     {
         $n = count($data);
 
-        $c = $n > 1 ? $this->calculateCFactor($n) : 0.0;
+        $c = $this->calculateCFactor($n);
 
         $probability = 2.0 ** -(($depth + $c) / $this->c);
 
@@ -268,11 +268,11 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      * Partition a dataset into left and right subsets.
      *
      * @param  array  $data
-     * @param  mixed  $index
+     * @param  int  $index
      * @param  mixed  $value
      * @return array
      */
-    protected function partition(array $data, $index, $value) : array
+    protected function partition(array $data, int $index, $value) : array
     {
         $left = $right = [];
 
@@ -303,7 +303,11 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      */
     protected function calculateCFactor(int $n) : float
     {
+        if ($n <= 1) {
+            return 0.0;
+        }
+
         return 2.0 * (log($n - 1) + M_EULER)
-            - (2.0 * ($n - 1) / $n  + self::EPSILON);
+            - (2.0 * ($n - 1) / ($n  + self::EPSILON));
     }
 }

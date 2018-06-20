@@ -11,7 +11,7 @@ use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class KNearestNeighbors implements Multiclass, Online, Probabilistic
+class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -182,7 +182,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic
         }
 
         asort($distances);
-        
+
         return array_intersect_key($this->labels,
             array_slice($distances, 0, $this->k, true));
     }

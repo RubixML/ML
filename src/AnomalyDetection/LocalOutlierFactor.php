@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetection;
 
 use Rubix\ML\Online;
+use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
@@ -10,7 +11,7 @@ use Rubix\ML\Metrics\Distance\Distance;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use InvalidArgumentException;
 
-class LocalOutlierFactor implements Detector, Probabilistic, Online
+class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
 {
     /**
      * The number of nearest neighbors to consider a local region.
@@ -28,7 +29,8 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online
     protected $neighbors;
 
     /**
-     * The threshold density factor used to mark outliers.
+     * The threshold outlier facter. Factor is a value between 0 and 1 where
+     * greater than 0.5 signifies outlier territory.
      *
      * @var float
      */

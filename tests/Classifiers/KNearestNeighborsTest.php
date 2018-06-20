@@ -2,6 +2,7 @@
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Multiclass;
@@ -53,6 +54,7 @@ class KNearestNeighborsTest extends TestCase
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 

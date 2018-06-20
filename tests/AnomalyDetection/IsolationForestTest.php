@@ -34,7 +34,7 @@ class IsolationForestTest extends TestCase
             [1.0177273113, 4.727491941], [9.293847293, 3.293847293],
         ]);
 
-        $this->estimator = new IsolationForest(100, 1.0, 0.45);
+        $this->estimator = new IsolationForest(300, 1.0, 0.45);
     }
 
     public function test_build_isolation_forest_detector()
@@ -53,5 +53,17 @@ class IsolationForestTest extends TestCase
         $results = $this->estimator->predict($this->dirty);
 
         $this->assertEquals([1, 0, 1, 0], $results);
+    }
+
+    public function test_predict_proba()
+    {
+        $this->estimator->train($this->clean);
+
+        $results = $this->estimator->proba($this->dirty);
+
+        $this->assertGreaterThan(0.45, $results[0]);
+        $this->assertLessThanOrEqual(0.45, $results[1]);
+        $this->assertGreaterThan(0.45, $results[2]);
+        $this->assertLessThanOrEqual(0.45, $results[3]);
     }
 }

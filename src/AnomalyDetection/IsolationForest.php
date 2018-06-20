@@ -27,8 +27,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
 
     /**
      * The threshold isolation score. Score is a value between 0 and 1 where
-     * 0.5 is nominal, 1 is certain to be an outlier, and 0 is an extremely
-     * dense region.
+     * greater than 0.5 signifies outlier territory.
      *
      * @var float
      */
@@ -50,7 +49,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, float $threshold = 0.6)
+    public function __construct(int $trees = 100, float $ratio = 0.1, float $threshold = 0.5)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'

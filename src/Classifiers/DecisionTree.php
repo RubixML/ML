@@ -332,11 +332,11 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
      * Partition a dataset into left and right subsets.
      *
      * @param  array  $data
-     * @param  mixed  $index
+     * @param  int  $index
      * @param  mixed  $value
      * @return array
      */
-    protected function partition(array $data, $index, $value) : array
+    protected function partition(array $data, int $index, $value) : array
     {
         $left = $right = [];
 

@@ -2,6 +2,8 @@
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetection\Detector;
 use Rubix\ML\Metrics\Distance\Euclidean;
@@ -41,7 +43,9 @@ class LocalOutlierFactorTest extends TestCase
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
@@ -52,5 +56,17 @@ class LocalOutlierFactorTest extends TestCase
         $results = $this->estimator->predict($this->dirty);
 
         $this->assertEquals([1, 0, 1, 0], $results);
+    }
+
+    public function test_predict_proba()
+    {
+        $this->estimator->train($this->clean);
+
+        $results = $this->estimator->proba($this->dirty);
+
+        $this->assertGreaterThan(0.5, $results[0]);
+        $this->assertLessThanOrEqual(0.5, $results[1]);
+        $this->assertGreaterThan(0.5, $results[2]);
+        $this->assertLessThanOrEqual(0.5, $results[3]);
     }
 }
