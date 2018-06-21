@@ -19,9 +19,8 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     protected $maxDepth;
 
     /**
-     * The threshold isolation score. Score is a value between 0 and 1 where
-     * 0.5 is nominal, 1 is certain to be an outlier, and 0 is an extremely
-     * dense region.
+     * The threshold isolation score betweeen 0 and 1 where 0 is not likely to
+     * be an outlier and 1 is very likely to be an outlier.
      *
      * @var float
      */
@@ -113,7 +112,8 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->get('outcome');
+            $predictions[] = $this->search($sample)
+                ->get('outcome');
         }
 
         return $predictions;
@@ -130,7 +130,8 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)->get('probability');
+            $probabilities[] = $this->search($sample)
+                ->get('probability');
         }
 
         return $probabilities;
@@ -176,9 +177,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     }
 
     /**
-     * Recursive function to split the training data adding decision nodes along the
-     * way. The terminating conditions are a) split would make node responsible
-     * for less values than $minSamples or b) the max depth of the branch has been reached.
+     * Recursive function to split the training set.
      *
      * @param  \Rubix\ML\BinaryNode  $root
      * @param  int  $depth
@@ -219,7 +218,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     }
 
     /**
-     * Randomized algorithm to find a split point in a dataset.
+     * Randomized algorithm to find a split point in the data.
      *
      * @param  array  $data
      * @return \Rubix\ML\BinaryNode

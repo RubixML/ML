@@ -143,7 +143,8 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->get('output');
+            $predictions[] = $this->search($sample)
+                ->get('output');
         }
 
         return $predictions;
@@ -250,11 +251,11 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     {
         $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
-        shuffle($this->indices);
-
         $best = [
             'variance' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
+
+        shuffle($this->indices);
 
         foreach ($this->indices as $index) {
             foreach ($data as $row) {
@@ -306,13 +307,8 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
         $mean = Average::mean($outcomes);
 
-        $variance = array_reduce($outcomes, function ($carry, $outcome) use ($mean) {
-            return $carry += ($outcome - $mean) ** 2;
-        }, 0.0) / count($outcomes);
-
         return new BinaryNode([
             'output' => $mean,
-            'variance' =>  $variance,
             'terminal' => true,
         ]);
     }

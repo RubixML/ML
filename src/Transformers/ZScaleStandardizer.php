@@ -56,19 +56,19 @@ class ZScaleStandardizer implements Transformer
     {
         $this->means = $this->stddevs = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === self::CONTINUOUS) {
-                $values = $dataset->column($column);
-
+        foreach ($dataset->rotate() as $column => $values) {
+            if ($dataset->type($column) === self::CONTINUOUS) {
                 $mean = Average::mean($values);
 
-                $stddev = sqrt(array_reduce($values,
-                    function ($carry, $feature) use ($mean) {
-                        return $carry += ($feature - $mean) ** 2;
-                    }, 0) / count($values));
+                $deviations = [];
+
+                foreach ($values as $value) {
+                    $deviations[] = ($value - $mean) ** 2;
+                }
+
+                $this->stddevs[$column] = sqrt(Average::mean($deviations));
 
                 $this->means[$column] = $mean;
-                $this->stddevs[$column] = $stddev;
             }
         }
     }

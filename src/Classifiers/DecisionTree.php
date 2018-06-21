@@ -91,7 +91,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
             throw new InvalidArgumentException('Split tolerance must be between'
                 . ' 0 and 1.');
         }
-        
+
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
         $this->epsilon = $epsilon;
@@ -152,7 +152,8 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->get('class');
+            $predictions[] = $this->search($sample)
+                ->get('class');
         }
 
         return $predictions;
@@ -169,7 +170,8 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)->get('probabilities');
+            $probabilities[] = $this->search($sample)
+                ->get('probabilities');
         }
 
         return $probabilities;
@@ -267,7 +269,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     /**
      * Greedy algorithm to chose the best split point for a given set of data
      * as determined by its gini index. The algorithm will terminate early if it
-     * finds a homogenous split. i.e. a gini score of 0.
+     * finds a homogenous split. i.e. a gini score of <= epsilon.
      *
      * @param  array  $data
      * @return \Rubix\ML\BinaryNode
@@ -276,11 +278,11 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     {
         $outcomes = array_unique(array_column($data, count($data[0]) - 1));
 
-        shuffle($this->indices);
-
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
+
+        shuffle($this->indices);
 
         foreach ($this->indices as $index) {
             foreach ($data as $row) {

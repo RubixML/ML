@@ -61,6 +61,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [Numeric String Converter](#numeric-string-converter)
 			- [One Hot Encoder](#one-hot-encoder)
             - [Polynomial Expander](#polynomial-expander)
+            - [Robust Standardizer](#robust-standardizer)
 			- [TF-IDF Transformer](#tf---idf-transformer)
 			- [Variance Threshold Filter](#variance-threshold-filter)
 			- [Z Scale Standardizer](#z-scale-standardizer)
@@ -1367,6 +1368,26 @@ This Transformer does not have any additional methods.
 use Rubix\ML\Transformers\PolynomialExpander;
 
 $transformer = new PolynomialExpander(3);
+```
+
+#### Robust Standardizer
+This Transformer standardizes continuous features by removing the median and dividing over the median absolute deviation (MAD), a value referred to as robust z score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
+
+##### Continuous
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `medians() : array` | Return the medians calculated by fitting the training set. |
+| `mads() : array` | Return the median absolute deviations calculated during fitting. |
+
+##### Example:
+```php
+use Rubix\ML\Transformers\RobustStandardizer;
+
+$transformer = new RobustStandardizer();
 ```
 
 #### TF-IDF Transformer

@@ -62,6 +62,14 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function columnTypes() : array;
 
     /**
+     * Get the column type for a given column index.
+     *
+     * @param  int  $index
+     * @return int
+     */
+    public function type(int $index) : int;
+
+    /**
      * Return the number of feature columns in the datasets.
      *
      * @return int

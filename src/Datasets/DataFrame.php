@@ -114,6 +114,18 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Get the column type for a given column index.
+     *
+     * @param  int  $index
+     * @return int
+     */
+    public function type(int $index) : int
+    {
+        return is_string($this->samples[0][$index])
+            ? self::CATEGORICAL : self::CONTINUOUS;
+    }
+
+    /**
      * Return the number of feature columns in the datasets.
      *
      * @return int

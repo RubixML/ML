@@ -12,11 +12,11 @@ class RobustZScore implements Detector, Persistable
     const LAMBDA = 0.6745;
 
     /**
-     * The threshold absolute z score to be considered an outlier.
+     * The threshold z score of a feature to be consider the sample an outlier.
      *
      * @var float
      */
-    protected $tolerance;
+    protected $threshold;
 
     /**
      * The median of each training feature column.
@@ -37,18 +37,18 @@ class RobustZScore implements Detector, Persistable
     ];
 
     /**
-     * @param  float  $tolerance
+     * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $tolerance = 3.5)
+    public function __construct(float $threshold = 3.5)
     {
-        if ($tolerance <= 0) {
-            throw new InvalidArgumentException('Tolerance must be greater than'
-                . ' 0.');
+        if ($threshold < 0) {
+            throw new InvalidArgumentException('Z score threshold must be'
+                . ' 0 or greater.');
         }
 
-        $this->tolerance = $tolerance;
+        $this->threshold = $threshold;
     }
 
     /**
@@ -110,10 +110,11 @@ class RobustZScore implements Detector, Persistable
 
         foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
-                $score = self::LAMBDA * ($feature - $this->medians[$column])
+                $score = self::LAMBDA
+                    * ($feature - $this->medians[$column])
                     / $this->mads[$column];
 
-                if ($score > $this->tolerance) {
+                if ($score > $this->threshold) {
                     $predictions[] = 1;
 
                     continue 2;

@@ -19,7 +19,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
     protected $trees;
 
     /**
-     * The ratio of training samples to train each decision tree on.
+     * The ratio of training samples to train each isolation tree on.
      *
      * @var float
      */
@@ -129,7 +129,8 @@ class IsolationForest implements Detector, Probabilistic, Persistable
             $probability = 0.0;
 
             foreach ($this->forest as $tree) {
-                $probability += $tree->search($sample)->get('probability');
+                $probability += $tree->search($sample)
+                    ->get('probability');
             }
 
             $probabilities[] = $probability / $n;
