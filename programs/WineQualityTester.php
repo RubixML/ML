@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Metrics\Validation\RSquared;
+use Rubix\ML\Metrics\Validation\RMSError;
 use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
@@ -41,7 +41,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
-    1e-4, new RSquared(), 0.2, 3, 1e-3, 100), [
+    1e-4, new RMSError(), 0.2, 3, 1e-3, 100), [
         new NumericStringConverter(),
     ]);
 

@@ -25,12 +25,13 @@ class LabeledTest extends TestCase
 
         $this->labels = [
             'not monster', 'monster', 'not monster',
-            'monster', 'not monster', 'not monster'];
+            'monster', 'not monster', 'not monster',
+        ];
 
         $this->dataset = new Labeled($this->samples, $this->labels);
     }
 
-    public function test_build_supervised_dataset()
+    public function test_build_labeled_dataset()
     {
         $this->assertInstanceOf(Labeled::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
@@ -39,6 +40,18 @@ class LabeledTest extends TestCase
     public function test_get_labels()
     {
         $this->assertEquals($this->labels, $this->dataset->labels());
+    }
+
+    public function test_get_label()
+    {
+        $this->assertEquals('not monster', $this->dataset->label(0));
+        $this->assertEquals('monster', $this->dataset->label(1));
+    }
+
+    public function test_possible_outcomes()
+    {
+        $this->assertEquals(['not monster', 'monster'],
+            $this->dataset->possibleOutcomes());
     }
 
     public function test_randomize()
@@ -76,6 +89,16 @@ class LabeledTest extends TestCase
 
         $this->assertEquals(5, $dataset->count());
         $this->assertEquals(1, $this->dataset->count());
+    }
+
+    public function test_splice_dataset()
+    {
+        $this->assertEquals(6, $this->dataset->count());
+
+        $dataset = $this->dataset->splice(2, 2);
+
+        $this->assertEquals(2, $dataset->count());
+        $this->assertEquals(4, $this->dataset->count());
     }
 
     public function test_split_dataset()

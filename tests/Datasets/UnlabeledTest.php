@@ -24,7 +24,7 @@ class UnlabeledTest extends TestCase
         $this->dataset = new Unlabeled($this->samples);
     }
 
-    public function test_build_unsupervised_dataset()
+    public function test_build_unlabeled_dataset()
     {
         $this->assertInstanceOf(Unlabeled::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
@@ -60,6 +60,16 @@ class UnlabeledTest extends TestCase
 
         $this->assertEquals(5, $dataset->count());
         $this->assertEquals(1, $this->dataset->count());
+    }
+
+    public function test_splice_dataset()
+    {
+        $this->assertEquals(6, $this->dataset->count());
+
+        $dataset = $this->dataset->splice(2, 2);
+
+        $this->assertEquals(2, $dataset->count());
+        $this->assertEquals(4, $this->dataset->count());
     }
 
     public function test_split_dataset()

@@ -37,11 +37,11 @@ $estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
     new RobustStandardizer(),
 ]);
 
-$validator = new KFold(new F1Score(), 10);
+$validator = new KFold(10);
 
 $report = new ConfusionMatrix();
 
-var_dump($validator->test($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset, new F1Score()));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 

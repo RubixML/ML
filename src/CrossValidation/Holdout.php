@@ -10,14 +10,7 @@ use InvalidArgumentException;
 class Holdout implements Validator
 {
     /**
-     * The metric used to score the predictions.
-     *
-     * @var \Rubix\ML\Metrics\Validation
-     */
-    protected $metric;
-
-    /**
-     * The holdout ratio. i.e. the ratio of samples to use for validation.
+     * The holdout ratio. i.e. the ratio of samples to use for testing.
      *
      * @var float
      */
@@ -36,23 +29,20 @@ class Holdout implements Validator
                 . ' between 0.01 and 1.0.');
         }
 
-        $this->metric = $metric;
         $this->ratio = $ratio;
     }
 
     /**
-     * Run k training rounds where k is the number of folds. For each round use
-     * one fold for testing and the rest to train the model. Return the average
-     * score for each training round.
+     * Run a single training and testing round where the ratio determines the
+     * number of samples held out for testing.
      *
      * @param  \Rubix\ML\Estimator\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Metrics\Validation\Validation  $metric
      * @return float
      */
-    public function test(Estimator $estimator, Labeled $dataset) : float
+    public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
     {
-        $dataset->randomize();
-
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
             list($training, $testing) =
                 $dataset->stratifiedSplit(1 - $this->ratio);
@@ -63,7 +53,7 @@ class Holdout implements Validator
 
         $estimator->train($training);
 
-        $score = $this->metric->score($estimator, $testing);
+        $score = $metric->score($estimator, $testing);
 
         return $score;
     }

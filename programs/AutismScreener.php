@@ -42,14 +42,14 @@ $estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 100, 0.1, 0.999), 
     new MissingDataImputer('?'),
 ]);
 
-$validator = new KFold(new MCC(), 10);
+$validator = new KFold(10);
 
 $report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
 ]);
 
-var_dump($validator->test($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset, new MCC()));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 

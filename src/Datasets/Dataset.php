@@ -117,6 +117,16 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function leave(int $n = 1);
 
     /**
+     * Remove a size n chunk of the dataset starting at offset and return it in
+     * a new dataset.
+     *
+     * @param  int  $offset
+     * @param  int  $n
+     * @return self
+     */
+    public function splice(int $offset, int $n);
+
+    /**
      * Randomize the dataset.
      *
      * @return self

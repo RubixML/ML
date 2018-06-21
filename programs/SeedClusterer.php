@@ -37,11 +37,11 @@ $estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
     new ZScaleStandardizer(),
 ]);
 
-$validator = new KFold(new VMeasure(), 10);
+$validator = new KFold(10);
 
 $report = new ContingencyTable();
 
-var_dump($validator->test($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset, new VMeasure()));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 

@@ -15,8 +15,8 @@ class CosineSimilarity implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $a = new Vector($a);
-        $b = new Vector($b);
+        $a = new Vector(array_values($a));
+        $b = new Vector(array_values($b));
 
         return 1 - $a->dotProduct($b) / ($a->length() * $b->length());
     }

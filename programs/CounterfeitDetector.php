@@ -3,6 +3,7 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
+use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Metrics\Validation\MCC;
@@ -37,13 +38,13 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new LogisticRegression(10, new Adam(0.001), 1e-4, 1e-4), [
+$estimator = new Pipeline(new SVC(1.0, 1e-3, 1000, PHP_INT_MAX), [
     new NumericStringConverter(),
 ]);
 
-$validator = new KFold(new MCC(), 10);
+$validator = new KFold(10);
 
-var_dump($validator->test($dummy, $dataset));
+var_dump($validator->test($dummy, $dataset, new MCC()));
 
 echo "\n";
 

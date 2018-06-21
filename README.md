@@ -1451,15 +1451,21 @@ Cross validation is the process of testing the generalization performance of a c
 
 ---
 #### Validators
-Validators take an Estimator instance and Labeled Dataset object and return a score that measures the generalization performance using a user-defined validation metric.
+Validators take an Estimator instance, Labeled Dataset object, and validation Metric and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset chosen by the testing algorithm.
 
 ```php
-public test(Estimator $estimator, Labeled $dataset) : float
+public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
 ```
 
 ##### Example:
 ```php
-$score = $validator->test($estimator, $dataset);
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Metrics\Validation\Accuracy;
+
+...
+$validator = new KFold(10);
+
+$score = $validator->test($estimator, $dataset, new Accuracy());
 
 var_dump($score);
 ```
@@ -1468,6 +1474,7 @@ var_dump($score);
 ```sh
 float(0.869)
 ```
+Below describes the various Cross Validators available in Rubix.
 
 #### Hold Out
 Hold Out is the simplest form of cross validation available in Rubix. It uses a "hold out" set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is fast, but it doesn't allow the model to train on the entire training set.
@@ -1483,11 +1490,11 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Metrics\Validation\Accuracy;
 
-$validator = new HoldOut(new Accuracy(), 0.25);
+$validator = new HoldOut(0.25);
 ```
 
 #### K Fold
-K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
+K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the validation performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1498,9 +1505,8 @@ K Fold is a technique that splits the training set into K individual sets and fo
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Metrics\Validation\F1Score;
 
-$validator = new KFold(new F1Score(), 5);
+$validator = new KFold(5);
 ```
 
 ---
@@ -1755,7 +1761,7 @@ $estimator = new GridSearch(KNearestNeightbors::class, $params, new KFold(new Ac
 
 ---
 ### Model Persistence
-It is possible to persist a computer model to disk by wrapping the Estimator instance in a **Persistent Model** meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface, as certain models scale better than others on disk.
+It is possible to persist a computer model to disk by wrapping the Estimator instance in a **Persistent Model** meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface.
 
 ```php
 public save(string $path) : bool

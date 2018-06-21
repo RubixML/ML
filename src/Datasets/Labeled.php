@@ -134,11 +134,11 @@ class Labeled extends DataFrame implements Dataset
     public function take(int $n = 1) : self
     {
         if ($n < 0) {
-            throw new InvalidArgumentException('Cannot take less than 0 samples.');
+            throw new InvalidArgumentException('Cannot take less than 0'
+                . ' samples.');
         }
 
-        return new self(array_splice($this->samples, 0, $n),
-            array_splice($this->labels, 0, $n));
+        return $this->splice(0, $n);
     }
 
     /**
@@ -152,11 +152,25 @@ class Labeled extends DataFrame implements Dataset
     public function leave(int $n = 1) : self
     {
         if ($n < 0) {
-            throw new InvalidArgumentException('Cannot leave less than 0 samples.');
+            throw new InvalidArgumentException('Cannot leave less than 0'
+                . ' samples.');
         }
 
-        return new self(array_splice($this->samples, $n),
-            array_splice($this->labels, $n));
+        return $this->splice($n, $this->numRows());
+    }
+
+    /**
+     * Remove a size n chunk of the dataset starting at offset and return it in
+     * a new dataset.
+     *
+     * @param  int  $offset
+     * @param  int  $n
+     * @return self
+     */
+    public function splice(int $offset, int $n) : self
+    {
+        return new self(array_splice($this->samples, $offset, $n),
+            array_splice($this->labels, $offset, $n));
     }
 
     /**
@@ -245,7 +259,8 @@ class Labeled extends DataFrame implements Dataset
             . '1 time.');
         }
 
-        list($samples, $labels) = [$this->samples, $this->labels];
+        $samples = $this->samples;
+        $labels = $this->labels;
 
         $n = round(count($samples) / $k);
 

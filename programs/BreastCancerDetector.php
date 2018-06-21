@@ -59,14 +59,14 @@ $estimator = new Pipeline(new CommitteeMachine([
     new ZScaleStandardizer(),
 ]);
 
-$validator = new Holdout(new MCC(), 0.1);
+$validator = new Holdout(0.1);
 
 $report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
 ]);
 
-var_dump($validator->test($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset, new MCC()));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
