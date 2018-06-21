@@ -41,7 +41,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
-    1e-4, new RSquared(), 0.2, 3, 100), [
+    1e-4, new RSquared(), 0.2, 3, 1e-3, 100), [
         new NumericStringConverter(),
     ]);
 

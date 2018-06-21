@@ -588,7 +588,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetectors\IsolationForest;
+use Rubix\ML\AnomalyDetection\IsolationForest;
 
 $estimator = new IsolationForest(500, 0.1, 0.7);
 ```
@@ -612,7 +612,7 @@ Isolation Trees detect anomalous data by separating them out early during traver
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetectors\IsolationTree;
+use Rubix\ML\AnomalyDetection\IsolationTree;
 
 $estimator = new IsolationTree(1000, 0.65);
 ```
@@ -635,7 +635,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
+use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
 use Rubix\ML\Metrics\Distance\Minkowski;
 
 $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
@@ -659,7 +659,7 @@ A quick global anomaly Detector, Robust Z Score uses a modified Z score threshol
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetectors\RobustZScore;
+use Rubix\ML\AnomalyDetection\RobustZScore;
 
 $estimator = new RobustZScore(3.0);
 ```
@@ -677,7 +677,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 |--|--|--|--|
 | base | None | string | The fully qualified class name of the base "weak" classifier. |
 | params | [ ] | array | The parameters of the base classifer. |
-| epochs | 100 | int | The maximum number of training rounds to execute before the algorithm terminates. |
+| experts | 100 | int | The number of classifiers to train in the ensemble. |
 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | threshold | 0.999 | float | The minimum accuracy an epoch must score before the algorithm terminates. |
 
@@ -1506,7 +1506,44 @@ $validator = new KFold(new F1Score(), 5);
 ---
 #### Validation Metrics
 
-Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. There are different metrics for different types of Estimators.
+Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. The output of the Metric's `score()` method is a scalar score. You can output a tuple of minimum and maximum scores with the `range()` method.
+
+To compute a validation score on an Estimator with a Labeled Dataset:
+```php
+public score(Estimator $estimator, Labeled $testing) : float
+```
+
+To output the range of values the metric can take on:
+```php
+public range() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Metrics\Validation\MeanAbsoluteError;
+
+...
+$metric = new MeanAbsoluteError();
+
+$score = $metric->score($estimator, $testing);
+
+var_dump($score);
+var_dump($metric->range());
+```
+
+##### Outputs:
+```sh
+float(0.99846070553066)
+
+array(2) {
+  [0]=>
+  float(-INF)
+  [1]=>
+  int(0)
+}
+```
+
+There are different metrics for different types of Estimators listed below.
 
 ##### Classification
 | Metric | Range |  Description |
@@ -1514,7 +1551,7 @@ Validation metrics are for evaluating the performance of an Estimator given some
 | Accuracy | (0, 1) | A quick metric that computes the average accuracy over the entire testing set. |
 | F1 Score | (0, 1) | A metric that takes the precision and recall of each class outcome into consideration. |
 | Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
-| MCC | (0, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. It returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
+| MCC | (-1, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. It returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
 
 ##### Regression
 | Metric | Range | Description |
@@ -1522,7 +1559,7 @@ Validation metrics are for evaluating the performance of an Estimator given some
 | Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
 | Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
 | RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
-| R-Squared | (0, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
+| R-Squared | (-INF, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
 
 ##### Clustering
 | Metric | Range | Description |
@@ -1713,7 +1750,7 @@ $params = [
 	[1, 3, 5, 10, 20], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $params, new KFold(new Accuracy(), 10);
+$estimator = new GridSearch(KNearestNeightbors::class, $params, new KFold(new Accuracy(), 10));
 ```
 
 ---

@@ -8,6 +8,16 @@ use Rubix\ML\Classifiers\Classifier;
 class MCC implements Classification
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-1, 1];
+    }
+
+    /**
      * Score the Matthews correlation coefficient of the predicted classes.
      * Score is a number between -1 and 1.
      *

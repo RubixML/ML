@@ -43,9 +43,10 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(15, new ELU()),
-    new Dense(15, new ELU()),
-    new Dense(15, new ELU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
+    new Dense(10, new ELU()),
 ];
 
 $estimator = new Pipeline(new CommitteeMachine([

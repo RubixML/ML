@@ -37,7 +37,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new NaiveBayes(), [
+$estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 100, 0.1, 0.999), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
 ]);
@@ -57,4 +57,4 @@ $estimator->train($training);
 
 var_dump($report->generate($estimator, $testing));
 
-var_dump($estimator->proba($dataset->randomize()->head(5)));
+var_dump($estimator->predict($dataset->randomize()->head(5)));

@@ -8,6 +8,16 @@ use Rubix\ML\Classifiers\Classifier;
 class F1Score implements Classification
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [0, 1];
+    }
+    
+    /**
      * Score the average F1 score of the predictions.
      *
      * @param  \Rubix\ML\Classifiers\Classifier  $estimator

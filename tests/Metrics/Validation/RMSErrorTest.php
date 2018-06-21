@@ -27,6 +27,11 @@ class RMSErrorTest extends TestCase
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 
+    public function test_get_range()
+    {
+        $this->assertEquals([-INF, 0], $this->metric->range());
+    }
+
     public function test_score_predictions()
     {
         $score = $this->metric->score($this->estimator, $this->testing);

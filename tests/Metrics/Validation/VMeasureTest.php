@@ -21,11 +21,16 @@ class VMeasureTest extends TestCase
         $this->metric = new VMeasure();
     }
 
-    public function test_build_v_score_metric()
+    public function test_build_v_measure_metric()
     {
         $this->assertInstanceOf(VMeasure::class, $this->metric);
         $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
+    }
+
+    public function test_get_range()
+    {
+        $this->assertEquals([0, 1], $this->metric->range());
     }
 
     public function test_score_predictions()

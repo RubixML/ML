@@ -8,6 +8,16 @@ use Rubix\ML\Regressors\Regressor;
 class MeanSquaredError implements Regression
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-INF, 0];
+    }
+    
+    /**
      * Calculate the negative mean squared error of the predictions.
      *
      * @param  \Rubix\ML\Regressors\Regressor  $estimator

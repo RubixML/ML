@@ -8,7 +8,7 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use Rubix\ML\Metrics\Validation\F1Score;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\RobustStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use League\Csv\Reader;
@@ -34,7 +34,7 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
     new NumericStringConverter(),
-    new ZScaleStandardizer(),
+    new RobustStandardizer(),
 ]);
 
 $validator = new KFold(new F1Score(), 10);

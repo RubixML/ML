@@ -27,6 +27,11 @@ class CompletenessTest extends TestCase
         $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
+    
+    public function test_get_range()
+    {
+        $this->assertEquals([0, 1], $this->metric->range());
+    }
 
     public function test_score_predictions()
     {

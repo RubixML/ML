@@ -8,6 +8,16 @@ use Rubix\ML\Clusterers\Clusterer;
 class VMeasure implements Clustering
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [0, 1];
+    }
+    
+    /**
      * Calculate the V score of a clustering. V Score is the harmonic mean of
      * homogeneity and completness.
      *

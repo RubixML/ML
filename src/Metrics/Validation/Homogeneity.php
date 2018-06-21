@@ -8,6 +8,16 @@ use Rubix\ML\Clusterers\Clusterer;
 class Homogeneity implements Clustering
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [0, 1];
+    }
+    
+    /**
      * Calculate the homogeneity of a clustering.
      *
      * @param  \Rubix\ML\Clusterers\Clusterer  $estimator

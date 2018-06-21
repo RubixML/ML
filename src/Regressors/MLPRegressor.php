@@ -47,13 +47,6 @@ class MLPRegressor implements Regressor, Online, Persistable
     protected $alpha;
 
     /**
-     * The minimum validation score needed to early stop training.
-     *
-     * @var float
-     */
-    protected $threshold;
-
-    /**
      * The regression metric used to validate the performance of the model.
      *
      * @var \Rubix\ML\Metrics\Validation\Regression
@@ -75,6 +68,14 @@ class MLPRegressor implements Regressor, Online, Persistable
      * @var int
      */
     protected $window;
+
+    /**
+     * The amount of validation metric to tolerate when considering early
+     * stopping due to max validation score.
+     *
+     * @var float
+     */
+    protected $tolerance;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -108,13 +109,14 @@ class MLPRegressor implements Regressor, Online, Persistable
      * @param  \Rubix\ML\Metrics\Validation\Regression|null  $metric
      * @param  float $ratio
      * @param  int  $window
+     * @param  float  $tolerance
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $hidden, int $batchSize = 50, Optimizer $optimizer = null,
                     float $alpha = 1e-4, Regression $metric = null, float $ratio = 0.2,
-                    int $window = 3, int $epochs = PHP_INT_MAX)
+                    int $window = 3, float $tolerance = 1e-3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -134,6 +136,11 @@ class MLPRegressor implements Regressor, Online, Persistable
         if ($window < 1) {
             throw new InvalidArgumentException('Stopping criteria window must'
                 . ' be at least 2 epochs.');
+        }
+
+        if ($tolerance < -1 or $tolerance > 1) {
+            throw new InvalidArgumentException('Validation metric tolerance'
+                . ' must be between -1 and 1.');
         }
 
         if ($epochs < 1) {
@@ -156,6 +163,7 @@ class MLPRegressor implements Regressor, Online, Persistable
         $this->metric = $metric;
         $this->ratio = $ratio;
         $this->window = $window;
+        $this->tolerance = $tolerance;
         $this->epochs = $epochs;
     }
 
@@ -216,6 +224,8 @@ class MLPRegressor implements Regressor, Online, Persistable
 
         $best = ['score' => -INF, 'snapshot' => null];
 
+        list($min, $max) = $this->metric->range();
+
         $this->progress = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
@@ -235,6 +245,10 @@ class MLPRegressor implements Regressor, Online, Persistable
             if ($score > $best['score']) {
                 $best['score'] = $score;
                 $best['snapshot'] = $this->network->read();
+            }
+
+            if ($score > ($max - $this->tolerance)) {
+                break 1;
             }
 
             if ($epoch >= $this->window) {

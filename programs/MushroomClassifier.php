@@ -9,9 +9,11 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Metrics\Validation\MCC;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\ClassificationReport;
@@ -49,9 +51,10 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
-    1e-4, new MCC(), 0.2, 3, 100), [
+    1e-4, new MCC(), 0.2, 3, 1e-3, 100), [
         new OneHotEncoder(),
         new SparseRandomProjector(30),
+        new ZScaleStandardizer(),
     ]);
 
 $report = new AggregateReport([

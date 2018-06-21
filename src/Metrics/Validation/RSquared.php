@@ -9,6 +9,16 @@ use Rubix\ML\Regressors\Regressor;
 class RSquared implements Regression
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-INF, 1];
+    }
+
+    /**
      * Calculate the coefficient of determination i.e. R^2 from the predictions.
      *
      * @param  \Rubix\ML\Regressors\Regressor  $estimator

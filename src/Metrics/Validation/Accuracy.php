@@ -8,6 +8,16 @@ use Rubix\ML\Classifiers\Classifier;
 class Accuracy implements Classification
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [0, 1];
+    }
+
+    /**
      * Test the accuracy of the predictions.
      *
      * @param  \Rubix\ML\Classifiers\Classifier  $estimator

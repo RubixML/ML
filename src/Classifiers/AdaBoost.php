@@ -28,13 +28,13 @@ class AdaBoost implements Binary, Persistable
     ];
 
     /**
-     * The number of training epochs to execute. Note that the algorithm will
+     * The number of training rounds to execute. Note that the algorithm will
      * terminate early if it can train a classifier that exceeds the threshold
      * hyperparameter.
      *
      * @var int
      */
-    protected $epochs;
+    protected $experts;
 
     /**
      * The ratio of samples to train each classifier on.
@@ -91,13 +91,13 @@ class AdaBoost implements Binary, Persistable
     /**
      * @param  string  $base
      * @param  array  $params
-     * @param  int  $epochs
+     * @param  int  $experts
      * @param  float  $ratio
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params = [], int $epochs = 100,
+    public function __construct(string $base, array $params = [], int $experts = 100,
                                 float $ratio = 0.1, float $threshold = 0.999)
     {
         $this->reflector = new ReflectionClass($base);
@@ -107,9 +107,9 @@ class AdaBoost implements Binary, Persistable
                 . ' classifier interface.');
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+        if ($experts < 1) {
+            throw new InvalidArgumentException('Ensemble must contain at least'
+                . ' 1 expert.');
         }
 
         if ($ratio < 0.01 or $ratio > 1) {
@@ -123,7 +123,7 @@ class AdaBoost implements Binary, Persistable
         }
 
         $this->params = $params;
-        $this->epochs = $epochs;
+        $this->experts = $experts;
         $this->ratio = $ratio;
         $this->threshold = $threshold;
     }
@@ -176,7 +176,7 @@ class AdaBoost implements Binary, Persistable
 
         $this->ensemble = $this->influence = [];
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($expert = 1; $expert <= $this->experts; $expert++) {
             $estimator = $this->reflector->newInstanceArgs($this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));

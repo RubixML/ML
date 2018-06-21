@@ -8,6 +8,16 @@ use Rubix\ML\Classifiers\Classifier;
 class Informedness implements Classification
 {
     /**
+     * Return a tuple of the min and max output value for this metric.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-1, 1];
+    }
+
+    /**
      * Calculate the informedness score of the predicted classes. Informedness
      * is determined by recall + specificity - 1.
      *
