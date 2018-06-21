@@ -3,8 +3,8 @@
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetection\Detector;
-use Rubix\ML\AnomalyDetection\RobustZScore;
+use Rubix\ML\AnomalyDetectors\Detector;
+use Rubix\ML\AnomalyDetectors\RobustZScore;
 use PHPUnit\Framework\TestCase;
 
 class RobustZScoreTest extends TestCase

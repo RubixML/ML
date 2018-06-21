@@ -5,9 +5,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetection\Detector;
+use Rubix\ML\AnomalyDetectors\Detector;
 use Rubix\ML\Metrics\Distance\Euclidean;
-use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
 
 class LocalOutlierFactorTest extends TestCase

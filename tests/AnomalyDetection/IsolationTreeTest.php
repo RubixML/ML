@@ -4,8 +4,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetection\Detector;
-use Rubix\ML\AnomalyDetection\IsolationTree;
+use Rubix\ML\AnomalyDetectors\Detector;
+use Rubix\ML\AnomalyDetectors\IsolationTree;
 use PHPUnit\Framework\TestCase;
 
 class IsolationTreeTest extends TestCase

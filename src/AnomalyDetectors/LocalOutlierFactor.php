@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\AnomalyDetection;
+namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Persistable;

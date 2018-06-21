@@ -4,10 +4,10 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetection\IsolationTree;
+use Rubix\ML\AnomalyDetectors\IsolationTree;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\AnomalyDetection\IsolationForest;
+use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
 

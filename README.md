@@ -588,7 +588,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetection\IsolationForest;
+use Rubix\ML\AnomalyDetectors\IsolationForest;
 
 $estimator = new IsolationForest(500, 0.1, 0.7);
 ```
@@ -612,7 +612,7 @@ Isolation Trees detect anomalous data by separating them out early during traver
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetection\IsolationTree;
+use Rubix\ML\AnomalyDetectors\IsolationTree;
 
 $estimator = new IsolationTree(1000, 0.65);
 ```
@@ -635,7 +635,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use Rubix\ML\Metrics\Distance\Minkowski;
 
 $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
@@ -659,7 +659,7 @@ A quick global anomaly Detector, Robust Z Score uses a modified Z score threshol
 
 ##### Example:
 ```php
-use Rubix\ML\AnomalyDetection\RobustZScore;
+use Rubix\ML\AnomalyDetectors\RobustZScore;
 
 $estimator = new RobustZScore(3.0);
 ```
