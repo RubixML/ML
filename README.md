@@ -69,21 +69,11 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 		- [Validators](#validators)
 			- [Hold Out](#hold-out)
 			- [K Fold](#k-fold)
+			- [Leave P Out](#leave-p-out)
 		- [Metrics](#validation-metrics)
 			- [Classification](#classification)
-                - Accuracy
-                - F1 Score
-                - Informedness
-                - MCC
 			- [Regression](#regression)
-                - Mean Absolute Error
-                - Mean Squared Error
-                - RMS Error
-                - R Squared
 			- [Clustering](#clustering)
-                - Completeness
-                - Homogeneity
-                - V Measure
 		- [Reports](#reports)
 			- [Aggregate Report](#aggregate-report)
 			- [Classification Report](#classification-report)
@@ -1482,7 +1472,6 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| metric | None | object | The metric for the validator to measure. |
 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 
 ##### Example:
@@ -1499,14 +1488,28 @@ K Fold is a technique that splits the training set into K individual sets and fo
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| metric | None | object | The metric for the validator to measure. |
-| folds | 10 | int | The number of times to split the training set into equal sized folds. |
+| k | 10 | int | The number of times to split the training set into equal sized folds. |
 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\KFold;
 
 $validator = new KFold(5);
+```
+
+#### Leave P Out
+Leave P Out tests the model with a unique holdout set of P samples for each round until all samples have been tested. Note that this process can become slow with large datasets and small values of P.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| p | 10 | int | The number of samples to leave out each round for testing. |
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\LeavePOut;
+
+$validator = new LeavePOut(30);
 ```
 
 ---

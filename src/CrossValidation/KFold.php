@@ -16,21 +16,21 @@ class KFold implements Validator
      *
      * @var int
      */
-    protected $folds;
+    protected $k;
 
     /**
-     * @param  int  $folds
+     * @param  int  $k
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $folds = 10)
+    public function __construct(int $k = 10)
     {
-        if ($folds < 2) {
+        if ($k < 2) {
             throw new InvalidArgumentException('The number of folds cannot be'
                 . ' less than two.');
         }
 
-        $this->folds = $folds;
+        $this->k = $k;
     }
 
     /**
@@ -46,21 +46,21 @@ class KFold implements Validator
     public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
     {
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
-            $folds = $dataset->stratifiedFold($this->folds);
+            $k = $dataset->stratifiedFold($this->k);
         } else {
-            $folds = $dataset->fold($this->folds);
+            $k = $dataset->fold($this->k);
         }
 
         $scores = [];
 
-        for ($i = 0; $i < $this->folds; $i++) {
+        for ($i = 0; $i < $this->k; $i++) {
             $training = [];
 
-            for ($j = 0; $j < $this->folds; $j++) {
+            for ($j = 0; $j < $this->k; $j++) {
                 if ($i === $j) {
-                    $testing = clone $folds[$j];
+                    $testing = clone $k[$j];
                 } else {
-                    $training[] = clone $folds[$j];
+                    $training[] = clone $k[$j];
                 }
             }
 
