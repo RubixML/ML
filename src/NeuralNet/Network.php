@@ -3,18 +3,18 @@
 namespace Rubix\ML\NeuralNet;
 
 use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
+use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
-use ArrayAccess;
 use Countable;
 
-class Network implements ArrayAccess, Countable
+class Network implements Countable
 {
     /**
      * The layers of the network.
@@ -26,12 +26,20 @@ class Network implements ArrayAccess, Countable
     ];
 
     /**
+     * The gradient descent optimizer used to train the network.
+     *
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
+    protected $optimizer;
+
+    /**
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
      * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return void
      */
-    public function __construct(Input $input, array $hidden, Output $output)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
         $this->layers[] = $input;
 
@@ -45,6 +53,8 @@ class Network implements ArrayAccess, Countable
         }
 
         $this->layers[] = $output;
+
+        $this->optimizer = $optimizer;
     }
 
     /**
@@ -102,18 +112,18 @@ class Network implements ArrayAccess, Countable
     /**
      * Initialize the network.
      *
-     * @return self
+     * @return void
      */
-    public function initialize() : self
+    public function initialize() : void
     {
         for ($i = 1; $i < count($this->layers); $i++) {
             $current = $this->layers[$i];
             $previous = $this->layers[$i - 1];
 
             $current->initialize($previous);
-        }
 
-        return $this;
+            $this->optimizer->initialize($current);
+        }
     }
 
     /**
@@ -144,6 +154,36 @@ class Network implements ArrayAccess, Countable
         $this->output()->back($labels);
 
         return $this;
+    }
+
+    /**
+     * Return the activations of the neurons at the output layer.
+     *
+     * @return array
+     */
+    public function activations() : array
+    {
+        return $this->output()->computed()->transpose()->getMatrix();
+    }
+
+    /**
+     * Take a step of gradient descent and return the magnitude.
+     *
+     * @return float
+     */
+    public function step() : float
+    {
+        $magnitude = 0.0;
+
+        foreach ($this->parametric() as $layer) {
+            $step = $this->optimizer->step($layer);
+
+            $layer->update($step);
+
+            $magnitude += $step->oneNorm();
+        }
+
+        return $magnitude;
     }
 
     /**
@@ -183,53 +223,5 @@ class Network implements ArrayAccess, Countable
     public function count() : int
     {
         return $this->depth();
-    }
-
-    /**
-     * @param  mixed  $index
-     * @param  array  $values
-     * @throws \RuntimeException
-     * @return void
-     */
-    public function offsetSet($index, $values) : void
-    {
-        throw new RuntimeException('Network layers cannot be mutated directly.');
-    }
-
-    /**
-     * Does a given layer exist in the network.
-     *
-     * @param  mixed  $index
-     * @return bool
-     */
-    public function offsetExists($index) : bool
-    {
-        return isset($this->layers[$index]);
-    }
-
-    /**
-     * @param  mixed  $index
-     * @throws \RuntimeException
-     * @return void
-     */
-    public function offsetUnset($index) : void
-    {
-        throw new RuntimeException('Network layers cannot be mutated directly.');
-    }
-
-    /**
-     * Return a layer from the network given by index.
-     *
-     * @param  mixed  $index
-     * @throws \InvalidArgumentException
-     * @return array
-     */
-    public function offsetGet($index) : array
-    {
-        if (!isset($this->layers[$index])) {
-            throw new InvalidArgumentException('Network layer does not exist.');
-        }
-
-        return $this->layers[$index];
     }
 }

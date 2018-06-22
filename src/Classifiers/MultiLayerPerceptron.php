@@ -87,6 +87,15 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $epochs;
 
     /**
+     * The unique class labels.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
+
+    /**
      * The underlying computational graph.
      *
      * @param \Rubix\ML\NeuralNet\Network
@@ -188,13 +197,13 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
                 . ' Labeled training set.');
         }
 
-        $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Softmax($dataset->possibleOutcomes(),
-            $this->alpha));
+        $this->classes = $dataset->possibleOutcomes();
 
-        foreach ($this->network->initialize()->parametric() as $layer) {
-            $this->optimizer->initialize($layer);
-        }
+        $this->network = new Network(new Input($dataset->numColumns()),
+            $this->hidden, new Softmax($this->classes,
+            $this->alpha), $this->optimizer);
+
+        $this->network->initialize();
 
         $this->partial($dataset);
     }
@@ -224,20 +233,17 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
 
-        $best = ['score' => -INF, 'snapshot' => null];
-
         list($min, $max) = $this->metric->range();
+
+        $best = ['score' => -INF, 'snapshot' => null];
 
         $this->progress = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($training->randomize()->batch($this->batchSize) as $batch) {
                 $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
-
-                foreach ($this->network->parametric() as $layer) {
-                    $layer->update($this->optimizer->step($layer));
-                }
+                    ->backpropagate($batch->labels())
+                    ->step();
             }
 
             $score = $this->metric->score($this, $testing);
@@ -305,8 +311,14 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      */
     public function proba(Dataset $dataset) : array
     {
-        $this->network->feed($dataset->samples());
+        $results = $this->network->feed($dataset->samples())->activations();
 
-        return $this->network->output()->activations();
+        $probabilities = [];
+
+        foreach ($results as $activations) {
+            $probabilities[] = array_combine($this->classes, $activations);
+        }
+
+        return $probabilities;
     }
 }

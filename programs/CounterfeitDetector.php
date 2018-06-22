@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Metrics\Validation\MCC;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Metrics\Validation\Accuracy;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Transformers\SparseRandomProjector;
@@ -38,16 +39,18 @@ $dataset = new Labeled($samples, $labels);
 
 $dummy = new DummyClassifier(new PopularityContest());
 
-$estimator = new Pipeline(new SVC(1.0, 1e-3, 1000, PHP_INT_MAX), [
+$estimator = new Pipeline(new LogisticRegression(10, new Adam(0.001), 1e-4, 1e-4), [
     new NumericStringConverter(),
 ]);
 
 $validator = new KFold(10);
 
+$dataset->randomize();
+
 var_dump($validator->test($dummy, $dataset, new MCC()));
 
 echo "\n";
 
-var_dump($validator->test($estimator, $dataset));
+var_dump($validator->test($estimator, $dataset, new MCC()));
 
 var_dump($estimator->proba($dataset->randomize()->head(5)));

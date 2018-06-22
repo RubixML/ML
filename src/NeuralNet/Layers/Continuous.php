@@ -173,24 +173,6 @@ class Continuous implements Output, Parametric
     }
 
     /**
-     * Return an array with the output activations for each class.
-     *
-     * @return array
-     */
-    public function activations() : array
-    {
-        $activations = [];
-
-        foreach ($this->computed->getMatrix() as $i => $neuron) {
-            foreach ($neuron as $j => $activation) {
-                $activations[$j][0] = $activation;
-            }
-        }
-
-        return $activations;
-    }
-
-    /**
      * Update the parameters in the layer.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $steps

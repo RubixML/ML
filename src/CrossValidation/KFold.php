@@ -46,9 +46,9 @@ class KFold implements Validator
     public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
     {
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
-            $k = $dataset->stratifiedFold($this->k);
+            $folds = $dataset->stratifiedFold($this->k);
         } else {
-            $k = $dataset->fold($this->k);
+            $folds = $dataset->fold($this->k);
         }
 
         $scores = [];
@@ -58,9 +58,9 @@ class KFold implements Validator
 
             for ($j = 0; $j < $this->k; $j++) {
                 if ($i === $j) {
-                    $testing = clone $k[$j];
+                    $testing = clone $folds[$j];
                 } else {
-                    $training[] = clone $k[$j];
+                    $training[] = clone $folds[$j];
                 }
             }
 

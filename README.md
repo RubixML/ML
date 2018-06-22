@@ -24,7 +24,7 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 	- [Estimators](#estimators)
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
-		- [Anomaly Detection](#anomaly-detection)
+		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
 			- [Isolation Tree](#isolation-tree)
 			- [Local Outlier Factor](#local-outlier-factor)
@@ -51,6 +51,28 @@ The goal of the Rubix project is to bring state-of-the-art machine learning capa
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
+	- [Neural Network](#neural-network)
+		- [Activation Functions](#activation-functions)
+			- [ELU](#elu)
+			- [Hyperbolic Tangent](#hyperbolic-tangent)
+			- [Identity](#identity)
+			- [PReLU](#prelu)
+			- [Sigmoid](#sigmoid)
+		- [Layers](#layers)
+			- [Input](#input)
+			- [Hidden](#hidden)
+				- [Dense](#dense)
+			- [Output](#output)
+				- [Continuous](#continuous)
+				- [Logistic](#logistic)
+				- [Softmax](#softmax)
+		- [Optimizers](#optimizers)
+			- [AdaGrad](#adagrad)
+			- [Adam](#adam)
+			- [Momentum](#momentum)
+			- [RMS Prop](#rms-prop)
+			- [Step Decay](#step-decay)
+			- [Stochastic](#stochastic)
 	- [Data Preprocessing](#data-preprocessing)
 		- [Pipeline](#pipeline)
 		- [Transformers](#transformers)
@@ -525,7 +547,7 @@ $estimator->partial($dataset[1]);
 
 $estimator->partial($dataset[2]);
 ```
-#### Probabalistic
+#### Probabilistic
 
 Some Estimators may implement the **Probabilistic** interface, in which case, they will have an additional method that returns an array of probability scores of each class, cluster, etc.
 
@@ -801,7 +823,7 @@ A type of regression analysis that uses the logistic function to classify betwee
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
-| threshold | 1e-4 | float | The minimum change in the weights necessary to continue training. |
+| min change | 1e-4 | float | The minimum change in the weights necessary to continue training. |
 | epochs | 100 | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
@@ -909,7 +931,7 @@ A generalization of logistic regression for multiple class outcomes.
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
-| threshold | 1e-4 | float | The minimum change in the weights necessary to continue training. |
+| min change | 1e-4 | float | The minimum change in the weights necessary to continue training. |
 | epochs | 100 | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
@@ -1175,6 +1197,281 @@ $estimator = new Ridge(2.0);
 
 $estimator->intercept(); // 5.298226
 $estimator->coefficients(); // [2.023, 3.122, 5.401, ...]
+```
+
+---
+### Neural Network
+A number of the Estimators in Rubix are implemented as a computational graph commonly referred to as a Neural Network due to its inspiration from the human brain. Neural Nets are trained using an iterative process called Gradient Descent and use Backpropagation (sometimes called Reverse Mode Autodiff) to calculate the error of each parameter in the network.
+
+#### Activation Functions
+The input to every neuron is passed through an Activation Function which determines its output. There are different properties of Activation Functions that make them more or less desirable depending on your problem.
+
+#### ELU
+Exponential Linear Units are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+
+$activationFunction = new ELU(5.0);
+```
+
+#### Hyperbolic Tangent
+S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
+
+$activationFunction = new HyperbolicTangent();
+```
+
+#### Identity
+The Identity function (sometimes called Linear Activation Function) simply outputs the value of the input.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\Identity;
+
+$activationFunction = new Identity();
+```
+
+#### PReLU
+Parametric Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| leakage | 0.01 | float | The amount of leakage as a ratio of the input value. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+
+$activationFunction = new PReLU(0.001);
+```
+
+#### Sigmoid
+A bounded S-shaped function (specifically the Logistic function) with an output value between 0 and 1.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+
+$activationFunction = new Sigmoid();
+```
+
+#### Layers
+Every network is made up of layers of computational units called neurons. Each layer processes and transforms the input from the previous layer.
+
+There are three types of Layers that form a network, **Input**, **Hidden**, and **Output**. A network can have as many Hidden Layers as the user specifies, however, there can only be 1 Input and 1 Output Layer per network.
+
+The network is trained using Gradient Descent with Backpropagation and has a number of GD **Optimizers** available to it.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Softmax;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+
+$network = new Network(new Input(784), [
+	new Dense(200, new ELU()),
+	new Dense(100, new ELU()),
+	new Dense(100, new ELU()),
+	new Dense(50, new ELU()),
+], new Softmax([
+	'dog', 'cat', 'frog', 'car',
+], 1e-4), new Adam(0.001));
+```
+
+#### Input
+The Input Layer is simply a placeholder layer that represents the value of a sample or batch of samples. The number of placeholder nodes should be equal to the number of feature columns of a sample.
+
+#### Hidden
+In multilayer networks, Hidden Layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output Layer. The more complex the problem space is, the more Hidden Layer neurons will be necessary to handle the complexity.
+
+#### Dense
+Dense Layers are fully connected Hidden Layers, meaning each neuron is connected to each other neuron in the previous layer.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| neurons | None | int | The number of neurons in the layer. |
+| activation fn | None | object | The activation function to use. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+
+$layer = new Dense(100, new PReLU(0.05));
+```
+
+#### Output
+Activations are read directly from the Output Layer when it comes to making a prediction. The type of Output Layer used will determine the type of Estimator the neural net can power (Binary Classifier, Multiclass Classifier, or Regressor).
+
+#### Continuous
+The Continuous Output Layer consists of a single linear neuron that outputs a scalar value useful for Regression problems.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| alpha | 1e-4 | float | The L2 regularization penalty. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Continuous;
+
+$layer = new Continuous(1e-5);
+```
+
+#### Logistic
+The Logistic Output Layer consists of a single sigmoid neuron capable of distinguishing between two classes.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| classes | None | array | The unique class labels of the binary classification problem. |
+| alpha | 1e-4 | float | The L2 regularization penalty. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Logistic;
+
+$layer = new Logistic(['yes', 'no'], 1e-5);
+```
+
+#### Softmax
+A generalization of the Logistic Layer, the Softmax Output Layer gives a joint probability estimate of a multiclass classification problem.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| classes | None | array | The unique class labels of the multiclass classification problem. |
+| alpha | 1e-4 | float | The L2 regularization penalty. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Softmax;
+
+$layer = new Softmax(['yes', 'no', 'maybe'], 1e-6);
+```
+
+#### Optimizers
+Gradient Descent is an algorithm that takes iterative steps towards minimizing the objective function. There have been many papers that describe enhancements to the standard Stochastic Gradient Descent algorithm whose methods are encapsulated in pluggable Optimizers. More specifically, Optimizers control the amount of Gradient Descent step to take upon each training iteration.
+
+#### AdaGrad
+Short for Adaptive Gradient, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
+
+$optimizer = new AdaGrad(0.035);
+```
+
+#### Adam
+Short for Adaptive Momentum Estimation, the Adam Optimizer uses both Momentum and RMS properties to achieve a balance of velocity and stability.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| momentum | 0.9 | float | The decay rate of the Momentum property. |
+| rms | 0.999 | float | The decay rate of the RMS property. |
+| epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+
+$optimizer = new Adam(0.0001, 0.9, 0.999, 1e-8);
+```
+
+#### Momentum
+Momentum adds velocity to each step until exhausted. It does so by accumulating speed from past updates and adding a factor to the current step.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| decay | 0.9 | float | The Momentum decay rate. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\Momentum;
+
+$optimizer = new Momentum(0.001, 0.925);
+```
+
+#### RMS Prop
+An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| decay | 0.9 | float | The RMS decay rate. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\RMSProp;
+
+$optimizer = new RMSProp(0.01, 0.9);
+```
+
+#### Step Decay
+A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter when it reaches a new floor (takes k steps).
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| k | 10 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
+| decay | 1e-5 | float | The decay factor to decrease the learning rate by every k steps. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\StepDecay;
+
+$optimizer = new StepDecay(0.001, 15, 1e-5);
+```
+
+#### Stochastic
+The basic constant learning rate Optimizer.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+
+$optimizer = new Stochastic(0.001);
 ```
 
 ---

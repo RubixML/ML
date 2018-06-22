@@ -188,11 +188,9 @@ class MLPRegressor implements Regressor, Online, Persistable
         }
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Continuous($this->alpha));
+            $this->hidden, new Continuous($this->alpha), $this->optimizer);
 
-        foreach ($this->network->initialize()->parametric() as $layer) {
-            $this->optimizer->initialize($layer);
-        }
+        $this->network->initialize();
 
         $this->partial($dataset);
     }
@@ -220,22 +218,19 @@ class MLPRegressor implements Regressor, Online, Persistable
             $this->train($dataset);
         }
 
-        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
-
-        $best = ['score' => -INF, 'snapshot' => null];
+        list($training, $testing) = $dataset->split(1 - $this->ratio);
 
         list($min, $max) = $this->metric->range();
+
+        $best = ['score' => -INF, 'snapshot' => null];
 
         $this->progress = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($training->randomize()->batch($this->batchSize) as $batch) {
                 $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
-
-                foreach ($this->network->parametric() as $layer) {
-                    $layer->update($this->optimizer->step($layer));
-                }
+                    ->backpropagate($batch->labels())
+                    ->step();
             }
 
             $score = $this->metric->score($this, $testing);
@@ -277,14 +272,8 @@ class MLPRegressor implements Regressor, Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $this->network->feed($dataset->samples());
+        $results = $this->network->feed($dataset->samples())->activations();
 
-        $predictions = [];
-
-        foreach ($this->network->output()->activations() as $activations) {
-            $predictions[] = $activations[0];
-        };
-
-        return $predictions;
+        return array_column($results, 0);
     }
 }

@@ -42,7 +42,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      *
      * @var float
      */
-    protected $threshold;
+    protected $minChange;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -51,6 +51,15 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      * @var int
      */
     protected $epochs;
+
+    /**
+     * The unique class labels.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * The underlying computational graph.
@@ -63,13 +72,13 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
-     * @param  float  $threshold
+     * @param  float  $minChange
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $batchSize = 10, Optimizer $optimizer = null,
-                                float $alpha = 1e-4, float $threshold = 1e-4,
+                                float $alpha = 1e-4, float $minChange = 1e-4,
                                 int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
@@ -82,8 +91,8 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
                 . ' be non-negative.');
         }
 
-        if ($threshold < 0) {
-            throw new InvalidArgumentException('Threshold cannot be set to less'
+        if ($minChange < 0) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
 
@@ -99,7 +108,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
-        $this->threshold = $threshold;
+        $this->minChange = $minChange;
         $this->epochs = $epochs;
     }
 
@@ -115,12 +124,12 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new Network(new Input($dataset->numColumns()), [],
-            new Logistic($dataset->possibleOutcomes(), $this->alpha));
+        $this->classes = $dataset->possibleOutcomes();
 
-        foreach ($this->network->initialize()->parametric() as $layer) {
-            $this->optimizer->initialize($layer);
-        }
+        $this->network = new Network(new Input($dataset->numColumns()), [],
+            new Logistic($this->classes, $this->alpha), $this->optimizer);
+
+        $this->network->initialize();
 
         $this->partial($dataset);
     }
@@ -155,17 +164,12 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
             $change = 0.0;
 
             foreach ($dataset->randomize()->batch($this->batchSize) as $batch) {
-                $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
-
-                $step = $this->optimizer->step($this->network->output());
-
-                $this->network->output()->update($step);
-
-                $change += $step->oneNorm();
+                $change += $this->network->feed($batch->samples())
+                    ->backpropagate($batch->labels())
+                    ->step();
             }
 
-            if (abs($change - $previous) < $this->threshold) {
+            if (abs($change - $previous) < $this->minChange) {
                 break 1;
             }
 
@@ -208,8 +212,15 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        $this->network->feed($dataset->samples());
+        $results = $this->network->feed($dataset->samples())->activations();
 
-        return $this->network->output()->activations();
+        $probabilities = [];
+
+        foreach ($results as $i => $activations) {
+            $probabilities[$i][$this->classes[0]] = 1 - $activations[0];
+            $probabilities[$i][$this->classes[1]] = $activations[0];
+        }
+
+        return $probabilities;
     }
 }

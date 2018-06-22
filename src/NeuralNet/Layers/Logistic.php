@@ -150,7 +150,7 @@ class Logistic implements Output, Parametric
 
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] =  random_int(-$r * 1e8, $r * 1e8) / 1e8;
+                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
             }
         }
 
@@ -203,25 +203,6 @@ class Logistic implements Output, Parametric
             ->multiply($this->previous->computed()->transpose());
 
         $this->previous->back($this);
-    }
-
-    /**
-     * Return an array with the output activations for each class.
-     *
-     * @return array
-     */
-    public function activations() : array
-    {
-        $activations = [];
-
-        foreach ($this->computed->getMatrix() as $i => $neuron) {
-            foreach ($neuron as $j => $activation) {
-                $activations[$j][$this->classes[0]] = 1 - $activation;
-                $activations[$j][$this->classes[1]] = $activation;
-            }
-        }
-
-        return $activations;
     }
 
     /**
