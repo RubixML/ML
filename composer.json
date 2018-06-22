@@ -2,7 +2,7 @@
     "name": "rubix/ml",
     "description": "Rubix is a library that lets you build intelligent programs that learn from data in PHP.",
     "license": "MIT",
-    "keywords": ["data", "science", "mining", "machine", "learning", "predictive", "modeling", "ai", "classification", "regression", "clustering"],
+    "keywords": ["data", "science", "mining", "machine", "learning", "predictive", "modeling", "ai", "classification", "regression", "clustering", "anomaly", "neural", "net"],
     "authors": [
         {
             "name": "Andrew DalPino",
@@ -16,7 +16,7 @@
         "markrogoyski/math-php": "^0.43.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "7.0.*"
+        "phpunit/phpunit": "7.2.*"
     },
     "autoload": {
         "psr-4": {
