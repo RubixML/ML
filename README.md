@@ -227,9 +227,9 @@ We need to supply a validation metric to measure suited to our Classifier. In th
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Metrics\Validation\Accuracy;
 
-$validator = new HoldOut(new Accuracy(), 0.2);
+$validator = new HoldOut(0.2);
 
-$score = $validator->test($estimator, $dataset);
+$score = $validator->test($estimator, $dataset, new Accuracy());
 
 var_dump($score);
 ```

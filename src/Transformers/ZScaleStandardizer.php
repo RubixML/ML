@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
+use MathPHP\Statistics\Significance;
 use InvalidArgumentException;
 
 class ZScaleStandardizer implements Transformer
@@ -66,7 +67,8 @@ class ZScaleStandardizer implements Transformer
                     $deviations[] = ($value - $mean) ** 2;
                 }
 
-                $this->stddevs[$column] = sqrt(Average::mean($deviations));
+                $this->stddevs[$column] = sqrt(Average::mean($deviations))
+                    + self::EPSILON;
 
                 $this->means[$column] = $mean;
             }
@@ -82,9 +84,9 @@ class ZScaleStandardizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($this->means as $column => $mean) {
-                $sample[$column] = ($sample[$column] - $mean)
-                    / ($this->stddevs[$column] + self::EPSILON);
+            foreach ($sample as $column => &$feature) {
+                $feature = Significance::zScore($feature,
+                    $this->means[$column], $this->stddevs[$column]);
             }
         }
     }

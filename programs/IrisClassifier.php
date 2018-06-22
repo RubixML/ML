@@ -4,11 +4,10 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\CrossValidation\LeavePOut;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use Rubix\ML\Metrics\Validation\F1Score;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Transformers\RobustStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use League\Csv\Reader;
@@ -32,18 +31,19 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
+$dataset->randomize();
+
 $estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
-    new NumericStringConverter(),
-    new RobustStandardizer(),
+    new NumericStringConverter()
 ]);
 
-$validator = new KFold(10);
+$validator = new LeavePOut(3);
 
 $report = new ConfusionMatrix();
 
 var_dump($validator->test($estimator, $dataset, new F1Score()));
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+list($training, $testing) = $dataset->stratifiedSplit(0.8);
 
 $estimator->train($training);
 

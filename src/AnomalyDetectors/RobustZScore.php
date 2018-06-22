@@ -94,7 +94,8 @@ class RobustZScore implements Detector, Persistable
                 $deviations[] = abs($value - $median);
             }
 
-            $this->mads[$column] = Average::median($deviations);
+            $this->mads[$column] = Average::median($deviations)
+                + self::EPSILON;
 
             $this->medians[$column] = $median;
         }
@@ -110,11 +111,10 @@ class RobustZScore implements Detector, Persistable
 
         foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
-                $score = self::LAMBDA
-                    * ($feature - $this->medians[$column])
-                    / $this->mads[$column];
+                $zscore = (self::LAMBDA * ($feature - $this->medians[$column]))
+                    / ($this->mads[$column] + self::EPSILON);
 
-                if ($score > $this->threshold) {
+                if ($zscore > $this->threshold) {
                     $predictions[] = 1;
 
                     continue 2;

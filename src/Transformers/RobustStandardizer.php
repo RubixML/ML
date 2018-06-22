@@ -8,6 +8,8 @@ use InvalidArgumentException;
 
 class RobustStandardizer implements Transformer
 {
+    const LAMBDA = 0.6745;
+
     /**
      * The computed medians of the fitted data indexed by column.
      *
@@ -68,7 +70,8 @@ class RobustStandardizer implements Transformer
                     $deviations[] = abs($value - $median);
                 }
 
-                $this->mads[$column] = Average::median($deviations);
+                $this->mads[$column] = Average::median($deviations)
+                    + self::EPSILON;
 
                 $this->medians[$column] = $median;
             }
@@ -76,7 +79,7 @@ class RobustStandardizer implements Transformer
     }
 
     /**
-     * Transform the features into a z score.
+     * Transform the features into a modified z score.
      *
      * @param  array  $samples
      * @return void
@@ -84,8 +87,8 @@ class RobustStandardizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            foreach ($this->medians as $column => $median) {
-                $sample[$column] = ($sample[$column] - $median)
+            foreach ($sample as $column => &$feature) {
+                $feature = (self::LAMBDA * ($feature - $this->medians[$column]))
                     / ($this->mads[$column] + self::EPSILON);
             }
         }

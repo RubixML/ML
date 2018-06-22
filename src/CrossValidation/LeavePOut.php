@@ -24,7 +24,7 @@ class LeavePOut implements Validator
      */
     public function __construct(int $p = 10)
     {
-        if ($p < 2) {
+        if ($p < 1) {
             throw new InvalidArgumentException('The number of held out samples'
                 . ' must be 1 or more.');
         }

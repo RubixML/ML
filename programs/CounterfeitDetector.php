@@ -11,7 +11,6 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Metrics\Validation\Accuracy;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;

@@ -138,12 +138,14 @@ class Dense implements Hidden, Parametric
             array_fill(0, $previous->width(), 0.0));
 
         if ($this->activationFunction instanceof Rectifier) {
-            $r = pow(6 / $previous->width(), 1 / self::ROOT_2);
+            $r = (6 / $previous->width()) ** (1 / self::ROOT_2);
         } else if ($this->activationFunction instanceof HyperbolicTangent) {
-            $r = pow(6 / $previous->width(), 1 / 4);
+            $r = (6 / $previous->width()) ** (1 / 4);
         } else if ($this->activationFunction instanceof Sigmoid) {
             $r = sqrt(6 / $previous->width());
-        } else { $r = 3; }
+        } else {
+            $r = 4;
+        }
 
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {

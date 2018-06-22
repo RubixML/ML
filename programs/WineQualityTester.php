@@ -34,6 +34,8 @@ $labels = iterator_to_array($reader->fetchColumn('quality'));
 
 $dataset = new Labeled($samples, $labels);
 
+$dataset->randomize();
+
 $hidden = [
     new Dense(30, new PReLU()),
     new Dense(30, new PReLU()),
@@ -41,13 +43,13 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
-    1e-4, new RMSError(), 0.2, 3, 1e-3, 100), [
+    1e-4, new RMSError(), 0.1, 3, 1e-3, 100), [
         new NumericStringConverter(),
     ]);
 
 $report = new ResidualAnalysis();
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+list($training, $testing) = $dataset->stratifiedSplit(0.8);
 
 $estimator->train($training);
 
