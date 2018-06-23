@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Metrics\Validation;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
+use InvalidArgumentException;
 
-class MCC implements Classification
+class MCC implements Validation
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -21,12 +23,18 @@ class MCC implements Classification
      * Score the Matthews correlation coefficient of the predicted classes.
      * Score is a number between -1 and 1.
      *
-     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Classifier $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Labeled $testing) : float
     {
+        if (!$estimator instanceof Classifier) {
+            throw new InvalidArgumentException('This metric only works on'
+                . ' classifiers.');
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();

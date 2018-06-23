@@ -53,7 +53,7 @@ class MeanShift implements Clusterer, Persistable
 
     /**
      * @param  float  $radius
-     * @param  \Rubix\ML\Contracts\Distance  $kernel
+     * @param  \Rubix\ML\Metrics\Distance\Distance  $kernel
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
@@ -199,7 +199,8 @@ class MeanShift implements Clusterer, Persistable
             $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $best['distance']) {
-                $best = ['distance' => $distance, 'label' => $label];
+                $best['distance'] = $distance;
+                $best['label'] = $label;
             }
         }
 

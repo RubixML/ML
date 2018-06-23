@@ -4,7 +4,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\Metrics\Validation\Accuracy;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Classification;
 use PHPUnit\Framework\TestCase;
 
 class AccuracyTest extends TestCase
@@ -26,7 +25,6 @@ class AccuracyTest extends TestCase
     public function test_build_accuracy_metric()
     {
         $this->assertInstanceOf(Accuracy::class, $this->metric);
-        $this->assertInstanceOf(Classification::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

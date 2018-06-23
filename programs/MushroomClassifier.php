@@ -72,6 +72,6 @@ var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->progress());
 
-$model->save(dirname(__DIR__) . '/models/mushroom.model');
+$model->save();
 
 var_dump($model->proba($dataset->randomize()->head(5)));

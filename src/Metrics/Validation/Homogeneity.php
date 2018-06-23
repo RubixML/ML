@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Metrics\Validation;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\Clusterer;
+use InvalidArgumentException;
 
-class Homogeneity implements Clustering
+class Homogeneity implements Validation
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -16,16 +18,22 @@ class Homogeneity implements Clustering
     {
         return [0, 1];
     }
-    
+
     /**
      * Calculate the homogeneity of a clustering.
      *
-     * @param  \Rubix\ML\Clusterers\Clusterer  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Clusterer $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Labeled $testing) : float
     {
+        if (!$estimator instanceof Clusterer) {
+            throw new InvalidArgumentException('This metric only works on'
+                . ' clusterers.');
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();

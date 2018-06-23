@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Metrics\Validation;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Regressor;
+use InvalidArgumentException;
 
-class MeanSquaredError implements Regression
+class MeanSquaredError implements Validation
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -16,16 +18,22 @@ class MeanSquaredError implements Regression
     {
         return [-INF, 0];
     }
-    
+
     /**
      * Calculate the negative mean squared error of the predictions.
      *
-     * @param  \Rubix\ML\Regressors\Regressor  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Regressor $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Labeled $testing) : float
     {
+        if (!$estimator instanceof Regressor) {
+            throw new InvalidArgumentException('This metric only works on'
+                . ' regresors.');
+        }
+
         $error = 0.0;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {

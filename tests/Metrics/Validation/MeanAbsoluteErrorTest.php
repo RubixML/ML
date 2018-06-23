@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Regression;
 use Rubix\ML\Metrics\Validation\MeanAbsoluteError;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +22,6 @@ class MeanAbsoluteErrorTest extends TestCase
     public function test_build_mean_absolute_error_metric()
     {
         $this->assertInstanceOf(MeanAbsoluteError::class, $this->metric);
-        $this->assertInstanceOf(Regression::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

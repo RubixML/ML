@@ -4,7 +4,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\Metrics\Validation\F1Score;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Classification;
 use PHPUnit\Framework\TestCase;
 
 class F1ScoreTest extends TestCase
@@ -26,7 +25,6 @@ class F1ScoreTest extends TestCase
     public function test_build_f1_score_metric()
     {
         $this->assertInstanceOf(F1Score::class, $this->metric);
-        $this->assertInstanceOf(Classification::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

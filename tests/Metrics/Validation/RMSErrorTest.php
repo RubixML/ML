@@ -4,7 +4,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\ML\Metrics\Validation\RMSError;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Regression;
 use PHPUnit\Framework\TestCase;
 
 class RMSErrorTest extends TestCase
@@ -23,7 +22,6 @@ class RMSErrorTest extends TestCase
     public function test_build_rms_error_metric()
     {
         $this->assertInstanceOf(RMSError::class, $this->metric);
-        $this->assertInstanceOf(Regression::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

@@ -4,7 +4,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\ML\Metrics\Validation\RSquared;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Regression;
 use PHPUnit\Framework\TestCase;
 
 class RSquaredTest extends TestCase
@@ -23,7 +22,6 @@ class RSquaredTest extends TestCase
     public function test_build_r_squared_metric()
     {
         $this->assertInstanceOf(RSquared::class, $this->metric);
-        $this->assertInstanceOf(Regression::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

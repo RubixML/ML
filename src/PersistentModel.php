@@ -5,9 +5,17 @@ namespace Rubix\ML;
 use Rubix\ML\Persistable;
 use InvalidArgumentException;
 use RuntimeException;
+use ReflectionClass;
 
 class PersistentModel
 {
+    /**
+     * The reflector instance of the base estimator.
+     *
+     * @var \ReflectionClass
+     */
+    protected $reflector;
+
     /**
      * Factory method to restore the model from a pickled object file at path.
      *
@@ -24,13 +32,8 @@ class PersistentModel
 
         $model = unserialize(file_get_contents($path));
 
-        if (!$model) {
-            throw new RuntimeException('Model could not be reconstituted.');
-        }
-
         if (!$model instanceof Persistable) {
-            throw new RuntimeException('Reconstituted object is not a valid'
-                . ' persistent model. ' . get_class($model) . ' found.');
+            throw new RuntimeException('Model could not be reconstituted.');
         }
 
         return new self($model);
@@ -43,6 +46,17 @@ class PersistentModel
     public function __construct(Persistable $model)
     {
         $this->model = $model;
+        $this->reflector = new ReflectionClass($model);
+    }
+
+    /**
+     * Return the instance of the base estimator.
+     *
+     * @return \Rubix\ML\Persistable
+     */
+    public function estimator() : Persistable
+    {
+        return $this->model;
     }
 
     /**
@@ -55,14 +69,14 @@ class PersistentModel
      */
     public function save(string $path = '') : bool
     {
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writeable. Check path and file permissions.');
+        if (empty($path)) {
+            $path = strtolower($this->reflector->getShortName())
+                . '-' . (string) time() . '.model';
         }
 
-        if (empty($path)) {
-            $path = strtolower(get_class($this->model)) . '_'
-                . (string) time() . '.model';
+        if (!is_writable(dirname($path))) {
+            throw new InvalidArgumentException('Folder does not exist or is not'
+                . ' writable. Check path and file permissions.');
         }
 
         return file_put_contents($path, serialize($this->model), LOCK_EX)

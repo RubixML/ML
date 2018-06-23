@@ -1,10 +1,9 @@
 <?php
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Classification;
 use PHPUnit\Framework\TestCase;
 
 class MCCTest extends TestCase
@@ -26,7 +25,6 @@ class MCCTest extends TestCase
     public function test_build_mcc_test()
     {
         $this->assertInstanceOf(MCC::class, $this->metric);
-        $this->assertInstanceOf(Classification::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

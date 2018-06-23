@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClusterer;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Clustering;
 use Rubix\ML\Metrics\Validation\Completeness;
 use PHPUnit\Framework\TestCase;
 
@@ -24,10 +23,9 @@ class CompletenessTest extends TestCase
     public function test_build_completeness_metric()
     {
         $this->assertInstanceOf(Completeness::class, $this->metric);
-        $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
-    
+
     public function test_get_range()
     {
         $this->assertEquals([0, 1], $this->metric->range());

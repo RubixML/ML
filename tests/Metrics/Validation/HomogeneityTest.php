@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClusterer;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Clustering;
 use Rubix\ML\Metrics\Validation\Homogeneity;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +23,6 @@ class HomogeneityTest extends TestCase
     public function test_build_homogeneity_metric()
     {
         $this->assertInstanceOf(Homogeneity::class, $this->metric);
-        $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

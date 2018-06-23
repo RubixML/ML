@@ -2,9 +2,8 @@
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\ML\Metrics\Validation\Informedness;
 use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Classification;
+use Rubix\ML\Metrics\Validation\Informedness;
 use PHPUnit\Framework\TestCase;
 
 class InformednessTest extends TestCase
@@ -26,7 +25,6 @@ class InformednessTest extends TestCase
     public function test_build_mcc_test()
     {
         $this->assertInstanceOf(Informedness::class, $this->metric);
-        $this->assertInstanceOf(Classification::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 

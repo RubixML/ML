@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Metrics\Validation;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
+use InvalidArgumentException;
 
-class Accuracy implements Classification
+class Accuracy implements Validation
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -20,12 +22,18 @@ class Accuracy implements Classification
     /**
      * Test the accuracy of the predictions.
      *
-     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Classifier $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Labeled $testing) : float
     {
+        if (!$estimator instanceof Classifier) {
+            throw new InvalidArgumentException('This metric only works on'
+                . ' classifiers.');
+        }
+
         $score = 0.0;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {

@@ -2,9 +2,8 @@
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClusterer;
-use Rubix\ML\Metrics\Validation\Validation;
-use Rubix\ML\Metrics\Validation\Clustering;
 use Rubix\ML\Metrics\Validation\VMeasure;
+use Rubix\ML\Metrics\Validation\Validation;
 use PHPUnit\Framework\TestCase;
 
 class VMeasureTest extends TestCase
@@ -24,7 +23,6 @@ class VMeasureTest extends TestCase
     public function test_build_v_measure_metric()
     {
         $this->assertInstanceOf(VMeasure::class, $this->metric);
-        $this->assertInstanceOf(Clustering::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
     }
 
