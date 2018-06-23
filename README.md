@@ -1,8 +1,11 @@
-# Rubix for PHP
-Rubix is a library that lets you build intelligent programs that learn from data in PHP.
+# Rubix ML for PHP
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/php-ai/php-ml) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
+
+
+Rubix ML is a library that lets you build intelligent programs that learn from data in PHP.
 
 ## Our Mission
-The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. Although PHP is best known for its web potential, we believe that PHP engineers should not have to be left out of the ML party. We aspire to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
+The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the [PHP](https://php.net) language. Although PHP is best known for its web potential, we believe that PHP engineers should not be left out of the ML party. We aspire to provide the tooling to facilitate small to medium sized projects, rapid prototyping, and education.
 
 ## Installation
 Install Rubix using composer:
@@ -65,6 +68,7 @@ MIT
 		- [Online](#online)
 		- [Probabilistic](#probabilistic)
 		- [Persistable](#persistable)
+	- [Meta-Estimators](#meta-estimators)
 	- [Neural Network](#neural-network)
 		- [Activation Functions](#activation-functions)
 			- [ELU](#elu)
@@ -139,9 +143,9 @@ Although this is certainly a valid way of obtaining data, in reality, chances ar
 Having that said, Rubix will be able to handle any dataset as long as it can fit into one its predefined Dataset objects (Labeled, Unlabeled, etc.).
 
 #### The Dataset Object
-All of the machine learning algorithms (called *Estimators*) in Rubix require a Dataset object to train. Unlike standard PHP arrays, Dataset objects extend the basic data structure functionality with many useful features such as properly splitting, folding, and randomizing the data points.
+All of the machine learning algorithms (called *Estimators*) in Rubix require a Dataset object to train. Unlike standard PHP arrays, [Dataset objects](#dataset-objects) extend the basic data structure functionality with many useful features such as properly splitting, folding, and randomizing the data points.
 
-For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate (between 1 and 5) their similarity, communication, and partner attractiveness. We can construct a Labeled Dataset object from the data you collected in the following way:
+For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate (between 1 and 5) their similarity, communication, and partner attractiveness. We can construct a [Labeled Dataset](#labeled) object from the data you collected in the following way:
 
 ```php
 use \Rubix\ML\Datasets\Labeled;
@@ -155,15 +159,15 @@ $dataset = new Labeled($samples, $labels);
 
 ### Choosing an Estimator
 
-There are many different algorithms to chose from and each one is designed to handle specific (often overlapping) tasks. Choosing the right Estimator for the job is crucial to building an accurate and performant computer model.
+There are many different algorithms to chose from and each one is designed to handle specific (often overlapping) tasks. Choosing the right [Estimator](#estimators) for the job is crucial to building an accurate and performant computer model.
 
-There are a couple ways that we could model our marriage satisfaction predictor. We could have asked a fourth question - that is, to rate each couple's overall marriage satisfaction and then train a Regressor to predict a continuous "satisfaction score" for each new sample. But since all we have to go by for now is whether they are still married or currently divorced, a Classifier will be better suited.
+There are a couple ways that we could model our marriage satisfaction predictor. We could have asked a fourth question - that is, to rate each couple's overall marriage satisfaction and then train a [Regressor](#regressors) to predict a continuous "satisfaction score" for each new sample. But since all we have to go by for now is whether they are still married or currently divorced, a [Classifier](#classifiers) will be better suited.
 
 In practice, one will experiment with more than one type of Classifier to find the best fit to the data, but for the purposes of this introduction we will simply demonstrate a common and intuitive algorithm called *K Nearest Neighbors*.
 
 #### Creating the Estimator Instance
 
-Like most Estimators, the K Nearest Neighbors Classifier requires a number of parameters (called *Hyperparameters*) to be chosen up front. These parameters can be chosen based on some prior knowledge of the problem space, or at random. Rubix provides a meta-Estimator called Grid Search that, given a list, searches the parameter space for the most effective combination. For the purposes of this example we will just go with our intuition and chose the parameters outright.
+Like most Estimators, the [K Nearest Neighbors Classifier](#k-nearest-neighbors) requires a number of parameters (called *Hyperparameters*) to be chosen up front. These parameters can be chosen based on some prior knowledge of the problem space, or at random. Rubix provides a meta-Estimator called [Grid Search](#grid-search) that, given a list, searches the parameter space for the most effective combination. For the purposes of this example we will just go with our intuition and chose the parameters outright.
 
 Here are the hyperparameters for K Nearest Neighbors:
 
@@ -187,6 +191,7 @@ $estimator = new KNearestNeighbors();
 // Specifying parameters
 $estimator = new KNearestNeighbors(3, new Manhattan());
 ```
+
 ### Training and Prediction
 Now that we've chosen and instantiated an Estimator and our Dataset object is ready to go, it is time to train our model and use it to make some predictions.
 
@@ -220,9 +225,9 @@ array(5) {
 Note that we are not using a Labeled Dataset here because we don't know the outcomes yet. In fact, the outcome is exactly what we are trying to predict.
 
 ### Evaluating Model Performance
-We can make predictions but how do we know that the predictions our model makes are accurate? The answer to that is called *cross validation* and Rubix has a number of tools that can automate the process of evaluating a model. For the purposes of this introduction, we will use the simplest form of cross validation called Holdout. The idea is to randomize and split the dataset into a training and testing set, such that a portion of the data is "held out" to be used to test the model.
+We can make predictions but how do we know that the predictions our model makes are accurate? The answer to that is called [Cross Validation](#cross-validation) and Rubix has a number of tools that can automate the process of evaluating a model. For the purposes of this introduction, we will use the simplest form of cross validation called [Holdout](#hold-out). The idea is to randomize and split the dataset into a training and testing set, such that a portion of the data is "held out" to be used to test the model.
 
-We need to supply a validation metric to measure suited to our Classifier. In this case we will use the Accuracy metric, but many more exist depending on your purpose.
+We need to supply a validation metric to measure suited to our Classifier. In this case we will use the Accuracy metric, but more exist depending on your purpose.
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Metrics\Validation\Accuracy;
@@ -237,13 +242,14 @@ var_dump($score);
 ```sh
 float(0.945)
 ```
-Since we are measuring accuracy, this output means that our Estimator is about 95% accurate given the data we've provided it. The second HoldOut parameter 0.2 instructs the validator to use 20% of the dataset for testing. More data for testing means the result will have less variance however that also means we don't use as much data to train the model.
+Since we are measuring accuracy, this output means that our Estimator is about 95% accurate given the data we've provided it. The parameter 0.2 instructs the [Validator](#validators) to use 20% of the dataset for testing. More data for testing means the result will have less variance however that also means we don't use as much data to train the model.
 
 ### What Next?
-Now that we've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started with Rubix and are comfortable with machine learning a great place to get started is with one of the many datasets available for free on the [University of California Irvine Machine Learning repository](https://archive.ics.uci.edu/ml/datasets.html) website.
+Now that we've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started with Rubix and are comfortable with machine learning a great place to get started is with one of the many datasets available for free on the University of California Irvine [Machine Learning repository](https://archive.ics.uci.edu/ml/datasets.html) website.
 
 ---
 ### API Reference
+Here you will find information regarding the classes that make up the Rubix library.
 
 ### Dataset Objects
 In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects make it easy to slice and transport data in a canonical way.
@@ -287,6 +293,10 @@ Batch the Dataset into subsets of n rows per batch:
 ```php
 public batch(int $n = 50) : array
 ```
+Generate a random subset of size n:
+```php
+public randomSubset($n = 1) : self
+```
 
 Generate a random subset with replacement of size n:
 ```php
@@ -301,11 +311,6 @@ public static combine(array $datasets) : self
 Return the 2-dimensional sample matrix:
 ```php
 public samples() : array
-```
-
-Dump all of the data into an array:
-```php
-public all() : array
 ```
 
 ##### Example:
@@ -399,7 +404,7 @@ $dataset = new Unlabeled($samples);
 ### Feature Extractors
 Feature Extractors are objects that help you encode raw data into feature vectors so they can be used by an Estimator.
 
-Extractors have an API similar to Transformers, however, they are designed to be used on the raw data before it is inserted into a Dataset Object. The output of the `extract()` method is a sample matrix that can be used to build a Dataset Object.
+Extractors have an API similar to [Transformers](#transformers), however, they are designed to be used on the raw data *before* it is inserted into a Dataset Object. The output of the `extract()` method is a sample matrix that can be used to build a [Dataset Object](#dataset-objects).
 
 Fit the Extractor to the training samples:
 ```php
@@ -420,13 +425,13 @@ use Rubix\ML\Datasets\Labeled;
 ...
 $estractor = new CountVectorizer(5000);
 
-$extractor->fit($samples);
+$extractor->fit($data);
 
-$matrix = $extractor->extract($samples);
+$samples = $extractor->extract($data);
 
-$dataset = new Unlabeled($matrix);
+$dataset = new Unlabeled($samples);
 
-$dataset = new Labeled($matrix, $labels);
+$dataset = new Labeled($samples, $labels);
 ```
 
 ### Count Vectorizer
@@ -466,7 +471,7 @@ $extractor->size();
 ```
 
 ### Pixel Encoder
-Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically.
+Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/).
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -488,11 +493,11 @@ $extractor = new PixelEncoder([28, 28], false, 'imagick');
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various Classifiers, Regressors, and Clusterers that make *predictions* based on the data they have been trained with.
+Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on the data they have been trained with.
 
-To train an Estimator simply pass it a training set:
+To train an Estimator pass it a training Dataset object:
 ```php
-public train(Dataset $dataset) : void
+public train(Dataset $training) : void
 ```
 
 To make predictions, pass it another dataset:
@@ -500,7 +505,7 @@ To make predictions, pass it another dataset:
 public predict(Dataset $dataset) : array
 ```
 
-The return array of a prediction is 0 indexed containing the predicted values of the supplied Dataset object in the same order.
+The return array of a prediction is 0 indexed containing the predicted values indexed in the same order.
 
 ##### Example:
 ```php
@@ -536,10 +541,10 @@ array(3) {
 ---
 ### Anomaly Detectors
 
-Anomaly detection is the process of identifying samples that do not conform to the expected pattern. Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
+Anomaly detection is the process of identifying samples that do not conform to the expected pattern. They can be used in fraud prevention, intrusion detection, biology and physics, and many more areas. Detectors predict an output value of either *0* for a normal sample or *1* for an outlier.
 
 ### Isolation Forest
-An Ensemble Anomaly Detector comprised of Isolation Trees each trained on a different subset of the training set.
+An [Ensemble-based](https://en.wikipedia.org/wiki/Ensemble_learning) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
 ##### Unsupervised, Probabilistic, Persistable
 
@@ -560,7 +565,7 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 $estimator = new IsolationForest(500, 0.1, 0.7);
 ```
 ### Isolation Tree
-Isolation Trees detect anomalous data by separating them out early during traversal. The shorter the path that a sample takes from the root to a terminal node, the more likely it is to be an outlier. *Note* that this Estimator is considered a weak learner and is typically only used within the context of an ensemble (such as Isolation Forest).
+Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own nodes. **Note** this Estimator is considered a *weak learner* and is typically only used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
 
 ##### Unsupervised, Probabilistic, Persistable
 
@@ -585,7 +590,7 @@ $estimator = new IsolationTree(1000, 0.65);
 ```
 
 ### Local Outlier Factor
-The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the density ratio of the sample over the median of the local region.
+The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
 
 ##### Unsupervised, Probabilistic, Online, Persistable
 
@@ -609,7 +614,7 @@ $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
 ```
 
 ### Robust Z Score
-A quick global anomaly Detector, Robust Z Score uses a modified Z score threshold to detect outliers within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation as the former are more robust to noise than the latter.
+A quick global anomaly Detector, Robust Z Score uses a threshold to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers.
 
 ##### Unsupervised, Persistable
 
@@ -633,7 +638,7 @@ $estimator = new RobustZScore(3.0);
 
 ---
 ### Classifiers
-Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - **Binary** and **Multiclass**. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
+Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - *Binary* and *Multiclass*. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
 ### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
@@ -669,7 +674,7 @@ $estimator->influence(); // [0.7522, 0.7945, ...]
 ```
 
 ### Committee Machine
-Ensemble classifier that aggregates the class probability predictions of a committee of user-specified, heterogeneous Probabilistic classifiers (MultiLayerPerceptron, Random Forest, etc.).
+Ensemble classifier that aggregates the class probability predictions of a committee of user-specified, heterogeneous [Probabilistic](#probabilistic) classifiers (MultiLayerPerceptron, Random Forest, etc.).
 
 ##### Supervised, Multiclass, Probabilistic, Persistable
 
@@ -727,7 +732,7 @@ $estimator->balance(); // -1
 ```
 
 ### Dummy Classifier
-A classifier based on a given imputer strategy. Used to provide sanity check and to compare performance with an actual classifier.
+A classifier based on a given [Imputer strategy](#missing-data-imputer). Used to provide sanity check and to compare performance with an actual classifier.
 
 ##### Supervised, Multiclass, Persistable
 
@@ -795,7 +800,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
 ```
 
 ### Multi Layer Perceptron
-Multiclass neural network model that uses a series of user-defined hidden layers as intermediate computational units equipped with non-linear activation functions.
+Multiclass [Neural Network](#neural-network) model that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress.
 
 ##### Supervised, Multiclass, Online, Probabilistic, Persistable
 
@@ -1017,7 +1022,7 @@ $estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
 A Regressor estimates the continuous expected output value of a given sample. Regression analysis is often used to predict the outcome of an experiment where the outcome can range over a continuous spectrum of values.
 
 ### Dummy Regressor
-Regressor that guesses the output values based on an imputer strategy. Used to provide sanity check and to compare performance against actual Regressors.
+Regressor that guesses the output values based on an [Imputer](#missing-data-imputer) strategy. Used to provide sanity check and to compare performance against actual Regressors.
 
 ##### Supervised, Persistable
 
@@ -1038,7 +1043,7 @@ $estimator = new DummyRegressor(new BlurryMean());
 ```
 
 ### KNN Regressor
-A version of K Nearest Neighbors that uses the mean outcome of K nearest data points to make continuous valued predictions.
+A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
 
 ##### Supervised, Online, Persistable
 
@@ -1060,7 +1065,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
 
 ### MLP Regressor
-A neural network with a continuous output layer suitable for regression problems.
+A [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress.
 
 ##### Supervised, Persistable
 
@@ -1159,7 +1164,7 @@ $estimator->coefficients(); // [2.023, 3.122, 5.401, ...]
 ---
 ### Online
 
-Certain Estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory.
+Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory.
 
 You can partially train an Online Estimator as such:
 ```php
@@ -1180,7 +1185,7 @@ $estimator->partial($dataset[2]);
 ---
 ### Probabilistic
 
-Some Estimators may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each class, cluster, etc.
+Some [Estimators](#estimators) may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each class, cluster, etc.
 
 Calculate probability estimates:
 ```php
@@ -1207,6 +1212,31 @@ array(3) {
 		['divorced'] => 0.800,
 	}
 }
+```
+
+---
+### Meta-Estimators
+Meta-Estimators allow you to progressively enhance your models by adding additional functionality such as [data preprocessing](#data-preprocessing) and [persistence](#model-persistence). Each Meta-Estimator wraps a base Estimator and you can even wrap certain Meta-Estimators with other Meta-Estimators. Some examples of Meta-Estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Persistent Model](#persistent-model).
+
+You can call any of the base Estimator(s)' methods from the Meta-Estimator simply by invoking its signature.
+
+##### Example:
+```php
+use Rubix\ML\Pipeline;
+use Rubix\ML\GridSearch;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Classifiers\DecisionTree;
+use Rubix\ML\Transformers\NumericStringConverter;
+
+...
+$params = [[10, 30, 50, 100], [1, 3, 5]];
+
+$estimator = new Pipeline(new GridSearch(DecisionTree::class, $params, new MCC(), new KFold(10)));
+
+$estimator->train($dataset); // Train a Decision Tree with preprocessing and grid search
+
+$estimator->complexity(); // Call complexity() method on Decision Tree from Pipeline
 ```
 
 ---
@@ -1289,9 +1319,7 @@ $activationFunction = new Sigmoid();
 ### Layers
 Every network is made up of layers of computational units called neurons. Each layer processes and transforms the input from the previous layer.
 
-There are three types of Layers that form a network, **Input**, **Hidden**, and **Output**. A network can have as many Hidden Layers as the user specifies, however, there can only be 1 Input and 1 Output Layer per network.
-
-The network is trained using Gradient Descent with Backpropagation and has a number of GD **Optimizers** available to it.
+There are three types of Layers that form a network, **Input**, **Hidden**, and **Output**. A network can have as many Hidden layers as the user specifies, however, there can only be 1 Input and 1 Output layer per network.
 
 ##### Example:
 ```php
@@ -1316,10 +1344,10 @@ $network = new Network(new Input(784), [
 The Input Layer is simply a placeholder layer that represents the value of a sample or batch of samples. The number of placeholder nodes should be equal to the number of feature columns of a sample.
 
 ### Hidden
-In multilayer networks, Hidden Layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output Layer. The more complex the problem space is, the more Hidden Layer neurons will be necessary to handle the complexity.
+In multilayer networks, Hidden layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output layer. The more complex the problem space is, the more Hidden layers and neurons will be necessary to handle the complexity.
 
 ### Dense
-Dense Layers are fully connected Hidden Layers, meaning each neuron is connected to each other neuron in the previous layer.
+Dense layers are fully connected Hidden layers, meaning each neuron is connected to each other neuron in the previous layer. Dense layers are able to employ a variety of [Activation Functions](#activation-functions) that modify the output of each neuron in the layer.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1336,7 +1364,7 @@ $layer = new Dense(100, new PReLU(0.05));
 ```
 
 ### Output
-Activations are read directly from the Output Layer when it comes to making a prediction. The type of Output Layer used will determine the type of Estimator the neural net can power (Binary Classifier, Multiclass Classifier, or Regressor).
+Activations are read directly from the Output layer when it comes to making a prediction. The type of Output layer used will determine the type of Estimator the Neural Net can power (Binary Classifier, Multiclass Classifier, or Regressor). The different types of Output layers are listed below.
 
 ### Continuous
 The Continuous Output Layer consists of a single linear neuron that outputs a scalar value useful for Regression problems.
@@ -1387,10 +1415,10 @@ $layer = new Softmax(['yes', 'no', 'maybe'], 1e-6);
 
 ---
 ### Optimizers
-Gradient Descent is an algorithm that takes iterative steps towards minimizing the objective function. There have been many papers that describe enhancements to the standard Stochastic Gradient Descent algorithm whose methods are encapsulated in pluggable Optimizers. More specifically, Optimizers control the amount of Gradient Descent step to take upon each training iteration.
+Gradient Descent is an algorithm that takes iterative steps towards minimizing an objective function. There have been many papers that describe enhancements to the standard Stochastic Gradient Descent algorithm whose methods are encapsulated in pluggable Optimizers by Rubix. More specifically, Optimizers control the amount of Gradient Descent step to take for each parameter in the network upon each training iteration.
 
 ### AdaGrad
-Short for Adaptive Gradient, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
+Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1405,7 +1433,7 @@ $optimizer = new AdaGrad(0.035);
 ```
 
 ### Adam
-Short for Adaptive Momentum Estimation, the Adam Optimizer uses both Momentum and RMS properties to achieve a balance of velocity and stability.
+Short for *Adaptive Momentum Estimation*, the Adam Optimizer uses both Momentum and RMS properties to achieve a balance of velocity and stability.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1423,7 +1451,7 @@ $optimizer = new Adam(0.0001, 0.9, 0.999, 1e-8);
 ```
 
 ### Momentum
-Momentum adds velocity to each step until exhausted. It does so by accumulating speed from past updates and adding a factor to the current step.
+Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor to the current step.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1488,10 +1516,10 @@ $optimizer = new Stochastic(0.001);
 
 ---
 ### Data Preprocessing
-Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the **Pipeline** meta-Estimator and the various **Transformers** that it employs to fit the input data to suit the requirements and preferences of the Estimator that it feeds.
+Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the Pipeline meta-Estimator and the various [Transformers](#transformers) that it employs to fit the input data to suit the requirements and preferences of the [Estimator](#estimator) that it feeds.
 
 ### Pipeline
-A Pipeline is an Estimator that wraps another Estimator with additional functionality. For this reason, a Pipeline is called a *meta-Estimator*. As arguments, a Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, the Pipeline will automatically fit the training set upon training and transform any Dataset object supplied as an argument to one of the base Estimator's methods, including `predict()`.
+A Pipeline is an Estimator that wraps another Estimator with additional functionality. For this reason, a Pipeline is called a *meta-Estimator*. As arguments, Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, the Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `predict()`.
 
 ##### Example:
 ```php
@@ -1514,7 +1542,7 @@ Transformer middleware will process in the order given when the Pipeline was bui
 In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data. Below is a list of the available Transformers in Rubix.
 
 ### Transformers
-Transformers are generally designed to be used by the Pipeline meta-Estimator, however they can be used manually as well.
+Transformers are generally designed to be used by the [Pipeline](#pipeline) meta-Estimator, however they can be used manually as well.
 
 The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt do it anyways, it won't hurt.
 ```php
@@ -1577,7 +1605,7 @@ $transformer = new L2Regularizer();
 ```
 
 ### Min Max Normalizer
-Min Max Normalization scales the input features from a range of 0 to 1 by dividing the feature value over the maximum value for that feature column.
+Often used as an alternative to [Standard Scaling](#z-scale-standardizer), the Min Max Normalization scales the input features from a range of 0 to 1 by dividing the feature value over the maximum value for that feature column.
 
 ##### Continuous
 
@@ -1595,7 +1623,7 @@ $transformer = new MinMaxNormalizer();
 ```
 
 ### Missing Data Imputer
-In the real world, it is common to have to deal with datasets that are missing a few values here and there. The Missing Data Imputer searches for any missing value placeholders and replaces it with a guess based on a given imputer **Strategy**.
+In the real world, it is common to have to deal with datasets that are missing a few values here and there. The Missing Data Imputer searches for any missing value placeholders and replaces it with a guess based on a given imputer *Strategy*.
 
 ##### Categorical or Continuous
 
@@ -1619,7 +1647,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ```
 
 ### Numeric String Converter
-This handy little Transformer will convert all numeric strings into their integer or float counterparts. Useful for when extracting from a source that only recognizes data as string types.
+This handy Transformer will convert all numeric strings into their integer or float counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
 ##### Categorical
 
@@ -1736,7 +1764,7 @@ $transformer = new VarianceThresholdFilter(500);
 ```
 
 ### Z Scale Standardizer
-A way of centering and scaling an input vector such that the values range from 0 to 1 with a unit variance.
+A way of centering and scaling an input vector by computing the Z Score for each continuous feature.
 
 ##### Continuous
 
@@ -1758,10 +1786,10 @@ $transformer = new ZScaleStandardizer();
 
 ---
 ### Cross Validation
-Cross validation is the process of testing the generalization performance of a computer model using various techniques. Rubix has a number of classes that run cross validation on an instantiated Estimator for you. Each **Validator** outputs a scalar score based on the chosen metric.
+Cross validation is the process of testing the generalization performance of a computer model using various techniques. Rubix has a number of classes that run cross validation on an instantiated Estimator for you. Each Validator outputs a scalar score based on the chosen metric.
 
 ### Validators
-Validators take an Estimator instance, Labeled Dataset object, and validation Metric and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset chosen by the testing algorithm.
+Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled) object, and validation [Metric](#validation-metrics) and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset chosen by the testing algorithm.
 
 ```php
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
@@ -1787,7 +1815,7 @@ float(0.869)
 Below describes the various Cross Validators available in Rubix.
 
 ### Hold Out
-Hold Out is the simplest form of cross validation available in Rubix. It uses a "hold out" set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is fast, but it doesn't allow the model to train on the entire training set.
+Hold Out is the simplest form of cross validation available in Rubix. It uses a *hold out* set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -2050,22 +2078,25 @@ $report = new ResidualAnalysis();
 
 ---
 ### Model Selection
-Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the **Grid Search** meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
+Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the *Grid Search* meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
 
 ### Grid Search
-Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search actually trains one Estimator per combination of parameters and the predictions are done using the single best Estimator. You can access the scores of each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator.
+Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | base | None | string | The fully qualified class name of the base Estimator. |
 | params | [ ] | array | An array containing n-tuples (represented as PHP arrays) of parameters to search across for a given constructor argument position. |
-| validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to score each parameter combination. |
+| metric | None | object | The validation metric used to score each set of parameters. |
+| validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
 
 ##### Additional Methods:
 | Method | Description |
 |--|--|
 | `results() : array` | An array containing the score of each combination of parameters. |
+| `best() : array` | The parameters with the highest validation score. |
+| `estimator() : Estimator` | The underlying estimator trained with the best parameter combination. |
 
 ##### Example:
 ```php
@@ -2073,14 +2104,14 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Metrics\Distance\Euclidean;
 use Rubix\ML\Metrics\Distance\Manhattan;
-use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\KFold;
 
 $params = [
-	[1, 3, 5, 10, 20], [new Euclidean(), new Manhattan()],
+	[1, 3, 5, 10], [new Euclidean(), new Manhattan()],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $params, new KFold(new Accuracy(), 10));
+$estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
 ```
 
 ---

@@ -2,16 +2,14 @@
 
 namespace Rubix\ML;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Regressors\Regressor;
-use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\CrossValidation\Validator;
+use Rubix\ML\Metrics\Validation\Validation;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class GridSearch implements Classifier, Clusterer, Regressor, Persistable
+class GridSearch implements Estimator, Persistable
 {
     /**
      * The reflector instance of the base estimator.
@@ -31,7 +29,14 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     ];
 
     /**
-     * The validator used to score each trained estimator.
+     * The validation metric used to score the estimator.
+     *
+     * @var \Rubix\ML\Metrics\Validation\Validation
+     */
+     protected $metric;
+
+    /**
+     * The validator used to test the estimator.
      *
      * @var \Rubix\ML\CrossValidation\Validator
      */
@@ -56,13 +61,31 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     ];
 
     /**
+     * The parameters of the best estimator.
+     *
+     * @var array
+     */
+    protected $best = [
+        //
+    ];
+
+    /**
+     * The best estimator instance.
+     *
+     * @var \Rubix\ML\Estimator
+     */
+    protected $estimator;
+
+    /**
      * @param  string  $base
      * @param  array  $params
+     * @param  \Rubix\ML\Metrics\Validation\Validation  $metric
      * @param  \Rubix\ML\CrossValidation\Validator  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, Validator $validator)
+    public function __construct(string $base, array $params, Validation $metric,
+                                Validator $validator)
     {
         $reflector = new ReflectionClass($base);
 
@@ -79,13 +102,10 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
                 . count($params) . ' given, only ' . count($args) . ' needed.');
         }
 
-        foreach ($params as &$params) {
-            $params = (array) $params;
-        }
-
         $this->reflector = $reflector;
         $this->args = array_slice($args, 0, count($params));
         $this->params = $params;
+        $this->metric = $metric;
         $this->validator = $validator;
     }
 
@@ -97,6 +117,26 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
     public function results() : array
     {
         return $this->results;
+    }
+
+    /**
+     * Return the parameters that had the highest validation score.
+     *
+     * @return array
+     */
+    public function best(): array
+    {
+        return $this->best;
+    }
+
+    /**
+     * Return the best estimator instance.
+     *
+     * @return \Rubix\ML\Estimator
+     */
+    public function estimator() : Estimator
+    {
+        return $this->estimator;
     }
 
     /**
@@ -114,17 +154,22 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
                 . ' Labeled training set.');
         }
 
-        $best = ['score' => -INF, 'estimator' => null];
+        $this->results = $this->best = [];
+        $this->estimator = null;
 
-        $this->results = [];
+        $dataset->randomize();
+
+        $best = ['score' => -INF, 'params' => [], 'estimator' => null];
 
         foreach ($this->combineParams($this->params) as $params) {
             $estimator = $this->reflector->newInstanceArgs($params);
 
-            $score = $this->validator->score($estimator, $dataset);
+            $score = $this->validator->test($estimator, $dataset,
+                $this->metric);
 
             if ($score > $best['score']) {
                 $best['score'] = $score;
+                $best['params'] = $params;
                 $best['estimator'] = $estimator;
             }
 
@@ -134,7 +179,10 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
             ];
         }
 
+        $this->best = $best['params'];
         $this->estimator = $best['estimator'];
+
+        $this->estimator->train($dataset);
     }
 
     /**
@@ -145,7 +193,7 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return $this->estimator->predict($samples);
+        return $this->estimator->predict($dataset);
     }
 
     /**
@@ -157,22 +205,22 @@ class GridSearch implements Classifier, Clusterer, Regressor, Persistable
      */
     protected function combineParams(array $params) : array
     {
-        $params = [[]];
+        $temp = [[]];
 
         foreach ($params as $i => $options) {
             $append = [];
 
-            foreach ($params as $product) {
+            foreach ($temp as $product) {
                 foreach ($options as $option) {
                     $product[$i] = $option;
                     $append[] = $product;
                 }
             }
 
-            $params = $append;
+            $temp = $append;
         }
 
-        return $params;
+        return $temp;
     }
 
     /**

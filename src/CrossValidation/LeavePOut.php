@@ -40,7 +40,7 @@ class LeavePOut implements Validator
      */
     public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
     {
-        $n = ceil($dataset->numRows() / $this->p);
+        $n = round($dataset->numRows() / $this->p);
 
         $scores = [];
 

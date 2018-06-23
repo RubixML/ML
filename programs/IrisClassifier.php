@@ -3,9 +3,13 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
+use Rubix\ML\GridSearch;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\CrossValidation\LeavePOut;
+use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\Metrics\Distance\Diagonal;
 use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Metrics\Distance\Manhattan;
 use Rubix\ML\Metrics\Validation\F1Score;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Transformers\NumericStringConverter;
@@ -33,18 +37,18 @@ $dataset = new Labeled($samples, $labels);
 
 $dataset->randomize();
 
-$estimator = new Pipeline(new KNearestNeighbors(3, new Euclidean()), [
-    new NumericStringConverter()
-]);
+$params = [
+    [1, 3, 5, 7, 9], [new Euclidean(), new Diagonal(), new Manhattan()],
+];
 
-$validator = new LeavePOut(3);
+$estimator = new Pipeline(new GridSearch(KNearestNeighbors::class, $params, new MCC(), new KFold(10)), [
+    new NumericStringConverter(),
+]);
 
 $report = new ConfusionMatrix();
 
-var_dump($validator->test($estimator, $dataset, new F1Score()));
+$estimator->train($dataset);
 
-list($training, $testing) = $dataset->stratifiedSplit(0.8);
+var_dump($estimator->results());
 
-$estimator->train($training);
-
-var_dump($report->generate($estimator, $testing));
+var_dump($estimator->best());
