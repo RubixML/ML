@@ -6,7 +6,7 @@ use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Metrics\Validation\MCC;
-use Rubix\ML\CrossValidation\Holdout;
+use Rubix\ML\Classifiers\DecisionTree;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Metrics\Distance\Euclidean;
@@ -52,6 +52,7 @@ $hidden = [
 $estimator = new Pipeline(new CommitteeMachine([
     new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
     new RandomForest(100, 0.3, 50, 3, 1e-2),
+    new DecisionTree(500, 1, 1e-4),
     new KNearestNeighbors(3, new Euclidean()),
 ]), [
     new NumericStringConverter(),
@@ -59,19 +60,15 @@ $estimator = new Pipeline(new CommitteeMachine([
     new ZScaleStandardizer(),
 ]);
 
-$validator = new Holdout(0.1);
-
 $report = new AggregateReport([
     new ConfusionMatrix(),
     new ClassificationReport(),
 ]);
 
-var_dump($validator->test($estimator, $dataset, new MCC()));
-
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.20);
 
 $estimator->train($training);
 
 var_dump($report->generate($estimator, $testing));
 
-var_dump($estimator->proba($dataset->randomize()->head(5)));
+var_dump($estimator->proba($dataset->randomize()->head(3)));

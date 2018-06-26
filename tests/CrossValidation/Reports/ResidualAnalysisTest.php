@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\Regression;
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +25,6 @@ class ResidualAnalysisTest extends TestCase
     public function test_build_regression_analysis()
     {
         $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
-        $this->assertInstanceOf(Regression::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

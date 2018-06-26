@@ -13,8 +13,8 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\Metrics\Validation\Validation;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\Metrics\Validation\Classification;
 use InvalidArgumentException;
 
 class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
@@ -48,9 +48,9 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $alpha;
 
     /**
-     * The classification metric used to validate the performance of the model.
+     * The Validation metric used to validate the performance of the model.
      *
-     * @var \Rubix\ML\Metrics\Validation\Classification
+     * @var \Rubix\ML\Metrics\Validation\Validation
      */
     protected $metric;
 
@@ -116,7 +116,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\ML\Metrics\Validation\Classification|null  $metric
+     * @param  \Rubix\ML\Metrics\Validation\Validation|null  $metric
      * @param  float $ratio
      * @param  int  $window
      * @param  float  $tolerance
@@ -125,7 +125,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 50, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, Classification $metric = null, float $ratio = 0.2,
+                    float $alpha = 1e-4, Validation $metric = null, float $ratio = 0.2,
                     int $window = 3, float $tolerance = 1e-3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {

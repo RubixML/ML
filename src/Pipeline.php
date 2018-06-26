@@ -3,12 +3,9 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Regressors\Regressor;
-use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Transformers\Transformer;
 
-class Pipeline implements Classifier, Clusterer, Regressor, Persistable
+class Pipeline implements MetaEstimator, Persistable
 {
     /**
      * The wrapped estimator instance.

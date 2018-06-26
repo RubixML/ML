@@ -12,9 +12,8 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
-use Countable;
 
-class Network implements Countable
+class Network
 {
     /**
      * The layers of the network.
@@ -204,8 +203,7 @@ class Network implements Countable
     }
 
     /**
-     * Restore the network parameters from an array of weights indexed by layer
-     * then neuron then finally synapse weight.
+     * Restore the network parameters from an array of weights indexed by layer.
      *
      * @param  array  $parameters
      * @return void
@@ -215,13 +213,5 @@ class Network implements Countable
         foreach ($this->parametric() as $i => $layer) {
             $layer->restore($parameters[$i]);
         }
-    }
-
-    /**
-     * @return int
-     */
-    public function count() : int
-    {
-        return $this->depth();
     }
 }

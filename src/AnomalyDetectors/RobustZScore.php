@@ -12,7 +12,7 @@ class RobustZScore implements Detector, Persistable
     const LAMBDA = 0.6745;
 
     /**
-     * The threshold z score of a feature to be consider the sample an outlier.
+     * The threshold z score of a feature to consider the sample an outlier.
      *
      * @var float
      */

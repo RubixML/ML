@@ -79,8 +79,8 @@ class AdaBoost implements Binary, Persistable
     ];
 
     /**
-     * The amount of influence an expert has. i.e. the classifier's ability to
-     * make accurate predictions.
+     * The amount of influence a particular classifier has. i.e. the
+     * classifier's ability to make accurate predictions.
      *
      * @var array
      */
@@ -139,7 +139,7 @@ class AdaBoost implements Binary, Persistable
     }
 
     /**
-     * Return the list of influence values for each estimator in the ensemble.
+     * Return the list of influence values for each classifier in the ensemble.
      *
      * @return array
      */
@@ -150,7 +150,7 @@ class AdaBoost implements Binary, Persistable
 
     /**
      * Train a boosted enemble of binary classifiers assigning an influence value
-     * to each one and re-weighting the training data according to reflect how
+     * to each one and re-weighting the training data accordingly to reflect how
      * difficult a particular sample is to classify.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -176,7 +176,7 @@ class AdaBoost implements Binary, Persistable
 
         $this->ensemble = $this->influence = [];
 
-        for ($expert = 1; $expert <= $this->experts; $expert++) {
+        for ($epoch = 1; $epoch <= $this->experts; $epoch++) {
             $estimator = $this->reflector->newInstanceArgs($this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));

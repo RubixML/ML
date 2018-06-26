@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\Classification;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +25,6 @@ class ConfusionMatrixTest extends TestCase
     public function test_build_confusion_matrix()
     {
         $this->assertInstanceOf(ConfusionMatrix::class, $this->report);
-        $this->assertInstanceOf(Classification::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

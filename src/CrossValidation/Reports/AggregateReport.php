@@ -32,7 +32,7 @@ class AggregateReport implements Report
      * Generate an aggregated report consisting of 1 or more individual reports.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Runix\ML\Datasets\Labeled  $testing
      * @return array
      */
     public function generate(Estimator $estimator, Labeled $testing) : array

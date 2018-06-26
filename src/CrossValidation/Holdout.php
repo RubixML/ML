@@ -17,12 +17,11 @@ class Holdout implements Validator
     protected $ratio;
 
     /**
-     * @param  \Rubix\ML\Metrics\Validation\Validation  $metric
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Validation $metric, float $ratio = 0.2)
+    public function __construct(float $ratio = 0.2)
     {
         if ($ratio < 0.01 or $ratio > 1.0) {
             throw new InvalidArgumentException('Holdout ratio must be'

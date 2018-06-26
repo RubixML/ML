@@ -45,10 +45,12 @@ $estimator = new Pipeline(new GridSearch(KNearestNeighbors::class, $params, new 
     new NumericStringConverter(),
 ]);
 
-$report = new ConfusionMatrix();
+$validator = new KFold(10);
 
 $estimator->train($dataset);
 
 var_dump($estimator->results());
 
 var_dump($estimator->best());
+
+var_dump($validator->test($estimator, $dataset, new MCC()));

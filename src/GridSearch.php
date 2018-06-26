@@ -9,7 +9,7 @@ use Rubix\ML\Metrics\Validation\Validation;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class GridSearch implements Estimator, Persistable
+class GridSearch implements MetaEstimator, Persistable
 {
     /**
      * The reflector instance of the base estimator.

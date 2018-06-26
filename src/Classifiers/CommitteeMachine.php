@@ -58,7 +58,7 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
     /**
      * Train all the experts with the dataset.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -80,7 +80,7 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
      * Make a prediction based on the class that recieved the highest
      * probability score from the committee of experts.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $samples
      * @return array
      */
     public function predict(Dataset $samples) : array
@@ -106,7 +106,7 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
     /**
      * Combine the probablistic predictions of the committee.
      *
-     * @param  \Rubix\Engine\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function proba(Dataset $dataset) : array
@@ -130,7 +130,7 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
     /**
      * Add an expert to the committee.
      *
-     * @param  \Rubix\Engine\Classifiers\Classifier  $estimator
+     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
      * @throws \InvalidArgumentException
      * @return void
      */

@@ -3,7 +3,6 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\Classification;
 use Rubix\ML\CrossValidation\Reports\ClassificationReport;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +25,6 @@ class ClassificationReportTest extends TestCase
     public function test_build_classification_report()
     {
         $this->assertInstanceOf(ClassificationReport::class, $this->report);
-        $this->assertInstanceOf(Classification::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

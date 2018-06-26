@@ -2,21 +2,29 @@
 
 namespace Rubix\ML\CrossValidation\Reports;
 
-use MathPHP\Statistics\Average;
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
+use InvalidArgumentException;
 
-class ResidualAnalysis implements Regression
+class ResidualAnalysis implements Report
 {
     /**
      * Generate a residual analysis of a regression.
      *
-     * @param  \Rubix\ML\Regressors\Regressor  $estimator
-     * @param  \Runix\Engine\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Runix\ML\Datasets\Labeled  $testing
+     * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Regressor $estimator, Labeled $testing) : array
+    public function generate(Estimator $estimator, Labeled $testing) : array
     {
+        if (!$estimator instanceof Regressor) {
+            throw new InvalidArgumentException('This report only works on'
+                . ' regressors.');
+        }
+
         $metrics = array_fill_keys(['error', 'sae', 'sse', 'sst'], 0.0);
 
         $mean = Average::mean($testing->labels());
