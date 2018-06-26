@@ -14,7 +14,7 @@ use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -46,7 +46,7 @@ $validator = new KFold(10);
 
 $report = new AggregateReport([
     new ConfusionMatrix(),
-    new ClassificationReport(),
+    new MulticlassBreakdown(),
 ]);
 
 var_dump($validator->test($estimator, $dataset, new MCC()));

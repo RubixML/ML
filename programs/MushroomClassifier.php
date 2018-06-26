@@ -16,7 +16,7 @@ use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -59,7 +59,7 @@ $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
 
 $report = new AggregateReport([
     new ConfusionMatrix(),
-    new ClassificationReport(),
+    new MulticlassBreakdown(),
 ]);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);

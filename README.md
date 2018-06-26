@@ -116,9 +116,9 @@ MIT
 			- [Clustering](#clustering)
 		- [Reports](#reports)
 			- [Aggregate Report](#aggregate-report)
-			- [Classification Report](#classification-report)
 			- [Confusion Matrix](#confusion-matrix)
 			- [Contingency Table](#contingency-table)
+			- [MulticlassBreakdown](#multiclass-breakdown)
 			- [Residual Analysis](#residual-analysis)
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
@@ -2005,27 +2005,12 @@ A Report that aggregates the results of multiple reports.
 ```php
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 $report = new AggregateReport([
 	new ConfusionMatrix(),
-	new ClassificationReport(),
+	new MulticlassBreakdown(),
 ]);
-```
-
-### Classification Report
-A Report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Cardinality, Miss Rate, and more.
-
-##### Classification
-
-##### Parameters:
-This Report does not have any parameters.
-
-##### Example:
-```php
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
-
-$report = new ClassificationReport();
 ```
 
 ### Confusion Matrix
@@ -2059,6 +2044,21 @@ This Report does not have any parameters.
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
 $report = new ContingencyTable();
+```
+
+### Multiclass Breakdown
+A Report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Cardinality, Miss Rate, and more.
+
+##### Classification
+
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
+
+$report = new MulticlassBreakdown();
 ```
 
 ### Residual Analysis

@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
 use InvalidArgumentException;
 
-class ClassificationReport implements Report
+class MulticlassBreakdown implements Report
 {
     /**
      * Prepare the classification report. This involves calculating a number of
@@ -56,15 +56,10 @@ class ClassificationReport implements Report
             }
         }
 
-        $overall = [
-            'average' => array_fill_keys([
-                'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
-                'fall_out', 'f1_score', 'mcc', 'informedness',
-            ], 0.0),
-            'total' => array_fill_keys([
-                'cardinality',
-            ], 0.0),
-        ];
+        $overall = array_fill_keys([
+            'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
+            'fall_out', 'f1_score', 'mcc', 'informedness', 'cardinality',
+        ], 0.0);
 
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
@@ -93,23 +88,29 @@ class ClassificationReport implements Report
             $table[$label]['density'] = $table[$label]['cardinality']
                 / count($predictions);
 
-            $overall['average']['accuracy'] += $table[$label]['accuracy'];
-            $overall['average']['precision'] += $table[$label]['precision'];
-            $overall['average']['recall'] += $table[$label]['recall'];
-            $overall['average']['specificity'] += $table[$label]['specificity'];
-            $overall['average']['miss_rate'] += $table[$label]['miss_rate'];
-            $overall['average']['fall_out'] += $table[$label]['fall_out'];
-            $overall['average']['f1_score'] += $table[$label]['f1_score'];
-            $overall['average']['mcc'] += $table[$label]['mcc'];
-            $overall['average']['informedness'] += $table[$label]['informedness'];
-            $overall['total']['cardinality'] += $table[$label]['cardinality'];
+            $overall['accuracy'] += $table[$label]['accuracy'];
+            $overall['precision'] += $table[$label]['precision'];
+            $overall['recall'] += $table[$label]['recall'];
+            $overall['specificity'] += $table[$label]['specificity'];
+            $overall['miss_rate'] += $table[$label]['miss_rate'];
+            $overall['fall_out'] += $table[$label]['fall_out'];
+            $overall['f1_score'] += $table[$label]['f1_score'];
+            $overall['mcc'] += $table[$label]['mcc'];
+            $overall['informedness'] += $table[$label]['informedness'];
+            $overall['cardinality'] += $table[$label]['cardinality'];
         }
 
         $n = count($classes);
 
-        $overall['average'] = array_map(function ($metric) use ($n) {
-            return $metric / $n;
-        }, $overall['average']);
+        foreach ($overall as $metric => &$score) {
+            if ($metric === 'cardinality') {
+                $score = (int) $score;
+
+                continue 1;
+            }
+
+            $score /= $n;
+        }
 
         return [
             'overall' => $overall,

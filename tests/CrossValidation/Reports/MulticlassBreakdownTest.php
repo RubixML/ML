@@ -3,10 +3,10 @@
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ClassificationReport;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
-class ClassificationReportTest extends TestCase
+class MulticlassBreakdownTest extends TestCase
 {
     protected $report;
 
@@ -19,12 +19,12 @@ class ClassificationReportTest extends TestCase
             'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
         ]);
 
-        $this->report = new ClassificationReport();
+        $this->report = new MulticlassBreakdown();
     }
 
-    public function test_build_classification_report()
+    public function test_build_multiclass_breakdown()
     {
-        $this->assertInstanceOf(ClassificationReport::class, $this->report);
+        $this->assertInstanceOf(MulticlassBreakdown::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
@@ -32,20 +32,16 @@ class ClassificationReportTest extends TestCase
     {
         $actual = [
             'overall' => [
-                'average' => [
-                    'accuracy' => 0.6,
-                    'precision' => 0.5833333309722222,
-                    'recall' => 0.5833333309722222,
-                    'specificity' => 0.5833333309722222,
-                    'miss_rate' => 0.41666666902777777,
-                    'fall_out' => 0.41666666902777777,
-                    'f1_score' => 0.5833333259722223,
-                    'informedness' => 0.16666666194444435,
-                    'mcc' => 0.16666666638888888,
-                ],
-                'total' => [
-                    'cardinality' => 5,
-                ],
+                'accuracy' => 0.6,
+                'precision' => 0.5833333309722222,
+                'recall' => 0.5833333309722222,
+                'specificity' => 0.5833333309722222,
+                'miss_rate' => 0.41666666902777777,
+                'fall_out' => 0.41666666902777777,
+                'f1_score' => 0.5833333259722223,
+                'informedness' => 0.16666666194444435,
+                'mcc' => 0.16666666638888888,
+                'cardinality' => 5,
             ],
             'label' => [
                 'wolf' => [
