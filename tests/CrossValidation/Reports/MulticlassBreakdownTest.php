@@ -10,6 +10,10 @@ class MulticlassBreakdownTest extends TestCase
 {
     protected $report;
 
+    protected $testing;
+
+    protected $estimator;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],

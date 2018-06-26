@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
 use InvalidArgumentException;
@@ -31,15 +32,20 @@ class ConfusionMatrix implements Report
      * Generate a confusion matrix.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Runix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Estimator $estimator, Labeled $testing) : array
+    public function generate(Estimator $estimator, Dataset $testing) : array
     {
         if (!$estimator instanceof Classifier) {
             throw new InvalidArgumentException('This report only works on'
                 . ' classifiers.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This report requires a'
+                . ' Labeled testing set.');
         }
 
         $predictions = $estimator->predict($testing);

@@ -3,7 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 
 interface Report
 {
@@ -13,8 +13,8 @@ interface Report
      * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Runix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset $testing
      * @return array
      */
-    public function generate(Estimator $estimator, Labeled $testing) : array;
+    public function generate(Estimator $estimator, Dataset $testing) : array;
 }

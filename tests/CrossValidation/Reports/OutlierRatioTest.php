@@ -1,16 +1,14 @@
 <?php
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockRegressor;
+use Rubix\Tests\Helpers\MockDetector;
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\CrossValidation\Reports\OutlierRatio;
 use PHPUnit\Framework\TestCase;
 
-class ResidualAnalysisTest extends TestCase
+class OutlierRatioTest extends TestCase
 {
     protected $report;
-
-    protected $testing;
 
     protected $estimator;
 
@@ -19,26 +17,26 @@ class ResidualAnalysisTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
             [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
 
-        $this->estimator = new MockRegressor([
-            10, 12, 15, 42, 56, 12, 17, 9, 1, 7,
+        $this->estimator = new MockDetector([
+            0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
         ]);
 
-        $this->report = new ResidualAnalysis();
+        $this->report = new OutlierRatio();
     }
 
     public function test_build_regression_analysis()
     {
-        $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
+        $this->assertInstanceOf(OutlierRatio::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
     public function test_generate_report()
     {
         $actual = [
-            'mean_absolute_error' => 0.7999999992,
-            'mean_squared_error' => 0.9999999989999999,
-            'rms_error' => 0.9999999995,
-            'r_squared' => 0.9962367816957203,
+            'outliers' => 1,
+            'inliers' => 9,
+            'ratio' => 0.1111111109876543,
+            'cardinality' => 10,
         ];
 
         $result = $this->report->generate($this->estimator, $this->testing);

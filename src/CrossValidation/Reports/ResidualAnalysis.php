@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
@@ -14,15 +15,20 @@ class ResidualAnalysis implements Report
      * Generate a residual analysis of a regression.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Runix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Estimator $estimator, Labeled $testing) : array
+    public function generate(Estimator $estimator, Dataset $testing) : array
     {
         if (!$estimator instanceof Regressor) {
             throw new InvalidArgumentException('This report only works on'
                 . ' regressors.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This report requires a'
+                . ' Labeled testing set.');
         }
 
         $metrics = array_fill_keys(['error', 'sae', 'sse', 'sst'], 0.0);

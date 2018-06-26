@@ -119,6 +119,7 @@ MIT
 			- [Confusion Matrix](#confusion-matrix)
 			- [Contingency Table](#contingency-table)
 			- [MulticlassBreakdown](#multiclass-breakdown)
+			- [Outlier Ratio](#outlier-ratio)
 			- [Residual Analysis](#residual-analysis)
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
@@ -2059,6 +2060,21 @@ This Report does not have any parameters.
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 $report = new MulticlassBreakdown();
+```
+
+### Outlier Ratio
+Outlier Ratio is the proportion of outliers to inliers in an [Anomaly Detection](#anomaly-detectors) problem.
+
+##### Anomaly Detection
+
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Reports\OutlierRatio;
+
+$report = new OutlierRatio();
 ```
 
 ### Residual Analysis

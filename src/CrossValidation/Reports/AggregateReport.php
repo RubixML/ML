@@ -3,7 +3,7 @@
 namespace Rubix\ML\CrossValidation\Reports;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 
 class AggregateReport implements Report
 {
@@ -32,10 +32,10 @@ class AggregateReport implements Report
      * Generate an aggregated report consisting of 1 or more individual reports.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Runix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @return array
      */
-    public function generate(Estimator $estimator, Labeled $testing) : array
+    public function generate(Estimator $estimator, Dataset $testing) : array
     {
         $reports = [];
 
