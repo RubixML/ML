@@ -5,7 +5,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase

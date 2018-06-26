@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Metrics\Validation\RMSError;
+use Rubix\ML\CrossValidation\Metrics\RMSError;
 use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;

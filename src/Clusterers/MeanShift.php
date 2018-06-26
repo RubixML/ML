@@ -5,8 +5,8 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -23,7 +23,7 @@ class MeanShift implements Clusterer, Persistable
     /**
      * The distance kernel to use when computing the distances.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
@@ -53,7 +53,7 @@ class MeanShift implements Clusterer, Persistable
 
     /**
      * @param  float  $radius
-     * @param  \Rubix\ML\Metrics\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException

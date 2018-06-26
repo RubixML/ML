@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Classifiers\NaiveBayes;
-use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use Rubix\ML\Transformers\MissingDataImputer;

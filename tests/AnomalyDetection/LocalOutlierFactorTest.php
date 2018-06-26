@@ -6,7 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\Detector;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
 

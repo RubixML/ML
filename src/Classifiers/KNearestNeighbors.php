@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistable
@@ -23,7 +23,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
@@ -56,7 +56,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Metrics\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */

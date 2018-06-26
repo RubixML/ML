@@ -5,8 +5,8 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -22,7 +22,7 @@ class KMeans implements Clusterer, Online, Persistable
     /**
      * The distance function to use when computing the distances.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 

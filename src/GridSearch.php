@@ -5,7 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\Metrics\Validation\Validation;
+use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -31,7 +31,7 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * The validation metric used to score the estimator.
      *
-     * @var \Rubix\ML\Metrics\Validation\Validation
+     * @var \Rubix\ML\CrossValidation\Metrics\Validation
      */
      protected $metric;
 
@@ -79,7 +79,7 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * @param  string  $base
      * @param  array  $params
-     * @param  \Rubix\ML\Metrics\Validation\Validation  $metric
+     * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
      * @param  \Rubix\ML\CrossValidation\Validator  $validator
      * @throws \InvalidArgumentException
      * @return void

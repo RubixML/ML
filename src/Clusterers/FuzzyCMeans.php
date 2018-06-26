@@ -5,8 +5,8 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -31,7 +31,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      * The distance kernel to use when computing the distances between
      * samples.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 

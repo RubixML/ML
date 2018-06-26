@@ -4,8 +4,8 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 class DBSCAN implements Clusterer, Persistable

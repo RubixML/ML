@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 class KNNRegressor implements Regressor, Online, Persistable
@@ -23,7 +23,7 @@ class KNNRegressor implements Regressor, Online, Persistable
     /**
      * The distance kernel to use when computing the distances.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 

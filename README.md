@@ -185,7 +185,7 @@ It is important to understand the effect that each parameter has on the performa
 To create a K Nearest Neighbors Classifier instance:
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Metrics\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Manhattan;
 
 // Using the default parameters
 $estimator = new KNearestNeighbors();
@@ -232,7 +232,7 @@ We can make predictions but how do we know that the predictions our model makes 
 We need to supply a validation metric to measure suited to our Classifier. In this case we will use the Accuracy metric, but more exist depending on your purpose.
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
-use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
 $validator = new HoldOut(0.2);
 
@@ -610,7 +610,7 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
-use Rubix\ML\Metrics\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\Minkowski;
 
 $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
 ```
@@ -771,7 +771,7 @@ This Estimator does not have any additional methods.|
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new KNearestNeighbors(3, new Euclidean());
 ```
@@ -829,7 +829,7 @@ use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $hidden = [
 	new Dense(10, new ELU()),
@@ -930,7 +930,7 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\DBSCAN;
-use Rubix\ML\Metrics\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Manhattan;
 
 $estimator = new DBSCAN(4.0, 5, new Manhattan());
 ```
@@ -958,7 +958,7 @@ Clusterer that allows data points to belong to multiple clusters if they fall wi
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\FuzzyCMeans;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
 
@@ -986,7 +986,7 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new KMeans(3, new Euclidean());
 
@@ -1014,7 +1014,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\MeanShift;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
 ```
@@ -1061,7 +1061,7 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Regressors\KNNRegressor;
-use Rubix\ML\Metrics\Distance\Minkowski;
+use Rubix\ML\Kernels\Distance\Minkowski;
 
 $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
@@ -1095,7 +1095,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
-use Rubix\ML\Metrics\Validation\RSquared;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 
 $hidden = [
 	new Dense(30, new HyperbolicTangent()),
@@ -1226,7 +1226,7 @@ You can call any of the base Estimator(s)' methods from the Meta-Estimator simpl
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\GridSearch;
-use Rubix\ML\Metrics\Validation\MCC;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Classifiers\DecisionTree;
 use Rubix\ML\Transformers\NumericStringConverter;
@@ -1800,7 +1800,7 @@ public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
 ...
 $validator = new KFold(10);
@@ -1827,7 +1827,7 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
-use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
 $validator = new HoldOut(0.25);
 ```
@@ -1878,7 +1878,7 @@ public range() : array
 
 ##### Example:
 ```php
-use Rubix\ML\Metrics\Validation\MeanAbsoluteError;
+use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 
 ...
 $metric = new MeanAbsoluteError();
@@ -1928,7 +1928,7 @@ There are different metrics for different types of Estimators listed below.
 
 ##### Example:
 ```php
-use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
 $metric =  new Accuracy();
 ```
@@ -2267,16 +2267,30 @@ Grid Search is an algorithm that optimizes hyperparameter selection. From the us
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Metrics\Distance\Euclidean;
-use Rubix\ML\Metrics\Distance\Manhattan;
-use Rubix\ML\Metrics\Validation\Accuracy;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\KFold;
 
+...
 $params = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()],
 ];
 
 $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
+
+$estimator->train($dataset);
+
+var_dump($estimator->best()); // Return the best parameters
+```
+
+##### Outputs:
+```sh
+array(2) {
+  [0]=> int(5)
+  [1]=> object(Rubix\ML\Kernels\Distance\Euclidean)#15 (0) {
+  }
+}
 ```
 
 ---

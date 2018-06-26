@@ -6,7 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Regressors\KNNRegressor;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class KNNRegressorTest extends TestCase

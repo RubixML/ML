@@ -5,7 +5,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;

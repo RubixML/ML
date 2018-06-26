@@ -6,7 +6,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
 use Rubix\ML\Clusterers\MeanShift;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
 class MeanShiftTest extends TestCase

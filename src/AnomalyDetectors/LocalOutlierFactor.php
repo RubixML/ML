@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Metrics\Distance\Distance;
-use Rubix\ML\Metrics\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
@@ -40,7 +40,7 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
      * The distance kernel to use when computing the distances between two
      * data points.
      *
-     * @var \Rubix\ML\Metrics\Distance\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
@@ -57,7 +57,7 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
      * @param  int  $k
      * @param  int  $neighbors
      * @param  float  $threshold
-     * @param  \Rubix\ML\Metrics\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
