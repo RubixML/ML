@@ -24,7 +24,7 @@ class OutlierRatioTest extends TestCase
         $this->report = new OutlierRatio();
     }
 
-    public function test_build_regression_analysis()
+    public function test_build_outlier_ratio_report()
     {
         $this->assertInstanceOf(OutlierRatio::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);

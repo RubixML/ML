@@ -9,7 +9,9 @@ use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\OutlierReport;
+use Rubix\ML\CrossValidation\Reports\OutlierRatio;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -35,7 +37,10 @@ $estimator = new Pipeline(new IsolationForest(300, 0.2, 0.55), [
     new NumericStringConverter(),
 ]);
 
-$report = new OutlierReport();
+$report = new AggregateReport([
+    new OutlierRatio(),
+    new PredictionSpeed(),
+]);
 
 list($training, $testing) = $dataset->split(0.8);
 

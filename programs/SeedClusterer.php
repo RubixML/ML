@@ -11,6 +11,8 @@ use Rubix\ML\Metrics\Distance\Euclidean;
 use Rubix\ML\Metrics\Validation\VMeasure;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use League\Csv\Reader;
 
@@ -39,7 +41,10 @@ $estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
 
 $validator = new KFold(10);
 
-$report = new ContingencyTable();
+$report = new AggregateReport([
+    new ContingencyTable(),
+    new PredictionSpeed(),
+]);
 
 var_dump($validator->test($estimator, $dataset, new VMeasure()));
 

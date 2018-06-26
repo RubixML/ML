@@ -19,6 +19,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use League\Csv\Reader;
 
@@ -63,6 +64,7 @@ $estimator = new Pipeline(new CommitteeMachine([
 $report = new AggregateReport([
     new ConfusionMatrix(),
     new MulticlassBreakdown(),
+    new PredictionSpeed(),
 ]);
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.20);

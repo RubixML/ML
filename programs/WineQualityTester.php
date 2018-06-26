@@ -10,6 +10,8 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Metrics\Validation\RMSError;
 use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use League\Csv\Reader;
 
@@ -47,7 +49,10 @@ $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
         new NumericStringConverter(),
     ]);
 
-$report = new ResidualAnalysis();
+$report = new AggregateReport([
+    new ResidualAnalysis(),
+    new PredictionSpeed(),
+]);
 
 list($training, $testing) = $dataset->stratifiedSplit(0.8);
 

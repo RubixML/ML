@@ -120,6 +120,7 @@ MIT
 			- [Contingency Table](#contingency-table)
 			- [MulticlassBreakdown](#multiclass-breakdown)
 			- [Outlier Ratio](#outlier-ratio)
+			- [Prediction Speed](#prediction-speed)
 			- [Residual Analysis](#residual-analysis)
 	- [Model Selection](#model-selection)
 		- [Grid Search](#grid-search)
@@ -2028,7 +2029,37 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 ```php
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
+...
 $report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+
+```sh
+  array(3) {
+    ["dog"]=>
+    array(2) {
+      ["dog"]=> int(842)
+      ["cat"]=> int(5)
+      ["turtle"]=> int(0)
+    }
+    ["cat"]=>
+    array(2) {
+      ["dog"]=> int(0)
+      ["cat"]=> int(783)
+      ["turtle"]=> int(3)
+    }
+    ["turtle"]=>
+    array(2) {
+      ["dog"]=> int(31)
+      ["cat"]=> int(79)
+      ["turtle"]=> int(496)
+    }
+  }
 ```
 
 ### Contingency Table
@@ -2044,7 +2075,36 @@ This Report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
+...
 $report = new ContingencyTable();
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+array(3) {
+    [1]=>
+    array(3) {
+      [1]=> int(13)
+      [2]=> int(0)
+      [3]=> int(2)
+    }
+    [2]=>
+    array(3) {
+      [1]=> int(1)
+      [2]=> int(0)
+      [3]=> int(12)
+    }
+    [0]=>
+    array(3) {
+      [1]=> int(0)
+      [2]=> int(14)
+      [3]=> int(0)
+    }
+  }
 ```
 
 ### Multiclass Breakdown
@@ -2059,7 +2119,37 @@ This Report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
+...
 $report = new MulticlassBreakdown();
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+...
+    array(2) {
+      ["benign"]=>
+      array(15) {
+        ["accuracy"]=> int(1)
+        ["precision"]=> float(0.99999999998723)
+        ["recall"]=> float(0.99999999998723)
+        ["specificity"]=> float(0.99999999998812)
+        ["miss_rate"]=> float(1.2771450563775E-11)
+        ["fall_out"]=> float(1.1876499783625E-11)
+        ["f1_score"]=> float(0.99999999498723)
+        ["mcc"]=> float(0.99999999999998)
+        ["informedness"]=> float(0.99999999997535)
+        ["true_positives"]=> int(783)
+        ["true_negatives"]=> int(842)
+        ["false_positives"]=> int(0)
+        ["false_negatives"]=> int(0)
+        ["cardinality"]=> int(783)
+        ["density"]=> float(0.48184615384615)
+      }
+...
 ```
 
 ### Outlier Ratio
@@ -2074,7 +2164,51 @@ This Report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\OutlierRatio;
 
+...
 $report = new OutlierRatio();
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+  array(4) {
+    ["outliers"]=> int(13)
+    ["inliers"]=> int(307)
+    ["ratio"]=> float(0.042345276871585)
+    ["cardinality"]=> int(320)
+  }
+```
+
+### Prediction Speed
+This Report measures the number of predictions an Estimator can make per second as given by the PPS (predictions per second) score.
+
+##### Classification, Regression, Clustering, Anomaly Detection
+
+##### Parameters:
+This Report does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
+
+...
+$report = new PredictionSpeed();
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+  array(3) {
+    ["pps"]=> float(2998.8272123503)
+    ["average_sec"]=> float(0.00033346366287096)
+    ["total_sec"]=> float(0.10704183578491)
+  }
 ```
 
 ### Residual Analysis
@@ -2089,7 +2223,22 @@ This Report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 
+...
 $report = new ResidualAnalysis();
+
+$result = $report->generate($estimator, $testing);
+
+var_dump($result);
+```
+
+##### Outputs:
+```sh
+  array(4) {
+    ["mean_absolute_error"]=> float(0.60076863576779)
+    ["mean_squared_error"]=> float(0.6170496114073)
+    ["rms_error"]=> float(0.78552505460189)
+    ["r_squared"]=> float(0.52063215677)
+  }
 ```
 
 ---
