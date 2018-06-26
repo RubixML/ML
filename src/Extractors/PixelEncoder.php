@@ -10,15 +10,16 @@ use RuntimeException;
 class PixelEncoder implements Extractor
 {
     /**
-     * The size of the output vector. The image will be scaled and cropped
-     * according to the setting of this parameter.
+     * The image will be scaled and cropped according to the setting of this
+     * parameter which will have an effect on the size of the outpput vector.
      *
      * @var array
      */
     protected $size;
 
     /**
-     * The number of channels to encode.
+     * The number of channels to encode. Each channel requires width x height
+     * number of features.
      *
      * @var bool
      */
@@ -87,12 +88,14 @@ class PixelEncoder implements Extractor
 
         foreach ($samples as $sample) {
             if (is_resource($sample)) {
-                $image = $this->intervention->make($sample)
-                    ->fit(...$this->size)->sharpen($this->sharpen);
+                $image = $this->intervention->make($sample);
 
                 if ($this->channels === 1) {
                     $image = $image->greyscale();
                 }
+
+                $image->fit(...$this->size)
+                    ->sharpen($this->sharpen);
 
                 $vectors[] = $this->vectorize($image);
             }

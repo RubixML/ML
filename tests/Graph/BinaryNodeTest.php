@@ -63,7 +63,6 @@ class BinaryNodeTest extends TestCase
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
         $this->assertEquals('high', $this->node->left()->coolness_factor);
-        $this->assertEquals($this->node, $this->node->left()->parent());
 
         $this->node->detachLeft();
 
@@ -77,7 +76,6 @@ class BinaryNodeTest extends TestCase
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());
         $this->assertEquals('low', $this->node->right()->coolness_factor);
-        $this->assertEquals($this->node, $this->node->right()->parent());
 
         $this->node->detachRight();
 

@@ -46,7 +46,7 @@ class BinaryTree implements Tree
      */
     public function height() : int
     {
-        return $this->root->height();
+        return isset($this->root) ? $this->root->height() : 0;
     }
 
     /**
@@ -57,7 +57,7 @@ class BinaryTree implements Tree
      */
     public function balance() : int
     {
-        return $this->root->balance();
+        return isset($this->root) ? $this->root->balance() : 0;
     }
 
     /**

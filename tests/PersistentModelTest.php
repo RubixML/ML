@@ -21,6 +21,8 @@ class PersistentModelTest extends TestCase
 
     public function test_save_model()
     {
+        $this->assertFalse(file_exists(__DIR__ . '/test.model'));
+
         $this->model->save(__DIR__ . '/test.model');
 
         $this->assertFileExists(__DIR__ . '/test.model');
@@ -33,6 +35,6 @@ class PersistentModelTest extends TestCase
         $this->assertInstanceOf(PersistentModel::class, $model);
         $this->assertInstanceOf(Persistable::class, $model->estimator());
 
-        unlink(__DIR__ . '/test.model');
+        $this->assertTrue(unlink(__DIR__ . '/test.model'));
     }
 }

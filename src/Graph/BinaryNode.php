@@ -7,13 +7,6 @@ use InvalidArgumentException;
 class BinaryNode extends GraphObject implements Node
 {
     /**
-     * The parent node.
-     *
-     * @var \Rubix\ML\Graph\BinaryNode|null
-     */
-    protected $parent;
-
-    /**
      * The left child node.
      *
      * @var \Rubix\ML\Graph\BinaryNode|null
@@ -26,14 +19,6 @@ class BinaryNode extends GraphObject implements Node
      * @var \Rubix\ML\Graph\BinaryNode|null
      */
     protected $right;
-
-    /**
-     * @return \Rubix\ML\Graph\BinaryNode|null
-     */
-    public function parent() : ?self
-    {
-        return $this->parent;
-    }
 
     /**
      * @return \Rubix\ML\Graph\BinaryNode|null
@@ -74,17 +59,6 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
-     * Set the parent node.
-     *
-     * @param  \Rubix\ML\Graph\BinaryNode|null  $node
-     * @return void
-     */
-    public function setParent(BinaryNode $node = null) : void
-    {
-        $this->parent = $node;
-    }
-
-    /**
      * Set the left child node.
      *
      * @param  \Rubix\ML\Graph\BinaryNode|null  $node
@@ -92,10 +66,6 @@ class BinaryNode extends GraphObject implements Node
      */
     public function attachLeft(BinaryNode $node) : void
     {
-        $this->detachLeft();
-
-        $node->setParent($this);
-
         $this->left = $node;
     }
 
@@ -107,10 +77,6 @@ class BinaryNode extends GraphObject implements Node
      */
     public function attachRight(BinaryNode $node) : void
     {
-        $this->detachRight();
-
-        $node->setParent($this);
-
         $this->right = $node;
     }
 
@@ -121,11 +87,7 @@ class BinaryNode extends GraphObject implements Node
      */
     public function detachLeft() : void
     {
-        if (isset($this->left)) {
-            $this->left->setParent(null);
-
-            $this->left = null;
-        }
+        $this->left = null;
     }
 
     /**
@@ -135,11 +97,7 @@ class BinaryNode extends GraphObject implements Node
      */
     public function detachRight() : void
     {
-        if (isset($this->right)) {
-            $this->right->setParent(null);
-
-            $this->right = null;
-        }
+        $this->right = null;
     }
 
     /**
