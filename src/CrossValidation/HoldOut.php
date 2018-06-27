@@ -4,6 +4,8 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
 
@@ -35,7 +37,7 @@ class HoldOut implements Validator
      * Run a single training and testing round where the ratio determines the
      * number of samples held out for testing.
      *
-     * @param  \Rubix\ML\Estimator\Estimator  $estimator
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
      * @return float

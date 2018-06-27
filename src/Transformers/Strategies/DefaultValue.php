@@ -15,8 +15,7 @@ class DefaultValue implements Categorical, Continuous
     protected $value;
 
     /**
-     * @param  string  $categorical
-     * @param  mixed  $continuous
+     * @param  mixed  $value
      * @return void
      */
     public function __construct($value)
@@ -32,7 +31,7 @@ class DefaultValue implements Categorical, Continuous
      * Needs no fiting.
      *
      * @param  array  $values
-     * @return mixed
+     * @return void
      */
     public function fit(array $values) : void
     {

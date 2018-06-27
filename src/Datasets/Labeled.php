@@ -203,7 +203,7 @@ class Labeled extends DataFrame implements Dataset
             . ' between 0 and 1.');
         }
 
-        $n = round($ratio * $this->numRows());
+        $n = (int) ($ratio * $this->numRows());
 
         return [
             new self(array_slice($this->samples, 0, $n),
@@ -230,7 +230,7 @@ class Labeled extends DataFrame implements Dataset
         $left = $right = [[], []];
 
         foreach ($this->stratify() as $label => $stratum) {
-            $n = round($ratio * count($stratum));
+            $n = (int) ($ratio * count($stratum));
 
             $left[0] = array_merge($left[0], array_splice($stratum, 0, $n));
             $left[1] = array_merge($left[1], array_fill(0, $n, $label));
@@ -262,7 +262,7 @@ class Labeled extends DataFrame implements Dataset
         $samples = $this->samples;
         $labels = $this->labels;
 
-        $n = round(count($samples) / $k);
+        $n = (int) (count($samples) / $k);
 
         $folds = [];
 
@@ -294,7 +294,7 @@ class Labeled extends DataFrame implements Dataset
             $fold = [[], []];
 
             foreach ($this->stratify() as $label => $stratum) {
-                $n = round(count($stratum) / $k);
+                $n = (int) (count($stratum) / $k);
 
                 $fold[0] = array_merge($fold[0], array_splice($stratum, 0, $n));
                 $fold[1] = array_merge($fold[1], array_fill(0, $n, $label));

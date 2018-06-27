@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Datasets;
+
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 

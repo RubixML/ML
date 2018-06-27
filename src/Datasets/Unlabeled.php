@@ -112,7 +112,7 @@ class Unlabeled extends DataFrame implements Dataset
             . ' between 0 and 1.');
         }
 
-        $n = round($ratio * $this->numRows());
+        $n = (int) ($ratio * $this->numRows());
 
         return [
             new self(array_slice($this->samples, 0, $n)),
@@ -136,7 +136,7 @@ class Unlabeled extends DataFrame implements Dataset
 
         $samples = $this->samples;
 
-        $n = round(count($samples) / $k);
+        $n = (int) (count($samples) / $k);
 
         $folds = [];
 

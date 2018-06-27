@@ -7,7 +7,7 @@ class BinaryTree implements Tree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Node|null
+     * @var \Rubix\ML\Graph\BinaryNode|null
      */
     protected $root;
 
@@ -21,7 +21,7 @@ class BinaryTree implements Tree
     }
 
     /**
-     * @return \Rubix\ML\Graph\Node|null
+     * @return \Rubix\ML\Graph\BinaryNode|null
      */
     public function root() : ?Node
     {

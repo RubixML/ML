@@ -125,7 +125,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $n = $this->ratio * $dataset->numRows();
+        $n = (int) ($this->ratio * $dataset->numRows());
 
         $this->forest = [];
 

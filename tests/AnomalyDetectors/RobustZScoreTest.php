@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\AnomalyDetectors;
+
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
@@ -11,11 +13,13 @@ class RobustZScoreTest extends TestCase
 {
     protected $estimator;
 
-    protected $dataset;
+    protected $clean;
+
+    protected $dirty;
 
     public function setUp()
     {
-        $this->dataset = new Unlabeled([
+        $this->clean = new Unlabeled([
             [2.771244718, 1.784783929], [1.728571309, 1.169761413],
             [3.678319846, 2.812813570], [3.961043357, 2.619950320],
             [2.999208922, 2.209014212], [2.345634564, 1.345634563],
@@ -28,7 +32,12 @@ class RobustZScoreTest extends TestCase
             [10.56785567, 3.123412342], [6.456749570, 3.324523456],
         ]);
 
-        $this->estimator = new RobustZScore(1.0);
+        $this->dirty = new Unlabeled([
+            [10.032273011, 2.469057128], [3.612394031, 2.645327321],
+            [1.0177273113, 4.727491941], [9.293847293, 3.293847293],
+        ]);
+
+        $this->estimator = new RobustZScore(2.0);
     }
 
     public function test_build_robust_z_score_detector()
@@ -41,12 +50,10 @@ class RobustZScoreTest extends TestCase
 
     public function test_predict()
     {
-        $this->estimator->train($this->dataset);
+        $this->estimator->train($this->clean);
 
-        $results = $this->estimator->predict($this->dataset);
+        $results = $this->estimator->predict($this->dirty);
 
-        $this->assertEquals([
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0
-        ], $results);
+        $this->assertEquals([0, 0, 1, 0], $results);
     }
 }

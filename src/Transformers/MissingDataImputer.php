@@ -21,14 +21,14 @@ class MissingDataImputer implements Transformer
     /**
      * The imputer to use when imputing continuous values.
      *
-     * @var \Rubix\ML\Strategies\Continuous
+     * @var \Rubix\ML\Transformers\Strategies\Continuous
      */
     protected $continuous;
 
     /**
      * The imputer to use when imputing categorical values.
      *
-     * @var \Rubix\ML\Strategies\Categorical
+     * @var \Rubix\ML\Transformers\Strategies\Categorical
      */
     protected $categorical;
 
@@ -43,8 +43,8 @@ class MissingDataImputer implements Transformer
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\ML\Strategies\Continuous|null  $continuous
-     * @param  \Rubix\ML\Strategies\Categorical|null  $categorical
+     * @param  \Rubix\ML\Transformers\Strategies\Continuous|null  $continuous
+     * @param  \Rubix\ML\Transformers\Strategies\Categorical|null  $categorical
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -78,7 +78,7 @@ class MissingDataImputer implements Transformer
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === self::CATEGORICAL) {
                 $imputer = clone $this->categorical;
-            } else if ($type === self::CONTINUOUS) {
+            } else {
                 $imputer = clone $this->continuous;
             }
 

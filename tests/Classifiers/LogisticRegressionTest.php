@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Classifiers;
+
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -58,7 +60,7 @@ class LogisticRegressionTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new LogisticRegression(1, new Adam(0.005), 1e-4, 1e-4, 1e5);
+        $this->estimator = new LogisticRegression(1, new Adam(0.005), 1e-4, 1e-4, 10000);
     }
 
     public function test_build_perceptron_classifier()

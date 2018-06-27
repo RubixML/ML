@@ -72,7 +72,7 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * The best estimator instance.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Estimator|null
      */
     protected $estimator;
 
@@ -132,9 +132,9 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * Return the best estimator instance.
      *
-     * @return \Rubix\ML\Estimator
+     * @return \Rubix\ML\Estimator|null
      */
-    public function estimator() : Estimator
+    public function estimator() : ?Estimator
     {
         return $this->estimator;
     }
@@ -162,7 +162,7 @@ class GridSearch implements MetaEstimator, Persistable
         $best = ['score' => -INF, 'params' => [], 'estimator' => null];
 
         foreach ($this->combineParams($this->params) as $params) {
-            $estimator = $this->reflector->newInstanceArgs($params);
+            $estimator = $this->reflector->newInstance(...$params);
 
             $score = $this->validator->test($estimator, $dataset,
                 $this->metric);
@@ -188,7 +188,7 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array

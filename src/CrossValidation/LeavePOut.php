@@ -33,7 +33,7 @@ class LeavePOut implements Validator
     }
 
     /**
-     * @param  \Rubix\ML\Estimator\Estimator  $estimator
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
      * @return float

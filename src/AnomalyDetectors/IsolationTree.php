@@ -70,6 +70,8 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
         $this->maxDepth = $maxDepth;
         $this->threshold = $threshold;
         $this->splits = 0;
+
+        parent::__construct();
     }
 
     /**
@@ -152,23 +154,23 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      * Recursive function to traverse the tree and return a terminal node.
      *
      * @param  array  $sample
-     * @param  \Rubix\ML\BinaryNode  $root
-     * @return \Rubix\ML\BinaryNode
+     * @param  \Rubix\ML\Graph\BinaryNode  $root
+     * @return \Rubix\ML\Graph\BinaryNode
      */
     protected function _search(array $sample, BinaryNode $root) : BinaryNode
     {
-        if ($root->terminal) {
+        if ($root->get('terminal')) {
             return $root;
         }
 
-        if ($root->type === self::CATEGORICAL) {
-            if ($sample[$root->index] === $root->value) {
+        if ($root->get('type') === self::CATEGORICAL) {
+            if ($sample[$root->get('index')] === $root->get('value')) {
                 return $this->_search($sample, $root->left());
             } else {
                 return $this->_search($sample, $root->right());
             }
         } else {
-            if ($sample[$root->index] < $root->value) {
+            if ($sample[$root->get('index')] < $root->get('value')) {
                 return $this->_search($sample, $root->left());
             } else {
                 return $this->_search($sample, $root->right());
@@ -179,13 +181,13 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     /**
      * Recursive function to split the training set.
      *
-     * @param  \Rubix\ML\BinaryNode  $root
+     * @param  \Rubix\ML\Graph\BinaryNode  $root
      * @param  int  $depth
      * @return void
      */
     protected function split(BinaryNode $root, int $depth = 0) : void
     {
-        list($left, $right) = $root->groups;
+        list($left, $right) = $root->get('groups');
 
         $root->remove('groups');
 
@@ -221,7 +223,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      * Randomized algorithm to find a split point in the data.
      *
      * @param  array  $data
-     * @return \Rubix\ML\BinaryNode
+     * @return \Rubix\ML\Graph\BinaryNode
      */
     protected function findRandomSplit(array $data) : BinaryNode
     {

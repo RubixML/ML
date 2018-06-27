@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\CrossValidation\Reports;
+
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
 use Rubix\ML\CrossValidation\Reports\Report;

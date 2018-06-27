@@ -27,7 +27,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param  mixed  $index
+     * @param  int  $index
      * @return array
      */
     public function row(int $index) : array;
@@ -42,7 +42,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature column at the given index.
      *
-     * @param  mixed  $index
+     * @param  int  $index
      * @return array
      */
     public function column(int $index) : array;
@@ -83,6 +83,13 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return void
      */
     public function transform(Transformer $transformer) : void;
+
+    /**
+     * Rotate the sample matrix.
+     *
+     * @return array
+     */
+    public function rotate() : array;
 
     /**
      * Return a dataset containing only the first n samples.

@@ -8,7 +8,7 @@ interface Transformer
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
-    
+
     const EPSILON = 1e-8;
 
     /**
@@ -19,7 +19,7 @@ interface Transformer
 
     /**
      * @param  array  $samples
-     * @return array
+     * @return void
      */
     public function transform(array &$samples) : void;
 }

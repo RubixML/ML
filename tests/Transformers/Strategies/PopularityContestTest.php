@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Transformers\Strategies;
+
 use Rubix\ML\Transformers\Strategies\Strategy;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;

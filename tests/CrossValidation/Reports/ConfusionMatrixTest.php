@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\CrossValidation\Reports;
+
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\CrossValidation\Reports\Report;

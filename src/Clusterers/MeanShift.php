@@ -45,7 +45,7 @@ class MeanShift implements Clusterer, Persistable
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var int
+     * @var array
      */
     protected $centroids = [
         //
@@ -100,7 +100,7 @@ class MeanShift implements Clusterer, Persistable
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return void
      */
     public function train(Dataset $dataset) : void
     {

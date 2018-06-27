@@ -17,6 +17,13 @@ class PersistentModel
     protected $reflector;
 
     /**
+     * The underlying persistable estimator instance.
+     *
+     * @var \Rubix\ML\Persistable
+     */
+    protected $model;
+
+    /**
      * Factory method to restore the model from a pickled object file at path.
      *
      * @param  string  $path
@@ -30,7 +37,7 @@ class PersistentModel
                 . ' opened. Check path and file permissions.');
         }
 
-        $model = unserialize(file_get_contents($path));
+        $model = unserialize(file_get_contents($path) ?: '');
 
         if (!$model instanceof Persistable) {
             throw new RuntimeException('Model could not be reconstituted.');
@@ -65,7 +72,7 @@ class PersistentModel
      *
      * @param  string  $path
      * @throws \InvalidArgumentException
-     * @return void
+     * @return bool
      */
     public function save(string $path = '') : bool
     {

@@ -21,9 +21,17 @@ class PixelEncoder implements Extractor
      * The number of channels to encode. Each channel requires width x height
      * number of features.
      *
-     * @var bool
+     * @var int
      */
     protected $channels;
+
+    /**
+     * The amount of sharpness to apply to the image before vectorization.
+     * 0 - 100.
+     *
+     * @var int
+     */
+    protected $sharpen;
 
     /**
      * The Intervention image manager instance.

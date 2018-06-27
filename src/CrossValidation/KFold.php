@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
+use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
 
@@ -38,7 +40,7 @@ class KFold implements Validator
      * one fold for testing and the rest to train the model. Return the average
      * validation score for each training round.
      *
-     * @param  \Rubix\ML\Estimator\Estimator  $estimator
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
      * @return float
@@ -55,6 +57,7 @@ class KFold implements Validator
 
         for ($i = 0; $i < $this->k; $i++) {
             $training = [];
+            $testing = null;
 
             for ($j = 0; $j < $this->k; $j++) {
                 if ($i === $j) {

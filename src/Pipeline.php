@@ -69,7 +69,7 @@ class Pipeline implements MetaEstimator, Persistable
     /**
      * Preoprecess the sample dataset and make a prediction.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array

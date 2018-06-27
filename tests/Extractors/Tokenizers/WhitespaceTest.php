@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Extractors\Tokenizers;
+
 use Rubix\ML\Extractors\Tokenizers\Tokenizer;
 use Rubix\ML\Extractors\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;

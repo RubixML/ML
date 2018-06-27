@@ -64,7 +64,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\ML\NeuralNet\Network
+     * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 

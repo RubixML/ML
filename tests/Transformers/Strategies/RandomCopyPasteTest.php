@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Transformers\Strategies;
+
 use Rubix\ML\Transformers\Strategies\Strategy;
 use Rubix\ML\Transformers\Strategies\RandomCopyPaste;
 use PHPUnit\Framework\TestCase;

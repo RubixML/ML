@@ -22,9 +22,11 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * The hidden layer configuration of the neural net.
      *
-     * @param array
+     * @var array
      */
-    protected $hidden;
+    protected $hidden = [
+        //
+    ];
 
     /**
      * The number of training samples to consider per iteration of gradient descent.
@@ -98,14 +100,14 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\ML\NeuralNet\Network
+     * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 
     /**
      * The validation score of each epoch during training.
      *
-     * @param array
+     * @var array
      */
     protected $progress = [
         //
@@ -271,7 +273,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             }
         }
 
-        if ($score !== $best['score']) {
+        if (end($this->progress) !== $best['score']) {
             $this->network->restore($best['snapshot']);
         }
     }

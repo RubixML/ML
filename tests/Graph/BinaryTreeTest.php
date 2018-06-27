@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Graph;
+
 use Rubix\ML\Graph\Node;
 use Rubix\ML\Graph\Tree;
 use Rubix\ML\Graph\BinaryTree;

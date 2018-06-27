@@ -28,20 +28,20 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     protected $kernel;
 
     /**
+     * The training samples.
+     *
+     * @var array
+     */
+    protected $samples = [
+        //
+    ];
+
+    /**
      * The possible class outcomes.
      *
      * @var array
      */
     protected $classes = [
-        //
-    ];
-
-    /**
-     * The memoized coordinate vectors of the training data.
-     *
-     * @var array
-     */
-    protected $dataset = [
         //
     ];
 

@@ -18,14 +18,14 @@ class BlurryMean implements Continuous
     /**
      * The precomputed mean of the fitted feature column.
      *
-     * @var array
+     * @var float
      */
     protected $mean;
 
     /**
      * The precomputed standard deviation of the fitted feature column.
      *
-     * @var array
+     * @var float
      */
     protected $stddev;
 
@@ -77,6 +77,8 @@ class BlurryMean implements Continuous
      */
     protected function generateGaussianValue() : float
     {
-        return random_int(-1 * 1e8, 1 * 1e8) / 1e8;
+        $scale = (int) 1e8;
+
+        return random_int(-1 * $scale, 1 * $scale) / $scale;
     }
 }

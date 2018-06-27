@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Graph;
+
 use Rubix\ML\Graph\GraphObject;
 use PHPUnit\Framework\TestCase;
 

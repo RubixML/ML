@@ -11,7 +11,7 @@ interface Validator
     /**
     * Test the estimator with the suppplied dataset and return a score.
     *
-    * @param  \Rubix\ML\Estimator\Estimator  $estimator
+    * @param  \Rubix\ML\Estimator  $estimator
     * @param  \Rubix\ML\Datasets\Labeled  $dataset
     * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
     * @return float

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\CrossValidation\Metrics;
+
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\Tests\Helpers\MockClassifier;
@@ -9,6 +11,10 @@ use PHPUnit\Framework\TestCase;
 class MCCTest extends TestCase
 {
     protected $metric;
+
+    protected $estimator;
+
+    protected $testing;
 
     public function setUp()
     {

@@ -20,7 +20,7 @@ class ConfusionMatrix implements Report
     ];
 
     /**
-     * @param  array|null  $labels
+     * @param  array|null  $classes
      * @return void
      */
     public function __construct(?array $classes = null)

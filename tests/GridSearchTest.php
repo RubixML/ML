@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests;
+
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;

@@ -36,7 +36,7 @@ class KMeans implements Clusterer, Online, Persistable
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var int
+     * @var array
      */
     protected $centroids = [
         //
@@ -44,7 +44,7 @@ class KMeans implements Clusterer, Online, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Contracts\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
@@ -83,7 +83,7 @@ class KMeans implements Clusterer, Online, Persistable
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -110,7 +110,7 @@ class KMeans implements Clusterer, Online, Persistable
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return void
      */
     public function partial(Dataset $dataset) : void
     {

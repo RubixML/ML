@@ -63,6 +63,8 @@ class AdaGrad implements Optimizer
         $cache = $this->cache[$layer]->add($layer->gradients()
             ->hadamardProduct($layer->gradients()));
 
+        $steps = [];
+
         foreach ($layer->gradients()->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {
                 $steps[$i][$j] =  $this->rate * $column

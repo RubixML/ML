@@ -1,11 +1,13 @@
 <?php
 
+namespace Rubix\Tests\Transformers;
+
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
 
-class MinMaxMinMaxNormalizerTest extends TestCase
+class MinMaxNormalizerTest extends TestCase
 {
     protected $dataset;
 

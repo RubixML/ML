@@ -64,7 +64,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     /**
      * The underlying computational graph.
      *
-     * @param \Rubix\ML\NeuralNet\Network
+     * @var \Rubix\ML\NeuralNet\Network
      */
     protected $network;
 

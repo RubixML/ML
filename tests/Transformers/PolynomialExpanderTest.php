@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Transformers;
+
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\PolynomialExpander;
@@ -19,7 +21,7 @@ class PolynomialExpanderTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new PolynomialExpander(2, true);
+        $this->transformer = new PolynomialExpander(2);
     }
 
     public function test_build_l1_regularizer()

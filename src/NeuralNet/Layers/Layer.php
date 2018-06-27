@@ -20,7 +20,7 @@ interface Layer
     /**
      * Initialize the layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void;

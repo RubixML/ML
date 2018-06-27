@@ -18,7 +18,7 @@ class Continuous implements Output, Parametric
     /**
      * The previous layer in the network.
      *
-     * @var \Rubix\ML\NeuralNet\Layers\Layer
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden
      */
     protected $previous;
 
@@ -123,7 +123,8 @@ class Continuous implements Output, Parametric
 
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
+                $weights[$i][$j] = random_int((int) (-$r * 1e8),
+                    (int) ($r * 1e8)) / 1e8;
             }
         }
 

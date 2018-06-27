@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\NeuralNet\ActivationFunctions;
+
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;

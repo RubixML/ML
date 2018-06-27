@@ -59,7 +59,7 @@ class Network
     /**
      * Return the input layer.
      *
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Layers\Input
      */
     public function input() : Input
     {
@@ -79,7 +79,7 @@ class Network
     /**
      * Return the output layer.
      *
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Layers\Output
      */
     public function output() : Output
     {

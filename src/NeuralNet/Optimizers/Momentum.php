@@ -57,7 +57,7 @@ class Momentum implements Optimizer
     /**
      * Initialize the optimizer for a particular layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Network  $network
+     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
      * @return void
      */
     public function initialize(Parametric $layer) : void

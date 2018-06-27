@@ -16,6 +16,13 @@ class Input implements Layer
     protected $placeholders;
 
     /**
+     * The memoized output activations matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $computed;
+
+    /**
      * @param  int  $inputs
      * @throws \InvalidArgumentException
      * @return void
@@ -51,7 +58,7 @@ class Input implements Layer
     /**
      * Initialize the layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
      * @return void
      */
     public function initialize(Layer $previous) : void
@@ -85,7 +92,7 @@ class Input implements Layer
     /**
      * Do nothing since placeholder layers do not have parameters.
      *
-     * @param  \Rubix\ML\NerualNet\Layers\Layer  $next
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $next
      * @return void
      */
     public function back(Layer $next) : void

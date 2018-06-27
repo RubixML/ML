@@ -49,7 +49,7 @@ class AggregateReport implements Report
     /**
      * Add a report to the stack.
      *
-     * @param  \Rubix\ML\ModelSeletion\Reports\Report  $report
+     * @param  \Rubix\ML\CrossValidation\Reports\Report  $report
      * @param  mixed  $index
      * @return void
      */

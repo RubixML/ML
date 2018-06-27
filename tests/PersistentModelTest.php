@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests;
+
 use Rubix\ML\Persistable;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\DummyClassifier;

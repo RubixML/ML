@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Transformers\Strategies;
+
 use Rubix\ML\Transformers\Strategies\Strategy;
 use Rubix\ML\Transformers\Strategies\BlurryMedian;
 use PHPUnit\Framework\TestCase;

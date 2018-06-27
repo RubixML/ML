@@ -91,7 +91,7 @@ class GraphObject
      * Remove a property from the object.
      *
      * @param  string  $property
-     * @return self
+     * @return void
      */
     public function remove(string $property) : void
     {
@@ -103,18 +103,19 @@ class GraphObject
     /**
      * Set a property using an assignment operation.
      *
-     * @param  mixed  $property
+     * @param  string  $property
+     * @param  mixed  $value
      * @return mixed
      */
     public function __set(string $property, $value)
     {
-        return $this->set($property, $value);
+        $this->set($property, $value);
     }
 
     /**
      * Return a property value via object property accessor.
      *
-     * @param  mixed  $property
+     * @param  string  $property
      * @return mixed
      */
     public function __get(string $property)

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests;
+
 use Rubix\ML\Pipeline;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;

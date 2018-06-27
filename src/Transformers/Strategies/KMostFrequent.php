@@ -39,7 +39,7 @@ class KMostFrequent implements Categorical
      * Rank the classes by most frequent and chose the top k.
      *
      * @param  array  $values
-     * @return mixed
+     * @return void
      */
     public function fit(array $values) : void
     {

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Extractors;
+
 use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\CountVectorizer;
 use PHPUnit\Framework\TestCase;

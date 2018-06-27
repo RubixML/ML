@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\CrossValidation\Reports;
+
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockDetector;
 use Rubix\ML\CrossValidation\Reports\Report;
@@ -11,6 +13,8 @@ class OutlierRatioTest extends TestCase
     protected $report;
 
     protected $estimator;
+
+    protected $testing;
 
     public function setUp()
     {

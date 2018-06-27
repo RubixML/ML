@@ -30,14 +30,14 @@ class DBSCAN implements Clusterer, Persistable
     /**
      * The distance function to use when computing the distances between points.
      *
-     * @var \Rubix\ML\Contracts\Distance
+     * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
     /**
      * @param  float  $radius
      * @param  int  $minDensity
-     * @param  \Rubix\ML\Contracts\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -64,7 +64,7 @@ class DBSCAN implements Clusterer, Persistable
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return void
      */
     public function train(Dataset $dataset) : void
     {

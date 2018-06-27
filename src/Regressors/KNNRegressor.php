@@ -28,11 +28,11 @@ class KNNRegressor implements Regressor, Online, Persistable
     protected $kernel;
 
     /**
-     * The coordinate vectors of the training data.
+     * The training samples.
      *
      * @var array
      */
-    protected $dataset = [
+    protected $samples = [
         //
     ];
 
@@ -47,7 +47,7 @@ class KNNRegressor implements Regressor, Online, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Contracts\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */

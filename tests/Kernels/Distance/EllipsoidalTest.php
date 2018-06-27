@@ -1,10 +1,12 @@
 <?php
 
+namespace Rubix\Tests\Kernels\Distance;
+
 use Rubix\ML\Kernels\Distance\Ellipsoidal;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
-class ElliposoidalTest extends TestCase
+class EllipsoidalTest extends TestCase
 {
     protected $kernel;
 

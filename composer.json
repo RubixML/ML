@@ -5,9 +5,7 @@
     "homepage": "https://github.com/andrewdalpino/Rubix",
     "license": "MIT",
     "keywords": [
-        "data", "science", "mining", "machine", "learning", "predictive",
-        "modeling", "ai", "classification", "regression", "clustering",
-        "anomaly", "detection", "neural", "net"
+        "machine", "learning", "data", "science", "mining", "predictive", "modeling", "ai", "classification", "regression", "clustering", "anomaly", "detection", "neural", "net"
     ],
     "authors": [
         {
@@ -22,6 +20,7 @@
         "markrogoyski/math-php": "^0.43.0"
     },
     "require-dev": {
+        "phpstan/phpstan": "^0.10.0",
         "phpunit/phpunit": "7.2.*"
     },
     "autoload": {
@@ -33,6 +32,10 @@
         "psr-4": {
             "Rubix\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "analyze": "phpstan analyse -l 1 src tests",
+        "test": "phpunit"
     },
     "config": {
         "preferred-install": "dist",

@@ -119,7 +119,8 @@ class NaiveBayes implements Multiclass, Probabilistic, Persistable
 
         $n = $dataset->numRows();
 
-        $this->stats = $this->weights = [];
+        $this->means = $this->stddevs = $this->probabilities =
+            $this->weights = [];
 
         foreach ($dataset->stratify() as $class => $dataset) {
             foreach (array_map(null, ...$dataset) as $column => $values) {

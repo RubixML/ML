@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Regressors;
+
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;

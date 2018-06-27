@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Classifiers;
+
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;

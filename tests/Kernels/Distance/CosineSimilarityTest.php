@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Kernels\Distance;
+
 use Rubix\ML\Kernels\Distance\CosineSimilarity;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;

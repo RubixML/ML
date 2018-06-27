@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\AnomalyDetectors;
+
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -12,7 +14,9 @@ class IsolationForestTest extends TestCase
 {
     protected $estimator;
 
-    protected $dataset;
+    protected $clean;
+
+    protected $dirty;
 
     public function setUp()
     {

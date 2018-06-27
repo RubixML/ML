@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Graph;
+
 use Rubix\ML\Graph\Node;
 use Rubix\ML\Graph\BinaryNode;
 use Rubix\ML\Graph\GraphObject;

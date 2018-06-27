@@ -81,7 +81,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $n = $this->ratio * $dataset->numRows();
+        $n = (int) ($this->ratio * $dataset->numRows());
 
         $maxDepth = ceil(log($n, 2));
 

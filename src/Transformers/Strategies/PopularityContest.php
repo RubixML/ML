@@ -27,7 +27,7 @@ class PopularityContest implements Categorical
      *
      * @param  array  $values
      * @throws \RuntimeException
-     * @return mixed
+     * @return void
      */
     public function fit(array $values) : void
     {
@@ -60,6 +60,6 @@ class PopularityContest implements Categorical
             }
         }
 
-        return $temp;
+        return $temp ?? null;
     }
 }

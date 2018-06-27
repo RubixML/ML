@@ -14,7 +14,7 @@ class AdaBoost implements Binary, Persistable
     /**
      * The reflector instance of the base classifier.
      *
-     * @param \ReflectionClass
+     * @var \ReflectionClass
      */
     protected $reflector;
 
@@ -177,7 +177,7 @@ class AdaBoost implements Binary, Persistable
         $this->ensemble = $this->influence = [];
 
         for ($epoch = 1; $epoch <= $this->experts; $epoch++) {
-            $estimator = $this->reflector->newInstanceArgs($this->params);
+            $estimator = $this->reflector->newInstance(...$this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));
 
@@ -243,8 +243,7 @@ class AdaBoost implements Binary, Persistable
      * Generate a random weighted subset with replacement.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @throws \InvalidArgumentException
-     * @return self
+     * @return \Rubix\ML\Datasets\Labeled
      */
     protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
     {
@@ -256,10 +255,12 @@ class AdaBoost implements Binary, Persistable
 
         $total = array_sum($this->weights);
 
+        $scale = (int) 1e8;
+
         $subset = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $random = random_int(0, $total * 1e8) / 1e8;
+            $random = random_int(0, $total * $scale) / $scale;
 
             for ($index = 0; $index < $n; $index++) {
                 $random -= $this->weights[$index];

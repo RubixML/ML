@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Clusterers;
+
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;

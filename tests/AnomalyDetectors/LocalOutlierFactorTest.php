@@ -1,18 +1,24 @@
 <?php
 
+namespace Rubix\Tests\AnomalyDetectors;
+
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\Detector;
-use Rubix\ML\AnomalyDetectors\IsolationTree;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
 
-class IsolationTreeTest extends TestCase
+class LocalOutlierFactorTest extends TestCase
 {
     protected $estimator;
 
-    protected $dataset;
+    protected $clean;
+
+    protected $dirty;
 
     public function setUp()
     {
@@ -34,14 +40,15 @@ class IsolationTreeTest extends TestCase
             [1.0177273113, 4.727491941], [9.293847293, 3.293847293],
         ]);
 
-        $this->estimator = new IsolationTree(50, 0.45);
+        $this->estimator = new LocalOutlierFactor(5, 4, 0.5, new Euclidean());
     }
 
-    public function test_build_isolation_tree_detector()
+    public function test_build_local_outlier_factor_detector()
     {
-        $this->assertInstanceOf(IsolationTree::class, $this->estimator);
+        $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
@@ -52,7 +59,7 @@ class IsolationTreeTest extends TestCase
 
         $results = $this->estimator->predict($this->dirty);
 
-        $this->assertEquals(4, count($results));
+        $this->assertEquals([1, 0, 1, 0], $results);
     }
 
     public function test_predict_proba()
@@ -61,6 +68,9 @@ class IsolationTreeTest extends TestCase
 
         $results = $this->estimator->proba($this->dirty);
 
-        $this->assertEquals(4, count($results));
+        $this->assertGreaterThan(0.5, $results[0]);
+        $this->assertLessThanOrEqual(0.5, $results[1]);
+        $this->assertGreaterThan(0.5, $results[2]);
+        $this->assertLessThanOrEqual(0.5, $results[3]);
     }
 }

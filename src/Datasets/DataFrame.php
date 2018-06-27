@@ -62,7 +62,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param  mixed  $index
+     * @param  int  $index
      * @return array
      */
     public function row(int $index) : array
@@ -83,7 +83,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature column at the given index.
      *
-     * @param  mixed  $index
+     * @param  int  $index
      * @return array
      */
     public function column(int $index) : array

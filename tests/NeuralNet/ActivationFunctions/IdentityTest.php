@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\NeuralNet\ActivationFunctions;
+
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\Identity;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
@@ -15,7 +17,7 @@ class IdentityTest extends TestCase
     {
         $this->input = new Matrix([[1.0], [-0.5]]);
 
-        $this->activationFunction = new Identity(1.0);
+        $this->activationFunction = new Identity();
     }
 
     public function test_build_activation_function()

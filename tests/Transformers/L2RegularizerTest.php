@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Transformers;
+
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\L2Regularizer;

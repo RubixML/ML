@@ -53,7 +53,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var int
+     * @var array
      */
     protected $centroids = [
         //
@@ -72,7 +72,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     /**
      * @param  int  $c
      * @param  float  $fuzz
-     * @param  \Rubix\ML\Contracts\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  float  $threshold
      * @param  int  $epochs
      * @throws \InvalidArgumentException
@@ -140,7 +140,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -172,11 +172,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
             $score = $this->scoreEpoch($dataset);
 
+            $last = end($this->progress);
+
             $this->progress[$epoch] = $score;
 
-            if (count($this->progress) > 2) {
-                $last = $this->progress[count($this->progress) - 2];
-
+            if ($epoch > 2) {
                 if (abs($last - $score) < $this->threshold) {
                     break 1;
                 }
@@ -292,11 +292,13 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     {
         $memberships = array_fill(0, $n, array_fill(0, $this->c, 0.0));
 
+        $scale = (int) 1e8;
+
         for ($i = 0; $i < $n; $i++) {
             $total = 0.0;
 
             for ($j = 0; $j < $this->c; $j++) {
-                $weight = random_int(0, 1e8) / 1e8;
+                $weight = random_int(0, $scale) / $scale;
 
                 $memberships[$i][$j] = $weight;
 

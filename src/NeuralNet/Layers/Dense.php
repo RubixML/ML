@@ -149,7 +149,8 @@ class Dense implements Hidden, Parametric
 
         for ($i = 0; $i < $this->width(); $i++) {
             for ($j = 0; $j < $previous->width(); $j++) {
-                $weights[$i][$j] = random_int(-$r * 1e8, $r * 1e8) / 1e8;
+                $weights[$i][$j] = random_int((int) (-$r * 1e8),
+                    (int) ($r * 1e8)) / 1e8;
             }
         }
 
@@ -182,7 +183,7 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer.
      *
-     * @param  \Rubix\ML\NerualNet\Layers\Layer  $next
+     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $next
      * @return void
      */
     public function back(Layer $next) : void

@@ -20,7 +20,7 @@ class Lottery implements Categorical
      *
      * @param  array  $values
      * @throws \RuntimeException
-     * @return mixed
+     * @return void
      */
     public function fit(array $values) : void
     {

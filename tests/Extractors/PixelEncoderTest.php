@@ -1,5 +1,7 @@
 <?php
 
+namespace Rubix\Tests\Extractors;
+
 use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\PixelEncoder;
 use PHPUnit\Framework\TestCase;

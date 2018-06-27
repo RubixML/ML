@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
+use InvalidArgumentException;
 
 class VarianceThresholdFilter implements Transformer
 {
