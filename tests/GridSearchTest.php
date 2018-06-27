@@ -17,7 +17,7 @@ class GridSearchTest extends TestCase
         $this->estimator = new GridSearch(DummyClassifier::class, [], new Accuracy(), new HoldOut(0.2));
     }
 
-    public function test_create_tree()
+    public function test_build_grid_search()
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(MetaEstimator::class, $this->estimator);

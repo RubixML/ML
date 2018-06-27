@@ -10,7 +10,7 @@ use InvalidArgumentException;
 class HoldOut implements Validator
 {
     /**
-     * The holdout ratio. i.e. the ratio of samples to use for testing.
+     * The hold out ratio. i.e. the ratio of samples to use for testing.
      *
      * @var float
      */
