@@ -34,7 +34,7 @@ class IsolationForestTest extends TestCase
             [1.0177273113, 4.727491941], [9.293847293, 3.293847293],
         ]);
 
-        $this->estimator = new IsolationForest(300, 1.0, 0.45);
+        $this->estimator = new IsolationForest(500, 0.9, 0.45);
     }
 
     public function test_build_isolation_forest_detector()

@@ -89,7 +89,7 @@ class Logistic implements Output, Parametric
                 . ' labels must be exactly 2.');
         }
 
-        $this->classes = array_values($labels);
+        $this->classes = [$labels[0] => 0, $labels[1] => 1];
         $this->activationFunction = new Sigmoid();
         $this->alpha = $alpha;
     }
@@ -187,10 +187,16 @@ class Logistic implements Output, Parametric
         $errors = [[]];
 
         foreach ($labels as $i => $label) {
-            $expected = array_search($label, $this->classes);
+            $expected = $this->classes[$label];
 
-            $errors[0][$i] = ($expected - $this->computed[0][$i])
-                + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
+            if ($expected === 0) {
+                $error = (1 - $expected) * log(1 - $this->computed[0][$i]);
+            } else {
+                $error = -$expected * log($this->computed[0][$i]);
+            }
+
+            $errors[0][$i] = $error + 0.5 * $this->alpha
+                * array_sum($this->weights[0]) ** 2;
         }
 
         $errors = MatrixFactory::create($errors);
