@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
 
-class Holdout implements Validator
+class HoldOut implements Validator
 {
     /**
      * The holdout ratio. i.e. the ratio of samples to use for testing.
