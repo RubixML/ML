@@ -30,7 +30,7 @@ class L2RegularizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 

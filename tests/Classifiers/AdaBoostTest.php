@@ -5,11 +5,13 @@ namespace Rubix\Tests\Classifiers;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Binary;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\DecisionTree;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class AdaBoostTest extends TestCase
 {
@@ -80,5 +82,14 @@ class AdaBoostTest extends TestCase
 
         $this->assertEquals('male', $predictions[0]);
         $this->assertEquals('female', $predictions[1]);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }

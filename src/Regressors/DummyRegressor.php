@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Transformers\Strategies\Continuous;
 use Rubix\ML\Transformers\Strategies\BlurryMean;
+use InvalidArgumentException;
 
 class DummyRegressor implements Regressor, Persistable
 {
@@ -34,10 +35,16 @@ class DummyRegressor implements Regressor, Persistable
      * Fit the training set to the given guessing strategy.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This Estimator requires a'
+                . ' Labeled training set.');
+        }
+
         $this->strategy->fit($dataset->labels());
     }
 

@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -15,6 +16,7 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class MultiLayerPerceptronTest extends TestCase
 {
@@ -104,5 +106,14 @@ class MultiLayerPerceptronTest extends TestCase
         $this->assertLessThan(0.5, $probabilities[0]['female']);
         $this->assertLessThan(0.5, $probabilities[1]['male']);
         $this->assertGreaterThan(0.5, $probabilities[1]['female']);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }

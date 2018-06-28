@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class MinMaxNormalizerTest extends TestCase
 {
@@ -24,13 +25,13 @@ class MinMaxNormalizerTest extends TestCase
         $this->transformer = new MinMaxNormalizer();
     }
 
-    public function test_build_z_scale_standardizer()
+    public function test_build_min_max_normalizer()
     {
         $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -41,5 +42,12 @@ class MinMaxNormalizerTest extends TestCase
             [0.3939393938996021, 0.06040268456173145, 0.13705583755649461, 0.015151515151132538],
             [0.9999999998989899, 0.999999999966443, 0.9999999999492385, 0.9999999999747474],
         ], $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

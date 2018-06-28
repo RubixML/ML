@@ -24,13 +24,13 @@ class NumericStringConverterTest extends TestCase
         $this->transformer = new NumericStringConverter();
     }
 
-    public function test_build_l1_regularizer()
+    public function test_build_numeric_string_converter()
     {
         $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 

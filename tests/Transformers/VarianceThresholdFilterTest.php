@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class VarianceThresholdFilterTest extends TestCase
 {
@@ -29,7 +30,7 @@ class VarianceThresholdFilterTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -38,5 +39,12 @@ class VarianceThresholdFilterTest extends TestCase
         $this->assertEquals([
             [0, 1], [1, 0], [0, 0], [1, 1], [1, 0], [1, 1]
         ], $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

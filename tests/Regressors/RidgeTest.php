@@ -6,8 +6,10 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class RidgeTest extends TestCase
 {

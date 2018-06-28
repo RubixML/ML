@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\RobustStandardizer;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class RobustStandardizerTest extends TestCase
 {
@@ -24,13 +25,13 @@ class RobustStandardizerTest extends TestCase
         $this->transformer = new RobustStandardizer();
     }
 
-    public function test_build_z_scale_standardizer()
+    public function test_build_robust_standardizer()
     {
         $this->assertInstanceOf(RobustStandardizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -41,5 +42,12 @@ class RobustStandardizerTest extends TestCase
             [0.0, 0.0, 0.0, 0.0],
             [1.0376923071601578, 10.492222210564195, 4.246851848706035, 43.842499853858335],
         ], $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

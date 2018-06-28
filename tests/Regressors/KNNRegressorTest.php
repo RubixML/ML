@@ -6,10 +6,12 @@ use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class KNNRegressorTest extends TestCase
 {
@@ -66,5 +68,14 @@ class KNNRegressorTest extends TestCase
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals(27, $predictions[0], '', 3);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }

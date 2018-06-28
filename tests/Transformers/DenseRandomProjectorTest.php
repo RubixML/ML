@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\DenseRandomProjector;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class DenseRandomProjectorTest extends TestCase
 {
@@ -30,12 +31,19 @@ class DenseRandomProjectorTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
         $this->dataset->transform($this->transformer);
 
         $this->assertEquals(2, $this->dataset->numColumns());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

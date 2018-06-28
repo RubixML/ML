@@ -819,6 +819,7 @@ A type of classifier that uses the logistic (sigmoid) function to distinguish be
 | Method | Description |
 |--|--|
 | `progress() : array` | Returns an array with the training progress at each epoch of training. |
+| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
 
 ##### Example:
 ```php
@@ -849,6 +850,7 @@ Multiclass [Neural Network](#neural-network) model that uses a series of user-de
 | Method | Description |
 |--|--|
 | `progress() : array` | Returns an array with the training progress at each epoch of training. |
+| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
 
 ##### Example:
 ```php
@@ -930,6 +932,7 @@ A generalization of logistic regression for multiple class outcomes using a sing
 | Method | Description |
 |--|--|
 | `progress() : array` | Returns an array with the training progress at each epoch of training. |
+| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
 
 ##### Example:
 ```php
@@ -1118,6 +1121,7 @@ A [Neural Network](#neural-network) with a continuous output layer suitable for 
 | Method | Description |
 |--|--|
 | `progress() : array` | Returns an array with the validation score at each epoch of training. |
+| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
 
 ##### Example:
 ```php

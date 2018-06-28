@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class TfIdfTransformerTest extends TestCase
 {
@@ -30,7 +31,7 @@ class TfIdfTransformerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -41,5 +42,12 @@ class TfIdfTransformerTest extends TestCase
             [0, 0.17609125688420885, 0.4771212503767177, 0, 0, 0.3521825137684177, 0.4771212503767177, 0, 0, 0, 0, 0.5282737706526266, 0, 0.4771212503767177, 0, 0, 0, 0, 0],
             [0, 0, 0, 0.4771212503767177, 0.3521825137684177, 0.5282737706526266, 0, 0, 0.7043650275368354, 0.3521825137684177, 0, 0, 0.4771212503767177, 0, 0.9542425007534354, 0, 0.17609125688420885, 0, 0],
         ], $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

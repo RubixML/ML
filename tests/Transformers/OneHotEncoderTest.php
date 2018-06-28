@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class OneHotEncoderTest extends TestCase
 {
@@ -31,7 +32,7 @@ class OneHotEncoderTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -43,5 +44,12 @@ class OneHotEncoderTest extends TestCase
             [1, 0, 0, 1, 1, 0],
             [0, 1, 0, 1, 1, 0],
         ], $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

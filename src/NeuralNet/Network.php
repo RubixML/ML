@@ -116,13 +116,13 @@ class Network
     }
 
     /**
-     * The depth of the network. i.e. the number of hidden layers.
+     * The depth of the network. i.e. the number of parametric layers.
      *
      * @return int
      */
     public function depth() : int
     {
-        return count($this->hidden());
+        return count($this->parametric());
     }
 
     /**

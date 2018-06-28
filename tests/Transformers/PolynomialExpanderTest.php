@@ -24,13 +24,13 @@ class PolynomialExpanderTest extends TestCase
         $this->transformer = new PolynomialExpander(2);
     }
 
-    public function test_build_l1_regularizer()
+    public function test_build_polynomial_expander()
     {
         $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 

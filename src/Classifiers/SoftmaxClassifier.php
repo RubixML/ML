@@ -64,7 +64,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     /**
      * The underlying computational graph.
      *
-     * @var \Rubix\ML\NeuralNet\Network
+     * @var \Rubix\ML\NeuralNet\Network|null
      */
     protected $network;
 
@@ -122,11 +122,23 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     }
 
     /**
+     * Return the training progress of the estimator.
+     *
      * @return array
      */
     public function progress() : array
     {
         return $this->progress;
+    }
+
+    /**
+     * Return the underlying neural network instance or null if not trained.
+     *
+     * @return \Rubix\ML\NeuralNet\Network|null
+     */
+    public function network() : ?Network
+    {
+        return $this->network;
     }
 
     /**

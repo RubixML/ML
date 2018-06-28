@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\MissingDataImputer;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class MissingDataImputerTest extends TestCase
 {
@@ -26,13 +27,13 @@ class MissingDataImputerTest extends TestCase
         $this->transformer = new MissingDataImputer('?');
     }
 
-    public function test_build_imputer()
+    public function test_build_missing_data_imputer()
     {
         $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
@@ -40,5 +41,12 @@ class MissingDataImputerTest extends TestCase
 
         $this->assertThat($this->dataset[1][0], $this->logicalAnd($this->greaterThan(30), $this->lessThan(45)));
         $this->assertContains($this->dataset[3][1], ['friendly', 'mean']);
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

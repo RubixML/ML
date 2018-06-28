@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class SparseRandomProjectorTest extends TestCase
 {
@@ -24,18 +25,25 @@ class SparseRandomProjectorTest extends TestCase
         $this->transformer = new SparseRandomProjector(2);
     }
 
-    public function test_build_l1_regularizer()
+    public function test_build_sparse_random_projector()
     {
         $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_dataset()
+    public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);
 
         $this->dataset->transform($this->transformer);
 
         $this->assertEquals(2, $this->dataset->numColumns());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->dataset->transform($this->transformer);
     }
 }

@@ -6,12 +6,14 @@ use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class MLPRegressorTest extends TestCase
 {
@@ -70,5 +72,14 @@ class MLPRegressorTest extends TestCase
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals(20, $predictions[0], '', 3);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }

@@ -5,9 +5,11 @@ namespace Rubix\Tests\Regressors;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Regressors\RegressionTree;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class RegressionTreeTest extends TestCase
 {
@@ -63,5 +65,14 @@ class RegressionTreeTest extends TestCase
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals(34, $predictions[0], '', 3);
+    }
+    
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }

@@ -5,10 +5,12 @@ namespace Rubix\Tests\Classifiers;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class DummyClassifierTest extends TestCase
 {
@@ -76,5 +78,14 @@ class DummyClassifierTest extends TestCase
 
         $this->assertContains($predictions[0], ['male', 'female']);
         $this->assertContains($predictions[1], ['male', 'female']);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }
