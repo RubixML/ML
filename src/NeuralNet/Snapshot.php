@@ -40,7 +40,7 @@ class Snapshot extends SplObjectStorage
     {
         foreach ($layers as $layer) {
             if ($layer instanceof Parametric) {
-                $this->attach($layer, $layer->weights());
+                $this->attach($layer, clone $layer->weights());
             }
         }
     }

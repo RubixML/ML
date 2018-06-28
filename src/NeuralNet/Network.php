@@ -66,6 +66,16 @@ class Network
     }
 
     /**
+     * Return all the layers in the network.
+     *
+     * @return array
+     */
+    public function layers() : array
+    {
+        return $this->layers;
+    }
+
+    /**
      * Return the input layer.
      *
      * @return \Rubix\ML\NeuralNet\Layers\Input

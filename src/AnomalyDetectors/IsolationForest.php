@@ -49,7 +49,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, float $threshold = 0.5)
+    public function __construct(int $trees = 300, float $ratio = 0.1, float $threshold = 0.5)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
