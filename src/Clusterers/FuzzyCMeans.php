@@ -36,12 +36,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     protected $kernel;
 
     /**
-     * The sensitivity threshold. i.e. the minimum change in the centroid means
-     * necessary for the algorithm to continue learning.
+     * The minimum change in the centroids necessary to continue training.
      *
      * @var float
      */
-    protected $threshold;
+    protected $minChange;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
@@ -73,13 +72,13 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      * @param  int  $c
      * @param  float  $fuzz
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  float  $threshold
+     * @param  float  $minChange
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
-                            float $threshold = 1e-4, int $epochs = PHP_INT_MAX)
+                            float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
             throw new InvalidArgumentException('Target clusters must be'
@@ -91,8 +90,8 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 . ' than 1.');
         }
 
-        if ($threshold < 0) {
-            throw new InvalidArgumentException('Threshold cannot be set to less'
+        if ($minChange < 0) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
 
@@ -108,7 +107,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         $this->c = $c;
         $this->fuzz = $fuzz + self::EPSILON;
         $this->kernel = $kernel;
-        $this->threshold = $threshold;
+        $this->minChange = $minChange;
         $this->epochs = $epochs;
     }
 
@@ -163,6 +162,8 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
         $this->progress = [];
 
+        $previous = 0.0;
+
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($dataset as $index => $sample) {
                 $memberships[$index] = $this->calculateMembership($sample);
@@ -170,17 +171,15 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
             $this->step($dataset, $memberships);
 
-            $score = $this->scoreEpoch($dataset);
+            $similarity = $this->calculateSimilarity($dataset);
 
-            $last = end($this->progress);
+            $this->progress[] = ['similarity' => $similarity];
 
-            $this->progress[$epoch] = $score;
-
-            if ($epoch > 2) {
-                if (abs($last - $score) < $this->threshold) {
-                    break 1;
-                }
+            if (abs($similarity - $previous) < $this->minChange) {
+                break 1;
             }
+
+            $previous = $similarity;
         }
     }
 
@@ -246,8 +245,8 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += pow($a / ($b + self::EPSILON),
-                    2 / ($this->fuzz - 1));
+                $total += ($a / ($b + self::EPSILON))
+                    ** (2 / ($this->fuzz - 1));
             }
 
             $membership[$label] = 1 / ($total + self::EPSILON);
@@ -267,11 +266,10 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     {
         foreach ($this->centroids as $label => &$centroid) {
             foreach ($centroid as $j => &$mean) {
-                $total = self::EPSILON;
-                $a = 0.0;
+                $a = $total = self::EPSILON;
 
                 foreach ($dataset as $k => $sample) {
-                    $weight = pow($memberships[$k][$label], $this->fuzz);
+                    $weight = $memberships[$k][$label] ** $this->fuzz;
 
                     $a += $weight * $sample[$j];
                     $total += $weight;
@@ -283,7 +281,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     }
 
     /**
-     * Initialize the membership matrix of dimension n x C.
+     * Initialize the membership matrix of dimension n x c.
      *
      * @param  int  $n
      * @return array
@@ -292,13 +290,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     {
         $memberships = array_fill(0, $n, array_fill(0, $this->c, 0.0));
 
-        $scale = (int) 1e8;
-
         for ($i = 0; $i < $n; $i++) {
             $total = 0.0;
 
             for ($j = 0; $j < $this->c; $j++) {
-                $weight = random_int(0, $scale) / $scale;
+                $weight = random_int(0, 100000000) / 1e8;
 
                 $memberships[$i][$j] = $weight;
 
@@ -314,21 +310,22 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     }
 
     /**
-     * Return a score based on the objective function. i.e. the minimum total
-     * distance between cluster centroids and all samples.
+     * Return a similarity score inferred upon by maximizing the inter-cluster
+     * distance.
      *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return float
      */
-    protected function scoreEpoch(Dataset $dataset) : float
+    protected function calculateSimilarity(Dataset $dataset) : float
     {
-        $score = 0.0;
+        $similarity = 0.0;
 
         foreach ($dataset as $sample) {
             foreach ($this->centroids as $centroid) {
-                $score += $this->kernel->compute($sample, $centroid);
+                $similarity += $this->kernel->compute($sample, $centroid);
             }
         }
 
-        return $score;
+        return $similarity;
     }
 }

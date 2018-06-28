@@ -8,6 +8,7 @@ use Rubix\ML\Transformers\Strategies\BlurryMean;
 use Rubix\ML\Transformers\Strategies\Categorical;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 use InvalidArgumentException;
+use RuntimeException;
 
 class MissingDataImputer implements Transformer
 {
@@ -35,11 +36,9 @@ class MissingDataImputer implements Transformer
     /**
      * The fitted data imputers.
      *
-     * @var array
+     * @var array|null
      */
-    protected $imputers = [
-        //
-    ];
+    protected $imputers;
 
     /**
      * @param  mixed  $placeholder
@@ -75,6 +74,8 @@ class MissingDataImputer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
+        $this->imputers = [];
+
         foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === self::CATEGORICAL) {
                 $imputer = clone $this->categorical;
@@ -97,10 +98,15 @@ class MissingDataImputer implements Transformer
      * Replace missing values within sample set with guessed values.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->imputers)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as $row => &$sample) {
             foreach ($sample as $column => &$feature) {
                 if ($feature === $this->placeholder) {

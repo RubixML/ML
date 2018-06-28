@@ -4,13 +4,14 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
+use RuntimeException;
 
 class TfIdfTransformer implements Transformer
 {
     /**
      * The inverse document frequency values for each feature.
      *
-     * @var array
+     * @var array|null
      */
     protected $idfs;
 
@@ -39,18 +40,31 @@ class TfIdfTransformer implements Transformer
         }
 
         foreach ($this->idfs as &$idf) {
-            $idf = log10($dataset->numRows() / ($idf + self::EPSILON));
+            $idf = log($dataset->numRows() / ($idf + self::EPSILON), 10);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function idfs() : ?array
+    {
+        return $this->idfs;
     }
 
     /**
      * Multiply the term frequency by the inverse document frequency.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->idfs)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             foreach ($sample as $i => &$feature) {
                 $feature *= $this->idfs[$i];

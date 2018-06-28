@@ -5,27 +5,23 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Significance;
-use InvalidArgumentException;
+use RuntimeException;
 
 class ZScaleStandardizer implements Transformer
 {
     /**
      * The computed means of the fitted data indexed by column.
      *
-     * @var array
+     * @var array|null
      */
-    protected $means = [
-        //
-    ];
+    protected $means;
 
     /**
      * The computed standard deviations of the fitted data indexed by column.
      *
-     * @var array
+     * @var array|null
      */
-    protected $stddevs = [
-        //
-    ];
+    protected $stddevs;
 
     /**
      * Return the means calculated by fitting the training set.
@@ -79,10 +75,15 @@ class ZScaleStandardizer implements Transformer
      * Transform the features into a z score.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->means) or !isset($this->stddevs)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$feature) {
                 $feature = Significance::zScore($feature,

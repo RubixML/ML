@@ -64,10 +64,16 @@ $report = new AggregateReport([
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-$estimator->train($training);
+$folds = $training->randomize()->stratifiedFold(3);
 
-var_dump($report->generate($estimator, $testing));
+$estimator->train($folds[0]);
+
+$estimator->partial($folds[1]);
+
+$estimator->partial($folds[2]);
 
 var_dump($estimator->progress());
+
+var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->proba($dataset->randomize()->head(3)));

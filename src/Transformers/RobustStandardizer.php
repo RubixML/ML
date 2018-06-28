@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
-use InvalidArgumentException;
+use RuntimeException;
 
 class RobustStandardizer implements Transformer
 {
@@ -13,28 +13,24 @@ class RobustStandardizer implements Transformer
     /**
      * The computed medians of the fitted data indexed by column.
      *
-     * @var array
+     * @var array|null
      */
-    protected $medians = [
-        //
-    ];
+    protected $medians;
 
     /**
      * The computed median absolute deviations of the fitted data indexed by
      * column.
      *
-     * @var array
+     * @var array|null
      */
-    protected $mads = [
-        //
-    ];
+    protected $mads;
 
     /**
      * Return the medians calculated by fitting the training set.
      *
-     * @return  array
+     * @return array|null
      */
-    public function medians() : array
+    public function medians() : ?array
     {
         return $this->medians;
     }
@@ -42,9 +38,9 @@ class RobustStandardizer implements Transformer
     /**
      * Return the median absolute deviations calculated during fitting.
      *
-     * @return  array
+     * @return array|null
      */
-    public function mads() : array
+    public function mads() : ?array
     {
         return $this->mads;
     }
@@ -53,7 +49,6 @@ class RobustStandardizer implements Transformer
      * Calculate the medians and median absolute deviations of the dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
@@ -82,10 +77,15 @@ class RobustStandardizer implements Transformer
      * Transform the features into a modified z score.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->medians) or !isset($this->mads)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$feature) {
                 $feature = (self::LAMBDA * ($feature - $this->medians[$column]))

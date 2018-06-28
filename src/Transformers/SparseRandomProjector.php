@@ -6,10 +6,11 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
+use RuntimeException;
 
 class SparseRandomProjector implements Transformer
 {
-    const MULTIPLIER = 1.73205080757;
+    const BETA = 1.73205080757;
 
     const DISTRIBUTION = [-1, 0, 0, 0, 0, 1];
 
@@ -23,7 +24,7 @@ class SparseRandomProjector implements Transformer
     /**
      * The randomized matrix R.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
     */
     protected $r;
 
@@ -60,7 +61,7 @@ class SparseRandomProjector implements Transformer
 
         for ($i = 0; $i < $dataset->numColumns(); $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = static::MULTIPLIER
+                $r[$i][$j] = static::BETA
                     * static::DISTRIBUTION[random_int(0, $n)];
             }
         }
@@ -73,10 +74,15 @@ class SparseRandomProjector implements Transformer
      * given.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->r)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         $samples = MatrixFactory::create($samples)
             ->multiply($this->r)
             ->getMatrix();

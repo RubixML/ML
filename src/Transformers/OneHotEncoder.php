@@ -3,18 +3,10 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
+use RuntimeException;
 
 class OneHotEncoder implements Transformer
 {
-    /**
-     * The set of unique possible categories of the training set.
-     *
-     * @var array
-     */
-    protected $categories = [
-        //
-    ];
-
     /**
      * The user specified columns to encode. If this is null, the transformer
      * will encode all categorical feature columns.
@@ -24,6 +16,13 @@ class OneHotEncoder implements Transformer
     protected $columns = [
         //
     ];
+
+    /**
+     * The set of unique possible categories of the training set.
+     *
+     * @var array|null
+     */
+    protected $categories;
 
     /**
      * @param  array  $columns
@@ -47,13 +46,14 @@ class OneHotEncoder implements Transformer
                 function ($type) { return $type === self::CATEGORICAL; }));
         }
 
+        $this->categories = [[]];
+
         $position = 0;
 
         foreach ($dataset->samples() as $sample) {
             foreach ($this->columns as $column) {
                 if (!isset($this->categories[$column][$sample[$column]])) {
-                    $this->categories[$column][$sample[$column]]
-                        = $position++;
+                    $this->categories[$column][$sample[$column]] = $position++;
                 }
             }
         }
@@ -65,10 +65,15 @@ class OneHotEncoder implements Transformer
      * if present, is unmodified but moved to the front of the vector.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->categories)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             $vector = [];
 

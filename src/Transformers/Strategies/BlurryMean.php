@@ -77,8 +77,6 @@ class BlurryMean implements Continuous
      */
     protected function generateGaussianValue() : float
     {
-        $scale = (int) 1e8;
-
-        return random_int(-1 * $scale, 1 * $scale) / $scale;
+        return random_int((int) (-1 * 1e8), (int) (1 * 1e8)) / 1e8;
     }
 }

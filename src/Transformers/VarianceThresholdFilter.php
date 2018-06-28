@@ -5,6 +5,7 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
+use RuntimeException;
 
 class VarianceThresholdFilter implements Transformer
 {
@@ -18,14 +19,13 @@ class VarianceThresholdFilter implements Transformer
     /**
      * The feature columns that have been selected.
      *
-     * @var array
+     * @var array|null
      */
-    protected $selected = [
-        //
-    ];
+    protected $selected;
 
     /**
      * @param  float  $threshold
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $threshold = 0.0)
@@ -43,7 +43,7 @@ class VarianceThresholdFilter implements Transformer
      */
     public function selected() : array
     {
-        return array_keys($this->selected);
+        return array_keys($this->selected ?? []);
     }
 
     /**
@@ -76,10 +76,15 @@ class VarianceThresholdFilter implements Transformer
      * not meet the variance threshold.
      *
      * @param  array  $samples
+     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void
     {
+        if (!isset($this->selected)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
         foreach ($samples as &$sample) {
             $sample = array_values(array_intersect_key($sample, $this->selected));
         }
