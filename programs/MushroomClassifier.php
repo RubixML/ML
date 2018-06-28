@@ -12,7 +12,6 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\ActivationFunctions\ISRLU;
-use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\PredictionSpeed;

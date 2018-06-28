@@ -105,7 +105,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $network;
 
     /**
-     * The validation score of each epoch during training.
+     * The training progress of the estimator at each epoch.
      *
      * @var array
      */
@@ -207,6 +207,8 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         $this->network->initialize();
 
+        $this->progress = [];
+
         $this->partial($dataset);
     }
 
@@ -239,8 +241,6 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         $best = ['score' => -INF, 'snapshot' => null];
 
-        $this->progress = [];
-
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $change = 0.0;
 
@@ -252,7 +252,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
             $score = $this->metric->score($this, $testing);
 
-            $this->progress[$epoch] = ['score' => $score, 'change' => $change];
+            $this->progress[] = ['score' => $score, 'change' => $change];
 
             if ($score > $best['score']) {
                 $best['score'] = $score;

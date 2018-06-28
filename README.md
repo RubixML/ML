@@ -802,7 +802,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ```
 
 ### Logistic Regression
-A type of regression analysis that uses the logistic function to classify between two possible outcomes.
+A type of classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes.
 
 ##### Supervised, Binary, Online, Probabilistic, Persistable
 
@@ -816,7 +816,9 @@ A type of regression analysis that uses the logistic function to classify betwee
 | epochs | 100 | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `progress() : array` | Returns an array with the training progress at each epoch of training. |
 
 ##### Example:
 ```php
@@ -846,7 +848,7 @@ Multiclass [Neural Network](#neural-network) model that uses a series of user-de
 ##### Additional Methods:
 | Method | Description |
 |--|--|
-| `progress() : array` | Returns an array with the validation score at each epoch of training. |
+| `progress() : array` | Returns an array with the training progress at each epoch of training. |
 
 ##### Example:
 ```php
@@ -910,7 +912,7 @@ $estimator = new RandomForest(100, 0.2, 5, 3, 1e-2);
 ```
 
 ### Softmax Classifier
-A generalization of logistic regression for multiple class outcomes.
+A generalization of logistic regression for multiple class outcomes using a single layer neural network.
 
 ##### Supervised, Multiclass, Online, Probabilistic, Persistable
 
@@ -923,8 +925,11 @@ A generalization of logistic regression for multiple class outcomes.
 | min change | 1e-4 | float | The minimum change in the weights necessary to continue training. |
 | epochs | 100 | int | The maximum number of training epochs to execute. |
 
+
 ##### Additional Methods:
-This Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `progress() : array` | Returns an array with the training progress at each epoch of training. |
 
 ##### Example:
 ```php

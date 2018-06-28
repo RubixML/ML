@@ -69,6 +69,15 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     protected $network;
 
     /**
+     * The training progress of the estimator at each epoch.
+     *
+     * @var array
+     */
+    protected $progress = [
+        //
+    ];
+
+    /**
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
@@ -113,6 +122,14 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     }
 
     /**
+     * @return array
+     */
+    public function progress() : array
+    {
+        return $this->progress;
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -130,6 +147,8 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
            new Softmax($this->classes, $this->alpha), $this->optimizer);
 
         $this->network->initialize();
+
+        $this->progress = [];
 
         $this->partial($dataset);
     }
@@ -168,6 +187,8 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
                     ->backpropagate($batch->labels())
                     ->step();
             }
+
+            $this->progress[] = ['change' => $change];
 
             if (abs($change - $previous) < $this->minChange) {
                 break 1;

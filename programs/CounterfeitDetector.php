@@ -3,7 +3,6 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
-use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -50,8 +49,8 @@ $dataset->randomize();
 
 var_dump($validator->test($dummy, $dataset, new MCC()));
 
-echo "\n";
-
 var_dump($validator->test($estimator, $dataset, new MCC()));
 
-var_dump($estimator->proba($dataset->randomize()->head(5)));
+var_dump($estimator->progress());
+
+var_dump($estimator->proba($dataset->randomize()->head(3)));
