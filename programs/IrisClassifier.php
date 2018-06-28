@@ -4,14 +4,14 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\GridSearch;
+use Rubix\ML\RandomParams;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Manhattan;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use League\Csv\Reader;
@@ -38,7 +38,7 @@ $dataset = new Labeled($samples, $labels);
 $dataset->randomize();
 
 $params = [
-    [1, 3, 5, 7, 9], [new Euclidean(), new Diagonal(), new Manhattan()],
+    RandomParams::ints(1, 10, 5), [new Euclidean(), new Diagonal()],
 ];
 
 $estimator = new Pipeline(new GridSearch(KNearestNeighbors::class, $params, new MCC(), new KFold(10)), [
