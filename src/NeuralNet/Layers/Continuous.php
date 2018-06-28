@@ -63,6 +63,11 @@ class Continuous implements Output
      */
     public function __construct(float $alpha = 1e-4)
     {
+        if ($alpha < 0) {
+            throw new InvalidArgumentException('Cannot add negative L2 penalty'
+                . ' to the weights.');
+        }
+        
         $this->alpha = $alpha;
         $this->width = 1;
     }

@@ -34,7 +34,7 @@ class PersistentModel
     {
         if (!file_exists($path) or !is_readable($path)) {
             throw new RuntimeException('File ' . basename($path) . ' cannot be'
-                . ' opened. Check path and file permissions.');
+                . ' opened. Check path and permissions.');
         }
 
         $model = unserialize(file_get_contents($path) ?: '');
@@ -83,7 +83,7 @@ class PersistentModel
 
         if (!is_writable(dirname($path))) {
             throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable. Check path and file permissions.');
+                . ' writable. Check path and permissions.');
         }
 
         return file_put_contents($path, serialize($this->model), LOCK_EX)

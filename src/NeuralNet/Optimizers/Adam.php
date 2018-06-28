@@ -125,7 +125,7 @@ class Adam implements Optimizer
                 ->hadamardProduct($layer->gradients()
                 ->scalarMultiply(1 - $this->rmsDecay)));
 
-        $steps = [];
+        $steps = [[]];
 
         foreach ($layer->gradients()->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {

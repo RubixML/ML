@@ -11,7 +11,6 @@ use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
-use RuntimeException;
 
 class Network
 {
@@ -107,13 +106,13 @@ class Network
     }
 
     /**
-     * The depth of the network. i.e. the number of layers.
+     * The depth of the network. i.e. the number of hidden layers.
      *
      * @return int
      */
     public function depth() : int
     {
-        return count($this->layers);
+        return count($this->hidden());
     }
 
     /**
@@ -200,32 +199,28 @@ class Network
     }
 
     /**
-     * Read the weight paramters of the network and return an array of weight
-     * matrices.
+     * Read the weight paramters of the network and return a snapshot.
      *
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Snapshot
      */
-    public function read() : array
+    public function read() : Snapshot
     {
-        $layers = [];
-
-        foreach ($this->backPath as $i => $layer) {
-            $layers[$i] = $layer->weights();
-        }
-
-        return $layers;
+        return new Snapshot($this->parametric());
     }
 
+
     /**
-     * Restore the network parameters from an array of weights indexed by layer.
+     * Restore the network parameters from a snapshot.
      *
-     * @param  array  $parameters
+     * @param  \Rubix\ML\NeuralNet\Snapshot  $snapshot
      * @return void
      */
-    public function restore(array $parameters) : void
+    public function restore(Snapshot $snapshot) : void
     {
-        foreach ($this->backPath as $i => $layer) {
-            $layer->restore($parameters[$i]);
+        foreach ($snapshot as $layer) {
+            if ($layer instanceof Parametric) {
+                $layer->restore($snapshot[$layer]);
+            }
         }
     }
 }

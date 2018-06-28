@@ -112,6 +112,7 @@ MIT
 			- [RMS Prop](#rms-prop)
 			- [Step Decay](#step-decay)
 			- [Stochastic](#stochastic)
+		- [Snapshots](#snapshots)
 	- [Cross Validation](#cross-validation)
 		- [Validators](#validators)
 			- [Hold Out](#hold-out)
@@ -826,7 +827,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
 ```
 
 ### Multi Layer Perceptron
-Multiclass [Neural Network](#neural-network) model that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress.
+Multiclass [Neural Network](#neural-network) model that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. The MLP features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
 ##### Supervised, Multiclass, Online, Probabilistic, Persistable
 
@@ -1092,7 +1093,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
 
 ### MLP Regressor
-A [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress.
+A [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
 ##### Supervised, Persistable
 
@@ -1350,7 +1351,7 @@ array(2) {
 ```
 
 ### Random Search
-Random search is a hyperparameter selection technique that samples *n* parameters randomly from a user-specified distribution. In Rubix, the Random Params helper can be used along with [Grid Search](#grid-search) to achieve the goal of random search.
+Random search is a hyperparameter selection technique that samples *n* parameters randomly from a user-specified distribution. In Rubix, the Random Params helper can be used along with [Grid Search](#grid-search) to achieve the goal of random search. The Random Params helper automatically takes care of deduplication so you never need to worry about testing a parameter twice. For this reason, however, you cannot generate more parameters than in range of, thus generating 5 unique ints between 1 and 3 is impossible.
 
 To generate a distribution of integer parameters:
 ```php
@@ -1959,6 +1960,24 @@ A constant learning rate Optimizer.
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 
 $optimizer = new Stochastic(0.001);
+```
+
+### Snapshots
+Snapshots are a way to capture the state of a neural network at a moment in time. A Snapshot object holds all of the parameters in the network and can be saved and restored from storage with the `save()` and `restore()` methods.
+
+To take a snapshot of your network simply call the `read()` method on the Network object. To restore the network from a snapshot pass the snapshot to the `restore()` method.
+
+The example below shows how to take a snapshot, save it to storage, and then restore the network via the snapshot.
+```php
+...
+$snapshot = $network->read();
+
+$snapshot->save('00001.snapshot');
+
+$snapshot = Snapshot::restore('00001.snapshot');
+
+$network->restore($snapshot);
+...
 ```
 
 ---

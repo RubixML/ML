@@ -188,7 +188,7 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return new self(array_intersect_key($this->samples,
-            array_rand($this->samples, $n)));
+            (array) array_rand($this->samples, $n)));
     }
 
     /**

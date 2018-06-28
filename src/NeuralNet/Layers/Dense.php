@@ -129,7 +129,7 @@ class Dense implements Hidden
         } else if ($this->activationFunction instanceof Sigmoid) {
             $r = sqrt(6 / $width);
         } else {
-            $r = 4;
+            $r = 3;
         }
 
         for ($i = 0; $i < $this->width; $i++) {
@@ -141,7 +141,7 @@ class Dense implements Hidden
 
         $this->weights = new Matrix($weights);
 
-        return $this->width();
+        return $this->width;
     }
 
     /**

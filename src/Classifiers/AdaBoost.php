@@ -256,12 +256,10 @@ class AdaBoost implements Binary, Persistable
 
         $total = array_sum($this->weights);
 
-        $scale = (int) 1e8;
-
         $subset = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $random = random_int(0, $total * $scale) / $scale;
+            $random = random_int(0, (int) ($total * 1e8)) / 1e8;
 
             for ($index = 0; $index < $n; $index++) {
                 $random -= $this->weights[$index];

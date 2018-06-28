@@ -28,6 +28,7 @@ class PredictionSpeed implements Report
             'pps' => $testing->numRows() / ($total + self::EPSILON),
             'average_sec' => $total / ($testing->numRows() + self::EPSILON),
             'total_sec' => $total,
+            'cardinality' => $testing->numRows(),
         ];
     }
 }

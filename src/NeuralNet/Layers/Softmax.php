@@ -80,6 +80,11 @@ class Softmax implements Output
                 . ' must be 2 or more.');
         }
 
+        if ($alpha < 0) {
+            throw new InvalidArgumentException('Cannot add negative L2 penalty'
+                . ' to the weights.');
+        }
+
         $this->classes = $classes;
         $this->alpha = $alpha;
         $this->width = count($classes);

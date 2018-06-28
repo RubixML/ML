@@ -16,7 +16,7 @@ class PersistentModelTest extends TestCase
         $this->model = new PersistentModel(new DummyClassifier());
     }
 
-    public function test_create_tree()
+    public function test_build_persistent_model()
     {
         $this->assertInstanceOf(PersistentModel::class, $this->model);
     }

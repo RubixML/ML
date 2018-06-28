@@ -175,13 +175,14 @@ class KMeans implements Clusterer, Online, Persistable
      */
     protected function label(array $sample) : int
     {
-        $best = ['distance' => INF, 'label' => null];
+        $best = ['distance' => INF, 'label' => -1];
 
         foreach ($this->centroids as $label => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $best['distance']) {
-                $best = ['distance' => $distance, 'label' => $label];
+                $best['distance'] = $distance;
+                $best['label'] = (int) $label;
             }
         }
 

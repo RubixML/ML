@@ -44,10 +44,10 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(20, new ISRLU()),
-    new Dense(30, new ISRLU()),
-    new Dense(20, new ISRLU()),
-    new Dense(30, new ISRLU()),
+    new Dense(10, new ISRLU()),
+    new Dense(10, new ISRLU()),
+    new Dense(10, new ISRLU()),
+    new Dense(10, new ISRLU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),

@@ -28,6 +28,6 @@ class Whitespace implements Tokenizer
      */
     public function tokenize(string $string) : array
     {
-        return explode($this->delimiter, $string);
+        return explode($this->delimiter, $string) ?: [];
     }
 }

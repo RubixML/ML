@@ -88,6 +88,11 @@ class Logistic implements Output
                 . ' labels must be exactly 2.');
         }
 
+        if ($alpha < 0) {
+            throw new InvalidArgumentException('Cannot add negative L2 penalty'
+                . ' to the weights.');
+        }
+
         $this->classes = [$labels[0] => 0, $labels[1] => 1];
         $this->activationFunction = new Sigmoid();
         $this->alpha = $alpha;

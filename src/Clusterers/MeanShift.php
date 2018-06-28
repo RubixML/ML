@@ -193,14 +193,14 @@ class MeanShift implements Clusterer, Persistable
      */
     protected function label(array $sample) : int
     {
-        $best = ['distance' => INF, 'label' => null];
+        $best = ['distance' => INF, 'label' => -1];
 
         foreach ($this->centroids as $label => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $best['distance']) {
                 $best['distance'] = $distance;
-                $best['label'] = $label;
+                $best['label'] = (int) $label;
             }
         }
 

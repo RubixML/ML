@@ -30,7 +30,7 @@ class OutlierRatio implements Report
             'outliers' => $counts[1],
             'inliers' => $counts[0],
             'ratio' => $counts[1] / ($counts[0] + self::EPSILON),
-            'cardinality' => $counts[0] + $counts[1],
+            'cardinality' => $testing->numRows(),
         ];
     }
 }

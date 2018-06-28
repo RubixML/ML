@@ -83,7 +83,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
     {
         $n = (int) ($this->ratio * $dataset->numRows());
 
-        $maxDepth = ceil(log($n, 2));
+        $maxDepth = (int) ceil(log($n, 2));
 
         $this->forest = [];
 

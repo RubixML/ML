@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class RandomParams
 {
     /**
-     * Generate a random parameter distribution of intergers.
+     * Generate a random parameter distribution of integers.
      *
      * @param  int  $min
      * @param  int  $max

@@ -227,7 +227,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      */
     protected function findRandomSplit(array $data) : BinaryNode
     {
-        $index = array_rand($data[0]);
+        $index = (int) array_rand($data[0]);
 
         $value = $data[array_rand($data)][$index];
 

@@ -348,7 +348,7 @@ class Labeled extends DataFrame implements Dataset
                 . ' than the sample size.');
         }
 
-        $indices = array_rand($this->samples, $n);
+        $indices = (array) array_rand($this->samples, $n);
 
         return new self(array_intersect_key($this->samples, $indices),
             array_intersect_key($this->labels, $indices));
