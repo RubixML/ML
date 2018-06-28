@@ -9,6 +9,14 @@ interface ActivationFunction
     const EPSILON = 1e-8;
 
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array;
+
+    /**
      * Compute the output value.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $z

@@ -7,6 +7,17 @@ use MathPHP\LinearAlgebra\Matrix;
 class Sigmoid implements ActivationFunction
 {
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [0, 1];
+    }
+
+    /**
      * Compute the output value.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $z

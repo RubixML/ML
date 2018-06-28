@@ -16,6 +16,17 @@ class ELU implements Rectifier
     protected $alpha;
 
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-$this->alpha, INF];
+    }
+
+    /**
      * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void

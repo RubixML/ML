@@ -8,6 +8,17 @@ use MathPHP\LinearAlgebra\MatrixFactory;
 class Identity implements ActivationFunction
 {
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-INF, INF];
+    }
+
+    /**
      * Compute the output value.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $z

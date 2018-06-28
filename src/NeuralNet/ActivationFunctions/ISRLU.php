@@ -5,15 +5,15 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class PReLU implements Rectifier
+class ISRLU implements Rectifier
 {
     /**
-     * The amount of leakage as a ratio of the input value to allow to pass
-     * through when not activated.
+     * At which negative value the ISRLU will saturate. i.e. alpha = 1.0 means
+     * that the leakage will never be more than -1.0.
      *
      * @var float
      */
-    protected $leakage;
+    protected $alpha;
 
     /**
      * Return a tuple of the min and max output value for this activation
@@ -23,22 +23,22 @@ class PReLU implements Rectifier
      */
     public function range() : array
     {
-        return [-INF, INF];
+        return [-(1 / sqrt($this->alpha)), INF];
     }
 
     /**
-     * @param  float  $leakage
+     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $leakage = 0.01)
+    public function __construct(float $alpha = 1.0)
     {
-        if ($leakage < 0 or $leakage > 1) {
-            throw new InvalidArgumentException('Leakage coefficient must be'
-                . ' between 0 and 1.');
+        if ($alpha < 0) {
+            throw new InvalidArgumentException('Alpha parameter must be a'
+                . ' positive value.');
         }
 
-        $this->leakage = $leakage;
+        $this->alpha = $alpha;
     }
 
     /**
@@ -50,7 +50,8 @@ class PReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $value : $this->leakage * $value;
+            return $value >= 0.0 ? $value : $value
+                / sqrt(1 + $this->alpha * $value ** 2);
         });
     }
 
@@ -64,7 +65,7 @@ class PReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $this->leakage;
+            return $output >= 0.0 ? 1.0 : $output ** 3;
         });
     }
 }

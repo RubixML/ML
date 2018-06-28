@@ -5,13 +5,13 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\NeuralNet\ActivationFunctions\ISRLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
@@ -44,10 +44,10 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
+    new Dense(20, new ISRLU()),
+    new Dense(30, new ISRLU()),
+    new Dense(20, new ISRLU()),
+    new Dense(30, new ISRLU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
