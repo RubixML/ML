@@ -18,14 +18,6 @@ interface Layer
     public function width() : int;
 
     /**
-     * Initialize the layer.
-     *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
-     * @return void
-     */
-    public function initialize(Layer $previous) : void;
-
-    /**
      * Compute the input sum and activation of each nueron in the layer and return
      * an activation matrix.
      *
@@ -33,11 +25,4 @@ interface Layer
      * @return \MathPHP\LinearAlgebra\Matrix
      */
     public function forward(Matrix $input) : Matrix;
-
-    /**
-     * The memoized activations of the last forward pass.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function computed() : Matrix;
 }

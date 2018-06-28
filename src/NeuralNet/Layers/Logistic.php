@@ -3,11 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
-class Logistic implements Output, Parametric
+class Logistic implements Output
 {
     /**
      * The labels of either of the possible outcomes.
@@ -33,18 +32,18 @@ class Logistic implements Output, Parametric
     protected $alpha;
 
     /**
-     * The previous layer in the network.
-     *
-     * @var \Rubix\ML\NeuralNet\Layers\Hidden
-     */
-    protected $previous;
-
-    /**
      * The weight matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $weights;
+
+    /**
+     * The memoized input matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $input;
 
     /**
      * The memoized z matrix.
@@ -59,13 +58,6 @@ class Logistic implements Output, Parametric
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
-
-    /**
-     * The memoized error matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $errors;
 
     /**
      * The memoized gradient matrix.
@@ -113,22 +105,6 @@ class Logistic implements Output, Parametric
     /**
      * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function computed() : Matrix
-    {
-        return $this->computed;
-    }
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function errors() : Matrix
-    {
-        return $this->errors;
-    }
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
     public function gradients() : Matrix
     {
         return $this->gradients;
@@ -138,25 +114,24 @@ class Logistic implements Output, Parametric
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
+     * @param  int  $width
      * @return void
      */
-    public function initialize(Layer $previous) : void
+    public function initialize(int $width) : void
     {
         $weights = array_fill(0, $this->width(),
-            array_fill(0, $previous->width(), 0.0));
+            array_fill(0, $width, 0.0));
 
-        $r = sqrt(6 / $previous->width());
+        $r = sqrt(6 / $width);
 
         for ($i = 0; $i < $this->width(); $i++) {
-            for ($j = 0; $j < $previous->width(); $j++) {
+            for ($j = 0; $j < $width; $j++) {
                 $weights[$i][$j] = random_int((int) (-$r * 1e8),
                     (int) ($r * 1e8)) / 1e8;
             }
         }
 
-        $this->weights = MatrixFactory::create($weights);
-        $this->previous = $previous;
+        $this->weights = new Matrix($weights);
     }
 
     /**
@@ -168,9 +143,9 @@ class Logistic implements Output, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $activations = $this->previous->forward($input);
+        $this->input = $input;
 
-        $this->z = $this->weights->multiply($activations);
+        $this->z = $this->weights->multiply($input);
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -181,9 +156,9 @@ class Logistic implements Output, Parametric
      * Calculate the errors and gradients for each output neuron.
      *
      * @param  array  $labels
-     * @return void
+     * @return array
      */
-    public function back(array $labels) : void
+    public function back(array $labels) : array
     {
         $errors = [[]];
 
@@ -200,16 +175,25 @@ class Logistic implements Output, Parametric
                 * array_sum($this->weights[0]) ** 2;
         }
 
-        $errors = MatrixFactory::create($errors);
+        $errors = new Matrix($errors);
 
-        $this->errors = $this->activationFunction
+        $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($errors);
 
-        $this->gradients = $this->errors
-            ->multiply($this->previous->computed()->transpose());
+        $this->gradients = $errors->multiply($this->input->transpose());
 
-        $this->previous->back($this);
+        return [$this->weights, $errors];
+    }
+
+    /**
+     * Return the computed activation matrix.
+     *
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function activations() : Matrix
+    {
+        return $this->computed;
     }
 
     /**

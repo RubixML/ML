@@ -10,7 +10,7 @@ class DefaultValue implements Categorical, Continuous
     /**
      * The default value to impute.
      *
-     * @var string
+     * @var mixed
      */
     protected $value;
 

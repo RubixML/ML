@@ -32,6 +32,15 @@ class Network
     protected $optimizer;
 
     /**
+     * The memoized pathing of the backward pass.
+     *
+     * @var array
+     */
+    protected $backPath = [
+        //
+    ];
+
+    /**
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
      * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
@@ -54,6 +63,7 @@ class Network
         $this->layers[] = $output;
 
         $this->optimizer = $optimizer;
+        $this->backPath = array_reverse($this->parametric());
     }
 
     /**
@@ -93,9 +103,7 @@ class Network
      */
     public function parametric() : array
     {
-        return array_filter($this->layers, function ($layer) {
-            return $layer instanceof Parametric;
-        });
+        return array_slice($this->layers, 1, count($this->layers), true);
     }
 
     /**
@@ -115,13 +123,12 @@ class Network
      */
     public function initialize() : void
     {
-        for ($i = 1; $i < count($this->layers); $i++) {
-            $current = $this->layers[$i];
-            $previous = $this->layers[$i - 1];
+        $width = $this->input()->width();
 
-            $current->initialize($previous);
+        foreach ($this->parametric() as $layer) {
+            $width = $layer->initialize($width);
 
-            $this->optimizer->initialize($current);
+            $this->optimizer->initialize($layer);
         }
     }
 
@@ -136,7 +143,9 @@ class Network
     {
         $input = MatrixFactory::create($samples)->transpose();
 
-        $this->output()->forward($input);
+        foreach ($this->layers as $layer) {
+            $input = $layer->forward($input);
+        }
 
         return $this;
     }
@@ -150,7 +159,15 @@ class Network
      */
     public function backpropagate(array $labels) : self
     {
-        $this->output()->back($labels);
+        $errors = $weights = null;
+
+        foreach ($this->backPath as $layer) {
+            if ($layer instanceof Output) {
+                list($weights, $errors) = $layer->back($labels);
+            } else {
+                list($weights, $errors) = $layer->back($weights, $errors);
+            }
+        }
 
         return $this;
     }
@@ -162,7 +179,8 @@ class Network
      */
     public function activations() : array
     {
-        return $this->output()->computed()->transpose()->getMatrix();
+        return $this->output()->activations()->transpose()
+            ->getMatrix();
     }
 
     /**
@@ -174,7 +192,7 @@ class Network
     {
         $magnitude = 0.0;
 
-        foreach ($this->parametric() as $layer) {
+        foreach ($this->backPath as $layer) {
             $step = $this->optimizer->step($layer);
 
             $layer->update($step);
@@ -195,7 +213,7 @@ class Network
     {
         $layers = [];
 
-        foreach ($this->parametric() as $i => $layer) {
+        foreach ($this->backPath as $i => $layer) {
             $layers[$i] = $layer->weights();
         }
 
@@ -210,7 +228,7 @@ class Network
      */
     public function restore(array $parameters) : void
     {
-        foreach ($this->parametric() as $i => $layer) {
+        foreach ($this->backPath as $i => $layer) {
             $layer->restore($parameters[$i]);
         }
     }

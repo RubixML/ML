@@ -26,10 +26,10 @@ class OneHotEncoder implements Transformer
     ];
 
     /**
-     * @param  array|null  $columns
+     * @param  array  $columns
      * @return void
      */
-    public function __construct(?array $columns = null)
+    public function __construct(array $columns = [])
     {
         $this->columns = $columns;
     }
@@ -42,11 +42,9 @@ class OneHotEncoder implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (!isset($this->columns)) {
+        if (empty($this->columns)) {
             $this->columns = array_keys(array_filter($dataset->columnTypes(),
-                function ($type) {
-                    return $type === self::CATEGORICAL;
-                }));
+                function ($type) { return $type === self::CATEGORICAL; }));
         }
 
         $position = 0;

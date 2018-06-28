@@ -23,18 +23,9 @@ interface Parametric extends Layer
     public function restore(Matrix $weights) : void;
 
     /**
-     * Return the weight matrix.
-     *
      * @return \MathPHP\LinearAlgebra\Matrix
      */
     public function weights() : Matrix;
-
-    /**
-     * Return an error matrix computed from last backward pass.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function errors() : Matrix;
 
     /**
      * A matrix of gradients computed during the last backward pass.

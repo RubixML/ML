@@ -12,11 +12,11 @@ use ReflectionClass;
 class AdaBoost implements Binary, Persistable
 {
     /**
-     * The reflector instance of the base classifier.
+     * The class name of the base classifier.
      *
-     * @var \ReflectionClass
+     * @var string
      */
-    protected $reflector;
+    protected $base;
 
     /**
      * The constructor arguments of the base classifier.
@@ -100,9 +100,9 @@ class AdaBoost implements Binary, Persistable
     public function __construct(string $base, array $params = [], int $experts = 100,
                                 float $ratio = 0.1, float $threshold = 0.999)
     {
-        $this->reflector = new ReflectionClass($base);
+        $reflector = new ReflectionClass($base);
 
-        if (!in_array(Classifier::class, $this->reflector->getInterfaceNames())) {
+        if (!in_array(Classifier::class, $reflector->getInterfaceNames())) {
             throw new InvalidArgumentException('Base class must implement the'
                 . ' classifier interface.');
         }
@@ -122,6 +122,7 @@ class AdaBoost implements Binary, Persistable
                 . ' 0 and 1.');
         }
 
+        $this->base = $base;
         $this->params = $params;
         $this->experts = $experts;
         $this->ratio = $ratio;
@@ -177,7 +178,7 @@ class AdaBoost implements Binary, Persistable
         $this->ensemble = $this->influence = [];
 
         for ($epoch = 1; $epoch <= $this->experts; $epoch++) {
-            $estimator = $this->reflector->newInstance(...$this->params);
+            $estimator = new $this->base(...$this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));
 

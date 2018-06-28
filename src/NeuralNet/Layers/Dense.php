@@ -10,7 +10,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
-class Dense implements Hidden, Parametric
+class Dense implements Hidden
 {
     /**
      * The number of neurons in this layer.
@@ -27,18 +27,18 @@ class Dense implements Hidden, Parametric
     protected $activationFunction;
 
     /**
-     * The previous layer in the network.
-     *
-     * @var \Rubix\ML\NeuralNet\Layers\Layer
-     */
-    protected $previous;
-
-    /**
      * The weight matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $weights;
+
+    /**
+     * The memoized input matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $input;
 
     /**
      * The memoized z matrix.
@@ -53,13 +53,6 @@ class Dense implements Hidden, Parametric
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
-
-    /**
-     * The memoized error matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $errors;
 
     /**
      * The memoized gradient matrix.
@@ -104,22 +97,6 @@ class Dense implements Hidden, Parametric
     /**
      * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function computed() : Matrix
-    {
-        return $this->computed;
-    }
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function errors() : Matrix
-    {
-        return $this->errors;
-    }
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
     public function gradients() : Matrix
     {
         return $this->gradients;
@@ -129,33 +106,34 @@ class Dense implements Hidden, Parametric
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
-     * @return void
+     * @param  int  $width
+     * @return int
      */
-    public function initialize(Layer $previous) : void
+    public function initialize(int $width) : int
     {
         $weights = array_fill(0, $this->width(),
-            array_fill(0, $previous->width(), 0.0));
+            array_fill(0, $width, 0.0));
 
         if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $previous->width()) ** (1 / self::ROOT_2);
+            $r = (6 / $width) ** (1 / self::ROOT_2);
         } else if ($this->activationFunction instanceof HyperbolicTangent) {
-            $r = (6 / $previous->width()) ** (1 / 4);
+            $r = (6 / $width) ** (1 / 4);
         } else if ($this->activationFunction instanceof Sigmoid) {
-            $r = sqrt(6 / $previous->width());
+            $r = sqrt(6 / $width);
         } else {
             $r = 4;
         }
 
         for ($i = 0; $i < $this->width(); $i++) {
-            for ($j = 0; $j < $previous->width(); $j++) {
+            for ($j = 0; $j < $width; $j++) {
                 $weights[$i][$j] = random_int((int) (-$r * 1e8),
                     (int) ($r * 1e8)) / 1e8;
             }
         }
 
-        $this->weights = MatrixFactory::create($weights);
-        $this->previous = $previous;
+        $this->weights = new Matrix($weights);
+
+        return $this->width();
     }
 
     /**
@@ -167,11 +145,11 @@ class Dense implements Hidden, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $activations = $this->previous->forward($input);
+        $this->input = $input;
 
-        $this->z = $this->weights->multiply($activations);
+        $this->z = $this->weights->multiply($input);
 
-        $biases = MatrixFactory::one(1, $activations->getN());
+        $biases = MatrixFactory::one(1, $input->getN());
 
         $this->computed = $this->activationFunction
             ->compute($this->z->rowExclude($this->z->getM() - 1))
@@ -183,20 +161,19 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $next
-     * @return void
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
+     * @param  \MathPHP\LinearAlgebra\Matrix  $errors
+     * @return array
      */
-    public function back(Layer $next) : void
+    public function back(Matrix $weights, Matrix $errors) : array
     {
-        $this->errors = $this->activationFunction
+        $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($next->weights()->transpose()
-                ->multiply($next->errors()));
+            ->hadamardProduct($weights->transpose()->multiply($errors));
 
-        $this->gradients = $this->errors
-            ->multiply($this->previous->computed()->transpose());
+        $this->gradients = $errors->multiply($this->input->transpose());
 
-        $this->previous->back($this);
+        return [$this->weights, $errors];
     }
 
     /**

@@ -12,11 +12,11 @@ use ReflectionClass;
 class GridSearch implements MetaEstimator, Persistable
 {
     /**
-     * The reflector instance of the base estimator.
+     * The class name of the base estimator.
      *
-     * @var \ReflectionClass
+     * @var string
      */
-    protected $reflector;
+    protected $base;
 
     /**
      * The grid of hyperparameters i.e. constructor arguments of the base
@@ -102,7 +102,7 @@ class GridSearch implements MetaEstimator, Persistable
                 . count($params) . ' given, only ' . count($args) . ' needed.');
         }
 
-        $this->reflector = $reflector;
+        $this->base = $base;
         $this->args = array_slice($args, 0, count($params));
         $this->params = $params;
         $this->metric = $metric;
@@ -162,7 +162,7 @@ class GridSearch implements MetaEstimator, Persistable
         $best = ['score' => -INF, 'params' => [], 'estimator' => null];
 
         foreach ($this->combineParams($this->params) as $params) {
-            $estimator = $this->reflector->newInstance(...$params);
+            $estimator = new $this->base(...$params);
 
             $score = $this->validator->test($estimator, $dataset,
                 $this->metric);

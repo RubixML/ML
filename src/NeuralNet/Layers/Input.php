@@ -9,11 +9,11 @@ use InvalidArgumentException;
 class Input implements Layer
 {
     /**
-     * The number of input nodes. i.e. feature placeholders.
+     * The number of input nodes. i.e. feature inputs.
      *
      * @var int
      */
-    protected $placeholders;
+    protected $inputs;
 
     /**
      * The memoized output activations matrix.
@@ -34,7 +34,7 @@ class Input implements Layer
             . ' be greater than 0.');
         }
 
-        $this->placeholders = $inputs;
+        $this->inputs = $inputs;
     }
 
     /**
@@ -44,7 +44,7 @@ class Input implements Layer
      */
     public function width() : int
     {
-        return $this->placeholders + 1;
+        return $this->inputs + 1;
     }
 
     /**
@@ -56,17 +56,6 @@ class Input implements Layer
     }
 
     /**
-     * Initialize the layer.
-     *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $previous
-     * @return void
-     */
-    public function initialize(Layer $previous) : void
-    {
-        //
-    }
-
-    /**
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *
@@ -75,11 +64,11 @@ class Input implements Layer
      */
     public function forward(Matrix $input) : Matrix
     {
-        if ($input->getM() !== $this->placeholders) {
+        if ($input->getM() !== $this->inputs) {
             throw new InvalidArgumentException('The number of feature columns'
-            . ' must equal the number of input placeholders. '
-            . (string) $input->getM() . ' found, '
-            . (string) $this->placeholders . ' needed.');
+                . ' must equal the number of input inputs. '
+                . (string) $input->getM() . ' found, '
+                . (string) $this->inputs . ' needed.');
         }
 
         $biases = MatrixFactory::one(1, $input->getN());
@@ -87,16 +76,5 @@ class Input implements Layer
         $this->computed = $input->augmentBelow($biases);
 
         return $this->computed;
-    }
-
-    /**
-     * Do nothing since placeholder layers do not have parameters.
-     *
-     * @param  \Rubix\ML\NeuralNet\Layers\Layer  $next
-     * @return void
-     */
-    public function back(Layer $next) : void
-    {
-        //
     }
 }

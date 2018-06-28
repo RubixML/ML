@@ -22,7 +22,7 @@ class BinaryNodeTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
         $this->assertInstanceOf(GraphObject::class, $this->node);
 
-        $this->assertEquals('medium', $this->node->coolness_factor);
+        $this->assertEquals('medium', $this->node->get('coolness_factor'));
 
         $this->assertEquals(1, $this->node->height());
         $this->assertNull($this->node->left());
@@ -64,7 +64,7 @@ class BinaryNodeTest extends TestCase
 
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
-        $this->assertEquals('high', $this->node->left()->coolness_factor);
+        $this->assertEquals('high', $this->node->left()->get('coolness_factor'));
 
         $this->node->detachLeft();
 
@@ -77,7 +77,7 @@ class BinaryNodeTest extends TestCase
 
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());
-        $this->assertEquals('low', $this->node->right()->coolness_factor);
+        $this->assertEquals('low', $this->node->right()->get('coolness_factor'));
 
         $this->node->detachRight();
 
