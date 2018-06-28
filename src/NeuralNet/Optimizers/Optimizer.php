@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 
 interface Optimizer
@@ -18,10 +17,10 @@ interface Optimizer
     public function initialize(Parametric $layer) : void;
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate the step for a parametric layer and return the magnitude.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix;
+    public function step(Parametric $layer) : float;
 }

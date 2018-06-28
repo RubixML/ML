@@ -70,9 +70,9 @@ class Momentum implements Optimizer
      * Calculate the step for a parametric layer.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix
+    public function step(Parametric $layer) : float
     {
         $velocities = $layer->gradients()
             ->add($this->velocities[$layer]->scalarMultiply($this->decay))
@@ -80,6 +80,8 @@ class Momentum implements Optimizer
 
         $this->velocities[$layer] = $velocities;
 
-        return $velocities;
+        $layer->update($velocities);
+
+        return $velocities->oneNorm();
     }
 }

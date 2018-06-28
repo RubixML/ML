@@ -110,9 +110,9 @@ class Adam implements Optimizer
      * Calculate the step for a parametric layer.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix
+    public function step(Parametric $layer) : float
     {
         $velocities = $this->velocities[$layer]
             ->scalarMultiply($this->momentumDecay)
@@ -137,6 +137,10 @@ class Adam implements Optimizer
         $this->velocities[$layer] = $velocities;
         $this->cache[$layer] = $cache;
 
-        return new Matrix($steps);
+        $steps = new Matrix($steps);
+
+        $layer->update($steps);
+
+        return $steps->oneNorm();
     }
 }

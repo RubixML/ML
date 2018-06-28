@@ -27,6 +27,13 @@ class Dense implements Hidden
     protected $activationFunction;
 
     /**
+     * The width of the layer. i.e. the number of neurons.
+     *
+     * @var int
+     */
+    protected $width;
+
+    /**
      * The weight matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
@@ -76,6 +83,7 @@ class Dense implements Hidden
 
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
+        $this->width = $neurons + 1;
     }
 
     /**
@@ -83,7 +91,7 @@ class Dense implements Hidden
      */
     public function width() : int
     {
-        return $this->neurons + 1;
+        return $this->width;
     }
 
     /**
@@ -111,7 +119,7 @@ class Dense implements Hidden
      */
     public function initialize(int $width) : int
     {
-        $weights = array_fill(0, $this->width(),
+        $weights = array_fill(0, $this->width,
             array_fill(0, $width, 0.0));
 
         if ($this->activationFunction instanceof Rectifier) {
@@ -124,7 +132,7 @@ class Dense implements Hidden
             $r = 4;
         }
 
-        for ($i = 0; $i < $this->width(); $i++) {
+        for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $width; $j++) {
                 $weights[$i][$j] = random_int((int) (-$r * 1e8),
                     (int) ($r * 1e8)) / 1e8;

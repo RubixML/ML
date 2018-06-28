@@ -70,9 +70,9 @@ class RMSProp implements Optimizer
      * Calculate the step for a parametric layer.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix
+    public function step(Parametric $layer) : float
     {
         $cache = $this->cache[$layer]
             ->scalarMultiply($this->decay)
@@ -91,6 +91,10 @@ class RMSProp implements Optimizer
 
         $this->cache[$layer] = $cache;
 
-        return new Matrix($steps);
+        $steps = new Matrix($steps);
+
+        $layer->update($steps);
+
+        return $steps->oneNorm();
     }
 }

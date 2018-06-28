@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
 
@@ -45,10 +44,14 @@ class Stochastic implements Optimizer
      * Calculate the step for a parametric layer.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix
+    public function step(Parametric $layer) : float
     {
-        return $layer->gradients()->scalarMultiply($this->rate);
+        $steps = $layer->gradients()->scalarMultiply($this->rate);
+
+        $layer->update($steps);
+
+        return $steps->oneNorm();
     }
 }

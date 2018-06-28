@@ -193,11 +193,7 @@ class Network
         $magnitude = 0.0;
 
         foreach ($this->backPath as $layer) {
-            $step = $this->optimizer->step($layer);
-
-            $layer->update($step);
-
-            $magnitude += $step->oneNorm();
+            $magnitude += $this->optimizer->step($layer);
         }
 
         return $magnitude;

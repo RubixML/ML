@@ -53,12 +53,12 @@ class AdaGrad implements Optimizer
     }
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate the step for a parametric layer and return the magnitude.
      *
      * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return float
      */
-    public function step(Parametric $layer) : Matrix
+    public function step(Parametric $layer) : float
     {
         $cache = $this->cache[$layer]->add($layer->gradients()
             ->hadamardProduct($layer->gradients()));
@@ -67,13 +67,17 @@ class AdaGrad implements Optimizer
 
         foreach ($layer->gradients()->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {
-                $steps[$i][$j] =  $this->rate * $column
+                $steps[$i][$j] = $this->rate * $column
                     / (sqrt($cache[$i][$j]) + self::EPSILON);
             }
         }
 
         $this->cache[$layer] = $cache;
 
-        return new Matrix($steps);
+        $steps = new Matrix($steps);
+
+        $layer->update($steps);
+
+        return $steps->oneNorm();
     }
 }

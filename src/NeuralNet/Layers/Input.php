@@ -23,6 +23,13 @@ class Input implements Layer
     protected $computed;
 
     /**
+     * The width of the layer. i.e. the number of neurons.
+     *
+     * @var int
+     */
+    protected $width;
+
+    /**
      * @param  int  $inputs
      * @throws \InvalidArgumentException
      * @return void
@@ -35,6 +42,7 @@ class Input implements Layer
         }
 
         $this->inputs = $inputs;
+        $this->width = $inputs + 1;
     }
 
     /**
@@ -44,7 +52,7 @@ class Input implements Layer
      */
     public function width() : int
     {
-        return $this->inputs + 1;
+        return $this->width;
     }
 
     /**

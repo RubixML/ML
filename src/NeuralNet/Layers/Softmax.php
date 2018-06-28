@@ -24,6 +24,13 @@ class Softmax implements Output
     protected $alpha;
 
     /**
+     * The width of the layer. i.e. the number of neurons.
+     *
+     * @var int
+     */
+    protected $width;
+
+    /**
      * The weight matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
@@ -75,6 +82,7 @@ class Softmax implements Output
 
         $this->classes = $classes;
         $this->alpha = $alpha;
+        $this->width = count($classes);
     }
 
     /**
@@ -82,7 +90,7 @@ class Softmax implements Output
      */
     public function width() : int
     {
-        return count($this->classes);
+        return $this->width;
     }
 
     /**
@@ -110,12 +118,12 @@ class Softmax implements Output
      */
     public function initialize(int $width) : void
     {
-        $weights = array_fill(0, $this->width(),
+        $weights = array_fill(0, $this->width,
             array_fill(0, $width, 0.0));
 
         $r = sqrt(6 / $width);
 
-        for ($i = 0; $i < $this->width(); $i++) {
+        for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $width; $j++) {
                 $weights[$i][$j] = random_int((int) (-$r * 1e8),
                     (int) ($r * 1e8)) / 1e8;
