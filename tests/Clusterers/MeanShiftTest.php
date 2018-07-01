@@ -32,7 +32,7 @@ class MeanShiftTest extends TestCase
             [10.56785567, 3.123412342], [6.456749570, 3.324523456],
         ]);
 
-        $this->estimator = new MeanShift(3.0, new Euclidean(), 1e-8, 100);
+        $this->estimator = new MeanShift(3.0, new Euclidean(), 1e-4, 300);
     }
 
     public function test_build_k_means_estimator()

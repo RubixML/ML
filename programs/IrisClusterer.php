@@ -3,12 +3,14 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
+use Rubix\ML\GridSearch;
+use Rubix\ML\RandomParams;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
@@ -34,24 +36,18 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new MeanShift(1.3, new Euclidean(), 1e-8), [
+$params = [
+    RandomParams::floats(0.5, 1.0, 10), [new Euclidean(), new Minkowski(3.0)],
+];
+
+$estimator = new Pipeline(new GridSearch(MeanShift::class, $params, new VMeasure(), new KFold(10)), [
     new NumericStringConverter(),
-    new ZScaleStandardizer(),
 ]);
 
-$validator = new KFold(10);
+$estimator->train($dataset);
 
-$report = new AggregateReport([
-    new ContingencyTable(),
-    new PredictionSpeed(),
-]);
+var_dump($estimator->results());
 
-var_dump($validator->test($estimator, $dataset, new VMeasure()));
+var_dump($estimator->best());
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
-
-$estimator->train($training);
-
-var_dump($report->generate($estimator, $testing));
-
-var_dump($estimator->predict($dataset->randomize()->head(5)));
+var_dump($estimator->predict($dataset->randomize()->head(10)));

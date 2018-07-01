@@ -2,7 +2,7 @@
     "name": "rubix/ml",
     "type": "library",
     "description": "Rubix ML is a library that lets you build intelligent programs that learn from data in PHP.",
-    "homepage": "https://github.com/andrewdalpino/Rubix",
+    "homepage": "https://github.com/andrewdalpino/Rubix-ML",
     "license": "MIT",
     "keywords": [
         "machine", "learning", "data", "science", "mining", "predictive", "modeling", "ai", "classification", "regression", "clustering", "anomaly", "detection", "neural", "net"

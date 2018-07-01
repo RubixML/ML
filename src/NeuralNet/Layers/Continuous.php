@@ -67,7 +67,7 @@ class Continuous implements Output
             throw new InvalidArgumentException('Cannot add negative L2 penalty'
                 . ' to the weights.');
         }
-        
+
         $this->alpha = $alpha;
         $this->width = 1;
     }
@@ -100,18 +100,18 @@ class Continuous implements Output
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  int  $width
+     * @param  int  $prevWidth
      * @return void
      */
-    public function initialize(int $width) : void
+    public function initialize(int $prevWidth) : void
     {
         $weights = array_fill(0, $this->width,
-            array_fill(0, $width, 0.0));
+            array_fill(0, $prevWidth, 0.0));
 
-        $r = sqrt(6 / $width);
+        $r = sqrt(6 / $prevWidth);
 
         for ($i = 0; $i < $this->width; $i++) {
-            for ($j = 0; $j < $width; $j++) {
+            for ($j = 0; $j < $prevWidth; $j++) {
                 $weights[$i][$j] = random_int((int) (-$r * 1e8),
                     (int) ($r * 1e8)) / 1e8;
             }

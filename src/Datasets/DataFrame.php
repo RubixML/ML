@@ -26,11 +26,17 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param  array  $samples
+     * @param  mixed  $placeholder
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples)
+    public function __construct(array $samples, $placeholder = '?')
     {
+        if (!is_string($placeholder) and !is_numeric($placeholder)) {
+            throw new InvalidArgumentException('Placeholder must be a string'
+                . ' or numeric type ' . gettype($placeholder) . ' found.');
+        }
+
         foreach ($samples as &$sample) {
             $sample = array_values((array) $sample);
 
@@ -40,6 +46,10 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             }
 
             foreach ($sample as &$feature) {
+                if (is_null($feature)) {
+                    $feature = $placeholder;
+                }
+
                 if (!is_string($feature) and !is_numeric($feature)) {
                     throw new InvalidArgumentException('Feature must be a'
                         . ' string, or numeric type, '

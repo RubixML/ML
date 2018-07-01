@@ -58,7 +58,7 @@ class PolynomialExpander implements Transformer
 
             for ($i = 0; $i < count($sample); $i++) {
                 for ($j = 1; $j <= $this->degree; $j++) {
-                    $vector[] = pow($sample[$i], $j);
+                    $vector[] = $sample[$i] ** $j;
                 }
             }
 

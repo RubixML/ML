@@ -2,10 +2,10 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/andrewdalpino/Rubix-ML.svg?style=for-the-badge)](https://travis-ci.org/andrewdalpino/Rubix-ML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
 
-Rubix ML is a library that lets you build intelligent programs that learn from data in PHP.
+Rubix ML is a library that lets you build intelligent programs that learn from data in [PHP](https://php.net).
 
 ## Our Mission
-The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the [PHP](https://php.net) language. We aspire to provide the framework to facilitate small to medium sized projects, rapid prototyping, and education. If you would like to join in on the mission, you get up and running fast by following the instructions below.
+The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. We aspire to provide the framework to facilitate small to medium sized projects, rapid prototyping, and education. If you would like to join in on the mission, you get up and running fast by following the instructions below.
 
 ## Installation
 Install Rubix using composer:
@@ -2418,3 +2418,21 @@ var_dump($result);
     ["r_squared"]=> float(0.52063215677)
   }
 ```
+
+---
+## Testing
+Rubix utilizes a combination of static analysis and unit tests to reduce errors in code. Rubix provides two Composer scripts that can be run from the root directory that automate the testing process.
+
+To run static analysis:
+```sh
+composer analyze
+```
+
+To run the unit tests:
+```sh
+composer test
+```
+
+---
+## Contributing
+Please make sure all your code is tested and passes static analysis (see [Testing](#testing) section above) before submitting it to the repository.

@@ -28,12 +28,11 @@ class MeanShift implements Clusterer, Persistable
     protected $kernel;
 
     /**
-     * The sensitivity threshold. i.e. the minimum change in the centroid means
-     * necessary for the algorithm to continue learning.
+     * The minimum change in the centroids necessary to continue training.
      *
      * @var float
      */
-    protected $threshold;
+    protected $minChange;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
@@ -54,20 +53,20 @@ class MeanShift implements Clusterer, Persistable
     /**
      * @param  float  $radius
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  float  $threshold
+     * @param  float  $minChange
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius, Distance $kernel = null,
-                                float $threshold = 1e-8, int $epochs = PHP_INT_MAX)
+    public function __construct(float $radius, Distance $kernel = null, float $minChange = 1e-4,
+                                int $epochs = PHP_INT_MAX)
     {
         if ($radius <= 0) {
             throw new InvalidArgumentException('Radius must be greater than'
                 . ' 0');
         }
 
-        if ($threshold < 0) {
+        if ($minChange < 0) {
             throw new InvalidArgumentException('Threshold cannot be set to less'
                 . ' than 0.');
         }
@@ -83,7 +82,7 @@ class MeanShift implements Clusterer, Persistable
 
         $this->radius = $radius;
         $this->kernel = $kernel;
-        $this->threshold = $threshold;
+        $this->minChange = $minChange;
         $this->epochs = $epochs;
     }
 
@@ -109,38 +108,27 @@ class MeanShift implements Clusterer, Persistable
                 . ' continuous features.');
         }
 
-        $this->centroids = $dataset->samples();
-
-        $n = $dataset->numColumns();
+        $this->centroids = $previous = $dataset->samples();
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $previous = $this->centroids;
-
-            foreach ($this->centroids as $i => &$centroid) {
-                $weighted = array_fill(0, $n, 0.0);
-                $total = array_fill(0, $n, 0.0);
-
+            foreach ($this->centroids as $i => &$centroid1) {
                 foreach ($dataset as $sample) {
-                    $distance = $this->kernel->compute($sample, $centroid);
+                    $distance = $this->kernel->compute($sample, $centroid1);
 
                     if ($distance <= $this->radius) {
                         foreach ($sample as $column => $feature) {
                             $weight = exp(-(($distance ** 2)
                                 / (2 * $this->radius ** 2)));
 
-                            $weighted[$column] += $weight * $feature;
-                            $total[$column] += $weight;
+                            $centroid1[$column] = ($weight * $feature)
+                                / $weight;
                         }
                     }
                 }
 
-                foreach ($centroid as $column => &$mean) {
-                    $mean = $weighted[$column] / $total[$column];
-                }
-
-                foreach ($this->centroids as $j => $target) {
+                foreach ($this->centroids as $j => $centroid2) {
                     if ($i !== $j) {
-                        $distance = $this->kernel->compute($centroid, $target);
+                        $distance = $this->kernel->compute($centroid1, $centroid2);
 
                         if ($distance < $this->radius) {
                             unset($this->centroids[$j]);
@@ -149,20 +137,13 @@ class MeanShift implements Clusterer, Persistable
                 }
             }
 
-            $this->centroids = array_map('unserialize',
-                array_unique(array_map('serialize', $this->centroids)));
+            $shift = $this->calculateShift($previous);
 
-            $change = 0.0;
-
-            foreach ($this->centroids as $i => $centroid) {
-                foreach ($centroid as $j => $mean) {
-                    $change += abs($previous[$i][$j] - $mean);
-                }
-            }
-
-            if ($change < $this->threshold) {
+            if ($shift < $this->minChange) {
                 break 1;
             }
+
+            $previous = $this->centroids;
         }
 
         $this->centroids = array_values($this->centroids);
@@ -205,5 +186,24 @@ class MeanShift implements Clusterer, Persistable
         }
 
         return $best['label'];
+    }
+
+    /**
+     * Calculate the magnitude of a centroid shift from the previous epoch.
+     *
+     * @param  array  $previous
+     * @return float
+     */
+    protected function calculateShift(array $previous) : float
+    {
+        $shift = 0.0;
+
+        foreach ($this->centroids as $i => $centroid) {
+            foreach ($centroid as $j => $mean) {
+                $shift += abs($previous[$i][$j] - $mean);
+            }
+        }
+
+        return $shift;
     }
 }

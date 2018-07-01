@@ -9,17 +9,17 @@ interface Hidden extends Parametric
     /**
      * Initialize the layer.
      *
-     * @param  int  $width
+     * @param  int  $prevWidth
      * @return int
      */
-    public function initialize(int $width) : int;
+    public function initialize(int $prevWidth) : int;
 
     /**
-     * Calculate the errors and gradients of the layer for each neuron.
+     * Calculate the errors and gradients of the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
-     * @param  \MathPHP\LinearAlgebra\Matrix  $errors
+     * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
+     * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
      * @return array
      */
-    public function back(Matrix $weights, Matrix $errors) : array;
+    public function back(Matrix $prevWeights, Matrix $prevErrors) : array;
 }

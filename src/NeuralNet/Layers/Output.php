@@ -9,13 +9,13 @@ interface Output extends Parametric
     /**
      * Initialize the layer.
      *
-     * @param  int  $width
+     * @param  int  $prevWidth
      * @return void
      */
-    public function initialize(int $width) : void;
+    public function initialize(int $prevWidth) : void;
 
     /**
-     * Calculate a backward pass of the network from the output layer.
+     * Calculate the errors and gradients for each output neuron.
      *
      * @param  array  $labels
      * @return array

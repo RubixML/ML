@@ -42,10 +42,11 @@ class Labeled extends DataFrame implements Dataset
     /**
      * @param  array  $samples
      * @param  array  $labels
+     * @param  mixed  $placeholder
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples, array $labels)
+    public function __construct(array $samples, array $labels, $placeholder = '?')
     {
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The ratio of samples to labels'
@@ -61,7 +62,7 @@ class Labeled extends DataFrame implements Dataset
 
         $this->labels = array_values($labels);
 
-        parent::__construct($samples);
+        parent::__construct($samples, $placeholder);
     }
 
     /**
