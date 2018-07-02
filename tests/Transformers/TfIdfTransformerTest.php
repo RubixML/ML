@@ -35,7 +35,7 @@ class TfIdfTransformerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [0.4771212503767177, 0.5282737706526266, 0, 0, 0.17609125688420885, 0, 0, 0, 0.17609125688420885, 0.3521825137684177, 0, 0.3521825137684177, 0, 0, 0, 1.9084850015068708, 0.17609125688420885, 0, 0.4771212503767177],
@@ -48,6 +48,6 @@ class TfIdfTransformerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

@@ -36,7 +36,7 @@ class OneHotEncoderTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [1, 0, 1, 0, 1, 0],
@@ -50,6 +50,6 @@ class OneHotEncoderTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

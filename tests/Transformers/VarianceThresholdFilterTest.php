@@ -34,7 +34,7 @@ class VarianceThresholdFilterTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [0, 1], [1, 0], [0, 0], [1, 1], [1, 0], [1, 1]
@@ -45,6 +45,6 @@ class VarianceThresholdFilterTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

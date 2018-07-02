@@ -35,7 +35,7 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals(2, $this->dataset->numColumns());
     }
@@ -44,6 +44,6 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

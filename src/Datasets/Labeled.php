@@ -191,6 +191,22 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Group rows by label and return an array of stratified sets.
+     *
+     * @return array
+     */
+    public function stratify() : array
+    {
+        $strata = [];
+
+        foreach ($this->labels as $index => $label) {
+            $strata[$label][] = $this->samples[$index];
+        }
+
+        return $strata;
+    }
+
+    /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param  float  $ratio
@@ -379,21 +395,5 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return new self(...$subset);
-    }
-
-    /**
-     * Group rows by label and return an array of stratified sets.
-     *
-     * @return array
-     */
-    public function stratify() : array
-    {
-        $strata = [];
-
-        foreach ($this->labels as $index => $label) {
-            $strata[$label][] = $this->samples[$index];
-        }
-
-        return $strata;
     }
 }

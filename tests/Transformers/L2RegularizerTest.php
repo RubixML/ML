@@ -34,7 +34,7 @@ class L2RegularizerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [0.18257418550172202, 0.36514837100344405, 0.5477225565051661, 0.7302967420068881],

@@ -8,6 +8,13 @@ use InvalidArgumentException;
 class PReLU implements Rectifier
 {
     /**
+     * The threshold at which the neuron activates.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * The amount of leakage as a ratio of the input value to allow to pass
      * through when not activated.
      *
@@ -27,17 +34,19 @@ class PReLU implements Rectifier
     }
 
     /**
+     * @param  float  $threshold
      * @param  float  $leakage
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $leakage = 0.01)
+    public function __construct(float $threshold = 0.0, float $leakage = 0.01)
     {
         if ($leakage < 0 or $leakage > 1) {
             throw new InvalidArgumentException('Leakage coefficient must be'
                 . ' between 0 and 1.');
         }
 
+        $this->threshold = $threshold;
         $this->leakage = $leakage;
     }
 
@@ -50,7 +59,7 @@ class PReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $value : $this->leakage * $value;
+            return $value >= $this->threshold ? $value : $this->leakage * $value;
         });
     }
 
@@ -64,7 +73,7 @@ class PReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $this->leakage;
+            return $output >= $this->threshold ? 1.0 : $this->leakage;
         });
     }
 }

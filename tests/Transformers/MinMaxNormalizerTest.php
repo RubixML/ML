@@ -35,7 +35,7 @@ class MinMaxNormalizerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [0.0, 0.0, 0.0, 0.0],
@@ -48,6 +48,6 @@ class MinMaxNormalizerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

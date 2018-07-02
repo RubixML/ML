@@ -274,7 +274,7 @@ Now that you've gone through a brief introduction of a simple machine learning p
 Here you will find information regarding the classes that make up the Rubix library.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects make it easy to slice and transport data in a canonical way. The Dataset interface provides the following basic methods.
+In Rubix, data is passed around using specialized data structures called Dataset objects. The object can hold a heterogeneous mix of string or numerical data and gracefully handles *null* values by using a placeholder. In addition, Dataset objects make it easy to slice and transport data in a canonical way. The Dataset interface provides the following methods.
 
 Return the *first* **n** rows of data in a new Dataset object:
 ```php
@@ -1437,23 +1437,32 @@ $estimator = PersistentModel::restore('path/to/models/folder/random_forest.model
 ```
 
 ### Transformers
-Transformers are generally designed to be used by the [Pipeline](#pipeline) meta-Estimator, however they can be used manually as well.
+Transformers can be used by the [Pipeline](#pipeline) meta-Estimator or they can be used separately.
 
-The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt do it anyways, it won't hurt.
+The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt, call `fit()` anyways.
 ```php
 public fit(Dataset $dataset) : void
 ```
 
-The transform method on the Transformer is not meant to be called directly. This is done to force transformations to be done on the Dataset object in place so to deal with large datasets. To transform a dataset you can simply pass the instantiated transformer to a Dataset object's `transform()` method.
+The Transformer directly modifies a sample matrix via the `transform()` method.
+
+```php
+public transform(array $samples) : void
+```
+
+To transform a Dataset without having to pass the raw sample matrix you can call `apply()` on any Dataset object and it will apply the transformation to the underlying sample matrix automatically.
 
 ##### Example:
 ```php
 use Rubix\ML\Transformers\MinMaxNormalizer;
 
+...
 $transformer = new MinMaxNormalizer();
 
-$dataset->transform($transformer);
+$dataset->apply($transformer);
 ```
+
+Here are a list of the Transformers available in Rubix.
 
 ### Dense and Sparse Random Projectors
 A Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma "Johnson-Lindenstrauss lemma") that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance.
@@ -1519,7 +1528,7 @@ $transformer = new MinMaxNormalizer();
 ```
 
 ### Missing Data Imputer
-In the real world, it is common to have to deal with datasets that are missing a few values here and there. The Missing Data Imputer searches for any missing value placeholders and replaces it with a guess based on a given imputer *Strategy*.
+In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given imputer *Strategy*.
 
 ##### Categorical or Continuous
 
@@ -1543,7 +1552,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ```
 
 ### Numeric String Converter
-This handy Transformer will convert all numeric strings into their integer or float counterparts. Useful for when extracting from a source that only recognizes data as string types.
+This handy Transformer will convert all numeric strings into their integer or floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
 ##### Categorical
 
@@ -1561,7 +1570,7 @@ $transformer = new NumericStringConverter();
 ```
 
 ### One Hot Encoder
-The One Hot Encoder takes a column of categorical features, such as the country a person was born in, and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories of the feature column.
+The One Hot Encoder takes a column of categorical features and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories of the feature column.
 
 ##### Categorical
 
@@ -1581,7 +1590,7 @@ $transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
 ```
 
 ### Polynomial Expander
-This Transformer will generate polynomial features of specified degrees. Polynomial expansion is often used to fit data to a non-linear curve using standard linear regression.
+This Transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data to a non-linear curve using a linear Estimator.
 
 ##### Continuous *Only*
 

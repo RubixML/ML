@@ -60,7 +60,7 @@ class Pipeline implements MetaEstimator, Persistable
         foreach ($this->transformers as $transformer) {
             $transformer->fit($dataset);
 
-            $dataset->transform($transformer);
+            $dataset->apply($transformer);
         }
 
         $this->estimator->train($dataset);
@@ -101,7 +101,7 @@ class Pipeline implements MetaEstimator, Persistable
     public function preprocess(Dataset $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
-            $dataset->transform($transformer);
+            $dataset->apply($transformer);
         }
     }
 

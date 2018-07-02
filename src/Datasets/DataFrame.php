@@ -37,17 +37,21 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 . ' or numeric type ' . gettype($placeholder) . ' found.');
         }
 
-        foreach ($samples as &$sample) {
-            $sample = array_values((array) $sample);
+        $columns = count($samples[0] ?? []);
 
-            if (count($sample) !== count(current($samples))) {
+        foreach ($samples as &$sample) {
+            if (count($sample) !== $columns) {
                 throw new InvalidArgumentException('The number of feature'
                     . ' columns must be equal for all samples.');
             }
 
-            foreach ($sample as &$feature) {
+            $temp = [];
+
+            foreach ($sample as $feature) {
                 if (is_null($feature)) {
-                    $feature = $placeholder;
+                    $temp[] = $placeholder;
+
+                    continue 1;
                 }
 
                 if (!is_string($feature) and !is_numeric($feature)) {
@@ -55,13 +59,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                         . ' string, or numeric type, '
                         . gettype($feature) . ' found.');
                 }
+
+                $temp[] = $feature;
             }
+
+            $sample = $temp;
         }
 
         $this->samples = array_values($samples);
     }
 
     /**
+     * Return the sample matrix.
+     *
      * @return array
      */
     public function samples() : array
@@ -136,7 +146,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the number of feature columns in the datasets.
+     * Return the number of feature columns in the data frame.
      *
      * @return int
      */
@@ -146,18 +156,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Have a transformer transform the dataset.
+     * Apply a transformation to the sample matrix.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
      * @return void
      */
-    public function transform(Transformer $transformer) : void
+    public function apply(Transformer $transformer) : void
     {
         $transformer->transform($this->samples);
     }
 
     /**
-     * Rotate the sample matrix.
+     * Rotate the sample matrix and return it in an array. i.e. rows become
+     * columns and columns become rows. This is equivalent to transposing.
      *
      * @return array
      */

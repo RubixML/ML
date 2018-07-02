@@ -77,12 +77,12 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function numColumns() : int;
 
     /**
-     * Have a transformer transform the dataset.
+     * Apply a tranformation to the sample matrix.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
      * @return void
      */
-    public function transform(Transformer $transformer) : void;
+    public function apply(Transformer $transformer) : void;
 
     /**
      * Rotate the sample matrix.

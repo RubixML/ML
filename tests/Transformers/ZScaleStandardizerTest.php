@@ -35,7 +35,7 @@ class ZScaleStandardizerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [-1.1297063462715407, -0.772046361723632,  -0.8562475928233875, -0.7232368526547304],
@@ -48,6 +48,6 @@ class ZScaleStandardizerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

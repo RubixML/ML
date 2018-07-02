@@ -2,8 +2,8 @@
 
 namespace Rubix\ML;
 
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
@@ -70,7 +70,7 @@ class GridSearch implements MetaEstimator, Persistable
     ];
 
     /**
-     * The best estimator instance.
+     * The instance of the estimator with the best parameters.
      *
      * @var \Rubix\ML\Estimator|null
      */
@@ -91,7 +91,7 @@ class GridSearch implements MetaEstimator, Persistable
 
         if (!in_array(Estimator::class, $reflector->getInterfaceNames())) {
             throw new InvalidArgumentException('Base class must implement the'
-                . ' estimator inteferace.');
+                . ' estimator interface.');
         }
 
         $args = array_column($reflector->getConstructor()->getParameters(),

@@ -37,7 +37,7 @@ class MissingDataImputerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertThat($this->dataset[1][0], $this->logicalAnd($this->greaterThan(30), $this->lessThan(45)));
         $this->assertContains($this->dataset[3][1], ['friendly', 'mean']);
@@ -47,6 +47,6 @@ class MissingDataImputerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

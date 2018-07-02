@@ -35,7 +35,7 @@ class RobustStandardizerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [-0.6744999996541025, -0.6744999992505555, -0.6744999995003703, -0.6744999977516667],
@@ -48,6 +48,6 @@ class RobustStandardizerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
     }
 }

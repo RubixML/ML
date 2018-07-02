@@ -34,7 +34,7 @@ class PolynomialExpanderTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
-        $this->dataset->transform($this->transformer);
+        $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
             [1, 1, 2, 4, 3, 9, 4, 16],
