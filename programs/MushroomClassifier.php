@@ -11,7 +11,7 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
-use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
@@ -43,10 +43,10 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new SoftPlus()),
-    new Dense(10, new SoftPlus()),
-    new Dense(10, new SoftPlus()),
-    new Dense(10, new SoftPlus()),
+    new Dense(10, new SELU()),
+    new Dense(10, new SELU()),
+    new Dense(10, new SELU()),
+    new Dense(10, new SELU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),

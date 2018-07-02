@@ -96,6 +96,7 @@ MIT
 			- [Identity](#identity)
 			- [ISRLU](#isrlu)
 			- [Leaky ReLU](#leaky-relu)
+			- [SELU](#selu)
 			- [Sigmoid](#sigmoid)
 			- [Soft Plus](#soft-plus)
 		- [Layers](#layers)
@@ -1768,6 +1769,22 @@ Leaky Rectified Linear Units are functions that output x when x > 0 or a small l
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 $activationFunction = new LeakyReLU(0.001);
+```
+
+### SELU
+Scaled Exponential Linear Unit is a self-normalizing activation function based on [ELU](#elu).
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| scale | 1.05070 | float | The factor to scale the output by. |
+| alpha | 1.67326 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+
+$activationFunction = new SELU(1.05070, 1.67326);
 ```
 
 ### Sigmoid
