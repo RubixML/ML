@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\CrossValidation\Metrics\RMSError;
-use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
@@ -39,9 +39,9 @@ $dataset = new Labeled($samples, $labels);
 $dataset->randomize();
 
 $hidden = [
-    new Dense(30, new PReLU()),
-    new Dense(30, new PReLU()),
-    new Dense(30, new PReLU()),
+    new Dense(30, new LeakyReLU()),
+    new Dense(30, new LeakyReLU()),
+    new Dense(30, new LeakyReLU()),
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),

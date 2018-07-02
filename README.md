@@ -95,8 +95,9 @@ MIT
 			- [Hyperbolic Tangent](#hyperbolic-tangent)
 			- [Identity](#identity)
 			- [ISRLU](#isrlu)
-			- [PReLU](#prelu)
+			- [Leaky ReLU](#leaky-relu)
 			- [Sigmoid](#sigmoid)
+			- [Soft Plus](#soft-plus)
 		- [Layers](#layers)
 			- [Input](#input)
 			- [Hidden](#hidden)
@@ -1128,13 +1129,13 @@ A [Neural Network](#neural-network) with a continuous output layer suitable for 
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 
 $hidden = [
 	new Dense(30, new HyperbolicTangent()),
-	new Dense(50, new PReLU()),
+	new Dense(50, new LeakyReLU()),
 ];
 
 $estimator = new MLPRegressor($hidden, 10, new RMSProp(0.001), 1e-2, new RSquared(), 0.2, 3, PHP_INT_MAX);
@@ -1754,8 +1755,8 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ISRLU;
 $activationFunction = new ISRLU(5.0);
 ```
 
-### PReLU
-Parametric Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
+### Leaky ReLU
+Leaky Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1764,9 +1765,9 @@ Parametric Rectified Linear Units are functions that output x when x > 0 or a sm
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$activationFunction = new PReLU(0.001);
+$activationFunction = new LeakyReLU(0.001);
 ```
 
 ### Sigmoid
@@ -1780,6 +1781,19 @@ This Activation Function does not have any parameters.
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
 $activationFunction = new Sigmoid();
+```
+
+### Soft Plus
+A smooth approximation of the ReLU function whose output is constrained to be positive.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
+
+$activationFunction = new SoftPlus();
 ```
 
 ---
@@ -1824,9 +1838,9 @@ Dense layers are fully connected Hidden layers, meaning each neuron is connected
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$layer = new Dense(100, new PReLU(0.05));
+$layer = new Dense(100, new LeakyReLU(0.05));
 ```
 
 ### Output

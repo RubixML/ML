@@ -37,7 +37,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 . ' or numeric type ' . gettype($placeholder) . ' found.');
         }
 
-        $columns = count($samples[0] ?? []);
+        $columns = count(reset($samples) ?? []);
 
         foreach ($samples as &$sample) {
             if (count($sample) !== $columns) {

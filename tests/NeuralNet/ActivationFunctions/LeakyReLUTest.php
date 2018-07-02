@@ -3,12 +3,12 @@
 namespace Rubix\Tests\NeuralNet\ActivationFunctions;
 
 use MathPHP\LinearAlgebra\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\PReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
-class PReLUTest extends TestCase
+class LeakyReLUTest extends TestCase
 {
     protected $input;
 
@@ -18,12 +18,12 @@ class PReLUTest extends TestCase
     {
         $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activationFunction = new PReLU(0.0, 0.01);
+        $this->activationFunction = new LeakyReLU(0.01);
     }
 
     public function test_build_activation_function()
     {
-        $this->assertInstanceOf(PReLU::class, $this->activationFunction);
+        $this->assertInstanceOf(LeakyReLU::class, $this->activationFunction);
         $this->assertInstanceOf(Rectifier::class, $this->activationFunction);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
     }
