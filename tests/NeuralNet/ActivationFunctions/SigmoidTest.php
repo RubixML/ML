@@ -26,6 +26,11 @@ class SigmoidTest extends TestCase
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
     }
 
+    public function test_get_range()
+    {
+        $this->assertEquals([0.0, 1.0], $this->activationFunction->range());
+    }
+
     public function test_compute()
     {
         $activations = $this->activationFunction->compute($this->input);

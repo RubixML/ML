@@ -16,7 +16,7 @@ class NumericStringConverter implements Transformer
     }
 
     /**
-     * Normalize the dataset.
+     * Convert all numerial strings to floating point numbers.
      *
      * @param  array  $samples
      * @return void
@@ -26,9 +26,7 @@ class NumericStringConverter implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$feature) {
                 if (is_string($feature) and is_numeric($feature)) {
-                    $feature = is_float($feature + self::EPSILON)
-                        ? (float) $feature
-                        : (int) $feature;
+                    $feature = (float) $feature;
                 }
             }
         }

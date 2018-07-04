@@ -37,10 +37,15 @@ class ResidualAnalysisTest extends TestCase
     public function test_generate_report()
     {
         $actual = [
-            'mean_absolute_error' => 0.7999999992,
-            'mean_squared_error' => 0.9999999989999999,
-            'rms_error' => 0.9999999995,
-            'r_squared' => 0.9962367816957203,
+            'mean_absolute_error' => 0.8,
+            'median_absolute_error' => 1.0,
+            'mean_squared_error' => 1.0,
+            'rms_error' => 1.0,
+            'r_squared' => 0.9958930551562692,
+            'min' => 0,
+            'max' => 2,
+            'variance' => 0.36000000000000004,
+            'cardinality' => 10,
         ];
 
         $result = $this->report->generate($this->estimator, $this->testing);

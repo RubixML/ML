@@ -36,13 +36,6 @@ class Continuous implements Output
     protected $input;
 
     /**
-     * The memoized z matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $z;
-
-    /**
      * The memoized output activations matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
@@ -64,8 +57,8 @@ class Continuous implements Output
     public function __construct(float $alpha = 1e-4)
     {
         if ($alpha < 0) {
-            throw new InvalidArgumentException('Cannot add negative L2 penalty'
-                . ' to the weights.');
+            throw new InvalidArgumentException('L2 regularization parameter'
+                . ' must be 0 or greater.');
         }
 
         $this->alpha = $alpha;
@@ -131,9 +124,7 @@ class Continuous implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->multiply($input);
-
-        $this->computed = $this->z;
+        $this->computed = $this->weights->multiply($input);
 
         return $this->computed;
     }
@@ -150,7 +141,7 @@ class Continuous implements Output
 
         foreach ($labels as $i => $label) {
             $errors[0][$i] = ($label - $this->computed[0][$i])
-                + 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
+                + $this->alpha * array_sum($this->weights[0]) ** 2;
         }
 
         $errors = new Matrix($errors);

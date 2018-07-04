@@ -89,8 +89,8 @@ class Logistic implements Output
         }
 
         if ($alpha < 0) {
-            throw new InvalidArgumentException('Cannot add negative L2 penalty'
-                . ' to the weights.');
+            throw new InvalidArgumentException('L2 regularization parameter'
+                . ' must be 0 or greater.');
         }
 
         $this->classes = [$labels[0] => 0, $labels[1] => 1];

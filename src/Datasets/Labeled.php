@@ -28,7 +28,7 @@ class Labeled extends DataFrame implements Dataset
 
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Cannot merge any non-Labeled'
+                throw new InvalidArgumentException('Cannot merge non-Labeled'
                     . ' datasets, ' . get_class($dataset) . ' found.');
             }
 
@@ -53,10 +53,14 @@ class Labeled extends DataFrame implements Dataset
              . ' must be equal.');
         }
 
-        foreach ($labels as $label) {
+        foreach ($labels as &$label) {
             if (!is_string($label) and !is_numeric($label)) {
                 throw new InvalidArgumentException('Label must be a string or'
                     . ' numeric type, ' . gettype($label) . ' found.');
+            }
+
+            if (is_string($label) and is_numeric($label)) {
+                $label = (float) $label;
             }
         }
 

@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
+use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
 class ResidualAnalysis implements Report
@@ -31,25 +32,36 @@ class ResidualAnalysis implements Report
                 . ' Labeled testing set.');
         }
 
-        $metrics = array_fill_keys(['error', 'sae', 'sse', 'sst'], 0.0);
+        $l1 = $l2 = [];
+
+        $sse = $sst = 0.0;
+
+        $predictions = $estimator->predict($testing);
 
         $mean = Average::mean($testing->labels());
 
-        foreach ($estimator->predict($testing) as $i => $prediction) {
+        foreach ($predictions as $i => $prediction) {
             $error = $testing->label($i) - $prediction;
 
-            $metrics['sae'] += abs($error);
-            $metrics['sse'] += $error ** 2;
-            $metrics['sst'] += ($prediction - $mean) ** 2;
+            $l1[] = abs($error);
+            $l2[] = $error ** 2;
+
+            $sse += end($l2);
+            $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        $n = $testing->numRows() + self::EPSILON;
+        $mse = Average::mean($l2);
 
         return [
-            'mean_absolute_error' => $metrics['sae'] / $n,
-            'mean_squared_error' => $metrics['sse'] / $n,
-            'rms_error' => sqrt($metrics['sse'] / $n),
-            'r_squared' => 1 - ($metrics['sse'] / ($metrics['sst'] + self::EPSILON)),
+            'mean_absolute_error' => Average::mean($l1),
+            'median_absolute_error' => Average::median($l1),
+            'mean_squared_error' => $mse,
+            'rms_error' => sqrt($mse),
+            'min' => min($l1),
+            'max' => max($l1),
+            'variance' => Descriptive::populationVariance($l1),
+            'r_squared' => 1 - ($sse / $sst),
+            'cardinality' => $testing->numRows(),
         ];
     }
 }

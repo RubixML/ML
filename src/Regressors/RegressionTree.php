@@ -8,7 +8,7 @@ use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use MathPHP\Statistics\Descriptive;
+use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
 class RegressionTree extends BinaryTree implements Regressor, Persistable
@@ -69,14 +69,14 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
                                 float $epsilon = 1e-2)
     {
-        if ($minSamples < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
-        }
-
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
                 . ' than 1.');
+        }
+
+        if ($minSamples < 1) {
+            throw new InvalidArgumentException('At least one sample is required'
+                . ' to make a decision.');
         }
 
         if ($epsilon < 0) {
@@ -93,7 +93,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     }
 
     /**
-     * The complexity of the CART i.e. the number of splits.
+     * The complexity of the tree i.e. the number of splits.
      *
      * @return int
      */
@@ -103,7 +103,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
     }
 
     /**
-     * Train the regression tree by learning the most optimal splits in the
+     * Train the regression tree by learning the optimal splits in the
      * training set.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -172,7 +172,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      */
     protected function _search(array $sample, BinaryNode $root) : BinaryNode
     {
-        if ($root->get('terminal')) {
+        if ($root->get('terminal', false)) {
             return $root;
         }
 
@@ -251,10 +251,8 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      */
     protected function findBestSplit(array $data) : BinaryNode
     {
-        $outcomes = array_unique(array_column($data, count($data[0]) - 1));
-
         $best = [
-            'variance' => INF, 'index' => null, 'value' => null, 'groups' => [],
+            'sse' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
         shuffle($this->indices);
@@ -263,7 +261,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
-                $variance = 0.0;
+                $sse = 0.0;
 
                 foreach ($groups as $group) {
                     if (count($group) === 0) {
@@ -272,17 +270,17 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
 
                     $values = array_column($group, count($group[0]) - 1);
 
-                    $variance += Descriptive::populationVariance($values);
+                    $sse += RandomVariable::sumOfSquaresDeviations($values);
                 }
 
-                if ($variance < $best['variance']) {
-                    $best['variance'] = $variance;
+                if ($sse < $best['sse']) {
+                    $best['sse'] = $sse;
                     $best['index'] = $index;
                     $best['value'] = $row[$index];
                     $best['groups'] = $groups;
                 }
 
-                if ($variance <= $this->epsilon) {
+                if ($sse <= $this->epsilon) {
                     break 2;
                 }
             }
@@ -292,7 +290,7 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
             'index' => $best['index'],
             'value' => $best['value'],
             'type' => $this->columnTypes[$best['index']],
-            'variance' => $best['variance'],
+            'sse' => $best['sse'],
             'groups' => $best['groups'],
         ]);
     }
@@ -305,12 +303,8 @@ class RegressionTree extends BinaryTree implements Regressor, Persistable
      */
     protected function terminate(array $data) : BinaryNode
     {
-        $outcomes = array_column($data, count($data[0]) - 1);
-
-        $mean = Average::mean($outcomes);
-
         return new BinaryNode([
-            'output' => $mean,
+            'output' => Average::mean(array_column($data, count($data[0]) - 1)),
             'terminal' => true,
         ]);
     }

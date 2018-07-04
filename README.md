@@ -1554,7 +1554,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ```
 
 ### Numeric String Converter
-This handy Transformer will convert all numeric strings into their integer or floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
+This handy Transformer will convert all numeric strings into their floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
 ##### Categorical
 

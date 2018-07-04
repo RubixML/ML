@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
-     * The hidden layer configuration of the neural net.
+     * The user-specified hidden layers of the network.
      *
      * @var array
      */
@@ -29,7 +29,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     ];
 
     /**
-     * The number of training samples to consider per iteration of gradient descent.
+     * The number of training samples to consider per iteholdoutn of gradient descent.
      *
      * @var int
      */
@@ -57,12 +57,12 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $metric;
 
     /**
-     * The ratio of training samples to use for validation. i.e. the holdout
-     * ratio.
+     * The holdout of training samples to use for validation. i.e. the holdout
+     * holdout.
      *
      * @var float
      */
-    protected $ratio;
+    protected $holdout;
 
     /**
      * The training window to consider during early stop checking i.e. the last
@@ -119,7 +119,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation|null  $metric
-     * @param  float $ratio
+     * @param  float $holdout
      * @param  int  $window
      * @param  float  $tolerance
      * @param  int  $epochs
@@ -127,7 +127,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 50, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, Validation $metric = null, float $ratio = 0.2,
+                    float $alpha = 1e-4, Validation $metric = null, float $holdout = 0.2,
                     int $window = 3, float $tolerance = 1e-3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
@@ -136,11 +136,11 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         }
 
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('L2 regularization term must'
+            throw new InvalidArgumentException('Regularization parameter must'
                 . ' be non-negative.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($holdout < 0.01 or $holdout > 1.0) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
@@ -173,7 +173,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
         $this->metric = $metric;
-        $this->ratio = $ratio;
+        $this->holdout = $holdout;
         $this->window = $window;
         $this->tolerance = $tolerance;
         $this->epochs = $epochs;
@@ -247,7 +247,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             $this->train($dataset);
         }
 
-        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
+        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->holdout);
 
         list($min, $max) = $this->metric->range();
 

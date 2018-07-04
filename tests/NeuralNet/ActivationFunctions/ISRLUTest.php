@@ -28,6 +28,11 @@ class ISRLUTest extends TestCase
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
     }
 
+    public function test_get_range()
+    {
+        $this->assertEquals([-1.0, INF], $this->activationFunction->range());
+    }
+
     public function test_compute()
     {
         $activations = $this->activationFunction->compute($this->input);
