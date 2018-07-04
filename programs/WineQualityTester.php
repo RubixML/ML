@@ -12,7 +12,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
-use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
+use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -46,7 +46,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
-    1e-4, new MeanSquaredError(), 0.1, 3, 1e-3, 100), [
+    1e-4, new MedianAbsoluteError(), 0.1, 3, 1e-3, 100), [
         new NumericStringConverter(),
     ]);
 

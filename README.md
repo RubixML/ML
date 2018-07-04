@@ -2157,6 +2157,7 @@ There are different metrics for the different types of Estimators listed below.
 | Metric | Range | Description |
 |--|--|--|
 | Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
+| Median Absolute Error | (-INF, 0) | The median absolute difference between the actual and predicted values. |
 | Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
 | RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
 | R-Squared | (-INF, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
