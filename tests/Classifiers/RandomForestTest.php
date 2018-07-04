@@ -60,7 +60,7 @@ class RandomForestTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new RandomForest(30, 0.7, 10, 3, 1e-4);
+        $this->estimator = new RandomForest(30, 0.7, 10, 3, 2);
     }
 
     public function test_create_tree()

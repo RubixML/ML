@@ -739,8 +739,8 @@ Binary Tree based algorithm that works by intelligently splitting the training d
 | Param | Default | Type | Description |
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| epsilon | 1e-2 | float | The amount of gini impurity to tolerate when choosing the best split. |
+| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -844,7 +844,7 @@ Multiclass [Neural Network](#neural-network) model that uses a series of user-de
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| ratio | 0.2 | float | The ratio of sample data to hold out for validation during training. |
+| holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
@@ -903,7 +903,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| epsilon | 1e-2 | float | The amount of gini impurity to tolerate when choosing the best split. |
+| max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1115,7 +1115,7 @@ A [Neural Network](#neural-network) with a continuous output layer suitable for 
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| ratio | 0.2 | float | The ratio of sample data to hold out for validation during training. |
+| holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
@@ -1153,8 +1153,8 @@ A binary tree learning algorithm that performs greedy splitting by minimizing th
 | Param | Default | Type | Description |
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| epsilon | 1e-2 | float | The amount of variance to tolerate when the best split. |
+| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -2431,7 +2431,7 @@ var_dump($result);
 ```
 
 ### Residual Analysis
-Residual Analysis is a type of Report that measures the total differences between the predicted and actual values of a Regression.
+Residual Analysis is a type of Report that measures the differences between the predicted and actual values of a regression problem.
 
 ##### Regression
 
@@ -2452,11 +2452,25 @@ var_dump($result);
 
 ##### Output:
 ```sh
-  array(4) {
-    ["mean_absolute_error"]=> float(0.60076863576779)
-    ["mean_squared_error"]=> float(0.6170496114073)
-    ["rms_error"]=> float(0.78552505460189)
-    ["r_squared"]=> float(0.52063215677)
+  array(9) {
+    ["mean_absolute_error"]=>
+    float(2.1971189157834)
+    ["median_absolute_error"]=>
+    float(1.714)
+    ["mean_squared_error"]=>
+    float(8.7020753279997)
+    ["rms_error"]=>
+    float(2.9499280208167)
+    ["min"]=>
+    float(0.0069999999999908)
+    ["max"]=>
+    float(14.943333333333)
+    ["variance"]=>
+    float(3.8747437979066)
+    ["r_squared"]=>
+    float(0.82286934000174)
+    ["cardinality"]=>
+    int(301)
   }
 ```
 

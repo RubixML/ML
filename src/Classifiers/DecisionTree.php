@@ -20,18 +20,19 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     protected $maxDepth;
 
     /**
-     * The minimum number of samples that form a consensus to make a prediction.
+     * The minimum number of samples that each node must contain in order to
+     * form a consensus to make a prediction.
      *
      * @var int
      */
     protected $minSamples;
 
     /**
-     * The amount of gini impurity to tolerate when choosing a perfect split.
+     * The maximum number of features to consider when determining a split.
      *
-     * @var float
+     * @var int
      */
-    protected $epsilon;
+    protected $maxFeatures;
 
     /**
      * The possible class outcomes.
@@ -70,12 +71,12 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     /**
      * @param  int  $maxDepth
      * @param  int  $minSamples
-     * @param  float  $epsilon
+     * @param  int  $maxFeatures
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                float $epsilon = 1e-2)
+                                int $maxFeatures = PHP_INT_MAX)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
@@ -87,17 +88,18 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                 . ' to make a decision.');
         }
 
-        if ($epsilon < 0 or $epsilon > 1) {
-            throw new InvalidArgumentException('Split tolerance must be between'
-                . ' 0 and 1.');
+        if ($maxFeatures < 1) {
+            throw new InvalidArgumentException('Tree must consider at least 1'
+                . ' feature to determine a split.');
         }
 
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
-        $this->epsilon = $epsilon;
-        $this->splits = 0;
+        $this->maxFeatures = $maxFeatures;
 
         parent::__construct();
+
+        $this->splits = 0;
     }
 
     /**
@@ -271,7 +273,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
     /**
      * Greedy algorithm to chose the best split point for a given set of data
      * as determined by its gini index. The algorithm will terminate early if it
-     * finds a homogenous split. i.e. a gini score of <= epsilon.
+     * finds a homogenous split. i.e. a gini score of 0.
      *
      * @param  array  $data
      * @return \Rubix\ML\Graph\BinaryNode
@@ -286,7 +288,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
 
         shuffle($this->indices);
 
-        foreach ($this->indices as $index) {
+        foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
@@ -299,7 +301,7 @@ class DecisionTree extends BinaryTree implements Multiclass, Probabilistic, Pers
                     $best['groups'] = $groups;
                 }
 
-                if ($gini <= $this->epsilon) {
+                if ($gini === 0.0) {
                     break 2;
                 }
             }

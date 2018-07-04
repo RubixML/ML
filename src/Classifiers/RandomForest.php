@@ -41,11 +41,11 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     protected $minSamples;
 
     /**
-     * The amount of gini impurity to tolerate when choosing a perfect split.
+     * The maximum number of features to consider when determining a split.
      *
-     * @var float
+     * @var int
      */
-    protected $tolerance;
+    protected $maxFeatures;
 
     /**
      * The possible class outcomes.
@@ -73,8 +73,8 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 50,
-                                int $minSamples = 5, float $tolerance = 1e-2)
+    public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 10,
+                                int $minSamples = 5, int $maxFeatures = PHP_INT_MAX)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -86,26 +86,26 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
                 . ' value between 0.01 and 1.0.');
         }
 
-        if ($minSamples < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
-        }
-
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
                 . ' than 1.');
         }
 
-        if ($tolerance < 0 or $tolerance > 1) {
-            throw new InvalidArgumentException('Gini tolerance must be between'
-                . ' 0 and 1.');
+        if ($minSamples < 1) {
+            throw new InvalidArgumentException('At least one sample is required'
+                . ' to make a decision.');
+        }
+
+        if ($maxFeatures < 1) {
+            throw new InvalidArgumentException('Tree must consider at least 1'
+                . ' feature to determine a split.');
         }
 
         $this->trees = $trees;
         $this->ratio = $ratio;
-        $this->minSamples = $minSamples;
         $this->maxDepth = $maxDepth;
-        $this->tolerance = $tolerance;
+        $this->minSamples = $minSamples;
+        $this->maxFeatures = $maxFeatures;
     }
 
     /**
@@ -131,7 +131,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
 
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new DecisionTree($this->maxDepth, $this->minSamples,
-                $this->tolerance);
+                $this->maxFeatures);
 
             $tree->train($dataset->randomSubsetWithReplacement($n));
 

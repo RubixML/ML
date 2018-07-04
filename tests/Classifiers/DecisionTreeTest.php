@@ -60,7 +60,7 @@ class DecisionTreeTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new DecisionTree(10, 5, 1e-4);
+        $this->estimator = new DecisionTree(10, 5, 2);
     }
 
     public function test_create_tree()

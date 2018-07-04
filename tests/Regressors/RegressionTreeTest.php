@@ -47,7 +47,7 @@ class RegressionTreeTest extends TestCase
 
         $this->testing = new Labeled([[6, 150.0, 2825]], [20]);
 
-        $this->estimator = new RegressionTree(10, 5, 1e-4);
+        $this->estimator = new RegressionTree(10, 5, 2);
     }
 
     public function test_build_regression_tree()
@@ -66,7 +66,7 @@ class RegressionTreeTest extends TestCase
 
         $this->assertEquals(34, $predictions[0], '', 3);
     }
-    
+
     public function test_train_with_unlabeled()
     {
         $dataset = new Unlabeled([['bad']]);
