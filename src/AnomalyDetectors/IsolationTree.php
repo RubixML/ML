@@ -69,9 +69,10 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
 
         $this->maxDepth = $maxDepth;
         $this->threshold = $threshold;
-        $this->splits = 0;
 
         parent::__construct();
+
+        $this->splits = 0;
     }
 
     /**
@@ -250,16 +251,14 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      */
     protected function terminate(array $data, int $depth) : BinaryNode
     {
-        $n = count($data);
-
-        $c = $this->calculateCFactor($n);
+        $c = $this->calculateCFactor(count($data));
 
         $probability = 2.0 ** -(($depth + $c) / $this->c);
 
-        $outcome = $probability > $this->threshold ? 1 : 0;
+        $outlier = $probability > $this->threshold ? 1 : 0;
 
         return new BinaryNode([
-            'outcome' => $outcome,
+            'outlier' => $outlier,
             'probability' => $probability,
             'terminal' => true,
         ]);

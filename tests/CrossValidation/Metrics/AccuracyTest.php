@@ -45,4 +45,15 @@ class AccuracyTest extends TestCase
 
         $this->assertEquals(0.5999999988, $score);
     }
+
+    public function test_within_range()
+    {
+        list($min, $max) = $this->metric->range();
+
+        $score = $this->metric->score($this->estimator, $this->testing);
+
+        $this->assertThat($score, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
+    }
 }

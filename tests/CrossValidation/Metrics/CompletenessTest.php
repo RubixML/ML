@@ -43,4 +43,15 @@ class CompletenessTest extends TestCase
 
         $this->assertEquals(0.5833333280555556, $score);
     }
+
+    public function test_within_range()
+    {
+        list($min, $max) = $this->metric->range();
+
+        $score = $this->metric->score($this->estimator, $this->testing);
+
+        $this->assertThat($score, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
+    }
 }

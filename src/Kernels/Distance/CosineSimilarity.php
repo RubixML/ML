@@ -18,6 +18,6 @@ class CosineSimilarity implements Distance
         $a = new Vector(array_values($a));
         $b = new Vector(array_values($b));
 
-        return 1 - $a->dotProduct($b) / ($a->length() * $b->length());
+        return 1 - ($a->dotProduct($b) / ($a->length() * $b->length()));
     }
 }

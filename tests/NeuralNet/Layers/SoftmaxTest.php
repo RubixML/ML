@@ -17,7 +17,7 @@ class SoftmaxTest extends TestCase
         $this->layer = new Softmax(['hot', 'cold', 'ice cold']);
     }
 
-    public function test_build_logistic_layer()
+    public function test_build_layer()
     {
         $this->assertInstanceOf(Softmax::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);

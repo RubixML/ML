@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class F1ScoreTest extends TestCase
 {
     protected $metric;
-    
+
     protected $estimator;
 
     protected $testing;
@@ -44,5 +44,16 @@ class F1ScoreTest extends TestCase
         $score = $this->metric->score($this->estimator, $this->testing);
 
         $this->assertEquals(0.5833333404166667, $score);
+    }
+
+    public function test_within_range()
+    {
+        list($min, $max) = $this->metric->range();
+
+        $score = $this->metric->score($this->estimator, $this->testing);
+
+        $this->assertThat($score, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
     }
 }

@@ -12,6 +12,8 @@ use InvalidArgumentException;
 
 class Dense implements Hidden
 {
+    const BETA = 1 / self::ROOT_2;
+
     /**
      * The number of neurons in this layer.
      *
@@ -122,9 +124,9 @@ class Dense implements Hidden
         $weights = array_fill(0, $this->width, array_fill(0, $prevWidth, 0.0));
 
         if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $prevWidth) ** (1 / self::ROOT_2);
+            $r = (6 / $prevWidth) ** self::BETA;
         } else if ($this->activationFunction instanceof HyperbolicTangent) {
-            $r = (6 / $prevWidth) ** (1 / 4);
+            $r = (6 / $prevWidth) ** 0.25;
         } else if ($this->activationFunction instanceof Sigmoid) {
             $r = sqrt(6 / $prevWidth);
         } else {

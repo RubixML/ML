@@ -81,11 +81,11 @@ class MulticlassBreakdown implements Report
             $table[$label]['f1_score'] = 2.0 * (($table[$label]['precision']
                 * $table[$label]['recall']) / ($table[$label]['precision']
                 + $table[$label]['recall'] + self::EPSILON));
+            $table[$label]['informedness'] = $table[$label]['recall']
+                + $table[$label]['specificity'] - 1;
             $table[$label]['mcc'] = ($tp * $tn - $fp * $fn)
                 / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
                 + self::EPSILON);
-            $table[$label]['informedness'] = $table[$label]['recall']
-                + $table[$label]['specificity'] - 1;
             $table[$label]['true_positives'] = $tp;
             $table[$label]['true_negatives'] = $tn;
             $table[$label]['false_positives'] = $fp;

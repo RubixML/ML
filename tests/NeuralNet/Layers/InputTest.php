@@ -15,7 +15,7 @@ class InputTest extends TestCase
         $this->layer = new Input(50);
     }
 
-    public function test_build_input_layer()
+    public function test_build_layer()
     {
         $this->assertInstanceOf(Input::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);

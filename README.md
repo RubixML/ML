@@ -104,7 +104,7 @@ MIT
 			- [Hidden](#hidden)
 				- [Dense](#dense)
 			- [Output](#output)
-				- [Continuous](#continuous)
+				- [Linear](#linear)
 				- [Logistic](#logistic)
 				- [Softmax](#softmax)
 		- [Optimizers](#optimizers)
@@ -115,6 +115,15 @@ MIT
 			- [Step Decay](#step-decay)
 			- [Stochastic](#stochastic)
 		- [Snapshots](#snapshots)
+	- [Kernel Functions](#kernel-functions)
+		- [Distance](#distance)
+			- [Canberra](#canberra)
+			- [Cosine Similarity](#cosine-similarity)
+			- [Diagonal](#diagonal)
+			- [Ellipsoidal](#ellipsoidal)
+			- [Euclidean](#euclidean)
+			- [Manhattan](#manhattan)
+			- [Minkowski](#minkowski)
 	- [Cross Validation](#cross-validation)
 		- [Validators](#validators)
 			- [Hold Out](#hold-out)
@@ -1863,8 +1872,8 @@ $layer = new Dense(100, new LeakyReLU(0.05));
 ### Output
 Activations are read directly from the Output layer when it comes to making a prediction. The type of Output layer used will determine the type of Estimator the Neural Net can power (Binary Classifier, Multiclass Classifier, or Regressor). The different types of Output layers are listed below.
 
-### Continuous
-The Continuous Output Layer consists of a single linear neuron that outputs a scalar value useful for Regression problems.
+### Linear
+The Linear Output Layer consists of a single linear neuron that outputs a continuous scalar value useful for Regression problems.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1873,9 +1882,9 @@ The Continuous Output Layer consists of a single linear neuron that outputs a sc
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Linear;
 
-$layer = new Continuous(1e-5);
+$layer = new Linear(1e-5);
 ```
 
 ### Logistic
@@ -2027,6 +2036,106 @@ $snapshot = Snapshot::restore('00001.snapshot');
 
 $network->restore($snapshot);
 ...
+```
+
+---
+### Kernel Functions
+Kernel functions are used to compute the similarity or distance between two vectors and can be plugged in to a particular Estimator to perform a part of the computation. They are pairwise positive semi-definite functions meaning their output is always 0 or greater. When considered as a hyperparameter, different Kernel functions have properties that can lead to different training and predictions.
+
+### Distance
+Distance functions are a type of Kernel that measures the distance between two coordinate vectors. They can be used throughout Rubix in Estimators that use the concept of distance to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
+
+### Canberra
+A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Canberra;
+
+$kernel = new Canberra();
+```
+
+### Cosine Similarity
+Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\CosineSimilarity;
+
+$kernel = new CosineSimilarity();
+```
+
+### Diagonal
+The Diagonal (sometimes called Chebyshev) distance is a measure that constrains movement to horizontal, vertical, and diagonal from a point. An example that uses Diagonal movement is a chess board.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Diagonal;
+
+$kernel = new Diagonal();
+```
+
+### Ellipsoidal
+The Ellipsoidal distance measures the distance between two points on a 3-dimensional ellipsoid.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Ellipsoidal;
+
+$kernel = new Ellipsoidal();
+```
+
+### Euclidean
+This is the ordinary straight line (bee line) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$kernel = new Euclidean();
+```
+
+### Manhattan
+A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Manhattan;
+
+$kernel = new Manhattan();
+```
+
+### Minkowski
+The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the l*ambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Minkowski;
+
+$kernel = new Minkowski(4.0);
 ```
 
 ---

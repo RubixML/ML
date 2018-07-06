@@ -4,22 +4,22 @@ namespace Rubix\Tests\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Linear;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use PHPUnit\Framework\TestCase;
 
-class ContinuousTest extends TestCase
+class LinearTest extends TestCase
 {
     protected $layer;
 
     public function setUp()
     {
-        $this->layer = new Continuous();
+        $this->layer = new Linear();
     }
 
-    public function test_build_continuous_layer()
+    public function test_build_layer()
     {
-        $this->assertInstanceOf(Continuous::class, $this->layer);
+        $this->assertInstanceOf(Linear::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Output::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);

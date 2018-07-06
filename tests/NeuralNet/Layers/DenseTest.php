@@ -18,7 +18,7 @@ class DenseTest extends TestCase
         $this->layer = new Dense(10, new ELU());
     }
 
-    public function test_build_dense_layer()
+    public function test_build_layer()
     {
         $this->assertInstanceOf(Dense::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);

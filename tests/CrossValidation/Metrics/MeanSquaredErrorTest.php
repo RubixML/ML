@@ -42,4 +42,15 @@ class MeanSquaredErrorTest extends TestCase
 
         $this->assertEquals(-8, $score, '', 5);
     }
+
+    public function test_within_range()
+    {
+        list($min, $max) = $this->metric->range();
+
+        $score = $this->metric->score($this->estimator, $this->testing);
+
+        $this->assertThat($score, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
+    }
 }

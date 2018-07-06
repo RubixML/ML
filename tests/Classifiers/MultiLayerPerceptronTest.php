@@ -68,7 +68,7 @@ class MultiLayerPerceptronTest extends TestCase
         $this->estimator = new MultiLayerPerceptron([
             new Dense(8, new ELU()),
             new Dense(8, new ELU()),
-        ], 1, new Adam(0.005), 1e-4, new MCC(), 0.10, 4);
+        ], 1, new Adam(0.001), 1e-4, new MCC(), 0.10, 4);
     }
 
     public function test_build_multi_layer_perceptron()
@@ -90,8 +90,8 @@ class MultiLayerPerceptronTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals('male', $predictions[0]);
-        $this->assertEquals('female', $predictions[1]);
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
     }
 
     public function test_predict_proba()

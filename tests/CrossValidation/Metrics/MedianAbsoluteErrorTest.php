@@ -42,4 +42,15 @@ class MedianAbsoluteErrorTest extends TestCase
 
         $this->assertEquals(2.2, $score, '', 5);
     }
+
+    public function test_within_range()
+    {
+        list($min, $max) = $this->metric->range();
+
+        $score = $this->metric->score($this->estimator, $this->testing);
+
+        $this->assertThat($score, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
+    }
 }

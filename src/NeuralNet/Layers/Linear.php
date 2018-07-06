@@ -5,7 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class Continuous implements Output
+class Linear implements Output
 {
     /**
      * The L2 regularization parameter.
@@ -101,7 +101,7 @@ class Continuous implements Output
         $weights = array_fill(0, $this->width,
             array_fill(0, $prevWidth, 0.0));
 
-        $r = sqrt(6 / $prevWidth);
+        $r = (6 / $prevWidth) ** 0.25;
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $prevWidth; $j++) {

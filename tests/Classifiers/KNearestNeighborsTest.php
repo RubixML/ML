@@ -84,8 +84,8 @@ class KNearestNeighborsTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals('male', $predictions[0]);
-        $this->assertEquals('female', $predictions[1]);
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
     }
 
     public function test_predict_proba()

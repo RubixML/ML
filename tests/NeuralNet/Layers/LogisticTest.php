@@ -17,7 +17,7 @@ class LogisticTest extends TestCase
         $this->layer = new Logistic(['hot', 'cold']);
     }
 
-    public function test_build_logistic_layer()
+    public function test_build_layer()
     {
         $this->assertInstanceOf(Logistic::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);

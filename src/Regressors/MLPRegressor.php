@@ -9,8 +9,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Layers\Linear;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
@@ -202,7 +202,7 @@ class MLPRegressor implements Regressor, Online, Persistable
         }
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Continuous($this->alpha), $this->optimizer);
+            $this->hidden, new Linear($this->alpha), $this->optimizer);
 
         $this->network->initialize();
 
