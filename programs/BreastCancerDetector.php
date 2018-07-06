@@ -5,22 +5,20 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\Classifiers\DecisionTree;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\CommitteeMachine;
-use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
-use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -52,9 +50,8 @@ $hidden = [
 
 $estimator = new Pipeline(new CommitteeMachine([
     new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
-    new RandomForest(100, 0.3, 50, 3, 1e-2),
-    new DecisionTree(500, 1, 1e-4),
-    new KNearestNeighbors(3, new Euclidean()),
+    new RandomForest(200, 0.1, 10, 3, 3),
+    new ClassificationTree(150, 3, 5),
 ]), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
@@ -67,7 +64,7 @@ $report = new AggregateReport([
     new PredictionSpeed(),
 ]);
 
-list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.20);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
 $estimator->train($training);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\CrossValidation\Reports;
+namespace Rubix\ML\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
@@ -49,7 +49,7 @@ class AggregateReport implements Report
     /**
      * Add a report to the stack.
      *
-     * @param  \Rubix\ML\CrossValidation\Reports\Report  $report
+     * @param  \Rubix\ML\Reports\Report  $report
      * @param  mixed  $index
      * @return void
      */

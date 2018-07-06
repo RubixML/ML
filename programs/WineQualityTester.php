@@ -5,13 +5,13 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\Reports\ResidualAnalysis;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
 use League\Csv\Reader;
 

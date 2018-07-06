@@ -7,14 +7,14 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Classifiers\NaiveBayes;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
-use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

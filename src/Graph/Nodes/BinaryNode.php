@@ -1,27 +1,27 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Nodes;
 
 use InvalidArgumentException;
 
-class BinaryNode extends GraphObject implements Node
+class BinaryNode implements Node
 {
     /**
      * The left child node.
      *
-     * @var \Rubix\ML\Graph\BinaryNode|null
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var \Rubix\ML\Graph\BinaryNode|null
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     protected $right;
 
     /**
-     * @return \Rubix\ML\Graph\BinaryNode|null
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function left() : ?self
     {
@@ -29,7 +29,7 @@ class BinaryNode extends GraphObject implements Node
     }
 
     /**
-     * @return \Rubix\ML\Graph\BinaryNode|null
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function right() : ?self
     {
@@ -61,10 +61,10 @@ class BinaryNode extends GraphObject implements Node
     /**
      * Set the left child node.
      *
-     * @param  \Rubix\ML\Graph\BinaryNode  $node
+     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $node
      * @return void
      */
-    public function attachLeft(BinaryNode $node) : void
+    public function attachLeft(self $node) : void
     {
         $this->left = $node;
     }
@@ -72,10 +72,10 @@ class BinaryNode extends GraphObject implements Node
     /**
      * Set the right child node.
      *
-     * @param  \Rubix\ML\Graph\BinaryNode  $node
+     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $node
      * @return void
      */
-    public function attachRight(BinaryNode $node) : void
+    public function attachRight(self $node) : void
     {
         $this->right = $node;
     }

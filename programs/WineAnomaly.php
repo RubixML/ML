@@ -4,14 +4,13 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetectors\IsolationTree;
+use Rubix\ML\Reports\OutlierRatio;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\OutlierRatio;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

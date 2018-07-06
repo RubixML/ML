@@ -9,7 +9,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Binary;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\Classifier;
-use Rubix\ML\Classifiers\DecisionTree;
+use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -60,7 +60,7 @@ class AdaBoostTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new AdaBoost(DecisionTree::class, [1, 1], 20, 0.5, 0.99);
+        $this->estimator = new AdaBoost(ClassificationTree::class, [1, 1], 20, 0.5, 0.99);
     }
 
     public function test_build_ada_boost_classifier()

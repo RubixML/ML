@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Nodes;
 
 interface Node
 {

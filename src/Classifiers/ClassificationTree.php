@@ -1,18 +1,17 @@
 <?php
 
-namespace Rubix\ML\Regressors;
+namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
-use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
-class RegressionTree extends DecisionTree implements Regressor, Persistable
+class ClassificationTree extends DecisionTree implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.
@@ -20,6 +19,15 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      * @var int
      */
     protected $maxFeatures;
+
+    /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * The memoized random column index array.
@@ -49,7 +57,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     }
 
     /**
-     * Train the regression tree by learning the optimal splits in the
+     * Train the decision tree by learning the most optimal splits in the
      * training set.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -63,6 +71,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
                 . ' Labeled training set.');
         }
 
+        $this->classes = $dataset->possibleOutcomes();
         $this->indices = $dataset->indices();
 
         $data = $dataset->samples();
@@ -94,9 +103,26 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     }
 
     /**
-     * Greedy algorithm to chose the best split point for a given set of data
-     * as determined by its sum of squared error. The algorithm will terminate
-     * early if it finds a perfect split. i.e. a sse score of 0.
+     * Output a vector of class probabilities per sample.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        $probabilities = [];
+
+        foreach ($dataset as $sample) {
+            $probabilities[] = $this->search($sample)->meta('probabilities');
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Greedy algorithm to chose the best split point for a given set of data.
+     * The algorithm will terminate early if it finds a perfect split. i.e. a
+     * gini or sse score of 0.
      *
      * @param  array  $data
      * @return \Rubix\ML\Graph\Nodes\Decision
@@ -104,7 +130,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     protected function findBestSplit(array $data) : Decision
     {
         $best = [
-            'sse' => INF, 'index' => null, 'value' => null, 'groups' => [],
+            'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
         shuffle($this->indices);
@@ -113,37 +139,28 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
-                $sse = 0.0;
+                $gini = $this->calculateGini($groups);
 
-                foreach ($groups as $group) {
-                    if (count($group) === 0) {
-                        continue 1;
-                    }
-
-                    $values = array_column($group, count($group[0]) - 1);
-
-                    $sse += RandomVariable::sumOfSquaresDeviations($values);
-                }
-
-                if ($sse < $best['sse']) {
-                    $best['sse'] = $sse;
+                if ($gini < $best['gini']) {
+                    $best['gini'] = $gini;
                     $best['index'] = $index;
                     $best['value'] = $row[$index];
                     $best['groups'] = $groups;
                 }
 
-                if ($sse === 0.0) {
+                if ($gini === 0.0) {
                     break 2;
                 }
             }
         }
 
         return new Decision($best['index'], $best['value'],
-            $best['sse'], $best['groups']);
+            $best['gini'], $best['groups']);
     }
 
     /**
-     * Terminate the branch with the most likely outcome.
+     * Terminate the branch by selecting the outcome with the highest
+     * probability.
      *
      * @param  array  $data
      * @param  int  $depth
@@ -151,20 +168,49 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      */
     protected function terminate(array $data, int $depth) : Terminal
     {
-        $outcomes = array_column($data, count($data[0]) - 1);
+        $classes = array_column($data, count(current($data)) - 1);
 
-        $prediction =  Average::mean($outcomes);
+        $probabilities = array_fill_keys($this->classes, 0.0);
 
-        $variance = 0.0;
+        $n = count($classes);
 
-        foreach ($outcomes as $outcome) {
-            $variance += ($outcome - $prediction) ** 2;
+        foreach (array_count_values($classes) as $class => $count) {
+            $probabilities[$class] = $count / $n;
         }
 
-        $variance /= count($outcomes);
+        $prediction = array_search(max($probabilities), $probabilities);
 
         return new Terminal($prediction, [
-            'variance' => $variance,
+            'probabilities' => $probabilities,
         ]);
+    }
+
+    /**
+     * Calculate the Gini impurity index for a given split.
+     *
+     * @param  array  $groups
+     * @return float
+     */
+    protected function calculateGini(array $groups) : float
+    {
+        $total = array_sum(array_map('count', $groups));
+
+        $gini = 0.0;
+
+        foreach ($groups as $group) {
+            $n = count($group);
+
+            if ($n === 0) {
+                continue 1;
+            }
+
+            $values = array_column($group, count(current($group)) - 1);
+
+            foreach (array_count_values($values) as $count) {
+                $gini += (1.0 - ($count / $n) ** 2) * ($n / $total);
+            }
+        }
+
+        return $gini;
     }
 }

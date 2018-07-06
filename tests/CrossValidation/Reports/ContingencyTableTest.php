@@ -4,8 +4,8 @@ namespace Rubix\Tests\CrossValidation\Reports;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClusterer;
-use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ContingencyTable;
+use Rubix\ML\Reports\Report;
+use Rubix\ML\Reports\ContingencyTable;
 use PHPUnit\Framework\TestCase;
 
 class ContingencyTableTest extends TestCase

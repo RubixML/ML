@@ -7,13 +7,13 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\RandomParams;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

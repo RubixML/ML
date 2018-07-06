@@ -88,7 +88,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
         $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
-            $tree = new IsolationTree($maxDepth, $this->threshold);
+            $tree = new IsolationTree($maxDepth, 1, $this->threshold);
 
             $tree->train($dataset->randomSubset($n));
 
@@ -129,8 +129,7 @@ class IsolationForest implements Detector, Probabilistic, Persistable
             $probability = 0.0;
 
             foreach ($this->forest as $tree) {
-                $probability += $tree->search($sample)
-                    ->get('probability');
+                $probability += $tree->search($sample)->meta('probability');
             }
 
             $probabilities[] = $probability / $n;

@@ -1,42 +1,26 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Trees;
+
+use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 
 class BinaryTree implements Tree
 {
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\BinaryNode|null
+     * @var \Rubix\ML\Graph\Nodes\Node|null
      */
     protected $root;
 
-    /**
-     * @param  \Rubix\ML\Graph\BinaryNode  $node
-     * @return void
-     */
-    public function __construct(BinaryNode $node = null)
-    {
-        $this->setRoot($node);
-    }
 
     /**
-     * @return \Rubix\ML\Graph\BinaryNode|null
+     * @return \Rubix\ML\Graph\Nodes\Node|null
      */
     public function root() : ?Node
     {
         return $this->root;
-    }
-
-    /**
-     * Set the root node of the tree.
-     *
-     * @param  \Rubix\ML\Graph\BinaryNode|null  $node
-     * @return void
-     */
-    public function setRoot(BinaryNode $node = null) : void
-    {
-        $this->root = $node;
     }
 
     /**

@@ -1,10 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Graph;
+namespace Rubix\Tests\Graph\Nodes;
 
-use Rubix\ML\Graph\Node;
-use Rubix\ML\Graph\BinaryNode;
-use Rubix\ML\Graph\GraphObject;
+use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 class BinaryNodeTest extends TestCase
@@ -13,16 +12,13 @@ class BinaryNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new BinaryNode(['coolness_factor' => 'medium']);
+        $this->node = new BinaryNode();
     }
 
-    public function test_create_binary_node()
+    public function test_build_node()
     {
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
-        $this->assertInstanceOf(GraphObject::class, $this->node);
-
-        $this->assertEquals('medium', $this->node->get('coolness_factor'));
 
         $this->assertEquals(1, $this->node->height());
         $this->assertNull($this->node->left());
@@ -35,7 +31,7 @@ class BinaryNodeTest extends TestCase
         $this->assertNull($this->node->left());
         $this->assertTrue($this->node->isLeaf());
 
-        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'low']));
+        $this->node->attachLeft(new BinaryNode());
 
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
@@ -49,7 +45,7 @@ class BinaryNodeTest extends TestCase
         $this->assertNull($this->node->right());
         $this->assertTrue($this->node->isLeaf());
 
-        $this->node->attachRight(new BinaryNode(['coolness_factor' => 'high']));
+        $this->node->attachRight(new BinaryNode());
 
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());
@@ -60,11 +56,10 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_left_child()
     {
-        $this->node->attachLeft(new BinaryNode(['coolness_factor' => 'high']));
+        $this->node->attachLeft(new BinaryNode());
 
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
-        $this->assertEquals('high', $this->node->left()->get('coolness_factor'));
 
         $this->node->detachLeft();
 
@@ -73,11 +68,10 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_right_child()
     {
-        $this->node->attachRight(new BinaryNode(['coolness_factor' => 'low']));
+        $this->node->attachRight(new BinaryNode());
 
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());
-        $this->assertEquals('low', $this->node->right()->get('coolness_factor'));
 
         $this->node->detachRight();
 

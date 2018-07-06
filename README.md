@@ -45,8 +45,8 @@ MIT
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
+			- [Classification Tree](#classification-tree)
 			- [Committee Machine](#committee-machine)
-			- [Decision Tree](#decision-tree)
 			- [Dummy Classifier](#dummy-classifier)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
 			- [Logistic Regression](#logistic-regression)
@@ -133,14 +133,14 @@ MIT
 			- [Classification](#classification)
 			- [Regression](#regression)
 			- [Clustering](#clustering)
-		- [Reports](#reports)
-			- [Aggregate Report](#aggregate-report)
-			- [Confusion Matrix](#confusion-matrix)
-			- [Contingency Table](#contingency-table)
-			- [Multiclass Breakdown](#multiclass-breakdown)
-			- [Outlier Ratio](#outlier-ratio)
-			- [Prediction Speed](#prediction-speed)
-			- [Residual Analysis](#residual-analysis)
+	- [Reports](#reports)
+		- [Aggregate Report](#aggregate-report)
+		- [Confusion Matrix](#confusion-matrix)
+		- [Contingency Table](#contingency-table)
+		- [Multiclass Breakdown](#multiclass-breakdown)
+		- [Outlier Ratio](#outlier-ratio)
+		- [Prediction Speed](#prediction-speed)
+		- [Residual Analysis](#residual-analysis)
 
 ---
 ### An Introduction to Machine Learning in Rubix
@@ -218,13 +218,14 @@ Training is the process of feeding the Estimator data so that it can learn. The 
 
 Passing the Labeled Dataset object we created earlier we can train the KNN estimator like so:
 ```php
+...
 $estimator->train($dataset);
 ```
 That's it.
 
 For our 100 sample dataset, this will only take a few milliseconds, but larger datasets and more sophisticated Estimators can take much longer.
 
-Once the Estimator has been fully trained we can feed in some new sample data points to see what the model predicts. Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make a prediction on whether they look more like the class of married or divorced by taking their running them through the model.
+Once the Estimator has been fully trained we can feed in some new sample data points to see what the model predicts. Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make a prediction on whether they look more like the class of married or divorced couples by taking their answers and running them through the trained Estimator's `predict()` method.
 ```php
 use Rubix\ML\Dataset\Unlabeled;
 
@@ -711,6 +712,38 @@ $estimator->weights(); // [0.25, 0.35, 0.1, ...]
 $estimator->influence(); // [0.7522, 0.7945, ...]
 ```
 
+
+### Classification Tree
+A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best split in a training set.
+
+##### Supervised, Multiclass, Probabilistic, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `complexity() : int` | Returns the number of splits in the tree. |
+| `height() : int` | Return the height of the tree. |
+| `balance() : int` | Return the balance factor of the tree. |
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\ClassificationTree;
+
+$estimator = new ClassificationTree(10, 3, 1e-4);
+
+$estimator->complexity(); // 20
+$estimator->height(); // 9
+$estimator->balance(); // -1
+```
+
+
 ### Committee Machine
 Ensemble classifier that aggregates the class probability predictions of a committee of user-specified, heterogeneous [Probabilistic](#probabilistic) classifiers (MultiLayerPerceptron, Random Forest, etc.).
 
@@ -737,36 +770,6 @@ $estimator = new CommitteeMachine([
 	new SoftmaxClassifier(50, new Adam(0.001), 1e-4),
 	new KNearestNeighbors(3),
 ]);
-```
-
-### Decision Tree
-Binary Tree based algorithm that works by intelligently splitting the training data at various decision nodes until a terminating condition is met.
-
-##### Supervised, Multiclass, Probabilistic, Persistable
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
-| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-
-##### Additional Methods:
-| Method | Description |
-|--|--|
-| `complexity() : int` | Returns the number of splits in the tree. |
-| `height() : int` | Return the height of the tree. |
-| `balance() : int` | Return the balance factor of the tree. |
-
-##### Example:
-```php
-use Rubix\ML\Classifiers\DecisionTree;
-
-$estimator = new DecisionTree(10, 3, 1e-4);
-
-$estimator->complexity(); // 20
-$estimator->height(); // 9
-$estimator->balance(); // -1
 ```
 
 ### Dummy Classifier
@@ -2288,8 +2291,9 @@ $metric = new Accuracy();
 $metric = new Homogeneity();
 ```
 
+---
 ### Reports
-Reports offer deeper insight into the performance of an Estimator than a standard Metric. To generate a report, pass a trained Estimator and a testing Dataset to the Report's `generate()` method. The output is an array that can be used to generate visualizations or other useful statistics.
+Reports allow you to evaluate the performance of a model with a testing set. To generate a report, pass a *trained* Estimator and a testing Dataset to the Report's `generate()` method. The output is an associative array that can be used to generate visualizations or other useful statistics.
 
 To generate a report:
 ```php
@@ -2299,7 +2303,7 @@ public generate(Estimator $estimator, Dataset $dataset) : array
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Datasets\Labeled;
 
 ...
@@ -2328,10 +2332,10 @@ A Report that aggregates the results of multiple reports. The reports are indexe
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
-use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\MulticlassBreakdown;
+use Rubix\ML\Reports\PredictionSpeed;
 
 ...
 $report = new AggregateReport([
@@ -2355,7 +2359,7 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\ConfusionMatrix;
 
 ...
 $report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
@@ -2401,7 +2405,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\ContingencyTable;
+use Rubix\ML\Reports\ContingencyTable;
 
 ...
 $report = new ContingencyTable();
@@ -2445,7 +2449,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
+use Rubix\ML\Reports\MulticlassBreakdown;
 
 ...
 $report = new MulticlassBreakdown();
@@ -2490,7 +2494,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\OutlierRatio;
+use Rubix\ML\Reports\OutlierRatio;
 
 ...
 $report = new OutlierRatio();
@@ -2520,7 +2524,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
+use Rubix\ML\Reports\PredictionSpeed;
 
 ...
 $report = new PredictionSpeed();
@@ -2532,11 +2536,13 @@ var_dump($result);
 
 ##### Output:
 ```sh
-  array(3) {
-    ["pps"]=> float(2998.8272123503)
-    ["average_sec"]=> float(0.00033346366287096)
-    ["total_sec"]=> float(0.10704183578491)
+  array(4) {
+    ["ppm"]=> float(4332968.1101788)
+    ["average_seconds"]=> float(1.3847287706694E-5)
+    ["total_seconds"]=> float(0.0041680335998535)
+    ["cardinality"]=> int(301)
   }
+
 ```
 
 ### Residual Analysis
@@ -2549,7 +2555,7 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\ResidualAnalysis;
 
 ...
 $report = new ResidualAnalysis();

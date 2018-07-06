@@ -4,8 +4,8 @@ namespace Rubix\Tests\CrossValidation\Reports;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockDetector;
-use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\OutlierRatio;
+use Rubix\ML\Reports\Report;
+use Rubix\ML\Reports\OutlierRatio;
 use PHPUnit\Framework\TestCase;
 
 class OutlierRatioTest extends TestCase

@@ -4,8 +4,8 @@ namespace Rubix\Tests\CrossValidation\Reports;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
+use Rubix\ML\Reports\Report;
+use Rubix\ML\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
 class MulticlassBreakdownTest extends TestCase

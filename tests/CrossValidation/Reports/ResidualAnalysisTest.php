@@ -4,8 +4,8 @@ namespace Rubix\Tests\CrossValidation\Reports;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockRegressor;
-use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\Report;
+use Rubix\ML\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 
 class ResidualAnalysisTest extends TestCase

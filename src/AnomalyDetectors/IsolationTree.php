@@ -4,20 +4,14 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Graph\BinaryNode;
-use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\DecisionTree;
+use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Terminal;
 use InvalidArgumentException;
 
-class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persistable
+class IsolationTree extends DecisionTree implements Detector, Probabilistic, Persistable
 {
-    /**
-     * The maximum depth of a branch before it is forced to terminate.
-     *
-     * @var int
-     */
-    protected $maxDepth;
-
     /**
      * The threshold isolation score betweeen 0 and 1 where 0 is not likely to
      * be an outlier and 1 is very likely to be an outlier.
@@ -34,55 +28,22 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
     protected $c;
 
     /**
-     * The type of each feature column. i.e. categorical or continuous.
-     *
-     * @var array
-     */
-    protected $columnTypes = [
-        //
-    ];
-
-    /**
-     * The number of times the tree has split. i.e. a comparison is made.
-     *
-     * @var int
-     */
-    protected $splits;
-
-    /**
      * @param  int  $maxDepth
+     * @param  int  $minSamples
      * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, float $threshold = 0.5)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5, float $threshold = 0.5)
     {
-        if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have depth less'
-                . ' than 1.');
-        }
-
         if ($threshold < 0 or $threshold > 1) {
             throw new InvalidArgumentException('Threshold isolation score must'
                 . ' be between 0 and 1.');
         }
 
-        $this->maxDepth = $maxDepth;
+        parent::__construct($maxDepth, $minSamples);
+
         $this->threshold = $threshold;
-
-        parent::__construct();
-
-        $this->splits = 0;
-    }
-
-    /**
-     * The complexity of the tree i.e. the number of splits.
-     *
-     * @return int
-     */
-    public function complexity() : int
-    {
-        return $this->splits;
     }
 
     /**
@@ -93,15 +54,9 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      */
     public function train(Dataset $dataset) : void
     {
-        $this->columnTypes = $dataset->columnTypes();
-
         $this->c = $this->calculateCFactor($dataset->numRows());
 
-        $this->setRoot($this->findRandomSplit($dataset->samples()));
-
-        $this->splits = 1;
-
-        $this->split($this->root);
+        $this->grow($dataset->samples());
     }
 
     /**
@@ -115,8 +70,7 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)
-                ->get('outcome');
+            $predictions[] = $this->search($sample)->outcome();
         }
 
         return $predictions;
@@ -133,113 +87,29 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)
-                ->get('probability');
+            $probabilities[] = $this->search($sample)->meta('probability');
         }
 
         return $probabilities;
     }
 
     /**
-     * Search the tree for a terminal node.
-     *
-     * @param  array  $sample
-     * @return \Rubix\ML\Graph\BinaryNode
-     */
-    public function search(array $sample) : BinaryNode
-    {
-        return $this->_search($sample, $this->root);
-    }
-
-    /**
-     * Recursive function to traverse the tree and return a terminal node.
-     *
-     * @param  array  $sample
-     * @param  \Rubix\ML\Graph\BinaryNode  $root
-     * @return \Rubix\ML\Graph\BinaryNode
-     */
-    protected function _search(array $sample, BinaryNode $root) : BinaryNode
-    {
-        if ($root->get('terminal')) {
-            return $root;
-        }
-
-        if ($root->get('type') === self::CATEGORICAL) {
-            if ($sample[$root->get('index')] === $root->get('value')) {
-                return $this->_search($sample, $root->left());
-            } else {
-                return $this->_search($sample, $root->right());
-            }
-        } else {
-            if ($sample[$root->get('index')] < $root->get('value')) {
-                return $this->_search($sample, $root->left());
-            } else {
-                return $this->_search($sample, $root->right());
-            }
-        }
-    }
-
-    /**
-     * Recursive function to split the training set.
-     *
-     * @param  \Rubix\ML\Graph\BinaryNode  $root
-     * @param  int  $depth
-     * @return void
-     */
-    protected function split(BinaryNode $root, int $depth = 0) : void
-    {
-        list($left, $right) = $root->get('groups');
-
-        $root->remove('groups');
-
-        if ($depth >= $this->maxDepth) {
-            $root->attachLeft($this->terminate($left, $depth));
-            $root->attachRight($this->terminate($right, $depth));
-            return;
-        }
-
-        if (count($left) > 1) {
-            $root->attachLeft($this->findRandomSplit($left));
-
-            $this->splits++;
-
-            $this->split($root->left(), ++$depth);
-        } else {
-            $root->attachLeft($this->terminate($left, $depth));
-        }
-
-        if (count($right) > 1) {
-            $root->attachRight($this->findRandomSplit($right));
-
-            $this->splits++;
-
-            $this->split($root->right(), ++$depth);
-
-        } else {
-            $root->attachRight($this->terminate($left, $depth));
-        }
-    }
-
-    /**
      * Randomized algorithm to find a split point in the data.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\BinaryNode
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findRandomSplit(array $data) : BinaryNode
+    protected function findBestSplit(array $data) : Decision
     {
         $index = (int) array_rand($data[0]);
 
         $value = $data[array_rand($data)][$index];
 
+        $score = count($data);
+
         $groups = $this->partition($data, $index, $value);
 
-        return new BinaryNode([
-            'index' => $index,
-            'value' => $value,
-            'type' => $this->columnTypes[$index],
-            'groups' => $groups,
-        ]);
+        return new Decision($index, $value, $score, $groups);
     }
 
     /**
@@ -247,52 +117,19 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
      *
      * @param  array  $data
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\BinaryNode
+     * @return \Rubix\ML\Graph\Nodes\Terminal
      */
-    protected function terminate(array $data, int $depth) : BinaryNode
+    protected function terminate(array $data, int $depth) : Terminal
     {
         $c = $this->calculateCFactor(count($data));
 
         $probability = 2.0 ** -(($depth + $c) / $this->c);
 
-        $outlier = $probability > $this->threshold ? 1 : 0;
+        $prediction = $probability > $this->threshold ? 1 : 0;
 
-        return new BinaryNode([
-            'outlier' => $outlier,
+        return new Terminal($prediction, [
             'probability' => $probability,
-            'terminal' => true,
         ]);
-    }
-
-    /**
-     * Partition a dataset into left and right subsets.
-     *
-     * @param  array  $data
-     * @param  int  $index
-     * @param  mixed  $value
-     * @return array
-     */
-    protected function partition(array $data, int $index, $value) : array
-    {
-        $left = $right = [];
-
-        foreach ($data as $row) {
-            if ($this->columnTypes[$index] === self::CATEGORICAL) {
-                if ($row[$index] !== $value) {
-                    $left[] = $row;
-                } else {
-                    $right[] = $row;
-                }
-            } else {
-                if ($row[$index] < $value) {
-                    $left[] = $row;
-                } else {
-                    $right[] = $row;
-                }
-            }
-        }
-
-        return [$left, $right];
     }
 
     /**
@@ -307,7 +144,6 @@ class IsolationTree extends BinaryTree implements Detector, Probabilistic, Persi
             return 0.0;
         }
 
-        return 2.0 * (log($n - 1) + M_EULER)
-            - (2.0 * ($n - 1) / ($n  + self::EPSILON));
+        return 2.0 * (log($n - 1) + M_EULER) - (2.0 * ($n - 1) / $n);
     }
 }

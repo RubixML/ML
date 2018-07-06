@@ -9,11 +9,11 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
-use Rubix\ML\Classifiers\DecisionTree;
+use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class DecisionTreeTest extends TestCase
+class ClassificationTreeTest extends TestCase
 {
     protected $estimator;
 
@@ -60,12 +60,12 @@ class DecisionTreeTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new DecisionTree(10, 5, 2);
+        $this->estimator = new ClassificationTree(10, 5, 2);
     }
 
     public function test_create_tree()
     {
-        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
+        $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);

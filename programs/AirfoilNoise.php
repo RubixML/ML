@@ -4,12 +4,11 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Regressors\Ridge;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\PredictionSpeed;
+use Rubix\ML\Reports\ResidualAnalysis;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\CrossValidation\Reports\AggregateReport;
-use Rubix\ML\CrossValidation\Reports\PredictionSpeed;
-use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -31,7 +30,7 @@ $labels = iterator_to_array($reader->fetchColumn('decibels'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new RegressionTree(100, 5, 2), [
+$estimator = new Pipeline(new RegressionTree(100, 5, 3), [
         new NumericStringConverter(),
     ]);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\CrossValidation\Reports;
+namespace Rubix\ML\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;

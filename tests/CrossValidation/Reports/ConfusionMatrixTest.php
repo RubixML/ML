@@ -4,8 +4,8 @@ namespace Rubix\Tests\CrossValidation\Reports;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\Report;
+use Rubix\ML\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
 
 class ConfusionMatrixTest extends TestCase
