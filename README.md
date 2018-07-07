@@ -253,9 +253,9 @@ array(5) {
 Note that we are not using a Labeled Dataset here because we don't know the outcomes yet. In fact, the outcome is exactly what we are trying to predict. Next we'll look at how we can test the accuracy of the predictions our model makes.
 
 ### Evaluating Model Performance
-Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training. [Cross Validation](#cross-validation) is the process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a form of cross validation called [Hold Out](#hold-out). The idea is simple. Randomize and split the dataset into a training and testing set, such that a portion of the data is "held out" to be used to test the model. The reason we do not use *all* of the data for training is precisely because we want to test the model on samples that it has never seen before.
+Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training. [Cross Validation](#cross-validation) is the process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called [Hold Out](#hold-out). The Hold Out validator will take care of randomizing and splitting the dataset into  training and testing sets, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is precisely because we want to test the Estimator on samples that it has never seen before.
 
-Hold Out requires you to set the ratio of testing to training samples to use. In this case, let's chose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to understand here is the trade off between more data for training and more precise testing results.
+Hold Out requires you to set the ratio of testing to training samples to use. In this case, let's chose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to understand here is the trade off between more data for training and more precise testing results. Once you get the hang of Hold Out, the next step is to consider more elaborate cross validation techniques such as [K Fold](#k-fold), and [Leave P Out](#leave-p-out).
 
 To return a validation score from the Hold Out Validator using the Accuracy Metric just pass it the untrained Estimator instance and a dataset.
 
@@ -280,7 +280,7 @@ float(0.945)
 Since we are measuring accuracy, this output indicates that our Estimator is 94.5% accurate given the data we've trained and tested it with. Not bad.
 
 ### What Next?
-Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started a great place to start is by downloading one of the many datasets available for free at the University of California Irvine [Machine Learning repository](https://archive.ics.uci.edu/ml/datasets.html) website. Most of these datasets have been pre-cleaned and used as examples in many academic settings.
+Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started a great place to begin is at the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) where they have many pre-cleaned datasets available for free.
 
 ---
 ### API Reference
@@ -584,9 +584,9 @@ array(3) {
 [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, sciences, and many more areas. The output of a Detector is either *0* for a normal sample or *1* for a detected outlier.
 
 ### Isolation Forest
-An [Ensemble-based](https://en.wikipedia.org/wiki/Ensemble_learning) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
+An [ensemble](https://en.wikipedia.org/wiki/Ensemble_learning) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Unsupervised, Probabilistic, Persistable
+##### Unsupervised | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -605,9 +605,9 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 $estimator = new IsolationForest(500, 0.1, 0.7);
 ```
 ### Isolation Tree
-Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own nodes. *Note* that this Estimator is considered a *weak learner* and is typically only used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
+Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own nodes. *Note* that this Estimator is considered a *weak* learner and is typically used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
 
-##### Unsupervised, Probabilistic, Persistable
+##### Unsupervised | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -632,7 +632,7 @@ $estimator = new IsolationTree(1000, 0.65);
 ### Local Outlier Factor
 The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
 
-##### Unsupervised, Probabilistic, Online, Persistable
+##### Unsupervised | Probabilistic | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -656,7 +656,7 @@ $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
 ### Robust Z Score
 A quick global anomaly Detector, Robust Z Score uses a threshold to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers.
 
-##### Unsupervised, Persistable
+##### Unsupervised | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -680,15 +680,17 @@ $estimator = new RobustZScore(3.0);
 ### Classifiers
 Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - *Binary* and *Multiclass*. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
-### AdaBoost
-Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise weak classifier by focusing more attention on samples that are harder to classify.
+Below are a list of all of the Classifiers available in Rubix.
 
-##### Supervised, Binary, Persistable
+### AdaBoost
+Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify.
+
+##### Supervised | Binary | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| base | None | string | The fully qualified class name of the base "weak" classifier. |
+| base | None | string | The fully qualified class name of the base *weak* classifier. |
 | params | [ ] | array | The parameters of the base classifer. |
 | experts | 100 | int | The number of classifiers to train in the ensemble. |
 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
@@ -711,9 +713,9 @@ $estimator = new AdaBoost(ExtraTree::class, [10, 3], 100, 0.1, 0.999);
 
 
 ### Classification Tree
-A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best split in a training set.
+A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best splits in a training set.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -738,9 +740,9 @@ $estimator = new ClassificationTree(10, 3, 1e-4);
 
 
 ### Committee Machine
-Ensemble classifier that aggregates the weighted predictions of a committee of user-specified, heterogeneous classifiers (called *experts*). Optionally, you can supply a tuple containing the influence value and classifier instance which will allow you to assign an arbitrary influence value to each expert.
+Ensemble classifier that aggregates the weighted predictions of a committee of user-specified, heterogeneous classifiers (called *experts*). Optionally, you can supply a tuple containing the influence value and classifier instance which will allow you to assign an arbitrary influence value to each expert. The committee a uses weighted hard-voting scheme to make predictions.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised | Multiclass | Probabilistic | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -767,12 +769,23 @@ $estimator = new CommitteeMachine([
 	[7, new SoftmaxClassifier(50, new Adam(0.001), 1e-4)],
 	[8, new KNearestNeighbors(3)],
 ]);
+
+var_dump($estimator->influence()); // Return normalized influence
+```
+
+##### Output:
+```sh
+array(3) {
+  [0]=> float(0.4)
+  [1]=> float(0.28)
+  [2]=> float(0.32)
+}
 ```
 
 ### Dummy Classifier
-A classifier based on a given [Imputer strategy](#missing-data-imputer). Used to provide sanity check and to compare performance with an actual classifier.
+A classifier based on a given [Imputer strategy](#missing-data-imputer). Used to provide a sanity check and to compare performance with an actual classifier.
 
-##### Supervised, Multiclass, Persistable
+##### Supervised | Multiclass | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -791,15 +804,16 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree
-An Extremely Randomized Decision Tree that splits the training set at a random point. Extra Trees are useful in ensembles such as [AdaBoost](#adaboost) as the "weak" classifier or can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees are useful in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -816,9 +830,9 @@ $estimator = new ExtraTree(20, 3);
 ```
 
 ### K Nearest Neighbors
-A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
+A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does all of its computation at prediction time.
 
-##### Supervised, Multiclass, Probabilistic, Online, Persistable
+##### Supervised | Multiclass | Probabilistic | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -840,7 +854,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ### Logistic Regression
 A type of classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes.
 
-##### Supervised, Binary, Online, Probabilistic, Persistable
+##### Supervised | Binary | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -862,13 +876,13 @@ A type of classifier that uses the logistic (sigmoid) function to distinguish be
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4);
+$estimator = new LogisticRegression(30, new Adam(0.001), 1e-4, 1e-3);
 ```
 
 ### Multi Layer Perceptron
 Multiclass [Neural Network](#neural-network) model that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. The MLP features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
-##### Supervised, Multiclass, Online, Probabilistic, Persistable
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -908,7 +922,7 @@ $estimator = new MultiLayerPerceptron($hidden, 10, new Adam(0.001), 1e-4, new MC
 ### Naive Bayes
 Probability-based classifier that used probabilistic inference to derive the predicted class. The naive part is that the classifier assumes that all features are independent.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 This estimator does not have any hyperparameters.
@@ -924,9 +938,9 @@ $estimator = new NaiveBayes();
 ```
 
 ### Random Forest
-Ensemble classifier that trains Decision Trees on a random subset of the training data. A prediction is made based on the probability scores returned from each tree in the forest.
+[Ensemble](https://en.wikipedia.org/wiki/Ensemble_learning) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset of the training data. A prediction is made based on the probability scores returned from each tree in the forest.
 
-##### Supervised, Multiclass, Probabilistic, Persistable
+##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -936,6 +950,7 @@ Ensemble classifier that trains Decision Trees on a random subset of the trainin
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| base | ClassificationTree::class | string | The base classification tree class name. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -943,14 +958,15 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\ExtraTree;
 
-$estimator = new RandomForest(100, 0.2, 5, 3, 1e-2);
+$estimator = new RandomForest(400, 0.1, 10, 3, 5, ExtraTree::class);
 ```
 
 ### Softmax Classifier
-A generalization of logistic regression for multiple class outcomes using a single layer neural network.
+A generalization of logistic regression for multiple class outcomes using a single layer [neural network](#neural-network).
 
-##### Supervised, Multiclass, Online, Probabilistic, Persistable
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -973,7 +989,7 @@ A generalization of logistic regression for multiple class outcomes using a sing
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
-$estimator = new SoftmaxClassifier(200, 10, new Momentum(0.001), 1e-4);
+$estimator = new SoftmaxClassifier(100, new Momentum(0.001), 1e-4, 1e-4);
 ```
 
 ---
@@ -983,7 +999,7 @@ Clustering is a common technique in data mining that focuses on grouping samples
 ### DBSCAN
 Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as noise and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors) as well.
 
-##### Unsupervised, Persistable
+##### Unsupervised | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1006,7 +1022,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ### Fuzzy C Means
 Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region and thus is able to output probabilities for each cluster via the [Probabilistic](#probabilistic) interface.
 
-##### Unsupervised, Probabilistic, Persistable
+##### Unsupervised | Probabilistic | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1034,7 +1050,7 @@ $estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
 
-##### Unsupervised, Online, Persistable
+##### Unsupervised | Online | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1059,7 +1075,7 @@ $estimator = new KMeans(3, new Euclidean());
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (centroids) of a training set given by a radius constraint.
 
-##### Unsupervised, Persistable
+##### Unsupervised | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1087,9 +1103,9 @@ $estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
 Regression analysis is used to predict the outcome of an experiment where the value can range over a continuous spectrum. A Regressor estimates the expected continuous outcome of an unknown sample.
 
 ### Dummy Regressor
-Regressor that guesses the output values based on an [Imputer](#missing-data-imputer) strategy. Used to provide sanity check and to compare performance against actual Regressors.
+Regressor that guesses the output values based on an [Imputer](#missing-data-imputer) strategy. Used to provide a sanity check and to compare performance against actual Regressors.
 
-##### Supervised, Persistable
+##### Supervised | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1110,7 +1126,7 @@ $estimator = new DummyRegressor(new BlurryMean());
 ### KNN Regressor
 A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
 
-##### Supervised, Online, Persistable
+##### Supervised | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1132,7 +1148,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ### MLP Regressor
 A [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
-##### Supervised, Persistable
+##### Supervised | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1171,9 +1187,9 @@ $estimator = new MLPRegressor($hidden, 50, new RMSProp(0.001), 1e-2, new MeanSqu
 ```
 
 ### Regression Tree
-A binary tree learning algorithm that performs greedy splitting by minimizing the variance between decision node splits.
+A Decision Tree learning algorithm that performs greedy splitting by minimizing the sum of squared errors between decision node splits.
 
-##### Supervised, Persistable
+##### Supervised | Persistable | Nonlinear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1197,9 +1213,9 @@ $estimator = new RegressionTree(50, 1, 0.0);
 ```
 
 ### Ridge
-L2 penalized least squares regression.
+L2 penalized least squares regression. Can be used for simple regression problems that can be fit to a straight line.
 
-##### Supervised, Persistable
+##### Supervised | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1511,7 +1527,7 @@ $transformer = new SparseRandomProjector(100);
 ```
 
 ### L1 and L2 Regularizers
-Augment the input vector of each sample such that each feature is divided over the L1 or L2 norm (or "magnitude") of the feature vector.
+Augment each sample vector in the sample matrix such that each feature is divided over the L1 or L2 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
 
@@ -1591,7 +1607,7 @@ $transformer = new NumericStringConverter();
 ```
 
 ### One Hot Encoder
-The One Hot Encoder takes a column of categorical features and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories of the feature column.
+The One Hot Encoder takes a column of categorical features and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories per feature column. This is used when you need to convert all features to continuous format since some Estimators do not work with categorical features.
 
 ##### Categorical
 
@@ -1611,7 +1627,7 @@ $transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
 ```
 
 ### Polynomial Expander
-This Transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data to a non-linear curve using a linear Estimator.
+This Transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
 
 ##### Continuous *Only*
 
@@ -1848,8 +1864,8 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $network = new Network(new Input(784), [
-	new Dense(300, new ELU()),
-	new Dense(200, new ELU()),
+	new Dense(100, new ELU()),
+	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
 ], new Softmax([
 	'dog', 'cat', 'frog', 'car',

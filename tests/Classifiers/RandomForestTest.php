@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\RandomForest;
@@ -60,7 +61,7 @@ class RandomForestTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new RandomForest(30, 0.7, 10, 3, 2);
+        $this->estimator = new RandomForest(30, 0.7, 10, 3, 2, ExtraTree::class);
     }
 
     public function test_create_tree()

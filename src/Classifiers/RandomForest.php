@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
+use ReflectionClass;
 
 class RandomForest implements Multiclass, Probabilistic, Persistable
 {
@@ -48,6 +49,13 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
     protected $maxFeatures;
 
     /**
+     * The class name of the base classification tree.
+     *
+     * @var string
+     */
+    protected $base;
+
+    /**
      * The possible class outcomes.
      *
      * @var array
@@ -70,11 +78,12 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
      * @param  float  $ratio
      * @param  int  $maxDepth
      * @param  int  $minSamples
+     * @param  string  $base
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 10,
-                                int $minSamples = 5, int $maxFeatures = PHP_INT_MAX)
+        int $minSamples = 5, int $maxFeatures = PHP_INT_MAX, string $base = ClassificationTree::class)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -101,11 +110,21 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
                 . ' feature to determine a split.');
         }
 
+        $reflector = new ReflectionClass($base);
+
+        if ($reflector->getName() !== ClassificationTree::class) {
+            if ($reflector->getParentClass()->getName() !== ClassificationTree::class) {
+                throw new InvalidArgumentException('Base classifier must be a'
+                    . ' type of classification tree.');
+            }
+        }
+
         $this->trees = $trees;
         $this->ratio = $ratio;
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
         $this->maxFeatures = $maxFeatures;
+        $this->base = $base;
     }
 
     /**
@@ -130,7 +149,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
         $this->forest = [];
 
         for ($i = 0; $i < $this->trees; $i++) {
-            $tree = new ClassificationTree($this->maxDepth, $this->minSamples,
+            $tree = new $this->base($this->maxDepth, $this->minSamples,
                 $this->maxFeatures);
 
             $tree->train($dataset->randomSubsetWithReplacement($n));

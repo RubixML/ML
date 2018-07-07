@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -66,6 +67,7 @@ class ExtraTreeTest extends TestCase
     public function test_create_tree()
     {
         $this->assertInstanceOf(ExtraTree::class, $this->estimator);
+        $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);

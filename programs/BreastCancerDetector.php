@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
@@ -50,7 +51,7 @@ $hidden = [
 
 $estimator = new Pipeline(new CommitteeMachine([
     [10, new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC())],
-    [8, new RandomForest(200, 0.1, 10, 3, 3)],
+    [8, new RandomForest(300, 0.1, 10, 3, 3, ExtraTree::class)],
     [7, new ClassificationTree(150, 3, 5)],
 ]), [
     new NumericStringConverter(),

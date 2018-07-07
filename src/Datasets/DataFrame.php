@@ -37,20 +37,15 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 . ' or numeric type ' . gettype($placeholder) . ' found.');
         }
 
-        $columns = count(reset($samples) ?? []);
-
         foreach ($samples as &$sample) {
-            if (count($sample) !== $columns) {
+            if (count($sample) !== count(reset($samples) ?? [])) {
                 throw new InvalidArgumentException('The number of feature'
                     . ' columns must be equal for all samples.');
             }
 
-            $temp = [];
-
-            foreach ($sample as $feature) {
-                if (is_null($feature)) {
-                    $temp[] = $placeholder;
-
+            foreach ($sample as &$feature) {
+                if (!isset($feature)) {
+                    $feature = $placeholder;
                     continue 1;
                 }
 
@@ -59,11 +54,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                         . ' string, or numeric type, '
                         . gettype($feature) . ' found.');
                 }
-
-                $temp[] = $feature;
             }
 
-            $sample = $temp;
+            $sample = array_values($sample);
         }
 
         $this->samples = array_values($samples);
