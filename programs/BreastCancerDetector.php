@@ -49,9 +49,9 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new CommitteeMachine([
-    new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
-    new RandomForest(200, 0.1, 10, 3, 3),
-    new ClassificationTree(150, 3, 5),
+    [10, new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC())],
+    [8, new RandomForest(200, 0.1, 10, 3, 3)],
+    [7, new ClassificationTree(150, 3, 5)],
 ]), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
@@ -67,6 +67,8 @@ $report = new AggregateReport([
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
 $estimator->train($training);
+
+var_dump($estimator->influence());
 
 var_dump($report->generate($estimator, $testing));
 

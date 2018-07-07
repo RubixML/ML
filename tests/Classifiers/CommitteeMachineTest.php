@@ -62,9 +62,9 @@ class CommitteeMachineTest extends TestCase
         ]);
 
         $this->estimator = new CommitteeMachine([
-            new KNearestNeighbors(1, new Euclidean()),
-            new KNearestNeighbors(3, new Euclidean()),
-            new KNearestNeighbors(5, new Euclidean()),
+            [3, new KNearestNeighbors(1, new Euclidean())],
+            [4, new KNearestNeighbors(3, new Euclidean())],
+            [5, new KNearestNeighbors(5, new Euclidean())],
         ]);
     }
 
@@ -101,6 +101,11 @@ class CommitteeMachineTest extends TestCase
         $this->assertLessThan(0.5, $probabilities[0]['female']);
         $this->assertLessThan(0.5, $probabilities[1]['male']);
         $this->assertGreaterThan(0.5, $probabilities[1]['female']);
+    }
+
+    public function test_get_influence()
+    {
+        $this->assertEquals([0.25, 0.3333333333333333, 0.4166666666666667], $this->estimator->influence());
     }
 
     public function test_train_with_unlabeled()

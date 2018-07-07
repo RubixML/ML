@@ -5,7 +5,6 @@ namespace Rubix\Tests\Graph\Trees;
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Trees\BinaryTree;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 class BinaryTreeTest extends TestCase

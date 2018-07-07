@@ -96,10 +96,10 @@ class KNearestNeighborsTest extends TestCase
 
         $probabilities = $this->estimator->proba($this->testing);
 
-        $this->assertGreaterThan(0.5, $probabilities[0]['male']);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[0]['male']);
         $this->assertLessThan(0.5, $probabilities[0]['female']);
         $this->assertLessThan(0.5, $probabilities[1]['male']);
-        $this->assertGreaterThan(0.5, $probabilities[1]['female']);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[1]['female']);
     }
 
     public function test_train_with_unlabeled()

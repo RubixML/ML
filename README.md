@@ -738,17 +738,21 @@ $estimator = new ClassificationTree(10, 3, 1e-4);
 
 
 ### Committee Machine
-Ensemble classifier that aggregates the class probability predictions of a committee of user-specified, heterogeneous [Probabilistic](#probabilistic) classifiers (MultiLayerPerceptron, Random Forest, etc.).
+Ensemble classifier that aggregates the weighted predictions of a committee of user-specified, heterogeneous classifiers (called *experts*). Optionally, you can supply a tuple containing the influence value and classifier instance which will allow you to assign an arbitrary influence value to each expert.
 
 ##### Supervised, Multiclass, Probabilistic, Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| experts | None | array | The probabilistic classifier instances that comprise the committee. |
+| experts | None | array | An array of classifier instances and their influence values. |
+
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `experts() : int` | Returns the ensemble of classifiers. |
+| `influence() : int` | The normalized influence values of each classifier in the committee. |
 
 ##### Example:
 ```php
@@ -759,9 +763,9 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 
 $estimator = new CommitteeMachine([
-	new RandomForest(100, 0.3, 50, 3, 1e-2),
-	new SoftmaxClassifier(50, new Adam(0.001), 1e-4),
-	new KNearestNeighbors(3),
+	[10, new RandomForest(100, 0.3, 50, 3, 1e-2)],
+	[7, new SoftmaxClassifier(50, new Adam(0.001), 1e-4)],
+	[8, new KNearestNeighbors(3)],
 ]);
 ```
 

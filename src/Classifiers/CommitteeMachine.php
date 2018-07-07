@@ -11,11 +11,21 @@ use InvalidArgumentException;
 class CommitteeMachine implements Multiclass, Probabilistic, Persistable
 {
     /**
-     * The committee of experts. i.e. the ensemble of probabilistic classifiers.
+     * The committee of experts. i.e. the ensemble of
+     * probabilistic classifiers.
      *
      * @var array
      */
     protected $experts = [
+        //
+    ];
+
+    /**
+     * The user-specified influence that each classifier has in the committee.
+     *
+     * @var array
+     */
+    protected $influence = [
         //
     ];
 
@@ -40,19 +50,62 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
                 . ' the committee.');
         }
 
-        foreach ($experts as $estimator) {
-            $this->addExpert($estimator);
+        $total = 0.0;
+
+        foreach ($experts as &$expert) {
+            if (!is_array($expert)) {
+                $expert = [1, $expert];
+            }
+
+            if (count($expert) !== 2) {
+                throw new InvalidArgumentException('Exactly 2 arguments are'
+                    . ' required for expert configuration.');
+            }
+
+            if (!is_int($expert[0]) and !is_float($expert[0])) {
+                throw new InvalidArgumentException('Influence parameter must be'
+                    . ' an integer or floating point number.');
+            }
+
+            if ($expert[0] < 0) {
+                throw new InvalidArgumentException('Influence cannot be less'
+                    . ' than 0.');
+            }
+
+            if (!$expert[1] instanceof Classifier) {
+                throw new InvalidArgumentException('Estimator must be a'
+                    . ' classifier, ' . gettype($expert[0]) . ' found.');
+            }
+
+            $total += $expert[0];
+        }
+
+        $this->experts = $this->influence = [];
+
+        foreach ($experts as &$expert) {
+            $this->influence[] = $expert[0] / $total;
+            $this->experts[] = $expert[1];
         }
     }
 
     /**
-     * Return the underlying estimator instances.
+     * Return the underlying classifier instances.
      *
      * @return array
      */
     public function experts() : array
     {
         return $this->experts;
+    }
+
+    /**
+     * Return the iinfluence of each classifier.
+     *
+     * @return array
+     */
+    public function influence() : array
+    {
+        return $this->influence;
     }
 
     /**
@@ -111,36 +164,15 @@ class CommitteeMachine implements Multiclass, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        $n = count($this->experts) + self::EPSILON;
-
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.0));
 
-        foreach ($this->experts as $expert) {
-            foreach ($expert->proba($dataset) as $i => $distribution) {
-                foreach ($distribution as $class => $probability) {
-                    $probabilities[$i][$class] += $probability / $n;
-                }
+        foreach ($this->experts as $i => $expert) {
+            foreach ($expert->predict($dataset) as $j => $prediction) {
+                $probabilities[$j][$prediction] += $this->influence[$i];
             }
         }
 
         return $probabilities;
-    }
-
-    /**
-     * Add an expert to the committee.
-     *
-     * @param  \Rubix\ML\Classifiers\Classifier  $estimator
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    protected function addExpert(Classifier $estimator) : void
-    {
-        if (!$estimator instanceof Probabilistic) {
-            throw new InvalidArgumentException('Estimator must be a'
-                . ' probabilistic classifier.');
-        }
-
-        $this->experts[] = $estimator;
     }
 }
