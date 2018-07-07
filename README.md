@@ -48,6 +48,7 @@ MIT
 			- [Classification Tree](#classification-tree)
 			- [Committee Machine](#committee-machine)
 			- [Dummy Classifier](#dummy-classifier)
+			- [Extra Tree](#extra-tree)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
 			- [Logistic Regression](#logistic-regression)
 			- [Multi Layer Perceptron](#multi-layer-perceptron)
@@ -703,13 +704,9 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\DecisionTree;
+use Rubix\ML\Classifiers\ExtraTree;
 
-$estimator = new AdaBoost(DecisionTree::class, [1, 10], 100, 0.1, 0.999);
-
-$estimator->weights(); // [0.25, 0.35, 0.1, ...]
-
-$estimator->influence(); // [0.7522, 0.7945, ...]
+$estimator = new AdaBoost(ExtraTree::class, [10, 3], 100, 0.1, 0.999);
 ```
 
 
@@ -737,10 +734,6 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 use Rubix\ML\Classifiers\ClassificationTree;
 
 $estimator = new ClassificationTree(10, 3, 1e-4);
-
-$estimator->complexity(); // 20
-$estimator->height(); // 9
-$estimator->balance(); // -1
 ```
 
 
@@ -793,6 +786,31 @@ use Rubix\ML\Transformers\Strategies\PopularityContest;
 $estimator = new DummyClassifier(new PopularityContest());
 ```
 
+### Extra Tree
+An Extremely Randomized Decision Tree that splits the training set at a random point. Extra Trees are useful in ensembles such as [AdaBoost](#adaboost) as the "weak" classifier or can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+
+##### Supervised, Multiclass, Probabilistic, Persistable
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `complexity() : int` | Returns the number of splits in the tree. |
+| `height() : int` | Return the height of the tree. |
+| `balance() : int` | Return the balance factor of the tree. |
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\ExtraTree;
+
+$estimator = new ExtraTree(20, 3);
+```
+
 ### K Nearest Neighbors
 A lazy learning algorithm that locates the K nearest samples from the training set and uses a majority vote to classify the unknown sample.
 
@@ -805,7 +823,7 @@ A lazy learning algorithm that locates the K nearest samples from the training s
 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.|
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -881,8 +899,6 @@ $hidden = [
 ];
 
 $estimator = new MultiLayerPerceptron($hidden, 10, new Adam(0.001), 1e-4, new MCC(), 0.2, 3, PHP_INT_MAX);
-
-$estimator->progress(); // [0.45, 0.59, 0.72, 0.88, ...]
 ```
 
 ### Naive Bayes
@@ -1009,9 +1025,6 @@ use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
-
-$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
-$estimator->progress(); // [5878.01, 5200.50, 4960.28, ...]
 ```
 
 ### K Means
@@ -1037,8 +1050,6 @@ use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new KMeans(3, new Euclidean());
-
-$estimator->centroids(); // [[3.149, 2.615], [-1.592, -3.444], ...]
 ```
 
 ### Mean Shift
@@ -1144,16 +1155,15 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 
 $hidden = [
 	new Dense(30, new HyperbolicTangent()),
-	new Dense(50, new LeakyReLU()),
+	new Dense(30, new LeakyReLU()),
+	new Dense(30, new LeakyReLU()),
 ];
 
-$estimator = new MLPRegressor($hidden, 10, new RMSProp(0.001), 1e-2, new RSquared(), 0.2, 3, PHP_INT_MAX);
-
-$estimator->progress(); // [0.66, 0.88, 0.94, 0.95, ...]
+$estimator = new MLPRegressor($hidden, 50, new RMSProp(0.001), 1e-2, new MeanSquaredError(), 0.2, 3, PHP_INT_MAX);
 ```
 
 ### Regression Tree
@@ -1180,10 +1190,6 @@ A binary tree learning algorithm that performs greedy splitting by minimizing th
 use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new RegressionTree(50, 1, 0.0);
-
-$estimator->complexity(); // 36
-$estimator->height(); // 18
-$estimator->balance(); // 0
 ```
 
 ### Ridge
@@ -1207,9 +1213,6 @@ L2 penalized least squares regression.
 use Rubix\ML\Regressors\Ridge;
 
 $estimator = new Ridge(2.0);
-
-$estimator->intercept(); // 5.298226
-$estimator->coefficients(); // [2.023, 3.122, 5.401, ...]
 ```
 
 ---

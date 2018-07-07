@@ -5,8 +5,8 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
@@ -19,7 +19,7 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Autism Screener using Boosted Naive Bayes           ║' . "\n";
+echo '║ Autism Screener using Boosted Extra Tree            ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -37,7 +37,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new AdaBoost(NaiveBayes::class, [], 100, 0.1, 0.999), [
+$estimator = new Pipeline(new AdaBoost(ExtraTree::class, [10, 5], 100, 0.1, 0.999), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
 ]);
