@@ -60,7 +60,7 @@ class ClassificationTreeTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new ClassificationTree(10, 5, 2);
+        $this->estimator = new ClassificationTree(10, 5, 2, 1e-2);
     }
 
     public function test_create_tree()

@@ -27,7 +27,7 @@ class ExtraTree extends ClassificationTree
 
             $groups = $this->partition($data, $index, $value);
 
-            $gini = $this->calculateGini($groups);
+            $gini = $this->calculateGiniImpurity($groups);
 
             if ($gini < $best['gini']) {
                 $best['gini'] = $gini;

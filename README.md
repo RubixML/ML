@@ -723,6 +723,7 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
+| tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a perfect split. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -735,7 +736,7 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new ClassificationTree(10, 3, 1e-4);
+$estimator = new ClassificationTree(100, 7, 4, 1e-4);
 ```
 
 
@@ -950,6 +951,7 @@ $estimator = new NaiveBayes();
 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a perfect split. |
 | base | ClassificationTree::class | string | The base classification tree class name. |
 
 ##### Additional Methods:
@@ -960,7 +962,7 @@ This Estimator does not have any additional methods.
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ExtraTree;
 
-$estimator = new RandomForest(400, 0.1, 10, 3, 5, ExtraTree::class);
+$estimator = new RandomForest(400, 0.1, 10, 3, 5, 1e-2, ExtraTree::class);
 ```
 
 ### Softmax Classifier

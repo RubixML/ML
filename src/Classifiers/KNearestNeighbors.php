@@ -28,7 +28,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     protected $kernel;
 
     /**
-     * The training samples.
+     * The training samples that make up the neighborhood of the problem space.
      *
      * @var array
      */
@@ -46,7 +46,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     ];
 
     /**
-     * The memoized labels.
+     * The memoized labels of the training set.
      *
      * @var array
      */

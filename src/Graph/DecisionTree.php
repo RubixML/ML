@@ -25,7 +25,7 @@ abstract class DecisionTree extends BinaryTree
     protected $minSamples;
 
     /**
-     * The number of times the tree has split. i.e. a comparison is made.
+     * The number of times the tree has split. i.e. a decision is made.
      *
      * @var int
      */
@@ -94,19 +94,20 @@ abstract class DecisionTree extends BinaryTree
 
         $this->splits = 1;
 
-        $this->split($this->root);
+        $this->split($this->root, 1);
     }
 
     /**
-     * Recursive function to split the training data adding decision nodes along the
-     * way. The terminating conditions are a) split would make node responsible
-     * for less values than $minSamples or b) the max depth of the branch has been reached.
+     * Recursive function to split the training data adding decision nodes along
+     * the way. The terminating conditions are a) split would make node
+     * responsible for less values than $minSamples or b) the max depth of the
+     * branch has been reached.
      *
      * @param  \Rubix\ML\Graph\Nodes\Decision  $current
      * @param  int  $depth
      * @return void
      */
-    protected function split(Decision $current, int $depth = 0) : void
+    protected function split(Decision $current, int $depth) : void
     {
         list($left, $right) = $current->groups();
 
@@ -133,7 +134,7 @@ abstract class DecisionTree extends BinaryTree
 
             $this->splits++;
 
-            $this->split($node, ++$depth);
+            $this->split($node, $depth + 1);
         } else {
             $current->attachLeft($this->terminate($left, $depth));
         }
@@ -145,7 +146,7 @@ abstract class DecisionTree extends BinaryTree
 
             $this->splits++;
 
-            $this->split($node, ++$depth);
+            $this->split($node, $depth + 1);
         } else {
             $current->attachRight($this->terminate($right, $depth));
         }
