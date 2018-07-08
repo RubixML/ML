@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -9,7 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
-class IsolationForest implements Detector, Probabilistic, Persistable
+class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -69,6 +70,16 @@ class IsolationForest implements Detector, Probabilistic, Persistable
         $this->trees = $trees;
         $this->ratio = $ratio;
         $this->threshold = $threshold;
+    }
+
+    /**
+     * Return the ensemble of estimators.
+     *
+     * @return array
+     */
+    public function estimators() : array
+    {
+        return $this->forest;
     }
 
     /**

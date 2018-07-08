@@ -46,7 +46,6 @@ MIT
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Classification Tree](#classification-tree)
-			- [Committee Machine](#committee-machine)
 			- [Dummy Classifier](#dummy-classifier)
 			- [Extra Tree](#extra-tree)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
@@ -75,6 +74,7 @@ MIT
 			- [Pipeline](#pipeline)
 		- [Ensemble](#ensemble)
 			- [Bootstrap Aggregator](#bootstrap-aggregator)
+			- [Committee Machine](#committee-machine)
 		- [Model Persistence](#model-persistence)
 			- [Persistent Model](#persistent-model)
 		- [Model Selection](#model-selection)
@@ -701,6 +701,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 ##### Additional Methods:
 | Method | Description |
 |--|--|
+| `estimators() : int` | Returns the ensemble of estimators. |
 | `weights() : array` | Returns the calculated weight values of the last trained dataset. |
 | `influence() : array` | Returns the influence scores for each boosted "weak" classifier.
 
@@ -741,49 +742,6 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new ClassificationTree(100, 7, 4, 1e-4);
 ```
 
-
-### Committee Machine
-Ensemble classifier that aggregates the weighted predictions of a committee of user-specified, heterogeneous classifiers (called *experts*). Optionally, you can supply a tuple containing the influence value and classifier instance which will allow you to assign an arbitrary influence value to each expert. The committee a uses weighted hard-voting scheme to make predictions.
-
-##### Supervised | Multiclass | Probabilistic | Persistable
-
-##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| experts | None | array | An array of classifier instances and their influence values. |
-
-
-##### Additional Methods:
-| Method | Description |
-|--|--|
-| `experts() : int` | Returns the ensemble of classifiers. |
-| `influence() : int` | The normalized influence values of each classifier in the committee. |
-
-##### Example:
-```php
-use Rubix\ML\Classifiers\CommitteeMachine;
-use Rubix\ML\Classifiers\RandomForest;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-
-$estimator = new CommitteeMachine([
-	[10, new RandomForest(100, 0.3, 50, 3, 1e-2)],
-	[7, new SoftmaxClassifier(50, new Adam(0.001), 1e-4)],
-	[8, new KNearestNeighbors(3)],
-]);
-
-var_dump($estimator->influence()); // Return normalized influence
-```
-
-##### Output:
-```sh
-array(3) {
-  [0]=> float(0.4)
-  [1]=> float(0.28)
-  [2]=> float(0.32)
-}
-```
 
 ### Dummy Classifier
 A classifier based on a given [Imputer strategy](#missing-data-imputer). Used to provide a sanity check and to compare performance with an actual classifier.
@@ -957,7 +915,9 @@ $estimator = new NaiveBayes();
 | base | ClassificationTree::class | string | The base classification tree class name. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `estimators() : int` | Returns the ensemble of estimators. |
 
 ##### Example:
 ```php
@@ -1366,7 +1326,9 @@ Bootstrap Aggregating (or *bagging*) is a model averaging technique designed to 
 | ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
-This Meta Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `estimators() : int` | Returns the ensemble of estimators. |
 
 ##### Example:
 ```php
@@ -1379,6 +1341,49 @@ $estimator = new BootstrapAggregator(RegressionTree::class, [10, 5, 3], 100, 0.2
 $estimator->traing($training); // Trains 100 regression trees
 
 $estimator->predict($testing); // Aggregates their predictions
+```
+
+### Committee Machine
+A voting Ensemble that aggregates the weighted predictions of a committee of user-specified, heterogeneous estimators (called *experts*) of a single type (i.e all Classifiers, Regressors, etc). Optionally, you can supply a tuple (*array*) containing the influence value and Estimator instance which will allow you to assign an arbitrary influence value to each Estimator. The committee uses a weighted hard-voting scheme to make final predictions.
+
+##### Classifiers, Regressors, Anomaly Detectors
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| experts | None | array | An array of estimator instances and their influence value tuples. |
+
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `estimators() : int` | Returns the ensemble of estimators. |
+| `influence() : int` | The normalized influence values of each classifier in the committee. |
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\CommitteeMachine;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+
+$estimator = new CommitteeMachine([
+	[10, new RandomForest(100, 0.3, 50, 3, 4, 1e-3)],
+	[7, new SoftmaxClassifier(50, new Adam(0.001), 0.1)],
+	[8, new KNearestNeighbors(3)],
+]);
+
+var_dump($estimator->influence()); // Dump normalized influence values
+```
+
+##### Output:
+```sh
+array(3) {
+  [0]=> float(0.4)
+  [1]=> float(0.28)
+  [2]=> float(0.32)
+}
 ```
 
 ---

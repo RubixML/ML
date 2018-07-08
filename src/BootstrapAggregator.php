@@ -11,7 +11,7 @@ use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class BootstrapAggregator implements MetaEstimator, Persistable
+class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
 {
     /**
      * The class name of the base estimator.
@@ -101,6 +101,16 @@ class BootstrapAggregator implements MetaEstimator, Persistable
         $this->params = $params;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+    }
+
+    /**
+     * Return the ensemble of estimators.
+     *
+     * @return array
+     */
+    public function estimators() : array
+    {
+        return $this->ensemble;
     }
 
     /**

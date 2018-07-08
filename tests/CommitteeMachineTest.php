@@ -1,15 +1,13 @@
 <?php
 
-namespace Rubix\Tests\Classifiers;
+namespace Rubix\Tests;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Probabilistic;
+use Rubix\ML\Ensemble;
+use Rubix\ML\Persistable;
+use Rubix\ML\MetaEstimator;
+use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\Multiclass;
-use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -68,13 +66,12 @@ class CommitteeMachineTest extends TestCase
         ]);
     }
 
-    public function test_build_classifier()
+    public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
-        $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Multiclass::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
+        $this->assertInstanceOf(Ensemble::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
     public function test_make_prediction()
@@ -89,31 +86,8 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals($this->testing->label(1), $predictions[1]);
     }
 
-    public function test_predict_proba()
-    {
-        $this->training->randomize();
-
-        $this->estimator->train($this->training);
-
-        $probabilities = $this->estimator->proba($this->testing);
-
-        $this->assertGreaterThan(0.5, $probabilities[0]['male']);
-        $this->assertLessThan(0.5, $probabilities[0]['female']);
-        $this->assertLessThan(0.5, $probabilities[1]['male']);
-        $this->assertGreaterThan(0.5, $probabilities[1]['female']);
-    }
-
     public function test_get_influence()
     {
         $this->assertEquals([0.25, 0.3333333333333333, 0.4166666666666667], $this->estimator->influence());
-    }
-
-    public function test_train_with_unlabeled()
-    {
-        $dataset = new Unlabeled([['bad']]);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train($dataset);
     }
 }

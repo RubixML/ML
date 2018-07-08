@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -9,7 +10,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class AdaBoost implements Binary, Persistable
+class AdaBoost implements Binary, Ensemble, Persistable
 {
     /**
      * The class name of the base classifier.
@@ -127,6 +128,16 @@ class AdaBoost implements Binary, Persistable
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->threshold = $threshold;
+    }
+
+    /**
+     * Return the ensemble of estimators.
+     *
+     * @return array
+     */
+    public function estimators() : array
+    {
+        return $this->ensemble;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Rubix\Tests\Classifiers;
 
+use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
@@ -68,6 +69,7 @@ class AdaBoostTest extends TestCase
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Binary::class, $this->estimator);
+        $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

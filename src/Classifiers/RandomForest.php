@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -10,7 +11,7 @@ use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class RandomForest implements Multiclass, Probabilistic, Persistable
+class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -140,6 +141,16 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
         $this->base = $base;
+    }
+
+    /**
+     * Return the ensemble of estimators.
+     *
+     * @return array
+     */
+    public function estimators() : array
+    {
+        return $this->forest;
     }
 
     /**

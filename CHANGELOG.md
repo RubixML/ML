@@ -4,6 +4,8 @@
     - Random Forest now supports Extra Trees
     - New Decision Tree implementation
     - Added Canberra distance kernel
+    - Committee Machine is now a Meta Estimator Ensemble
+    - Added Bootstrap Aggregator Meta Estimator Ensemble
 
 - 0.0.2-alpha
     - Added Anomaly Detection

@@ -2,6 +2,7 @@
 
 namespace Rubix\Tests;
 
+use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Labeled;
@@ -66,6 +67,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
         $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
+        $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
