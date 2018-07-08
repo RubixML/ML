@@ -100,8 +100,8 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
         }
 
         if ($ratio < 0.01 or $ratio > 1.0) {
-            throw new InvalidArgumentException('Sample ratio must be a float'
-                . ' value between 0.01 and 1.0.');
+            throw new InvalidArgumentException('Sample ratio must be between'
+                . ' 0.01 and 1.');
         }
 
         if ($maxDepth < 1) {
@@ -163,7 +163,7 @@ class RandomForest implements Multiclass, Probabilistic, Persistable
 
         $this->forest = [];
 
-        for ($i = 0; $i < $this->trees; $i++) {
+        for ($epoch = 0; $epoch < $this->trees; $epoch++) {
             $tree = new $this->base($this->maxDepth, $this->minSamples,
                 $this->maxFeatures, $this->tolerance);
 

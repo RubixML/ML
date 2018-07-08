@@ -52,7 +52,7 @@ class IsolationTreeTest extends TestCase
         $this->estimator = new IsolationTree(10, 1, 0.50);
     }
 
-    public function test_build_isolation_tree_detector()
+    public function test_build_detector()
     {
         $this->assertInstanceOf(IsolationTree::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
@@ -61,7 +61,7 @@ class IsolationTreeTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_predict()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->training);
 

@@ -64,7 +64,7 @@ class ExtraTreeTest extends TestCase
         $this->estimator = new ExtraTree(10, 5);
     }
 
-    public function test_create_tree()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(ExtraTree::class, $this->estimator);
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);

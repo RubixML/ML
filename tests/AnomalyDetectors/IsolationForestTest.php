@@ -49,10 +49,10 @@ class IsolationForestTest extends TestCase
             1, 0, 1, 0,
         ]);
 
-        $this->estimator = new IsolationForest(500, 0.8, 0.5);
+        $this->estimator = new IsolationForest(300, 0.8, 0.5);
     }
 
-    public function test_build_isolation_forest_detector()
+    public function test_build_detector()
     {
         $this->assertInstanceOf(IsolationForest::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
@@ -61,7 +61,7 @@ class IsolationForestTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_predict()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->training);
 

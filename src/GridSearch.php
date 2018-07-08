@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
@@ -80,12 +81,11 @@ class GridSearch implements MetaEstimator, Persistable
      * @param  string  $base
      * @param  array  $params
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
-     * @param  \Rubix\ML\CrossValidation\Validator  $validator
+     * @param  \Rubix\ML\CrossValidation\Validator|null  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, Validation $metric,
-                                Validator $validator)
+    public function __construct(string $base, array $params, Validation $metric, Validator $validator = null)
     {
         $reflector = new ReflectionClass($base);
 
@@ -94,12 +94,21 @@ class GridSearch implements MetaEstimator, Persistable
                 . ' estimator interface.');
         }
 
+        if (in_array(MetaEstimator::class, $reflector->getInterfaceNames())) {
+            throw new InvalidArgumentException('Base estimator cannot be a meta'
+                . ' estimator.');
+        }
+
         $args = array_column($reflector->getConstructor()->getParameters(),
             'name');
 
         if (count($params) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
                 . count($params) . ' given, only ' . count($args) . ' needed.');
+        }
+
+        if (is_null($validator)) {
+            $validator = new KFold(10);
         }
 
         $this->base = $base;

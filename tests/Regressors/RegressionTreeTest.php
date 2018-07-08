@@ -64,7 +64,7 @@ class RegressionTreeTest extends TestCase
         $this->estimator = new RegressionTree(20, 2, 3);
     }
 
-    public function test_build_regression_tree()
+    public function test_build_regressor()
     {
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);

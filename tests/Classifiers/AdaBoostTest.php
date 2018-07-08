@@ -63,7 +63,7 @@ class AdaBoostTest extends TestCase
         $this->estimator = new AdaBoost(ClassificationTree::class, [1, 1], 20, 0.5, 0.99);
     }
 
-    public function test_build_ada_boost_classifier()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

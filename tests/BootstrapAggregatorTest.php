@@ -1,18 +1,15 @@
 <?php
 
-namespace Rubix\Tests\Regressors;
+namespace Rubix\Tests;
 
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\Regressor;
-use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\BootstrapAggregator;
+use Rubix\ML\Regressors\RegressionTree;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 
-class DummyRegressorTest extends TestCase
+class BootstrapAggregatorTest extends TestCase
 {
     protected $estimator;
 
@@ -62,14 +59,13 @@ class DummyRegressorTest extends TestCase
             26, 32,
         ]);
 
-        $this->estimator = new DummyRegressor(new BlurryMean());
+        $this->estimator = new BootstrapAggregator(RegressionTree::class, [10, 3, 2], 30, 0.8);
     }
 
-    public function test_build_regressor()
+    public function test_build_meta_estimator()
     {
-        $this->assertInstanceOf(DummyRegressor::class, $this->estimator);
-        $this->assertInstanceOf(Regressor::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
+        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
@@ -79,16 +75,7 @@ class DummyRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', INF);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', INF);
-    }
-
-    public function test_train_with_unlabeled()
-    {
-        $dataset = new Unlabeled([['bad']]);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train($dataset);
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
     }
 }

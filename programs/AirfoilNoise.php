@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\ResidualAnalysis;
@@ -13,7 +14,7 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Airfoil Noise using a Regression Tree               ║' . "\n";
+echo '║ Airfoil Noise using Bootstrapped Regression Tree    ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
@@ -30,7 +31,7 @@ $labels = iterator_to_array($reader->fetchColumn('decibels'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new RegressionTree(100, 5, 3), [
+$estimator = new Pipeline(new BootstrapAggregator(RegressionTree::class, [10, 5, 3], 10, 0.5), [
         new NumericStringConverter(),
     ]);
 

@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\DummyClassifier;
@@ -43,14 +44,12 @@ $estimator = new Pipeline(new LogisticRegression(10, new Adam(0.001), 1e-4, 1e-4
     new ZScaleStandardizer(),
 ]);
 
-$validator = new KFold(10);
+$validator = new KFold(8);
 
-$dataset->randomize();
+$testing = $dataset->randomize()->take(3);
 
 var_dump($validator->test($dummy, $dataset, new MCC()));
 
 var_dump($validator->test($estimator, $dataset, new MCC()));
 
-var_dump($estimator->progress());
-
-var_dump($estimator->proba($dataset->randomize()->head(3)));
+var_dump($estimator->predict($testing));

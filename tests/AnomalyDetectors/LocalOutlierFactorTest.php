@@ -54,7 +54,7 @@ class LocalOutlierFactorTest extends TestCase
         $this->estimator = new LocalOutlierFactor(5, 4, 0.5, new Euclidean());
     }
 
-    public function test_build_local_outlier_factor_detector()
+    public function test_build_detector()
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
@@ -64,7 +64,7 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_predict()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->training);
 

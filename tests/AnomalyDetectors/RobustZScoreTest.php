@@ -51,7 +51,7 @@ class RobustZScoreTest extends TestCase
         $this->estimator = new RobustZScore(1.2);
     }
 
-    public function test_build_robust_z_score_detector()
+    public function test_build_detector()
     {
         $this->assertInstanceOf(RobustZScore::class, $this->estimator);
         $this->assertInstanceOf(Detector::class, $this->estimator);
@@ -59,7 +59,7 @@ class RobustZScoreTest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_predict()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->training);
 

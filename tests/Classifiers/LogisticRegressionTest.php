@@ -62,10 +62,10 @@ class LogisticRegressionTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new LogisticRegression(1, new Adam(0.005), 1e-4, 1e-4, 10000);
+        $this->estimator = new LogisticRegression(1, new Adam(0.005), 1e-4, 1e-4);
     }
 
-    public function test_build_perceptron_classifier()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
         $this->assertInstanceOf(Binary::class, $this->estimator);

@@ -65,7 +65,7 @@ class KNearestNeighborsTest extends TestCase
         $this->estimator = new KNearestNeighbors(3, new Euclidean());
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(KNearestNeighbors::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

@@ -34,7 +34,7 @@ class DBSCANTest extends TestCase
         $this->estimator = new DBSCAN(2.5, 5, new Euclidean());
     }
 
-    public function test_build_DBSCAN_clusterer()
+    public function test_build_clusterer()
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
@@ -42,7 +42,7 @@ class DBSCANTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    public function test_cluster()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->dataset);
 

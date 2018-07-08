@@ -68,7 +68,7 @@ class CommitteeMachineTest extends TestCase
         ]);
     }
 
-    public function test_build_k_means_clusterer()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

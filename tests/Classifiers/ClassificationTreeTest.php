@@ -63,7 +63,7 @@ class ClassificationTreeTest extends TestCase
         $this->estimator = new ClassificationTree(10, 5, 2, 1e-2);
     }
 
-    public function test_create_tree()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

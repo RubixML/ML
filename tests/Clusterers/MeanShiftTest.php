@@ -35,7 +35,7 @@ class MeanShiftTest extends TestCase
         $this->estimator = new MeanShift(3.0, new Euclidean(), 1e-4, 300);
     }
 
-    public function test_build_k_means_estimator()
+    public function test_build_clusterer()
     {
         $this->assertInstanceOf(MeanShift::class, $this->estimator);
         $this->assertInstanceOf(Clusterer::class, $this->estimator);
@@ -43,7 +43,7 @@ class MeanShiftTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    public function test_cluster_samples()
+    public function test_make_prediction()
     {
         $this->estimator->train($this->dataset);
 

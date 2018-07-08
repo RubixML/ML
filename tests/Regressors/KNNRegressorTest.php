@@ -66,7 +66,7 @@ class KNNRegressorTest extends TestCase
         $this->estimator = new KNNRegressor(1, new Euclidean());
     }
 
-    public function test_build_knn_regressor()
+    public function test_build_regressor()
     {
         $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);

@@ -64,7 +64,7 @@ class RidgeTest extends TestCase
         $this->estimator = new Ridge(1.0);
     }
 
-    public function test_build_ridge_regressor()
+    public function test_build_regressor()
     {
         $this->assertInstanceOf(Ridge::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

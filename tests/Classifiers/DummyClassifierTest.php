@@ -62,7 +62,7 @@ class DummyClassifierTest extends TestCase
         $this->estimator = new DummyClassifier(new PopularityContest());
     }
 
-    public function test_build_dummy_classifier()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(DummyClassifier::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);

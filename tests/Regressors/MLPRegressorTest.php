@@ -69,10 +69,10 @@ class MLPRegressorTest extends TestCase
         $this->estimator = new MLPRegressor([
             new Dense(10, new ELU()),
             new Dense(10, new ELU()),
-        ], 10, new Adam(0.001), 1e-4, new MeanAbsoluteError(), 0.1, 4);
+        ], 1, new Adam(0.001), 1e-4, new MeanAbsoluteError(), 0.1, 4);
     }
 
-    public function test_build_mlp_regressor()
+    public function test_build_regressor()
     {
         $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);

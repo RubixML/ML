@@ -73,11 +73,13 @@ MIT
 	- [Meta-Estimators](#meta-estimators)
 		- [Data Preprocessing](#data-preprocessing)
 			- [Pipeline](#pipeline)
+		- [Ensemble](#ensemble)
+			- [Bootstrap Aggregator](#bootstrap-aggregator)
+		- [Model Persistence](#model-persistence)
+			- [Persistent Model](#persistent-model)
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
 			- [Random Search](#random-search)
-		- [Model Persistence](#model-persistence)
-			- [Persistent Model](#persistent-model)
 	- [Transformers](#transformers)
 		- [Dense and Sparse Random Projectors](#dense-and-sparse-random-projectors)
 		- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
@@ -584,7 +586,7 @@ array(3) {
 [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, sciences, and many more areas. The output of a Detector is either *0* for a normal sample or *1* for a detected outlier.
 
 ### Isolation Forest
-An [ensemble](https://en.wikipedia.org/wiki/Ensemble_learning) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
+An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
 ##### Unsupervised | Probabilistic | Persistable | Nonlinear
 
@@ -692,7 +694,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 |--|--|--|--|
 | base | None | string | The fully qualified class name of the base *weak* classifier. |
 | params | [ ] | array | The parameters of the base classifer. |
-| experts | 100 | int | The number of classifiers to train in the ensemble. |
+| estimators | 100 | int | The number of estimators to train in the ensemble. |
 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | threshold | 0.999 | float | The minimum accuracy an epoch must score before the algorithm terminates. |
 
@@ -805,7 +807,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree
-An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees are useful in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees are useful in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -939,7 +941,7 @@ $estimator = new NaiveBayes();
 ```
 
 ### Random Forest
-[Ensemble](https://en.wikipedia.org/wiki/Ensemble_learning) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset of the training data. A prediction is made based on the probability scores returned from each tree in the forest.
+[Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset of the training data. A prediction is made based on the probability scores returned from each tree in the forest.
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -1347,6 +1349,39 @@ Transformer middleware will process in the order given when the Pipeline was bui
 In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data.
 
 ---
+### Ensemble
+Ensemble Meta Estimators train and orchestrate a number of base Estimators in order to make their predictions. Certain Estimators (like [AdaBoost](#adaboost) and [Random Forest](#random-forest)) are implemented as Ensembles under the hood, however these *Meta* Estimators are able to work across Estimator types which makes them very useful.
+
+### Bootstrap Aggregator
+Bootstrap Aggregating (or *bagging*) is a model averaging technique designed to improve the stability and performance of a user-specified base Estimator by training a number of them on a unique bootstrapped training set. Bootstrap Aggregator then collects all of their predictions and makes a final prediction based on the results.
+
+##### Classifiers, Regressors, Anomaly Detectors
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| base | None | string | The fully qualified class name of the base Estimator. |
+| params | [ ] | array | The parameters of the base estimator. |
+| estimators | 10 | int | The number of base estimators to train in the ensemble. |
+| ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
+
+##### Additional Methods:
+This Meta Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\BootstrapAggregator;
+use Rubix\ML\Regressors\RegressionTree;
+
+...
+$estimator = new BootstrapAggregator(RegressionTree::class, [10, 5, 3], 100, 0.2);
+
+$estimator->traing($training); // Trains 100 regression trees
+
+$estimator->predict($testing); // Aggregates their predictions
+```
+
+---
 ### Model Selection
 Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the *Grid Search* meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
 
@@ -1384,9 +1419,9 @@ $params = [
 
 $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
 
-$estimator->train($dataset);
+$estimator->train($dataset); // Train one estimator per parameter combination
 
-var_dump($estimator->best()); // Return the best parameters
+var_dump($estimator->best()); // Return the best combination
 ```
 
 ##### Output:
