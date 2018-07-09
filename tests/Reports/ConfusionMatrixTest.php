@@ -1,14 +1,14 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation\Reports;
+namespace Rubix\Tests\Reports;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClusterer;
 use Rubix\ML\Reports\Report;
-use Rubix\ML\Reports\ContingencyTable;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\Tests\Helpers\MockClassifier;
 use PHPUnit\Framework\TestCase;
 
-class ContingencyTableTest extends TestCase
+class ConfusionMatrixTest extends TestCase
 {
     protected $report;
 
@@ -21,16 +21,16 @@ class ContingencyTableTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClusterer([
+        $this->estimator = new MockClassifier([
             'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
         ]);
 
-        $this->report = new ContingencyTable();
+        $this->report = new ConfusionMatrix(['wolf', 'lamb']);
     }
 
-    public function test_build_confusion_matrix()
+    public function test_build_report()
     {
-        $this->assertInstanceOf(ContingencyTable::class, $this->report);
+        $this->assertInstanceOf(ConfusionMatrix::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 

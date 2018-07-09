@@ -45,11 +45,9 @@ class HoldOut implements Validator
     public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
     {
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
-            list($training, $testing) =
-                $dataset->stratifiedSplit(1 - $this->ratio);
+            list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
         } else {
-            list($training, $testing) =
-                $dataset->split(1 - $this->ratio);
+            list($training, $testing) = $dataset->randomize()->split(1 - $this->ratio);
         }
 
         $estimator->train($training);

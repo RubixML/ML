@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation\Reports;
+namespace Rubix\Tests\Reports;
 
+use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\Tests\Helpers\MockClassifier;
-use Rubix\ML\Reports\Report;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +28,7 @@ class MulticlassBreakdownTest extends TestCase
         $this->report = new MulticlassBreakdown();
     }
 
-    public function test_build_multiclass_breakdown()
+    public function test_build_report()
     {
         $this->assertInstanceOf(MulticlassBreakdown::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);

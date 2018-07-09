@@ -118,7 +118,7 @@ class MLPRegressor implements Regressor, Online, Persistable
      */
     public function __construct(array $hidden, int $batchSize = 50, Optimizer $optimizer = null,
         float $alpha = 1e-4, Validation $metric = null, float $holdout = 0.1, int $window = 3,
-        float $tolerance = 1e-3, int $epochs = PHP_INT_MAX)
+        float $tolerance = 1e-5, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -232,7 +232,7 @@ class MLPRegressor implements Regressor, Online, Persistable
             $this->train($dataset);
         }
 
-        list($training, $testing) = $dataset->split(1 - $this->holdout);
+        list($training, $testing) = $dataset->randomize()->split(1 - $this->holdout);
 
         list($min, $max) = $this->metric->range();
 

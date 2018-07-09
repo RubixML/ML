@@ -50,7 +50,7 @@ class KFold implements Validator
         if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
             $folds = $dataset->stratifiedFold($this->k);
         } else {
-            $folds = $dataset->fold($this->k);
+            $folds = $dataset->randomize()->fold($this->k);
         }
 
         $scores = [];

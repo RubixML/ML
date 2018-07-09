@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation\Reports;
+namespace Rubix\Tests\Reports;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockDetector;
 use Rubix\ML\Reports\Report;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Reports\OutlierRatio;
+use Rubix\Tests\Helpers\MockDetector;
 use PHPUnit\Framework\TestCase;
 
 class OutlierRatioTest extends TestCase
@@ -28,7 +28,7 @@ class OutlierRatioTest extends TestCase
         $this->report = new OutlierRatio();
     }
 
-    public function test_build_outlier_ratio_report()
+    public function test_build_report()
     {
         $this->assertInstanceOf(OutlierRatio::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);

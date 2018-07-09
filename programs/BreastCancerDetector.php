@@ -6,6 +6,7 @@ use Rubix\ML\Pipeline;
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\ExtraTree;
+use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
@@ -46,13 +47,12 @@ $hidden = [
     new Dense(10, new ELU()),
     new Dense(10, new ELU()),
     new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
 ];
 
 $estimator = new Pipeline(new CommitteeMachine([
-    [10, new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC())],
-    [8, new RandomForest(300, 0.1, 10, 3, 3, 1e-4, ExtraTree::class)],
-    [7, new ClassificationTree(100, 3, 5, 1e-4)],
+    new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
+    new RandomForest(500, 0.1, 10, 3, 3, 1e-4, ExtraTree::class),
+    new ClassificationTree(100, 3, 5, 1e-4),
 ]), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
@@ -68,8 +68,6 @@ $report = new AggregateReport([
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.80);
 
 $estimator->train($training);
-
-var_dump($estimator->influence());
 
 var_dump($report->generate($estimator, $testing));
 

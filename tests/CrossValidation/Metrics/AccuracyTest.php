@@ -43,7 +43,7 @@ class AccuracyTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.5999999988, $score);
+        $this->assertEquals(0.6, $score);
     }
 
     public function test_within_range()

@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
 class Accuracy implements Validation
@@ -29,12 +30,16 @@ class Accuracy implements Validation
      */
     public function score(Estimator $estimator, Labeled $testing) : float
     {
-        if (!$estimator instanceof Classifier) {
+        if (!$estimator instanceof Classifier and !$estimator instanceof Detector) {
             throw new InvalidArgumentException('This metric only works on'
-                . ' classifiers.');
+                . ' classifiers and anomaly detectors.');
         }
 
         $score = 0.0;
+
+        if ($testing->numRows() === 0) {
+            return $score;
+        }
 
         foreach ($estimator->predict($testing) as $i => $prediction) {
             if ($prediction === $testing->label($i)) {
@@ -42,6 +47,6 @@ class Accuracy implements Validation
             }
         }
 
-        return $score / ($testing->numRows() + self::EPSILON);
+        return $score / $testing->numRows();
     }
 }

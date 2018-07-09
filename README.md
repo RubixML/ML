@@ -125,6 +125,7 @@ MIT
 			- [Diagonal](#diagonal)
 			- [Ellipsoidal](#ellipsoidal)
 			- [Euclidean](#euclidean)
+			- [Hamming](#hamming)
 			- [Manhattan](#manhattan)
 			- [Minkowski](#minkowski)
 	- [Cross Validation](#cross-validation)
@@ -855,6 +856,7 @@ Multiclass [Neural Network](#neural-network) model that uses a series of user-de
 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| tolerance | 1e-3 | The amount of error to tolerate in the validation metric. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
@@ -1124,6 +1126,7 @@ A [Neural Network](#neural-network) with a continuous output layer suitable for 
 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| tolerance | 1e-5 | The amount of error to tolerate in the validation metric. |
 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
@@ -1259,25 +1262,23 @@ array(2) {
 
 ---
 ### Meta-Estimators
-Meta-Estimators allow you to progressively enhance your models by adding additional functionality such as [data preprocessing](#data-preprocessing) and [persistence](#model-persistence). Each Meta-Estimator wraps a base Estimator and you can even wrap certain Meta-Estimators with other Meta-Estimators. Some examples of Meta-Estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Persistent Model](#persistent-model).
-
-Best of all, you can call any of the base Estimator(s)' methods simply by invoking its signature on the Meta-Estimator.
+Meta-Estimators allow you to progressively enhance your models by adding additional functionality such as [data preprocessing](#data-preprocessing) and [persistence](#model-persistence) or by orchestrating an [Ensemble](#ensemble) of base Estimators. Each Meta-Estimator wraps a base Estimator and you can even wrap certain Meta-Estimators with other Meta-Estimators. Some examples of Meta-Estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Bootstrap Aggregator](#bootstrap-aggregator).
 
 ##### Example:
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\GridSearch;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Classifiers\DecisionTree;
 use Rubix\ML\Transformers\NumericStringConverter;
 
 ...
-$params = [[10, 30, 50, 100], [1, 3, 5]];
+$params = [[10, 30, 50], [1, 3, 5], [2, 3, 4];
 
-$estimator = new Pipeline(new GridSearch(DecisionTree::class, $params, new MCC(), new KFold(10)));
+$estimator = new Pipeline(new GridSearch(ClassificationTree::class, $params, new MCC(), new KFold(10)));
 
-$estimator->train($dataset); // Train a Decision Tree with preprocessing and grid search
+$estimator->train($dataset); // Train a classification tree with preprocessing and grid search
 
 $estimator->complexity(); // Call complexity() method on Decision Tree from Pipeline
 ```
@@ -1286,25 +1287,40 @@ $estimator->complexity(); // Call complexity() method on Decision Tree from Pipe
 Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the Pipeline meta-Estimator and the various [Transformers](#transformers) that it employs to fit the input data to suit the requirements and preferences of the [Estimator](#estimator) that it feeds.
 
 ### Pipeline
-A Pipeline is an Estimator that wraps another Estimator with additional functionality. For this reason, a Pipeline is called a *meta-Estimator*. As arguments, Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, the Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `predict()`.
+Pipeline is responsible for transforming the input sample matrix of a Dataset in such a way that can be processed by the base Estimator. Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `predict()`.
+
+##### Classifiers, Regressors, Clusterers, Anomaly Detectors
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| estimator | None | object | An instance of a base estimator. |
+| transformers | [ ] | array | The transformer middleware to be applied to each dataset. |
+
+##### Additional Methods:
+This Meta Estimator does not have any additional methods.
 
 ##### Example:
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizer\RMSProp;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\SparseRandomProjector;
 
-$estimator = new Pipeline(new SoftmaxClassifier(200, 50), [
+$estimator = new Pipeline(new SoftmaxClassifier(100, new RMSProp(0.01), 1e-2), [
 	new MissingDataImputer(),
 	new OneHotEncoder(),
+	new SparseRandomProjector(30),
 ]);
 
-$estimator->train($dataset); // Dataset objects are fit and
-$estimator->predict($samples); // transformed automatically.
+$estimator->train($dataset); // Datasets are fit and ...
+
+$estimator->predict($samples); // Transformed automatically.
 ```
 
-Transformer middleware will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since Tranformers are run sequentially, the order in which they run *matters*. For example, a Transformer near the end of the stack may depend on a previous Transformer to convert all categorical features into continuous ones before it can run.
+Transformer *middleware* will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since Tranformers run sequentially, the order in which they run *matters*. For example, a Transformer near the end of the stack may depend on a previous Transformer to convert all categorical features into continuous ones before it can run.
 
 In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data.
 
@@ -1344,21 +1360,20 @@ $estimator->predict($testing); // Aggregates their predictions
 ```
 
 ### Committee Machine
-A voting Ensemble that aggregates the weighted predictions of a committee of user-specified, heterogeneous estimators (called *experts*) of a single type (i.e all Classifiers, Regressors, etc). Optionally, you can supply a tuple (*array*) containing the influence value and Estimator instance which will allow you to assign an arbitrary influence value to each Estimator. The committee uses a weighted hard-voting scheme to make final predictions.
+A voting Ensemble that aggregates the predictions of a committee of user-specified, heterogeneous estimators (called *experts*) of a single type (i.e all Classifiers, Regressors, etc). The committee uses a hard-voting scheme to make final predictions.
 
 ##### Classifiers, Regressors, Anomaly Detectors
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| experts | None | array | An array of estimator instances and their influence value tuples. |
+| experts | None | array | An array of estimator instances. |
 
 
 ##### Additional Methods:
 | Method | Description |
 |--|--|
 | `estimators() : int` | Returns the ensemble of estimators. |
-| `influence() : int` | The normalized influence values of each classifier in the committee. |
 
 ##### Example:
 ```php
@@ -1369,21 +1384,10 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 
 $estimator = new CommitteeMachine([
-	[10, new RandomForest(100, 0.3, 50, 3, 4, 1e-3)],
-	[7, new SoftmaxClassifier(50, new Adam(0.001), 0.1)],
-	[8, new KNearestNeighbors(3)],
+	new RandomForest(100, 0.3, 50, 3, 4, 1e-3),
+	new SoftmaxClassifier(50, new Adam(0.001), 0.1),
+	new KNearestNeighbors(3),
 ]);
-
-var_dump($estimator->influence()); // Dump normalized influence values
-```
-
-##### Output:
-```sh
-array(3) {
-  [0]=> float(0.4)
-  [1]=> float(0.28)
-  [2]=> float(0.32)
-}
 ```
 
 ---
@@ -2177,6 +2181,21 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 
 $kernel = new Euclidean();
 ```
+
+### Hamming
+The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
+
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Hamming;
+
+$kernel = new Hamming();
+```
+
 
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.

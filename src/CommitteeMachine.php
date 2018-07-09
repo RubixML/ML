@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Clusterers\Clusterer;
 use Rubix\ML\Classifiers\Classifier;
@@ -13,20 +14,11 @@ use InvalidArgumentException;
 class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
 {
     /**
-     * The user-specified influence that each classifier has in the committee.
-     *
-     * @var array
-     */
-    protected $influence = [
-        //
-    ];
-
-    /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
      * @var array
      */
-    protected $ensemble = [
+    protected $experts = [
         //
     ];
 
@@ -43,63 +35,43 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
         }
 
         foreach ($experts as $expert) {
-            if ($experts[0][1] instanceof Classifier) {
-                if (!$expert[1] instanceof Classifier) {
-                    throw new InvalidArgumentException('Cannot mix estimator'
-                        . ' types. ' . gettype($expert) . ' found,'
-                        . ' classifier expected.');
-                }
-            } else if (!$experts[0][1] instanceof Regressor) {
-                if (!$expert[1] instanceof Regressor) {
-                    throw new InvalidArgumentException('Cannot mix estimator'
-                        . ' types. ' . gettype($expert) . ' found,'
-                        . ' regressor expected.');
-                }
-            } else if (!$experts[0][1] instanceof Detector) {
-                if (!$expert[1] instanceof Detector) {
-                    throw new InvalidArgumentException('Cannot mix estimator'
-                        . ' types. ' . gettype($expert) . ' found,'
-                        . ' anomaly detector expected.');
-                }
-            }
-        }
-
-        $total = 0.0;
-
-        foreach ($experts as &$expert) {
-            if (!is_array($expert)) {
-                $expert = [1, $expert];
+            if (!$expert instanceof Estimator) {
+                throw new InvalidArgumentException('Base class must implement'
+                    . ' the estimator interface.');
             }
 
-            if (count($expert) !== 2) {
-                throw new InvalidArgumentException('Exactly 2 arguments are'
-                    . ' required for estimator configuration.');
-            }
-
-            if (!is_int($expert[0]) and !is_float($expert[0])) {
-                throw new InvalidArgumentException('Influence parameter must be'
-                    . ' an integer or floating point number.');
-            }
-
-            if ($expert[0] < 0) {
-                throw new InvalidArgumentException('Influence cannot be less'
-                    . ' than 0.');
-            }
-
-            if ($expert[1] instanceof Clusterer) {
+            if ($expert instanceof Clusterer) {
                 throw new InvalidArgumentException('This meta estimator does'
-                    . ' not work with clusterers.');
+                    . ' not work on clusterers.');
             }
 
-            $total += $expert[0];
+            if ($expert instanceof MetaEstimator) {
+                throw new InvalidArgumentException('Base estimator cannot be a'
+                    . ' meta estimator.');
+            }
+
+            if ($experts[0] instanceof Classifier) {
+                if (!$expert instanceof Classifier) {
+                    throw new InvalidArgumentException('Cannot mix estimator'
+                        . ' types, ' . gettype($expert) . ' found,'
+                        . ' Classifier expected.');
+                }
+            } else if ($experts[0] instanceof Regressor) {
+                if (!$expert instanceof Regressor) {
+                    throw new InvalidArgumentException('Cannot mix estimator'
+                        . ' types, ' . gettype($expert) . ' found,'
+                        . ' Regressor expected.');
+                }
+            } else if ($experts[0] instanceof Detector) {
+                if (!$expert instanceof Detector) {
+                    throw new InvalidArgumentException('Cannot mix estimator'
+                        . ' types, ' . gettype($expert) . ' found,'
+                        . ' anomaly Detector expected.');
+                }
+            }
         }
 
-        unset($expert);
-
-        foreach ($experts as $expert) {
-            $this->influence[] = $expert[0] / $total;
-            $this->ensemble[] = $expert[1];
-        }
+        $this->experts = $experts;
     }
 
     /**
@@ -109,17 +81,7 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
      */
     public function estimators() : array
     {
-        return $this->ensemble;
-    }
-
-    /**
-     * Return the influence of each estimator.
-     *
-     * @return array
-     */
-    public function influence() : array
-    {
-        return $this->influence;
+        return $this->experts;
     }
 
     /**
@@ -130,8 +92,8 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        foreach ($this->ensemble as $expert) {
-            $expert->train(clone $dataset);
+        foreach ($this->experts as $expert) {
+            $expert->train($dataset);
         }
     }
 
@@ -143,56 +105,40 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $votes = [[]];
+        $predictions = [[]];
 
-        foreach ($this->ensemble as $expert) {
-            foreach ($expert->predict($dataset) as $i => $vote) {
-                $votes[$i][] = $vote;
+        foreach ($this->experts as $expert) {
+            foreach ($expert->predict($dataset) as $i => $prediction) {
+                $predictions[$i][] = $prediction;
             }
         }
 
-        return $this->tally($votes);
+        return $this->tally($predictions);
     }
 
     /**
      * Tally each estimators prediction and weight it according to its
      * associated normalized influence value.
      *
-     * @param  array  $votes
+     * @param  array  $predictions
      * @return array
      */
-    protected function tally(array $votes) : array
+    protected function tally(array $predictions) : array
     {
-        if ($this->ensemble[0] instanceof Classifier) {
-            return array_map(function ($predictions) {
-                $counts = array_fill_keys(array_unique($predictions), 0);
-
-                foreach ($predictions as $i => $prediction) {
-                    $counts[$prediction] += $this->influence[$i];
-                }
+        if ($this->experts[0] instanceof Classifier) {
+            return array_map(function ($votes) {
+                $counts = array_count_values($votes);
 
                 return array_search(max($counts), $counts);
-            }, $votes);
-        } else if ($this->ensemble[0] instanceof Detector) {
-            return array_map(function ($predictions) {
-                $score = 0.0;
-
-                foreach ($predictions as $i => $prediction) {
-                    $score += $this->influence[$i] * $prediction;
-                }
-
-                return $score >= 0.5 ? 1 : 0;
-            }, $votes);
+            }, $predictions);
+        } else if ($this->experts[0] instanceof Detector) {
+            return array_map(function ($votes) {
+                return Average::mean($votes) >= 0.5 ? 1 : 0;
+            }, $predictions);
         } else {
-            return array_map(function ($predictions) {
-                $value = 0.0;
-
-                foreach ($predictions as $i => $prediction) {
-                    $value += $this->influence[$i] * $prediction;
-                }
-
-                return $value;
-            }, $votes);
+            return array_map(function ($votes) {
+                return Average::mean($votes);
+            }, $predictions);
         }
     }
 }
