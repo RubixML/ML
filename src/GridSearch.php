@@ -164,11 +164,8 @@ class GridSearch implements MetaEstimator, Persistable
         }
 
         $this->results = $this->best = [];
-        $this->estimator = null;
 
-        $dataset->randomize();
-
-        $best = ['score' => -INF, 'params' => [], 'estimator' => null];
+        $best = ['score' => -INF, 'params' => []];
 
         foreach ($this->combineParams($this->params) as $params) {
             $estimator = new $this->base(...$params);
@@ -179,7 +176,6 @@ class GridSearch implements MetaEstimator, Persistable
             if ($score > $best['score']) {
                 $best['score'] = $score;
                 $best['params'] = $params;
-                $best['estimator'] = $estimator;
             }
 
             $this->results[] = [
@@ -189,7 +185,7 @@ class GridSearch implements MetaEstimator, Persistable
         }
 
         $this->best = $best['params'];
-        $this->estimator = $best['estimator'];
+        $this->estimator = new $this->base(...$best['params']);
 
         $this->estimator->train($dataset);
     }

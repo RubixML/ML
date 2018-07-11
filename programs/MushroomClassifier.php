@@ -43,10 +43,9 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new SELU()),
-    new Dense(10, new SELU()),
-    new Dense(10, new SELU()),
-    new Dense(10, new SELU()),
+    new Dense(20, new SELU()),
+    new Dense(20, new SELU()),
+    new Dense(20, new SELU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
@@ -70,4 +69,4 @@ var_dump($estimator->progress());
 
 var_dump($report->generate($estimator, $testing));
 
-var_dump($estimator->proba($dataset->randomize()->head(3)));
+var_dump($estimator->proba($testing->head(3)));

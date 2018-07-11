@@ -3,11 +3,12 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
-class PersistentModel
+class PersistentModel implements MetaEstimator
 {
     /**
      * The reflector instance of the base estimator.
@@ -64,6 +65,28 @@ class PersistentModel
     public function estimator() : Persistable
     {
         return $this->model;
+    }
+
+    /**
+     * Train the underlying estimator.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return void
+     */
+    public function train(Dataset $dataset) : void
+    {
+        $this->model->train($dataset);
+    }
+
+    /**
+     * Make a prediction on a given sample dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return array
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        return $this->model->predict($dataset);
     }
 
     /**

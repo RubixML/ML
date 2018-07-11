@@ -48,6 +48,7 @@ MIT
 			- [Classification Tree](#classification-tree)
 			- [Dummy Classifier](#dummy-classifier)
 			- [Extra Tree](#extra-tree)
+			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
 			- [Logistic Regression](#logistic-regression)
 			- [Multi Layer Perceptron](#multi-layer-perceptron)
@@ -791,6 +792,28 @@ use Rubix\ML\Classifiers\ExtraTree;
 $estimator = new ExtraTree(20, 3);
 ```
 
+### Gaussian Naive Bayes
+A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
+
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+
+##### Parameters:
+This Estimator does not have any parameters.
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `priors() : array` | Returns the class prior probabilities based on their weight over all training samples. |
+| `means() : array` | Return the running mean of each feature column of the training data. |
+| `variances() : array` | Return the running variances of each feature column of the training data. |
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\GaussianNB;
+
+$estimator = new GaussianNB();
+```
+
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does all of its computation at prediction time.
 
@@ -883,21 +906,26 @@ $estimator = new MultiLayerPerceptron($hidden, 10, new Adam(0.001), 1e-4, new MC
 ```
 
 ### Naive Bayes
-Probability-based classifier that used probabilistic inference to derive the predicted class. The naive part is that the classifier assumes that all features are independent.
+Probability-based classifier that used probabilistic inference to derive the correct class. The probabilities are calculated using [Bayes Rule](https://en.wikipedia.org/wiki/Bayes%27_theorem). The naive part relates to the fact that it assumes that all features are independent, which is rarely the case in the real world but tends to work out in practice for most problems.
 
-##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-This estimator does not have any hyperparameters.
+| Param | Default | Type | Description |
+|--|--|--|--|
+| smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
 
 ##### Additional Methods:
-This Estimator does not have any additional methods.
+| Method | Description |
+|--|--|
+| `priors() : array` | Returns the class prior probabilities based on their weight over all training samples. |
+| `probabilities() : array` | Return the probabilities of each feature given each class label. |
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 
-$estimator = new NaiveBayes();
+$estimator = new NaiveBayes(10.0);
 ```
 
 ### Random Forest

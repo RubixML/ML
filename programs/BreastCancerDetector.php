@@ -7,6 +7,7 @@ use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
@@ -44,15 +45,17 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
-    new Dense(10, new ELU()),
+    new Dense(20, new ELU()),
+    new Dense(20, new ELU()),
+    new Dense(20, new ELU()),
+    new Dense(20, new ELU()),
 ];
 
 $estimator = new Pipeline(new CommitteeMachine([
     new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
     new RandomForest(500, 0.1, 10, 3, 3, 1e-4, ExtraTree::class),
     new ClassificationTree(100, 3, 5, 1e-4),
+    new GaussianNB(),
 ]), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),

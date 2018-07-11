@@ -10,7 +10,6 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\MissingDataImputer;
@@ -58,4 +57,4 @@ $estimator->train($training);
 
 var_dump($report->generate($estimator, $testing));
 
-var_dump($estimator->predict($dataset->randomize()->head(5)));
+var_dump($estimator->predict($testing->head(3)));

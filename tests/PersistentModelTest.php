@@ -3,6 +3,7 @@
 namespace Rubix\Tests;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\MetaEstimator;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\DummyClassifier;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,7 @@ class PersistentModelTest extends TestCase
     public function test_build_persistent_model()
     {
         $this->assertInstanceOf(PersistentModel::class, $this->model);
+        $this->assertInstanceOf(MetaEstimator::class, $this->model);
     }
 
     public function test_save_model()

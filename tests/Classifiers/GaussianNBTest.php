@@ -1,18 +1,20 @@
 <?php
 
-namespace Rubix\Tests;
+namespace Rubix\Tests\Classifiers;
 
-use Rubix\ML\Ensemble;
+use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
-use Rubix\ML\CommitteeMachine;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Classifiers\Multiclass;
+use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\GaussianNB;
-use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class CommitteeMachineTest extends TestCase
+class GaussianNBTest extends TestCase
 {
     protected $estimator;
 
@@ -59,17 +61,17 @@ class CommitteeMachineTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new CommitteeMachine([
-            new KNearestNeighbors(3),
-            new GaussianNB(),
-        ]);
+        $this->estimator = new GaussianNB();
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_classifier()
     {
-        $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
-        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
-        $this->assertInstanceOf(Ensemble::class, $this->estimator);
+        $this->assertInstanceOf(GaussianNB::class, $this->estimator);
+        $this->assertInstanceOf(Multiclass::class, $this->estimator);
+        $this->assertInstanceOf(Classifier::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
@@ -81,7 +83,30 @@ class CommitteeMachineTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
+    }
+
+    public function test_predict_proba()
+    {
+        $this->training->randomize();
+
+        $this->estimator->train($this->training);
+
+        $probabilities = $this->estimator->proba($this->testing);
+
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[0]['male']);
+        $this->assertLessThan(0.5, $probabilities[0]['female']);
+        $this->assertLessThan(0.5, $probabilities[1]['male']);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[1]['female']);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $dataset = new Unlabeled([['bad']]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train($dataset);
     }
 }
