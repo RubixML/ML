@@ -39,12 +39,13 @@ class NaiveBayesTest extends TestCase
             ['nice', 'furry', 'loner', 'happy'],
             ['mean', 'rough', 'loner', 'happy'],
             ['nice', 'furry', 'friendly', 'sad'],
+            ['nice', 'furry', 'loner', 'sad'],
         ];
 
         $labels = [
             'not monster', 'monster', 'not monster', 'monster', 'monster',
             'not monster', 'not monster', 'not monster', 'monster', 'monster',
-            'monster', 'not monster', 'monster', 'not monster',
+            'monster', 'not monster', 'monster', 'not monster', 'not monster',
         ];
 
         $this->training = new Labeled($samples, $labels);
@@ -94,6 +95,22 @@ class NaiveBayesTest extends TestCase
         $this->assertLessThan(0.5, $probabilities[0]['monster']);
         $this->assertLessThan(0.5, $probabilities[1]['not monster']);
         $this->assertGreaterThanOrEqual(0.5, $probabilities[1]['monster']);
+    }
+
+    public function test_partial_train()
+    {
+        $folds = $this->training->randomize()->stratifiedFold(3);
+
+        $this->estimator->train($folds[0]);
+
+        $this->estimator->partial($folds[1]);
+
+        $this->estimator->partial($folds[2]);
+
+        $predictions = $this->estimator->predict($this->testing);
+
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
     }
 
     public function test_train_with_unlabeled()

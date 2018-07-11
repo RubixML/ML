@@ -184,6 +184,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
         }
 
         $this->classes = [1 => $classes[0], -1 => $classes[1]];
+
         $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
 
         $this->ensemble = $this->influence = [];
@@ -260,7 +261,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
     protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
     {
         $n = $dataset->numRows();
-        $k = round($this->ratio * $n);
+        $k = (int) ($this->ratio * $n);
 
         $samples = $dataset->samples();
         $labels = $dataset->labels();

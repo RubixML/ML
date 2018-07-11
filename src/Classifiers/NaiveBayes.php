@@ -12,7 +12,8 @@ use InvalidArgumentException;
 class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
-     * The amount of additive (Laplace) smoothing to apply to the probabilities.
+     * The amount of additive (Laplace) smoothing to apply to the feature
+     * probabilities.
      *
      * @var float
      */
@@ -28,7 +29,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The precomputed prior probabilities of each label given by their weight.
+     * The precomputed prior log probabilities of each label.
      *
      * @var array
      */
@@ -37,7 +38,8 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The count of each feature from the training set.
+     * The count of each feature from the training set used for online
+     * probability calculation.
      *
      * @var array
      */
@@ -46,7 +48,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The precomputed probabilities of each feature given each class label.
+     * The precomputed log probabilities of each feature given each class label.
      *
      * @var array
      */
@@ -79,7 +81,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the class prior probabilities based on their weight over all
+     * Return the class prior log probabilities based on their weight over all
      * training samples.
      *
      * @return array
@@ -90,7 +92,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the probabilities of each feature given each class label.
+     * Return the log probabilities of each feature given each class label.
      *
      * @return array
      */
@@ -152,20 +154,23 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
             foreach (array_map(null, ...$samples) as $column => $values) {
                 $counts = array_count_values((array) $values);
 
-                foreach ($counts as $category => $count) {
-                    if (!isset($this->counts[$class][$column][$category])) {
-                        $this->counts[$class][$column][$category] = $count;
+                foreach ($counts as $value => $count) {
+                    if (!isset($this->counts[$class][$column][$value])) {
+                        $this->counts[$class][$column][$value] = $count;
                     } else {
-                        $this->counts[$class][$column][$category] += $count;
+                        $this->counts[$class][$column][$value] += $count;
                     }
                 }
 
-                $total = (2.0 * $this->smoothing) + array_sum($counts);
+                $n = count($this->counts[$class][$column]);
 
-                foreach ($this->counts[$class][$column] as $category => $count) {
+                $total = array_sum($this->counts[$class][$column])
+                    + ($n * $this->smoothing);
+
+                foreach ($this->counts[$class][$column] as $value => $count) {
                     $probability = ($count + $this->smoothing) / $total;
 
-                    $this->probs[$class][$column][$category] = $probability;
+                    $this->probs[$class][$column][$value] = log($probability);
                 }
             }
 
@@ -176,13 +181,13 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
             + array_sum($this->weights);
 
         foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = ($weight + $this->smoothing) / $total;
+            $this->priors[$class] = log(($weight + $this->smoothing) / $total);
         }
     }
 
     /**
-    * Calculate the probabilities of the sample being a member of a class and
-    * chose the class with the highest probability as the prediction.
+    * Calculate the likelihood of the sample being a member of a class and
+    * chose the class with the highest likelihood score as the prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
@@ -191,25 +196,16 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $best = ['probability' => -INF, 'outcome' => null];
+        foreach ($dataset as $sample) {
+            $jll = $this->computeJointLogLikelihood($sample);
 
-            foreach ($probabilities as $class => $probability) {
-                if ($probability > $best['probability']) {
-                    $best['probability'] = $probability;
-                    $best['outcome'] = $class;
-                }
-            }
-
-            $predictions[] = $best['outcome'];
+            $predictions[] = array_search(max($jll), $jll);
         }
 
         return $predictions;
     }
 
     /**
-     * Calculate the probabilities of the sample being a member of each class.
-     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
@@ -218,25 +214,45 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $i => $sample) {
-            $scores = [];
+            $jll = $this->computeJointLogLikelihood($sample);
 
-            foreach ($this->classes as $class) {
-                $score = $this->priors[$class];
+            $sigma = 0.0;
 
-                foreach ($sample as $column => $feature) {
-                    $score *= $this->probs[$class][$column][$feature] ?? 0.0;
-                }
-
-                $scores[$class] = $score;
+            foreach ($jll as $likelihood) {
+                $sigma += exp($likelihood);
             }
 
-            $total = array_sum($scores);
+            $logProb = log($sigma);
 
-            foreach ($scores as $class => $score) {
-                $probabilities[$i][$class] = $score / $total;
+            foreach ($jll as $class => $likelihood) {
+                $probabilities[$i][$class] = exp($likelihood - $logProb);
             }
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Calculate the joint log likelihood of a sample being a member of each class.
+     *
+     * @param  array  $sample
+     * @return array
+     */
+    protected function computeJointLogLikelihood(array $sample) : array
+    {
+        $likelihood = [];
+
+        foreach ($this->classes as $class) {
+            $score = $this->priors[$class];
+
+            foreach ($sample as $column => $feature) {
+                $score += $this->probs[$class][$column][$feature]
+                    ?? log(self::EPSILON);
+            }
+
+            $likelihood[$class] = $score;
+        }
+
+        return $likelihood;
     }
 }

@@ -803,7 +803,7 @@ This Estimator does not have any parameters.
 ##### Additional Methods:
 | Method | Description |
 |--|--|
-| `priors() : array` | Returns the class prior probabilities based on their weight over all training samples. |
+| `priors() : array` | Returns the class prior log probabilities based on their weight over all training samples. |
 | `means() : array` | Return the running mean of each feature column of the training data. |
 | `variances() : array` | Return the running variances of each feature column of the training data. |
 
@@ -918,8 +918,8 @@ Probability-based classifier that used probabilistic inference to derive the cor
 ##### Additional Methods:
 | Method | Description |
 |--|--|
-| `priors() : array` | Returns the class prior probabilities based on their weight over all training samples. |
-| `probabilities() : array` | Return the probabilities of each feature given each class label. |
+| `priors() : array` | Returns the class prior log probabilities based on their weight over all training samples. |
+| `probabilities() : array` | Return the log probabilities of each feature given each class label. |
 
 ##### Example:
 ```php

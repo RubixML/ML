@@ -85,6 +85,22 @@ class KNNRegressorTest extends TestCase
         $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
     }
 
+    public function test_partial_train()
+    {
+        $folds = $this->training->randomize()->fold(3);
+
+        $this->estimator->train($folds[0]);
+
+        $this->estimator->partial($folds[1]);
+
+        $this->estimator->partial($folds[2]);
+
+        $predictions = $this->estimator->predict($this->testing);
+
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
+    }
+
     public function test_train_with_unlabeled()
     {
         $dataset = new Unlabeled([['bad']]);

@@ -68,23 +68,41 @@ class LocalOutlierFactorTest extends TestCase
     {
         $this->estimator->train($this->training);
 
-        $results = $this->estimator->predict($this->testing);
+        $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $results[0]);
-        $this->assertEquals($this->testing->label(1), $results[1]);
-        $this->assertEquals($this->testing->label(2), $results[2]);
-        $this->assertEquals($this->testing->label(3), $results[3]);
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
+        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        $this->assertEquals($this->testing->label(3), $predictions[3]);
     }
 
     public function test_predict_proba()
     {
         $this->estimator->train($this->training);
 
-        $results = $this->estimator->proba($this->testing);
+        $predictions = $this->estimator->proba($this->testing);
 
-        $this->assertGreaterThan(0.5, $results[0]);
-        $this->assertLessThanOrEqual(0.5, $results[1]);
-        $this->assertGreaterThan(0.5, $results[2]);
-        $this->assertLessThanOrEqual(0.5, $results[3]);
+        $this->assertGreaterThan(0.5, $predictions[0]);
+        $this->assertLessThanOrEqual(0.5, $predictions[1]);
+        $this->assertGreaterThan(0.5, $predictions[2]);
+        $this->assertLessThanOrEqual(0.5, $predictions[3]);
+    }
+
+    public function test_partial_train()
+    {
+        $folds = $this->training->randomize()->fold(3);
+
+        $this->estimator->train($folds[0]);
+
+        $this->estimator->partial($folds[1]);
+
+        $this->estimator->partial($folds[2]);
+
+        $predictions = $this->estimator->predict($this->testing);
+
+        $this->assertEquals($this->testing->label(0), $predictions[0]);
+        $this->assertEquals($this->testing->label(1), $predictions[1]);
+        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        $this->assertEquals($this->testing->label(3), $predictions[3]);
     }
 }

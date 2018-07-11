@@ -24,7 +24,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The precomputed prior probabilities of each label given by their weight.
+     * The precomputed prior log probabilities of each label given by their weight.
      *
      * @var array
      */
@@ -60,7 +60,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
     ];
 
     /**
-     * Return the class prior probabilities based on their weight over all
+     * Return the class prior log probabilities based on their weight over all
      * training samples.
      *
      * @return array
@@ -186,8 +186,8 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
     }
 
     /**
-    * Calculate the probabilities of the sample being a member of a class and
-    * chose the class with the highest probability as the prediction.
+    * Calculate the likelihood of the sample being a member of a class and
+    * chose the class with the highest likelihood score as the prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
@@ -233,7 +233,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
     }
 
     /**
-     * Calculate the joint log likelyhood of a sample being a member of each class.
+     * Calculate the joint log likelihood of a sample being a member of each class.
      *
      * @param  array  $sample
      * @return array
