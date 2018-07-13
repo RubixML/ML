@@ -88,6 +88,7 @@ MIT
 		- [Numeric String Converter](#numeric-string-converter)
 		- [One Hot Encoder](#one-hot-encoder)
 	    - [Polynomial Expander](#polynomial-expander)
+	    - [Quartile Standardizer](#quartile-standardizer)
 	    - [Robust Standardizer](#robust-standardizer)
 		- [TF-IDF Transformer](#tf---idf-transformer)
 		- [Variance Threshold Filter](#variance-threshold-filter)
@@ -1719,6 +1720,28 @@ This Transformer does not have any additional methods.
 use Rubix\ML\Transformers\PolynomialExpander;
 
 $transformer = new PolynomialExpander(3);
+```
+
+### Quartile Standardizer
+
+This standardizer removes the median and scales each sample according to the interquantile range (*IQR*). The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
+
+##### Continuous
+
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+| Method | Description |
+|--|--|
+| `medians() : array` | Return the medians calculated by fitting the training set. |
+| `iqrs() : array` | Return the interquartile ranges calculated during fitting. |
+
+##### Example:
+```php
+use Rubix\ML\Transformers\QuartileStandardizer;
+
+$transformer = new QuartileStandardizer();
 ```
 
 ### Robust Standardizer
