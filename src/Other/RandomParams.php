@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML;
+namespace Rubix\ML\Other;
 
 use InvalidArgumentException;
 

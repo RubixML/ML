@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Transformers\Strategies;
+namespace Rubix\Tests\Other\Strategies;
 
-use Rubix\ML\Transformers\Strategies\Strategy;
-use Rubix\ML\Transformers\Strategies\BlurryMedian;
+use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\BlurryMedian;
 use PHPUnit\Framework\TestCase;
 
 class BlurryMedianTest extends TestCase
@@ -29,8 +29,12 @@ class BlurryMedianTest extends TestCase
     {
         $this->strategy->fit($this->values);
 
+        list($min, $max) = $this->strategy->range();
+
         $value = $this->strategy->guess();
 
-        $this->assertThat($value,$this->logicalAnd($this->greaterThan(2.5), $this->lessThan(3.5)));
+        $this->assertThat($value, $this->logicalAnd(
+            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        );
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Tests\Transformers\Strategies;
+namespace Rubix\Tests\Other\Strategies;
 
-use Rubix\ML\Transformers\Strategies\Strategy;
-use Rubix\ML\Transformers\Strategies\Lottery;
+use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
-class LotteryTest extends TestCase
+class PopularityContestTest extends TestCase
 {
     protected $values;
 
@@ -16,12 +16,12 @@ class LotteryTest extends TestCase
     {
         $this->values = ['a', 'a', 'b', 'a', 'c'];
 
-        $this->strategy = new Lottery();
+        $this->strategy = new PopularityContest();
     }
 
     public function test_build_local_celebrity_strategy()
     {
-        $this->assertInstanceOf(Lottery::class, $this->strategy);
+        $this->assertInstanceOf(PopularityContest::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
@@ -31,6 +31,6 @@ class LotteryTest extends TestCase
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->values);
+        $this->assertContains($value, $this->strategy->set());
     }
 }

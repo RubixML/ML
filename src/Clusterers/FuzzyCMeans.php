@@ -153,8 +153,8 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 . ' than the parameter C.');
         }
 
-        $this->centroids = array_fill(0, $this->c,
-            array_fill(0, $dataset->numColumns(), 0.0));
+        $this->centroids = array_fill(0, $this->c, array_fill(0,
+            $dataset->numColumns(), 0.0));
 
         $memberships = $this->initializeMemberships($dataset->numRows());
 
@@ -294,7 +294,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
             $total = 0.0;
 
             for ($j = 0; $j < $this->c; $j++) {
-                $weight = rand(0, 100000000) / 1e8;
+                $weight = rand(0, (int) 1e8) / 1e8;
 
                 $memberships[$i][$j] = $weight;
 
@@ -310,7 +310,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     }
 
     /**
-     * Return a similarity score inferred upon by maximizing the inter-cluster
+     * Return a similarity score inferred by maximizing the inter-cluster
      * distance.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

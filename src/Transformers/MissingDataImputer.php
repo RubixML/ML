@@ -3,10 +3,10 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Transformers\Strategies\Continuous;
-use Rubix\ML\Transformers\Strategies\BlurryMean;
-use Rubix\ML\Transformers\Strategies\Categorical;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Continuous;
+use Rubix\ML\Other\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\Categorical;
+use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -22,14 +22,14 @@ class MissingDataImputer implements Transformer
     /**
      * The imputer to use when imputing continuous values.
      *
-     * @var \Rubix\ML\Transformers\Strategies\Continuous
+     * @var \Rubix\ML\Other\Strategies\Continuous
      */
     protected $continuous;
 
     /**
      * The imputer to use when imputing categorical values.
      *
-     * @var \Rubix\ML\Transformers\Strategies\Categorical
+     * @var \Rubix\ML\Other\Strategies\Categorical
      */
     protected $categorical;
 
@@ -42,13 +42,12 @@ class MissingDataImputer implements Transformer
 
     /**
      * @param  mixed  $placeholder
-     * @param  \Rubix\ML\Transformers\Strategies\Continuous|null  $continuous
-     * @param  \Rubix\ML\Transformers\Strategies\Categorical|null  $categorical
+     * @param  \Rubix\ML\Other\Strategies\Continuous|null  $continuous
+     * @param  \Rubix\ML\Other\Strategies\Categorical|null  $categorical
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($placeholder = '?', Continuous $continuous = null,
-                                Categorical $categorical = null)
+    public function __construct($placeholder = '?', Continuous $continuous = null, Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string or'
@@ -83,10 +82,9 @@ class MissingDataImputer implements Transformer
                 $imputer = clone $this->continuous;
             }
 
-            $values = array_filter($dataset->column($column),
-                function ($value) {
-                    return $value !== $this->placeholder;
-                });
+            $values = array_filter($dataset->column($column), function ($value) {
+                return $value !== $this->placeholder;
+            });
 
             $imputer->fit($values);
 

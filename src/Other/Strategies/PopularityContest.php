@@ -1,7 +1,8 @@
 <?php
 
-namespace Rubix\ML\Transformers\Strategies;
+namespace Rubix\ML\Other\Strategies;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 class PopularityContest implements Categorical
@@ -14,7 +15,7 @@ class PopularityContest implements Categorical
     protected $n;
 
     /**
-     * The popularity scores for each potential class label in the fitted dataset.
+     * The popularity scores for each potential class label in the fitted data.
      *
      * @var array
      */
@@ -23,17 +24,27 @@ class PopularityContest implements Categorical
     ];
 
     /**
+     * Return the set of all possible guesses for this strategy in an array.
+     *
+     * @return array
+     */
+    public function set() : array
+    {
+        return array_keys($this->popularity);
+    }
+
+    /**
      * Calculate the popularity of each unique class label in the dataset.
      *
      * @param  array  $values
-     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new RuntimeException('This strategy requires at least 1 data'
-                . ' point.');
+            throw new InvalidArgumentException('Strategy needs to be fit with'
+                . ' at least one value.');
         }
 
         $this->n = count($values);
@@ -41,13 +52,18 @@ class PopularityContest implements Categorical
     }
 
     /**
-     * Impute a missing value by holding a popularity contest where probability
-     * of winning is based on a class's popularity among the whole.
+     * Hold a popularity contest where the probability of winning is based on a
+     * category's prior probability.
      *
+     * @throws \RuntimeException
      * @return mixed
      */
     public function guess()
     {
+        if (empty($this->popularity)) {
+            throw new RuntimeException('Strategy has not been fitted.');
+        }
+
         $random = rand(0, $this->n);
 
         foreach ($this->popularity as $class => $count) {

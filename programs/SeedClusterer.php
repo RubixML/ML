@@ -12,7 +12,7 @@ use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\ContingencyTable;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
-use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Transformers\QuartileStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
 
@@ -36,7 +36,7 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
     new NumericStringConverter(),
-    new ZScaleStandardizer(),
+    new QuartileStandardizer(),
 ]);
 
 $validator = new KFold(10);

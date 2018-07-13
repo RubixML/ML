@@ -8,7 +8,6 @@ use Rubix\ML\Reports\OutlierRatio;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
@@ -32,7 +31,7 @@ $samples = iterator_to_array($reader->getRecords([
 
 $dataset = new Unlabeled($samples);
 
-$estimator = new Pipeline(new IsolationForest(300, 0.2, 0.55), [
+$estimator = new Pipeline(new IsolationForest(500, 0.2, 0.55), [
     new NumericStringConverter(),
 ]);
 

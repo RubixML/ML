@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Tests;
+namespace Rubix\Tests\Other;
 
-use Rubix\ML\RandomParams;
+use Rubix\ML\Other\RandomParams;
 use PHPUnit\Framework\TestCase;
 
 class RandomParamsTest extends TestCase

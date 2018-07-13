@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Extractors\Tokenizers;
+namespace Rubix\Tests\Other\Tokenizers;
 
-use Rubix\ML\Extractors\Tokenizers\Tokenizer;
-use Rubix\ML\Extractors\Tokenizers\Whitespace;
+use Rubix\ML\Other\Tokenizers\Tokenizer;
+use Rubix\ML\Other\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase
@@ -27,6 +27,7 @@ class WhitespaceTest extends TestCase
 
         $value = $this->tokenizer->tokenize($data);
 
-        $this->assertEquals($value, ['I', 'would', 'like', 'to', 'die', 'on', 'Mars,', 'just', 'not', 'on', 'impact.']);
+        $this->assertEquals($value, ['I', 'would', 'like', 'to', 'die', 'on',
+            'Mars,', 'just', 'not', 'on', 'impact.']);
     }
 }

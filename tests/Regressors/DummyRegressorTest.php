@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\BlurryMean;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 

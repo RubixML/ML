@@ -1,15 +1,13 @@
 <?php
 
-namespace Rubix\ML\Transformers\Strategies;
-
-use Rubix\ML\Datasets\Dataset;
+namespace Rubix\ML\Other\Strategies;
 
 interface Strategy
 {
     const EPSILON = 1e-8;
 
     /**
-     * Fit the imputer to the feature column of the training data.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @return void
@@ -17,7 +15,7 @@ interface Strategy
     public function fit(array $values) : void;
 
     /**
-     * Guess a value.
+     * Make a guess.
      *
      * @return mixed
      */

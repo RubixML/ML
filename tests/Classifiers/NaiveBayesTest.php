@@ -40,12 +40,15 @@ class NaiveBayesTest extends TestCase
             ['mean', 'rough', 'loner', 'happy'],
             ['nice', 'furry', 'friendly', 'sad'],
             ['nice', 'furry', 'loner', 'sad'],
+            ['mean', 'rough', 'friendly', 'sad'],
+            ['nice', 'rough', 'friendly', 'happy'],
         ];
 
         $labels = [
             'not monster', 'monster', 'not monster', 'monster', 'monster',
             'not monster', 'not monster', 'not monster', 'monster', 'monster',
             'monster', 'not monster', 'monster', 'not monster', 'not monster',
+            'monster', 'not monster',
         ];
 
         $this->training = new Labeled($samples, $labels);

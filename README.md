@@ -148,10 +148,21 @@ MIT
 		- [Outlier Ratio](#outlier-ratio)
 		- [Prediction Speed](#prediction-speed)
 		- [Residual Analysis](#residual-analysis)
+	- [Other](#other)
+		- [Guessing Strategies](#guessing-strategies)
+			- [Blurry Mean](#blurry-mean)
+			- [Blurry Median](#blurry-median)
+			- [K Most Frequent](#k-most-frequent)
+			- [Lottery](#lottery)
+			- [Popularity Contest](#popularity-contest)
+			- [Wild Guess](#wild-guess)
+		- [Tokenizers](#tokenizers)
+			- [Whitespace](#whitespace)
+			- [Word](#word-tokenizer)
 
 ---
 ### An Introduction to Machine Learning in Rubix
-Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of learning that Rubix offers out of the box, **Supervised** and **Unsupervised**.
+Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of learning that Rubix offers out of the box, *Supervised* and *Unsupervised*.
  - **Supervised** learning is a technique to train computer models with a dataset in which the outcome of each sample data point has been *labeled* either by a human expert or another ML model prior to training. There are two types of supervised learning to consider in Rubix:
 	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of Iris flower based on its sepal and petal dimensions.
 	 - **Regression** involves predicting continuous *values* rather than discrete classes. An example in which a regression model is appropriate would be predicting the life expectancy of a population based on economic factors.
@@ -486,13 +497,7 @@ Word counts are often used to represent natural language as numerical vectors. T
 |--|--|--|--|
 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
-| tokenizer | Word | object | The method of turning samples of text into individual tokens. |
-
-##### Available Tokenizers:
-| Tokenizer | Description |
-|--|--|
-| Whitespace | Tokens are exploded by a user-specified whitespace character. |
-| Word | Tokenize strings that meet the criteria of a word. |
+| tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -1488,7 +1493,7 @@ public static floats(float $min, float $max, int $n = 10) : array
 ##### Example:
 ```php
 use Rubix\ML\GridSearch;
-use Rubix\ML\RandomParams;
+use Rubix\ML\Other\RandomParams;
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -1550,7 +1555,7 @@ $estimator = PersistentModel::restore('path/to/models/folder/random_forest.model
 ```
 
 ### Transformers
-Transformers can be used by the [Pipeline](#pipeline) meta-Estimator or they can be used separately.
+Transformers take a sample matrices and transform them in various ways. A common transformation is scaling and centering the values using one of the Standardizers ([Z Scale](#z-scale-standardizer), [Robust](#robust-standardizer), [Quartile](#quartile-standardizer)). Transformers can be used with the [Pipeline](#pipeline) meta-Estimator or they can be used separately.
 
 The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt, call `fit()` anyways.
 ```php
@@ -2740,6 +2745,219 @@ var_dump($result);
     ["cardinality"]=>
     int(301)
   }
+```
+
+---
+### Other
+This section includes broader functioning objects that aren't part of a specific category.
+
+### Guessing Strategies
+Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information and basic means. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).
+
+The Strategy interface provides an API similar to Transformers as far as fitting, however, instead of being fit to an entire dataset, each Strategy is fit to an array of either continuous or discrete values.
+
+To fit a Strategy to an array of values:
+```php
+public fit(array $values) : void
+```
+
+To make a guess based on the fitted data:
+```php
+public guess() : mixed
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\BlurryMedian;
+
+$values = [1, 2, 3, 4, 5];
+
+$strategy = new BlurryMedian(0.05);
+
+$strategy->fit($values);
+
+var_dump($strategy->range()); // Min and max guess for continuous strategies
+
+var_dump($strategy->guess());
+var_dump($strategy->guess());
+var_dump($strategy->guess());
+```
+
+##### Output:
+```sh
+array(2) {
+  [0]=> float(2.85)
+  [1]=> float(3.15)
+}
+
+float(2.897176548)
+float(3.115719462)
+float(3.105983314)
+```
+Strategies are broken up into the Categorical type and the Continuous type. You can output the set of all possible categorical guesses by calling the `set()` method on any Categorical Strategy. Likewise, you can call `range()` on any Continuous Strategy to output the minimum and maximum values the guess can take on.
+
+Here are the guessing Strategies available to use in Rubix.
+
+### Blurry Mean
+This continuous Strategy that adds a blur factor to the mean of a set of values producing a random guess around the mean.
+
+##### Continuous
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| blur | 0.5 | float | The amount of Gaussian noise by ratio of the standard deviation to add to the guess. |
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\BlurryMean;
+
+$strategy = new BlurryMean(0.15);
+```
+
+### Blurry Median
+Adds random Gaussian noise to the median of a set of values.
+
+##### Continuous
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| blur | 0.5 | float | The amount of Gaussian noise by ratio of the interquartile range to add to the guess. |
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\BlurryMedian;
+
+$strategy = new BlurryMedian(0.1);
+```
+
+### K Most Frequent
+This Strategy outputs one of K most frequent discrete values at random.
+
+##### Categorical
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| k | 1 | int | The number of most frequency categories to consider when formulating a guess. |
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\KMostFrequent;
+
+$strategy = new KMostFrequent(5);
+```
+
+### Lottery
+Hold a lottery in which each category has an equal chance of being picked.
+
+##### Categorical
+
+##### Parameters:
+This Strategy does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\Lottery;
+
+$strategy = new Lottery();
+```
+
+### Popularity Contest
+Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.
+
+##### Categorical
+
+##### Parameters:
+This Strategy does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\Lottery;
+
+$strategy = new PopularityContest();
+```
+
+### Wild Guess
+It's just what you think it is. Make a guess somewhere in between the minimum and maximum values observed during fitting.
+
+##### Continuous
+
+##### Parameters:
+This Strategy does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\WildGuess;
+
+$strategy = new WildGuess();
+```
+
+---
+### Tokenizers
+Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Count Vectorizer](#count-vectorizer) to encode text into word counts.
+
+To tokenize a body of text:
+```php
+public tokenize(string $text) : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Tokenizers\Word;
+
+$text = 'I would like to die on Mars, just not on impact.';
+
+$tokenizer = new Word();
+
+var_dump($tokenizer->tokenize($text));
+```
+
+##### Output:
+```sh
+  array(10) {
+    [0]=> string(5) "would"
+	[1]=> string(4) "like"
+	[2]=> string(2) "to"
+	[3]=> string(3) "die"
+	[4]=> string(2) "on"
+	[5]=> string(4) "Mars"
+	[6]=> string(4) "just"
+	[7]=> string(3) "not"
+	[8]=> string(2) "on"
+	[9]=> string(6) "impact"
+  }
+```
+
+Below are the Tokenizers available in Rubix.
+
+### Whitespace
+Tokens are delimited by a user-specified whitespace character.
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| delimiter | ' ' | string | The whitespace character that delimits each token. |
+
+##### Example:
+```php
+use Rubix\ML\Other\Tokenizers\Whitespace;
+
+$tokenizer = new Whitespace(',');
+```
+
+### Word Tokenizer
+Tokens are matched via regular expression designed to pick out words from a block of text. Note that this tokenizer will only pick up on words that are 2 or more characters.
+
+##### Parameters:
+This Tokenizer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Other\Tokenizers\Word;
+
+$tokenizer = new Word();
 ```
 
 ---

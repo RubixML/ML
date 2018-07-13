@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Transformers\Strategies;
+namespace Rubix\Tests\Other\Strategies;
 
-use Rubix\ML\Transformers\Strategies\Strategy;
-use Rubix\ML\Transformers\Strategies\KMostFrequent;
+use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\KMostFrequent;
 use PHPUnit\Framework\TestCase;
 
 class KMostFrequentTest extends TestCase
@@ -31,6 +31,6 @@ class KMostFrequentTest extends TestCase
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->values);
+        $this->assertContains($value, $this->strategy->set());
     }
 }

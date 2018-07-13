@@ -5,8 +5,8 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Transformers\Strategies\Continuous;
-use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\Continuous;
+use Rubix\ML\Other\Strategies\BlurryMean;
 use InvalidArgumentException;
 
 class DummyRegressor implements Regressor, Persistable
@@ -14,12 +14,12 @@ class DummyRegressor implements Regressor, Persistable
     /**
      * The guessing strategy that the dummy employs.
      *
-     * @var \Rubix\ML\Transformers\Strategies\Continuous
+     * @var \Rubix\ML\Other\Strategies\Continuous
      */
     protected $strategy;
 
     /**
-     * @param  \Rubix\ML\Transformers\Strategies\Continuous  $strategy
+     * @param  \Rubix\ML\Other\Strategies\Continuous  $strategy
      * @return void
      */
     public function __construct(Continuous $strategy = null)

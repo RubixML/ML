@@ -5,8 +5,8 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Transformers\Strategies\Categorical;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Categorical;
+use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
 
 class DummyClassifier implements Multiclass, Persistable
@@ -14,12 +14,12 @@ class DummyClassifier implements Multiclass, Persistable
     /**
      * The guessing strategy that the dummy employs.
      *
-     * @var \Rubix\ML\Transformers\Strategies\Categorical
+     * @var \Rubix\ML\Other\Strategies\Categorical
      */
     protected $strategy;
 
     /**
-     * @param  \Rubix\ML\Transformers\Strategies\Categorical  $strategy
+     * @param  \Rubix\ML\Other\Strategies\Categorical  $strategy
      * @return void
      */
     public function __construct(Categorical $strategy = null)

@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
