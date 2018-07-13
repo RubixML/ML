@@ -1,7 +1,6 @@
 # Rubix ML for PHP
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/andrewdalpino/Rubix-ML.svg?style=for-the-badge)](https://travis-ci.org/andrewdalpino/Rubix-ML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-
 Rubix ML is a library that lets you build intelligent programs that learn from data in [PHP](https://php.net).
 
 ## Our Mission
@@ -98,18 +97,19 @@ MIT
 			- [ELU](#elu)
 			- [Hyperbolic Tangent](#hyperbolic-tangent)
 			- [Identity](#identity)
-			- [ISRLU](#isrlu)
+			- [ISRU](#isru)
 			- [Leaky ReLU](#leaky-relu)
 			- [SELU](#selu)
 			- [Sigmoid](#sigmoid)
 			- [Soft Plus](#soft-plus)
+			- [Softsign](#softsign)
 		- [Layers](#layers)
 			- [Input](#input)
 			- [Hidden](#hidden)
 				- [Dense](#dense)
 			- [Output](#output)
 				- [Linear](#linear)
-				- [Logistic](#logistic)
+				- [Logit](#logit)
 				- [Softmax](#softmax)
 		- [Optimizers](#optimizers)
 			- [AdaGrad](#adagrad)
@@ -135,9 +135,10 @@ MIT
 			- [K Fold](#k-fold)
 			- [Leave P Out](#leave-p-out)
 		- [Metrics](#validation-metrics)
+			- [Anomaly Detection](#anomaly-detection)
 			- [Classification](#classification)
-			- [Regression](#regression)
 			- [Clustering](#clustering)
+			- [Regression](#regression)
 	- [Reports](#reports)
 		- [Aggregate Report](#aggregate-report)
 		- [Confusion Matrix](#confusion-matrix)
@@ -1850,19 +1851,19 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Identity;
 $activationFunction = new Identity();
 ```
 
-### ISRLU
-Inverse Square Root Linear Units have a curve similar to ELUs but use a different function. It is purported by the author to be slightly faster than ELU computationally.
+### ISRU
+Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+| alpha | 1.0 | float | The parameter that controls the range of activation. |
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ISRLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
 
-$activationFunction = new ISRLU(5.0);
+$activationFunction = new ISRU(2.0);
 ```
 
 ### Leaky ReLU
@@ -1920,6 +1921,19 @@ This Activation Function does not have any parameters.
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 
 $activationFunction = new SoftPlus();
+```
+
+### Softsign
+A function that squashes the output of a neuron to + or - 1 from 0. In other words, the output is between -1 and 1.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
+
+$activationFunction = new Softsign();
 ```
 
 ---
@@ -1987,8 +2001,8 @@ use Rubix\ML\NeuralNet\Layers\Linear;
 $layer = new Linear(1e-5);
 ```
 
-### Logistic
-The Logistic Output Layer consists of a single sigmoid neuron capable of distinguishing between two classes.
+### Logit
+This Logit layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two classes. The Logit layer is useful for neural networks that output a binary class prediction.
 
 ##### Parameters:
 | Param | Default | Type | Description |
@@ -1998,9 +2012,9 @@ The Logistic Output Layer consists of a single sigmoid neuron capable of disting
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Logistic;
+use Rubix\ML\NeuralNet\Layers\Logit;
 
-$layer = new Logistic(['yes', 'no'], 1e-5);
+$layer = new Logit(['yes', 'no'], 1e-5);
 ```
 
 ### Softmax
@@ -2121,18 +2135,16 @@ $optimizer = new Stochastic(0.001);
 ```
 
 ### Snapshots
-Snapshots are a way to capture the state of a neural network at a moment in time. A Snapshot object holds all of the parameters in the network and can be saved and restored from storage with the `save()` and `restore()` methods.
+Snapshots are a way to capture the state of a neural network at a moment in time. A Snapshot object holds all of the parameters in the network and can be used to restore the network back to a previous state.
 
 To take a snapshot of your network simply call the `read()` method on the Network object. To restore the network from a snapshot pass the snapshot to the `restore()` method.
 
-The example below shows how to take a snapshot, save it to storage, and then restore the network via the snapshot.
+The example below shows how to take a snapshot and then restore the network via the snapshot.
 ```php
 ...
 $snapshot = $network->read();
 
-$snapshot->save('00001.snapshot');
-
-$snapshot = Snapshot::restore('00001.snapshot');
+...
 
 $network->restore($snapshot);
 ...
@@ -2369,22 +2381,19 @@ float(-0.99846070553066)
 
 There are different metrics for the different types of Estimators listed below.
 
+### Anomaly Detection
+| Metric | Range |  Description |
+|--|--|--|
+| Accuracy | (0, 1) | A quick metric that computes the accuracy of the detector. |
+
 ### Classification
 | Metric | Range |  Description |
 |--|--|--|
-| Accuracy | (0, 1) | A quick metric that computes the average accuracy over the entire testing set. |
+| Accuracy | (0, 1) | A quick metric that computes the accuracy of the classifier. |
 | F1 Score | (0, 1) | A metric that takes the precision and recall of each class outcome into consideration. |
 | Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
 | MCC | (-1, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
 
-### Regression
-| Metric | Range | Description |
-|--|--|--|
-| Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
-| Median Absolute Error | (-INF, 0) | The median absolute difference between the actual and predicted values. |
-| Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
-| RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
-| R-Squared | (-INF, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
 
 ### Clustering
 | Metric | Range | Description |
@@ -2402,6 +2411,15 @@ $metric = new Accuracy();
 
 $metric = new Homogeneity();
 ```
+
+### Regression
+| Metric | Range | Description |
+|--|--|--|
+| Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
+| Median Absolute Error | (-INF, 0) | The median absolute difference between the actual and predicted values. |
+| Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
+| RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
+| R-Squared | (-INF, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
 
 ---
 ### Reports

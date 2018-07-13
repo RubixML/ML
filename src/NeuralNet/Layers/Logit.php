@@ -7,7 +7,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
-class Logistic implements Output
+class Logit implements Output
 {
     /**
      * The labels of either of the possible outcomes.
@@ -42,35 +42,35 @@ class Logistic implements Output
     /**
      * The weight matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $weights;
 
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $z;
 
     /**
-     * The memoized output activations matrix.
+     * The memoized activation matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $computed;
 
     /**
      * The memoized gradient matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $gradients;
 
@@ -125,10 +125,9 @@ class Logistic implements Output
      */
     public function initialize(int $prevWidth, Optimizer $optimizer) : int
     {
-        $weights = array_fill(0, $this->width,
-            array_fill(0, $prevWidth, 0.0));
-
         $r = sqrt(6 / $prevWidth);
+
+        $weights = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $prevWidth; $j++) {
@@ -137,10 +136,9 @@ class Logistic implements Output
         }
 
         $this->weights = new Matrix($weights);
-
-        $optimizer->initialize($this->weights);
-
         $this->optimizer = $optimizer;
+
+        $this->optimizer->initialize($this->weights);
 
         return $this->width;
     }

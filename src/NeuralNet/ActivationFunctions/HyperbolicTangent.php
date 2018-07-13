@@ -39,8 +39,8 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return 1 - ($output ** 2);
+        return $computed->map(function ($activation) {
+            return 1 - ($activation ** 2);
         });
     }
 }

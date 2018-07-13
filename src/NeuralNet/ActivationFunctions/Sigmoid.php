@@ -39,8 +39,8 @@ class Sigmoid implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output * (1 - $output);
+        return $computed->map(function ($activation) {
+            return $activation * (1 - $activation);
         });
     }
 }

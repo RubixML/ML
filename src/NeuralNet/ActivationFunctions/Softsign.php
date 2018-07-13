@@ -5,31 +5,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class ELU implements Rectifier
+class Softsign implements ActivationFunction
 {
-    /**
-     * At which negative value the ELU will saturate. i.e. alpha = 1.0 means
-     * that the leakage will never be more than -1.0.
-     *
-     * @var float
-     */
-    protected $alpha;
-
-    /**
-     * @param  float  $alpha
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function __construct(float $alpha = 1.0)
-    {
-        if ($alpha < 0) {
-            throw new InvalidArgumentException('Alpha parameter must be a'
-                . ' positive value.');
-        }
-
-        $this->alpha = $alpha;
-    }
-
     /**
      * Return a tuple of the min and max output value for this activation
      * function.
@@ -38,7 +15,7 @@ class ELU implements Rectifier
      */
     public function range() : array
     {
-        return [-$this->alpha, INF];
+        return [-1, 1];
     }
 
     /**
@@ -50,7 +27,7 @@ class ELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $value : $this->alpha * (exp($value) - 1);
+            return $value / (1 + abs($value));
         });
     }
 
@@ -63,8 +40,8 @@ class ELU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $output + $this->alpha;
+        return $z->map(function ($output) {
+            return 1 / ((1 + abs($output)) ** 2);
         });
     }
 }

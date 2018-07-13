@@ -9,7 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Logistic;
+use Rubix\ML\NeuralNet\Layers\Logit;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
@@ -156,7 +156,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new Network(new Input($dataset->numColumns()), [],
-            new Logistic($this->classes, $this->alpha), $this->optimizer);
+            new Logit($this->classes, $this->alpha), $this->optimizer);
 
         $this->progress = [];
 

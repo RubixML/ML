@@ -2,10 +2,18 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 interface Parametric extends Layer
 {
+    /**
+     * Initialize the layer with an indegree and optimizer instance.
+     *
+     * @param  int  $prevWidth
+     * @return int
+     */
+    public function initialize(int $prevWidth, Optimizer $optimizer) : int;
+
     /**
      * Update the parameters in the layer and return the magnitude of the step.
      *
@@ -14,7 +22,7 @@ interface Parametric extends Layer
     public function update() : float;
 
     /**
-     * Read the parameters and return them in an array.
+     * Read the parameters and return them in an associative array.
      *
      * @return array
      */

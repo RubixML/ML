@@ -40,8 +40,8 @@ class SoftPlus implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return 1 / (1 + exp(-$output));
+        return $computed->map(function ($activation) {
+            return 1 / (1 + exp(-$activation));
         });
     }
 }

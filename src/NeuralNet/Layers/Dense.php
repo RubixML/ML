@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
@@ -112,17 +111,15 @@ class Dense implements Hidden
      */
     public function initialize(int $prevWidth, Optimizer $optimizer) : int
     {
-        $weights = array_fill(0, $this->width, array_fill(0, $prevWidth, 0.0));
-
-        if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $prevWidth) ** (1 / self::ROOT_2);
-        } else if ($this->activationFunction instanceof HyperbolicTangent) {
+        if ($this->activationFunction instanceof HyperbolicTangent) {
             $r = (6 / $prevWidth) ** 0.25;
-        } else if ($this->activationFunction instanceof Sigmoid) {
+        } else if ($this->activationFunction instanceof Rectifier) {
+            $r = (6 / $prevWidth) ** (1 / self::ROOT_2);
+        } else  {
             $r = sqrt(6 / $prevWidth);
-        } else {
-            $r = 3;
         }
+
+        $weights = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $prevWidth; $j++) {
@@ -131,10 +128,9 @@ class Dense implements Hidden
         }
 
         $this->weights = new Matrix($weights);
-
-        $optimizer->initialize($this->weights);
-
         $this->optimizer = $optimizer;
+
+        $this->optimizer->initialize($this->weights);
 
         return $this->width;
     }

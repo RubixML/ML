@@ -16,17 +16,6 @@ class LeakyReLU implements Rectifier
     protected $leakage;
 
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        return [-INF, INF];
-    }
-
-    /**
      * @param  float  $leakage
      * @throws \InvalidArgumentException
      * @return void
@@ -39,6 +28,17 @@ class LeakyReLU implements Rectifier
         }
 
         $this->leakage = $leakage;
+    }
+
+    /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-INF, INF];
     }
 
     /**
@@ -63,8 +63,8 @@ class LeakyReLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $this->leakage;
+        return $computed->map(function ($activation) {
+            return $activation >= 0.0 ? 1.0 : $this->leakage;
         });
     }
 }

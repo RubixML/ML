@@ -23,17 +23,6 @@ class SELU implements Rectifier
     protected $alpha;
 
     /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        return [-($this->scale * $this->alpha), INF];
-    }
-
-    /**
      * @param  float  $scale
      * @param  float  $alpha
      * @throws \InvalidArgumentException
@@ -58,6 +47,17 @@ class SELU implements Rectifier
     }
 
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        return [-($this->scale * $this->alpha), INF];
+    }
+
+    /**
      * Compute the output value.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $z
@@ -66,7 +66,8 @@ class SELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $this->scale * $value
+            return $value >= 0.0
+                ? $this->scale * $value
                 : $this->scale * $this->alpha * (exp($value) - 1);
         });
     }
@@ -80,9 +81,10 @@ class SELU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output >= 0.0 ? $this->scale * 1.0
-                : $this->scale * $output + 1;
+        return $computed->map(function ($activation) {
+            return $activation >= 0.0
+                ? $this->scale * 1.0
+                : $this->scale * $activation + 1;
         });
     }
 }

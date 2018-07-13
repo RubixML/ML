@@ -16,18 +16,18 @@ class Input implements Layer
     protected $inputs;
 
     /**
-     * The memoized output activations matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $computed;
-
-    /**
      * The width of the layer. i.e. the number of neurons.
      *
      * @var int
      */
     protected $width;
+
+    /**
+     * The memoized output activations matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix|null
+     */
+    protected $computed;
 
     /**
      * @param  int  $inputs
@@ -56,14 +56,6 @@ class Input implements Layer
     }
 
     /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function computed() : Matrix
-    {
-        return $this->computed;
-    }
-
-    /**
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *
@@ -81,8 +73,6 @@ class Input implements Layer
 
         $biases = MatrixFactory::one(1, $input->getN());
 
-        $this->computed = $input->augmentBelow($biases);
-
-        return $this->computed;
+        return $input->augmentBelow($biases);
     }
 }

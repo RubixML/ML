@@ -5,26 +5,15 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
-class ISRLU implements Rectifier
+class ISRU implements ActivationFunction
 {
     /**
-     * At which negative value the ISRLU will saturate. i.e. alpha = 1.0 means
-     * that the leakage will never be more than -1.0.
+     * At which point the output values of the function will saturdate. i.e.
+     * alpha = 2.0 means that the output will be between + or - 1 / sqrt(2.0).
      *
      * @var float
      */
     protected $alpha;
-
-    /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        return [-(1 / sqrt($this->alpha)), INF];
-    }
 
     /**
      * @param  float  $alpha
@@ -42,6 +31,19 @@ class ISRLU implements Rectifier
     }
 
     /**
+     * Return a tuple of the min and max output value for this activation
+     * function.
+     *
+     * @return array
+     */
+    public function range() : array
+    {
+        $r = 1 / sqrt($this->alpha);
+
+        return [-$r, $r];
+    }
+
+    /**
      * Compute the output value.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $z
@@ -50,8 +52,7 @@ class ISRLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $value : $value
-                / sqrt(1 + $this->alpha * $value ** 2);
+            return $value / sqrt(1 + $this->alpha * $value ** 2);
         });
     }
 
@@ -64,8 +65,8 @@ class ISRLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $output ** 3;
+        return $z->map(function ($output) {
+            return (1 / sqrt(1 + $this->alpha * $output ** 2)) ** 3;
         });
     }
 }
