@@ -4,9 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class AdaGrad implements Optimizer
 {
@@ -20,7 +18,7 @@ class AdaGrad implements Optimizer
     /**
      * The sum of squared gradient matrices for each layer.
      *
-     * @var \SplObjectStorage
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $cache;
 
@@ -37,47 +35,38 @@ class AdaGrad implements Optimizer
         }
 
         $this->rate = $rate;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void
+    public function initialize(Matrix $weights) : void
     {
-        $this->cache->attach($layer, MatrixFactory::zero($layer->weights()
-            ->getM(), $layer->weights()->getN()));
+        $this->cache = MatrixFactory::zero($weights->getM(), $weights->getN());
     }
 
     /**
-     * Calculate the step for a parametric layer and return the magnitude.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float
+    public function step(Matrix $gradients) : Matrix
     {
-        $cache = $this->cache[$layer]->add($layer->gradients()
-            ->hadamardProduct($layer->gradients()));
+        $this->cache = $this->cache->add($gradients->hadamardProduct($gradients));
 
         $steps = [[]];
 
-        foreach ($layer->gradients()->getMatrix() as $i => $row) {
+        foreach ($gradients->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {
                 $steps[$i][$j] = $this->rate * $column
-                    / (sqrt($cache[$i][$j]) + self::EPSILON);
+                    / (sqrt($this->cache[$i][$j]) + self::EPSILON);
             }
         }
 
-        $this->cache[$layer] = $cache;
-
-        $steps = new Matrix($steps);
-
-        $layer->update($steps);
-
-        return $steps->oneNorm();
+        return new Matrix($steps);
     }
 }

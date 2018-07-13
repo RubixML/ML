@@ -204,8 +204,6 @@ class MLPRegressor implements Regressor, Online, Persistable
         $this->network = new Network(new Input($dataset->numColumns()),
             $this->hidden, new Linear($this->alpha), $this->optimizer);
 
-        $this->network->initialize();
-
         $this->partial($dataset);
     }
 

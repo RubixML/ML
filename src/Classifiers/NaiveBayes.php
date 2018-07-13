@@ -216,16 +216,10 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $sigma = 0.0;
-
-            foreach ($jll as $likelihood) {
-                $sigma += exp($likelihood);
-            }
-
-            $logProb = log($sigma);
+            $max = $this->logSumExp($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $logProb);
+                $probabilities[$i][$class] = exp($likelihood - $max);
             }
         }
 
@@ -254,5 +248,22 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         }
 
         return $likelihood;
+    }
+
+    /**
+     * Compute the log of the sum of expenonetial probabilties.
+     *
+     * @param  array  $probabilities
+     * @return float
+     */
+    protected function logSumExp(array $probabilities) : float
+    {
+        $sigma = 0.0;
+
+        foreach ($probabilities as $probability) {
+            $sigma += exp($probability);
+        }
+
+        return log($sigma);
     }
 }

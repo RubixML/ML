@@ -61,7 +61,12 @@ class Network
 
         $this->layers[] = $output;
 
-        $this->optimizer = $optimizer;
+        $prevWidth = $this->input()->width();
+
+        foreach ($this->parametric() as $layer) {
+            $prevWidth = $layer->initialize($prevWidth, clone $optimizer);
+        }
+
         $this->backPath = array_reverse($this->parametric());
     }
 
@@ -126,22 +131,6 @@ class Network
     }
 
     /**
-     * Initialize the network.
-     *
-     * @return void
-     */
-    public function initialize() : void
-    {
-        $width = $this->input()->width();
-
-        foreach ($this->parametric() as $layer) {
-            $width = $layer->initialize($width);
-
-            $this->optimizer->initialize($layer);
-        }
-    }
-
-    /**
      * Feed a sample through the network and return the output activations
      * of each output neuron.
      *
@@ -188,8 +177,7 @@ class Network
      */
     public function activations() : array
     {
-        return $this->output()->activations()->transpose()
-            ->getMatrix();
+        return $this->output()->activations()->transpose()->getMatrix();
     }
 
     /**
@@ -202,7 +190,7 @@ class Network
         $magnitude = 0.0;
 
         foreach ($this->backPath as $layer) {
-            $magnitude += $this->optimizer->step($layer);
+            $magnitude += $layer->update();
         }
 
         return $magnitude;

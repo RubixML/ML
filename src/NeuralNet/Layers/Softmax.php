@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
 class Softmax implements Output
@@ -66,6 +67,13 @@ class Softmax implements Output
     protected $gradients;
 
     /**
+     * The gradient descent optimizer.
+     *
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer|null
+     */
+    protected $optimizer;
+
+    /**
      * @param  array  $classes
      * @param  float  $alpha
      * @throws \InvalidArgumentException
@@ -99,29 +107,14 @@ class Softmax implements Output
     }
 
     /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function weights() : Matrix
-    {
-        return $this->weights;
-    }
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function gradients() : Matrix
-    {
-        return $this->gradients;
-    }
-
-    /**
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
      * @param  int  $prevWidth
-     * @return void
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @return int
      */
-    public function initialize(int $prevWidth) : void
+    public function initialize(int $prevWidth, Optimizer $optimizer) : int
     {
         $weights = array_fill(0, $this->width,
             array_fill(0, $prevWidth, 0.0));
@@ -130,12 +123,17 @@ class Softmax implements Output
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $prevWidth; $j++) {
-                $weights[$i][$j] = random_int((int) (-$r * 1e8),
-                    (int) ($r * 1e8)) / 1e8;
+                $weights[$i][$j] = rand((int) (-$r * 1e8), (int) ($r * 1e8)) / 1e8;
             }
         }
 
         $this->weights = new Matrix($weights);
+
+        $optimizer->initialize($this->weights);
+
+        $this->optimizer = $optimizer;
+
+        return $this->width;
     }
 
     /**
@@ -207,24 +205,37 @@ class Softmax implements Output
     }
 
     /**
-     * Update the parameters in the layer.
+     * Update the parameters in the layer and return the magnitude of the step.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $steps
-     * @return void
+     * @return float
      */
-    public function update(Matrix $steps) : void
+    public function update() : float
     {
+        $steps = $this->optimizer->step($this->gradients);
+
         $this->weights = $this->weights->add($steps);
+
+        return $steps->oneNorm();
     }
 
     /**
-     * Restore the parameters in the layer.
+     * @return array
+     */
+    public function read() : array
+    {
+        return [
+            'weights' => clone $this->weights,
+        ];
+    }
+
+    /**
+     * Restore the parameters of the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
+     * @param  array  $parameters
      * @return void
      */
-    public function restore(Matrix $weights) : void
+    public function restore(array $parameters) : void
     {
-        $this->weights = $weights;
+        $this->weights = $parameters['weights'];
     }
 }

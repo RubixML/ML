@@ -4,7 +4,8 @@ namespace Rubix\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
@@ -15,9 +16,9 @@ class SnapshotTest extends TestCase
 
     public function setUp()
     {
-        $this->layer = new Dense(5, new Sigmoid());
+        $this->layer = new Dense(5, new ELU());
 
-        $this->layer->initialize(5);
+        $this->layer->initialize(5, new Stochastic());
 
         $this->snapshot = new Snapshot([$this->layer]);
     }
@@ -25,23 +26,5 @@ class SnapshotTest extends TestCase
     public function test_build_snapshot()
     {
         $this->assertInstanceOf(Snapshot::class, $this->snapshot);
-    }
-
-    public function test_save_snapshot()
-    {
-        $this->assertFalse(file_exists(__DIR__ . '/test.snapshot'));
-
-        $this->snapshot->save(__DIR__ . '/test.snapshot');
-
-        $this->assertFileExists(__DIR__ . '/test.snapshot');
-    }
-
-    public function test_restore_snapshot()
-    {
-        $snapshot = Snapshot::restore(__DIR__ . '/test.snapshot');
-
-        $this->assertInstanceOf(Snapshot::class, $snapshot);
-
-        $this->assertTrue(unlink(__DIR__ . '/test.snapshot'));
     }
 }

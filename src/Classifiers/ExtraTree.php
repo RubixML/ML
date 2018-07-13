@@ -23,7 +23,7 @@ class ExtraTree extends ClassificationTree
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            $value = $data[random_int(0, count($data) - 1)][$index];
+            $value = $data[rand(0, count($data) - 1)][$index];
 
             $groups = $this->partition($data, $index, $value);
 

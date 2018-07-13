@@ -42,7 +42,7 @@ class RandomParams
             $distribution = [];
 
             for ($i = 0; $i < $n; $i++) {
-                $temp = random_int($min, $max);
+                $temp = rand($min, $max);
 
                 if (!in_array($temp, $distribution)) {
                     $distribution[] = $temp;
@@ -81,7 +81,7 @@ class RandomParams
         $distribution = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $distribution[] = random_int((int) ($min * 1e8),
+            $distribution[] = rand((int) ($min * 1e8),
                 (int) ($max * 1e8)) / 1e8;
         }
 

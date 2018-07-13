@@ -271,7 +271,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
         $subset = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $random = random_int(0, (int) ($total * 1e8)) / 1e8;
+            $random = rand(0, (int) ($total * 1e8)) / 1e8;
 
             for ($index = 0; $index < $n; $index++) {
                 $random -= $this->weights[$index];

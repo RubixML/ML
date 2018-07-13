@@ -7,30 +7,24 @@ use MathPHP\LinearAlgebra\Matrix;
 interface Parametric extends Layer
 {
     /**
-     * Update the parameters in the layer.
+     * Update the parameters in the layer and return the magnitude of the step.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $steps
-     * @return void
+     * @return float
      */
-    public function update(Matrix $steps) : void;
+    public function update() : float;
+
+    /**
+     * Read the parameters and return them in an array.
+     *
+     * @return array
+     */
+    public function read() : array;
 
     /**
      * Restore the parameters in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
+     * @param  array  $parameters
      * @return void
      */
-    public function restore(Matrix $weights) : void;
-
-    /**
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function weights() : Matrix;
-
-    /**
-     * A matrix of gradients computed during the last backward pass.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function gradients() : Matrix;
+    public function restore(array $parameters) : void;
 }

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
+use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 
 interface Optimizer
@@ -9,18 +10,18 @@ interface Optimizer
     const EPSILON = 1e-8;
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void;
+    public function initialize(Matrix $weights) : void;
 
     /**
-     * Calculate the step for a parametric layer and return the magnitude.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float;
+    public function step(Matrix $gradients) : Matrix;
 }

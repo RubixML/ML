@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 interface Hidden extends Parametric
 {
@@ -12,7 +13,7 @@ interface Hidden extends Parametric
      * @param  int  $prevWidth
      * @return int
      */
-    public function initialize(int $prevWidth) : int;
+    public function initialize(int $prevWidth, Optimizer $optimizer) : int;
 
     /**
      * Calculate the errors and gradients of the layer.

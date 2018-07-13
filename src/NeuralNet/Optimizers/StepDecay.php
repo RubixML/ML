@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Layers\Parametric;
+use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
 class StepDecay implements Optimizer
@@ -63,39 +63,34 @@ class StepDecay implements Optimizer
     }
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void
+    public function initialize(Matrix $weights) : void
     {
         $this->steps = 0;
         $this->floors = 0;
     }
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float
+    public function step(Matrix $gradients) : Matrix
     {
         $this->steps++;
 
         if ($this->steps > $this->k) {
-            $this->floors++;
-
             $this->steps = 0;
+            $this->floors++;
         }
 
         $rate = $this->rate * (1 / (1 + $this->decay * $this->floors));
 
-        $steps = $layer->gradients()->scalarMultiply($rate);
-
-        $layer->update($steps);
-
-        return $steps->oneNorm();
+        return $gradients->scalarMultiply($rate);
     }
 }

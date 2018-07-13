@@ -4,9 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class Momentum implements Optimizer
 {
@@ -27,7 +25,7 @@ class Momentum implements Optimizer
     /**
      * A table storing the current velocity of each parameter.
      *
-     * @var \SplObjectStorage
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $velocities;
 
@@ -51,37 +49,32 @@ class Momentum implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->velocities = new SplObjectStorage();
     }
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void
+    public function initialize(Matrix $weights) : void
     {
-        $this->velocities->attach($layer, MatrixFactory::zero($layer->weights()
-            ->getM(), $layer->weights()->getN()));
+        $this->velocities = MatrixFactory::zero($weights->getM(),
+            $weights->getN());
     }
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float
+    public function step(Matrix $gradients) : Matrix
     {
-        $velocities = $layer->gradients()
-            ->add($this->velocities[$layer]->scalarMultiply($this->decay))
+        $this->velocities = $gradients
+            ->add($this->velocities->scalarMultiply($this->decay))
             ->scalarMultiply($this->rate);
 
-        $this->velocities[$layer] = $velocities;
-
-        $layer->update($velocities);
-
-        return $velocities->oneNorm();
+        return $this->velocities;
     }
 }

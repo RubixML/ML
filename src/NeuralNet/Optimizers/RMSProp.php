@@ -4,9 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class RMSProp implements Optimizer
 {
@@ -27,7 +25,7 @@ class RMSProp implements Optimizer
     /**
      * A cache of the sums of squared gradients for each layer.
      *
-     * @var \SplObjectStorage
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $cache;
 
@@ -51,50 +49,40 @@ class RMSProp implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void
+    public function initialize(Matrix $weights) : void
     {
-        $this->cache->attach($layer, MatrixFactory::zero($layer->weights()
-            ->getM(), $layer->weights()->getN()));
+        $this->cache = MatrixFactory::zero($weights->getM(),
+            $weights->getN());
     }
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float
+    public function step(Matrix $gradients) : Matrix
     {
-        $cache = $this->cache[$layer]
-            ->scalarMultiply($this->decay)
-            ->add($layer->gradients()
-                ->hadamardProduct($layer->gradients()
-                ->scalarMultiply(1 - $this->decay)));
+        $this->cache = $this->cache->scalarMultiply($this->decay)
+            ->add($gradients->hadamardProduct($gradients->scalarMultiply(1 - $this->decay)));
 
         $steps = [[]];
 
-        foreach ($layer->gradients()->getMatrix() as $i => $row) {
+        foreach ($gradients->getMatrix() as $i => $row) {
             foreach ($row as $j => $column) {
                 $steps[$i][$j] = $this->rate * $column
-                    / (sqrt($cache[$i][$j]) + self::EPSILON);
+                    / (sqrt($this->cache[$i][$j]) + self::EPSILON);
             }
         }
 
-        $this->cache[$layer] = $cache;
-
-        $steps = new Matrix($steps);
-
-        $layer->update($steps);
-
-        return $steps->oneNorm();
+        return new Matrix($steps);
     }
 }

@@ -158,8 +158,6 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->network = new Network(new Input($dataset->numColumns()), [],
             new Logistic($this->classes, $this->alpha), $this->optimizer);
 
-        $this->network->initialize();
-
         $this->progress = [];
 
         $this->partial($dataset);

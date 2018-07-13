@@ -101,9 +101,9 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
      */
     protected function findBestSplit(array $data) : Decision
     {
-        $index = random_int(0, count($data[0]) - 1);
+        $index = rand(0, count($data[0]) - 1);
 
-        $value = $data[random_int(0, count($data) - 1)][$index];
+        $value = $data[rand(0, count($data) - 1)][$index];
 
         $score = count($data);
 

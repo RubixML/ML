@@ -4,9 +4,7 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 class Adam implements Optimizer
 {
@@ -33,25 +31,25 @@ class Adam implements Optimizer
 
     /**
      * The smoothing parameter. i.e. a tiny number that helps provide numerical
-     * stability.
+     * smoothing and stability.
      *
      * @var float
      */
     protected $epsilon;
 
     /**
-     * The RMS matrices for each layer.
+     * The velocity matrix.
      *
-     * @var \SplObjectStorage
-     */
-    protected $cache;
-
-    /**
-     * The velocity matrices per layer.
-     *
-     * @var \SplObjectStorage
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $velocities;
+
+    /**
+     * The RMS matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix
+     */
+    protected $cache;
 
     /**
      * @param  float  $rate
@@ -87,60 +85,46 @@ class Adam implements Optimizer
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
         $this->epsilon = $epsilon;
-        $this->velocities = new SplObjectStorage();
-        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Initialize the optimizer for a particular layer.
+     * Initialize the layer optimizer.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
+     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
      * @return void
      */
-    public function initialize(Parametric $layer) : void
+    public function initialize(Matrix $weights) : void
     {
-        $this->velocities->attach($layer, MatrixFactory::zero($layer->weights()
-            ->getM(), $layer->weights()->getN()));
+        $this->velocities = MatrixFactory::zero($weights->getM(),
+            $weights->getN());
 
-        $this->cache->attach($layer, MatrixFactory::zero($layer->weights()
-            ->getM(), $layer->weights()->getN()));
+        $this->cache = MatrixFactory::zero($weights->getM(),
+            $weights->getN());
     }
 
     /**
-     * Calculate the step for a parametric layer.
+     * Calculate a gradient descent step for a layer given a matrix of gradients.
      *
-     * @param  \Rubix\ML\NeuralNet\Layers\Parametric  $layer
-     * @return float
+     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
+     * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Parametric $layer) : float
+    public function step(Matrix $gradients) : Matrix
     {
-        $velocities = $this->velocities[$layer]
-            ->scalarMultiply($this->momentumDecay)
-            ->add($layer->gradients()
-                ->scalarMultiply(1 - $this->momentumDecay));
+        $this->velocities = $this->velocities->scalarMultiply($this->momentumDecay)
+            ->add($gradients->scalarMultiply(1 - $this->momentumDecay));
 
-        $cache = $this->cache[$layer]
-            ->scalarMultiply($this->rmsDecay)
-            ->add($layer->gradients()
-                ->hadamardProduct($layer->gradients()
-                ->scalarMultiply(1 - $this->rmsDecay)));
+        $this->cache = $this->cache->scalarMultiply($this->rmsDecay)
+            ->add($gradients->hadamardProduct($gradients->scalarMultiply(1 - $this->rmsDecay)));
 
         $steps = [[]];
 
-        foreach ($layer->gradients()->getMatrix() as $i => $row) {
-            foreach ($row as $j => $column) {
-                $steps[$i][$j] = $this->rate * $velocities[$i][$j]
-                    / (sqrt($cache[$i][$j]) + $this->epsilon);
+        for ($i = 0; $i < $gradients->getM(); $i++) {
+            for ($j = 0; $j < $gradients->getN(); $j++) {
+                $steps[$i][$j] = $this->rate * $this->velocities[$i][$j]
+                    / (sqrt($this->cache[$i][$j]) + $this->epsilon);
             }
         }
 
-        $this->velocities[$layer] = $velocities;
-        $this->cache[$layer] = $cache;
-
-        $steps = new Matrix($steps);
-
-        $layer->update($steps);
-
-        return $steps->oneNorm();
+        return new Matrix($steps);
     }
 }

@@ -3,16 +3,17 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 interface Output extends Parametric
 {
     /**
-     * Initialize the layer.
+     * Initialize the layer with an indegree and optimizer instance.
      *
      * @param  int  $prevWidth
-     * @return void
+     * @return int
      */
-    public function initialize(int $prevWidth) : void;
+    public function initialize(int $prevWidth, Optimizer $optimizer) : int;
 
     /**
      * Calculate the errors and gradients for each output neuron.

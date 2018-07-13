@@ -62,7 +62,7 @@ class SparseRandomProjector implements Transformer
         for ($i = 0; $i < $dataset->numColumns(); $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
                 $r[$i][$j] = static::BETA
-                    * static::DISTRIBUTION[random_int(0, $n)];
+                    * static::DISTRIBUTION[rand(0, $n)];
             }
         }
 

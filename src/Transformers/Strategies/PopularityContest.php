@@ -48,7 +48,7 @@ class PopularityContest implements Categorical
      */
     public function guess()
     {
-        $random = random_int(0, $this->n);
+        $random = rand(0, $this->n);
 
         foreach ($this->popularity as $class => $count) {
             $random -= $count;

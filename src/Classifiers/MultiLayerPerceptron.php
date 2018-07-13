@@ -214,10 +214,8 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Softmax($this->classes,$this->alpha),
+            $this->hidden, new Softmax($this->classes, $this->alpha),
             $this->optimizer);
-
-        $this->network->initialize();
 
         $this->progress = [];
 

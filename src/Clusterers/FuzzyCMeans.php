@@ -294,7 +294,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
             $total = 0.0;
 
             for ($j = 0; $j < $this->c; $j++) {
-                $weight = random_int(0, 100000000) / 1e8;
+                $weight = rand(0, 100000000) / 1e8;
 
                 $memberships[$i][$j] = $weight;
 
