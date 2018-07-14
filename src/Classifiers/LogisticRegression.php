@@ -14,6 +14,16 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Logistic Regression
+ *
+ * A type of classifier that uses the logistic (sigmoid) function to distinguish
+ * between two possible outcomes.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class LogisticRegression implements Binary, Online, Probabilistic, Persistable
 {
     /**

@@ -10,6 +10,21 @@ use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
 use ReflectionClass;
 
+/**
+ * Grid Search
+ *
+ * Grid Search is an algorithm that optimizes hyperparameter selection. From the
+ * user’s perspective, the process of training and predicting is the same,
+ * however, under the hood, Grid Search trains one Estimator per combination of
+ * parameters and predictions are made using the best Estimator. You can access
+ * the scores for each parameter combination by calling the results() method on
+ * the trained Grid Search meta-Estimator or you can get the best parameters by
+ * calling best().
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class GridSearch implements MetaEstimator, Persistable
 {
     /**

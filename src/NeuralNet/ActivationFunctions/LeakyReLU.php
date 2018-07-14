@@ -5,6 +5,17 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * Leaky ReLU
+ *
+ * Leaky Rectified Linear Units are functions that output x when x > 0 or a
+ * small leakage value when x < 0. The amount of leakage is controlled by the
+ * user-specified parameter.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class LeakyReLU implements Rectifier
 {
     /**

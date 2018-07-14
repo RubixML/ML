@@ -5,6 +5,20 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Graph\Nodes\Decision;
 use InvalidArgumentException;
 
+/**
+ * Extra Tree
+ *
+ * An Extremely Randomized Classification Tree that splits the training set at
+ * a random point chosen among the maximum features. Extra Trees are useful in
+ * Ensembles such as Random Forest or AdaBoost as the “weak” classifier or they
+ * can be used on their own. The strength of Extra Trees are computational
+ * efficiency as well as increasing variance of the prediction (if that is
+ * desired).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ExtraTree extends ClassificationTree
 {
     /**

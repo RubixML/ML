@@ -10,6 +10,18 @@ use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 
+/**
+ * Dense
+ *
+ * Dense layers are fully connected Hidden layers, meaning each neuron is
+ * connected to each other neuron in the previous layer. Dense layers are able
+ * to employ a variety of Activation Functions that modify the output of each
+ * neuron in the layer.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Dense implements Hidden
 {
     /**

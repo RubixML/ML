@@ -6,6 +6,17 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
+/**
+ * AdaGrad
+ *
+ * Short for Adaptive Gradient, the AdaGrad Optimizer speeds up the learning of
+ * parameters that do not change often and slows down the learning of parameters
+ * that do enjoy heavy activity.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class AdaGrad implements Optimizer
 {
     /**

@@ -9,6 +9,17 @@ use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
 
+/**
+ * Dummy Classifier
+ *
+ * A classifier that uses a user-defined Guessing Strategyto make predictions.
+ * Dummy Classifier is useful to provide a sanity check and to compare
+ * performance with an actual classifier.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class DummyClassifier implements Multiclass, Persistable
 {
     /**

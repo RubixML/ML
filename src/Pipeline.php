@@ -5,6 +5,21 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Transformer;
 
+/**
+ * Pipeline
+ *
+ * Pipeline is responsible for transforming the input sample matrix of a Dataset
+ * in such a way that can be processed by the base Estimator. Pipeline accepts a
+ * base Estimator and a list of Transformers to apply to the input data before
+ * it is fed to the learning algorithm. Under the hood, Pipeline will
+ * automatically fit the training set upon training and transform any Dataset
+ * object supplied as an argument to one of the base Estimator’s methods,
+ * including predict().
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Pipeline implements MetaEstimator, Persistable
 {
     /**

@@ -5,6 +5,17 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use RuntimeException;
 
+/**
+ * Min Max Normalizer
+ *
+ * Often used as an alternative to Standard Scaling, the Min Max Normalization
+ * scales the input features from a range of 0 to 1 by dividing the feature
+ * value over the maximum value for that feature column.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MinMaxNormalizer implements Transformer
 {
     /**

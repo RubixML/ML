@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 
+/**
+ * Identity
+ *
+ * The Identity function (sometimes called Linear Activation Function) simply
+ * outputs the value of the input.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Identity implements ActivationFunction
 {
     /**

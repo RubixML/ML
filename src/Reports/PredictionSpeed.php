@@ -5,6 +5,16 @@ namespace Rubix\ML\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Prediction Speed
+ *
+ * This Report measures the prediction speed of an Estimator given as the number
+ * of predictions per second (*PPM*).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class PredictionSpeed implements Report
 {
     /**

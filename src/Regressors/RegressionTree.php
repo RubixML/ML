@@ -12,6 +12,16 @@ use Rubix\ML\Graph\Nodes\Terminal;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
+/**
+ * Regression Tree
+ *
+ * A Decision Tree learning algorithm that performs greedy splitting by
+ * minimizing the sum of squared errors between decision node splits.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RegressionTree extends DecisionTree implements Regressor, Persistable
 {
     /**

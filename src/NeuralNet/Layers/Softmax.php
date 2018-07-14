@@ -6,6 +6,16 @@ use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Softmax
+ *
+ * A generalization of the Logistic Layer, the Softmax Output Layer gives a
+ * joint probability estimate of a multiclass classification problem.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Softmax implements Output
 {
     /**

@@ -10,6 +10,16 @@ use Rubix\ML\Regressors\Regressor;
 use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 
+/**
+ * Residual Analysis
+ *
+ * Residual Analysis is a type of Report that measures the differences between
+ * the predicted and actual values of a regression problem.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ResidualAnalysis implements Report
 {
     /**

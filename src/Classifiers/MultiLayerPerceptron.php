@@ -12,11 +12,24 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\Validation;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Multi Layer Perceptron
+ *
+ * Multiclass Neural Network model that uses a series of user-defined Hidden
+ * Layers as intermediate computational units. The MLP features progress
+ * monitoring which means that it will automatically stop training when it can
+ * no longer make progress. It also utilizes snapshotting to make sure that it
+ * always uses the best parameters even if progress declined during training.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
 {
     /**

@@ -5,6 +5,16 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
+/**
+ * L1 Regularizer
+ *
+ * Augment each sample vector in the sample matrix such that each feature is
+ * divided over the L1 or L2 norm (or magnitude) of that vector.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class L1Regularizer implements Transformer
 {
     /**

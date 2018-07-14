@@ -10,6 +10,16 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Mean Shift
+ *
+ * A hierarchical clustering algorithm that uses peak finding to locate the
+ * local maxima (centroids) of a training set given by a radius constraint.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MeanShift implements Clusterer, Persistable
 {
     /**

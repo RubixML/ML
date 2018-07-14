@@ -13,7 +13,7 @@ $ composer require rubix/ml
 ```
 
 ## Requirements
-- [PHP](https://php.net)  7.1.3 or above
+- [PHP](https://php.net) 7.1.3 or above
 - [GD extension](https://php.net/manual/en/book.image.php) for Image Vectorization
 
 ## License
@@ -753,14 +753,14 @@ $estimator = new ClassificationTree(100, 7, 4, 1e-4);
 
 
 ### Dummy Classifier
-A classifier based on a given [Imputer strategy](#missing-data-imputer). Used to provide a sanity check and to compare performance with an actual classifier.
+A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
 ##### Supervised | Multiclass | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| strategy | PopularityContest | object | The imputer strategy to employ when guessing the outcome of a sample. |
+| strategy | PopularityContest | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -768,7 +768,7 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\PopularityContest;
 
 $estimator = new DummyClassifier(new PopularityContest());
 ```
@@ -1049,7 +1049,7 @@ $estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
 ```
 
 ### K Means
-A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points.
+A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters set by the parameter K.
 
 ##### Unsupervised | Online | Persistable | Linear
 
@@ -1104,14 +1104,14 @@ $estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
 Regression analysis is used to predict the outcome of an experiment where the value can range over a continuous spectrum. A Regressor estimates the expected continuous outcome of an unknown sample.
 
 ### Dummy Regressor
-Regressor that guesses the output values based on an [Imputer](#missing-data-imputer) strategy. Used to provide a sanity check and to compare performance against actual Regressors.
+Regressor that guesses the output values based on a [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
 ##### Supervised | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| strategy | BlurryMean | object | The imputer strategy to employ when guessing the outcome of a sample. |
+| strategy | BlurryMean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1119,9 +1119,9 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Tranformers\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\BlurryMean;
 
-$estimator = new DummyRegressor(new BlurryMean());
+$estimator = new DummyRegressor(new BlurryMean(0.2));
 ```
 
 ### KNN Regressor

@@ -20,7 +20,7 @@ class BlurryMean implements Continuous
     /**
      * The precomputed mean of the fitted data.
      *
-     * @var float|null
+     * @var float|int|null
      */
     protected $mean;
 

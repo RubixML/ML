@@ -11,6 +11,18 @@ use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
+/**
+ * Committee Machine
+ *
+ * A voting Ensemble that aggregates the predictions of a committee of
+ * user-specified, heterogeneous estimators (called experts) of a single type
+ * (i.e all Classifiers, Regressors, etc). The committee uses a hard-voting
+ * scheme to make final predictions.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
 {
     /**

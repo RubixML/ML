@@ -10,6 +10,17 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * K Means
+ *
+ * A fast centroid-based hard clustering algorithm capable of clustering
+ * linearly separable data points given a number of target clusters set by the
+ * parameter K.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class KMeans implements Clusterer, Online, Persistable
 {
     /**

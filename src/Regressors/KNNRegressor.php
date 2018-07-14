@@ -11,6 +11,17 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+/**
+ * KNN Regressor
+ *
+ * A version of K Nearest Neighbors that uses the mean outcome of K nearest
+ * data points to make continuous valued predictions suitable for regression
+ * problems.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class KNNRegressor implements Regressor, Online, Persistable
 {
     /**

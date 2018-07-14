@@ -6,6 +6,16 @@ use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Linear
+ *
+ * The Linear Output Layer consists of a single linear neuron that outputs a
+ * continuous scalar value useful for Regression problems.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Linear implements Output
 {
     /**

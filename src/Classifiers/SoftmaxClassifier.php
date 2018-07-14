@@ -14,6 +14,16 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Softmax Classifier
+ *
+ * A generalization of logistic regression for multiple class outcomes using a
+ * single layer neural network.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistable
 {
     /**

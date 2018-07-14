@@ -9,6 +9,19 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Naive Bayes
+ *
+ * Probability-based classifier that used probabilistic inference to derive the
+ * correct class. The probabilities are calculated using Bayes Rule. The naive
+ * part relates to the fact that it assumes that all features are independent,
+ * which is rarely the case in the real world but tends to work out in practice
+ * for most problems.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
 {
     /**

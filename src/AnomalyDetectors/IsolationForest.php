@@ -10,6 +10,17 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
+/**
+ * Isolation Forest
+ *
+ * An Ensemble Anomaly Detector comprised of Isolation Trees each trained on a
+ * different subset of the training set. The Isolation Forest works by averaging
+ * the isolation score of a sample across a user-specified number of trees.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
 {
     /**

@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * Soft Plus
+ *
+ * A smooth approximation of the ReLU function whose output is constrained to be
+ * positive.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class SoftPlus implements Rectifier
 {
     /**

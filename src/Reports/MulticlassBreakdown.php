@@ -8,6 +8,17 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
 use InvalidArgumentException;
 
+/**
+ * Multiclass Breakdown
+ *
+ * A Report that drills down in to each unique class outcome. The report
+ * includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall,
+ * Cardinality, Miss Rate, and more.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MulticlassBreakdown implements Report
 {
     /**

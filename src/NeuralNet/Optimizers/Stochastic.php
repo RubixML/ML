@@ -5,6 +5,15 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * Stochastic
+ *
+ * A constant learning rate Optimizer.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Stochastic implements Optimizer
 {
     /**

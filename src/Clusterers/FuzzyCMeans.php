@@ -10,6 +10,17 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Fuzzy C Means
+ *
+ * Clusterer that allows data points to belong to multiple clusters if they fall
+ * within a fuzzy region and thus is able to output probabilities for each
+ * cluster via the Probabilistic interface.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 {
     /**

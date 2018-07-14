@@ -10,6 +10,16 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
+/**
+ * Ridge
+ *
+ * L2 penalized least squares regression. Can be used for simple regression
+ * problems that can be fit to a straight line.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Ridge implements Regressor, Persistable
 {
     /**

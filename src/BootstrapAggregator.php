@@ -11,6 +11,19 @@ use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 use ReflectionClass;
 
+/**
+ * Bootstrap Aggregator
+ *
+ * Bootstrap Aggregating (or bagging) is a model averaging technique designed to
+ * improve the stability and performance of a user-specified base Estimator by
+ * training a number of them on a unique bootstrapped training set. Bootstrap
+ * Aggregator then collects all of their predictions and makes a final
+ * prediction based on the results.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
 {
     /**

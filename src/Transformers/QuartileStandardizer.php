@@ -6,6 +6,17 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
 use RuntimeException;
 
+/**
+ * Quartile Standardizer
+ *
+ * This standardizer removes the median and scales each sample according to the
+ * interquantile range (IQR). The IQR is the range between the 1st quartile
+ * (25th quantile) and the 3rd quartile (75th quantile).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class QuartileStandardizer implements Transformer
 {
     /**

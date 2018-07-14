@@ -9,6 +9,17 @@ use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\BlurryMean;
 use InvalidArgumentException;
 
+/**
+ * Dummy Regressor
+ *
+ * Regressor that guesses the output values based on a Guessing Strategy. Dummy
+ * Regressor is useful to provide a sanity check and to compare performance
+ * against actual Regressors.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class DummyRegressor implements Regressor, Persistable
 {
     /**

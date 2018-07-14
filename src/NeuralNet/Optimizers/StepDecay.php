@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * Step Decay
+ *
+ * A learning rate decay stochastic optimizer that reduces the learning rate by
+ * a factor of the decay parameter when it reaches a new floor (takes k steps).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class StepDecay implements Optimizer
 {
     /**

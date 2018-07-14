@@ -5,6 +5,19 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use RuntimeException;
 
+/**
+ * One Hot Encoder
+ *
+ * The One Hot Encoder takes a column of categorical features and produces a
+ * one-hot vector of n-dimensions where n is equal to the number of unique
+ * categories per feature column. This is used when you need to convert all
+ * features to continuous format since some Estimators do not work with
+ * categorical features.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class OneHotEncoder implements Transformer
 {
     /**

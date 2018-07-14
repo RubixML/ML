@@ -8,6 +8,19 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
+/**
+ * Persistent Model
+ *
+ * It is possible to persist a model to disk by wrapping the Estimator instance
+ * in a Persistent Model meta-Estimator. The Persistent Model class gives the
+ * Estimator two additional methods save() and restore() that serialize and
+ * unserialize to and from disk. In order to be persisted the Estimator must
+ * implement the Persistable interface.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class PersistentModel implements MetaEstimator
 {
     /**

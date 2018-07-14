@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * Softsign
+ *
+ * A function that squashes the output of a neuron to + or - 1 from 0. In other
+ * words, the output is between -1 and 1.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Softsign implements ActivationFunction
 {
     /**

@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * SELU
+ *
+ * Scaled Exponential Linear Unit is a self-normalizing activation function
+ * based on ELU.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class SELU implements Rectifier
 {
     /**

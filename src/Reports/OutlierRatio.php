@@ -7,6 +7,17 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
+/**
+ * Outlier Ratio
+ *
+ * Outlier Ratio is the proportion of outliers to inliers in an Anomaly
+ * Detection problem. It can be used to gauge the amount of contamination that
+ * the Detector is predicting.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class OutlierRatio implements Report
 {
     /**

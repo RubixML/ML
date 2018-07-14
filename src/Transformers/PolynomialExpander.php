@@ -5,6 +5,17 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
+/**
+ * Polynomial Expander
+ *
+ * This Transformer will generate polynomial features up to and including the
+ * specified degree. Polynomial expansion is often used to fit data that is
+ * non-linear using a linear Estimator such as Ridge.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class PolynomialExpander implements Transformer
 {
     /**

@@ -11,6 +11,17 @@ use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 use ReflectionClass;
 
+/**
+ * Random Forest
+ *
+ * Ensemble classifier that trains Decision Trees (Classification Trees or Extra
+ * Trees) on a random subset of the training data. A prediction is made based on
+ * the probability scores returned from each tree in the forest.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 {
     /**

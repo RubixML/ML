@@ -5,6 +5,19 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * ISRU
+ *
+ * Inverse Square Root units have a curve similar to Hyperbolic Tangent and
+ * Sigmoid but use the inverse of the square root function instead. It is
+ * purported by the authors to be computationally less complex than either of
+ * the aforementioned. In addition, ISRU allows the parameter alpha to control
+ * the range of activation such that it equals + or - 1 / sqrt(alpha).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ISRU implements ActivationFunction
 {
     /**

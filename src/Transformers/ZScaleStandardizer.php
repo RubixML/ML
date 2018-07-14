@@ -7,6 +7,16 @@ use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Significance;
 use RuntimeException;
 
+/**
+ * Z Scale Standardizer
+ *
+ * A way of centering and scaling a sample matrix by computing the Z Score for =
+ * each feature.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ZScaleStandardizer implements Transformer
 {
     /**

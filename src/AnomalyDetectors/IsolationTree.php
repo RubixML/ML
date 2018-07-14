@@ -10,6 +10,18 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
 use InvalidArgumentException;
 
+/**
+ * Isolation Tree
+ *
+ * Isolation Trees separate anomalous samples from dense clusters using an
+ * extremely randomized splitting process that isolates outliers into their own
+ * nodes. Note that this Estimator is considered a weak learner and is typically
+ * used within the context of an ensemble (such as Isolation Forest).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class IsolationTree extends DecisionTree implements Detector, Probabilistic, Persistable
 {
     /**

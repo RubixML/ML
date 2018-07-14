@@ -7,6 +7,17 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
+/**
+ * Logit
+ *
+ * This Logit layer consists of a single Sigmoid neuron capable of
+ * distinguishing between two classes. The Logit layer is useful for neural
+ * networks that output a binary class prediction.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Logit implements Output
 {
     /**

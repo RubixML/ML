@@ -10,6 +10,17 @@ use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Missing Data Imputer
+ *
+ * In the real world, it is common to have data with missing values here and
+ * there. The Missing Data Imputer replaces missing value placeholders with a
+ * guess based on a given imputer Strategy.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MissingDataImputer implements Transformer
 {
     /**

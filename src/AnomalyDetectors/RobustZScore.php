@@ -7,6 +7,19 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
+/**
+ * Robust Z Score
+ *
+ * A quick global anomaly Detector, Robust Z Score uses a threshold to detect
+ * outliers within a Dataset. The modified Z score consists of taking the median
+ * and median absolute deviation (MAD) instead of the mean and standard
+ * deviation thus making the statistic more robust to training sets that may
+ * already contain outliers.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RobustZScore implements Detector, Persistable
 {
     const LAMBDA = 0.6745;

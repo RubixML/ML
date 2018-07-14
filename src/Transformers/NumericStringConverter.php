@@ -4,6 +4,17 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Numeric String Converter
+ *
+ * This handy Transformer will convert all numeric strings into their floating
+ * point counterparts. Useful for when extracting from a source that only
+ * recognizes data as string types.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class NumericStringConverter implements Transformer
 {
     /**

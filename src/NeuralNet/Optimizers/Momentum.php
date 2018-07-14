@@ -6,6 +6,17 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
+/**
+ * Momentum
+ *
+ * Momentum adds velocity to each step until exhausted. It does so by
+ * accumulating momentum from past updates and adding a factor to the current
+ * step.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Momentum implements Optimizer
 {
     /**

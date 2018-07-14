@@ -10,6 +10,17 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionClass;
 
+/**
+ * Ada Boost
+ *
+ * Short for Adaptive Boosting, this ensemble classifier can improve the
+ * performance of an otherwise weak classifier by focusing more attention on
+ * samples that are harder to classify.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class AdaBoost implements Binary, Ensemble, Persistable
 {
     /**

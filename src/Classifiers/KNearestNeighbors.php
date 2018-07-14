@@ -11,6 +11,18 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+/**
+ * K Nearest Neighbors
+ *
+ * A distance-based algorithm that locates the K nearest neighbors from the
+ * training set and uses a majority vote to classify the unknown sample. K
+ * Nearest Neighbors is considered a lazy learning Estimator because it does all
+ * of its computation at prediction time.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistable
 {
     /**

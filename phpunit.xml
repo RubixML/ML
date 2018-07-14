@@ -9,13 +9,49 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Tests">
-            <directory>./tests</directory>
+        <testsuite name="Anomaly Detectors">
+            <directory>tests/AnomalyDetectors</directory>
+        </testsuite>
+        <testsuite name="Classifiers">
+            <directory>tests/Classifiers</directory>
+        </testsuite>
+        <testsuite name="Clusterers">
+            <directory>tests/Clusterers</directory>
+        </testsuite>
+        <testsuite name="Cross Validation">
+            <directory>tests/CrossValidation</directory>
+        </testsuite>
+        <testsuite name="Datasets">
+            <directory>tests/Datasets</directory>
+        </testsuite>
+        <testsuite name="Extractors">
+            <directory>tests/Extractors</directory>
+        </testsuite>
+        <testsuite name="Graph">
+            <directory>tests/Graph</directory>
+        </testsuite>
+        <testsuite name="Kernels">
+            <directory>tests/Kernels</directory>
+        </testsuite>
+        <testsuite name="Neural Net">
+            <directory>tests/NeuralNet</directory>
+        </testsuite>
+        <testsuite name="Other">
+            <directory>tests/Other</directory>
+        </testsuite>
+        <testsuite name="Regressors">
+            <directory>tests/Regressors</directory>
+        </testsuite>
+        <testsuite name="Reports">
+            <directory>tests/Reports</directory>
+        </testsuite>
+        <testsuite name="Transformers">
+            <directory>tests/Transformers</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
     <php>

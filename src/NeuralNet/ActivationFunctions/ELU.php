@@ -5,6 +5,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
+/**
+ * ELU
+ *
+ * Exponential Linear Units are a type of rectifier that soften the transition
+ * from non-activated to activated using the exponential function.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ELU implements Rectifier
 {
     /**

@@ -6,6 +6,16 @@ use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
 
+/**
+ * RMS Prop
+ *
+ * An adaptive gradient technique that divides the current gradient over a
+ * rolling window of magnitudes of recent gradients.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RMSProp implements Optimizer
 {
     /**

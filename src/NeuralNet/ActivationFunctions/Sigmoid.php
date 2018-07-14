@@ -4,6 +4,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use MathPHP\LinearAlgebra\Matrix;
 
+/**
+ * Sigmoid
+ *
+ * A bounded S-shaped function (specifically the Logistic function) with an
+ * output value between 0 and 1.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Sigmoid implements ActivationFunction
 {
     /**

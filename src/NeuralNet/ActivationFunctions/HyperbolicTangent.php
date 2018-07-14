@@ -4,6 +4,16 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use MathPHP\LinearAlgebra\Matrix;
 
+/**
+ * Hyperbolic Tangent
+ *
+ * S-shaped function that squeezes the input value into an output space between
+ * -1 and 1 centered at 0.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class HyperbolicTangent implements ActivationFunction
 {
     /**

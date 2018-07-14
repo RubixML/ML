@@ -12,6 +12,19 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
+/**
+ * Neural Network
+ *
+ * A number of the Estimators in Rubix are implemented as a computational graph
+ * commonly referred to as a Neural Network due to its inspiration from the
+ * human brain. Neural Nets are trained using an iterative process called
+ * Gradient Descent and use Backpropagation (sometimes called Reverse Mode
+ * Autodiff) to calculate the error of each parameter in the network.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Network
 {
     /**

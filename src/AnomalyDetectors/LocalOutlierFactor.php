@@ -11,6 +11,19 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+/**
+ * Local Outlier Factor
+ *
+ * The Local Outlier Factor (LOF) algorithm only considers the local region of
+ * a sample, set by the k parameter. A density estimate for each neighbor is
+ * computed by measuring the radius of the cluster centroid that the point and
+ * its neighbors form. The LOF is the ratio of the sample over the median radius
+ * of the local region.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
 {
     /**

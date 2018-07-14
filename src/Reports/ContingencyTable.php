@@ -8,6 +8,16 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\Clusterer;
 use InvalidArgumentException;
 
+/**
+ * Contingency Table
+ *
+ * A Contingency Table is used to display the frequency distribution of class
+ * labels among a clustering of samples.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ContingencyTable implements Report
 {
     /**

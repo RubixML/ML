@@ -5,6 +5,16 @@ namespace Rubix\ML\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 
+/**
+ * Aggregate Report
+ *
+ * A Report that aggregates the results of multiple reports. The reports are
+ * indexed by their order given at construction time.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class AggregateReport implements Report
 {
     /**

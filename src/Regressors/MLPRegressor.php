@@ -16,6 +16,19 @@ use Rubix\ML\CrossValidation\Metrics\Validation;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use InvalidArgumentException;
 
+/**
+ * MLP Regressor
+ *
+ * A Neural Network with a continuous output layer suitable for regression
+ * problems. The MLP also features progress monitoring which means that it will
+ * automatically stop training when it can no longer make progress. It also
+ * utilizes snapshotting to make sure that it always uses the best parameters
+ * even if progress declined during training.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MLPRegressor implements Regressor, Online, Persistable
 {
     /**

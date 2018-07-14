@@ -8,6 +8,18 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+/**
+ * DBSCAN
+ *
+ * Density-Based Spatial Clustering of Applications with Noise is a clustering
+ * algorithm able to find non-linearly separable and arbitrarily-shaped
+ * clusters. In addition, DBSCAN also has the ability to mark outliers as noise
+ * and thus can be used as a quasi Anomaly Detector as well.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class DBSCAN implements Clusterer, Persistable
 {
     const NOISE = -1;

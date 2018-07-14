@@ -11,6 +11,16 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
 use InvalidArgumentException;
 
+/**
+ * Classification Tree
+ *
+ * A Decision Tree-based classifier that minimizes gini impurity to greedily
+ * search for the best splits in a training set.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class ClassificationTree extends DecisionTree implements Multiclass, Probabilistic, Persistable
 {
     /**

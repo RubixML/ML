@@ -10,6 +10,18 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
+/**
+ * Gaussian Naive Bayes
+ *
+ * A variate of the Naive Bayes classifier that uses a probability density
+ * function over continuous features. The distribution of values is assumed to
+ * be Gaussian therefore your data might need to be transformed beforehand if
+ * it is not normally distributed.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
 {
     const TWO_PI = 2.0 * M_PI;

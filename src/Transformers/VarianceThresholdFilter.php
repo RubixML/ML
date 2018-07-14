@@ -7,6 +7,17 @@ use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Variance Threshold Filter
+ *
+ * A type of feature selector that removes all columns that have a lower
+ * variance than the threshold. Variance is computed as the population variance
+ * of all the values in the feature column.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class VarianceThresholdFilter implements Transformer
 {
     /**

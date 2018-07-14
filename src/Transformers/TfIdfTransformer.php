@@ -6,6 +6,20 @@ use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * TF-IDF Transformer
+ *
+ * Term Frequency - Inverse Document Frequency is the measure of how important a
+ * word is to a document. The TF-IDF value increases proportionally with the
+ * number of times a word appears in a document and is offset by the frequency
+ * of the word in the corpus. This Transformer makes the assumption that the
+ * input is made up of word frequency vectors such as those created by the Count
+ * Vectorizer.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class TfIdfTransformer implements Transformer
 {
     /**
