@@ -4,16 +4,14 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\BootstrapAggregator;
-use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Reports\AggregateReport;
+use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\CrossValidation\Metrics\MCC;
+use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -37,19 +35,23 @@ $labels = iterator_to_array($reader->fetchColumn('label'));
 
 $dataset = new Labeled($samples, $labels);
 
-$dummy = new DummyClassifier(new PopularityContest());
-
-$estimator = new Pipeline(new LogisticRegression(10, new Adam(0.001), 1e-4, 1e-4), [
+$estimator = new Pipeline(new LogisticRegression(100, 50, new Adam(0.001), 1e-4, 1e-8), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);
 
-$validator = new KFold(8);
+$report = new AggregateReport([
+    new ConfusionMatrix(),
+    new MulticlassBreakdown(),
+    new PredictionSpeed(),
+]);
 
-$testing = $dataset->randomize()->take(3);
+list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
-var_dump($validator->test($dummy, $dataset, new MCC()));
+$estimator->train($training);
 
-var_dump($validator->test($estimator, $dataset, new MCC()));
+var_dump($estimator->progress());
 
-var_dump($estimator->predict($testing));
+var_dump($report->generate($estimator, $testing));
+
+var_dump($estimator->proba($testing->head(3)));

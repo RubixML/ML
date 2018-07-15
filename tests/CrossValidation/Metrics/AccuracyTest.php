@@ -3,7 +3,7 @@
 namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClassifier;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use PHPUnit\Framework\TestCase;
@@ -21,14 +21,16 @@ class AccuracyTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClassifier([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        $this->estimator = $this->createMock(KNearestNeighbors::class);
+
+        $this->estimator->method('predict')->willReturn([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
         ]);
 
         $this->metric = new Accuracy();
     }
 
-    public function test_build_accuracy_metric()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(Accuracy::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);

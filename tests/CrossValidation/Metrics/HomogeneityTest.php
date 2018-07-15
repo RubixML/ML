@@ -3,7 +3,7 @@
 namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClusterer;
+use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 use PHPUnit\Framework\TestCase;
@@ -21,12 +21,16 @@ class HomogeneityTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClusterer([1, 2, 2, 1, 2]);
+        $this->estimator = $this->createMock(KMeans::class);
+
+        $this->estimator->method('predict')->willReturn([
+            1, 2, 2, 1, 2,
+        ]);
 
         $this->metric = new Homogeneity();
     }
 
-    public function test_build_homogeneity_metric()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(Homogeneity::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);

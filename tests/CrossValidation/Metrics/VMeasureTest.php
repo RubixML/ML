@@ -3,7 +3,7 @@
 namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClusterer;
+use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use PHPUnit\Framework\TestCase;
@@ -21,12 +21,16 @@ class VMeasureTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClusterer([1, 2, 2, 1, 2]);
+        $this->estimator = $this->createMock(KMeans::class);
+
+        $this->estimator->method('predict')->willReturn([
+            1, 2, 2, 1, 2,
+        ]);
 
         $this->metric = new VMeasure();
     }
 
-    public function test_build_v_measure_metric()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(VMeasure::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);

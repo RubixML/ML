@@ -5,7 +5,7 @@ namespace Rubix\Tests\Reports;
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Reports\OutlierRatio;
-use Rubix\Tests\Helpers\MockDetector;
+use Rubix\ML\AnomalyDetectors\RobustZScore;
 use PHPUnit\Framework\TestCase;
 
 class OutlierRatioTest extends TestCase
@@ -21,7 +21,9 @@ class OutlierRatioTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
             [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
 
-        $this->estimator = new MockDetector([
+        $this->estimator = $this->createMock(RobustZScore::class);
+
+        $this->estimator->method('predict')->willReturn([
             0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
         ]);
 

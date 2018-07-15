@@ -160,13 +160,13 @@ class Dense implements Hidden
 
         $this->z = $this->weights->multiply($input);
 
-        $biases = MatrixFactory::one(1, $input->getN());
+        $this->computed = $this->activationFunction->compute($this->z);
 
-        $this->computed = $this->activationFunction
-            ->compute($this->z->rowExclude($this->z->getM() - 1))
+        $biases = MatrixFactory::one(1, $this->computed->getN());
+
+        return $this->computed
+            ->rowExclude($this->computed->getM() - 1)
             ->augmentBelow($biases);
-
-        return $this->computed;
     }
 
     /**
@@ -198,7 +198,7 @@ class Dense implements Hidden
 
         $this->weights = $this->weights->add($steps);
 
-        return $steps->oneNorm();
+        return $steps->maxNorm();
     }
 
     /**

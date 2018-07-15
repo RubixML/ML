@@ -4,7 +4,7 @@ namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\Tests\Helpers\MockClassifier;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use PHPUnit\Framework\TestCase;
 
@@ -21,14 +21,16 @@ class MCCTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClassifier([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        $this->estimator = $this->createMock(KNearestNeighbors::class);
+
+        $this->estimator->method('predict')->willReturn([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
         ]);
 
         $this->metric = new MCC();
     }
 
-    public function test_build_mcc_test()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(MCC::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);

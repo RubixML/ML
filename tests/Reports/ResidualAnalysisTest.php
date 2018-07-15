@@ -4,8 +4,8 @@ namespace Rubix\Tests\Reports;
 
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Reports\ResidualAnalysis;
-use Rubix\Tests\Helpers\MockRegressor;
 use PHPUnit\Framework\TestCase;
 
 class ResidualAnalysisTest extends TestCase
@@ -21,7 +21,9 @@ class ResidualAnalysisTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
             [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
 
-        $this->estimator = new MockRegressor([
+        $this->estimator = $this->createMock(Ridge::class);
+
+        $this->estimator->method('predict')->willReturn([
             10, 12, 15, 42, 56, 12, 17, 9, 1, 7,
         ]);
 

@@ -56,12 +56,11 @@ class AdaBoost implements Binary, Ensemble, Persistable
     protected $ratio;
 
     /**
-     * The threshold accuracy of a single classifier before the algorithm stops
-     * early.
+     * The amount of accuracy to tolerate before early stopping.
      *
      * @var float
      */
-    protected $threshold;
+    protected $tolerance;
 
     /**
      * The actual labels of the binary class outcomes.
@@ -105,12 +104,12 @@ class AdaBoost implements Binary, Ensemble, Persistable
      * @param  array  $params
      * @param  int  $estimators
      * @param  float  $ratio
-     * @param  float  $threshold
+     * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(string $base, array $params = [], int $estimators = 100,
-                                float $ratio = 0.1, float $threshold = 0.999)
+                                float $ratio = 0.1, float $tolerance = 1e-3)
     {
         $reflector = new ReflectionClass($base);
 
@@ -129,8 +128,8 @@ class AdaBoost implements Binary, Ensemble, Persistable
                 . ' 0.01 and 1.0.');
         }
 
-        if ($threshold < 0 or $threshold > 1) {
-            throw new InvalidArgumentException('Threshold must be between'
+        if ($tolerance < 0 or $tolerance > 1) {
+            throw new InvalidArgumentException('Tolerance must be between'
                 . ' 0 and 1.');
         }
 
@@ -138,7 +137,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
         $this->params = $params;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->threshold = $threshold;
+        $this->tolerance = $tolerance;
     }
 
     /**
@@ -200,7 +199,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
 
         $this->ensemble = $this->influence = [];
 
-        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
+        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = new $this->base(...$this->params);
 
             $estimator->train($this->generateRandomWeightedSubset($dataset));
@@ -229,7 +228,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
             $this->influence[] = $influence;
             $this->ensemble[] = $estimator;
 
-            if ((1 - $error) > $this->threshold) {
+            if ($error < $this->tolerance) {
                 break 1;
             }
         }
@@ -244,20 +243,20 @@ class AdaBoost implements Binary, Ensemble, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $totals = array_fill(0, $dataset->numRows(), 0.0);
+        $sigmas = array_fill(0, $dataset->numRows(), 0.0);
 
         foreach ($this->ensemble as $i => $estimator) {
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $output = $prediction === $this->classes[1] ? 1 : -1;
 
-                $totals[$j] += $this->influence[$i] * $output;
+                $sigmas[$j] += $this->influence[$i] * $output;
             }
         }
 
         $predictions = [];
 
-        foreach ($totals as $total) {
-            $predictions[] = $this->classes[$total > 0 ? 1 : -1];
+        foreach ($sigmas as $sigma) {
+            $predictions[] = $this->classes[$sigma > 0 ? 1 : -1];
         }
 
         return $predictions;
@@ -282,12 +281,12 @@ class AdaBoost implements Binary, Ensemble, Persistable
         $subset = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $random = rand(0, (int) ($total * 1e8)) / 1e8;
+            $alpha = rand(0, (int) ($total * 1e8)) / 1e8;
 
             for ($index = 0; $index < $n; $index++) {
-                $random -= $this->weights[$index];
+                $alpha -= $this->weights[$index];
 
-                if ($random < 0) {
+                if ($alpha < 0) {
                     break 1;
                 }
             }

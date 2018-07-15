@@ -158,21 +158,23 @@ class Softmax implements Output
 
         $this->z = $this->weights->multiply($input);
 
-        $outputs = $cache = [[]];
+        $activations = [[]];
 
         foreach ($this->z->asVectors() as $i => $z) {
-            for ($j = 0; $j < $z->getN(); $j++) {
-                $cache[$i][$j] = exp($z[$j]);
+            $cache = [];
+
+            foreach ($z->getVector() as $j => $value) {
+                $cache[$j] = exp($value);
             }
 
-            $sigma = array_sum($cache[$i]);
+            $sigma = array_sum($cache);
 
-            for ($j = 0; $j < $z->getN(); $j++) {
-                $outputs[$j][$i] = $cache[$i][$j] / ($sigma + self::EPSILON);
+            foreach ($cache as $j => $value) {
+                $activations[$j][$i] = $value / $sigma;
             }
         }
 
-        $this->computed = new Matrix($outputs);
+        $this->computed = new Matrix($activations);
 
         return $this->computed;
     }
@@ -187,12 +189,13 @@ class Softmax implements Output
     {
         $errors = [[]];
 
-        foreach ($labels as $i => $label) {
-            foreach ($this->classes as $j => $class) {
-                $expected = $class === $label ? 1.0 : 0.0;
+        foreach ($this->classes as $i => $class) {
+            $l2penalty = 0.5 * $this->alpha * array_sum($this->weights[$i]) ** 2;
 
-                $errors[$j][$i] = ($expected - $this->computed[$j][$i])
-                    + 0.5 * $this->alpha * array_sum($this->weights[$j]) ** 2;
+            foreach ($this->computed->getRow($i) as $j => $activation) {
+                $expected = $class === $labels[$j] ? 1.0 : 0.0;
+
+                $errors[$i][$j] = ($expected - $activation) + $l2penalty;
             }
         }
 

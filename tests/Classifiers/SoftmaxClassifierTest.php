@@ -62,7 +62,7 @@ class SoftmaxClassifierTest extends TestCase
             'male', 'female',
         ]);
 
-        $this->estimator = new SoftmaxClassifier(1, new Adam(0.005), 1e-4, 1e-4);
+        $this->estimator = new SoftmaxClassifier(300, 1, new Adam(0.001), 1e-4, 1e-8);
     }
 
     public function test_build_classifier()

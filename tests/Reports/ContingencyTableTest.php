@@ -4,8 +4,8 @@ namespace Rubix\Tests\Reports;
 
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Reports\ContingencyTable;
-use Rubix\Tests\Helpers\MockClusterer;
 use PHPUnit\Framework\TestCase;
 
 class ContingencyTableTest extends TestCase
@@ -21,8 +21,10 @@ class ContingencyTableTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClusterer([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        $this->estimator = $this->createMock(KMeans::class);
+
+        $this->estimator->method('predict')->willReturn([
+            1, 2, 2, 1, 2,
         ]);
 
         $this->report = new ContingencyTable();
@@ -37,12 +39,12 @@ class ContingencyTableTest extends TestCase
     public function test_generate_report()
     {
         $actual = [
-            'wolf' => [
-                'wolf' => 2,
+            1 => [
+                'wolf' => 1,
                 'lamb' => 1,
             ],
-            'lamb' => [
-                'wolf' => 1,
+            2 => [
+                'wolf' => 2,
                 'lamb' => 1,
             ],
         ];

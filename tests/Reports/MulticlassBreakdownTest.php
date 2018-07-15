@@ -4,8 +4,8 @@ namespace Rubix\Tests\Reports;
 
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockClassifier;
 use Rubix\ML\Reports\MulticlassBreakdown;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 
 class MulticlassBreakdownTest extends TestCase
@@ -21,8 +21,10 @@ class MulticlassBreakdownTest extends TestCase
         $this->testing = new Labeled([[], [], [], [], []],
             ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
 
-        $this->estimator = new MockClassifier([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf'
+        $this->estimator = $this->createMock(KNearestNeighbors::class);
+
+        $this->estimator->method('predict')->willReturn([
+            'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
         ]);
 
         $this->report = new MulticlassBreakdown();

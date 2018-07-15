@@ -851,11 +851,11 @@ A type of classifier that uses the logistic (sigmoid) function to distinguish be
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
+| epochs | 100 | int | The maximum number of training epochs to execute. |
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
-| min change | 1e-4 | float | The minimum change in the weights necessary to continue training. |
-| epochs | 100 | int | The maximum number of training epochs to execute. |
+| min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -868,7 +868,7 @@ A type of classifier that uses the logistic (sigmoid) function to distinguish be
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$estimator = new LogisticRegression(30, new Adam(0.001), 1e-4, 1e-3);
+$estimator = new LogisticRegression(300, 10, new Adam(0.001), 1e-4, 1e-8);
 ```
 
 ### Multi Layer Perceptron
@@ -965,18 +965,18 @@ $estimator = new RandomForest(400, 0.1, 10, 3, 5, 1e-2, ExtraTree::class);
 ```
 
 ### Softmax Classifier
-A generalization of logistic regression for multiple class outcomes using a single layer [neural network](#neural-network).
+A generalization of [Logistic Regression](#logistic-regression) for multiple class outcomes using a single layer [neural network](#neural-network) with a Softmax output layer.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
+| epochs | 100 | int | The maximum number of training epochs to execute. |
 | batch size | 10 | int | The number of training samples to process at a time. |
 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
 | alpha | 1e-4 | float | The L2 regularization term. |
-| min change | 1e-4 | float | The minimum change in the weights necessary to continue training. |
-| epochs | 100 | int | The maximum number of training epochs to execute. |
+| min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
 
 
 ##### Additional Methods:
@@ -990,7 +990,7 @@ A generalization of logistic regression for multiple class outcomes using a sing
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
-$estimator = new SoftmaxClassifier(100, new Momentum(0.001), 1e-4, 1e-4);
+$estimator = new SoftmaxClassifier(500, 100, new Momentum(0.001), 1e-4, 1e-5);
 ```
 
 ---

@@ -143,14 +143,15 @@ class Linear implements Output
      */
     public function back(array $labels) : array
     {
-        $errors = [[]];
+        $l2penalty = 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
 
-        foreach ($labels as $i => $label) {
-            $errors[0][$i] = ($label - $this->computed[0][$i])
-                + $this->alpha * array_sum($this->weights[0]) ** 2;
+        $errors = [];
+
+        foreach ($this->computed->getRow(0) as $i => $activation) {
+            $errors[$i] = ($labels[$i] - $activation) + $l2penalty;
         }
 
-        $errors = new Matrix($errors);
+        $errors = new Matrix([$errors]);
 
         $this->gradients = $errors->multiply($this->input->transpose());
 

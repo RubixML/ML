@@ -27,6 +27,14 @@ use InvalidArgumentException;
 class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistable
 {
     /**
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
+     *
+     * @var int
+     */
+    protected $epochs;
+    
+    /**
      * The number of training samples to consider per iteration of gradient descent.
      *
      * @var int
@@ -55,14 +63,6 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     protected $minChange;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
-     *
-     * @var int
-     */
-    protected $epochs;
-
-    /**
      * The unique class labels.
      *
      * @var array
@@ -88,18 +88,22 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     ];
 
     /**
+     * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
      * @param  float  $minChange
-     * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $batchSize = 10, Optimizer $optimizer = null,
-                                float $alpha = 1e-4, float $minChange = 1e-4,
-                                int $epochs = PHP_INT_MAX)
+    public function __construct(int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null,
+                                float $alpha = 1e-4, float $minChange = 1e-8)
     {
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Estimator must train for at'
+                . ' least 1 epoch.');
+        }
+
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
                 . ' per batch.');
@@ -115,20 +119,15 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
                 . ' than 0.');
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
-        }
-
         if (!isset($optimizer)) {
             $optimizer = new Adam();
         }
 
+        $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
         $this->minChange = $minChange;
-        $this->epochs = $epochs;
     }
 
     /**
@@ -200,21 +199,21 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
         $previous = 0.0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $change = 0.0;
+            $step = 0.0;
 
             foreach ($dataset->randomize()->batch($this->batchSize) as $batch) {
-                $change += $this->network->feed($batch->samples())
+                $step += $this->network->feed($batch->samples())
                     ->backpropagate($batch->labels())
                     ->step();
             }
 
-            $this->progress[] = ['change' => $change];
+            $this->progress[] = ['step' => $step];
 
-            if (abs($change - $previous) < $this->minChange) {
+            if (abs($previous - $step) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $change;
+            $previous = $step;
         }
     }
 

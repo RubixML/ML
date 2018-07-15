@@ -3,7 +3,7 @@
 namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\Tests\Helpers\MockRegressor;
+use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\CrossValidation\Metrics\RMSError;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use PHPUnit\Framework\TestCase;
@@ -20,12 +20,16 @@ class RMSErrorTest extends TestCase
     {
         $this->testing = new Labeled([[], [], [], [], []], [10, 10, 6, 14, 8]);
 
-        $this->estimator = new MockRegressor([9, 15, 9, 12, 8]);
+        $this->estimator = $this->createMock(Ridge::class);
+
+        $this->estimator->method('predict')->willReturn([
+            9, 15, 9, 12, 8,
+        ]);
 
         $this->metric = new RMSError();
     }
 
-    public function test_build_rms_error_metric()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(RMSError::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);

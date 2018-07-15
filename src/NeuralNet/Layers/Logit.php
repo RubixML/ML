@@ -180,22 +180,17 @@ class Logit implements Output
      */
     public function back(array $labels) : array
     {
-        $errors = [[]];
+        $l2penalty = 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
 
-        foreach ($labels as $i => $label) {
-            $expected = $this->classes[$label];
+        $errors = [];
 
-            if ($expected === 0) {
-                $error = (1 - $expected) * log(1 - $this->computed[0][$i]);
-            } else {
-                $error = -$expected * log($this->computed[0][$i]);
-            }
+        foreach ($this->computed->getRow(0) as $i => $activation) {
+            $expected = $this->classes[$labels[$i]];
 
-            $errors[0][$i] = $error + 0.5 * $this->alpha
-                * array_sum($this->weights[0]) ** 2;
+            $errors[$i] = ($expected - $activation) + $l2penalty;
         }
 
-        $errors = new Matrix($errors);
+        $errors = new Matrix([$errors]);
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
@@ -227,7 +222,7 @@ class Logit implements Output
 
         $this->weights = $this->weights->add($steps);
 
-        return $steps->oneNorm();
+        return $steps->maxNorm();
     }
 
     /**
