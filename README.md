@@ -304,7 +304,7 @@ Now that you've gone through a brief introduction of a simple machine learning p
 Here you will find information regarding the classes that make up the Rubix library.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. The object can hold a heterogeneous mix of string or numerical data and gracefully handles *null* values by using a placeholder. In addition, Dataset objects make it easy to slice and transport data in a canonical way. The Dataset interface provides the following methods.
+In Rubix, data is passed around using specialized data structures called Dataset objects. The object can hold a heterogeneous mix of string or numerical data and gracefully handles *null* values by using a placeholder. In addition, Dataset objects make it easy to slice and transport data in a canonical way.
 
 Return the *first* **n** rows of data in a new Dataset object:
 ```php

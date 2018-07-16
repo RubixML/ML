@@ -3,9 +3,33 @@
 namespace Rubix\ML\Datasets;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class Unlabeled extends DataFrame implements Dataset
 {
+    /**
+     * Restore an unlabeled dataset from a serialized object file.
+     *
+     * @param  string  $path
+     * @throws \RuntimeException
+     * @return self
+     */
+    public static function restore(string $path) : self
+    {
+        if (!file_exists($path) or !is_readable($path)) {
+            throw new RuntimeException('File ' . basename($path) . ' cannot be'
+                . ' opened. Check path and permissions.');
+        }
+
+        $dataset = unserialize(file_get_contents($path) ?: '');
+
+        if (!$dataset instanceof Unlabeled) {
+            throw new RuntimeException('Dataset could not be reconstituted.');
+        }
+
+        return $dataset;
+    }
+
     /**
      * Factory method to create an unsupervised dataset from an array of datasets.
      *
@@ -212,5 +236,31 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return new self($subset);
+    }
+
+    /**
+     * Save the dataset to a serialized object file.
+     *
+     * @param  string  $path
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function save(string $path = '') : void
+    {
+        if (empty($path)) {
+            $path = (string) time() . '.dataset';
+        }
+
+        if (!is_writable(dirname($path))) {
+            throw new InvalidArgumentException('Folder does not exist or is not'
+                . ' writable. Check path and permissions.');
+        }
+
+        $success = file_put_contents($path, serialize($this), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException('Failed to serialize object to storage.');
+        }
     }
 }

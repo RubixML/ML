@@ -4,8 +4,8 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\GridSearch;
-use Rubix\ML\RandomParams;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\RandomParams;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Kernels\Distance\Diagonal;
@@ -35,15 +35,13 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$dataset->randomize();
+$dataset->apply(new NumericStringConverter());
 
 $params = [
     RandomParams::ints(1, 10, 5), [new Euclidean(), new Diagonal()],
 ];
 
-$estimator = new Pipeline(new GridSearch(KNearestNeighbors::class, $params, new MCC(), new KFold(10)), [
-    new NumericStringConverter(),
-]);
+$estimator = new GridSearch(KNearestNeighbors::class, $params, new MCC(), new KFold(10));
 
 $validator = new KFold(10);
 

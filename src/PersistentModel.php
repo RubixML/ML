@@ -108,9 +108,10 @@ class PersistentModel implements MetaEstimator
      *
      * @param  string  $path
      * @throws \InvalidArgumentException
-     * @return bool
+     * @throws \RuntimeException
+     * @return void
      */
-    public function save(string $path = '') : bool
+    public function save(string $path = '') : void
     {
         if (empty($path)) {
             $path = strtolower($this->reflector->getShortName())
@@ -122,8 +123,11 @@ class PersistentModel implements MetaEstimator
                 . ' writable. Check path and permissions.');
         }
 
-        return file_put_contents($path, serialize($this->model), LOCK_EX)
-            ? true : false;
+        $success = file_put_contents($path, serialize($this->model), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException('Failed to serialize object to storage.');
+        }
     }
 
     /**

@@ -102,13 +102,11 @@ class NaiveBayesTest extends TestCase
 
     public function test_partial_train()
     {
-        $folds = $this->training->randomize()->stratifiedFold(3);
+        $folds = $this->training->randomize()->stratifiedFold(2);
 
         $this->estimator->train($folds[0]);
 
         $this->estimator->partial($folds[1]);
-
-        $this->estimator->partial($folds[2]);
 
         $predictions = $this->estimator->predict($this->testing);
 

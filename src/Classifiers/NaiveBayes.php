@@ -164,7 +164,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         }
 
         foreach ($dataset->stratify() as $class => $samples) {
-            foreach (array_map(null, ...$samples) as $column => $values) {
+            foreach ($samples->rotate() as $column => $values) {
                 $counts = array_count_values((array) $values);
 
                 foreach ($counts as $value => $count) {

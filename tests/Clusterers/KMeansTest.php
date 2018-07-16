@@ -5,8 +5,8 @@ namespace Rubix\Tests\Clusterers;
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\Clusterer;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
@@ -19,18 +19,7 @@ class KMeansTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = new Unlabeled([
-            [2.771244718, 1.784783929], [1.728571309, 1.169761413],
-            [3.678319846, 2.812813570], [3.961043357, 2.619950320],
-            [2.999208922, 2.209014212], [2.345634564, 1.345634563],
-            [1.678967899, 1.345634566], [3.234523455, 2.123411234],
-            [3.456745685, 2.678960008], [2.234523463, 2.345633224],
-            [7.497545867, 3.162953546], [9.002203261, 3.339047188],
-            [7.444542326, 0.476683375], [10.12493903, 3.234550982],
-            [6.642287351, 3.319983761], [7.670678677, 3.234556477],
-            [9.345234522, 3.768960060], [7.234523457, 0.736747567],
-            [10.56785567, 3.123412342], [6.456749570, 3.324523456],
-        ]);
+        $this->dataset = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
 
         $this->estimator = new KMeans(2, new Euclidean(), 100);
     }
@@ -52,7 +41,7 @@ class KMeansTest extends TestCase
 
         $clusters = array_count_values($results);
 
-        $this->assertEquals(10, $clusters[0]);
-        $this->assertEquals(10, $clusters[1]);
+        $this->assertEquals(50, $clusters[0], '', 3);
+        $this->assertEquals(50, $clusters[1], '', 3);
     }
 }

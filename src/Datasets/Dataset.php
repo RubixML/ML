@@ -10,7 +10,15 @@ use Countable;
 interface Dataset extends ArrayAccess, IteratorAggregate, Countable
 {
     /**
-     * Factory method to create a dataset from an array of datasets.
+     * Restore a dataset from a serialized object file.
+     *
+     * @param  string  $path
+     * @return self
+     */
+    public static function restore(string $path);
+
+    /**
+     * Build a dataset object from an array of datasets.
      *
      * @param  array  $datasets
      * @return self
@@ -83,6 +91,14 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return void
      */
     public function apply(Transformer $transformer) : void;
+
+    /**
+     * Save the dataset to a serialized object file.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    public function save(string $path) : void;
 
     /**
      * Rotate the sample matrix.

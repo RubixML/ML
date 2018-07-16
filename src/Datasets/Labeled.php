@@ -3,6 +3,7 @@
 namespace Rubix\ML\Datasets;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class Labeled extends DataFrame implements Dataset
 {
@@ -14,6 +15,28 @@ class Labeled extends DataFrame implements Dataset
     protected $labels = [
         //
     ];
+
+    /**
+     * Restore a labeled dataset from a serialized object file.
+     *
+     * @param  string  $path
+     * @return self
+     */
+    public static function restore(string $path) : self
+    {
+        if (!file_exists($path) or !is_readable($path)) {
+            throw new RuntimeException('File ' . basename($path) . ' cannot be'
+                . ' opened. Check path and permissions.');
+        }
+
+        $dataset = unserialize(file_get_contents($path) ?: '');
+
+        if (!$dataset instanceof Labeled) {
+            throw new RuntimeException('Dataset could not be reconstituted.');
+        }
+
+        return $dataset;
+    }
 
     /**
      * Factory method to create a labeled dataset from an array of datasets.
@@ -60,7 +83,9 @@ class Labeled extends DataFrame implements Dataset
             }
 
             if (is_string($label) and is_numeric($label)) {
-                $label = (float) $label;
+                $label = (int) $label == $label
+                    ? (int) $label
+                    : (float) $label;
             }
         }
 
@@ -139,8 +164,7 @@ class Labeled extends DataFrame implements Dataset
     public function take(int $n = 1) : self
     {
         if ($n < 0) {
-            throw new InvalidArgumentException('Cannot take less than 0'
-                . ' samples.');
+            throw new InvalidArgumentException('Cannot take less than 0 samples.');
         }
 
         return $this->splice(0, $n);
@@ -157,8 +181,7 @@ class Labeled extends DataFrame implements Dataset
     public function leave(int $n = 1) : self
     {
         if ($n < 0) {
-            throw new InvalidArgumentException('Cannot leave less than 0'
-                . ' samples.');
+            throw new InvalidArgumentException('Cannot leave less than 0 samples.');
         }
 
         return $this->splice($n, $this->numRows());
@@ -195,7 +218,9 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Group rows by label and return an array of stratified sets.
+     * Group samples by label and return an array of stratified datasets. i.e.
+     * n datasets consisting of samples with the same label where n is equal to
+     * the number of unique labels.
      *
      * @return array
      */
@@ -203,8 +228,10 @@ class Labeled extends DataFrame implements Dataset
     {
         $strata = [];
 
-        foreach ($this->labels as $index => $label) {
-            $strata[$label][] = $this->samples[$index];
+        foreach ($this->_stratify() as $label => $stratum) {
+            $labels = array_fill(0, count($stratum), $label);
+
+            $strata[$label] = new self($stratum, $labels);
         }
 
         return $strata;
@@ -250,7 +277,7 @@ class Labeled extends DataFrame implements Dataset
 
         $left = $right = [[], []];
 
-        foreach ($this->stratify() as $label => $stratum) {
+        foreach ($this->_stratify() as $label => $stratum) {
             $n = (int) ($ratio * count($stratum));
 
             $left[0] = array_merge($left[0], array_splice($stratum, 0, $n));
@@ -260,10 +287,7 @@ class Labeled extends DataFrame implements Dataset
             $right[1] = array_merge($right[1], array_fill(0, count($stratum), $label));
         }
 
-        return [
-            new self(...$left),
-            new self(...$right),
-        ];
+        return [new self(...$left), new self(...$right)];
     }
 
     /**
@@ -312,16 +336,16 @@ class Labeled extends DataFrame implements Dataset
         $folds = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $fold = [[], []];
+            $samples = $labels = [];
 
-            foreach ($this->stratify() as $label => $stratum) {
+            foreach ($this->_stratify() as $label => $stratum) {
                 $n = (int) (count($stratum) / $k);
 
-                $fold[0] = array_merge($fold[0], array_splice($stratum, 0, $n));
-                $fold[1] = array_merge($fold[1], array_fill(0, $n, $label));
+                $samples = array_merge($samples, array_splice($stratum, 0, $n));
+                $labels = array_merge($labels, array_fill(0, $n, $label));
             }
 
-            $folds[] = new self(...$fold);
+            $folds[] = new self($samples, $labels);
         }
 
         return $folds;
@@ -399,5 +423,47 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return new self(...$subset);
+    }
+
+    /**
+     * Save the dataset to a serialized object file.
+     *
+     * @param  string  $path
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function save(string $path = '') : void
+    {
+        if (empty($path)) {
+            $path = (string) time() . '.dataset';
+        }
+
+        if (!is_writable(dirname($path))) {
+            throw new InvalidArgumentException('Folder does not exist or is not'
+                . ' writable. Check path and permissions.');
+        }
+
+        $success = file_put_contents($path, serialize($this), LOCK_EX);
+
+        if (!$success) {
+            throw new RuntimeException('Failed to serialize object to storage.');
+        }
+    }
+
+    /**
+     * Stratifying routine groups samples by label.
+     *
+     * @return array
+     */
+    protected function _stratify() : array
+    {
+        $strata = [];
+
+        foreach ($this->labels as $index => $label) {
+            $strata[$label][] = $this->samples[$index];
+        }
+
+        return $strata;
     }
 }

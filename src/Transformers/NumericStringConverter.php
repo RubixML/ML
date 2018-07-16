@@ -37,9 +37,9 @@ class NumericStringConverter implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$feature) {
                 if (is_string($feature) and is_numeric($feature)) {
-                    $feature = (float) $feature == $feature
-                        ? (float) $feature
-                        : (int) $feature;
+                    $feature = (int) $feature == $feature
+                        ? (int) $feature
+                        : (float) $feature;
                 }
             }
         }

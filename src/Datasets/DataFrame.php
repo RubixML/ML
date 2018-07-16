@@ -167,6 +167,10 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function rotate() : array
     {
+        if (empty($this->samples)) {
+            return [[]];
+        }
+
         return array_map(null, ...$this->samples);
     }
 

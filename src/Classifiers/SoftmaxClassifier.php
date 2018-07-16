@@ -33,7 +33,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
      * @var int
      */
     protected $epochs;
-    
+
     /**
      * The number of training samples to consider per iteration of gradient descent.
      *
@@ -198,10 +198,12 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
 
         $previous = 0.0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $batches = $dataset->randomize()->batch($this->batchSize);
+
             $step = 0.0;
 
-            foreach ($dataset->randomize()->batch($this->batchSize) as $batch) {
+            foreach ($batches as $batch) {
                 $step += $this->network->feed($batch->samples())
                     ->backpropagate($batch->labels())
                     ->step();

@@ -33,7 +33,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      * @var int
      */
     protected $epochs;
-    
+
     /**
      * The number of training samples to consider per iteration of gradient descent.
      *
