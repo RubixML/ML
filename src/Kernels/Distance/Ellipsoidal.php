@@ -5,6 +5,16 @@ namespace Rubix\ML\Kernels\Distance;
 use MathPHP\LinearAlgebra\Vector;
 use InvalidArgumentException;
 
+/**
+ * Ellipsoidal
+ *
+ * The Ellipsoidal distance measures the distance between two points on a
+ * 3-dimensional ellipsoid.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Ellipsoidal implements Distance
 {
     /**

@@ -5,6 +5,16 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Wild Guess
+ *
+ * It's just what you think it is. Make a guess somewhere in between the minimum
+ * and maximum values observed during fitting.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class WildGuess implements Continuous
 {
     /**

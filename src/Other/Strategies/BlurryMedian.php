@@ -7,6 +7,15 @@ use MathPHP\Statistics\Descriptive;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Blurry Median
+ *
+ * Adds random Gaussian noise to the median of a set of values.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class BlurryMedian implements Continuous
 {
     /**

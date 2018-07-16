@@ -23,17 +23,14 @@ class PersistentModelTest extends TestCase
         $this->assertInstanceOf(MetaEstimator::class, $this->model);
     }
 
-    public function test_save_model()
+    public function test_save_and_restore()
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.model'));
 
         $this->model->save(__DIR__ . '/test.model');
 
         $this->assertFileExists(__DIR__ . '/test.model');
-    }
 
-    public function test_restore_model()
-    {
         $model = PersistentModel::restore(__DIR__ . '/test.model');
 
         $this->assertInstanceOf(PersistentModel::class, $model);

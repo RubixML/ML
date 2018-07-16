@@ -5,6 +5,15 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Lottery
+ *
+ * Hold a lottery in which each category has an equal chance of being picked.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Lottery implements Categorical
 {
     /**

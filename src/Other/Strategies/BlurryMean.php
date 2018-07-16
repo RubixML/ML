@@ -7,6 +7,16 @@ use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Blurry Mean
+ *
+ * This continuous Strategy that adds a blur factor to the mean of a set of
+ * values producing a random guess around the mean.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class BlurryMean implements Continuous
 {
     /**

@@ -2,6 +2,16 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+/**
+ * Canberra
+ *
+ * A weighted version of Manhattan distance which computes the L1 distance
+ * between two coordinates in a vector space.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Canberra implements Distance
 {
     /**

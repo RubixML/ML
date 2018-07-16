@@ -106,14 +106,14 @@ class PersistentModel implements MetaEstimator
      * Save the estimator to a file given the path. File contains a pickled PHP
      * object that has been serialized.
      *
-     * @param  string  $path
+     * @param  string|null  $path
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function save(string $path = '') : void
+    public function save(?string $path = null) : void
     {
-        if (empty($path)) {
+        if (is_null($path)) {
             $path = strtolower($this->reflector->getShortName())
                 . '-' . (string) time() . '.model';
         }

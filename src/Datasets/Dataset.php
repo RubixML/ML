@@ -95,10 +95,10 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     /**
      * Save the dataset to a serialized object file.
      *
-     * @param  string  $path
+     * @param  string|null  $path
      * @return void
      */
-    public function save(string $path) : void;
+    public function save(?string $path = null) : void;
 
     /**
      * Rotate the sample matrix.

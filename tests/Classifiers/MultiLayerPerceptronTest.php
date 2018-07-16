@@ -42,7 +42,7 @@ class MultiLayerPerceptronTest extends TestCase
         $this->estimator = new MultiLayerPerceptron([
             new Dense(10, new ELU()),
             new Dense(10, new ELU()),
-        ], 1, new Adam(0.001), 1e-4, new MCC(), 0.10, 5);
+        ], 1, new Adam(0.001), 1e-4, new MCC(), 0.10, 3, 1e-2, 100);
     }
 
     public function test_build_classifier()

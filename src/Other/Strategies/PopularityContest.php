@@ -5,6 +5,16 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Popularity Contest
+ *
+ * Hold a popularity contest where the probability of winning (being guessed) is
+ * based on the category's prior probability.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class PopularityContest implements Categorical
 {
     /**

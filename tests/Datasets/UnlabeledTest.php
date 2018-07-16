@@ -90,4 +90,20 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(3, count($folds[0]));
         $this->assertEquals(3, count($folds[1]));
     }
+
+    public function test_save_and_restore()
+    {
+        $this->assertFalse(file_exists(__DIR__ . '/test.dataset'));
+
+        $this->dataset->save(__DIR__ . '/test.dataset');
+
+        $this->assertFileExists(__DIR__ . '/test.dataset');
+
+        $dataset = Unlabeled::restore(__DIR__ . '/test.dataset');
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+        $this->assertInstanceOf(Dataset::class, $dataset);
+
+        $this->assertTrue(unlink(__DIR__ . '/test.dataset'));
+    }
 }

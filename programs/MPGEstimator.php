@@ -10,44 +10,41 @@ use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Reports\ResidualAnalysis;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
-use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
+use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Wine Quality Tester using an MLP Regressor          ║' . "\n";
+echo '║ MPG Estimator using MLP regressor                   ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 echo  "\n";
 
-$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/winequality-red.csv')
-    ->setDelimiter(';')->setEnclosure('"')->setHeaderOffset(0);
+$reader = Reader::createFromPath(dirname(__DIR__) . '/datasets/mpg.csv')
+    ->setDelimiter(',')->setEnclosure('"')->setHeaderOffset(0);
 
 $samples = iterator_to_array($reader->getRecords([
-    'fixed_acidity', 'volatile_acidity', 'citric_acid', 'residual_sugar',
-    'chlorides', 'free_sulfur_dioxide', 'total_sulfur_dioxide', 'density', 'pH',
-    'sulphates', 'alcohol',
+    'cyclinders', 'displacement', 'weight', 'acceleration', 'horsepower', 'year',
 ]));
 
-$labels = iterator_to_array($reader->fetchColumn('quality'));
+$labels = iterator_to_array($reader->fetchColumn('mpg'));
 
 $dataset = new Labeled($samples, $labels);
 
-$dataset->randomize();
-
 $hidden = [
-    new Dense(10, new LeakyReLU()),
-    new Dense(10, new LeakyReLU()),
-    new Dense(10, new LeakyReLU()),
-    new Dense(10, new LeakyReLU()),
+    new Dense(50, new LeakyReLU()),
 ];
 
-$estimator = new Pipeline(new MLPRegressor($hidden, 50, new Adam(0.001),
-    1e-4, new MedianAbsoluteError(), 0.1, 3, 1e-3, 100), [
+$estimator = new Pipeline(new MLPRegressor($hidden, 10, new Adam(0.001),
+    1e-4, new MeanSquaredError(), 0.1, 3, 1e-5, 100), [
         new NumericStringConverter(),
+        new MissingDataImputer('?'),
+        new ZScaleStandardizer(),
     ]);
 
 $report = new AggregateReport([
@@ -55,7 +52,7 @@ $report = new AggregateReport([
     new PredictionSpeed(),
 ]);
 
-list($training, $testing) = $dataset->stratifiedSplit(0.8);
+list($training, $testing) = $dataset->randomize()->split(0.8);
 
 $estimator->train($training);
 

@@ -428,14 +428,14 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Save the dataset to a serialized object file.
      *
-     * @param  string  $path
+     * @param  string|null  $path
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function save(string $path = '') : void
+    public function save(?string $path = null) : void
     {
-        if (empty($path)) {
+        if (is_null($path)) {
             $path = (string) time() . '.dataset';
         }
 

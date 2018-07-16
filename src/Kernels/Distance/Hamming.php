@@ -2,6 +2,18 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+/**
+ * Hamming
+ *
+ * The Hamming distance is defined as the sum of all coordinates that are not
+ * exactly the same. Therefore, two coordinate vectors a and b would have a
+ * Hamming distance of 2 if only one of the three coordinates were equal between
+ * the vectors.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Hamming implements Distance
 {
     /**

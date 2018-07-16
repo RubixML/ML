@@ -136,4 +136,29 @@ class LabeledTest extends TestCase
         $this->assertEquals(3, count($folds[0]));
         $this->assertEquals(3, count($folds[1]));
     }
+
+    public function test_stratify()
+    {
+        $strata = $this->dataset->stratify();
+
+        $this->assertEquals(2, count($strata['monster']));
+        $this->assertEquals(4, count($strata['not monster']));
+
+    }
+
+    public function test_save_and_restore()
+    {
+        $this->assertFalse(file_exists(__DIR__ . '/test.dataset'));
+
+        $this->dataset->save(__DIR__ . '/test.dataset');
+
+        $this->assertFileExists(__DIR__ . '/test.dataset');
+
+        $dataset = Labeled::restore(__DIR__ . '/test.dataset');
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertInstanceOf(Dataset::class, $dataset);
+
+        $this->assertTrue(unlink(__DIR__ . '/test.dataset'));
+    }
 }

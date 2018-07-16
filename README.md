@@ -123,7 +123,7 @@ MIT
 	- [Kernel Functions](#kernel-functions)
 		- [Distance](#distance)
 			- [Canberra](#canberra)
-			- [Cosine Similarity](#cosine-similarity)
+			- [Cosine](#cosine)
 			- [Diagonal](#diagonal)
 			- [Ellipsoidal](#ellipsoidal)
 			- [Euclidean](#euclidean)
@@ -304,7 +304,24 @@ Now that you've gone through a brief introduction of a simple machine learning p
 Here you will find information regarding the classes that make up the Rubix library.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. The object can hold a heterogeneous mix of string or numerical data and gracefully handles *null* values by using a placeholder. In addition, Dataset objects make it easy to slice and transport data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of string and numerical data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
+
+#### Selecting
+
+Return the sample matrix:
+```php
+public samples() : array
+```
+
+Select the *sample* at row offset:
+```php
+public row(int $index) : array
+```
+
+Select the *values* of a feature column at offset:
+```php
+public column(int $index) : array
+```
 
 Return the *first* **n** rows of data in a new Dataset object:
 ```php
@@ -316,6 +333,29 @@ Return the *last* **n** rows of data in a new Dataset object:
 public tail(int $n = 10) : self
 ```
 
+##### Example:
+```php
+// Return the sample matrix
+$samples = $dataset->samples();
+
+// Return just the first 5 rows in a new dataset
+$subset = $dataset->head(5);
+```
+
+#### Properties
+
+Return the number of rows in the Dataset:
+```php
+public numRows() : int
+```
+
+Return the number of columns in the Dataset:
+```php
+public numColumns() : int
+```
+
+#### Splitting, Folding, and Batching
+
 Remove **n** rows from the Dataset and return them in a new Dataset:
 ```php
 public take(int $n = 1) : self
@@ -324,11 +364,6 @@ public take(int $n = 1) : self
 Leave **n** samples on the Dataset and return the rest in a new Dataset:
 ```php
 public leave(int $n = 1) : self
-```
-
-Randomize the order of the Dataset:
-```php
-public randomize() : self
 ```
 
 Split the Dataset into *left* and *right* subsets given by a **ratio**:
@@ -345,36 +380,9 @@ Batch the Dataset into subsets of **n** rows per batch:
 ```php
 public batch(int $n = 50) : array
 ```
-Generate a random subset of size **n**:
-```php
-public randomSubset($n = 1) : self
-```
-
-Generate a random subset with replacement of size **n**:
-```php
-public randomSubsetWithReplacement($n = 1) : self
-```
-
-Combine an array of Dataset objects into one Dataset object:
-```php
-public static combine(array $datasets) : self
-```
-
-Return the 2-dimensional sample matrix:
-```php
-public samples() : array
-```
 
 ##### Example:
 ```php
-use Rubix\ML\Datasets\Labeled;
-
-...
-$dataset = new Labeled($samples, $labels);
-
-// Return just the first 5 rows in a new dataset
-$subset = $dataset->head(5);
-
 // Remove the first 5 rows and return them in a new dataset
 $subset = $dataset->take(5);
 
@@ -383,36 +391,99 @@ list($left, $right) = $dataset->split(0.5);
 
 // Fold the dataset into 8 equal size datasets
 $folds = $dataset->fold(8);
+```
 
-// Generate a dataset of 500 random samples with replacement
-$subset = $dataset->randomSubsetWithReplacement(500);
+#### Randomizing
 
+Randomize the order of the Dataset and return it:
+```php
+public randomize() : self
+```
+Generate a random subset of size **n**:
+```php
+public randomSubset($n = 1) : self
+```
+Generate a random subset with replacement of size **n**:
+```php
+public randomSubsetWithReplacement($n = 1) : self
+```
+
+##### Example:
+```php
 // Randomize and split the dataset into two subsets
 list($left, $right) = $dataset->randomize()->split(0.8);
 
-// Return the sample matrix
-$samples = $dataset->samples();
+// Generate a dataset of 500 random samples
+$subset = $dataset->randomSubset(500);
 ```
 
-### Labeled
-For supervised Estimators you will need to pass it a Labeled Dataset that consists of a sample matrix and an accompanying array of labels that correspond to the observed outcomes of each sample. Splitting, folding, randomizing, and subsampling are all done while keeping the indexes of samples and labels aligned.
+#### Applying a Transformation
 
-In addition to the basic Dataset Object API, the Labeled class offers stratified splitting and folding thus dividing the labels evenly using these operations.
+You can apply a fitted Transformer to a Dataset directly passing it to the apply method on the Dataset.
+
+```php
+public apply(Transformer $transformer) : void
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\OneHotEncoder;
+
+...
+$transformer = new OneHotEncoder();
+
+$transformer->fit($dataset);
+
+$dataset->apply($transformer);
+```
+
+#### Saving and Restoring
+Dataset objects can be saved and restored from a serialized object file which makes them easy to work with. Saving will capture the current state of the dataset including any transformations that have been applied.
+
+Save the Dataset to a file:
+```php
+public save(?string $path = null) : void
+```
+
+Restore the Dataset from a file:
+```php
+public static restore(string $path) : self
+```
+
+##### Example:
+```php
+// Save the dataset to a file
+$dataset->save('path/to/dataset');
+
+// Assign a filename (ex. 1531772454.dataset)
+$dataset->save();
+
+$dataset = Labeled::restore('path/to/dataset');
+```
+
+There are two types of Dataset objects in Rubix, *labeled* and *unlabeled*.
+
+### Labeled
+For supervised Estimators you will need to pass it a Labeled Dataset consisting of a sample matrix and an array of labels that correspond to the observed outcomes of each sample. Splitting, folding, randomizing, and subsampling are all done while keeping the indexes of samples and labels aligned.
+
+In addition to the basic Dataset interface, the Labeled class can *stratify* the data by label.
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
 | labels | None | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
+| placeholder | '?' | mixed | The placeholder value for null features. |
 
 ##### Additional Methods:
 | Method | Description |
 |--|--|
-| `stratifiedSplit($ratio = 0.5) : array` | Split the Dataset into left and right stratified subsets with a given ratio of samples and labels. |
-| `stratifiedFold($k = 10) : array` | Fold the Dataset k - 1 times to form k equal size stratified Datasets. |
 | `labels() : array` | Return the 1-dimensional array of labels. |
 | `label(int $index) : mixed` | Return the label at the given row index. |
 | `possibleOutcomes() : array` | Return all of the possible outcomes given the labels. |
+| `stratify() : array` | Group the samples by label and return them in their own dataset. |
+| `stratifiedSplit($ratio = 0.5) : array` | Split the Dataset into left and right stratified subsets with a given ratio of samples and labels. |
+| `stratifiedFold($k = 10) : array` | Fold the Dataset k - 1 times to form k equal size stratified Datasets. |
 
 ##### Example:
 ```php
@@ -421,29 +492,59 @@ use Rubix\ML\Datasets\Labeled;
 ...
 $dataset = new Labeled($samples, $labels);
 
-// Fold the dataset into 5 equal size stratified subsets
-$folds = $dataset->stratifiedFold(5);
-
-// Randomize and split the dataset into two stratified subsets
-list($left, $right) = $dataset->randomize()->stratifiedSplit(0.6);
-
-// Return the label array
+// Return all the labels in the dataset
 $labels = $dataset->labels();
 
-// Return the label at the 200 index
-$label = $dataset->label(200);
+// Return the label at offset 3
+$label = $dataset->label(3);
 
 // Return all possible unique labels
 $outcomes = $dataset->possibleOutcomes();
+
+var_dump($labels);
+var_dump($label);
+var_dump($outcomes);
+```
+
+##### Output:
+```sh
+array(4) {
+    [0]=> string(5) "female"
+    [1]=> string(4) "male"
+    [2]=> string(5) "female"
+    [3]=> string(4) "male"
+}
+
+string(4) "male"
+
+array(2) {
+	[0]=> string(5) "female"
+	[1]=> string(4) "male"
+}
+```
+
+##### Example:
+```php
+...
+// Fold the dataset into 5 equal size stratified subsets
+$folds = $dataset->stratifiedFold(5);
+
+// Split the dataset into two stratified subsets
+list($left, $right) = $dataset->stratifiedSplit(0.8);
+
+// Put each sample with label x into its own dataset
+$strata = $dataset->stratify();
 ```
 
 ### Unlabeled
-Unlabeled Datasets are used for training Unsupervised Estimators and for feeding new samples into an Estimator to make predictions.
+Unlabeled datasets are used for training unsupervised Estimators and for feeding new samples into an Estimator to make predictions.
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
 | samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
+| placeholder | '?' | mixed | The placeholder value for null features. |
+
 
 ##### Additional Methods:
 This Dataset does not have any additional methods.
@@ -2198,7 +2299,7 @@ use Rubix\ML\Kernels\Distance\Canberra;
 $kernel = new Canberra();
 ```
 
-### Cosine Similarity
+### Cosine
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
 
 ##### Parameters:
@@ -2206,9 +2307,9 @@ This Kernel does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\Kernels\Distance\CosineSimilarity;
+use Rubix\ML\Kernels\Distance\Cosine;
 
-$kernel = new CosineSimilarity();
+$kernel = new Cosine();
 ```
 
 ### Diagonal
@@ -2238,7 +2339,7 @@ $kernel = new Ellipsoidal();
 ```
 
 ### Euclidean
-This is the ordinary straight line (bee line) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
+This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
 ##### Parameters:
 This Kernel does not have any parameters.

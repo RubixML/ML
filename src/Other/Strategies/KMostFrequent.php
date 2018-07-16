@@ -5,6 +5,15 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * K Most Frequent
+ *
+ * This Strategy outputs one of K most frequent discrete values at random.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class KMostFrequent implements Categorical
 {
     /**

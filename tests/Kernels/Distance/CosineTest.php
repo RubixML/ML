@@ -2,11 +2,11 @@
 
 namespace Rubix\Tests\Kernels\Distance;
 
+use Rubix\ML\Kernels\Distance\Cosine;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\CosineSimilarity;
 use PHPUnit\Framework\TestCase;
 
-class CosineSimilarityTest extends TestCase
+class CosineTest extends TestCase
 {
     protected $kernel;
 
@@ -22,12 +22,12 @@ class CosineSimilarityTest extends TestCase
         $this->b = ['x' => 7, 'y' => 9, 'z' => 4];
         $this->c = ['x' => 2, 'y' => 2, 'z' => 3];
 
-        $this->kernel = new CosineSimilarity();
+        $this->kernel = new Cosine();
     }
 
     public function test_build_distance_kernel()
     {
-        $this->assertInstanceOf(CosineSimilarity::class, $this->kernel);
+        $this->assertInstanceOf(Cosine::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
