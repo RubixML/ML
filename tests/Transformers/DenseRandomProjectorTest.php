@@ -25,7 +25,7 @@ class DenseRandomProjectorTest extends TestCase
         $this->transformer = new DenseRandomProjector(2);
     }
 
-    public function test_build_l1_regularizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(DenseRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

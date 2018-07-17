@@ -83,6 +83,7 @@ MIT
 	- [Transformers](#transformers)
 		- [Dense and Sparse Random Projectors](#dense-and-sparse-random-projectors)
 		- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
+		- [Lambda Function](#lambda-function)
 		- [Min Max Normalizer](#min-max-normalizer)
 		- [Missing Data Imputer](#missing-data-imputer)
 		- [Numeric String Converter](#numeric-string-converter)
@@ -1726,6 +1727,31 @@ use Rubix\ML\Transformers\L2Regularizer;
 
 $transformer = new L1Regularizer();
 $transformer = new L2Regularizer();
+```
+
+### Lambda Function
+Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix as an argument and should return the transformed sample matrix.
+
+##### Categorical or Continuous
+
+##### Parameters:
+| Param | Default | Type | Description |
+|--|--|--|--|
+| lambda | None | callable | The lambda function to run over the sample matrix. |
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Transformers\LambdaFunction;
+
+// Instantiate a lambda function that will sum up all the features for each sample
+$transformer = new LambdaFunction(function ($samples) {
+	return array_map(function ($sample) {
+		return [array_sum($sample)];
+	}, $samples);
+});
 ```
 
 ### Min Max Normalizer

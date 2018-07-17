@@ -27,7 +27,7 @@ class MissingDataImputerTest extends TestCase
         $this->transformer = new MissingDataImputer('?');
     }
 
-    public function test_build_missing_data_imputer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

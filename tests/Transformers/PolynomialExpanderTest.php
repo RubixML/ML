@@ -24,7 +24,7 @@ class PolynomialExpanderTest extends TestCase
         $this->transformer = new PolynomialExpander(2);
     }
 
-    public function test_build_polynomial_expander()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

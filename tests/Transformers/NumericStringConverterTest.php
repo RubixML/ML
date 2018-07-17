@@ -24,7 +24,7 @@ class NumericStringConverterTest extends TestCase
         $this->transformer = new NumericStringConverter();
     }
 
-    public function test_build_numeric_string_converter()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

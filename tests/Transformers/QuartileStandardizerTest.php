@@ -25,7 +25,7 @@ class QuartileStandardizerTest extends TestCase
         $this->transformer = new QuartileStandardizer();
     }
 
-    public function test_build_robust_standardizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(QuartileStandardizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

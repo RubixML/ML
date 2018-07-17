@@ -11,6 +11,7 @@ use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Reports\MulticlassBreakdown;
+use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;

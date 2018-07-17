@@ -25,7 +25,7 @@ class TfIdfTransformerTest extends TestCase
         $this->transformer = new TfIdfTransformer();
     }
 
-    public function test_build_tf_idf_transformer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(TfIdfTransformer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

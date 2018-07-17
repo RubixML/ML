@@ -26,7 +26,7 @@ class OneHotEncoderTest extends TestCase
         $this->transformer = new OneHotEncoder();
     }
 
-    public function test_build_one_hot_vectorizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(OneHotEncoder::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

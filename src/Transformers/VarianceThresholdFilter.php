@@ -58,7 +58,7 @@ class VarianceThresholdFilter implements Transformer
     }
 
     /**
-     * Chose the columns with a variance greater than the given threshold.
+     * Choose the columns with a variance greater than the given threshold.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void

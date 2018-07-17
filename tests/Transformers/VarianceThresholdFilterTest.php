@@ -24,7 +24,7 @@ class VarianceThresholdFilterTest extends TestCase
         $this->transformer = new VarianceThresholdFilter(0.0);
     }
 
-    public function test_build_variance_threshold_filter()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(VarianceThresholdFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

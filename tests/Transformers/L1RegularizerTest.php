@@ -24,7 +24,7 @@ class L1RegularizerTest extends TestCase
         $this->transformer = new L1Regularizer();
     }
 
-    public function test_build_l1_regularizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(L1Regularizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

@@ -4,11 +4,10 @@ namespace Rubix\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\RobustStandardizer;
+use Rubix\ML\Transformers\LambdaFunction;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
-class RobustStandardizerTest extends TestCase
+class LambdaFunctionTest extends TestCase
 {
     protected $transformer;
 
@@ -22,12 +21,20 @@ class RobustStandardizerTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new RobustStandardizer();
+        $this->transformer = new LambdaFunction(function ($samples) {
+            $sigmas = [];
+
+            foreach ($samples as $sample) {
+                $sigmas[] = [array_sum($sample)];
+            }
+
+            return $sigmas;
+        });
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(RobustStandardizer::class, $this->transformer);
+        $this->assertInstanceOf(LambdaFunction::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
@@ -38,16 +45,7 @@ class RobustStandardizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
-            [-0.6744999996541025, -0.6744999992505555, -0.6744999995003703, -0.6744999977516667],
-            [0.0, 0.0, 0.0, 0.0],
-            [1.0376923071601578, 10.492222210564195, 4.246851848706035, 43.842499853858335],
+            [10], [100], [1000],
         ], $this->dataset->samples());
-    }
-
-    public function test_transform_unfitted()
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->dataset->apply($this->transformer);
     }
 }

@@ -25,7 +25,7 @@ class ZScaleStandardizerTest extends TestCase
         $this->transformer = new ZScaleStandardizer();
     }
 
-    public function test_build_z_scale_standardizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(ZScaleStandardizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

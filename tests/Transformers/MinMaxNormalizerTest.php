@@ -25,7 +25,7 @@ class MinMaxNormalizerTest extends TestCase
         $this->transformer = new MinMaxNormalizer();
     }
 
-    public function test_build_min_max_normalizer()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);

@@ -25,7 +25,7 @@ class SparseRandomProjectorTest extends TestCase
         $this->transformer = new SparseRandomProjector(2);
     }
 
-    public function test_build_sparse_random_projector()
+    public function test_build_transformer()
     {
         $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
