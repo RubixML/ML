@@ -91,24 +91,23 @@ class RobustZScore implements Detector, Persistable
      */
     public function train(Dataset $dataset) : void
     {
+        $this->medians = $this->mads = [];
+
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
 
-        $this->medians = $this->mads = [];
-
-        foreach ($dataset->rotate() as $column => $features) {
-            $median = Average::median($features);
+        foreach ($dataset->rotate() as $column => $values) {
+            $median = Average::median($values);
 
             $deviations = [];
 
-            foreach ($features as $value) {
+            foreach ($values as $value) {
                 $deviations[] = abs($value - $median);
             }
 
-            $this->mads[$column] = Average::median($deviations)
-                + self::EPSILON;
+            $this->mads[$column] = Average::median($deviations);
 
             $this->medians[$column] = $median;
         }
@@ -124,10 +123,10 @@ class RobustZScore implements Detector, Persistable
 
         foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
-                $zscore = (self::LAMBDA * ($feature - $this->medians[$column]))
-                    / ($this->mads[$column] + self::EPSILON);
+                $z = (self::LAMBDA * ($feature - $this->medians[$column]))
+                    / $this->mads[$column];
 
-                if ($zscore > $this->threshold) {
+                if ($z > $this->threshold) {
                     $predictions[] = 1;
 
                     continue 2;

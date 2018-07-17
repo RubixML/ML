@@ -92,11 +92,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                             float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
-            throw new InvalidArgumentException('Target clusters must be'
-                . ' greater than 1.');
+            throw new InvalidArgumentException('Must target at least one'
+                . ' cluster.');
         }
 
-        if ($fuzz < 1) {
+        if ($fuzz <= 1) {
             throw new InvalidArgumentException('Fuzz factor must be greater'
                 . ' than 1.');
         }
@@ -116,7 +116,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         }
 
         $this->c = $c;
-        $this->fuzz = $fuzz + self::EPSILON;
+        $this->fuzz = $fuzz;
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -175,7 +175,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
         $previous = 0.0;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($dataset as $index => $sample) {
                 $memberships[$index] = $this->calculateMembership($sample);
             }
@@ -251,7 +251,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         foreach ($this->centroids as $label => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
-            $total = 0.0;
+            $total = self::EPSILON;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
@@ -260,7 +260,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                     ** (2 / ($this->fuzz - 1));
             }
 
-            $membership[$label] = 1 / ($total + self::EPSILON);
+            $membership[$label] = 1 / $total;
         }
 
         return $membership;

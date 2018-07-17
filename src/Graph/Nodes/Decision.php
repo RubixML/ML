@@ -36,6 +36,13 @@ class Decision extends BinaryNode
     ];
 
     /**
+     * The number of training samples this node is responsible for.
+     *
+     * @var int
+     */
+    protected $n;
+
+    /**
      * @param  int  $index
      * @param  mixed  $value
      * @param  float  $score
@@ -47,6 +54,7 @@ class Decision extends BinaryNode
         $this->index = $index;
         $this->value = $value;
         $this->score = $score;
+        $this->n = array_sum(array_map('count', $groups));
         $this->groups = $groups;
     }
 
@@ -80,6 +88,42 @@ class Decision extends BinaryNode
     public function groups() : array
     {
         return $this->groups;
+    }
+
+    /**
+     * @return int
+     */
+    public function n() : int
+    {
+        return $this->n;
+    }
+
+    /**
+     * Return the  decearse in impurity this decision node provides. A negative
+     * score means that the decision node actually causes its children to become
+     * less pure.
+     *
+     * @return float
+     */
+    public function impurityDecrease() : float
+    {
+        $decrease = $this->score;
+
+        if (isset($this->left)) {
+            if ($this->left instanceof Decision) {
+                $decrease -= ($this->left->n() / $this->n)
+                    * $this->left->score();
+            }
+        }
+
+        if (isset($this->right)) {
+            if ($this->right instanceof Decision) {
+                $decrease -= ($this->right->n() / $this->n)
+                    * $this->right->score();
+            }
+        }
+
+        return $decrease;
     }
 
     /**

@@ -9,19 +9,21 @@ class BinaryNode implements Node
     /**
      * The left child node.
      *
-     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * @var self|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * @var self|null
      */
     protected $right;
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * Return the left child node.
+     *
+     * @return self|null
      */
     public function left() : ?self
     {
@@ -29,7 +31,10 @@ class BinaryNode implements Node
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
+     * Return the right child node.
+     *
+     *
+     * @return self|null
      */
     public function right() : ?self
     {
@@ -37,7 +42,7 @@ class BinaryNode implements Node
     }
 
     /**
-     * Recursive function to determine the height of the node. O(V)
+     * Recursive function to determine the height of the node.
      *
      * @return int
      */
@@ -61,7 +66,7 @@ class BinaryNode implements Node
     /**
      * Set the left child node.
      *
-     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $node
+     * @param  self  $node
      * @return void
      */
     public function attachLeft(self $node) : void
@@ -72,7 +77,7 @@ class BinaryNode implements Node
     /**
      * Set the right child node.
      *
-     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $node
+     * @param  self  $node
      * @return void
      */
     public function attachRight(self $node) : void
@@ -107,6 +112,6 @@ class BinaryNode implements Node
      */
     public function isLeaf() : bool
     {
-        return !isset($this->left) and !isset($this->right);
+        return is_null($this->left) and is_null($this->right);
     }
 }

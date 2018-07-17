@@ -31,7 +31,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
     protected $maxFeatures;
 
     /**
-     * A small amount of gini impurity to tolerate when choosing a perfect split.
+     * A small amount of impurity to tolerate when choosing a perfect split.
      *
      * @var float
      */
@@ -70,7 +70,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
         }
 
         if ($tolerance < 0) {
-            throw new InvalidArgumentException('Gini tolerance must be 0 or'
+            throw new InvalidArgumentException('Impurity tolerance must be 0 or'
                 . ' greater.');
         }
 

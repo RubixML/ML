@@ -35,7 +35,7 @@ class DummyRegressor implements Regressor, Persistable
      */
     public function __construct(Continuous $strategy = null)
     {
-        if (!isset($strategy)) {
+        if (is_null($strategy)) {
             $strategy = new BlurryMean();
         }
 

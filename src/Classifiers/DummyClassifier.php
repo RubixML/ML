@@ -35,7 +35,7 @@ class DummyClassifier implements Multiclass, Persistable
      */
     public function __construct(Categorical $strategy = null)
     {
-        if (!isset($strategy)) {
+        if (is_null($strategy)) {
             $strategy = new PopularityContest();
         }
 

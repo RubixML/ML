@@ -72,7 +72,7 @@ class KMeans implements Clusterer, Online, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 

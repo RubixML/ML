@@ -119,7 +119,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
                 . ' than 0.');
         }
 
-        if (!isset($optimizer)) {
+        if (is_null($optimizer)) {
             $optimizer = new Adam();
         }
 

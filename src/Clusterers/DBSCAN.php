@@ -64,7 +64,7 @@ class DBSCAN implements Clusterer, Persistable
                 . ' number greater than 0.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 

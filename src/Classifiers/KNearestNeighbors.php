@@ -79,7 +79,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
                 . ' to make a prediction.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 

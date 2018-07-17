@@ -4,7 +4,6 @@ namespace Rubix\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Terminal;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
 class TerminalTest extends TestCase
@@ -23,7 +22,6 @@ class TerminalTest extends TestCase
     public function test_build_node()
     {
         $this->assertInstanceOf(Terminal::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

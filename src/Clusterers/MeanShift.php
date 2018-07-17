@@ -86,7 +86,7 @@ class MeanShift implements Clusterer, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 

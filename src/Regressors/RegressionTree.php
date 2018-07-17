@@ -32,6 +32,13 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     protected $maxFeatures;
 
     /**
+     * A small amount of impurity to tolerate when choosing a perfect split.
+     *
+     * @var float
+     */
+    protected $tolerance;
+
+    /**
      * The memoized random column index array.
      *
      * @var array|null
@@ -42,20 +49,27 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      * @param  int  $maxDepth
      * @param  int  $minSamples
      * @param  int  $maxFeatures
+     * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
-                                int $maxFeatures = PHP_INT_MAX)
+                            int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-4)
     {
         if ($maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . ' feature to determine a split.');
         }
 
+        if ($tolerance < 0) {
+            throw new InvalidArgumentException('Impurity tolerance must be 0 or'
+                . ' greater.');
+        }
+
         parent::__construct($maxDepth, $minSamples);
 
         $this->maxFeatures = $maxFeatures;
+        $this->tolerance = $tolerance;
     }
 
     /**
@@ -114,7 +128,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     protected function findBestSplit(array $data) : Decision
     {
         $best = [
-            'sse' => INF, 'index' => null, 'value' => null, 'groups' => [],
+            'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
         shuffle($this->indices);
@@ -123,7 +137,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
             foreach ($data as $row) {
                 $groups = $this->partition($data, $index, $row[$index]);
 
-                $sse = 0.0;
+                $ssd = 0.0;
 
                 foreach ($groups as $group) {
                     if (count($group) === 0) {
@@ -132,24 +146,24 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
 
                     $values = array_column($group, count($group[0]) - 1);
 
-                    $sse += RandomVariable::sumOfSquaresDeviations($values);
+                    $ssd += RandomVariable::sumOfSquaresDeviations($values);
                 }
 
-                if ($sse < $best['sse']) {
-                    $best['sse'] = $sse;
+                if ($ssd < $best['ssd']) {
+                    $best['ssd'] = $ssd;
                     $best['index'] = $index;
                     $best['value'] = $row[$index];
                     $best['groups'] = $groups;
                 }
 
-                if ($sse === 0.0) {
+                if ($ssd < $this->tolerance) {
                     break 2;
                 }
             }
         }
 
         return new Decision($best['index'], $best['value'],
-            $best['sse'], $best['groups']);
+            $best['ssd'], $best['groups']);
     }
 
     /**

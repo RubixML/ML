@@ -87,7 +87,7 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
                 . ' to estimate the density of a centroid.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 

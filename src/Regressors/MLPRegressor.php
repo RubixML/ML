@@ -163,11 +163,11 @@ class MLPRegressor implements Regressor, Online, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($optimizer)) {
+        if (is_null($optimizer)) {
             $optimizer = new Adam();
         }
 
-        if (!isset($metric)) {
+        if (is_null($metric)) {
             $metric = new MeanSquaredError();
         }
 

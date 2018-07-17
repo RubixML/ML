@@ -837,7 +837,7 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-| tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a perfect split. |
+| tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -1301,6 +1301,7 @@ A Decision Tree learning algorithm that performs greedy splitting by minimizing 
 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
+| tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
 
 ##### Additional Methods:
 | Method | Description |

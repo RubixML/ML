@@ -119,7 +119,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
                 . ' than 0.');
         }
 
-        if (!isset($optimizer)) {
+        if (is_null($optimizer)) {
             $optimizer = new Adam();
         }
 

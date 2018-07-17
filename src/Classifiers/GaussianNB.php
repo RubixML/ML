@@ -159,11 +159,6 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
 
                 $total = $this->weights[$class] + $n + self::EPSILON;
 
-                $old = [
-                    'mean' => $this->means[$class][$column],
-                    'variance' => $this->variances[$class][$column],
-                ];
-
                 $mean = Average::mean($values);
 
                 $ssd = 0.0;
@@ -174,17 +169,18 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
 
                 $variance = $ssd / $n;
 
-                $this->means[$class][$column] = (($n * $mean)
-                    + ($this->weights[$class] * $old['mean']))
+                $meanNew = (($n * $mean)
+                    + ($this->weights[$class] * $this->means[$class][$column]))
                     / $total;
 
-                $ssdNew = ($this->weights[$class] * $old['variance']
+                $ssdNew = ($this->weights[$class] * $this->variances[$class][$column]
                     + ($n * $variance)
                     + ($this->weights[$class] / ($n * $total))
-                    * ($n * $old['mean'] - $n * $mean) ** 2);
+                    * ($n * $this->means[$class][$column] - $n * $mean) ** 2);
 
-                $this->variances[$class][$column] = $ssdNew / $total
-                    + self::EPSILON;
+                $this->means[$class][$column] = $meanNew;
+
+                $this->variances[$class][$column] = $ssdNew / $total;
             }
 
             $this->weights[$class] += count($samples);

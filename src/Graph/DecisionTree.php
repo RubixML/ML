@@ -4,11 +4,18 @@ namespace Rubix\ML\Graph;
 
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
-use Rubix\ML\Graph\Trees\BinaryTree;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
 
-abstract class DecisionTree extends BinaryTree
+abstract class DecisionTree implements Tree
 {
+    /**
+     * The root node of the tree.
+     *
+     * @var \Rubix\ML\Graph\Nodes\Decision|null
+     */
+    protected $root;
+
     /**
      * The maximum depth of a branch before it is forced to terminate.
      *
@@ -79,6 +86,80 @@ abstract class DecisionTree extends BinaryTree
     public function complexity() : int
     {
         return $this->splits;
+    }
+
+    /**
+     * @return \Rubix\ML\Graph\Nodes\Decision|null
+     */
+    public function root() : ?Decision
+    {
+        return $this->root;
+    }
+
+    /**
+     * The height of the tree. O(V) because node heights are not memoized.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return isset($this->root) ? $this->root->height() : 0;
+    }
+
+    /**
+     * The balance factor of the tree. O(V) because balance requires height of
+     * each node.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return isset($this->root) ? $this->root->balance() : 0;
+    }
+
+    /**
+     * Is the tree bare?
+     *
+     * @return bool
+     */
+    public function bare() : bool
+    {
+        return is_null($this->root);
+    }
+
+    /**
+     * Return an array indexed by column number that contains the normalized
+     * importance score of that column in determining the overall prediction.
+     *
+     * @return array
+     */
+    public function featureImportances() : array
+    {
+        if ($this->bare()) {
+            return [];
+        }
+
+        $importances = [];
+
+        foreach ($this->traverse($this->root) as $node) {
+            if ($node instanceof Decision) {
+                if (isset($importances[$node->index()])) {
+                    $importances[$node->index()] += $node->impurityDecrease();
+                } else {
+                    $importances[$node->index()] = $node->impurityDecrease();
+                }
+            }
+        }
+
+        $total = array_sum($importances);
+
+        foreach ($importances as &$importance) {
+            $importance /= $total;
+        }
+
+        arsort($importances);
+
+        return $importances;
     }
 
     /**
@@ -164,27 +245,53 @@ abstract class DecisionTree extends BinaryTree
 
         while (isset($current)) {
             if ($current instanceof Terminal) {
-                break 1;
+                return $current;
             }
 
-            $value = $current->value();
-
-            if (is_string($value)) {
-                if ($sample[$current->index()] === $value) {
-                    $current = $current->left();
+            if ($current instanceof Decision) {
+                if (is_string($current->value())) {
+                    if ($sample[$current->index()] === $current->value()) {
+                        $current = $current->left();
+                    } else {
+                        $current = $current->right();
+                    }
                 } else {
-                    $current = $current->right();
-                }
-            } else {
-                if ($sample[$current->index()] < $value) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
+                    if ($sample[$current->index()] < $current->value()) {
+                        $current = $current->left();
+                    } else {
+                        $current = $current->right();
+                    }
                 }
             }
         }
 
-        return $current;
+        return null;
+    }
+
+    /**
+     * Return an array of all the decision nodes in the tree starting at a
+     * given node.
+     *
+     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $current
+     * @return array
+     */
+    public function traverse(BinaryNode $current) : array
+    {
+        if ($current instanceof Terminal) {
+            return [$current];
+        }
+
+        $left = $right = [];
+
+        if ($current->left() !== null) {
+            $left = $this->traverse($current->left());
+        }
+
+        if ($current->right() !== null) {
+            $right = $this->traverse($current->right());
+        }
+
+        return array_merge([$current], $left, $right);
     }
 
     /**
