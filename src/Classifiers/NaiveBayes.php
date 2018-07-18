@@ -7,6 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\ArgMax;
+use Rubix\ML\Other\Helpers\LogSumExp;
 use InvalidArgumentException;
 
 /**
@@ -212,7 +214,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $predictions[] = array_search(max($jll), $jll);
+            $predictions[] = ArgMax::compute($jll);
         }
 
         return $predictions;
@@ -229,7 +231,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $max = $this->logSumExp($jll);
+            $max = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
                 $probabilities[$i][$class] = exp($likelihood - $max);
@@ -261,22 +263,5 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         }
 
         return $likelihood;
-    }
-
-    /**
-     * Compute the log of the sum of expenonetial probabilties.
-     *
-     * @param  array  $probabilities
-     * @return float
-     */
-    protected function logSumExp(array $probabilities) : float
-    {
-        $sigma = 0.0;
-
-        foreach ($probabilities as $probability) {
-            $sigma += exp($probability);
-        }
-
-        return log($sigma);
     }
 }

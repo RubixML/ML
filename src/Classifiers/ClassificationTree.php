@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
+use Rubix\ML\Other\Helpers\ArgMax;
 use InvalidArgumentException;
 
 /**
@@ -202,7 +203,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
             $probabilities[$class] = $count / $n;
         }
 
-        $prediction = array_search(max($probabilities), $probabilities);
+        $prediction = ArgMax::compute($probabilities);
 
         return new Terminal($prediction, [
             'probabilities' => $probabilities,

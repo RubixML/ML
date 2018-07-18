@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Other\Helpers\ArgMax;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
@@ -141,7 +142,7 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
             return array_map(function ($votes) {
                 $counts = array_count_values($votes);
 
-                return array_search(max($counts), $counts);
+                return ArgMax::compute($counts);
             }, $predictions);
         } else if ($this->experts[0] instanceof Detector) {
             return array_map(function ($votes) {

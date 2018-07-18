@@ -1597,7 +1597,7 @@ public static floats(float $min, float $max, int $n = 10) : array
 ##### Example:
 ```php
 use Rubix\ML\GridSearch;
-use Rubix\ML\Other\RandomParams;
+use Rubix\ML\Other\Helpers\RandomParams;
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Minkowski;

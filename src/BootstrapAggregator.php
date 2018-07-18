@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Clusterers\Clusterer;
+use Rubix\ML\Other\Helpers\ArgMax;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
@@ -183,7 +184,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
             return array_map(function ($outcomes) {
                 $counts = array_count_values($outcomes);
 
-                return array_search(max($counts), $counts);
+                return ArgMax::compute($counts);
             }, $predictions);
         } else if (in_array(Detector::class, $this->reflector->getInterfaceNames())) {
             return array_map(function ($outcomes) {

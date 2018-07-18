@@ -8,6 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\ArgMax;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -206,16 +207,7 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($this->proba($dataset) as $probabilities) {
-            $best = ['probability' => -INF, 'outcome' => null];
-
-            foreach ($probabilities as $class => $probability) {
-                if ($probability > $best['probability']) {
-                    $best['probability'] = $probability;
-                    $best['outcome'] = $class;
-                }
-            }
-
-            $predictions[] = $best['outcome'];
+            $predictions[] = ArgMax::compute($probabilities);
         }
 
         return $predictions;

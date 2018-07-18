@@ -1,9 +1,19 @@
 <?php
 
-namespace Rubix\ML\Other;
+namespace Rubix\ML\Other\Helpers;
 
 use InvalidArgumentException;
 
+/**
+ * Random Params
+ *
+ * Generate a unique distribution of values to use in conjunction with
+ * Grid Search to randomize the parameter grid.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RandomParams
 {
     /**
@@ -32,26 +42,18 @@ class RandomParams
                 . ' parameters than in range of.');
         }
 
-        if ($max - $min < 1e4) {
-            $temp = range($min, $max);
+        $distribution = [];
 
-            shuffle($temp);
+        for ($i = 0; $i < $n; $i++) {
+            $r = rand($min, $max);
 
-            $distribution = array_slice($temp, 0, $n);
-        } else {
-            $distribution = [];
+            if (!in_array($r, $distribution)) {
+                $distribution[] = $r;
 
-            for ($i = 0; $i < $n; $i++) {
-                $temp = rand($min, $max);
-
-                if (!in_array($temp, $distribution)) {
-                    $distribution[] = $temp;
-
-                    continue 1;
-                }
-
-                $i--;
+                continue 1;
             }
+
+            $i--;
         }
 
         return $distribution;

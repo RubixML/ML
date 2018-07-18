@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\ArgMax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -140,16 +141,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
         $predictions = [];
 
         foreach ($this->proba($dataset) as $probabilities) {
-            $best = ['probability' => -INF, 'outcome' => null];
-
-            foreach ($probabilities as $class => $probability) {
-                if ($probability > $best['probability']) {
-                    $best['probability'] = $probability;
-                    $best['outcome'] = $class;
-                }
-            }
-
-            $predictions[] = $best['outcome'];
+            $predictions[] = ArgMax::compute($probabilities);
         }
 
         return $predictions;
