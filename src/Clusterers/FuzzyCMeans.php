@@ -31,8 +31,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     protected $c;
 
     /**
-     * This measures the tolerance the clusterer has to overlap and will
-     * determine the bandwidth of the fuzzy area. i.e. The fuzz factor.
+     * This determines the bandwidth of the fuzzy area. i.e. The fuzz factor.
      *
      * @var float
      */
@@ -70,8 +69,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     ];
 
     /**
-     * An array holding the progress of the last training session. i.e. the
-     * total distance between all the centroids and data points.
+     * An array holding the progress of the last training session.
      *
      * @var array
      */
@@ -89,7 +87,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      * @return void
      */
     public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
-                            float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
+                                float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'
@@ -111,7 +109,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 . ' least 1 epoch.');
         }
 
-        if (!isset($kernel)) {
+        if (is_null($kernel)) {
             $kernel = new Euclidean();
         }
 
@@ -164,14 +162,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 . ' than the parameter C.');
         }
 
-        $this->centroids = array_fill(0, $this->c, array_fill(0,
-            $dataset->numColumns(), 0.0));
+        $this->centroids = $dataset->randomize()->tail($this->c)->samples();
 
-        $memberships = $this->initializeMemberships($dataset->numRows());
+        $this->progress = ['distances' => []];
 
-        $this->step($dataset, $memberships);
-
-        $this->progress = [];
+        $memberships = [];
 
         $previous = 0.0;
 
@@ -180,17 +175,30 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
                 $memberships[$index] = $this->calculateMembership($sample);
             }
 
-            $this->step($dataset, $memberships);
+            foreach ($this->centroids as $label => &$centroid) {
+                foreach ($centroid as $column => &$mean) {
+                    $sigma = $total = self::EPSILON;
 
-            $similarity = $this->calculateSimilarity($dataset);
+                    foreach ($dataset as $index => $sample) {
+                        $weight = $memberships[$index][$label] ** $this->fuzz;
 
-            $this->progress[] = ['similarity' => $similarity];
+                        $sigma += $weight * $sample[$column];
+                        $total += $weight;
+                    }
 
-            if (abs($similarity - $previous) < $this->minChange) {
+                    $mean = $sigma / $total;
+                }
+            }
+
+            $distance = $this->computeInterClusterDistance($dataset, $memberships);
+
+            $this->progress['distances'][] = $distance;
+
+            if (abs($distance - $previous) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $similarity;
+            $previous = $distance;
         }
     }
 
@@ -207,10 +215,10 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         foreach ($this->proba($dataset) as $probabilities) {
             $best = ['probability' => -INF, 'outcome' => null];
 
-            foreach ($probabilities as $label => $probability) {
+            foreach ($probabilities as $cluster => $probability) {
                 if ($probability > $best['probability']) {
                     $best['probability'] = $probability;
-                    $best['outcome'] = $label;
+                    $best['outcome'] = $cluster;
                 }
             }
 
@@ -267,76 +275,22 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     }
 
     /**
-     * Update the cluster centroids with a new membership matrix.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @param  array  $memberships
-     * @return void
-     */
-    protected function step(Dataset $dataset, array $memberships) : void
-    {
-        foreach ($this->centroids as $label => &$centroid) {
-            foreach ($centroid as $j => &$mean) {
-                $a = $total = self::EPSILON;
-
-                foreach ($dataset as $k => $sample) {
-                    $weight = $memberships[$k][$label] ** $this->fuzz;
-
-                    $a += $weight * $sample[$j];
-                    $total += $weight;
-                }
-
-                $mean = $a / $total;
-            }
-        }
-    }
-
-    /**
-     * Initialize the membership matrix of dimension n x c.
-     *
-     * @param  int  $n
-     * @return array
-     */
-    protected function initializeMemberships(int $n) : array
-    {
-        $memberships = array_fill(0, $n, array_fill(0, $this->c, 0.0));
-
-        for ($i = 0; $i < $n; $i++) {
-            $total = 0.0;
-
-            for ($j = 0; $j < $this->c; $j++) {
-                $weight = rand(0, (int) 1e8) / 1e8;
-
-                $memberships[$i][$j] = $weight;
-
-                $total += $weight;
-            }
-
-            foreach ($memberships[$i] as &$membership) {
-                $membership /= $total;
-            }
-        }
-
-        return $memberships;
-    }
-
-    /**
-     * Return a similarity score inferred by maximizing the inter-cluster
-     * distance.
+     * Return the inter-cluster distance.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return float
      */
-    protected function calculateSimilarity(Dataset $dataset) : float
+    protected function computeInterClusterDistance(Dataset $dataset, array $memberships) : float
     {
-        $similarity = 0.0;
+        $distance = 0.0;
 
-        foreach ($dataset as $sample) {
-            foreach ($this->centroids as $centroid) {
-                $similarity += $this->kernel->compute($sample, $centroid);
+        foreach ($dataset as $i => $sample) {
+            foreach ($this->centroids as $j => $centroid) {
+                $distance += $memberships[$i][$j]
+                    * $this->kernel->compute($sample, $centroid);
             }
         }
 
-        return $similarity;
+        return $distance;
     }
 }

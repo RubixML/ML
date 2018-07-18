@@ -230,7 +230,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             $this->hidden, new Softmax($this->classes, $this->alpha),
             $this->optimizer);
 
-        $this->progress = [];
+        $this->progress = ['scores' => [], 'steps' => []];
 
         $this->partial($dataset);
     }
@@ -265,17 +265,18 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $best = ['score' => -INF, 'snapshot' => null];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $change = 0.0;
+            $step = 0.0;
 
             foreach ($training->randomize()->batch($this->batchSize) as $batch) {
-                $change += $this->network->feed($batch->samples())
+                $step += $this->network->feed($batch->samples())
                     ->backpropagate($batch->labels())
                     ->step();
             }
 
             $score = $this->metric->score($this, $testing);
 
-            $this->progress[] = ['score' => $score, 'change' => $change];
+            $this->progress['scores'][] = $score;
+            $this->progress['steps'][] = $step;
 
             if ($score > $best['score']) {
                 $best['score'] = $score;
@@ -287,7 +288,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             }
 
             if ($epoch >= $this->window) {
-                $window = array_slice($this->progress, -$this->window);
+                $window = array_slice($this->progress['scores'], -$this->window);
 
                 $worst = $window;
                 rsort($worst);
@@ -298,7 +299,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             }
         }
 
-        if (end($this->progress) !== $best['score']) {
+        if (end($this->progress['scores']) !== $best['score']) {
             $this->network->restore($best['snapshot']);
         }
     }

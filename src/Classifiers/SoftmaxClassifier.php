@@ -167,7 +167,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
         $this->network = new Network(new Input($dataset->numColumns()), [],
            new Softmax($this->classes, $this->alpha), $this->optimizer);
 
-        $this->progress = [];
+        $this->progress = ['steps' => []];
 
         $this->partial($dataset);
     }
@@ -209,7 +209,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
                     ->step();
             }
 
-            $this->progress[] = ['step' => $step];
+            $this->progress['step'][] = $step;
 
             if (abs($previous - $step) < $this->minChange) {
                 break 1;

@@ -61,6 +61,15 @@ class MeanShift implements Clusterer, Persistable
     ];
 
     /**
+     * An array holding the progress of the last training session.
+     *
+     * @var array
+     */
+    protected $progress = [
+        //
+    ];
+
+    /**
      * @param  float  $radius
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  float  $minChange
@@ -107,6 +116,16 @@ class MeanShift implements Clusterer, Persistable
     }
 
     /**
+     * Return the progress from last training session.
+     *
+     * @return array
+     */
+    public function progress() : array
+    {
+        return $this->progress;
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -120,7 +139,9 @@ class MeanShift implements Clusterer, Persistable
 
         $this->centroids = $previous = $dataset->samples();
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        $this->progress = ['shifts' => []];
+
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($this->centroids as $i => &$centroid1) {
                 foreach ($dataset as $sample) {
                     $distance = $this->kernel->compute($sample, $centroid1);
@@ -147,7 +168,9 @@ class MeanShift implements Clusterer, Persistable
                 }
             }
 
-            $shift = $this->calculateShift($previous);
+            $shift = $this->calculateCentroidShift($previous);
+
+            $this->progress['shifts'][] = $shift;
 
             if ($shift < $this->minChange) {
                 break 1;
@@ -199,12 +222,12 @@ class MeanShift implements Clusterer, Persistable
     }
 
     /**
-     * Calculate the magnitude of a centroid shift from the previous epoch.
+     * Calculate the magnitude (l1) of a centroid shift from the previous epoch.
      *
      * @param  array  $previous
      * @return float
      */
-    protected function calculateShift(array $previous) : float
+    protected function calculateCentroidShift(array $previous) : float
     {
         $shift = 0.0;
 

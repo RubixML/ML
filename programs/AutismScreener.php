@@ -36,7 +36,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new AdaBoost(ExtraTree::class, [10, 5, 1], 100, 0.1, 0.999), [
+$estimator = new Pipeline(new AdaBoost(ExtraTree::class, [10, 5, 1], 100, 0.1, 1e-3), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
 ]);
@@ -54,6 +54,8 @@ var_dump($validator->test($estimator, $dataset, new MCC()));
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
 $estimator->train($training);
+
+var_dump($estimator->progress());
 
 var_dump($report->generate($estimator, $testing));
 

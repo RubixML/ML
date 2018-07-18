@@ -1140,7 +1140,7 @@ Clusterer that allows data points to belong to multiple clusters if they fall wi
 | Method | Description |
 |--|--|
 | `centroids() : array` | Returns an array of the C computed centroids of the training data. |
-| `progress() : array` | Returns the progress of each epoch as the total distance between each sample and centroid. |
+| `progress() : array` | Returns the progress of training at each epoch. |
 
 ##### Example:
 ```php
@@ -1192,6 +1192,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | Method | Description |
 |--|--|
 | `centroids() : array` | Returns an array of the K computed centroids of the training data. |
+| `progress() : array` | Returns the progress of training at each epoch. |
 
 ##### Example:
 ```php

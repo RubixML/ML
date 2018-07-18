@@ -34,7 +34,7 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new FuzzyCMeans(3, 1.5, new Euclidean(), 1e-4), [
+$estimator = new Pipeline(new FuzzyCMeans(3, 1.1, new Euclidean(), 1e-4), [
     new NumericStringConverter(),
     new QuartileStandardizer(),
 ]);

@@ -167,7 +167,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->network = new Network(new Input($dataset->numColumns()), [],
             new Logit($this->classes, $this->alpha), $this->optimizer);
 
-        $this->progress = [];
+        $this->progress = ['steps' => []];
 
         $this->partial($dataset);
     }
@@ -209,7 +209,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
                     ->step();
             }
 
-            $this->progress[] = ['step' => $step];
+            $this->progress['steps'][] = $step;
 
             if (abs($previous - $step) < $this->minChange) {
                 break 1;

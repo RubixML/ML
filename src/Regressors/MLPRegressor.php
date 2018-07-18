@@ -217,6 +217,8 @@ class MLPRegressor implements Regressor, Online, Persistable
         $this->network = new Network(new Input($dataset->numColumns()),
             $this->hidden, new Linear($this->alpha), $this->optimizer);
 
+        $this->progress = ['scores' => [], 'steps' => []];
+
         $this->partial($dataset);
     }
 
@@ -249,20 +251,18 @@ class MLPRegressor implements Regressor, Online, Persistable
 
         $best = ['score' => -INF, 'snapshot' => null];
 
-        $this->progress = [];
-
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $change = 0.0;
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $step = 0.0;
 
             foreach ($training->randomize()->batch($this->batchSize) as $batch) {
-                $change += $this->network->feed($batch->samples())
+                $step += $this->network->feed($batch->samples())
                     ->backpropagate($batch->labels())
                     ->step();
             }
 
             $score = $this->metric->score($this, $testing);
 
-            $this->progress[$epoch] = ['score' => $score, 'change' => $change];
+            $this->progress[] = ['scores' => $score, 'steps' => $step];
 
             if ($score > $best['score']) {
                 $best['score'] = $score;
@@ -274,7 +274,7 @@ class MLPRegressor implements Regressor, Online, Persistable
             }
 
             if ($epoch >= $this->window) {
-                $window = array_slice($this->progress, -$this->window);
+                $window = array_slice($this->progress['scores'], -$this->window);
 
                 $worst = $window;
                 rsort($worst);
@@ -285,7 +285,7 @@ class MLPRegressor implements Regressor, Online, Persistable
             }
         }
 
-        if (end($this->progress) !== $best['score']) {
+        if (end($this->progress['scores']) !== $best['score']) {
             $this->network->restore($best['snapshot']);
         }
     }
