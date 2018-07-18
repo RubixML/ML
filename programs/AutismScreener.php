@@ -55,8 +55,6 @@ list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
 $estimator->train($training);
 
-var_dump($estimator->progress());
-
 var_dump($report->generate($estimator, $testing));
 
 var_dump($estimator->predict($testing->head(3)));

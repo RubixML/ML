@@ -8,7 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\Other\Helpers\ArgMax;
+use Rubix\ML\Other\Functions\ArgMax;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Logit;
 use Rubix\ML\NeuralNet\Optimizers\Adam;

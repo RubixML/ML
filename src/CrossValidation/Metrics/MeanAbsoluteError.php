@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Regressor;
 use InvalidArgumentException;
@@ -23,15 +24,24 @@ class MeanAbsoluteError implements Validation
      * Calculate the negative mean absolute error of the predictions.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Dataset $testing) : float
     {
         if (!$estimator instanceof Regressor) {
             throw new InvalidArgumentException('This metric only works on'
                 . ' regresors.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This metric requires a labeled'
+                . ' testing set.');
+        }
+
+        if ($testing->numRows() === 0) {
+            return 0.0;
         }
 
         $error = 0.0;
@@ -40,6 +50,6 @@ class MeanAbsoluteError implements Validation
             $error += abs($testing->label($i) - $prediction);
         }
 
-        return -($error / ($testing->numRows() + self::EPSILON));
+        return -($error / $testing->numRows());
     }
 }

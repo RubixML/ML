@@ -7,8 +7,8 @@ use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Other\Helpers\ArgMax;
 use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Other\Functions\ArgMax;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 

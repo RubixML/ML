@@ -3,7 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 
 interface Validation
 {
@@ -20,8 +20,8 @@ interface Validation
      * Score an estimator using a labeled testing set.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $testing) : float;
+    public function score(Estimator $estimator, Dataset $testing) : float;
 }

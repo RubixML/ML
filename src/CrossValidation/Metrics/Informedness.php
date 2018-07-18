@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
 use InvalidArgumentException;
@@ -24,15 +25,20 @@ class Informedness implements Validation
      * is determined by recall + specificity - 1.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Dataset $testing) : float
     {
         if (!$estimator instanceof Classifier) {
             throw new InvalidArgumentException('This metric only works on'
                 . ' classifiers.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This metric requires a labeled'
+                . ' testing set.');
         }
 
         $predictions = $estimator->predict($testing);
@@ -41,13 +47,8 @@ class Informedness implements Validation
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $truePositives = $trueNegatives = $falsePositives
-            = $falseNegatives = [];
-
-        foreach ($classes as $class) {
-            $truePositives[$class] = $trueNegatives[$class]
-                = $falsePositives[$class] = $falseNegatives[$class] = 0;
-        }
+        $truePositives = $trueNegatives = $falsePositives = $falseNegatives
+            = array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {

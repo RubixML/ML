@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
@@ -24,15 +25,24 @@ class RSquared implements Validation
      * Calculate the coefficient of determination i.e. R^2 from the predictions.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Dataset $testing) : float
     {
         if (!$estimator instanceof Regressor) {
             throw new InvalidArgumentException('This metric only works on'
                 . ' regresors.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This metric requires a labeled'
+                . ' testing set.');
+        }
+
+        if ($testing->numRows() === 0) {
+            return 0.0;
         }
 
         $mean = Average::mean($testing->labels());

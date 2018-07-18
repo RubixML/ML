@@ -2,7 +2,7 @@
 
 namespace Rubix\Tests\Other\Helpers;
 
-use Rubix\ML\Other\Helpers\ArgMin;
+use Rubix\ML\Other\Functions\ArgMin;
 use PHPUnit\Framework\TestCase;
 
 class ArgMinTest extends TestCase

@@ -11,9 +11,9 @@ use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\ContingencyTable;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Transformers\QuartileStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\CrossValidation\Metrics\Concentration;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -34,7 +34,7 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new FuzzyCMeans(3, 1.1, new Euclidean(), 1e-4), [
+$estimator = new Pipeline(new FuzzyCMeans(3, 1.1, new Euclidean(), 1e-4, 200), [
     new NumericStringConverter(),
     new QuartileStandardizer(),
 ]);
@@ -46,7 +46,7 @@ $report = new AggregateReport([
     new PredictionSpeed(),
 ]);
 
-var_dump($validator->test($estimator, $dataset, new VMeasure()));
+var_dump($validator->test($estimator, $dataset, new Concentration()));
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 

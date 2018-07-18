@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Helpers;
+namespace Rubix\ML\Other\Functions;
 
 /**
  * ArgMax

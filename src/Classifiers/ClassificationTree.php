@@ -9,7 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Terminal;
-use Rubix\ML\Other\Helpers\ArgMax;
+use Rubix\ML\Other\Functions\ArgMax;
 use InvalidArgumentException;
 
 /**

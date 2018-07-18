@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\ArgMax;
-use Rubix\ML\Other\Helpers\LogSumExp;
+use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace Rubix\Tests\Other\Helpers;
 
-use Rubix\ML\Other\Helpers\ArgMax;
+use Rubix\ML\Other\Functions\ArgMax;
 use PHPUnit\Framework\TestCase;
 
 class ArgMaxTest extends TestCase

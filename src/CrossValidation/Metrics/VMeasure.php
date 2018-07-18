@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\Clusterer;
 use InvalidArgumentException;
@@ -24,15 +25,20 @@ class VMeasure implements Validation
      * homogeneity and completness.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Labeled $testing) : float
+    public function score(Estimator $estimator, Dataset $testing) : float
     {
         if (!$estimator instanceof Clusterer) {
             throw new InvalidArgumentException('This metric only works on'
                 . ' clusterers.');
+        }
+
+        if (!$testing instanceof Labeled) {
+            throw new InvalidArgumentException('This metric requires a labeled'
+                . ' testing set.');
         }
 
         $predictions = $estimator->predict($testing);

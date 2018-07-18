@@ -2556,6 +2556,7 @@ There are different metrics for the different types of Estimators listed below.
 | Metric | Range | Description |
 |--|--|--|
 | Completeness | (0, 1) | A measure of the class outcomes that are predicted to be in the same cluster. |
+| Concentration | (-INF, INF) | A score that measures the ratio between the within-cluster dispersion and the between-cluster dispersion (also called *Calinski Harabaz* score).
 | Homogeneity | (0, 1) | A measure of the cluster assignments that are known to be in the same class. |
 | V Measure | (0, 1) | The harmonic mean between Homogeneity and Completeness. |
 

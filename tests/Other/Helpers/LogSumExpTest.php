@@ -2,7 +2,7 @@
 
 namespace Rubix\Tests\Other\Helpers;
 
-use Rubix\ML\Other\Helpers\LogSumExp;
+use Rubix\ML\Other\Functions\LogSumExp;
 use PHPUnit\Framework\TestCase;
 
 class LogSumExpTest extends TestCase
