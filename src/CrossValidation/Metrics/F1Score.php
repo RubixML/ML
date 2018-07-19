@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
 class F1Score implements Validation
@@ -30,9 +31,9 @@ class F1Score implements Validation
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if (!$estimator instanceof Classifier) {
+        if (!$estimator instanceof Classifier and !$estimator instanceof Detector) {
             throw new InvalidArgumentException('This metric only works on'
-                . ' classifiers.');
+                . ' classifiers and anomaly detectors.');
         }
 
         if (!$testing instanceof Labeled) {
@@ -71,6 +72,10 @@ class F1Score implements Validation
             $score += ((2 * $tp) / ((2 * $tp) + $fp + $fn) + self::EPSILON);
         }
 
-        return $score / (count($classes) + self::EPSILON);
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
+        return $score / count($classes);
     }
 }

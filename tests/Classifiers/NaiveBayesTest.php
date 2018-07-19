@@ -8,8 +8,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
+use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\NaiveBayes;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -24,41 +24,9 @@ class NaiveBayesTest extends TestCase
 
     public function setUp()
     {
-        $samples = [
-            ['nice', 'furry', 'friendly', 'happy'],
-            ['mean', 'furry', 'loner', 'sad'],
-            ['nice', 'rough', 'friendly', 'happy'],
-            ['mean', 'rough', 'friendly', 'sad'],
-            ['mean', 'rough', 'loner', 'happy'],
-            ['nice', 'rough', 'loner', 'sad'],
-            ['nice', 'furry', 'friendly', 'sad'],
-            ['nice', 'furry', 'friendly', 'happy'],
-            ['mean', 'rough', 'friendly', 'sad'],
-            ['nice', 'rough', 'loner', 'sad'],
-            ['mean', 'furry', 'loner', 'sad'],
-            ['nice', 'furry', 'loner', 'happy'],
-            ['mean', 'rough', 'loner', 'happy'],
-            ['nice', 'furry', 'friendly', 'sad'],
-            ['nice', 'furry', 'loner', 'sad'],
-            ['mean', 'rough', 'friendly', 'sad'],
-            ['nice', 'rough', 'friendly', 'happy'],
-        ];
+        $this->training = Labeled::restore(dirname(__DIR__) . '/congress.dataset');
 
-        $labels = [
-            'not monster', 'monster', 'not monster', 'monster', 'monster',
-            'not monster', 'not monster', 'not monster', 'monster', 'monster',
-            'monster', 'not monster', 'monster', 'not monster', 'not monster',
-            'monster', 'not monster',
-        ];
-
-        $this->training = new Labeled($samples, $labels);
-
-        $this->testing = new Labeled([
-            ['nice', 'rough', 'friendly', 'happy'],
-            ['mean', 'furry', 'loner', 'sad'],
-        ], [
-            'not monster', 'monster',
-        ]);
+        $this->testing = $this->training->randomize()->head(3);
 
         $this->estimator = new NaiveBayes();
     }
@@ -76,33 +44,24 @@ class NaiveBayesTest extends TestCase
 
     public function test_make_prediction()
     {
-        $this->training->randomize();
-
         $this->estimator->train($this->training);
 
         $predictions = $this->estimator->predict($this->testing);
 
         $this->assertEquals($this->testing->label(0), $predictions[0]);
         $this->assertEquals($this->testing->label(1), $predictions[1]);
-    }
-
-    public function test_predict_proba()
-    {
-        $this->training->randomize();
-
-        $this->estimator->train($this->training);
+        $this->assertEquals($this->testing->label(2), $predictions[2]);
 
         $probabilities = $this->estimator->proba($this->testing);
 
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[0]['not monster']);
-        $this->assertLessThan(0.5, $probabilities[0]['monster']);
-        $this->assertLessThan(0.5, $probabilities[1]['not monster']);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[1]['monster']);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
     }
 
     public function test_partial_train()
     {
-        $folds = $this->training->randomize()->stratifiedFold(2);
+        $folds = $this->training->stratifiedFold(2);
 
         $this->estimator->train($folds[0]);
 
@@ -112,6 +71,13 @@ class NaiveBayesTest extends TestCase
 
         $this->assertEquals($this->testing->label(0), $predictions[0]);
         $this->assertEquals($this->testing->label(1), $predictions[1]);
+        $this->assertEquals($this->testing->label(2), $predictions[2]);
+
+        $probabilities = $this->estimator->proba($this->testing);
+
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
     }
 
     public function test_train_with_unlabeled()

@@ -16,6 +16,8 @@ class F1ScoreTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,9 +30,11 @@ class F1ScoreTest extends TestCase
         ]);
 
         $this->metric = new F1Score();
+
+        $this->outcome = 0.5833333433333334;
     }
 
-    public function test_build_f1_score_metric()
+    public function test_build_metric()
     {
         $this->assertInstanceOf(F1Score::class, $this->metric);
         $this->assertInstanceOf(Validation::class, $this->metric);
@@ -45,7 +49,7 @@ class F1ScoreTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.5833333404166667, $score);
+        $this->assertEquals($this->outcome, $score);
     }
 
     public function test_within_range()

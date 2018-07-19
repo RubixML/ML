@@ -308,7 +308,7 @@ abstract class DecisionTree implements Tree
 
         if (is_string($value)) {
             foreach ($data as $row) {
-                if ($row[$index] !== $value) {
+                if ($row[$index] === $value) {
                     $left[] = $row;
                 } else {
                     $right[] = $row;

@@ -6,7 +6,7 @@ use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\ContingencyTable;
@@ -34,7 +34,7 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new FuzzyCMeans(3, 1.1, new Euclidean(), 1e-4, 200), [
+$estimator = new Pipeline(new GaussianMixture(3, 1e-4, 200), [
     new NumericStringConverter(),
     new QuartileStandardizer(),
 ]);

@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Tests\Other\Helpers;
+namespace Rubix\Tests\Other\Functions;
 
-use Rubix\ML\Other\Functions\ArgMin;
+use Rubix\ML\Other\Functions\ArgMax;
 use PHPUnit\Framework\TestCase;
 
-class ArgMinTest extends TestCase
+class ArgMaxTest extends TestCase
 {
     protected $values;
 
@@ -17,12 +17,12 @@ class ArgMinTest extends TestCase
             'yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0,
         ];
 
-        $this->outcome = 'maybe';
+        $this->outcome = 'yes';
     }
 
     public function test_compute()
     {
-        $value = ArgMin::compute($this->values);
+        $value = ArgMax::compute($this->values);
 
         $this->assertEquals($this->outcome, $value);
     }

@@ -7,6 +7,9 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Validation
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     const EPSILON = 1e-8;
 
     /**

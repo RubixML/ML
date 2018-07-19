@@ -38,6 +38,11 @@ class Concentration implements Validation
                 . ' clusterers.');
         }
 
+        if (in_array(self::CATEGORICAL, $testing->columnTypes())) {
+            throw new InvalidArgumentException('This metric only works with'
+                . ' continuous features.');
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labeled = new Labeled($testing->samples(), $predictions);

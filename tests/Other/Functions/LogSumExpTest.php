@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Helpers;
+namespace Rubix\Tests\Other\Functions;
 
 use Rubix\ML\Other\Functions\LogSumExp;
 use PHPUnit\Framework\TestCase;

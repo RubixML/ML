@@ -179,7 +179,7 @@ Although this is certainly a valid way of obtaining data, in reality, chances ar
 Having that said, Rubix will be able to handle any dataset as long as it can fit into one its predefined Dataset objects (Labeled, Unlabeled, etc.).
 
 #### The Dataset Object
-All of the machine learning algorithms (called *Estimators*) in Rubix require a Dataset object to train. Unlike standard PHP arrays, [Dataset objects](#dataset-objects) extend the basic data structure functionality with many useful features and properly handle splitting, folding, and randomizing the data points.
+Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) extend the PHP array structure with methods that properly handle selecting, splitting, folding, and randomizing the samples. In general, there are two types of Datasets, *Labeled* and *Unlabeled*. Labeled datasets are typically used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions.
 
 For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate (between 1 and 5) their similarity, communication, and partner attractiveness. We could construct a [Labeled Dataset](#labeled) object from the data you collected in the following way:
 
@@ -193,7 +193,7 @@ $labels = ['married', 'divorced', 'married', 'divorced', ...];
 $dataset = new Labeled($samples, $labels);
 ```
 
-The dataset is now ready to be used within Rubix.
+The Dataset object is now ready to be used throughout Rubix.
 
 ### Choosing an Estimator
 
@@ -305,7 +305,20 @@ Now that you've gone through a brief introduction of a simple machine learning p
 Here you will find information regarding the classes that make up the Rubix library.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of string and numerical data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and ncontinuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
+
+There are two types of data that Estimators can process i.e. *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical as a general rule throughout Rubix. This rule makes it easy to distinguish between the types of data while allowing for flexibility. For example, you could represent the number 5 as continuous by using the integer type or as categorical by using the string type (*'5'*).
+
+##### Example:
+```php
+use Rubix\ML\Datasets\Unlabeled;
+
+$samples = [
+	['nice', 'rough', 8, 6.55], ['mean', 'furry', 10, 9.89], ...
+];
+
+$dataset = new Unlabeled($samples);
+```
 
 #### Selecting
 
@@ -767,14 +780,15 @@ $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
 ```
 
 ### Robust Z Score
-A quick global anomaly Detector, Robust Z Score uses a threshold to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers.
+A quick *global* anomaly Detector, Robust Z Score uses a modified Z score to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers. Outlier can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
 
 ##### Unsupervised | Persistable
 
 ##### Parameters:
 | Param | Default | Type | Description |
 |--|--|--|--|
-| threshold | 3.5 | float | The threshold Z score to flag an outlier. |
+| tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
+| threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
 
 ##### Additional Methods:
 | Method | Description |
@@ -786,7 +800,7 @@ A quick global anomaly Detector, Robust Z Score uses a threshold to detect outli
 ```php
 use Rubix\ML\AnomalyDetection\RobustZScore;
 
-$estimator = new RobustZScore(3.0);
+$estimator = new RobustZScore(1.5, 3.0);
 ```
 
 ---
@@ -2542,12 +2556,13 @@ There are different metrics for the different types of Estimators listed below.
 | Metric | Range |  Description |
 |--|--|--|
 | Accuracy | (0, 1) | A quick metric that computes the accuracy of the detector. |
+| F1 Score | (0, 1) | A metric that takes the precision and recall  into consideration. |
 
 ### Classification
 | Metric | Range |  Description |
 |--|--|--|
 | Accuracy | (0, 1) | A quick metric that computes the accuracy of the classifier. |
-| F1 Score | (0, 1) | A metric that takes the precision and recall of each class outcome into consideration. |
+| F1 Score | (0, 1) | A metric that takes the precision and recall of into consideration. |
 | Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
 | MCC | (-1, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
 

@@ -27,7 +27,7 @@ class RobustZScoreTest extends TestCase
             [6.8, 3.2, 5.9, 2.3], [5.7, 3.8, 1.7, 0.3], [5.4, 3.9, 1.7, 0.4],
         ], [1, 1, 0, 1, 0, 0]);
 
-        $this->estimator = new RobustZScore(1.7);
+        $this->estimator = new RobustZScore(1.1, 1.7);
     }
 
     public function test_build_detector()
