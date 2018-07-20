@@ -19,7 +19,7 @@ use RuntimeException;
 class BlurryMedian implements Continuous
 {
     /**
-     * The amount of gaussian noise by ratio of the interquartile range to add
+     * The amount of gaussian noise as a factor of one interquartile range to add
      * to the guess.
      *
      * @var float
@@ -45,7 +45,7 @@ class BlurryMedian implements Continuous
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.05)
+    public function __construct(float $blur = 0.2)
     {
         if ($blur < 0.0 or $blur > 1.0) {
             throw new InvalidArgumentException('Blur factor must be between 0'

@@ -205,18 +205,13 @@ In practice, one will experiment with more than one type of Estimator to find th
 
 #### Creating the Estimator Instance
 
-Like most Estimators, the [K Nearest Neighbors Classifier](#k-nearest-neighbors) requires a number of parameters (called *Hyperparameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Rubix provides a meta-Estimator called [Grid Search](#grid-search) that searches the parameter space provided for the most effective combination. For the purposes of this example we will just go with our intuition and chose the parameters outright.
-
-Here are the hyperparameters for K Nearest Neighbors:
-
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a number of parameters (called *Hyperparameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Rubix provides a meta-Estimator called [Grid Search](#grid-search) that searches the parameter space provided for the most effective combination. For the purposes of this example we will just go with our intuition and chose the parameters outright.
 
 It is important to understand the effect that each parameter has on the performance of the Estimator since different settings can often lead to different results.
 
-The K Nearest Neighbors algorithm works by comparing the "*distance*" between a sample and each of the points from the training set. It will then use the K nearest points to base its prediction on. For example, if the 5 closest neighbors to a sample are 4 married and 1 divorced, the algorithm will output a prediction of married with a probability of 0.80.
+You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) which we highly recommend reading a few times to get a grasp for what each parameter does.
+
+The K Nearest Neighbors algorithm works by comparing the *distance* between a sample and each of the points from the training set. It will then use the K *nearest* points to base its prediction on. For example, if the 5 closest neighbors to a sample are 4 married and 1 divorced, the algorithm will output a prediction of married with a probability of 0.80.
 
 To create a K Nearest Neighbors Classifier instance:
 ```php
@@ -242,7 +237,7 @@ $estimator->train($dataset);
 ```
 That's it.
 
-For our 100 sample dataset, this will only take a few milliseconds, but larger datasets and more sophisticated Estimators can take much longer.
+For our 100 sample dataset, this should only take a few microseconds, but larger datasets and more sophisticated Estimators can take much longer.
 
 Once the Estimator has been fully trained we can feed in some new sample data points to see what the model predicts. Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make a prediction on whether they look more like the class of married or divorced couples by taking their answers and running them through the trained Estimator's `predict()` method.
 ```php
@@ -261,21 +256,23 @@ var_dump($predictions);
 
 ```sh
 array(5) {
-	[0] => 'divorced',
-	[1] => 'divorced',
-	[2] => 'married',
-	[3] => 'married',
-	[4] => 'divorced',
+	[0] => 'divorced'
+	[1] => 'divorced'
+	[2] => 'married'
+	[3] => 'married'
+	[4] => 'divorced'
 }
 ```
-Note that we are not using a Labeled Dataset here because we don't know the outcomes yet. In fact, the outcome is exactly what we are trying to predict. Next we'll look at how we can test the accuracy of the predictions our model makes.
+Note that we are not using a Labeled Dataset here because we don't know the outcomes yet. In fact, the label is exactly what we are trying to predict. Next we'll look at how we can test the accuracy of the predictions our model makes using cross validation.
 
 ### Evaluating Model Performance
-Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training. [Cross Validation](#cross-validation) is the process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called [Hold Out](#hold-out). The Hold Out validator will take care of randomizing and splitting the dataset into  training and testing sets, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is precisely because we want to test the Estimator on samples that it has never seen before.
+Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training. [Cross Validation](#cross-validation) is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](#hold-out) validator will take care of randomizing and splitting the dataset into  training and testing sets automatically, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is  because we want to test the Estimator on samples that it has never seen before.
 
 Hold Out requires you to set the ratio of testing to training samples to use. In this case, let's chose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to understand here is the trade off between more data for training and more precise testing results. Once you get the hang of Hold Out, the next step is to consider more elaborate cross validation techniques such as [K Fold](#k-fold), and [Leave P Out](#leave-p-out).
 
 To return a validation score from the Hold Out Validator using the Accuracy Metric just pass it the untrained Estimator instance and a dataset.
+
+##### Example:
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
@@ -298,7 +295,7 @@ float(0.945)
 Since we are measuring accuracy, this output indicates that our Estimator is 94.5% accurate given the data we've trained and tested it with. Not bad.
 
 ### What Next?
-Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation, but if you're eager to get started a great place to begin is at the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) where they have many pre-cleaned datasets available for free.
+Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation at least twice to fully understand all of the features at your disposal. If you're eager to get started, a great place to begin is by downloading some datasets from the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) where they have many pre-cleaned datasets available for free.
 
 ---
 ### API Reference
@@ -314,7 +311,7 @@ There are two types of data that Estimators can process i.e. *categorical* and *
 use Rubix\ML\Datasets\Unlabeled;
 
 $samples = [
-	['nice', 'rough', 8, 6.55], ['mean', 'furry', 10, 9.89], ...
+	['rough', 8, 6.55], ['furry', 10, 9.89], ...
 ];
 
 $dataset = new Unlabeled($samples);
@@ -431,9 +428,77 @@ list($left, $right) = $dataset->randomize()->split(0.8);
 $subset = $dataset->randomSubset(500);
 ```
 
+#### Sorting
+
+To sort a Dataset by a specific feature column:
+```php
+public sortByColumn(int $index, bool $descending = false) : self
+```
+
+##### Example:
+```php
+...
+var_dump($dataset->samples());
+
+$dataset->sortByColumn(2, false);
+
+var_dump($dataset->samples());
+```
+
+##### Output:
+```sh
+array(3) {
+    [0]=> array(3) {
+	    [0]=> string(4) "mean"
+	    [1]=> string(4) "furry"
+	    [2]=> int(8)
+    }
+    [1]=> array(3) {
+	    [0]=> string(4) "nice"
+	    [1]=> string(4) "rough"
+	    [2]=> int(1)
+    }
+    [2]=> array(3) {
+	    [0]=> string(4) "nice"
+	    [1]=> string(4) "rough"
+	    [2]=> int(6)
+    }
+}
+
+array(3) {
+    [0]=> array(3) {
+	    [0]=> string(4) "nice"
+	    [1]=> string(4) "rough"
+	    [2]=> int(1)
+    }
+    [1]=> array(3) {
+	    [0]=> string(4) "nice"
+	    [1]=> string(4) "rough"
+	    [2]=> int(6)
+    }
+    [2]=> array(3) {
+	    [0]=> string(4) "mean"
+	    [1]=> string(4) "furry"
+	    [2]=> int(8)
+    }
+}
+```
+
+#### Prepending and Appending
+
+To prepend a given Dataset onto the beginning of another Dataset:
+```php
+public prepend(Dataset $dataset) : self
+```
+
+To append a given Dataset onto the end of another Dataset:
+```php
+public append(Dataset $dataset) : self
+```
+
 #### Applying a Transformation
 
-You can apply a fitted Transformer to a Dataset directly passing it to the apply method on the Dataset.
+You can apply a fitted [Transformer](#transformers) to a Dataset directly passing it to the apply method on the Dataset.
 
 ```php
 public apply(Transformer $transformer) : void
@@ -478,26 +543,51 @@ $dataset = Labeled::restore('path/to/dataset');
 There are two types of Dataset objects in Rubix, *labeled* and *unlabeled*.
 
 ### Labeled
-For supervised Estimators you will need to pass it a Labeled Dataset consisting of a sample matrix and an array of labels that correspond to the observed outcomes of each sample. Splitting, folding, randomizing, and subsampling are all done while keeping the indexes of samples and labels aligned.
+For supervised Estimators you will need to pass it a Labeled Dataset consisting of a sample matrix and an array of labels that correspond to the observed outcomes of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned.
 
-In addition to the basic Dataset interface, the Labeled class can *stratify* the data by label.
+In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
-| labels | None | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
-| placeholder | '?' | mixed | The placeholder value for null features. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
+| 2 | labels | None | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
+| 3| placeholder | '?' | mixed | The placeholder value for null features. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `labels() : array` | Return the 1-dimensional array of labels. |
-| `label(int $index) : mixed` | Return the label at the given row index. |
-| `possibleOutcomes() : array` | Return all of the possible outcomes given the labels. |
-| `stratify() : array` | Group the samples by label and return them in their own dataset. |
-| `stratifiedSplit($ratio = 0.5) : array` | Split the Dataset into left and right stratified subsets with a given ratio of samples and labels. |
-| `stratifiedFold($k = 10) : array` | Fold the Dataset k - 1 times to form k equal size stratified Datasets. |
+Return a 1-dimensional array of labels:
+```php
+public labels() : array
+```
+
+Return the label at the given row offset:
+```php
+public label(int $index) : mixed
+```
+
+Return all of the possible outcomes i.e the unique labels:
+```php
+public possibleOutcomes() : array
+```
+
+Sort the Dataset by label:
+```php
+public sortByLabel(bool $descending = false) : self
+```
+
+Group the samples by label and return them in their own Dataset:
+```php
+public stratify() : array
+```
+Split the Dataset into left and right stratified subsets with a given **ratio** of samples in each:
+```php
+public stratifiedSplit($ratio = 0.5) : array
+```
+
+Fold the Dataset **k** - 1 times to form **k** equal size stratified Datasets
+```php
+public stratifiedFold($k = 10) : array
+```
 
 ##### Example:
 ```php
@@ -551,13 +641,13 @@ $strata = $dataset->stratify();
 ```
 
 ### Unlabeled
-Unlabeled datasets are used for training unsupervised Estimators and for feeding new samples into an Estimator to make predictions.
+Unlabeled datasets can be used for training unsupervised Estimators and for feeding data into an Estimator to make predictions.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
-| placeholder | '?' | mixed | The placeholder value for null features. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
+| 2| placeholder | '?' | mixed | The placeholder value for null features. |
 
 
 ##### Additional Methods:
@@ -605,20 +695,21 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 ### Count Vectorizer
-Word counts are often used to represent natural language as numerical vectors. The Count Vectorizer builds a vocabulary from the training samples and transforms the blob of text into sparse feature vectors. Each feature column represents the number of times the word that particular column represents appears in a given sample.
+In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Count Vectorizer builds a vocabulary from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
-| normalize | true | bool | Should we remove extra whitespace and lowercase? |
-| tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
+| 2 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
+| 3 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `vocabulary() : array` | Returns the vocabulary array. |
-| `size() : int` | Returns the size of the vocabulary in number of tokens.
+
+Return the fitted vocabulary i.e. the words that will be vectorized:
+```php
+public vocabulary() : array
+```
 
 ##### Example:
 ```php
@@ -635,15 +726,15 @@ $extractor->size();
 ```
 
 ### Pixel Encoder
-Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/).
+Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/). The GD extension is required to use this feature.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
-| sharpen | 0 | int | A value between 0 and 100 indicating the amount of sharpness to add to each sample. |
-| driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| 2 | rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
+| 3 | sharpen | 0 | int | A value between 0 and 100 indicating the amount of sharpness to add to each sample. |
+| 4 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:
 This Extractor does not have any additional methods.
@@ -657,11 +748,9 @@ $extractor = new PixelEncoder([28, 28], false, 'imagick');
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on the data they have been trained with. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
+Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
 
-Estimators make predictions based on how they have been trained. In order to make a prediction you must first train it.
-
-To train an Estimator pass it a training Dataset object:
+To train an Estimator pass it a training Dataset:
 ```php
 public train(Dataset $training) : void
 ```
@@ -671,7 +760,7 @@ To make predictions, pass it a new dataset:
 public predict(Dataset $dataset) : array
 ```
 
-The return value of `predict()` is an array in the order in which the samples were fed in.
+The return value of `predict()` is an array indexed in the order in which the samples were fed in.
 
 ##### Example:
 ```php
@@ -698,16 +787,16 @@ var_dump($result);
 ##### Output:
 ```sh
 array(3) {
-	[0] => 'married',
-	[1] => 'divorced',
-	[2] => 'married',
+	[0] => 'married'
+	[1] => 'divorced'
+	[2] => 'married'
 }
 ```
 
 ---
 ### Anomaly Detectors
 
-[Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, sciences, and many more areas. The output of a Detector is either *0* for a normal sample or *1* for a detected outlier.
+[Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, sciences, and many other areas. The output of a Detector is either *0* for a normal sample or *1* for a detected anomaly.
 
 ### Isolation Forest
 An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
@@ -715,11 +804,11 @@ An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolat
 ##### Unsupervised | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| trees | 100 | int | The number of Isolation Trees to train in the ensemble. |
-| ratio | 0.1 | float | The ratio of random samples to train each Isolation Tree with. |
-| threshold | 0.5 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | trees | 100 | int | The number of Isolation Trees to train in the ensemble. |
+| 2 | ratio | 0.1 | float | The ratio of random samples to train each Isolation Tree with. |
+| 3 | threshold | 0.5 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -736,17 +825,13 @@ Isolation Trees separate anomalous samples from dense clusters using an extremel
 ##### Unsupervised | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| threshold | 0.5 | float | The minimum isolation score. i.e. the probability that a sample is an outlier. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
+| 2 | threshold | 0.5 | float | The minimum isolation score. i.e. the probability that a sample is an outlier. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `complexity() : int` | Returns the number of splits in the tree. |
-| `height() : int` | Return the height of the tree. |
-| `balance() : int` | Return the balance factor of the tree. |
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -756,17 +841,17 @@ $estimator = new IsolationTree(1000, 0.65);
 ```
 
 ### Local Outlier Factor
-The Local Outlier Factor (LOF) algorithm only considers the local region of a sample, set by the k parameter. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
+The Local Outlier Factor (LOF) algorithm considers the local region of a sample, set by the k parameter, when determining an outlier. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
 
 ##### Unsupervised | Probabilistic | Online | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 10 | int | The k nearest neighbors that form a local region. |
-| neighbors | 20 | int | The number of neighbors considered when computing the radius of a centroid. |
-| threshold | 0.5 | float | The minimum density score. i.e. the probability that a sample is an outlier. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 10 | int | The k nearest neighbors that form a local region. |
+| 2 | neighbors | 20 | int | The number of neighbors considered when computing the radius of a centroid. |
+| 3 | threshold | 0.5 | float | The minimum density score. i.e. the probability that a sample is an outlier. |
+| 4 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -780,21 +865,27 @@ $estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
 ```
 
 ### Robust Z Score
-A quick *global* anomaly Detector, Robust Z Score uses a modified Z score to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers. Outlier can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
+A quick *global* anomaly detector, Robust Z Score uses a modified Z score to detect outliers within a Dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation thus making the statistic more robust to training sets that may already contain outliers. Outlier can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
 
 ##### Unsupervised | Persistable
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
-| threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
+| 2 | threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `medians() : array` | Return the medians of each feature column in the training set. |
-| `mads() : array` | Return the median absolute deviations (MAD) of each feature column in the training set. |
+
+Return the median of each feature column in the training set:
+```php
+public medians() : array
+```
+
+Return the median absolute deviation (MAD) of each feature column in the training set:
+```php
+public mads() : array
+```
 
 ##### Example:
 ```php
@@ -807,38 +898,39 @@ $estimator = new RobustZScore(1.5, 3.0);
 ### Classifiers
 Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - *Binary* and *Multiclass*. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
-Below are a list of all of the Classifiers available in Rubix.
-
 ### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify.
 
 ##### Supervised | Binary | Persistable
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| base | None | string | The fully qualified class name of the base *weak* classifier. |
-| params | [ ] | array | The parameters of the base classifer. |
-| estimators | 100 | int | The number of estimators to train in the ensemble. |
-| ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| threshold | 0.999 | float | The minimum accuracy an epoch must score before the algorithm terminates. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | None | string | The fully qualified class name of the base *weak* classifier. |
+| 2 | params | [ ] | array | The parameters of the base classifer. |
+| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 4 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `estimators() : int` | Returns the ensemble of estimators. |
-| `weights() : array` | Returns the calculated weight values of the last trained dataset. |
-| `influence() : array` | Returns the influence scores for each boosted "weak" classifier.
 
+Return the calculated weight values of the last trained dataset:
+```php
+public weights() : array
+```
+
+Return the influence scores for each boosted classifier:
+```php
+public influence() : array
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTree;
 
-$estimator = new AdaBoost(ExtraTree::class, [10, 3], 100, 0.1, 0.999);
+$estimator = new AdaBoost(ExtraTree::class, [10, 3, 5], 200, 0.1, 1e-2);
 ```
-
 
 ### Classification Tree
 A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best splits in a training set.
@@ -846,19 +938,15 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
-| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-| tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
+| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `complexity() : int` | Returns the number of splits in the tree. |
-| `height() : int` | Return the height of the tree. |
-| `balance() : int` | Return the balance factor of the tree. |
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -874,9 +962,9 @@ A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) 
 ##### Supervised | Multiclass | Persistable
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| strategy | PopularityContest | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | strategy | PopularityContest | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -890,33 +978,29 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree
-An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees are useful in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
-| max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `complexity() : int` | Returns the number of splits in the tree. |
-| `height() : int` | Return the height of the tree. |
-| `balance() : int` | Return the balance factor of the tree. |
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\ExtraTree;
 
-$estimator = new ExtraTree(20, 3);
+$estimator = new ExtraTree(20, 3, 4);
 ```
 
 ### Gaussian Naive Bayes
-A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
+A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function (*PDF*) over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
@@ -924,11 +1008,21 @@ A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability 
 This Estimator does not have any parameters.
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `priors() : array` | Returns the class prior log probabilities based on their weight over all training samples. |
-| `means() : array` | Return the running mean of each feature column of the training data. |
-| `variances() : array` | Return the running variances of each feature column of the training data. |
+
+Return the class prior log probabilities based on their weight over all training samples:
+```php
+public priors() : array
+```
+
+Return the running mean of each feature column of the training data:
+```php
+public means() : array
+```
+
+Return the running variance of each feature column of the training data:
+```php
+public variances() : array
+```
 
 ##### Example:
 ```php
@@ -938,15 +1032,15 @@ $estimator = new GaussianNB();
 ```
 
 ### K Nearest Neighbors
-A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does all of its computation at prediction time.
+A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time.
 
 ##### Supervised | Multiclass | Probabilistic | Online | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -960,24 +1054,29 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ```
 
 ### Logistic Regression
-A type of classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes.
+A type of linear classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes. Logistic Regression measures the relationship between the class label and one or more independent variables by estimating probabilities.
 
 ##### Supervised | Binary | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| epochs | 100 | int | The maximum number of training epochs to execute. |
-| batch size | 10 | int | The number of training samples to process at a time. |
-| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
-| alpha | 1e-4 | float | The L2 regularization term. |
-| min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
+| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
+| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `progress() : array` | Returns an array with the training progress at each epoch of training. |
-| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
+Return the training progress at each epoch:
+```php
+public progress() : array
+```
+
+Return the underlying neural network instance or *null* if untrained:
+```php
+public network() : Network|null
+```
 
 ##### Example:
 ```php
@@ -988,28 +1087,33 @@ $estimator = new LogisticRegression(300, 10, new Adam(0.001), 1e-4, 1e-8);
 ```
 
 ### Multi Layer Perceptron
-Multiclass [Neural Network](#neural-network) model that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. The MLP features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
+A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| hidden | [ ] | array | An array of hidden layers of the neural network. |
-| batch size | 10 | int | The number of training samples to process at a time. |
-| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
-| alpha | 1e-4 | float | The L2 regularization term. |
-| metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| tolerance | 1e-3 | The amount of error to tolerate in the validation metric. |
-| epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
+| 2 | batch size | 50 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
+| 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 8 | tolerance | 1e-3 | The amount of error to tolerate in the validation metric. |
+| 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `progress() : array` | Returns an array with the training progress at each epoch of training. |
-| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
+Return the training progress at each epoch:
+```php
+public progress() : array
+```
+
+Returns the underlying neural network instance or *null* if untrained:
+```php
+public network() : Network|null
+```
 
 ##### Example:
 ```php
@@ -1020,29 +1124,35 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $hidden = [
-	new Dense(10, new ELU()),
-	new Dense(10, new ELU()),
+	new Dense(30, new ELU()),
+	new Dense(20, new ELU()),
 	new Dense(10, new ELU()),
 ];
 
-$estimator = new MultiLayerPerceptron($hidden, 10, new Adam(0.001), 1e-4, new MCC(), 0.2, 3, PHP_INT_MAX);
+$estimator = new MultiLayerPerceptron($hidden, 100, new Adam(0.001), 1e-4, new MCC(), 0.2, 3, PHP_INT_MAX);
 ```
 
 ### Naive Bayes
-Probability-based classifier that used probabilistic inference to derive the correct class. The probabilities are calculated using [Bayes Rule](https://en.wikipedia.org/wiki/Bayes%27_theorem). The naive part relates to the fact that it assumes that all features are independent, which is rarely the case in the real world but tends to work out in practice for most problems.
+Probability-based classifier that used probabilistic inference to predict the correct class. The probabilities are calculated using [Bayes Rule](https://en.wikipedia.org/wiki/Bayes%27_theorem). The naive part relates to the fact that it assumes that all features are *independent*, which is rarely the case in the real world but tends to work out in practice for most problems.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `priors() : array` | Returns the class prior log probabilities based on their weight over all training samples. |
-| `probabilities() : array` | Return the log probabilities of each feature given each class label. |
+
+Returns the class prior log probabilities based on their weight over all training samples:
+```php
+public priors() : array
+```
+
+Return the log probabilities of each feature given each class label:
+```php
+probabilities() : array
+```
 
 ##### Example:
 ```php
@@ -1052,78 +1162,81 @@ $estimator = new NaiveBayes(10.0);
 ```
 
 ### Random Forest
-[Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset of the training data. A prediction is made based on the probability scores returned from each tree in the forest.
+[Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap*) of the training data. A prediction is made based on the probability scores returned from each tree in the forest weighted equally.
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| trees | 100 | int | The number of Decision Trees to train in the ensemble. |
-| ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
-| max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
-| tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a perfect split. |
-| base | ClassificationTree::class | string | The base classification tree class name. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | trees | 100 | int | The number of Decision Trees to train in the ensemble. |
+| 2 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
+| 3 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| 4 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
+| 5 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| 6 | tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a split. |
+| 7 | base | ClassificationTree::class | string | The base tree class name. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `estimators() : int` | Returns the ensemble of estimators. |
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\RandomForest;
-use Rubix\ML\Classifiers\ExtraTree;
+use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(400, 0.1, 10, 3, 5, 1e-2, ExtraTree::class);
+$estimator = new RandomForest(400, 0.1, 10, 3, 5, 1e-2, ClassificationTree::class);
 ```
 
 ### Softmax Classifier
-A generalization of [Logistic Regression](#logistic-regression) for multiple class outcomes using a single layer [neural network](#neural-network) with a Softmax output layer.
+A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer [neural network](#neural-network) with a Softmax output layer.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| epochs | 100 | int | The maximum number of training epochs to execute. |
-| batch size | 10 | int | The number of training samples to process at a time. |
-| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
-| alpha | 1e-4 | float | The L2 regularization term. |
-| min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
-
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
+| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `progress() : array` | Returns an array with the training progress at each epoch of training. |
-| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
+
+Return the training progress at each epoch:
+```php
+public progress() : array
+```
+
+Return the underlying neural network instance or *null* if untrained:
+```php
+public network() : Network|null
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
-$estimator = new SoftmaxClassifier(500, 100, new Momentum(0.001), 1e-4, 1e-5);
+$estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, 1e-5);
 ```
 
 ---
 ### Clusterers
-Clustering is a common technique in data mining that focuses on grouping samples in a way such that the groups are similar. Clusterers take unlabeled data points and assign them to a cluster. The return value of each prediction is the cluster number each sample was assigned to.
+Clustering is a common technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Clusterers take unlabeled data points and assign them a label (cluster). The return value of each prediction is the cluster number each sample was assigned to.
 
 ### DBSCAN
-Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as noise and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors) as well.
+Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors) as well.
 
 ##### Unsupervised | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
-| min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
+| 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
+| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1137,31 +1250,37 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
 
 ### Fuzzy C Means
-Clusterer that allows data points to belong to multiple clusters if they fall within a fuzzy region and thus is able to output probabilities for each cluster via the [Probabilistic](#probabilistic) interface.
+Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both K Means and Gaussian Mixture Models in that they require apriori knowledge of the number (parameter *c*) of clusters.
 
 ##### Unsupervised | Probabilistic | Persistable
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| c | None | int | The number of target clusters. |
-| fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | c | None | int | The number of target clusters. |
+| 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
+| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 4 | threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| 5 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `centroids() : array` | Returns an array of the C computed centroids of the training data. |
-| `progress() : array` | Returns the progress of training at each epoch. |
+
+Return the *c* computed centroids of the training data:
+```php
+public centroids() : array
+```
+
+Returns the progress of training at each epoch:
+```php
+public progress() : array
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new FuzzyCMeans(5, 2.5, new Euclidean(), 1e-3, 1000);
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ```
 
 ### K Means
@@ -1170,16 +1289,18 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 ##### Unsupervised | Online | Persistable | Linear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | None | int | The number of target clusters. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | None | int | The number of target clusters. |
+| 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 3 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `centroids() : array` | Returns an array of the K computed centroids of the training data. |
+
+Return the *c* computed centroids of the training data:
+```php
+public centroids() : array
+```
 
 ##### Example:
 ```php
@@ -1195,30 +1316,37 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 ##### Unsupervised | Persistable | Linear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| radius | None | float | The radius of each cluster centroid. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | radius | None | float | The radius of each cluster centroid. |
+| 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 3 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| 4 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `centroids() : array` | Returns an array of the K computed centroids of the training data. |
-| `progress() : array` | Returns the progress of training at each epoch. |
+
+Return the *c* computed centroids of the training data:
+```php
+public centroids() : array
+```
+
+Returns the progress of training at each epoch:
+```php
+public progress() : array
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Clusterers\MeanShift;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new MeanShift(3.0, new Euclidean(), 1e-6, 3000);
+$estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 ```
 
 ---
 ### Regressors
-Regression analysis is used to predict the outcome of an experiment where the value can range over a continuous spectrum. A Regressor estimates the expected continuous outcome of an unknown sample.
+Regression analysis is used to predict the outcome of an event where the value is continuous.
 
 ### Dummy Regressor
 Regressor that guesses the output values based on a [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
@@ -1226,9 +1354,9 @@ Regressor that guesses the output values based on a [Guessing Strategy](#guessin
 ##### Supervised | Persistable
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| strategy | BlurryMean | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | strategy | BlurryMean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1236,9 +1364,9 @@ This Estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Other\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\BlurryMedian;
 
-$estimator = new DummyRegressor(new BlurryMean(0.2));
+$estimator = new DummyRegressor(new BlurryMedian(0.2));
 ```
 
 ### KNN Regressor
@@ -1247,10 +1375,10 @@ A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outc
 ##### Supervised | Online | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
-| kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1264,45 +1392,49 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
 
 ### MLP Regressor
-A [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP also features progress monitoring which means that it will automatically stop training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
+A [Neural Network](#neural-network) with a linear output layer suitable for regression problems. The MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
 ##### Supervised | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| hidden | [ ] | array | An array of hidden layers of the neural network. |
-| batch size | 10 | int | The number of training samples to process at a time. |
-| optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
-| alpha | 1e-4 | float | The L2 regularization term. |
-| metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| tolerance | 1e-5 | The amount of error to tolerate in the validation metric. |
-| epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
+| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
+| 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 8 | tolerance | float | 1e-5 | The amount of error to tolerate in the validation metric. |
+| 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `progress() : array` | Returns an array with the validation score at each epoch of training. |
-| `network() : Network` | Returns the underlying neural network instance or *null* if not trained. |
+
+Return the training progress at each epoch:
+```php
+public progress() : array
+```
+
+Returns the underlying neural network instance or *null* if untrained:
+```php
+public network() : Network|null
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 
 $hidden = [
-	new Dense(30, new HyperbolicTangent()),
-	new Dense(30, new LeakyReLU()),
-	new Dense(30, new LeakyReLU()),
+	new Dense(100, new ISRU()),
 ];
 
-$estimator = new MLPRegressor($hidden, 50, new RMSProp(0.001), 1e-2, new MeanSquaredError(), 0.2, 3, PHP_INT_MAX);
+$estimator = new MLPRegressor($hidden, 50, new RMSProp(0.001), 1e-2, new MeanSquaredError(), 0.1, 3, PHP_INT_MAX);
 ```
 
 ### Regression Tree
@@ -1311,42 +1443,44 @@ A Decision Tree learning algorithm that performs greedy splitting by minimizing 
 ##### Supervised | Persistable | Nonlinear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| min samples | 5 | int | The minimum number of data points needed to make a prediction. |
-| max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-| tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
+| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
+| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `complexity() : int` | Returns the number of splits in the tree. |
-| `height() : int` | Return the height of the tree. |
-| `balance() : int` | Return the balance factor of the tree. |
+This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(50, 1, 0.0);
+$estimator = new RegressionTree(80, 1, 10, 0.0);
 ```
 
 ### Ridge
-L2 penalized least squares regression. Can be used for simple regression problems that can be fit to a straight line.
+L2 penalized least squares linear regression. Can be used for simple regression problems that can be fit to a straight line.
 
 ##### Supervised | Persistable | Linear
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| alpha | 1.0 | float | The L2 regularization term. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | alpha | 1.0 | float | The L2 regularization term. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `intercept() : float` | Returns the y intercept of the computed regression line. |
-| `coefficients() : array` | Return an array containing the computed coefficients of the regression line. |
+
+Return the y intercept of the computed regression line:
+```php
+public intercept() : float|null
+```
+
+Return the computed coefficients of the regression line:
+```php
+public coefficients() : array
+```
 
 ##### Example:
 ```php
@@ -1445,10 +1579,10 @@ Pipeline is responsible for transforming the input sample matrix of a Dataset in
 ##### Classifiers, Regressors, Clusterers, Anomaly Detectors
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| estimator | None | object | An instance of a base estimator. |
-| transformers | [ ] | array | The transformer middleware to be applied to each dataset. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | estimator | None | object | An instance of a base estimator. |
+| 2 | transformers | [ ] | array | The transformer middleware to be applied to each dataset. |
 
 ##### Additional Methods:
 This Meta Estimator does not have any additional methods.
@@ -1487,17 +1621,15 @@ Bootstrap Aggregating (or *bagging*) is a model averaging technique designed to 
 ##### Classifiers, Regressors, Anomaly Detectors
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| base | None | string | The fully qualified class name of the base Estimator. |
-| params | [ ] | array | The parameters of the base estimator. |
-| estimators | 10 | int | The number of base estimators to train in the ensemble. |
-| ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | None | string | The fully qualified class name of the base Estimator. |
+| 2 | params | [ ] | array | The parameters of the base estimator. |
+| 3 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
+| 4 | ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `estimators() : int` | Returns the ensemble of estimators. |
+This Meta Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1518,15 +1650,13 @@ A voting Ensemble that aggregates the predictions of a committee of user-specifi
 ##### Classifiers, Regressors, Anomaly Detectors
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| experts | None | array | An array of estimator instances. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | experts | [ ] | array | An array of estimator instances. |
 
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `estimators() : int` | Returns the ensemble of estimators. |
+This Meta Estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1537,7 +1667,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 
 $estimator = new CommitteeMachine([
-	new RandomForest(100, 0.3, 50, 3, 4, 1e-3),
+	new RandomForest(100, 0.3, 30, 3, 4, 1e-3),
 	new SoftmaxClassifier(50, new Adam(0.001), 0.1),
 	new KNearestNeighbors(3),
 ]);
@@ -1551,19 +1681,29 @@ Model selection is the task of selecting a version of a model with a hyperparame
 Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| base | None | string | The fully qualified class name of the base Estimator. |
-| params | [ ] | array | An array containing n-tuples (represented as PHP arrays) of parameters to search across for a given constructor argument position. |
-| metric | None | object | The validation metric used to score each set of parameters. |
-| validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | None | string | The fully qualified class name of the base Estimator. |
+| 2 | params | [ ] | array | An array containing n-tuples of parameters where each tuple represents a possible parameter for a given parameter location (ordinal). |
+| 3 | metric | None | object | The validation metric used to score each set of parameters. |
+| 4 | validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `results() : array` | An array containing the score of each combination of parameters. |
-| `best() : array` | The parameters with the highest validation score. |
-| `estimator() : Estimator` | The underlying estimator trained with the best parameter combination. |
+
+Return the results (scores and parameters) of the last search:
+```php
+public results() : array
+```
+
+Return the he parameters with the highest validation score:
+```php
+public best() : array
+```
+
+Return the underlying estimator trained with the best parameters:
+```php
+public estimator() : Estimator
+```
 
 ##### Example:
 ```php
@@ -1643,7 +1783,7 @@ array(3) {
 
 ---
 ### Model Persistence
-Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Rubix persists your models using built in object serialization (similar to pickling in Python). Most Estimators are persistable, but some are not allowed due to their poor storage complexity.
+Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Rubix persists your models using built in PHP object serialization (similar to pickling in Python). Most Estimators are persistable, but some are not allowed due to their poor storage complexity.
 
 ### Persistent Model
 It is possible to persist a model to disk by wrapping the Estimator instance in a Persistent Model meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface.
@@ -1708,9 +1848,9 @@ The difference between the Dense and Sparse Random Projectors are that the Dense
 ##### Continuous *Only*
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| dimensions | None | int | The number of target dimensions to project onto. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | None | int | The number of target dimensions to project onto. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -1722,7 +1862,7 @@ use Rubix\ML\Transformers\SparseRandomProjector;
 
 $transformer = new DenseRandomProjector(50);
 
-$transformer = new SparseRandomProjector(100);
+$transformer = new SparseRandomProjector(50);
 ```
 
 ### L1 and L2 Regularizers
@@ -1751,9 +1891,9 @@ Run a stateless lambda function (*anonymous* function) over the sample matrix. T
 ##### Categorical or Continuous
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| lambda | None | callable | The lambda function to run over the sample matrix. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | lambda | None | callable | The lambda function to run over the sample matrix. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -1771,7 +1911,7 @@ $transformer = new LambdaFunction(function ($samples) {
 ```
 
 ### Min Max Normalizer
-Often used as an alternative to [Standard Scaling](#z-scale-standardizer), the Min Max Normalization scales the input features from a range of 0 to 1 by dividing the feature value over the maximum value for that feature column.
+Often used as an alternative to [Standard Scaling](#z-scale-standardizer), the Min Max Normalization scales the input features to a range of between 0 and 1 by dividing the feature value over the maximum value for that feature column.
 
 ##### Continuous
 
@@ -1789,16 +1929,16 @@ $transformer = new MinMaxNormalizer();
 ```
 
 ### Missing Data Imputer
-In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given imputer *Strategy*.
+In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given guessing [Strategy](#guessing-strategies).
 
 ##### Categorical or Continuous
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
-| continuous strategy | BlurryMean | object | The imputer strategy to employ for continuous feature columns. |
-| categorical strategy | PopularityContest | object | The imputer strategy to employ for categorical feature columns. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
+| 2 | continuous strategy | BlurryMean | object | The guessing strategy to employ for continuous feature columns. |
+| 3 | categorical strategy | PopularityContest | object | The guessing strategy to employ for categorical feature columns. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -1836,9 +1976,9 @@ The One Hot Encoder takes a column of categorical features and produces a one-ho
 ##### Categorical
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| columns | Null | array | The user-specified columns to encode indicated by numeric index starting at 0. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | columns | Null | array | The user-specified columns to encode indicated by numeric index starting at 0. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -1856,9 +1996,9 @@ This Transformer will generate polynomial features up to and including the speci
 ##### Continuous *Only*
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -1880,10 +2020,16 @@ This standardizer removes the median and scales each sample according to the int
 This Transformer does not have any parameters.
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `medians() : array` | Return the medians calculated by fitting the training set. |
-| `iqrs() : array` | Return the interquartile ranges calculated during fitting. |
+
+Return the medians calculated by fitting the training set:
+```php
+public medians() : array
+```
+
+Return the interquartile ranges calculated during fitting:
+```php
+public iqrs() : array
+```
 
 ##### Example:
 ```php
@@ -1901,10 +2047,16 @@ This Transformer standardizes continuous features by removing the median and div
 This Transformer does not have any parameters.
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `medians() : array` | Return the medians calculated by fitting the training set. |
-| `mads() : array` | Return the median absolute deviations calculated during fitting. |
+
+Return the medians calculated by fitting the training set:
+```php
+public medians() : array
+```
+
+Return the median absolute deviations calculated during fitting:
+```php
+public mads() : array
+```
 
 ##### Example:
 ```php
@@ -1914,7 +2066,7 @@ $transformer = new RobustStandardizer();
 ```
 
 ### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is the measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Count Vectorizer](#count-vectorizer).
+Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Count Vectorizer](#count-vectorizer).
 
 ##### Continuous *Only*
 
@@ -1935,20 +2087,22 @@ A type of feature selector that removes all columns that have a lower variance t
 ##### Categorical and Continuous
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| threshold | 0.0 | float | The threshold at which lower scoring columns will be dropped from the dataset. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | threshold | 0.0 | float | The threshold at which lower scoring columns will be dropped from the dataset. |
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `selected() : array` | An array containing the columns that were selected during fitting. |
+
+Return the columns that were selected during fitting:
+```php
+public selected() : array
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 
-$transformer = new VarianceThresholdFilter(500);
+$transformer = new VarianceThresholdFilter(50);
 ```
 
 ### Z Scale Standardizer
@@ -1960,10 +2114,16 @@ A way of centering and scaling an input vector by computing the Z Score for each
 This Transformer does not have any parameters.
 
 ##### Additional Methods:
-| Method | Description |
-|--|--|
-| `means() : array` | Return the means calculated by fitting the training set. |
-| `stddevs() : array` | Return the standard deviations calculated during fitting. |
+
+Return the means calculated by fitting the training set:
+```php
+public means() : array
+```
+
+Return the standard deviations calculated during fitting:
+```php
+public stddevs() : array
+```
 
 ##### Example:
 ```php
@@ -1985,9 +2145,9 @@ The input to every neuron is passed through an Activation Function which determi
 Exponential Linear Units are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
 
 ##### Example:
 ```php
@@ -2026,9 +2186,9 @@ $activationFunction = new Identity();
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| alpha | 1.0 | float | The parameter that controls the range of activation. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | alpha | 1.0 | float | The parameter that controls the range of activation. |
 
 ##### Example:
 ```php
@@ -2041,9 +2201,9 @@ $activationFunction = new ISRU(2.0);
 Leaky Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| leakage | 0.01 | float | The amount of leakage as a ratio of the input value. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | leakage | 0.01 | float | The amount of leakage as a ratio of the input value. |
 
 ##### Example:
 ```php
@@ -2056,10 +2216,10 @@ $activationFunction = new LeakyReLU(0.001);
 Scaled Exponential Linear Unit is a self-normalizing activation function based on [ELU](#elu).
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| scale | 1.05070 | float | The factor to scale the output by. |
-| alpha | 1.67326 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | scale | 1.05070 | float | The factor to scale the output by. |
+| 2 | alpha | 1.67326 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
 
 ##### Example:
 ```php
@@ -2141,10 +2301,10 @@ In multilayer networks, Hidden layers perform the bulk of the computation. They 
 Dense layers are fully connected Hidden layers, meaning each neuron is connected to each other neuron in the previous layer. Dense layers are able to employ a variety of [Activation Functions](#activation-functions) that modify the output of each neuron in the layer.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| neurons | None | int | The number of neurons in the layer. |
-| activation fn | None | object | The activation function to use. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | neurons | None | int | The number of neurons in the layer. |
+| 2 | activation fn | None | object | The activation function to use. |
 
 ##### Example:
 ```php
@@ -2161,9 +2321,9 @@ Activations are read directly from the Output layer when it comes to making a pr
 The Linear Output Layer consists of a single linear neuron that outputs a continuous scalar value useful for Regression problems.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| alpha | 1e-4 | float | The L2 regularization penalty. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
 
 ##### Example:
 ```php
@@ -2176,10 +2336,10 @@ $layer = new Linear(1e-5);
 This Logit layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two classes. The Logit layer is useful for neural networks that output a binary class prediction.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| classes | None | array | The unique class labels of the binary classification problem. |
-| alpha | 1e-4 | float | The L2 regularization penalty. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | classes | None | array | The unique class labels of the binary classification problem. |
+| 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 
 ##### Example:
 ```php
@@ -2192,10 +2352,10 @@ $layer = new Logit(['yes', 'no'], 1e-5);
 A generalization of the Logistic Layer, the Softmax Output Layer gives a joint probability estimate of a multiclass classification problem.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| classes | None | array | The unique class labels of the multiclass classification problem. |
-| alpha | 1e-4 | float | The L2 regularization penalty. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
+| 2| alpha | 1e-4 | float | The L2 regularization penalty. |
 
 ##### Example:
 ```php
@@ -2212,9 +2372,9 @@ Gradient Descent is an algorithm that takes iterative steps towards minimizing a
 Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 
 ##### Example:
 ```php
@@ -2227,12 +2387,12 @@ $optimizer = new AdaGrad(0.035);
 Short for *Adaptive Momentum Estimation*, the Adam Optimizer uses both Momentum and RMS properties to achieve a balance of velocity and stability.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| momentum | 0.9 | float | The decay rate of the Momentum property. |
-| rms | 0.999 | float | The decay rate of the RMS property. |
-| epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 2 | momentum | 0.9 | float | The decay rate of the Momentum property. |
+| 3 | rms | 0.999 | float | The decay rate of the RMS property. |
+| 4 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
@@ -2245,10 +2405,10 @@ $optimizer = new Adam(0.0001, 0.9, 0.999, 1e-8);
 Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor to the current step.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| decay | 0.9 | float | The Momentum decay rate. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 2 | decay | 0.9 | float | The Momentum decay rate. |
 
 ##### Example:
 ```php
@@ -2261,10 +2421,10 @@ $optimizer = new Momentum(0.001, 0.925);
 An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| decay | 0.9 | float | The RMS decay rate. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 2 | decay | 0.9 | float | The RMS decay rate. |
 
 ##### Example:
 ```php
@@ -2277,11 +2437,11 @@ $optimizer = new RMSProp(0.01, 0.9);
 A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter when it reaches a new floor (takes k steps).
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| k | 10 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
-| decay | 1e-5 | float | The decay factor to decrease the learning rate by every k steps. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 2 | k | 10 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
+| 3 | decay | 1e-5 | float | The decay factor to decrease the learning rate by every k steps. |
 
 ##### Example:
 ```php
@@ -2294,9 +2454,9 @@ $optimizer = new StepDecay(0.001, 15, 1e-5);
 A constant learning rate Optimizer.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 
 ##### Example:
 ```php
@@ -2425,9 +2585,9 @@ $kernel = new Manhattan();
 The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the l*ambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
 
 ##### Example:
 ```php
@@ -2470,9 +2630,9 @@ Below describes the various Cross Validators available in Rubix.
 Hold Out is the simplest form of cross validation available in Rubix. It uses a *hold out* set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| ratio | 0.2 | float | The ratio of samples to hold out for testing. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 
 ##### Example:
 ```php
@@ -2486,9 +2646,9 @@ $validator = new HoldOut(0.25);
 K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the validation performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 10 | int | The number of times to split the training set into equal sized folds. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 10 | int | The number of times to split the training set into equal sized folds. |
 
 ##### Example:
 ```php
@@ -2501,9 +2661,9 @@ $validator = new KFold(5);
 Leave P Out tests the model with a unique holdout set of P samples for each round until all samples have been tested. Note that this process can become slow with large datasets and small values of P.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| p | 10 | int | The number of samples to leave out each round for testing. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | p | 10 | int | The number of samples to leave out each round for testing. |
 
 ##### Example:
 ```php
@@ -2629,9 +2789,9 @@ Most Reports require a Labeled dataset because they need some sort of ground tru
 A Report that aggregates the results of multiple reports. The reports are indexed by their order given at construction time.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| reports | None | array | An array of Report objects to aggregate. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | reports | [ ] | array | An array of Report objects to aggregate. |
 
 ##### Example:
 ```php
@@ -2656,9 +2816,9 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 ##### Classification
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| classes | All | array | The classes to compare in the matrix. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | classes | All | array | The classes to compare in the matrix. |
 
 ##### Example:
 ```php
@@ -2676,8 +2836,7 @@ var_dump($result);
 
 ```sh
   array(3) {
-    ["dog"]=>
-    array(2) {
+    ["dog"]=> array(2) {
       ["dog"]=> int(842)
       ["cat"]=> int(5)
       ["turtle"]=> int(0)
@@ -2949,15 +3108,15 @@ This continuous Strategy that adds a blur factor to the mean of a set of values 
 ##### Continuous
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| blur | 0.5 | float | The amount of Gaussian noise by ratio of the standard deviation to add to the guess. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | blur | 0.2 | float | The amount of Gaussian noise by ratio of the standard deviation to add to the guess. |
 
 ##### Example:
 ```php
 use Rubix\ML\Other\Strategies\BlurryMean;
 
-$strategy = new BlurryMean(0.15);
+$strategy = new BlurryMean(0.05);
 ```
 
 ### Blurry Median
@@ -2966,15 +3125,15 @@ Adds random Gaussian noise to the median of a set of values.
 ##### Continuous
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| blur | 0.5 | float | The amount of Gaussian noise by ratio of the interquartile range to add to the guess. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | blur | 0.2 | float | The amount of Gaussian noise by ratio of the interquartile range to add to the guess. |
 
 ##### Example:
 ```php
 use Rubix\ML\Other\Strategies\BlurryMedian;
 
-$strategy = new BlurryMedian(0.1);
+$strategy = new BlurryMedian(0.5);
 ```
 
 ### K Most Frequent
@@ -2983,9 +3142,9 @@ This Strategy outputs one of K most frequent discrete values at random.
 ##### Categorical
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| k | 1 | int | The number of most frequency categories to consider when formulating a guess. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 1 | int | The number of most frequency categories to consider when formulating a guess. |
 
 ##### Example:
 ```php
@@ -3081,9 +3240,9 @@ Below are the Tokenizers available in Rubix.
 Tokens are delimited by a user-specified whitespace character.
 
 ##### Parameters:
-| Param | Default | Type | Description |
-|--|--|--|--|
-| delimiter | ' ' | string | The whitespace character that delimits each token. |
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 
 ##### Example:
 ```php

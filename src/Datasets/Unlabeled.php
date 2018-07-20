@@ -123,6 +123,22 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
+     * Sort the dataset by a column in the sample matrix.
+     *
+     * @param  int  $index
+     * @param  bool  $descending
+     * @return self
+     */
+    public function sortByColumn(int $index, bool $descending = false)
+    {
+        $order = $this->column($index);
+
+        array_multisort($order, $this->samples, $descending ? SORT_DESC : SORT_ASC);
+
+        return $this;
+    }
+
+    /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
      * @param  float  $ratio
@@ -262,5 +278,31 @@ class Unlabeled extends DataFrame implements Dataset
         if (!$success) {
             throw new RuntimeException('Failed to serialize object to storage.');
         }
+    }
+
+    /**
+     * Append the given dataset to the end of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function prepend(Dataset $dataset) : Dataset
+    {
+        $this->samples = array_merge($dataset->samples(), $this->samples);
+
+        return $this;
+    }
+
+    /**
+     * Append the given dataset to the end of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset
+    {
+        $this->samples = array_merge($this->samples, $dataset->samples());
+
+        return $this;
     }
 }

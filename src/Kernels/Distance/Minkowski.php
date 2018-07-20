@@ -49,9 +49,9 @@ class Minkowski implements Distance
         $distance = 0.0;
 
         foreach ($a as $i => $coordinate) {
-            $distance += pow(abs($coordinate - $b[$i]), $this->lambda);
+            $distance += abs($coordinate - $b[$i]) ** $this->lambda;
         }
 
-        return pow($distance, 1.0 / $this->lambda);
+        return $distance ** (1.0 / $this->lambda);
     }
 }

@@ -20,7 +20,7 @@ use RuntimeException;
 class BlurryMean implements Continuous
 {
     /**
-     * The amount of gaussian noise by ratio of the standard deviation to add
+     * The amount of gaussian noise as a factor of one standard deviation to add
      * to the guess.
      *
      * @var float
@@ -46,9 +46,9 @@ class BlurryMean implements Continuous
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.05)
+    public function __construct(float $blur = 0.2)
     {
-        if ($blur < 0.0 or $blur > 1.0) {
+        if ($blur < 0.0) {
             throw new InvalidArgumentException('Blurr factor must be between 0'
                 . ' and 1.');
         }
@@ -106,7 +106,7 @@ class BlurryMean implements Continuous
         }
 
         return $this->mean + $this->blur
-            * $this->generateGaussianValue()
+            * $this->generateRandomGaussian()
             * $this->stddev;
     }
 
@@ -115,7 +115,7 @@ class BlurryMean implements Continuous
      *
      * @return float
      */
-    protected function generateGaussianValue() : float
+    protected function generateRandomGaussian() : float
     {
         return rand((int) (-1 * 1e8), (int) (1 * 1e8)) / 1e8;
     }

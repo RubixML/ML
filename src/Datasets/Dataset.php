@@ -157,6 +157,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function randomize();
 
     /**
+     * Sort the dataset by a column in the sample matrix.
+     *
+     * @param  int  $index
+     * @param  bool  $descending
+     * @return self
+     */
+    public function sortByColumn(int $index, bool $descending = false);
+
+    /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
      * @param  float  $ratio
@@ -197,4 +206,20 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     public function randomSubsetWithReplacement(int $n = 1);
+
+    /**
+     * Prepend the given dataset to the beginning of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function prepend(Dataset $dataset) : Dataset;
+
+    /**
+     * Append the given dataset to the end of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset;
 }

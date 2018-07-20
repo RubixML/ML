@@ -167,7 +167,7 @@ class Softmax implements Output
                 $cache[$j] = exp($value);
             }
 
-            $sigma = array_sum($cache);
+            $sigma = array_sum($cache) + self::EPSILON;
 
             foreach ($cache as $j => $value) {
                 $activations[$j][$i] = $value / $sigma;

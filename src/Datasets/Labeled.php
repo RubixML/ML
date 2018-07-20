@@ -218,6 +218,35 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Sort the dataset by a column in the sample matrix.
+     *
+     * @param  int  $index
+     * @param  bool  $descending
+     * @return self
+     */
+    public function sortByColumn(int $index, bool $descending = false)
+    {
+        $order = $this->column($index);
+
+        array_multisort($order, $this->samples, $this->labels, $descending ? SORT_DESC : SORT_ASC);
+
+        return $this;
+    }
+
+    /**
+     * Sort the dataset by its labels.
+     *
+     * @param  bool  $descending
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function sortByLabel(bool $descending = false) : Dataset
+    {
+        array_multisort($this->labels, $this->samples, $descending ? SORT_DESC : SORT_ASC);
+
+        return $this;
+    }
+
+    /**
      * Group samples by label and return an array of stratified datasets. i.e.
      * n datasets consisting of samples with the same label where n is equal to
      * the number of unique labels.
@@ -449,6 +478,46 @@ class Labeled extends DataFrame implements Dataset
         if (!$success) {
             throw new RuntimeException('Failed to serialize object to storage.');
         }
+    }
+
+    /**
+     * Prepend the given dataset to the beginning of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function prepend(Dataset $dataset) : Dataset
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Can only append a labeled'
+                . 'dataset.');
+        }
+
+        $this->samples = array_merge($dataset->samples(), $this->samples);
+        $this->labels = array_merge($dataset->labels(), $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * Append the given dataset to the end of this dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Can only append a labeled'
+                . 'dataset.');
+        }
+
+        $this->samples = array_merge($this->samples, $dataset->samples());
+        $this->labels = array_merge($this->labels, $dataset->labels());
+
+        return $this;
     }
 
     /**

@@ -74,16 +74,6 @@ class CountVectorizer implements Extractor
     }
 
     /**
-     * Return the size of the vocabulary.
-     *
-     * @return int
-     */
-    public function size() : int
-    {
-        return count($this->vocabulary);
-    }
-
-    /**
      * Build the vocabulary for the vectorizer.
      *
      * @param  array  $samples
