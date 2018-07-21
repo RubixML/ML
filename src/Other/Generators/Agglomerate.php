@@ -24,6 +24,13 @@ class Agglomerate implements Generator
     protected $weights;
 
     /**
+     * The number of dimensions of the agglomerate.
+     *
+     * @var int
+     */
+    protected $dimensions;
+
+    /**
      * @param  array  $generators
      * @param  array|null  $weights
      * @throws \InvalidArgumentException
@@ -32,7 +39,8 @@ class Agglomerate implements Generator
     public function __construct(array $generators = [], ?array $weights = null)
     {
         if (count($generators) === 0) {
-            throw new InvalidArgumentException('Must provide at least one blob');
+            throw new InvalidArgumentException('Must provide at least one'
+                . ' generator to agglomerate.');
         }
 
         if (is_null($weights)) {
@@ -41,12 +49,19 @@ class Agglomerate implements Generator
 
         if (count($generators) !== count($weights)) {
             throw new InvalidArgumentException('The number of weights must'
-                . ' the number of blobs.');
+                . ' the number of generators.');
         }
+
+        $dimensions = current($generators)->dimensions();
 
         foreach ($generators as $label => $generator) {
             if (!$generator instanceof Generator) {
                 throw new InvalidArgumentException('Non generator object found.');
+            }
+
+            if ($generator->dimensions() !== $dimensions) {
+                throw new InvalidArgumentException('Generators must each be'
+                    . ' the same dimension.');
             }
         }
 
@@ -58,6 +73,17 @@ class Agglomerate implements Generator
 
         $this->generators = $generators;
         $this->weights = array_combine(array_keys($generators), $normalized);
+        $this->dimensions = $dimensions;
+    }
+
+    /**
+     * Return the dimensionality of the data this generates.
+     *
+     * @return int
+     */
+    public function dimensions() : int
+    {
+        return $this->dimensions;
     }
 
     /**

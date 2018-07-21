@@ -12,6 +12,13 @@ interface Generator
     const EPSILON = 1e-8;
 
     /**
+     * Return the dimensionality of the data this generates.
+     *
+     * @return int
+     */
+    public function dimensions() : int;
+
+    /**
      * Generate n data points.
      *
      * @param  int  $n

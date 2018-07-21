@@ -13,37 +13,34 @@ class Blob implements Generator
      *
      * @var array
      */
-    protected $center = [
-        //
-    ];
+    protected $center;
 
     /**
-     * The standard deviations from the mean of the blob.
+     * The amount of noise to add to each feature column i.e the standard
+     * deviation of the gaussian noise added to the mean.
      *
      * @var array
      */
-    protected $stddev = [
-        //
-    ];
+    protected $noise;
 
     /**
      * @param  array  $center
-     * @param  mixed  $stddev
+     * @param  mixed  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $center = [0.0, 0.0], $stddev = 1.0)
+    public function __construct(array $center = [0.0, 0.0], $noise = 1.0)
     {
         if (count($center) === 0) {
             throw new InvalidArgumentException('Cannot generate data of less'
                 . ' than 1 dimension.');
         }
 
-        if (!is_array($stddev)) {
-            $stddev = array_fill(0, count($center), $stddev);
+        if (!is_array($noise)) {
+            $noise = array_fill(0, count($center), $noise);
         }
 
-        if (count($center) !== count($stddev)) {
+        if (count($center) !== count($noise)) {
             throw new InvalidArgumentException('The number of center'
                 . ' coordinates and standard deviations must be equal.');
         }
@@ -54,19 +51,29 @@ class Blob implements Generator
                     . ' a numeric type.');
             }
 
-            if (!is_int($stddev[$column]) and !is_float($stddev[$column])) {
+            if (!is_int($noise[$column]) and !is_float($noise[$column])) {
                 throw new InvalidArgumentException('Center coordinate must be'
                     . ' a numeric type.');
             }
 
-            if ($stddev[$column] < 0) {
-                throw new InvalidArgumentException('Standard deviation must be'
+            if ($noise[$column] < 0) {
+                throw new InvalidArgumentException('Noise factor must be'
                     . ' positive.');
             }
         }
 
         $this->center = $center;
-        $this->stddev = $stddev;
+        $this->noise = $noise;
+    }
+
+    /**
+     * Return the dimensionality of the data this generates.
+     *
+     * @return int
+     */
+    public function dimensions() : int
+    {
+        return count($this->center);
     }
 
     /**
@@ -83,7 +90,7 @@ class Blob implements Generator
             foreach ($this->center as $column => $mean) {
                 $samples[$i][$column] = $mean
                     + $this->generateRandomGaussian()
-                    * $this->stddev[$column];
+                    * $this->noise[$column];
             }
         }
 
