@@ -1,0 +1,40 @@
+<?php
+
+namespace Rubix\Tests\Other\Generators;
+
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Generators\Blob;
+use Rubix\ML\Other\Generators\Generator;
+use Rubix\ML\Other\Generators\Agglomerate;
+use PHPUnit\Framework\TestCase;
+
+class AgglomerateTest extends TestCase
+{
+    protected $generator;
+
+    public function setUp()
+    {
+        $this->generator = new Agglomerate([
+            'one' => new Blob([-5.0, 3.0], 0.2),
+            'two' => new Blob([5.0, -3.0], 0.2),
+        ], [1, 0.5]);
+    }
+
+    public function test_build_generator()
+    {
+        $this->assertInstanceOf(Agglomerate::class, $this->generator);
+        $this->assertInstanceOf(Generator::class, $this->generator);
+    }
+
+    public function test_generate_dataset()
+    {
+        $dataset = $this->generator->generate(20);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+        $this->assertInstanceOf(Dataset::class, $dataset);
+
+        $this->assertCount(20, $dataset);
+        $this->assertEquals(['one', 'two'], $dataset->possibleOutcomes());
+    }
+}
