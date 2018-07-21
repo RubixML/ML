@@ -40,7 +40,7 @@ class DBSCAN implements Clusterer, Persistable
     protected $minDensity;
 
     /**
-     * The distance function to use when computing the distances between points.
+     * The distance kernel to use when computing the distances between points.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
@@ -143,8 +143,7 @@ class DBSCAN implements Clusterer, Persistable
 
             $labels[$index] = $current;
 
-            $seeds = $this->groupNeighborsByDistance($dataset->row($index),
-                $dataset);
+            $seeds = $this->groupNeighborsByDistance($dataset->row($index), $dataset);
 
             if (count($seeds) >= $this->minDensity) {
                 $neighbors = array_unique(array_merge($neighbors, $seeds));

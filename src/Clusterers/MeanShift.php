@@ -148,11 +148,9 @@ class MeanShift implements Clusterer, Persistable
 
                     if ($distance <= $this->radius) {
                         foreach ($sample as $column => $feature) {
-                            $weight = exp(-(($distance ** 2)
-                                / (2 * $this->radius ** 2)));
+                            $weight = exp(-(($distance ** 2) / (2 * $this->radius ** 2)));
 
-                            $centroid1[$column] = ($weight * $feature)
-                                / $weight;
+                            $centroid1[$column] = ($weight * $feature) / $weight;
                         }
                     }
                 }
@@ -230,7 +228,7 @@ class MeanShift implements Clusterer, Persistable
     protected function calculateCentroidShift(array $previous) : float
     {
         $shift = 0.0;
-
+        
         foreach ($this->centroids as $i => $centroid) {
             foreach ($centroid as $j => $mean) {
                 $shift += abs($previous[$i][$j] - $mean);

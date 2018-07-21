@@ -69,7 +69,7 @@ class Labeled extends DataFrame implements Dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples, array $labels, $placeholder = '?')
+    public function __construct(array $samples = [], array $labels = [], $placeholder = '?')
     {
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The ratio of samples to labels'

@@ -3,6 +3,7 @@
 namespace Rubix\Tests\CrossValidation;
 
 use Rubix\ML\CrossValidation\LeavePOut;
+use Rubix\ML\CrossValidation\Validator;
 use PHPUnit\Framework\TestCase;
 
 class LeavePOutTest extends TestCase
@@ -17,5 +18,6 @@ class LeavePOutTest extends TestCase
     public function test_build_validator()
     {
         $this->assertInstanceOf(LeavePOut::class, $this->validator);
+        $this->assertInstanceOf(Validator::class, $this->validator);
     }
 }

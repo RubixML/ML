@@ -3,6 +3,7 @@
 namespace Rubix\Tests\CrossValidation;
 
 use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\CrossValidation\Validator;
 use PHPUnit\Framework\TestCase;
 
 class HoldOutTest extends TestCase
@@ -17,5 +18,6 @@ class HoldOutTest extends TestCase
     public function test_build_validator()
     {
         $this->assertInstanceOf(HoldOut::class, $this->validator);
+        $this->assertInstanceOf(Validator::class, $this->validator);
     }
 }

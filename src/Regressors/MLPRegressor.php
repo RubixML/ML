@@ -262,7 +262,8 @@ class MLPRegressor implements Regressor, Online, Persistable
 
             $score = $this->metric->score($this, $testing);
 
-            $this->progress[] = ['scores' => $score, 'steps' => $step];
+            $this->progress['scores'][] = $score;
+            $this->progress['steps'][] = $step;
 
             if ($score > $best['score']) {
                 $best['score'] = $score;

@@ -1151,7 +1151,7 @@ public priors() : array
 
 Return the log probabilities of each feature given each class label:
 ```php
-probabilities() : array
+public probabilities() : array
 ```
 
 ##### Example:

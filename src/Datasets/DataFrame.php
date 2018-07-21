@@ -30,7 +30,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples, $placeholder = '?')
+    public function __construct(array $samples = [], $placeholder = '?')
     {
         if (!is_string($placeholder) and !is_numeric($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string'
