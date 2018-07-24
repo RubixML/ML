@@ -90,9 +90,9 @@ class Agglomerate implements Generator
     /**
      * Return the normalized weights of each generator in the agglomerate.
      *
-     * @return int
+     * @return array
      */
-    public function weights() : int
+    public function weights() : array
     {
         return $this->weights;
     }

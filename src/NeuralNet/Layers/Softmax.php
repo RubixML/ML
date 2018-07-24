@@ -195,7 +195,9 @@ class Softmax implements Output
             foreach ($this->computed->getRow($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1.0 : 0.0;
 
-                $errors[$i][$j] = ($expected - $activation) + $l2penalty;
+                $errors[$i][$j] = ($expected - $activation)
+                    * ($activation * (1 - $activation))
+                    + $l2penalty;
             }
         }
 
