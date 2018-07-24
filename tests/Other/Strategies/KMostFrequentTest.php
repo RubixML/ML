@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\KMostFrequent;
 use PHPUnit\Framework\TestCase;
 
@@ -19,18 +20,19 @@ class KMostFrequentTest extends TestCase
         $this->strategy = new KMostFrequent(2);
     }
 
-    public function test_build_k_most_frequent_strategy()
+    public function test_build_strategy()
     {
         $this->assertInstanceOf(KMostFrequent::class, $this->strategy);
+        $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess_value()
+    public function test_make_guess()
     {
         $this->strategy->fit($this->values);
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->strategy->set());
+        $this->assertContains($value, $this->values);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Datasets;
+namespace Rubix\ML\Datasets\Structures;
 
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;

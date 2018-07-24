@@ -4,6 +4,7 @@ namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
+use MathPHP\Probability\Distribution\Continuous\Normal;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,25 +29,18 @@ class BlurryMean implements Continuous
     protected $blur;
 
     /**
-     * The precomputed mean of the fitted data.
+     * The probability distribution to sample from.
      *
-     * @var float|int|null
+     * @var \MathPHP\Probability\Distribution\Continuous\Normal|null
      */
-    protected $mean;
-
-    /**
-     * The precomputed standard deviation of the fitted data.
-     *
-     * @var float|null
-     */
-    protected $stddev;
+    protected $distribution;
 
     /**
      * @param  float  $blur
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.2)
+    public function __construct(float $blur = 0.1)
     {
         if ($blur < 0.0) {
             throw new InvalidArgumentException('Blurr factor must be between 0'
@@ -54,18 +48,6 @@ class BlurryMean implements Continuous
         }
 
         $this->blur = $blur;
-    }
-
-    /**
-     * Return the range of possible guesses for this strategy in a tuple.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        $r = $this->blur * $this->stddev;
-
-        return [$this->mean - $r, $this->mean + $r];
     }
 
     /**
@@ -82,15 +64,9 @@ class BlurryMean implements Continuous
                 . ' at least one value.');
         }
 
-        $this->mean = Average::mean($values);
+        $mean = Average::mean($values);
 
-        $ssd = 0.0;
-
-        foreach ($values as $value) {
-            $ssd += ($value - $this->mean) ** 2;
-        }
-
-        $this->stddev = sqrt($ssd / count($values));
+        $this->distribution = new Normal($mean, $this->blur * $mean);
     }
 
     /**
@@ -101,22 +77,10 @@ class BlurryMean implements Continuous
      */
     public function guess()
     {
-        if (is_null($this->mean) or is_null($this->stddev)) {
+        if (is_null($this->distribution)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->mean + $this->blur
-            * $this->generateRandomGaussian()
-            * $this->stddev;
-    }
-
-    /**
-     * Generate a float value between -1 and 1.
-     *
-     * @return float
-     */
-    protected function generateRandomGaussian() : float
-    {
-        return rand((int) (-1 * 1e8), (int) (1 * 1e8)) / 1e8;
+        return $this->distribution->rand();
     }
 }

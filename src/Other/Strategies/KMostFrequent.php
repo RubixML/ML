@@ -48,16 +48,6 @@ class KMostFrequent implements Categorical
     }
 
     /**
-     * Return the set of all possible guesses for this strategy in an array.
-     *
-     * @return array
-     */
-    public function set() : array
-    {
-        return $this->categories;
-    }
-
-    /**
      * Rank the classes by most frequent and chose the top k.
      *
      * @param  array  $values

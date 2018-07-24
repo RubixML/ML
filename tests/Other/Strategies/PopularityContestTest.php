@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
@@ -22,15 +23,16 @@ class PopularityContestTest extends TestCase
     public function test_build_local_celebrity_strategy()
     {
         $this->assertInstanceOf(PopularityContest::class, $this->strategy);
+        $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess_value()
+    public function test_make_guess()
     {
         $this->strategy->fit($this->values);
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->strategy->set());
+        $this->assertContains($value, $this->values);
     }
 }

@@ -3,7 +3,8 @@
 namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Descriptive;
+use MathPHP\Statistics\Average;
+use MathPHP\Probability\Distribution\Continuous\Normal;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -27,25 +28,18 @@ class BlurryMedian implements Continuous
     protected $blur;
 
     /**
-     * The precomputed median of the fitted data.
+     * The probability distribution to sample from.
      *
-     * @var float|null
+     * @var \MathPHP\Probability\Distribution\Continuous\Normal|null
      */
-    protected $median;
-
-    /**
-     * The precomputed interquartile range of the fitted data.
-     *
-     * @var float|null
-     */
-    protected $iqr;
+    protected $distribution;
 
     /**
      * @param  float  $blur
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.2)
+    public function __construct(float $blur = 0.1)
     {
         if ($blur < 0.0 or $blur > 1.0) {
             throw new InvalidArgumentException('Blur factor must be between 0'
@@ -53,18 +47,6 @@ class BlurryMedian implements Continuous
         }
 
         $this->blur = $blur;
-    }
-
-    /**
-     * Return the range of possible guesses for this strategy in a tuple.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        $r = $this->blur * $this->iqr;
-
-        return [$this->median - $r, $this->median + $r];
     }
 
     /**
@@ -80,10 +62,9 @@ class BlurryMedian implements Continuous
                 . ' at least one value.');
         }
 
-        $quartiles = Descriptive::quartiles($values);
+        $median = Average::median($values);
 
-        $this->median = $quartiles['Q2'];
-        $this->iqr = $quartiles['IQR'];
+        $this->distribution = new Normal($median, $this->blur * $median);
     }
 
     /**
@@ -93,22 +74,10 @@ class BlurryMedian implements Continuous
      */
     public function guess()
     {
-        if (is_null($this->median) or is_null($this->iqr)) {
+        if (is_null($this->distribution)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->median + $this->blur
-            * $this->generateGaussianValue()
-            * $this->iqr;
-    }
-
-    /**
-     * Generate a float value between -1 and 1.
-     *
-     * @return float
-     */
-    protected function generateGaussianValue() : float
-    {
-        return rand((int) (-1 * 1e8), (int) (1 * 1e8)) / 1e8;
+        return $this->distribution->rand();
     }
 }

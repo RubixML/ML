@@ -2,8 +2,9 @@
 
 namespace Rubix\Tests\Other\Strategies;
 
-use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\Lottery;
+use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\Categorical;
 use PHPUnit\Framework\TestCase;
 
 class LotteryTest extends TestCase
@@ -22,15 +23,16 @@ class LotteryTest extends TestCase
     public function test_build_local_celebrity_strategy()
     {
         $this->assertInstanceOf(Lottery::class, $this->strategy);
+        $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess_value()
+    public function test_make_guess()
     {
         $this->strategy->fit($this->values);
 
         $value = $this->strategy->guess();
 
-        $this->assertContains($value, $this->strategy->set());
+        $this->assertContains($value, $this->values);
     }
 }

@@ -26,16 +26,6 @@ class Lottery implements Categorical
     ];
 
     /**
-     * Return the set of all possible guesses for this strategy in an array.
-     *
-     * @return array
-     */
-    public function set() : array
-    {
-        return $this->categories;
-    }
-
-    /**
      * Store every unique outcome.
      *
      * @param  array  $values

@@ -4,6 +4,7 @@ namespace Rubix\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\WildGuess;
+use Rubix\ML\Other\Strategies\Continuous;
 use PHPUnit\Framework\TestCase;
 
 class WildGuessTest extends TestCase
@@ -16,25 +17,25 @@ class WildGuessTest extends TestCase
     {
         $this->values = [1, 2, 3, 4, 5];
 
-        $this->strategy = new WildGuess(2);
+        $this->strategy = new WildGuess();
     }
 
     public function test_build_random_copy_paste_strategy()
     {
         $this->assertInstanceOf(WildGuess::class, $this->strategy);
+        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess_value()
+    public function test_make_guess()
     {
         $this->strategy->fit($this->values);
 
-        list($min, $max) = $this->strategy->range();
+        $guess = $this->strategy->guess();
 
-        $value = $this->strategy->guess();
-
-        $this->assertThat($value, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat($guess, $this->logicalAnd(
+            $this->greaterThanOrEqual(min($this->values)),
+            $this->lessThanOrEqual(max($this->values)))
         );
     }
 }

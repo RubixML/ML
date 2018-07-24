@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Datasets\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,29 +29,6 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return $dataset;
-    }
-
-    /**
-     * Factory method to create an unsupervised dataset from an array of datasets.
-     *
-     * @param  array  $datasets
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public static function combine(array $datasets = []) : self
-    {
-        $samples = [];
-
-        foreach ($datasets as $dataset) {
-            if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Cannot merge a non'
-                    . ' dataset, ' . get_class($dataset) . ' found.');
-            }
-
-            $samples = array_merge($samples, $dataset->samples());
-        }
-
-        return new self($samples);
     }
 
     /**

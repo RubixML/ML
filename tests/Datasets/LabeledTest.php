@@ -4,7 +4,7 @@ namespace Rubix\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
 
 class LabeledTest extends TestCase

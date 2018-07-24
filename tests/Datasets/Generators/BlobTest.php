@@ -4,22 +4,22 @@ namespace Rubix\Tests\Other\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Generators\Circle;
-use Rubix\ML\Other\Generators\Generator;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-class CircleTest extends TestCase
+class BlobTest extends TestCase
 {
     protected $generator;
 
     public function setUp()
     {
-        $this->generator = new Circle([0, 0], 1.0, 1.0);
+        $this->generator = new Blob([0.0, 0.0], 1.0);
     }
 
     public function test_build_generator()
     {
-        $this->assertInstanceOf(Circle::class, $this->generator);
+        $this->assertInstanceOf(Blob::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
     }
 

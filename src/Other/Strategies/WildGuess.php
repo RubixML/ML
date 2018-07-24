@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use MathPHP\Probability\Distribution\Continuous\Uniform;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -18,50 +19,11 @@ use RuntimeException;
 class WildGuess implements Continuous
 {
     /**
-     * The number of decimal precision of the guess.
+     * The probability distribution to sample from.
      *
-     * @var int
+     * @var \MathPHP\Probability\Distribution\Continuous\Uniform|null
      */
-    protected $decimals;
-
-    /**
-     * The minimum value of the fitted data.
-     *
-     * @var float|null
-     */
-    protected $min;
-
-    /**
-     * The maximum value of the fitted data.
-     *
-     * @var float|null
-     */
-    protected $max;
-
-    /**
-     * @param  int  $decimals
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function __construct(int $decimals = 2)
-    {
-        if ($decimals < 0) {
-            throw new InvalidArgumentException('The number of decimals must be'
-                . ' 0 or greater.');
-        }
-
-        $this->decimals = $decimals;
-    }
-
-    /**
-     * Return the range of possible guesses for this strategy in a tuple.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        return [$this->min, $this->max];
-    }
+    protected $distribution;
 
     /**
      * Copy the values.
@@ -77,8 +39,7 @@ class WildGuess implements Continuous
                 . ' at least one value.');
         }
 
-        $this->min = min($values);
-        $this->max = max($values);
+        $this->distribution = new Uniform(min($values), max($values));
     }
 
     /**
@@ -89,15 +50,10 @@ class WildGuess implements Continuous
      */
     public function guess()
     {
-        if (is_null($this->min) or is_null($this->max)) {
+        if (is_null($this->distribution)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        if ($this->decimals === 0) {
-            return rand((int) $this->min, (int) $this->max);
-        }
-
-        return rand((int) ($this->min * $this->decimals),
-            (int) ($this->max * $this->decimals)) / $this->decimals;
+        return $this->distribution->rand();
     }
 }

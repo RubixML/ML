@@ -34,16 +34,6 @@ class PopularityContest implements Categorical
     ];
 
     /**
-     * Return the set of all possible guesses for this strategy in an array.
-     *
-     * @return array
-     */
-    public function set() : array
-    {
-        return array_keys($this->popularity);
-    }
-
-    /**
      * Calculate the popularity of each unique class label in the dataset.
      *
      * @param  array  $values

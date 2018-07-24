@@ -4,16 +4,16 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Other\Generators\Blob;
-use Rubix\ML\Other\Generators\Circle;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\Other\Generators\Agglomerate;
 use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -23,16 +23,15 @@ echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 
 $generator = new Agglomerate([
-    'zero' => new Blob([0, 0], 0.3),
-    'one' => new Circle([0, 0], 1.0, 1.0),
-    'two' => new Circle([0, 0], 3.0, 1.0),
-    'three' => new Circle([0, 0], 5.0, 1.0),
-    'four' => new Circle([0, 0], 8.0, 2.0),
+    'one' => new Circle([0, 0], 1.0, 0.1),
+    'two' => new Circle([0, 0], 3.0, 0.2),
+    'three' => new Circle([0, 0], 5.0, 0.05),
+    'four' => new Circle([0, 0], 8.0, 0.15),
 ], [
-    8, 5, 7, 10, 4,
+    2, 5, 7, 10,
 ]);
 
-$dataset = $generator->generate(1000);
+$dataset = $generator->generate(2000);
 
 $estimator = new KNearestNeighbors(3, new Euclidean());
 

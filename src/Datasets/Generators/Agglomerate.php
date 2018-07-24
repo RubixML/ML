@@ -1,11 +1,22 @@
 <?php
 
-namespace Rubix\ML\Other\Generators;
+namespace Rubix\ML\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Agglomerate
+ *
+ * An Agglomerate is a collection of other generators each assigned a label.
+ * Agglomerates are useful for classification, clustering, and anomaly detection
+ * problems where the label is a discrete value.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Agglomerate implements Generator
 {
     /**
@@ -74,6 +85,16 @@ class Agglomerate implements Generator
         $this->generators = $generators;
         $this->weights = array_combine(array_keys($generators), $normalized);
         $this->dimensions = $dimensions;
+    }
+
+    /**
+     * Return the normalized weights of each generator in the agglomerate.
+     *
+     * @return int
+     */
+    public function weights() : int
+    {
+        return $this->weights;
     }
 
     /**

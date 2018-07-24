@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Datasets\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -36,30 +37,6 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return $dataset;
-    }
-
-    /**
-     * Factory method to create a labeled dataset from an array of datasets.
-     *
-     * @param  array  $datasets
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public static function combine(array $datasets) : self
-    {
-        $samples = $labels = [];
-
-        foreach ($datasets as $dataset) {
-            if (!$dataset instanceof Labeled) {
-                throw new InvalidArgumentException('Cannot merge non-Labeled'
-                    . ' datasets, ' . get_class($dataset) . ' found.');
-            }
-
-            $samples = array_merge($samples, $dataset->samples());
-            $labels = array_merge($labels, $dataset->labels());
-        }
-
-        return new self($samples, $labels);
     }
 
     /**
@@ -370,7 +347,7 @@ class Labeled extends DataFrame implements Dataset
             foreach ($this->_stratify() as $label => $stratum) {
                 $n = (int) (count($stratum) / $k);
 
-                $samples = array_merge($samples, array_splice($stratum, 0, $n));
+                $samples = array_merge($samples, array_slice($stratum, $i * $n, $n));
                 $labels = array_merge($labels, array_fill(0, $n, $label));
             }
 

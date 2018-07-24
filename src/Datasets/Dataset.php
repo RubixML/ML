@@ -18,14 +18,6 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public static function restore(string $path);
 
     /**
-     * Build a dataset object from an array of datasets.
-     *
-     * @param  array  $datasets
-     * @return self
-     */
-    public static function combine(array $datasets);
-
-    /**
      * Return the 2-dimensional sample matrix.
      *
      * @return array

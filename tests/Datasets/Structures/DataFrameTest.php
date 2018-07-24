@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Tests\Datasets;
+namespace Rubix\Tests\Datasets\Structures;
 
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 

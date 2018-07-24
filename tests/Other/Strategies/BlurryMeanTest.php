@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
+use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\BlurryMean;
 use PHPUnit\Framework\TestCase;
 
@@ -19,22 +20,22 @@ class BlurryMeanTest extends TestCase
         $this->strategy = new BlurryMean();
     }
 
-    public function test_build_blurry_mean_strategy()
+    public function test_build_strategy()
     {
         $this->assertInstanceOf(BlurryMean::class, $this->strategy);
+        $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_guess_value()
+    public function test_make_guess()
     {
         $this->strategy->fit($this->values);
 
-        list($min, $max) = $this->strategy->range();
+        $guess = $this->strategy->guess();
 
-        $value = $this->strategy->guess();
-
-        $this->assertThat($value, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat($guess, $this->logicalAnd(
+            $this->greaterThanOrEqual(min($this->values)),
+            $this->lessThanOrEqual(max($this->values)))
         );
     }
 }

@@ -56,18 +56,18 @@ class KFold implements Validator
         $scores = [];
 
         for ($i = 0; $i < $this->k; $i++) {
-            $training = [];
+            $training = new Labeled();
             $testing = null;
 
             for ($j = 0; $j < $this->k; $j++) {
                 if ($i === $j) {
                     $testing = clone $folds[$j];
                 } else {
-                    $training[] = clone $folds[$j];
+                    $training->append($folds[$j]);
                 }
             }
 
-            $estimator->train(Labeled::combine($training));
+            $estimator->train($training);
 
             $scores[] = $metric->score($estimator, $testing);
         }

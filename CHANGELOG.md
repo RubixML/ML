@@ -2,6 +2,8 @@
     - Added sorting by column to Dataset
     - Added sort by label to Labeled Dataset
     - Added appending and prepending to Dataset
+    - Added Dataset Generators
+    - Fixed bug in stratified fold
 
 - 0.0.3-alpha
     - Added Extra Tree classifier
