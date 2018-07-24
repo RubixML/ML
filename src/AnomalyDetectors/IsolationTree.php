@@ -7,7 +7,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Terminal;
+use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
 /**
@@ -109,9 +109,9 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
      * Randomized algorithm to find a split point in the data.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Decision
+    protected function findBestSplit(array $data) : Comparison
     {
         $index = rand(0, count($data[0]) - 1);
 
@@ -121,7 +121,7 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
 
         $groups = $this->partition($data, $index, $value);
 
-        return new Decision($index, $value, $score, $groups);
+        return new Comparison($index, $value, $score, $groups);
     }
 
     /**
@@ -129,9 +129,9 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
      *
      * @param  array  $data
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Terminal
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function terminate(array $data, int $depth) : Terminal
+    protected function terminate(array $data, int $depth) : Decision
     {
         $c = $this->calculateCFactor(count($data));
 
@@ -139,7 +139,7 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
 
         $prediction = $probability > $this->threshold ? 1 : 0;
 
-        return new Terminal($prediction, [
+        return new Decision($prediction, [
             'probability' => $probability,
         ]);
     }

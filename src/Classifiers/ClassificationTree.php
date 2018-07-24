@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Terminal;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\ArgMax;
 use InvalidArgumentException;
 
@@ -150,9 +150,9 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
      * gini or sse score of 0.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Decision
+    protected function findBestSplit(array $data) : Comparison
     {
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -179,7 +179,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
             }
         }
 
-        return new Decision($best['index'], $best['value'],
+        return new Comparison($best['index'], $best['value'],
             $best['gini'], $best['groups']);
     }
 
@@ -189,9 +189,9 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
      *
      * @param  array  $data
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Terminal
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function terminate(array $data, int $depth) : Terminal
+    protected function terminate(array $data, int $depth) : Decision
     {
         $classes = array_column($data, count(current($data)) - 1);
 
@@ -205,7 +205,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
 
         $prediction = ArgMax::compute($probabilities);
 
-        return new Terminal($prediction, [
+        return new Decision($prediction, [
             'probabilities' => $probabilities,
         ]);
     }

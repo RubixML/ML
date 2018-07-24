@@ -5,134 +5,49 @@ namespace Rubix\ML\Graph\Nodes;
 class Decision extends BinaryNode
 {
     /**
-     * The index of the feature column.
-     *
-     * @var int
-     */
-    protected $index;
-
-    /**
-     * The split value.
+     * The predicted outcome.
      *
      * @var mixed
      */
-    protected $value;
+    protected $outcome;
 
     /**
-     * The score of the decision. i.e. the amount of gini impurity or sse that
-     * the split introduces.
-     *
-     * @var float
-     */
-    protected $score;
-
-    /**
-     * The left and right splits of the training data.
+     * The prediction meta data.
      *
      * @var array
      */
-    protected $groups = [
+    protected $meta = [
         //
     ];
 
     /**
-     * The number of training samples this node is responsible for.
-     *
-     * @var int
-     */
-    protected $n;
-
-    /**
-     * @param  int  $index
-     * @param  mixed  $value
-     * @param  float  $score
-     * @param  array  $groups
+     * @param  mixed  $outcome
+     * @param  array  $meta
      * @return void
      */
-    public function __construct(int $index, $value, float $score, array $groups)
+    public function __construct($outcome, array $meta = [])
     {
-        $this->index = $index;
-        $this->value = $value;
-        $this->score = $score;
-        $this->n = array_sum(array_map('count', $groups));
-        $this->groups = $groups;
+        $this->outcome = $outcome;
+        $this->meta = $meta;
     }
 
     /**
-     * @return int
-     */
-    public function index() : int
-    {
-        return $this->index;
-    }
-
-    /**
+     * Return the predicted outcome.
+     *
      * @return mixed
      */
-    public function value()
+    public function outcome()
     {
-        return $this->value;
+        return $this->outcome;
     }
 
     /**
-     * @return float
-     */
-    public function score() : float
-    {
-        return $this->score;
-    }
-
-    /**
-     * @return array
-     */
-    public function groups() : array
-    {
-        return $this->groups;
-    }
-
-    /**
-     * @return int
-     */
-    public function n() : int
-    {
-        return $this->n;
-    }
-
-    /**
-     * Return the  decearse in impurity this decision node provides. A negative
-     * score means that the decision node actually causes its children to become
-     * less pure.
+     * Return a meta value.
      *
-     * @return float
+     * @return mixed
      */
-    public function impurityDecrease() : float
+    public function meta(string $property)
     {
-        $decrease = $this->score;
-
-        if (isset($this->left)) {
-            if ($this->left instanceof Decision) {
-                $decrease -= ($this->left->n() / $this->n)
-                    * $this->left->score();
-            }
-        }
-
-        if (isset($this->right)) {
-            if ($this->right instanceof Decision) {
-                $decrease -= ($this->right->n() / $this->n)
-                    * $this->right->score();
-            }
-        }
-
-        return $decrease;
-    }
-
-    /**
-     * Remove the left and right splits of training data.
-     *
-     * @return void
-     */
-    public function cleanup() : void
-    {
-        unset($this->groups);
+        return $this->meta[$property] ?? null;
     }
 }

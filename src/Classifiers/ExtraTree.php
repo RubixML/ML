@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
 /**
@@ -26,9 +26,9 @@ class ExtraTree extends ClassificationTree
      * impurity among a random selection of $maxFeatures features.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Decision
+    protected function findBestSplit(array $data) : Comparison
     {
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -55,7 +55,7 @@ class ExtraTree extends ClassificationTree
             }
         }
 
-        return new Decision($best['index'], $best['value'],
+        return new Comparison($best['index'], $best['value'],
             $best['gini'], $best['groups']);
     }
 }

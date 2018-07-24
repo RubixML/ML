@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Graph;
 
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Terminal;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
 
@@ -12,7 +12,7 @@ abstract class DecisionTree implements Tree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Decision|null
+     * @var \Rubix\ML\Graph\Nodes\Comparison|null
      */
     protected $root;
 
@@ -64,9 +64,9 @@ abstract class DecisionTree implements Tree
      * Greedy algorithm to chose the best split point for a given set of data.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    abstract protected function findBestSplit(array $data) : Decision;
+    abstract protected function findBestSplit(array $data) : Comparison;
 
     /**
      * Terminate the branch by selecting the most likely outcome as the
@@ -74,9 +74,9 @@ abstract class DecisionTree implements Tree
      *
      * @param  array  $data
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Terminal
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    abstract protected function terminate(array $data, int $depth) : Terminal;
+    abstract protected function terminate(array $data, int $depth) : Decision;
 
     /**
      * The complexity of the decision tree i.e. the number of splits.
@@ -89,9 +89,9 @@ abstract class DecisionTree implements Tree
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Decision|null
+     * @return \Rubix\ML\Graph\Nodes\Comparison|null
      */
-    public function root() : ?Decision
+    public function root() : ?Comparison
     {
         return $this->root;
     }
@@ -142,7 +142,7 @@ abstract class DecisionTree implements Tree
         $importances = [];
 
         foreach ($this->traverse($this->root) as $node) {
-            if ($node instanceof Decision) {
+            if ($node instanceof Comparison) {
                 if (isset($importances[$node->index()])) {
                     $importances[$node->index()] += $node->impurityDecrease();
                 } else {
@@ -184,11 +184,11 @@ abstract class DecisionTree implements Tree
      * responsible for less values than $minSamples or b) the max depth of the
      * branch has been reached.
      *
-     * @param  \Rubix\ML\Graph\Nodes\Decision  $current
+     * @param  \Rubix\ML\Graph\Nodes\Comparison  $current
      * @param  int  $depth
      * @return void
      */
-    protected function split(Decision $current, int $depth) : void
+    protected function split(Comparison $current, int $depth) : void
     {
         list($left, $right) = $current->groups();
 
@@ -237,18 +237,18 @@ abstract class DecisionTree implements Tree
      * Search the tree for a terminal node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Terminal|null
+     * @return \Rubix\ML\Graph\Nodes\Decision|null
      */
-    public function search(array $sample) : ?Terminal
+    public function search(array $sample) : ?Decision
     {
         $current = $this->root;
 
         while (isset($current)) {
-            if ($current instanceof Terminal) {
+            if ($current instanceof Decision) {
                 return $current;
             }
 
-            if ($current instanceof Decision) {
+            if ($current instanceof Comparison) {
                 if (is_string($current->value())) {
                     if ($sample[$current->index()] === $current->value()) {
                         $current = $current->left();
@@ -277,7 +277,7 @@ abstract class DecisionTree implements Tree
      */
     public function traverse(BinaryNode $current) : array
     {
-        if ($current instanceof Terminal) {
+        if ($current instanceof Decision) {
             return [$current];
         }
 

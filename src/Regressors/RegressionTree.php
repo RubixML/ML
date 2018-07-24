@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
-use Rubix\ML\Graph\Nodes\Terminal;
+use Rubix\ML\Graph\Nodes\Comparison;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
@@ -123,9 +123,9 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      * early if it finds a perfect split. i.e. a sse score of 0.
      *
      * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Decision
+    protected function findBestSplit(array $data) : Comparison
     {
         $best = [
             'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -162,7 +162,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
             }
         }
 
-        return new Decision($best['index'], $best['value'],
+        return new Comparison($best['index'], $best['value'],
             $best['ssd'], $best['groups']);
     }
 
@@ -171,9 +171,9 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      *
      * @param  array  $data
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Terminal
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function terminate(array $data, int $depth) : Terminal
+    protected function terminate(array $data, int $depth) : Decision
     {
         $outcomes = array_column($data, count($data[0]) - 1);
 
@@ -187,7 +187,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
 
         $variance /= count($outcomes);
 
-        return new Terminal($prediction, [
+        return new Decision($prediction, [
             'variance' => $variance,
         ]);
     }
