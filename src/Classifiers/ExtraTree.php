@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
@@ -25,10 +26,10 @@ class ExtraTree extends ClassificationTree
      * Randomized algorithm to that choses the split point with the lowest gini
      * impurity among a random selection of $maxFeatures features.
      *
-     * @param  array  $data
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -37,9 +38,11 @@ class ExtraTree extends ClassificationTree
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            $value = $data[rand(0, count($data) - 1)][$index];
+            $sample = $dataset->row(rand(0, count($dataset) - 1));
 
-            $groups = $this->partition($data, $index, $value);
+            $value = $sample[$index];
+
+            $groups = $dataset->partition($index, $value);
 
             $gini = $this->calculateGiniImpurity($groups);
 

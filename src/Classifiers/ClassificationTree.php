@@ -6,7 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\DecisionTree;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\ArgMax;
@@ -22,7 +22,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends DecisionTree implements Multiclass, Probabilistic, Persistable
+class ClassificationTree extends CART implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.
@@ -99,13 +99,7 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
         $this->classes = $dataset->possibleOutcomes();
         $this->indices = $dataset->indices();
 
-        $data = $dataset->samples();
-
-        foreach ($data as $index => &$sample) {
-            array_push($sample, $dataset->label($index));
-        }
-
-        $this->grow($data);
+        $this->grow($dataset);
 
         unset($this->indices);
     }
@@ -149,10 +143,10 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
      * The algorithm will terminate early if it finds a perfect split. i.e. a
      * gini or sse score of 0.
      *
-     * @param  array  $data
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $best = [
             'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -161,15 +155,15 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            foreach ($data as $row) {
-                $groups = $this->partition($data, $index, $row[$index]);
+            foreach ($dataset as $sample) {
+                $groups = $dataset->partition($index, $sample[$index]);
 
                 $gini = $this->calculateGiniImpurity($groups);
 
                 if ($gini < $best['gini']) {
                     $best['gini'] = $gini;
                     $best['index'] = $index;
-                    $best['value'] = $row[$index];
+                    $best['value'] = $sample[$index];
                     $best['groups'] = $groups;
                 }
 
@@ -187,19 +181,16 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
      * Terminate the branch by selecting the class outcome with the highest
      * probability.
      *
-     * @param  array  $data
-     * @param  int  $depth
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function terminate(array $data, int $depth) : Decision
+    protected function terminate(Labeled $dataset) : Decision
     {
-        $classes = array_column($data, count(current($data)) - 1);
-
         $probabilities = array_fill_keys($this->classes, 0.0);
 
-        $n = count($classes);
+        $n = $dataset->numRows();
 
-        foreach (array_count_values($classes) as $class => $count) {
+        foreach (array_count_values($dataset->labels()) as $class => $count) {
             $probabilities[$class] = $count / $n;
         }
 
@@ -223,15 +214,13 @@ class ClassificationTree extends DecisionTree implements Multiclass, Probabilist
         $gini = 0.0;
 
         foreach ($groups as $group) {
-            $n = count($group);
+            $n = $group->numRows();
 
             if ($n === 0) {
                 continue 1;
             }
 
-            $values = array_column($group, count(current($group)) - 1);
-
-            foreach (array_count_values($values) as $count) {
+            foreach (array_count_values($group->labels()) as $count) {
                 $gini += (1.0 - ($count / $n) ** 2) * ($n / $total);
             }
         }

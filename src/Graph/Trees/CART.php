@@ -1,13 +1,15 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
 
-abstract class DecisionTree implements Tree
+abstract class CART implements Tree
 {
     /**
      * The root node of the tree.
@@ -58,25 +60,25 @@ abstract class DecisionTree implements Tree
 
         $this->maxDepth = $maxDepth;
         $this->minSamples = $minSamples;
+        $this->splits = 0;
     }
 
     /**
      * Greedy algorithm to chose the best split point for a given set of data.
      *
-     * @param  array  $data
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    abstract protected function findBestSplit(array $data) : Comparison;
+    abstract protected function findBestSplit(Labeled $dataset) : Comparison;
 
     /**
      * Terminate the branch by selecting the most likely outcome as the
      * prediction.
      *
-     * @param  array  $data
-     * @param  int  $depth
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    abstract protected function terminate(array $data, int $depth) : Decision;
+    abstract protected function terminate(Labeled $dataset) : Decision;
 
     /**
      * The complexity of the decision tree i.e. the number of splits.
@@ -94,37 +96,6 @@ abstract class DecisionTree implements Tree
     public function root() : ?Comparison
     {
         return $this->root;
-    }
-
-    /**
-     * The height of the tree. O(V) because node heights are not memoized.
-     *
-     * @return int
-     */
-    public function height() : int
-    {
-        return isset($this->root) ? $this->root->height() : 0;
-    }
-
-    /**
-     * The balance factor of the tree. O(V) because balance requires height of
-     * each node.
-     *
-     * @return int
-     */
-    public function balance() : int
-    {
-        return isset($this->root) ? $this->root->balance() : 0;
-    }
-
-    /**
-     * Is the tree bare?
-     *
-     * @return bool
-     */
-    public function bare() : bool
-    {
-        return is_null($this->root);
     }
 
     /**
@@ -166,12 +137,12 @@ abstract class DecisionTree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  array  $data
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function grow(array $data) : void
+    public function grow(Labeled $dataset) : void
     {
-        $this->root = $this->findBestSplit($data);
+        $this->root = $this->findBestSplit($dataset);
 
         $this->splits = 1;
 
@@ -179,7 +150,7 @@ abstract class DecisionTree implements Tree
     }
 
     /**
-     * Recursive function to split the training data adding decision nodes along
+     * Recursive function to split the training data adding comparison nodes along
      * the way. The terminating conditions are a) split would make node
      * responsible for less values than $minSamples or b) the max depth of the
      * branch has been reached.
@@ -194,8 +165,8 @@ abstract class DecisionTree implements Tree
 
         $current->cleanup();
 
-        if (empty($left) or empty($right)) {
-            $node = $this->terminate(array_merge($left, $right), $depth);
+        if ($left->empty() or $right->empty()) {
+            $node = $this->terminate($left->append($right));
 
             $current->attachLeft($node);
             $current->attachRight($node);
@@ -203,12 +174,12 @@ abstract class DecisionTree implements Tree
         }
 
         if ($depth >= $this->maxDepth) {
-            $current->attachLeft($this->terminate($left, $depth));
-            $current->attachRight($this->terminate($right, $depth));
+            $current->attachLeft($this->terminate($left));
+            $current->attachRight($this->terminate($right));
             return;
         }
 
-        if (count($left) > $this->minSamples) {
+        if ($left->numRows() > $this->minSamples) {
             $node = $this->findBestSplit($left);
 
             $current->attachLeft($node);
@@ -217,10 +188,10 @@ abstract class DecisionTree implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachLeft($this->terminate($left, $depth));
+            $current->attachLeft($this->terminate($left));
         }
 
-        if (count($right) > $this->minSamples) {
+        if ($right->numRows() > $this->minSamples) {
             $node = $this->findBestSplit($right);
 
             $current->attachRight($node);
@@ -229,7 +200,7 @@ abstract class DecisionTree implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachRight($this->terminate($right, $depth));
+            $current->attachRight($this->terminate($right));
         }
     }
 
@@ -295,35 +266,12 @@ abstract class DecisionTree implements Tree
     }
 
     /**
-     * Partition a dataset into left and right subsets.
+     * Is the tree bare?
      *
-     * @param  array  $data
-     * @param  int  $index
-     * @param  mixed  $value
-     * @return array
+     * @return bool
      */
-    protected function partition(array $data, int $index, $value) : array
+    public function bare() : bool
     {
-        $left = $right = [];
-
-        if (is_string($value)) {
-            foreach ($data as $row) {
-                if ($row[$index] === $value) {
-                    $left[] = $row;
-                } else {
-                    $right[] = $row;
-                }
-            }
-        } else {
-            foreach ($data as $row) {
-                if ($row[$index] < $value) {
-                    $left[] = $row;
-                } else {
-                    $right[] = $row;
-                }
-            }
-        }
-
-        return [$left, $right];
+        return is_null($this->root);
     }
 }

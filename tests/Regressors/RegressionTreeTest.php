@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Regressors;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
@@ -31,6 +32,7 @@ class RegressionTreeTest extends TestCase
     public function test_build_regressor()
     {
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
+        $this->assertInstanceOf(CART::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

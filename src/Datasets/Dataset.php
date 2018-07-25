@@ -184,6 +184,16 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function batch(int $n = 50) : array;
 
     /**
+     * Partition the dataset into left and right subsets by a specified feature
+     * column.
+     *
+     * @param  int  $index
+     * @param  mixed  $value
+     * @return array
+     */
+    public function partition(int $index, $value) : array;
+
+    /**
      * Generate a random subset of n samples.
      *
      * @param  int  $n
@@ -214,4 +224,11 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function append(Dataset $dataset) : Dataset;
+
+    /**
+     * Is the dataset empty?
+     *
+     * @return bool
+     */
+    public function empty() : bool;
 }

@@ -5,8 +5,8 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\CART;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Graph\DecisionTree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use MathPHP\Statistics\RandomVariable;
@@ -22,7 +22,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegressionTree extends DecisionTree implements Regressor, Persistable
+class RegressionTree extends CART implements Regressor, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.
@@ -66,10 +66,10 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
                 . ' greater.');
         }
 
-        parent::__construct($maxDepth, $minSamples);
-
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
+
+        parent::__construct($maxDepth, $minSamples);
     }
 
     /**
@@ -89,13 +89,7 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
 
         $this->indices = $dataset->indices();
 
-        $data = $dataset->samples();
-
-        foreach ($data as $index => &$sample) {
-            array_push($sample, $dataset->label($index));
-        }
-
-        $this->grow($data);
+        $this->grow($dataset);
 
         unset($this->indices);
     }
@@ -122,10 +116,10 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
      * as determined by its sum of squared error. The algorithm will terminate
      * early if it finds a perfect split. i.e. a sse score of 0.
      *
-     * @param  array  $data
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(array $data) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $best = [
             'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
@@ -134,25 +128,25 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            foreach ($data as $row) {
-                $groups = $this->partition($data, $index, $row[$index]);
+            foreach ($dataset as $sample) {
+                $value = $sample[$index];
+
+                $groups = $dataset->partition($index, $value);
 
                 $ssd = 0.0;
 
                 foreach ($groups as $group) {
-                    if (count($group) === 0) {
+                    if ($group->numRows() === 0) {
                         continue 1;
                     }
 
-                    $values = array_column($group, count($group[0]) - 1);
-
-                    $ssd += RandomVariable::sumOfSquaresDeviations($values);
+                    $ssd += RandomVariable::sumOfSquaresDeviations($group->labels());
                 }
 
                 if ($ssd < $best['ssd']) {
                     $best['ssd'] = $ssd;
                     $best['index'] = $index;
-                    $best['value'] = $row[$index];
+                    $best['value'] = $value;
                     $best['groups'] = $groups;
                 }
 
@@ -169,26 +163,11 @@ class RegressionTree extends DecisionTree implements Regressor, Persistable
     /**
      * Terminate the branch with the most likely outcome.
      *
-     * @param  array  $data
-     * @param  int  $depth
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function terminate(array $data, int $depth) : Decision
+    protected function terminate(Labeled $dataset) : Decision
     {
-        $outcomes = array_column($data, count($data[0]) - 1);
-
-        $prediction =  Average::mean($outcomes);
-
-        $variance = 0.0;
-
-        foreach ($outcomes as $outcome) {
-            $variance += ($outcome - $prediction) ** 2;
-        }
-
-        $variance /= count($outcomes);
-
-        return new Decision($prediction, [
-            'variance' => $variance,
-        ]);
+        return new Decision(Average::mean($dataset->labels()));
     }
 }

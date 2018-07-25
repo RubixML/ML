@@ -187,6 +187,50 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
+     * Partition the dataset into left and right subsets by a specified feature
+     * column. The dataset is split such that, for categorical values, the left
+     * subset contains all samples that match the value and the right side
+     * contains samples that do not match. For continuous values, the left side
+     * contains all the  samples that are less than the target value, and the
+     * right side contains the samples that are greater than or equal to the
+     * value.
+     *
+     * @param  int  $index
+     * @param  mixed  $value
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function partition(int $index, $value) : array
+    {
+        if (!is_string($value) and !is_numeric($value)) {
+            throw new InvalidArgumentException('Value must be a string or'
+                . ' numeric type.');
+        }
+
+        $left = $right = [];
+
+        if ($this->type($index) === self::CATEGORICAL) {
+            foreach ($this->samples as $i => $sample) {
+                if ($sample[$index] === $value) {
+                    $left[] = $sample;
+                } else {
+                    $right[] = $sample;
+                }
+            }
+        } else {
+            foreach ($this->samples as $i => $sample) {
+                if ($sample[$index] < $value) {
+                    $left[] = $sample;
+                } else {
+                    $right[] = $sample;
+                }
+            }
+        }
+
+        return [new self($left), new self($right)];
+    }
+
+    /**
      * Generate a random subset.
      *
      * @param  int  $n

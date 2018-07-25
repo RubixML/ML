@@ -103,7 +103,7 @@ class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $n = (int) ($this->ratio * $dataset->numRows());
+        $n = (int) round($this->ratio * $dataset->numRows());
 
         $maxDepth = (int) ceil(log($n, 2));
 
@@ -151,7 +151,7 @@ class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
             $probability = 0.0;
 
             foreach ($this->forest as $tree) {
-                $probability += $tree->search($sample)->meta('probability');
+                $probability += $tree->search($sample)->score();
             }
 
             $probabilities[] = $probability / $n;

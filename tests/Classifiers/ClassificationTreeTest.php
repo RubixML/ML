@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Classifiers;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
@@ -33,6 +34,7 @@ class ClassificationTreeTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
+        $this->assertInstanceOf(CART::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);

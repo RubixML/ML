@@ -187,9 +187,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      *
      * @return bool
      */
-    public function isEmpty() : bool
+    public function empty() : bool
     {
-        return $this->numRows() === 0;
+        return empty($this->samples);
     }
 
     /**

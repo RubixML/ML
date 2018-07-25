@@ -1,11 +1,10 @@
 <?php
-
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\DecisionTree;
+use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
@@ -22,7 +21,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationTree extends DecisionTree implements Detector, Probabilistic, Persistable
+class IsolationTree extends ITree implements Detector, Probabilistic, Persistable
 {
     /**
      * The threshold isolation score betweeen 0 and 1 where 0 is not likely to
@@ -31,13 +30,6 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
      * @var float
      */
     protected $threshold;
-
-    /**
-     * The C factor represents the average length of the path of a search.
-     *
-     * @var float
-     */
-    protected $c;
 
     /**
      * @param  int  $maxDepth
@@ -53,9 +45,9 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
                 . ' be between 0 and 1.');
         }
 
-        parent::__construct($maxDepth, $minSamples);
-
         $this->threshold = $threshold;
+
+        parent::__construct($maxDepth, $minSamples);
     }
 
     /**
@@ -66,9 +58,7 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
      */
     public function train(Dataset $dataset) : void
     {
-        $this->c = $this->calculateCFactor($dataset->numRows());
-
-        $this->grow($dataset->samples());
+        $this->grow($dataset);
     }
 
     /**
@@ -82,7 +72,8 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->outcome();
+            $predictions[] = $this->search($sample)->score()
+                > $this->threshold ? 1 : 0;
         }
 
         return $predictions;
@@ -99,63 +90,9 @@ class IsolationTree extends DecisionTree implements Detector, Probabilistic, Per
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)->meta('probability');
+            $probabilities[] = $this->search($sample)->score();
         }
 
         return $probabilities;
-    }
-
-    /**
-     * Randomized algorithm to find a split point in the data.
-     *
-     * @param  array  $data
-     * @return \Rubix\ML\Graph\Nodes\Comparison
-     */
-    protected function findBestSplit(array $data) : Comparison
-    {
-        $index = rand(0, count($data[0]) - 1);
-
-        $value = $data[rand(0, count($data) - 1)][$index];
-
-        $score = count($data);
-
-        $groups = $this->partition($data, $index, $value);
-
-        return new Comparison($index, $value, $score, $groups);
-    }
-
-    /**
-     * Terminate the branch.
-     *
-     * @param  array  $data
-     * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Decision
-     */
-    protected function terminate(array $data, int $depth) : Decision
-    {
-        $c = $this->calculateCFactor(count($data));
-
-        $probability = 2.0 ** -(($depth + $c) / $this->c);
-
-        $prediction = $probability > $this->threshold ? 1 : 0;
-
-        return new Decision($prediction, [
-            'probability' => $probability,
-        ]);
-    }
-
-    /**
-     * Calculate the average path length of an unsuccessful search for n nodes.
-     *
-     * @param  int  $n
-     * @return float
-     */
-    protected function calculateCFactor(int $n) : float
-    {
-        if ($n <= 1) {
-            return 0.0;
-        }
-
-        return 2.0 * (log($n - 1) + M_EULER) - (2.0 * ($n - 1) / $n);
     }
 }
