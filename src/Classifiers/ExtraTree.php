@@ -58,7 +58,7 @@ class ExtraTree extends ClassificationTree
             }
         }
 
-        return new Comparison($best['index'], $best['value'],
-            $best['gini'], $best['groups']);
+        return new Comparison($best['index'], $best['value'], $best['groups'],
+            $best['gini']);
     }
 }

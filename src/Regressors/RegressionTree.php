@@ -39,7 +39,7 @@ class RegressionTree extends CART implements Regressor, Persistable
     protected $tolerance;
 
     /**
-     * The memoized random column index array.
+     * The randomized column indices.
      *
      * @var array|null
      */
@@ -47,13 +47,13 @@ class RegressionTree extends CART implements Regressor, Persistable
 
     /**
      * @param  int  $maxDepth
-     * @param  int  $minSamples
+     * @param  int  $maxLeafSize
      * @param  int  $maxFeatures
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5,
                             int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-4)
     {
         if ($maxFeatures < 1) {
@@ -69,7 +69,7 @@ class RegressionTree extends CART implements Regressor, Persistable
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
 
-        parent::__construct($maxDepth, $minSamples);
+        parent::__construct($maxDepth, $maxLeafSize);
     }
 
     /**
@@ -156,8 +156,8 @@ class RegressionTree extends CART implements Regressor, Persistable
             }
         }
 
-        return new Comparison($best['index'], $best['value'],
-            $best['ssd'], $best['groups']);
+        return new Comparison($best['index'], $best['value'], $best['groups'],
+            $best['ssd']);
     }
 
     /**

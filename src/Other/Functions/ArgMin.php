@@ -3,7 +3,7 @@
 namespace Rubix\ML\Other\Functions;
 
 /**
- * ArgMax
+ * Argmax
  *
  * Return the index corresponding to the min value in an array.
  *
@@ -11,7 +11,7 @@ namespace Rubix\ML\Other\Functions;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ArgMin
+class Argmin
 {
     /**
      * Compute the argmax of the given values.
@@ -21,6 +21,6 @@ class ArgMin
      */
     public static function compute(array $values)
     {
-        return array_search(min($values), $values);
+        return empty($values) ? null : array_search(min($values), $values);
     }
 }

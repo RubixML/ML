@@ -9,7 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
-use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 
 /**
@@ -56,13 +56,13 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
 
     /**
      * @param  int  $maxDepth
-     * @param  int  $minSamples
+     * @param  int  $maxLeafSize
      * @param  int  $maxFeatures
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5,
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5,
                             int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-3)
     {
         if ($maxFeatures < 1) {
@@ -75,7 +75,7 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
                 . ' greater.');
         }
 
-        parent::__construct($maxDepth, $minSamples);
+        parent::__construct($maxDepth, $maxLeafSize);
 
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
@@ -173,8 +173,8 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
             }
         }
 
-        return new Comparison($best['index'], $best['value'],
-            $best['gini'], $best['groups']);
+        return new Comparison($best['index'], $best['value'], $best['groups'],
+            $best['gini']);
     }
 
     /**
@@ -194,7 +194,7 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
             $probabilities[$class] = $count / $n;
         }
 
-        $prediction = ArgMax::compute($probabilities);
+        $prediction = Argmax::compute($probabilities);
 
         return new Decision($prediction, [
             'probabilities' => $probabilities,

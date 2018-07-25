@@ -15,7 +15,7 @@ class ComparisonTest extends TestCase
 
     public function setUp()
     {
-        $this->params = [1, 1000, 0.9, []];
+        $this->params = [1, 1000, [], 0.9];
 
         $this->node = new Comparison(...$this->params);
     }
@@ -37,13 +37,13 @@ class ComparisonTest extends TestCase
         $this->assertEquals($this->params[1], $this->node->value());
     }
 
-    public function test_get_score()
-    {
-        $this->assertEquals($this->params[2], $this->node->score());
-    }
-
     public function test_get_groups()
     {
-        $this->assertEquals($this->params[3], $this->node->groups());
+        $this->assertEquals($this->params[2], $this->node->groups());
+    }
+
+    public function test_get_score()
+    {
+        $this->assertEquals($this->params[3], $this->node->score());
     }
 }

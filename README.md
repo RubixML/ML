@@ -54,6 +54,7 @@ MIT
 			- [Dummy Classifier](#dummy-classifier)
 			- [Extra Tree](#extra-tree)
 			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
+			- [K-d Neighbors](#k-d-neighbors)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
 			- [Logistic Regression](#logistic-regression)
 			- [Multi Layer Perceptron](#multi-layer-perceptron)
@@ -1099,7 +1100,7 @@ A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikip
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
 | 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
 
@@ -1144,7 +1145,7 @@ An Extremely Randomized Classification Tree that splits the training set at a ra
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
 
 ##### Additional Methods:
@@ -1189,8 +1190,31 @@ use Rubix\ML\Classifiers\GaussianNB;
 $estimator = new GaussianNB();
 ```
 
+### K-d Neighbors
+A fast [K Nearest Neighbors](#k-nearest-neighbors) approximating Estimator that uses a K-d tree to divide the training set into neighborhoods whose max size are constrained by the *neighborhood* hyperparameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then searches  only the points in the neighborhood for the nearest k to make a prediction. Since there may be points in other neighborhoods that may be closer, the nearest neighbor search is said to be *approximation*. The main advantage K-d Neighbors has over regular KNN is that it is much faster.
+
+##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
+| 2 | neighborhood | 10 | int | The max size of a neighborhood. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\KDNeighbors;
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$estimator = new KDNeighbors(3, 10, new Euclidean());
+```
+
 ### K Nearest Neighbors
-A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time.
+A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time. The advantage KNN has over [KD Neighbors](#k-d-neighbors)  is that it is more precise and capable of online learning.
 
 ##### Supervised | Multiclass | Probabilistic | Online | Persistable | Nonlinear
 
@@ -1604,7 +1628,7 @@ A Decision Tree learning algorithm that performs greedy splitting by minimizing 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| 2 | min samples | 5 | int | The minimum number of data points needed to make a prediction. |
+| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
 | 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
 

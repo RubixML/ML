@@ -26,12 +26,11 @@ abstract class CART implements Tree
     protected $maxDepth;
 
     /**
-     * The minimum number of samples that each node must contain in order to
-     * form a consensus to make a prediction.
+     * The maximum number of samples that a leaf node can contain.
      *
      * @var int
      */
-    protected $minSamples;
+    protected $maxLeafSize;
 
     /**
      * The number of times the tree has split. i.e. a decision is made.
@@ -42,24 +41,24 @@ abstract class CART implements Tree
 
     /**
      * @param  int  $maxDepth
-     * @param  int  $minSamples
+     * @param  int  $maxLeafSize
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth, int $minSamples)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
                 . ' than 1.');
         }
 
-        if ($minSamples < 1) {
+        if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
+                . ' to create a leaf.');
         }
 
         $this->maxDepth = $maxDepth;
-        $this->minSamples = $minSamples;
+        $this->maxLeafSize = $maxLeafSize;
         $this->splits = 0;
     }
 
@@ -152,7 +151,7 @@ abstract class CART implements Tree
     /**
      * Recursive function to split the training data adding comparison nodes along
      * the way. The terminating conditions are a) split would make node
-     * responsible for less values than $minSamples or b) the max depth of the
+     * responsible for less values than $maxLeafSize or b) the max depth of the
      * branch has been reached.
      *
      * @param  \Rubix\ML\Graph\Nodes\Comparison  $current
@@ -179,7 +178,7 @@ abstract class CART implements Tree
             return;
         }
 
-        if ($left->numRows() > $this->minSamples) {
+        if ($left->numRows() > $this->maxLeafSize) {
             $node = $this->findBestSplit($left);
 
             $current->attachLeft($node);
@@ -191,7 +190,7 @@ abstract class CART implements Tree
             $current->attachLeft($this->terminate($left));
         }
 
-        if ($right->numRows() > $this->minSamples) {
+        if ($right->numRows() > $this->maxLeafSize) {
             $node = $this->findBestSplit($right);
 
             $current->attachRight($node);

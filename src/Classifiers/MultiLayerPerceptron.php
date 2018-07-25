@@ -8,7 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Softmax;
@@ -317,7 +317,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $predictions = [];
 
         foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = ArgMax::compute($probabilities);
+            $predictions[] = Argmax::compute($probabilities);
         }
 
         return $predictions;

@@ -2,29 +2,33 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 /**
- * K Nearest Neighbors
+ * K-d Neighbors
  *
- * A distance-based algorithm that locates the K nearest neighbors from the
- * training set and uses a majority vote to classify the unknown sample. K
- * Nearest Neighbors is considered a lazy learning Estimator because it does all
- * of its computation at prediction time.
+ * A fast K Nearest Neighbors approximating algorithm that uses a K-d tree to
+ * divide the training set into neighborhoods whose max size are constrained by
+ * the neighborhood hyperparameter. K-d Neighbors does a binary search to locate
+ * the nearest neighborhood and then searches only the points in the neighborhood
+ * for the nearest k to make a prediction. Since there may be points in other
+ * neighborhoods that may be closer, the KNN search is said to be approximate.
+ * The main advantage K-d Neighbors has over regular KNN is that it is much
+ * faster.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistable
+class KDNeighbors extends KDTree implements Multiclass, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -41,15 +45,6 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     protected $kernel;
 
     /**
-     * The training samples that make up the neighborhood of the problem space.
-     *
-     * @var array
-     */
-    protected $samples = [
-        //
-    ];
-
-    /**
      * The possible class outcomes.
      *
      * @var array
@@ -59,25 +54,22 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     ];
 
     /**
-     * The memoized labels of the training set.
-     *
-     * @var array
-     */
-    protected $labels = [
-        //
-    ];
-
-    /**
      * @param  int  $k
+     * @param  int  $neighborhood
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 5, Distance $kernel = null)
+    public function __construct(int $k = 3, int $neighborhood = 10, Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . ' to make a prediction.');
+        }
+
+        if ($k > $neighborhood) {
+            throw new InvalidArgumentException('K cannot be larger than'
+                . ' neighborhood.');
         }
 
         if (is_null($kernel)) {
@@ -86,6 +78,8 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
 
         $this->k = $k;
         $this->kernel = $kernel;
+
+        parent::__construct($neighborhood);
     }
 
     /**
@@ -100,34 +94,14 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
                 . ' Labeled training set.');
         }
 
-        $this->classes = $this->samples = $this->labels = [];
-
-        $this->partial($dataset);
-    }
-
-    /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function partial(Dataset $dataset) : void
-    {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
-        }
-
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
 
-        $this->classes = array_merge($this->classes, $dataset->possibleOutcomes());
-        $this->samples = array_merge($this->samples, $dataset->samples());
-        $this->labels = array_merge($this->labels, $dataset->labels());
+        $this->classes = $dataset->possibleOutcomes();
+
+        $this->grow($dataset);
     }
 
     /**
@@ -172,22 +146,25 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector.
+     * Find the k nearest neighbors to the given sample from a neighborhood.
      *
      * @param  array  $sample
      * @return array
      */
-    protected function findNearestNeighbors(array $sample) : array
+    public function findNearestNeighbors(array $sample) : array
     {
         $distances = [];
 
-        foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->kernel->compute($sample, $neighbor);
+        list($neighborhood, $labels) = $this->search($sample);
+
+        foreach ($neighborhood as $i => $neighbor) {
+            $distances[$i] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);
 
-        return array_intersect_key($this->labels,
+        return array_intersect_key($labels,
             array_slice($distances, 0, $this->k, true));
+
     }
 }

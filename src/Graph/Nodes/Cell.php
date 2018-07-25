@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-class Isolation extends BinaryNode
+class Cell extends BinaryNode
 {
     /**
      * The isolation score.

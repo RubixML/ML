@@ -6,7 +6,6 @@ use Rubix\ML\Pipeline;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Other\Helpers\RandomParams;
 use Rubix\ML\Kernels\Distance\Euclidean;

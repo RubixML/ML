@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
@@ -214,7 +214,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $predictions[] = ArgMax::compute($jll);
+            $predictions[] = Argmax::compute($jll);
         }
 
         return $predictions;

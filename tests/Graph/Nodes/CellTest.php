@@ -1,0 +1,34 @@
+<?php
+
+namespace Rubix\Tests\Graph\Nodes;
+
+use Rubix\ML\Graph\Nodes\Cell;
+use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\BinaryNode;
+use PHPUnit\Framework\TestCase;
+
+class CellTest extends TestCase
+{
+    protected $node;
+
+    protected $params;
+
+    public function setUp()
+    {
+        $this->params = [0.9];
+
+        $this->node = new Cell(...$this->params);
+    }
+
+    public function test_build_node()
+    {
+        $this->assertInstanceOf(Cell::class, $this->node);
+        $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
+
+    public function test_get_score()
+    {
+        $this->assertEquals($this->params[0], $this->node->score());
+    }
+}

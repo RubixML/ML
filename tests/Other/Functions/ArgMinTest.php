@@ -2,10 +2,10 @@
 
 namespace Rubix\Tests\Other\Functions;
 
-use Rubix\ML\Other\Functions\ArgMin;
+use Rubix\ML\Other\Functions\Argmin;
 use PHPUnit\Framework\TestCase;
 
-class ArgMinTest extends TestCase
+class ArgminTest extends TestCase
 {
     protected $values;
 
@@ -22,7 +22,7 @@ class ArgMinTest extends TestCase
 
     public function test_compute()
     {
-        $value = ArgMin::compute($this->values);
+        $value = Argmin::compute($this->values);
 
         $this->assertEquals($this->outcome, $value);
     }

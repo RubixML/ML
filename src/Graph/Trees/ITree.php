@@ -2,16 +2,15 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Graph\Nodes\Isolation;
+use Rubix\ML\Graph\Nodes\Cell;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
 /**
  * I Tree
  *
- * The base Isloation Tree.
+ * The base Isloation Tree implementation using completely random splitting.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -34,15 +33,15 @@ class ITree implements Tree
     protected $maxDepth;
 
     /**
-     * The minimum number of samples that each node must contain in order to
-     * form a consensus to make a prediction.
+     * The maximum number of samples that a leaf node can contain.
      *
      * @var int
      */
-    protected $minSamples;
+    protected $maxLeafSize;
 
     /**
-     * The C factor represents the average length of the path of a search.
+     * The C factor estimates the average length of the path of a search for
+     * this tree.
      *
      * @var float
      */
@@ -50,24 +49,24 @@ class ITree implements Tree
 
     /**
      * @param  int  $maxDepth
-     * @param  int  $minSamples
+     * @param  int  $maxLeafSize
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
                 . ' than 1.');
         }
 
-        if ($minSamples < 1) {
+        if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
+                . ' to create a leaf.');
         }
 
         $this->maxDepth = $maxDepth;
-        $this->minSamples = $minSamples;
+        $this->maxLeafSize = $maxLeafSize;
     }
 
     /**
@@ -91,15 +90,15 @@ class ITree implements Tree
     {
         $this->c = $this->calculateCFactor($dataset->numRows());
 
-        $this->root = $this->findBestSplit($dataset, 1);
+        $this->root = $this->findRandomSplit($dataset, 1);
 
         $this->split($this->root, 1);
     }
 
     /**
-     * Recursive function to split the training data adding decision nodes along
+     * Recursive function to split the training data adding comparison nodes along
      * the way. The terminating conditions are a) split would make node
-     * responsible for less values than $minSamples or b) the max depth of the
+     * responsible for less values than $maxLeafSize or b) the max depth of the
      * branch has been reached.
      *
      * @param  \Rubix\ML\Graph\Nodes\Comparison  $current
@@ -118,8 +117,8 @@ class ITree implements Tree
             return;
         }
 
-        if ($left->numRows() > $this->minSamples) {
-            $node = $this->findBestSplit($left, $depth);
+        if ($left->numRows() > $this->maxLeafSize) {
+            $node = $this->findRandomSplit($left, $depth);
 
             $current->attachLeft($node);
 
@@ -128,8 +127,8 @@ class ITree implements Tree
             $current->attachLeft($this->terminate($left, $depth));
         }
 
-        if ($right->numRows() > $this->minSamples) {
-            $node = $this->findBestSplit($right, $depth);
+        if ($right->numRows() > $this->maxLeafSize) {
+            $node = $this->findRandomSplit($right, $depth);
 
             $current->attachRight($node);
 
@@ -143,14 +142,14 @@ class ITree implements Tree
      * Search the tree for a terminal node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Isolation|null
+     * @return \Rubix\ML\Graph\Nodes\Cell|null
      */
-    public function search(array $sample) : ?Isolation
+    public function search(array $sample) : ?Cell
     {
         $current = $this->root;
 
         while (isset($current)) {
-            if ($current instanceof Isolation) {
+            if ($current instanceof Cell) {
                 return $current;
             }
 
@@ -181,7 +180,7 @@ class ITree implements Tree
      * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Dataset $dataset, int $depth) : Comparison
+    protected function findRandomSplit(Dataset $dataset, int $depth) : Comparison
     {
         $index = rand(0, $dataset->numColumns() - 1);
 
@@ -191,11 +190,7 @@ class ITree implements Tree
 
         $groups = $dataset->partition($index, $value);
 
-        $c = $this->calculateCFactor($dataset->numRows());
-
-        $score = 2.0 ** -(($depth + $c) / $this->c);
-
-        return new Comparison($index, $value, $score, $groups);
+        return new Comparison($index, $value, $groups);
     }
 
     /**
@@ -203,15 +198,15 @@ class ITree implements Tree
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Isolation
+     * @return \Rubix\ML\Graph\Nodes\Cell
      */
-    protected function terminate(Dataset $dataset, int $depth) : Isolation
+    protected function terminate(Dataset $dataset, int $depth) : Cell
     {
         $c = $this->calculateCFactor($dataset->numRows());
 
         $score = 2.0 ** -(($depth + $c) / $this->c);
 
-        return new Isolation($score);
+        return new Cell($score);
     }
 
     /**

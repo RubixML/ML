@@ -5,7 +5,7 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -214,7 +214,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = ArgMax::compute($probabilities);
+            $predictions[] = Argmax::compute($probabilities);
         }
 
         return $predictions;

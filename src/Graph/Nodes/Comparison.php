@@ -45,11 +45,11 @@ class Comparison extends BinaryNode
     /**
      * @param  int  $index
      * @param  mixed  $value
-     * @param  float  $score
      * @param  array  $groups
+     * @param  float  $score
      * @return void
      */
-    public function __construct(int $index, $value, float $score, array $groups)
+    public function __construct(int $index, $value, array $groups, float $score = 0.0)
     {
         $this->index = $index;
         $this->value = $value;
@@ -75,19 +75,19 @@ class Comparison extends BinaryNode
     }
 
     /**
-     * @return float
-     */
-    public function score() : float
-    {
-        return $this->score;
-    }
-
-    /**
      * @return array
      */
     public function groups() : array
     {
         return $this->groups;
+    }
+
+    /**
+     * @return float
+     */
+    public function score() : float
+    {
+        return $this->score;
     }
 
     /**

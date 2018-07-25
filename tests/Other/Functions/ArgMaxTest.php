@@ -2,10 +2,10 @@
 
 namespace Rubix\Tests\Other\Functions;
 
-use Rubix\ML\Other\Functions\ArgMax;
+use Rubix\ML\Other\Functions\Argmax;
 use PHPUnit\Framework\TestCase;
 
-class ArgMaxTest extends TestCase
+class ArgmaxTest extends TestCase
 {
     protected $values;
 
@@ -22,7 +22,7 @@ class ArgMaxTest extends TestCase
 
     public function test_compute()
     {
-        $value = ArgMax::compute($this->values);
+        $value = Argmax::compute($this->values);
 
         $this->assertEquals($this->outcome, $value);
     }
