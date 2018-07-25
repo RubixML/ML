@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Cell;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Isolator;
 use InvalidArgumentException;
 
 /**
@@ -21,7 +21,7 @@ class ITree implements Tree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Comparison|null
+     * @var \Rubix\ML\Graph\Nodes\Isolator|null
      */
     protected $root;
 
@@ -72,9 +72,9 @@ class ITree implements Tree
     /**
      * Return the root node of the tree.
      *
-     * @return \Rubix\ML\Graph\Nodes\Comparison|null
+     * @return \Rubix\ML\Graph\Nodes\Isolator|null
      */
-    public function root() : ?Comparison
+    public function root() : ?Isolator
     {
         return $this->root;
     }
@@ -101,11 +101,11 @@ class ITree implements Tree
      * responsible for less values than $maxLeafSize or b) the max depth of the
      * branch has been reached.
      *
-     * @param  \Rubix\ML\Graph\Nodes\Comparison  $current
+     * @param  \Rubix\ML\Graph\Nodes\Isolator  $current
      * @param  int  $depth
      * @return void
      */
-    protected function split(Comparison $current, int $depth) : void
+    protected function split(Isolator $current, int $depth) : void
     {
         list($left, $right) = $current->groups();
 
@@ -153,7 +153,7 @@ class ITree implements Tree
                 return $current;
             }
 
-            if ($current instanceof Comparison) {
+            if ($current instanceof Isolator) {
                 if (is_string($current->value())) {
                     if ($sample[$current->index()] === $current->value()) {
                         $current = $current->left();
@@ -178,9 +178,9 @@ class ITree implements Tree
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  int  $depth
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Isolator
      */
-    protected function findRandomSplit(Dataset $dataset, int $depth) : Comparison
+    protected function findRandomSplit(Dataset $dataset, int $depth) : Isolator
     {
         $index = rand(0, $dataset->numColumns() - 1);
 
@@ -190,7 +190,7 @@ class ITree implements Tree
 
         $groups = $dataset->partition($index, $value);
 
-        return new Comparison($index, $value, $groups);
+        return new Isolator($index, $value, $groups);
     }
 
     /**

@@ -115,18 +115,15 @@ abstract class KDTree implements Tree
      * labels.
      *
      * @param  array  $sample
-     * @return array
+     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
      */
-    public function search(array $sample) : array
+    public function search(array $sample) : ?Neighborhood
     {
         $current = $this->root;
 
         while (isset($current)) {
             if ($current instanceof Neighborhood) {
-                return [
-                    $current->dataset()->samples(),
-                    $current->dataset()->labels(),
-                ];
+                return $current;
             }
 
             if ($current instanceof Coordinate) {
@@ -138,7 +135,7 @@ abstract class KDTree implements Tree
             }
         }
 
-        return [[], []];
+        return null;
     }
 
     /**
@@ -167,7 +164,7 @@ abstract class KDTree implements Tree
      */
     protected function terminate(Labeled $dataset) : Neighborhood
     {
-        return new Neighborhood($dataset);
+        return new Neighborhood($dataset->samples(), $dataset->labels());
     }
 
     /**

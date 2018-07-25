@@ -2,33 +2,58 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Datasets\Labeled;
-
 class Neighborhood extends BinaryNode
 {
     /**
-     * A partitioned dataset that makes up the neighborhood of the node.
+     * The samples that make up the neighborhood.
      *
-     * @var \Rubix\ML\Datasets\Labeled
+     * @var array
      */
-    protected $dataset;
+    protected $samples;
 
     /**
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * The samples that make up the neighborhood.
+     *
+     * @var array
+     */
+    protected $labels;
+
+    /**
+     * The number of training samples this node is responsible for.
+     *
+     * @var int
+     */
+    protected $n;
+
+    /**
+     * @param  array  $samples
+     * @param  array  $labels
      * @return void
      */
-    public function __construct(Labeled $dataset)
+    public function __construct(array $samples, array $labels)
     {
-        $this->dataset = $dataset;
+        $this->samples = $samples;
+        $this->labels = $labels;
+        $this->n = count($samples);
     }
 
     /**
-     * Return the dataset.
+     * Return the samples.
      *
      * @return mixed
      */
-    public function dataset()
+    public function samples()
     {
-        return $this->dataset;
+        return $this->samples;
+    }
+
+    /**
+     * Return the labels.
+     *
+     * @return mixed
+     */
+    public function labels()
+    {
+        return $this->labels;
     }
 }

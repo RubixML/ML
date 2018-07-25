@@ -3,11 +3,11 @@
 namespace Rubix\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Isolator;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
-class ComparisonTest extends TestCase
+class IsolatorTest extends TestCase
 {
     protected $node;
 
@@ -15,14 +15,14 @@ class ComparisonTest extends TestCase
 
     public function setUp()
     {
-        $this->params = [1, 1000, [[[0, 2], [0, 3]], []], 0.9];
+        $this->params = [1, 1000, [[[0, 2], [0, 3]], []]];
 
-        $this->node = new Comparison(...$this->params);
+        $this->node = new Isolator(...$this->params);
     }
 
     public function test_build_node()
     {
-        $this->assertInstanceOf(Comparison::class, $this->node);
+        $this->assertInstanceOf(Isolator::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
@@ -40,11 +40,6 @@ class ComparisonTest extends TestCase
     public function test_get_groups()
     {
         $this->assertEquals($this->params[2], $this->node->groups());
-    }
-
-    public function test_get_score()
-    {
-        $this->assertEquals($this->params[3], $this->node->score());
     }
 
     public function test_get_n()

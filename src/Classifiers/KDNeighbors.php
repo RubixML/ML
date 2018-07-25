@@ -153,11 +153,13 @@ class KDNeighbors extends KDTree implements Multiclass, Probabilistic, Persistab
      */
     public function findNearestNeighbors(array $sample) : array
     {
+        $neighborhood = $this->search($sample);
+
+        $labels = $neighborhood->labels();
+
         $distances = [];
 
-        list($neighborhood, $labels) = $this->search($sample);
-
-        foreach ($neighborhood as $i => $neighbor) {
+        foreach ($neighborhood->samples() as $i => $neighbor) {
             $distances[$i] = $this->kernel->compute($sample, $neighbor);
         }
 
