@@ -3,10 +3,11 @@
 namespace Rubix\Tests\Extractors;
 
 use Rubix\ML\Extractors\Extractor;
-use Rubix\ML\Extractors\CountVectorizer;
+use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Extractors\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
 
-class CountVectorizerTest extends TestCase
+class WordCountVectorizerTest extends TestCase
 {
     protected $extractor;
 
@@ -17,15 +18,15 @@ class CountVectorizerTest extends TestCase
         $this->samples = [
             'the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke',
-            'with an ubrella',
+            'with a dandy ubrella',
         ];
 
-        $this->extractor = new CountVectorizer();
+        $this->extractor = new WordCountVectorizer(50, ['quick', 'pig'], true, new Word());
     }
 
     public function test_build_count_vectorizer()
     {
-        $this->assertInstanceOf(CountVectorizer::class, $this->extractor);
+        $this->assertInstanceOf(WordCountVectorizer::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 
@@ -36,8 +37,8 @@ class CountVectorizerTest extends TestCase
         $samples = $this->extractor->extract($this->samples);
 
         $this->assertEquals([
-            [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+            [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
         ], $samples);
     }
 }

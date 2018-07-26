@@ -40,7 +40,7 @@ MIT
 			- [Circle](#circle)
 			- [Half Moon](#half-moon)
 	- [Feature Extractors](#feature-extractors)
-    	- [Count Vectorizer](#count-vectorizer)
+    	- [Word Count Vectorizer](#word-count-vectorizer)
 		- [Pixel Encoder](#pixel-encoder)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
@@ -837,12 +837,12 @@ public extract(array $samples) : array
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\CountVectorizer;
+use Rubix\ML\Extractors\WordCountVectorizer;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Labeled;
 
 ...
-$estractor = new CountVectorizer(5000);
+$estractor = new WordCountVectorizer(5000);
 
 $extractor->fit($data);
 
@@ -853,15 +853,16 @@ $dataset = new Unlabeled($samples);
 $dataset = new Labeled($samples, $labels);
 ```
 
-### Count Vectorizer
-In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Count Vectorizer builds a vocabulary from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
+### Word Count Vectorizer
+In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
-| 2 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
-| 3 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
+| 2 | stop words | [ ] | array | An array of stop words i.e. words to filter out of the original text. |
+| 3 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
+| 4 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
 
 ##### Additional Methods:
 
@@ -872,16 +873,10 @@ public vocabulary() : array
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\CountVectorizer;
+use Rubix\ML\Extractors\WordCountVectorizer;
 use Rubix\ML\Extractors\Tokenizers\Word;
 
-$extractor = new CountVectorizer(5000, true, new Word());
-
-// Return the vocabulary of the vectorizer
-$extractor->vocabulary();
-
-// Return the size of the fitted vocabulary
-$extractor->size();
+$extractor = new WordCountVectorizer(5000, ['the', 'what', 'has'], true, new Word());
 ```
 
 ### Pixel Encoder
@@ -2248,7 +2243,7 @@ $transformer = new RobustStandardizer();
 ```
 
 ### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Count Vectorizer](#count-vectorizer).
+Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
 ##### Continuous *Only*
 
@@ -3382,7 +3377,7 @@ $strategy = new WildGuess();
 
 ---
 ### Tokenizers
-Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Count Vectorizer](#count-vectorizer) to encode text into word counts.
+Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to encode text into word counts.
 
 To tokenize a body of text:
 ```php

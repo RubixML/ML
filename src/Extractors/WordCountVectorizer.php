@@ -7,7 +7,7 @@ use Rubix\ML\Other\Tokenizers\Tokenizer;
 use InvalidArgumentException;
 use RuntimeException;
 
-class CountVectorizer implements Extractor
+class WordCountVectorizer implements Extractor
 {
     /**
      * The maximum size of the vocabulary.
@@ -15,6 +15,15 @@ class CountVectorizer implements Extractor
      * @var int
      */
     protected $maxVocabulary;
+
+    /**
+     * An array of stop words i.e. words to filter out of the original text.
+     *
+     * @var array
+     */
+    protected $stopWords = [
+        //
+    ];
 
     /**
      * Should the text be normalized before tokenized? i.e. remove extra
@@ -42,23 +51,40 @@ class CountVectorizer implements Extractor
 
     /**
      * @param  int  $maxVocabulary
+     * @param  array  $stopWords
      * @param  bool  $normalize
      * @param  \Rubix\ML\Other\Tokenizers\Tokenizer  $tokenizer
      * @return void
      */
-    public function __construct(int $maxVocabulary = PHP_INT_MAX, bool $normalize = true,
-                                Tokenizer $tokenizer = null)
+    public function __construct(int $maxVocabulary = PHP_INT_MAX, array $stopWords = [],
+                                bool $normalize = true, Tokenizer $tokenizer = null)
     {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabulary must'
                 . ' be at least 1 word.');
         }
 
-        if (!isset($tokenizer)) {
+        foreach ($stopWords as $word) {
+            if (!is_string($word)) {
+                throw new InvalidArgumentException('Stop word must be a string,'
+                    . gettype($word) . ' found.');
+            }
+        }
+
+        if (is_null($tokenizer)) {
             $tokenizer = new Word();
         }
 
+        if ($normalize === true) {
+            $stopWords = array_map(function ($word) {
+                return strtolower(trim($word));
+            }, $stopWords);
+        }
+
+        $stopWords = array_flip(array_unique($stopWords));
+
         $this->maxVocabulary = $maxVocabulary;
+        $this->stopWords = $stopWords;
         $this->normalize = $normalize;
         $this->tokenizer = $tokenizer;
     }
@@ -84,13 +110,12 @@ class CountVectorizer implements Extractor
         $this->vocabulary = $frequencies = [];
 
         foreach ($samples as $sample) {
-            if (is_string($sample)) {
-                if ($this->normalize) {
-                    $sample = preg_replace('/\s+/', ' ',
-                        trim(strtolower($sample)));
-                }
+            if ($this->normalize) {
+                $sample = preg_replace('/\s+/', ' ', trim(strtolower($sample)));
+            }
 
-                foreach ($this->tokenizer->tokenize($sample) as $token) {
+            foreach ($this->tokenizer->tokenize($sample) as $token) {
+                if (!isset($this->stopWords[$token])) {
                     if (isset($frequencies[$token])) {
                         $frequencies[$token]++;
                     } else {
@@ -103,11 +128,13 @@ class CountVectorizer implements Extractor
         if (count($frequencies) > $this->maxVocabulary) {
             arsort($frequencies);
 
-            $frequencies = array_splice($frequencies, 0, $this->maxVocabulary);
+            $frequencies = array_slice($frequencies, 0, $this->maxVocabulary);
         }
 
+        $index = 0;
+
         foreach ($frequencies as $token => $count) {
-            $this->vocabulary[$token] = count($this->vocabulary);
+            $this->vocabulary[$token] = $index++;
         }
     }
 
@@ -148,13 +175,12 @@ class CountVectorizer implements Extractor
         $vector = array_fill(0, count($this->vocabulary), 0);
 
         if ($this->normalize) {
-            $sample = preg_replace('/\s+/', ' ',
-                trim(strtolower($sample)));
+            $sample = preg_replace('/\s+/', ' ', trim(strtolower($sample)));
         }
 
         foreach ($this->tokenizer->tokenize($sample) as $token) {
             if (isset($this->vocabulary[$token])) {
-                $vector[$this->vocabulary[$token]] += 1;
+                $vector[$this->vocabulary[$token]]++;
             }
         }
 
