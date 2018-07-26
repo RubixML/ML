@@ -7,7 +7,7 @@ use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
 /**
- * Extra Tree
+ * Extra Tree Classifier
  *
  * An Extremely Randomized Classification Tree that splits the training set at
  * a random point chosen among the maximum features. Extra Trees are useful in
@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ExtraTree extends ClassificationTree
+class ExtraTreeClassifier extends ClassificationTree
 {
     /**
      * Randomized algorithm to that choses the split point with the lowest gini

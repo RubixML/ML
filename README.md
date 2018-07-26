@@ -34,11 +34,6 @@ MIT
 		- [Dataset Objects](#dataset-objects)
 			- [Labeled](#labeled)
 			- [Unlabeled](#unlabeled)
-		- [Generators](#generators)
-			- [Agglomerate](#agglomerate)
-			- [Blob](#blob)
-			- [Circle](#circle)
-			- [Half Moon](#half-moon)
 	- [Feature Extractors](#feature-extractors)
     	- [Word Count Vectorizer](#word-count-vectorizer)
 		- [Pixel Encoder](#pixel-encoder)
@@ -68,6 +63,7 @@ MIT
 			- [Mean Shift](#mean-shift)
 		- [Regressors](#regressors)
 			- [Dummy Regressor](#dummy-regressor)
+			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
@@ -157,6 +153,11 @@ MIT
 		- [Prediction Speed](#prediction-speed)
 		- [Residual Analysis](#residual-analysis)
 	- [Other](#other)
+		- [Generators](#generators)
+			- [Agglomerate](#agglomerate)
+			- [Blob](#blob)
+			- [Circle](#circle)
+			- [Half Moon](#half-moon)
 		- [Guessing Strategies](#guessing-strategies)
 			- [Blurry Mean](#blurry-mean)
 			- [Blurry Median](#blurry-median)
@@ -678,147 +679,6 @@ use Rubix\ML\Datasets\Unlabeled;
 $dataset = new Unlabeled($samples);
 ```
 
-### Generators
-Dataset Generators allow you to produce data of a user-specified shape, dimensionality, and cardinality. This is useful for augmenting a dataset with synthetic data or for testing and demonstration purposes.
-
-To generate a Dataset object with **n** samples (*rows*):
-```php
-public generate(int $n = 100) : Dataset
-```
-
-Return the dimensionality of the samples produced:
-```php
-public dimensions() : int
-```
-
-##### Example:
-```php
-use Rubix\ML\Datasets\Generators\Blob;
-
-$generator = new Blob([0, 0], 1.0);
-
-$dataset = $generator->generate(3);
-
-var_dump($generator->dimensions());
-
-var_dump($dataset->samples());
-```
-
-##### Output:
-```sh
-int(2)
-
-object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
-  ["samples":protected]=>
-  array(3) {
-    [0]=>
-    array(2) {
-      [0]=> float(-0.2729673885539)
-      [1]=> float(0.43761840244204)
-    }
-    [1]=>
-    array(2) {
-      [0]=> float(-1.2718092282012)
-      [1]=> float(-1.9558245484829)
-    }
-    [2]=>
-    array(2) {
-      [0]=> float(1.1774185431405)
-      [1]=> float(0.05168623824664)
-    }
-  }
-}
-```
-
-### Agglomerate
-An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | generators | [ ] | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
-| 2 | weights | 1 / n | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
-
-##### Additional Methods:
-
-Return the normalized weights of each generator in the agglomerate:
-```php
-public weights() : array
-```
-
-##### Example:
-```php
-use Rubix\ML\Datasets\Generators\Agglomerate;
-
-$generator = new Agglomerate([
-	new Blob([5, 2], 1.0),
-	new HalfMoon([-3, 5], 1.5, 90.0, 0.1),
-	new Circle([2, -4], 2.0, 0.05),
-], [
-	5, 6, 3, // Weights
-]);
-```
-
-### Blob
-A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | center | [ ] | array | The coordinates of the center of the blob i.e. a centroid vector. |
-| 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the SD for each feature column. |
-
-##### Additional Methods:
-This Generator does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\Datasets\Generators\Blob;
-
-$generator = new Blob([1.2, 5.0, 2.6, 0.8], 0.25);
-```
-
-### Circle
-Create a circle made of sample data points in 2 dimensions.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
-| 2 | scale | 1.0 | float | The scaling factor of the circle. |
-| 3 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
-
-##### Additional Methods:
-This Generator does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\Datasets\Generators\Circle;
-
-$generator = new Circle([0.0, 0.0], 100, 0.1);
-```
-
-### Half Moon
-Generate a dataset consisting of 2-d samples that form a half moon shape.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
-| 2 | scale | 1.0 | float | The scaling factor of the circle. |
-| 3 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
-| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
-
-##### Additional Methods:
-This Generator does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\Datasets\Generators\HalfMoon;
-
-$generator = new HalfMoon([0.0, 0.0], 100, 180.0, 0.2);
-```
-
 ---
 ### Feature Extractors
 Feature Extractors are objects that help you encode raw data into feature vectors so they can be used by an Estimator.
@@ -1081,9 +941,9 @@ public influence() : array
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\ExtraTree;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(ExtraTree::class, [10, 3, 5], 200, 0.1, 1e-2);
+$estimator = new AdaBoost(ExtraTreeClassifier::class, [10, 3, 5], 200, 0.1, 1e-2);
 ```
 
 ### Classification Tree
@@ -1148,7 +1008,7 @@ This Estimator does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\Classifiers\ExtraTree;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
 $estimator = new ExtraTree(20, 3, 4);
 ```
@@ -1278,7 +1138,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 8 | tolerance | 1e-3 | The amount of error to tolerate in the validation metric. |
+| 8 | tolerance | 1e-3 | float | The amount of error to tolerate in the validation metric. |
 | 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
@@ -1546,8 +1406,31 @@ use Rubix\ML\Other\Strategies\BlurryMedian;
 $estimator = new DummyRegressor(new BlurryMedian(0.2));
 ```
 
+### K-d Neighbors Regressor
+A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples in the neighborhood. The advantage of K-d Neighbors over KNN is speed and added variance to the predictions (if that is desired).
+
+##### Supervised  | Persistable | Nonlinear
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
+| 2 | neighborhood | 10 | int | The max size of a neighborhood. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Regressors\KDNRegressor;
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$estimator = new KDNRegressor(5, 20, new Euclidean());
+```
+
 ### KNN Regressor
-A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
+A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems. The advantage of KNN Regressor over [KDN Regressor](#k-d-neighbors-regressor) is that it is more precise and capable of online learning.
 
 ##### Supervised | Online | Persistable | Nonlinear
 
@@ -1583,7 +1466,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 8 | tolerance | float | 1e-5 | The amount of error to tolerate in the validation metric. |
+| 8 | tolerance | 1e-5 | float | The amount of error to tolerate in the validation metric. |
 | 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 
@@ -3230,7 +3113,148 @@ var_dump($result);
 
 ---
 ### Other
-This section includes broader functioning objects that aren't part of a specific category.
+This section includes broader functioning classes that do not fall under a specific category.
+
+### Generators
+Dataset Generators allow you to produce synthetic data of a user-specified shape, dimensionality, and cardinality. This is useful for augmenting a dataset with extra data or for testing and demonstration purposes.
+
+To generate a Dataset object with **n** samples (*rows*):
+```php
+public generate(int $n = 100) : Dataset
+```
+
+Return the dimensionality of the samples produced:
+```php
+public dimensions() : int
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Generators\Blob;
+
+$generator = new Blob([0, 0], 1.0);
+
+$dataset = $generator->generate(3);
+
+var_dump($generator->dimensions());
+
+var_dump($dataset->samples());
+```
+
+##### Output:
+```sh
+int(2)
+
+object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
+  ["samples":protected]=>
+  array(3) {
+    [0]=>
+    array(2) {
+      [0]=> float(-0.2729673885539)
+      [1]=> float(0.43761840244204)
+    }
+    [1]=>
+    array(2) {
+      [0]=> float(-1.2718092282012)
+      [1]=> float(-1.9558245484829)
+    }
+    [2]=>
+    array(2) {
+      [0]=> float(1.1774185431405)
+      [1]=> float(0.05168623824664)
+    }
+  }
+}
+```
+
+### Agglomerate
+An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | generators | [ ] | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
+| 2 | weights | 1 / n | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
+
+##### Additional Methods:
+
+Return the normalized weights of each generator in the agglomerate:
+```php
+public weights() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Generators\Agglomerate;
+
+$generator = new Agglomerate([
+	new Blob([5, 2], 1.0),
+	new HalfMoon([-3, 5], 1.5, 90.0, 0.1),
+	new Circle([2, -4], 2.0, 0.05),
+], [
+	5, 6, 3, // Weights
+]);
+```
+
+### Blob
+A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | [ ] | array | The coordinates of the center of the blob i.e. a centroid vector. |
+| 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the SD for each feature column. |
+
+##### Additional Methods:
+This Generator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Other\Generators\Blob;
+
+$generator = new Blob([1.2, 5.0, 2.6, 0.8], 0.25);
+```
+
+### Circle
+Create a circle made of sample data points in 2 dimensions.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
+| 2 | scale | 1.0 | float | The scaling factor of the circle. |
+| 3 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
+
+##### Additional Methods:
+This Generator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Other\Generators\Circle;
+
+$generator = new Circle([0.0, 0.0], 100, 0.1);
+```
+
+### Half Moon
+Generate a dataset consisting of 2-d samples that form a half moon shape.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
+| 2 | scale | 1.0 | float | The scaling factor of the circle. |
+| 3 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
+| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
+
+##### Additional Methods:
+This Generator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Other\Generators\HalfMoon;
+
+$generator = new HalfMoon([0.0, 0.0], 100, 180.0, 0.2);
+```
 
 ### Guessing Strategies
 Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information and basic means. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).

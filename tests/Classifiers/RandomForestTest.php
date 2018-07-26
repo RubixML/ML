@@ -8,7 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\ExtraTree;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\RandomForest;
@@ -29,7 +29,7 @@ class RandomForestTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new RandomForest(100, 0.3, 10, 5, 4, 1e-3, ExtraTree::class);
+        $this->estimator = new RandomForest(100, 0.3, 10, 5, 4, 1e-3, ExtraTreeClassifier::class);
     }
 
     public function test_build_classifier()

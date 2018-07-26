@@ -43,7 +43,7 @@ class ITree implements Tree
      * The C factor estimates the average length of the path of a search for
      * this tree.
      *
-     * @var float
+     * @var float|null
      */
     protected $c;
 
@@ -202,11 +202,13 @@ class ITree implements Tree
      */
     protected function terminate(Dataset $dataset, int $depth) : Cell
     {
-        $c = $this->calculateCFactor($dataset->numRows());
+        $n = $dataset->numRows();
+
+        $c = $this->calculateCFactor($n);
 
         $score = 2.0 ** -(($depth + $c) / $this->c);
 
-        return new Cell($score);
+        return new Cell($n, $score);
     }
 
     /**

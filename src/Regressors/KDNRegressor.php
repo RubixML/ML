@@ -2,27 +2,27 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
 /**
- * KNN Regressor
+ * K-d Neighbors Regressor
  *
- * A version of K Nearest Neighbors that uses the mean outcome of K nearest
- * data points to make continuous valued predictions suitable for regression
- * problems.
+ * A fast implementation of K Nearest Neighbors regression using a K-d tree. The
+ * advantage of K-d Neighbors over KNN is speed and added variance to the
+ * predictions (if that is desired).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNRegressor implements Regressor, Online, Persistable
+class KDNRegressor extends KDTree implements Regressor, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -32,41 +32,29 @@ class KNNRegressor implements Regressor, Online, Persistable
     protected $k;
 
     /**
-     * The distance kernel to use when computing the distances.
+     * The distance function to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
     /**
-     * The training samples.
-     *
-     * @var array
-     */
-    protected $samples = [
-        //
-    ];
-
-    /**
-     * The training labels.
-     *
-     * @var array
-     */
-    protected $labels = [
-        //
-    ];
-
-    /**
      * @param  int  $k
+     * @param  int  $neighborhood
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, Distance $kernel = null)
+    public function __construct(int $k = 3, int $neighborhood = 10, Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . ' to make a prediction.');
+        }
+
+        if ($k > $neighborhood) {
+            throw new InvalidArgumentException('K cannot be larger than'
+                . ' neighborhood.');
         }
 
         if (is_null($kernel)) {
@@ -75,6 +63,8 @@ class KNNRegressor implements Regressor, Online, Persistable
 
         $this->k = $k;
         $this->kernel = $kernel;
+
+        parent::__construct($neighborhood);
     }
 
     /**
@@ -89,33 +79,12 @@ class KNNRegressor implements Regressor, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->samples = $this->labels = [];
-
-        $this->partial($dataset);
-    }
-
-    /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function partial(Dataset $dataset) : void
-    {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
-        }
-
         if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
 
-        $this->samples = array_merge($this->samples, $dataset->samples());
-        $this->labels = array_merge($this->labels, $dataset->labels());
+        $this->grow($dataset);
     }
 
     /**
@@ -136,22 +105,27 @@ class KNNRegressor implements Regressor, Online, Persistable
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector.
+     * Find the k nearest neighbors to the given sample from a neighborhood.
      *
      * @param  array  $sample
      * @return array
      */
-    protected function findNearestNeighbors(array $sample) : array
+    public function findNearestNeighbors(array $sample) : array
     {
+        $neighborhood = $this->search($sample);
+
+        $labels = $neighborhood->labels();
+
         $distances = [];
 
-        foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->kernel->compute($sample, $neighbor);
+        foreach ($neighborhood->samples() as $i => $neighbor) {
+            $distances[$i] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);
 
-        return array_intersect_key($this->labels,
+        return array_intersect_key($labels,
             array_slice($distances, 0, $this->k, true));
+
     }
 }

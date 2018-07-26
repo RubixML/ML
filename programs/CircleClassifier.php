@@ -7,13 +7,13 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Other\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Datasets\Generators\Circle;
+use Rubix\ML\Other\Generators\Circle;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Other\Generators\Agglomerate;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";

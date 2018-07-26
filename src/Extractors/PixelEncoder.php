@@ -3,10 +3,23 @@
 namespace Rubix\ML\Extractors;
 
 use Intervention\Image\Image;
-use Intervention\Image\ImageManager as Intervention;
+use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Pixel Encoder
+ *
+ * Images must first be converted to color channel values in order to be passed
+ * to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources)
+ * and converts them to a flat vector of color channel data. Image scaling and
+ * cropping is handled automatically by Intervention Image. The GD extension is
+ * required to use this feature.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class PixelEncoder implements Extractor
 {
     /**
@@ -70,7 +83,7 @@ class PixelEncoder implements Extractor
         $this->size = $size;
         $this->channels = $rgb ? 3 : 1;
         $this->sharpen = $sharpen;
-        $this->intervention = new Intervention(['driver' => $driver]);
+        $this->intervention = new ImageManager(['driver' => $driver]);
     }
 
     /**

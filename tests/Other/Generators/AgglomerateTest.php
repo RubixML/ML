@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\Tests\Datasets\Generators;
+namespace Rubix\Tests\Other\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Datasets\Generators\Generator;
-use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\Other\Generators\Blob;
+use Rubix\ML\Other\Generators\Generator;
+use Rubix\ML\Other\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
 class AgglomerateTest extends TestCase

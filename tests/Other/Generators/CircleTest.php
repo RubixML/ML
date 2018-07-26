@@ -1,25 +1,25 @@
 <?php
 
-namespace Rubix\Tests\Datasets\Generators;
+namespace Rubix\Tests\Other\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\Datasets\Generators\Generator;
+use Rubix\ML\Other\Generators\Circle;
+use Rubix\ML\Other\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-class HalfMoonTest extends TestCase
+class CircleTest extends TestCase
 {
     protected $generator;
 
     public function setUp()
     {
-        $this->generator = new HalfMoon([0, 0], 1.0, 90.0, 0.1);
+        $this->generator = new Circle([0, 0], 1.0, 1.0);
     }
 
     public function test_build_generator()
     {
-        $this->assertInstanceOf(HalfMoon::class, $this->generator);
+        $this->assertInstanceOf(Circle::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
     }
 

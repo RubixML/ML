@@ -38,8 +38,6 @@ class Neighborhood extends BinaryNode
     }
 
     /**
-     * Return the samples.
-     *
      * @return mixed
      */
     public function samples()
@@ -48,12 +46,18 @@ class Neighborhood extends BinaryNode
     }
 
     /**
-     * Return the labels.
-     *
      * @return mixed
      */
     public function labels()
     {
         return $this->labels;
+    }
+
+    /**
+     * @return int
+     */
+    public function n() : int
+    {
+        return $this->n;
     }
 }

@@ -10,7 +10,7 @@ class Decision extends BinaryNode
      * @var mixed
      */
     protected $outcome;
-
+    
     /**
      * The prediction meta data.
      *

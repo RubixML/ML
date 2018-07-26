@@ -7,6 +7,20 @@ use Rubix\ML\Other\Tokenizers\Tokenizer;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Word Count Vectorizer
+ *
+ * In machine learning, word counts are often used to represent natural language
+ * as numerical vectors. The Word Count Vectorizer builds a vocabulary using
+ * hash tables from the training samples during fitting and transforms an array
+ * of strings (text blobs) into sparse feature vectors. Each feature column
+ * represents a word from the vocabulary and the value denotes the number of times
+ * that word appears in a given sample.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class WordCountVectorizer implements Extractor
 {
     /**

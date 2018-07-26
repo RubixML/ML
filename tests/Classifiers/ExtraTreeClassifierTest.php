@@ -7,14 +7,14 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\ExtraTree;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class ExtraTreeTest extends TestCase
+class ExtraTreeClassifierTest extends TestCase
 {
     protected $estimator;
 
@@ -28,12 +28,12 @@ class ExtraTreeTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new ExtraTree(100, 3, 4);
+        $this->estimator = new ExtraTreeClassifier(100, 3, 4);
     }
 
     public function test_build_classifier()
     {
-        $this->assertInstanceOf(ExtraTree::class, $this->estimator);
+        $this->assertInstanceOf(ExtraTreeClassifier::class, $this->estimator);
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Multiclass::class, $this->estimator);
