@@ -80,11 +80,11 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     protected $network;
 
     /**
-     * The training progress of the estimator at each epoch.
+     * The sizes of each training step at each epoch.
      *
      * @var array
      */
-    protected $progress = [
+    protected $steps = [
         //
     ];
 
@@ -132,13 +132,13 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     }
 
     /**
-     * Return the training progress of the estimator.
+     * Return the sizes of each training step at each epoch.
      *
      * @return array
      */
-    public function progress() : array
+    public function steps() : array
     {
-        return $this->progress;
+        return $this->steps;
     }
 
     /**
@@ -168,7 +168,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
         $this->network = new Network(new Input($dataset->numColumns()), [],
            new Softmax($this->classes, $this->alpha), $this->optimizer);
 
-        $this->progress = ['steps' => []];
+        $this->steps = [];
 
         $this->partial($dataset);
     }
@@ -210,7 +210,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
                     ->step();
             }
 
-            $this->progress['step'][] = $step;
+            $this->steps[] = $step;
 
             if (abs($previous - $step) < $this->minChange) {
                 break 1;

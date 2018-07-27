@@ -36,9 +36,9 @@ class ZScaleStandardizer implements Transformer
     /**
      * Return the means calculated by fitting the training set.
      *
-     * @return  array
+     * @return array|null
      */
-    public function means() : array
+    public function means() : ?array
     {
         return $this->means;
     }
@@ -46,9 +46,9 @@ class ZScaleStandardizer implements Transformer
     /**
      * Return the standard deviations calculated during fitting.
      *
-     * @return  array
+     * @return array|null
      */
-    public function stddevs() : array
+    public function stddevs() : ?array
     {
         return $this->stddevs;
     }
@@ -90,7 +90,7 @@ class ZScaleStandardizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->means) or !isset($this->stddevs)) {
+        if (is_null($this->means) or is_null($this->stddevs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

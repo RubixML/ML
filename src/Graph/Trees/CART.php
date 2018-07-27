@@ -98,41 +98,6 @@ abstract class CART implements Tree
     }
 
     /**
-     * Return an array indexed by column number that contains the normalized
-     * importance score of that column in determining the overall prediction.
-     *
-     * @return array
-     */
-    public function featureImportances() : array
-    {
-        if ($this->bare()) {
-            return [];
-        }
-
-        $importances = [];
-
-        foreach ($this->traverse($this->root) as $node) {
-            if ($node instanceof Comparison) {
-                if (isset($importances[$node->index()])) {
-                    $importances[$node->index()] += $node->impurityDecrease();
-                } else {
-                    $importances[$node->index()] = $node->impurityDecrease();
-                }
-            }
-        }
-
-        $total = array_sum($importances);
-
-        foreach ($importances as &$importance) {
-            $importance /= $total;
-        }
-
-        arsort($importances);
-
-        return $importances;
-    }
-
-    /**
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
@@ -207,17 +172,13 @@ abstract class CART implements Tree
      * Search the tree for a terminal node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Decision|null
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    public function search(array $sample) : ?Decision
+    public function search(array $sample) : Decision
     {
         $current = $this->root;
 
         while (isset($current)) {
-            if ($current instanceof Decision) {
-                return $current;
-            }
-
             if ($current instanceof Comparison) {
                 if (is_string($current->value())) {
                     if ($sample[$current->index()] === $current->value()) {
@@ -233,9 +194,48 @@ abstract class CART implements Tree
                     }
                 }
             }
+
+            if ($current instanceof Decision) {
+                return $current;
+            }
         }
 
-        return null;
+        return new Decision(null);
+    }
+
+    /**
+     * Return an array indexed by column number that contains the normalized
+     * importance score of that column in determining the overall prediction.
+     *
+     * @return array
+     */
+    public function featureImportances() : array
+    {
+        if (is_null($this->root)) {
+            return [];
+        }
+
+        $importances = [];
+
+        foreach ($this->traverse($this->root) as $node) {
+            if ($node instanceof Comparison) {
+                if (isset($importances[$node->index()])) {
+                    $importances[$node->index()] += $node->impurityDecrease();
+                } else {
+                    $importances[$node->index()] = $node->impurityDecrease();
+                }
+            }
+        }
+
+        $total = array_sum($importances);
+
+        foreach ($importances as &$importance) {
+            $importance /= $total;
+        }
+
+        arsort($importances);
+
+        return $importances;
     }
 
     /**

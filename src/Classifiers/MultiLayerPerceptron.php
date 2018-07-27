@@ -119,11 +119,20 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $network;
 
     /**
-     * The training progress of the estimator at each epoch.
+     * The validation scores at each epoch.
      *
      * @var array
      */
-    protected $progress = [
+    protected $scores = [
+        //
+    ];
+
+    /**
+     * The sizes of each training step at each epoch.
+     *
+     * @var array
+     */
+    protected $steps = [
         //
     ];
 
@@ -194,13 +203,23 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     }
 
     /**
-     * Return the training progress of the estimator.
+     * Return the validation scores at each epoch.
      *
      * @return array
      */
-    public function progress() : array
+    public function scores() : array
     {
-        return $this->progress;
+        return $this->scores;
+    }
+
+    /**
+     * Return the sizes of each training step at each epoch.
+     *
+     * @return array
+     */
+    public function steps() : array
+    {
+        return $this->steps;
     }
 
     /**
@@ -231,7 +250,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             $this->hidden, new Softmax($this->classes, $this->alpha),
             $this->optimizer);
 
-        $this->progress = ['scores' => [], 'steps' => []];
+        $this->scores = $this->steps = [];
 
         $this->partial($dataset);
     }
@@ -255,7 +274,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             . ' continuous features.');
         }
 
-        if (!isset($this->network)) {
+        if (is_null($this->network)) {
             $this->train($dataset);
         }
 
@@ -276,8 +295,8 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
             $score = $this->metric->score($this, $testing);
 
-            $this->progress['scores'][] = $score;
-            $this->progress['steps'][] = $step;
+            $this->scores[] = $score;
+            $this->steps[] = $step;
 
             if ($score > $best['score']) {
                 $best['score'] = $score;
@@ -289,7 +308,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             }
 
             if ($epoch >= $this->window) {
-                $window = array_slice($this->progress['scores'], -$this->window);
+                $window = array_slice($this->scores, -$this->window);
 
                 $worst = $window;
                 rsort($worst);
@@ -300,7 +319,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             }
         }
 
-        if (end($this->progress['scores']) !== $best['score']) {
+        if (end($this->scores) !== $best['score']) {
             $this->network->restore($best['snapshot']);
         }
     }

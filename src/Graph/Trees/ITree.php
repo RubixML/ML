@@ -142,17 +142,13 @@ class ITree implements Tree
      * Search the tree for a terminal node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Cell|null
+     * @return \Rubix\ML\Graph\Nodes\Cell
      */
-    public function search(array $sample) : ?Cell
+    public function search(array $sample) : Cell
     {
         $current = $this->root;
 
         while (isset($current)) {
-            if ($current instanceof Cell) {
-                return $current;
-            }
-
             if ($current instanceof Isolator) {
                 if (is_string($current->value())) {
                     if ($sample[$current->index()] === $current->value()) {
@@ -168,9 +164,13 @@ class ITree implements Tree
                     }
                 }
             }
+
+            if ($current instanceof Cell) {
+                return $current;
+            }
         }
 
-        return null;
+        return new Cell(0, 0.0);
     }
 
     /**

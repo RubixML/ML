@@ -34,7 +34,7 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new FuzzyCMeans(3, 1.3, new Euclidean(), 1e-6, 100), [
+$estimator = new Pipeline(new FuzzyCMeans(3, 1.2, new Euclidean(), 1e-5, 100), [
     new NumericStringConverter(),
     new QuartileStandardizer(),
 ]);
@@ -52,7 +52,7 @@ list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
 $estimator->train($training);
 
-var_dump($estimator->progress());
+var_dump($estimator->distances());
 
 var_dump($report->generate($estimator, $testing));
 

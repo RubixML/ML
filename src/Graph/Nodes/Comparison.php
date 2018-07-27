@@ -29,7 +29,7 @@ class Comparison extends Split
     public function __construct(int $index, $value, array $groups, float $score)
     {
         $this->score = $score;
-        $this->n = array_sum(array_map('count', $groups));
+        $this->n = (int) array_sum(array_map('count', $groups));
 
         parent::__construct($index, $value, $groups);
     }

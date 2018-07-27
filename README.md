@@ -47,7 +47,7 @@ MIT
 			- [AdaBoost](#adaboost)
 			- [Classification Tree](#classification-tree)
 			- [Dummy Classifier](#dummy-classifier)
-			- [Extra Tree](#extra-tree)
+			- [Extra Tree Classifier](#extra-tree-classifier)
 			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
 			- [K-d Neighbors](#k-d-neighbors)
 			- [K Nearest Neighbors](#k-nearest-neighbors)
@@ -991,7 +991,7 @@ use Rubix\ML\Other\Strategies\PopularityContest;
 $estimator = new DummyClassifier(new PopularityContest());
 ```
 
-### Extra Tree
+### Extra Tree Classifier
 An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
@@ -999,7 +999,7 @@ An Extremely Randomized Classification Tree that splits the training set at a ra
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
 | 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
 
@@ -1010,7 +1010,7 @@ This Estimator does not have any additional methods.
 ```php
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new ExtraTree(20, 3, 4);
+$estimator = new ExtraTreeClassifier(50, 3, 4);
 ```
 
 ### Gaussian Naive Bayes
@@ -1105,9 +1105,10 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
 
 ##### Additional Methods:
-Return the training progress at each epoch:
+
+Return the size of the training step at each epoch:
 ```php
-public progress() : array
+public steps() : array
 ```
 
 Return the underlying neural network instance or *null* if untrained:
@@ -1142,9 +1143,14 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
-Return the training progress at each epoch:
+Return the validation scores at each epoch of training:
 ```php
-public progress() : array
+public scores() : array
+```
+
+Return the size of the training step at each epoch:
+```php
+public steps() : array
 ```
 
 Returns the underlying neural network instance or *null* if untrained:
@@ -1241,9 +1247,9 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 
 ##### Additional Methods:
 
-Return the training progress at each epoch:
+Return the size of the training step at each epoch:
 ```php
-public progress() : array
+public steps() : array
 ```
 
 Return the underlying neural network instance or *null* if untrained:
@@ -1307,9 +1313,9 @@ Return the *c* computed centroids of the training data:
 public centroids() : array
 ```
 
-Returns the progress of training at each epoch:
+Returns the inter-cluster distances at each epoch of training:
 ```php
-public progress() : array
+public distances() : array
 ```
 
 ##### Example:
@@ -1368,9 +1374,9 @@ Return the *c* computed centroids of the training data:
 public centroids() : array
 ```
 
-Returns the progress of training at each epoch:
+Returns the amount of centroid shift during each epoch of training:
 ```php
-public progress() : array
+public shifts() : array
 ```
 
 ##### Example:
@@ -1472,9 +1478,14 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 
 ##### Additional Methods:
 
-Return the training progress at each epoch:
+Return the validation scores at each epoch of training:
 ```php
-public progress() : array
+public scores() : array
+```
+
+Return the size of the training step at each epoch:
+```php
+public steps() : array
 ```
 
 Returns the underlying neural network instance or *null* if untrained:

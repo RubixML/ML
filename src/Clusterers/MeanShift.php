@@ -61,11 +61,11 @@ class MeanShift implements Clusterer, Persistable
     ];
 
     /**
-     * An array holding the progress of the last training session.
+     * The amount of centroid shift during each epoch of training.
      *
      * @var array
      */
-    protected $progress = [
+    protected $shifts = [
         //
     ];
 
@@ -116,13 +116,13 @@ class MeanShift implements Clusterer, Persistable
     }
 
     /**
-     * Return the progress from last training session.
+     * Return the amount of centroid shift at each epoch of training.
      *
      * @return array
      */
-    public function progress() : array
+    public function shifts() : array
     {
-        return $this->progress;
+        return $this->shifts;
     }
 
     /**
@@ -139,7 +139,7 @@ class MeanShift implements Clusterer, Persistable
 
         $this->centroids = $previous = $dataset->samples();
 
-        $this->progress = ['shifts' => []];
+        $this->shifts = [];
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($this->centroids as $i => &$centroid1) {
@@ -148,7 +148,8 @@ class MeanShift implements Clusterer, Persistable
 
                     if ($distance <= $this->radius) {
                         foreach ($sample as $column => $feature) {
-                            $weight = exp(-(($distance ** 2) / (2 * $this->radius ** 2)));
+                            $weight = exp(-(($distance ** 2)
+                                / (2 * $this->radius ** 2)));
 
                             $centroid1[$column] = ($weight * $feature) / $weight;
                         }
@@ -168,7 +169,7 @@ class MeanShift implements Clusterer, Persistable
 
             $shift = $this->calculateCentroidShift($previous);
 
-            $this->progress['shifts'][] = $shift;
+            $this->shifts[] = $shift;
 
             if ($shift < $this->minChange) {
                 break 1;
@@ -228,7 +229,7 @@ class MeanShift implements Clusterer, Persistable
     protected function calculateCentroidShift(array $previous) : float
     {
         $shift = 0.0;
-        
+
         foreach ($this->centroids as $i => $centroid) {
             foreach ($centroid as $j => $mean) {
                 $shift += abs($previous[$i][$j] - $mean);

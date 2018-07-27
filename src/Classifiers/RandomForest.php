@@ -25,6 +25,11 @@ use ReflectionClass;
  */
 class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 {
+    const TREES = [
+        ClassificationTree::class,
+        ExtraTreeClassifier::class,
+    ];
+
     /**
      * The number of trees to train in the ensemble.
      *
@@ -139,11 +144,9 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 
         $reflector = new ReflectionClass($base);
 
-        if ($reflector->getName() !== ClassificationTree::class) {
-            if ($reflector->getParentClass()->getName() !== ClassificationTree::class) {
-                throw new InvalidArgumentException('Base classifier must be a'
-                    . ' type of classification tree.');
-            }
+        if (!in_array($reflector->getName(), self::TREES)) {
+            throw new InvalidArgumentException('Base classifier must be a'
+                . ' type of classification tree.');
         }
 
         $this->trees = $trees;

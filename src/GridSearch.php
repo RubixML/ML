@@ -8,6 +8,7 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
+use ReflectionMethod;
 use ReflectionClass;
 
 /**
@@ -79,16 +80,14 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * The parameters of the best estimator.
      *
-     * @var array
+     * @var array|null
      */
-    protected $best = [
-        //
-    ];
+    protected $best;
 
     /**
      * The instance of the estimator with the best parameters.
      *
-     * @var \Rubix\ML\Estimator|null
+     * @var \Rubix\ML\Estimator
      */
     protected $estimator;
 
@@ -114,8 +113,13 @@ class GridSearch implements MetaEstimator, Persistable
                 . ' estimator.');
         }
 
-        $args = array_column($reflector->getConstructor()->getParameters(),
-            'name');
+        $constructor = $reflector->getConstructor();
+
+        if ($constructor instanceof ReflectionMethod) {
+            $args = array_column($constructor->getParameters(), 'name');
+        } else {
+            $args = [];
+        }
 
         if (count($params) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
@@ -146,9 +150,9 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * Return the parameters that had the highest validation score.
      *
-     * @return array
+     * @return array|null
      */
-    public function best(): array
+    public function best() : ?array
     {
         return $this->best;
     }
@@ -180,7 +184,7 @@ class GridSearch implements MetaEstimator, Persistable
 
         $this->results = $this->best = [];
 
-        $best = ['score' => -INF, 'params' => []];
+        $best = ['score' => -INF, 'params' => [], 'estmator' => null];
 
         foreach ($this->combineParams($this->params) as $params) {
             $estimator = new $this->base(...$params);
@@ -191,6 +195,7 @@ class GridSearch implements MetaEstimator, Persistable
             if ($score > $best['score']) {
                 $best['score'] = $score;
                 $best['params'] = $params;
+                $best['estimator'] = $estimator;
             }
 
             $this->results[] = [
@@ -200,9 +205,7 @@ class GridSearch implements MetaEstimator, Persistable
         }
 
         $this->best = $best['params'];
-        $this->estimator = new $this->base(...$best['params']);
-
-        $this->estimator->train($dataset);
+        $this->estimator = $best['estimator'];
     }
 
     /**

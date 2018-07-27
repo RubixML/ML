@@ -80,11 +80,11 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
     protected $network;
 
     /**
-     * The training progress of the estimator at each epoch.
+     * The sizes of each training step at each epoch.
      *
      * @var array
      */
-    protected $progress = [
+    protected $steps = [
         //
     ];
 
@@ -132,13 +132,13 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the training progress of the estimator.
+     * Return the sizes of each training step at each epoch.
      *
      * @return array
      */
-    public function progress() : array
+    public function steps() : array
     {
-        return $this->progress;
+        return $this->steps;
     }
 
     /**
@@ -168,7 +168,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->network = new Network(new Input($dataset->numColumns()), [],
             new Logit($this->classes, $this->alpha), $this->optimizer);
 
-        $this->progress = ['steps' => []];
+        $this->steps = [];
 
         $this->partial($dataset);
     }
@@ -193,7 +193,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
             . ' continuous features.');
         }
 
-        if (!isset($this->network)) {
+        if (is_null($this->network)) {
             $this->train($dataset);
         }
 
@@ -210,7 +210,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
                     ->step();
             }
 
-            $this->progress['steps'][] = $step;
+            $this->steps[] = $step;
 
             if (abs($previous - $step) < $this->minChange) {
                 break 1;
@@ -246,13 +246,13 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        $results = $this->network->feed($dataset->samples())->activations();
+        $activations = $this->network->feed($dataset->samples())->activations();
 
         $probabilities = [];
 
-        foreach ($results as $i => $activations) {
-            $probabilities[$i][$this->classes[0]] = 1 - $activations[0];
-            $probabilities[$i][$this->classes[1]] = $activations[0];
+        foreach ($activations as $i => $activation) {
+            $probabilities[$i][$this->classes[0]] = 1 - $activation[0];
+            $probabilities[$i][$this->classes[1]] = $activation[0];
         }
 
         return $probabilities;

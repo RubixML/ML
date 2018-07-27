@@ -9,6 +9,9 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
+        <testsuite name="All">
+            <directory>tests</directory>
+        </testsuite>
         <testsuite name="Anomaly Detectors">
             <directory>tests/AnomalyDetectors</directory>
         </testsuite>

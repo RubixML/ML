@@ -3,10 +3,10 @@
 namespace Rubix\Tests\Classifiers;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\Multiclass;
 use Rubix\ML\Classifiers\Classifier;

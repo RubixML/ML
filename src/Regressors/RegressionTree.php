@@ -41,9 +41,11 @@ class RegressionTree extends CART implements Regressor, Persistable
     /**
      * The randomized column indices.
      *
-     * @var array|null
+     * @var array
      */
-    protected $indices;
+    protected $indices = [
+        //
+    ];
 
     /**
      * @param  int  $maxDepth
@@ -91,7 +93,7 @@ class RegressionTree extends CART implements Regressor, Persistable
 
         $this->grow($dataset);
 
-        unset($this->indices);
+        $this->indices = [];
     }
 
     /**

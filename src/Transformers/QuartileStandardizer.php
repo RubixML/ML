@@ -36,9 +36,9 @@ class QuartileStandardizer implements Transformer
     /**
      * Return the means calculated by fitting the training set.
      *
-     * @return  array
+     * @return array|null
      */
-    public function medians() : array
+    public function medians() : ?array
     {
         return $this->medians;
     }
@@ -46,9 +46,9 @@ class QuartileStandardizer implements Transformer
     /**
      * Return the interquartile ranges calculated during fitting.
      *
-     * @return  array
+     * @return array|null
      */
-    public function iqrs() : array
+    public function iqrs() : ?array
     {
         return $this->iqrs;
     }
@@ -82,7 +82,7 @@ class QuartileStandardizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->medians) or !isset($this->iqrs)) {
+        if (is_null($this->medians) or is_null($this->iqrs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

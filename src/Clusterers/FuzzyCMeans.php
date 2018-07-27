@@ -70,11 +70,11 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     ];
 
     /**
-     * An array holding the progress of the last training session.
+     * The inter cluster distances at each epoch of training.
      *
      * @var array
      */
-    protected $progress = [
+    protected $distances = [
         //
     ];
 
@@ -132,13 +132,13 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
     }
 
     /**
-     * Return the progress from last training session.
+     * Return the inter cluster distance at each epoch of training.
      *
      * @return array
      */
-    public function progress() : array
+    public function distances() : array
     {
-        return $this->progress;
+        return $this->distances;
     }
 
     /**
@@ -165,9 +165,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
         $this->centroids = $dataset->randomize()->tail($this->c)->samples();
 
-        $this->progress = ['distances' => []];
-
-        $memberships = [];
+        $this->distances = $memberships = [];
 
         $previous = 0.0;
 
@@ -193,7 +191,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
             $distance = $this->computeInterClusterDistance($dataset, $memberships);
 
-            $this->progress['distances'][] = $distance;
+            $this->distances[] = $distance;
 
             if (abs($distance - $previous) < $this->minChange) {
                 break 1;

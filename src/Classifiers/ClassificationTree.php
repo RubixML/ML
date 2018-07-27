@@ -50,9 +50,11 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
     /**
      * The memoized random column index array.
      *
-     * @var array|null
+     * @var array
      */
-    protected $indices;
+    protected $indices = [
+        //
+    ];
 
     /**
      * @param  int  $maxDepth
@@ -101,7 +103,7 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
 
         $this->grow($dataset);
 
-        unset($this->indices);
+        $this->indices = [];
     }
 
     /**

@@ -25,11 +25,9 @@ class ConfusionMatrix implements Report
     /**
      * The classes to compare in the matrix.
      *
-     * @var array
+     * @var array|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * @param  array|null  $classes
@@ -64,7 +62,7 @@ class ConfusionMatrix implements Report
 
         $labels = $testing->labels();
 
-        if (!isset($this->classes)) {
+        if (is_null($this->classes)) {
             $classes = array_unique(array_merge($predictions, $labels));
         } else {
             $classes = $this->classes;
