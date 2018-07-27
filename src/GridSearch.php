@@ -184,7 +184,7 @@ class GridSearch implements MetaEstimator, Persistable
 
         $this->results = $this->best = [];
 
-        $best = ['score' => -INF, 'params' => [], 'estmator' => null];
+        $best = ['score' => -INF, 'params' => [], 'estimator' => null];
 
         foreach ($this->combineParams($this->params) as $params) {
             $estimator = new $this->base(...$params);
