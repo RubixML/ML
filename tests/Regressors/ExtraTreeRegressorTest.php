@@ -8,11 +8,11 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Regressor;
-use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Regressors\ExtraTreeRegressor;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
-class RegressionTreeTest extends TestCase
+class ExtraTreeRegressorTest extends TestCase
 {
     protected $estimator;
 
@@ -26,12 +26,12 @@ class RegressionTreeTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new RegressionTree(20, 2, 3, 1e-4);
+        $this->estimator = new ExtraTreeRegressor(20, 2, 8, 1e-4);
     }
 
     public function test_build_regressor()
     {
-        $this->assertInstanceOf(RegressionTree::class, $this->estimator);
+        $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
         $this->assertInstanceOf(Regressor::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

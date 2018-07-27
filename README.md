@@ -63,6 +63,7 @@ MIT
 			- [Mean Shift](#mean-shift)
 		- [Regressors](#regressors)
 			- [Dummy Regressor](#dummy-regressor)
+			- [Extra Tree Regressor](#extra-tree-regressor)
 			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
@@ -947,7 +948,7 @@ $estimator = new AdaBoost(ExtraTreeClassifier::class, [10, 3, 5], 200, 0.1, 1e-2
 ```
 
 ### Classification Tree
-A Decision Tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best splits in a training set.
+A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best splits in a training set.
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -1002,6 +1003,7 @@ An Extremely Randomized Classification Tree that splits the training set at a ra
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
 | 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1410,6 +1412,29 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\BlurryMedian;
 
 $estimator = new DummyRegressor(new BlurryMedian(0.2));
+```
+
+### Extra Tree Regressor
+An Extremely Randomized Regression Tree. Extra Trees differ from standard Regression Trees in that they choose a random split drawn from max features. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a weak learner by itself.
+
+##### Supervised | Persistable | Nonlinear
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
+| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
+| 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
+| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
+
+##### Additional Methods:
+This Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\ExtraTreeRegressor;
+
+$estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
 ```
 
 ### K-d Neighbors Regressor

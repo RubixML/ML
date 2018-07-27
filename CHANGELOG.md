@@ -1,5 +1,6 @@
 - Unreleased
     - Added K-d Neighbors classifier and regressor
+    - Added Extra Tree Regressor
     - Added sorting by column to Dataset
     - Added sort by label to Labeled Dataset
     - Added appending and prepending to Dataset

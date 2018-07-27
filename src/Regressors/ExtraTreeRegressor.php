@@ -1,26 +1,25 @@
 <?php
 
-namespace Rubix\ML\Classifiers;
+namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
 /**
- * Extra Tree Classifier
+ * Extra Tree Regressor
  *
- * An Extremely Randomized Classification Tree that splits the training set at
- * a random point chosen among the maximum features. Extra Trees are useful in
- * Ensembles such as Random Forest or AdaBoost as the “weak” classifier or they
- * can be used on their own. The strength of Extra Trees are computational
- * efficiency as well as increasing variance of the prediction (if that is
- * desired).
+ * An Extremely Randomized Regression Tree. Extra Trees differ from standard
+ * Regression Trees in that they choose a random split drawn from max features.
+ * When max features is set to 1 this amounts to building a totally random
+ * tree. Extra Tree can be used in an Ensemble, such as Bootstrap Aggregator, or
+ * by itself, however, it is generally considered a weak learner by itself.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ExtraTreeClassifier extends ClassificationTree
+class ExtraTreeRegressor extends RegressionTree
 {
     /**
      * Randomized algorithm to that choses the split point with the lowest gini
@@ -32,7 +31,7 @@ class ExtraTreeClassifier extends ClassificationTree
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $best = [
-            'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
+            'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
         ];
 
         shuffle($this->indices);
@@ -44,21 +43,21 @@ class ExtraTreeClassifier extends ClassificationTree
 
             $groups = $dataset->partition($index, $value);
 
-            $gini = $this->calculateGiniImpurity($groups);
+            $ssd = $this->calculateSsd($groups);
 
-            if ($gini < $best['gini']) {
-                $best['gini'] = $gini;
+            if ($ssd < $best['ssd']) {
+                $best['ssd'] = $ssd;
                 $best['index'] = $index;
                 $best['value'] = $value;
                 $best['groups'] = $groups;
             }
 
-            if ($gini <= $this->tolerance) {
+            if ($ssd <= $this->tolerance) {
                 break 1;
             }
         }
 
         return new Comparison($best['index'], $best['value'], $best['groups'],
-            $best['gini']);
+            $best['ssd']);
     }
 }

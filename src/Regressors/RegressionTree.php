@@ -135,15 +135,7 @@ class RegressionTree extends CART implements Regressor, Persistable
 
                 $groups = $dataset->partition($index, $value);
 
-                $ssd = 0.0;
-
-                foreach ($groups as $group) {
-                    if ($group->numRows() === 0) {
-                        continue 1;
-                    }
-
-                    $ssd += RandomVariable::sumOfSquaresDeviations($group->labels());
-                }
+                $ssd = $this->calculateSsd($groups);
 
                 if ($ssd < $best['ssd']) {
                     $best['ssd'] = $ssd;
@@ -171,5 +163,26 @@ class RegressionTree extends CART implements Regressor, Persistable
     protected function terminate(Labeled $dataset) : Decision
     {
         return new Decision(Average::mean($dataset->labels()));
+    }
+
+    /**
+     * Calculate the sum of squared deviations for each group in a split.
+     *
+     * @param  array  $groups
+     * @return float
+     */
+    protected function calculateSsd(array $groups) : float
+    {
+        $ssd = 0.0;
+
+        foreach ($groups as $group) {
+            if ($group->numRows() === 0) {
+                continue 1;
+            }
+
+            $ssd += RandomVariable::sumOfSquaresDeviations($group->labels());
+        }
+
+        return $ssd;
     }
 }
