@@ -1,11 +1,12 @@
 - Unreleased
     - Added K-d Neighbors classifier and regressor
     - Added Extra Tree Regressor
+    - Added Adaline regressor
     - Added sorting by column to Dataset
     - Added sort by label to Labeled Dataset
     - Added appending and prepending to Dataset
     - Added Dataset Generators
-    - Fixed bug in stratified fold
+    - Fixed bug in dataset stratified fold
     - Added stop word filter to Word Count Vectorizer
 
 - 0.0.3-alpha

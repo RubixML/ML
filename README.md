@@ -62,6 +62,7 @@ MIT
 			- [K Means](#k-means)
 			- [Mean Shift](#mean-shift)
 		- [Regressors](#regressors)
+			- [Adaline](#adaline)
 			- [Dummy Regressor](#dummy-regressor)
 			- [Extra Tree Regressor](#extra-tree-regressor)
 			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
@@ -1123,7 +1124,7 @@ public network() : Network|null
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$estimator = new LogisticRegression(300, 10, new Adam(0.001), 1e-4, 1e-8);
+$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, 1e-5);
 ```
 
 ### Multi Layer Perceptron
@@ -1392,6 +1393,40 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 ---
 ### Regressors
 Regression analysis is used to predict the outcome of an event where the value is continuous.
+
+### Adaline
+Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear). The Adaline converges to the least squares error which is the same error function as linear regression.
+
+##### Supervised | Online | Persistable | Linear
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
+| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
+| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
+
+##### Additional Methods:
+
+Return the size of the training step at each epoch:
+```php
+public steps() : array
+```
+
+Return the underlying neural network instance or *null* if untrained:
+```php
+public network() : Network|null
+```
+
+##### Example:
+```php
+use Rubix\ML\Classifers\Adaline;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+
+$estimator = new Adaline(300, 10, new Adam(0.001), 1e-4, 1e-8);
+```
 
 ### Dummy Regressor
 Regressor that guesses the output values based on a [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.

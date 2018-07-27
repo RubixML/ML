@@ -31,7 +31,7 @@ $labels = iterator_to_array($reader->fetchColumn('decibels'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new BootstrapAggregator(RegressionTree::class, [10, 3, 3], 20, 0.4), [
+$estimator = new Pipeline(new BootstrapAggregator(RegressionTree::class, [10, 3, 3], 20, 0.3), [
         new NumericStringConverter(),
     ]);
 

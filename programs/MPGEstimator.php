@@ -56,7 +56,7 @@ list($training, $testing) = $dataset->randomize()->split(0.8);
 
 $estimator->train($training);
 
-var_dump($estimator->progress());
+var_dump($estimator->scores());
 
 var_dump($report->generate($estimator, $testing));
 

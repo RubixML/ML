@@ -5,13 +5,13 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
+use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
@@ -36,7 +36,7 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new AdaBoost(ExtraTreeClassifier::class, [10, 5, 1], 100, 0.1, 1e-3), [
+$estimator = new Pipeline(new AdaBoost(ExtraTreeClassifier::class, [10, 5, 10], 100, 0.1, 1e-3), [
     new NumericStringConverter(),
     new MissingDataImputer('?'),
 ]);
