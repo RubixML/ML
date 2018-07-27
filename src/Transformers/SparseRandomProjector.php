@@ -70,14 +70,15 @@ class SparseRandomProjector implements Transformer
                 . ' with continuous features.');
         }
 
+        $columns = $dataset->numColumns();
+
         $n = count(static::DISTRIBUTION) - 1;
 
         $r = [[]];
 
-        for ($i = 0; $i < $dataset->numColumns(); $i++) {
+        for ($i = 0; $i < $columns; $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = static::BETA
-                    * static::DISTRIBUTION[rand(0, $n)];
+                $r[$i][$j] = static::BETA * static::DISTRIBUTION[rand(0, $n)];
             }
         }
 
@@ -94,7 +95,7 @@ class SparseRandomProjector implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->r)) {
+        if (is_null($this->r)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

@@ -4,7 +4,6 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
-use MathPHP\Statistics\Significance;
 use RuntimeException;
 
 /**
@@ -20,6 +19,20 @@ use RuntimeException;
 class ZScaleStandardizer implements Transformer
 {
     /**
+     * Should we center the data?
+     *
+     * @var bool
+     */
+    protected $center;
+
+    /**
+     * Should we scale the data?
+     *
+     * @var bool
+     */
+    protected $scale;
+
+    /**
      * The computed means of the fitted data indexed by column.
      *
      * @var array|null
@@ -32,6 +45,17 @@ class ZScaleStandardizer implements Transformer
      * @var array|null
      */
     protected $stddevs;
+
+    /**
+     * @param  bool  $center
+     * @param  bool  $scale
+     * @return void
+     */
+    public function __construct(bool $center = true, bool $scale = true)
+    {
+        $this->center = $center;
+        $this->scale = $scale;
+    }
 
     /**
      * Return the means calculated by fitting the training set.
@@ -82,7 +106,7 @@ class ZScaleStandardizer implements Transformer
     }
 
     /**
-     * Transform the features into a z score.
+     * Center and scale the features of the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -96,8 +120,13 @@ class ZScaleStandardizer implements Transformer
 
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$feature) {
-                $feature = Significance::zScore($feature,
-                    $this->means[$column], $this->stddevs[$column]);
+                if ($this->center === true) {
+                    $feature -= $this->means[$column];
+                }
+
+                if ($this->scale === true) {
+                    $feature /= $this->stddevs[$column];
+                }
             }
         }
     }

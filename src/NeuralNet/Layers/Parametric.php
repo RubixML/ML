@@ -6,13 +6,15 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 interface Parametric extends Layer
 {
+    const PHI = 1e8;
+
     /**
      * Initialize the layer with an indegree and optimizer instance.
      *
-     * @param  int  $prevWidth
+     * @param  int  $fanIn
      * @return int
      */
-    public function initialize(int $prevWidth, Optimizer $optimizer) : int;
+    public function initialize(int $fanIn, Optimizer $optimizer) : int;
 
     /**
      * Update the parameters in the layer and return the magnitude of the step.

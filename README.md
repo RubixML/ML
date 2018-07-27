@@ -2143,12 +2143,15 @@ $transformer = new PolynomialExpander(3);
 
 ### Quartile Standardizer
 
-This standardizer removes the median and scales each sample according to the interquantile range (*IQR*). The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
+This standardizer centers the sample matrix around the median and scales each feature according to the interquantile range (*IQR*) for each column. The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
 
 ##### Continuous
 
 ##### Parameters:
-This Transformer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | true | bool | Should we center the sample matrix? |
+| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 
@@ -2170,12 +2173,15 @@ $transformer = new QuartileStandardizer();
 ```
 
 ### Robust Standardizer
-This Transformer standardizes continuous features by removing the median and dividing over the median absolute deviation (MAD), a value referred to as robust z score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
+This Transformer standardizes continuous features by centering around the median and scaling by the median absolute deviation (MAD), a value referred to as robust Z Score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
 
 ##### Continuous
 
 ##### Parameters:
-This Transformer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | true | bool | Should we center the sample matrix? |
+| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 
@@ -2237,12 +2243,15 @@ $transformer = new VarianceThresholdFilter(50);
 ```
 
 ### Z Scale Standardizer
-A way of centering and scaling an input vector by computing the Z Score for each continuous feature.
+A way of centering and scaling a sample matrix by computing the Z Score for each continuous feature. Z Scores have a mean of 0 and *unit* variance.
 
 ##### Continuous
 
 ##### Parameters:
-This Transformer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | true | bool | Should we center the sample matrix? |
+| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 

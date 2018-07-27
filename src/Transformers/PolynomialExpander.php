@@ -64,10 +64,12 @@ class PolynomialExpander implements Transformer
      */
     public function transform(array &$samples) : void
     {
+        $columns = count(reset($samples));
+
         foreach ($samples as &$sample) {
             $vector = [];
 
-            for ($i = 0; $i < count($sample); $i++) {
+            for ($i = 0; $i < $columns; $i++) {
                 for ($j = 1; $j <= $this->degree; $j++) {
                     $vector[] = $sample[$i] ** $j;
                 }

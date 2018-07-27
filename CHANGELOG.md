@@ -8,6 +8,7 @@
     - Added Dataset Generators
     - Fixed bug in dataset stratified fold
     - Added stop word filter to Word Count Vectorizer
+    - Added centering and scaling options for standardizers
 
 - 0.0.3-alpha
     - Added Extra Tree classifier

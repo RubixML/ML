@@ -2,24 +2,16 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-use Rubix\ML\Pipeline;
-use Rubix\ML\GridSearch;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Classifiers\KDNeighbors;
-use Rubix\ML\Reports\AggregateReport;
-use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\Kernels\Distance\Diagonal;
-use Rubix\ML\Other\Helpers\RandomParams;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Reports\MulticlassBreakdown;
-use Rubix\ML\CrossValidation\Metrics\MCC;
+use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Other\Generators\HalfMoon;
-use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Other\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
-use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -37,9 +29,7 @@ $generator = new Agglomerate([
     5, 6,
 ]);
 
-$dataset = $generator->generate(3000);
-
-$dataset->apply(new NumericStringConverter());
+$dataset = $generator->generate(2000);
 
 $estimator1 = new KDNeighbors(3, 10, new Euclidean());
 $estimator2 = new KNearestNeighbors(3, new Euclidean());

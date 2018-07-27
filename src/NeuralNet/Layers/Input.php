@@ -23,13 +23,6 @@ class Input implements Layer
     protected $width;
 
     /**
-     * The memoized output activations matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
-     */
-    protected $computed;
-
-    /**
      * @param  int  $inputs
      * @throws \InvalidArgumentException
      * @return void

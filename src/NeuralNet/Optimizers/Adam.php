@@ -105,11 +105,9 @@ class Adam implements Optimizer
      */
     public function initialize(Matrix $weights) : void
     {
-        $this->velocities = MatrixFactory::zero($weights->getM(),
-            $weights->getN());
+        $this->velocities = MatrixFactory::zero($weights->getM(), $weights->getN());
 
-        $this->cache = MatrixFactory::zero($weights->getM(),
-            $weights->getN());
+        $this->cache = MatrixFactory::zero($weights->getM(), $weights->getN());
     }
 
     /**
@@ -126,10 +124,13 @@ class Adam implements Optimizer
         $this->cache = $this->cache->scalarMultiply($this->rmsDecay)
             ->add($gradients->hadamardProduct($gradients->scalarMultiply(1 - $this->rmsDecay)));
 
+        $m = $gradients->getM();
+        $n = $gradients->getN();
+
         $steps = [[]];
 
-        for ($i = 0; $i < $gradients->getM(); $i++) {
-            for ($j = 0; $j < $gradients->getN(); $j++) {
+        for ($i = 0; $i < $m; $i++) {
+            for ($j = 0; $j < $n; $j++) {
                 $steps[$i][$j] = $this->rate * $this->velocities[$i][$j]
                     / (sqrt($this->cache[$i][$j]) + $this->epsilon);
             }

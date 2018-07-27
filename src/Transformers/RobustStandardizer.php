@@ -23,6 +23,20 @@ class RobustStandardizer implements Transformer
     const LAMBDA = 0.6745;
 
     /**
+     * Should we center the data?
+     *
+     * @var bool
+     */
+    protected $center;
+
+    /**
+     * Should we scale the data?
+     *
+     * @var bool
+     */
+    protected $scale;
+
+    /**
      * The computed medians of the fitted data indexed by column.
      *
      * @var array|null
@@ -36,6 +50,17 @@ class RobustStandardizer implements Transformer
      * @var array|null
      */
     protected $mads;
+
+    /**
+     * @param  bool  $center
+     * @param  bool  $scale
+     * @return void
+     */
+    public function __construct(bool $center = true, bool $scale = true)
+    {
+        $this->center = $center;
+        $this->scale = $scale;
+    }
 
     /**
      * Return the medians calculated by fitting the training set.
@@ -86,7 +111,7 @@ class RobustStandardizer implements Transformer
     }
 
     /**
-     * Transform the features into a modified z score.
+     * Center and scale the features of the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -94,14 +119,19 @@ class RobustStandardizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->medians) or !isset($this->mads)) {
+        if (is_null($this->medians) or is_null($this->mads)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$feature) {
-                $feature = (self::LAMBDA * ($feature - $this->medians[$column]))
-                    / ($this->mads[$column] + self::EPSILON);
+                if ($this->center === true) {
+                    $feature -= $this->medians[$column];
+                }
+
+                if ($this->scale === true) {
+                    $feature = (self::LAMBDA * $feature) / $this->mads[$column];
+                }
             }
         }
     }

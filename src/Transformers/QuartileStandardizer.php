@@ -20,6 +20,20 @@ use RuntimeException;
 class QuartileStandardizer implements Transformer
 {
     /**
+     * Should we center the data?
+     *
+     * @var bool
+     */
+    protected $center;
+
+    /**
+     * Should we scale the data?
+     *
+     * @var bool
+     */
+    protected $scale;
+
+    /**
      * The computed medians of the fitted data indexed by column.
      *
      * @var array|null
@@ -32,6 +46,17 @@ class QuartileStandardizer implements Transformer
      * @var array|null
      */
     protected $iqrs;
+
+    /**
+     * @param  bool  $center
+     * @param  bool  $scale
+     * @return void
+     */
+    public function __construct(bool $center = true, bool $scale = true)
+    {
+        $this->center = $center;
+        $this->scale = $scale;
+    }
 
     /**
      * Return the means calculated by fitting the training set.
@@ -68,13 +93,13 @@ class QuartileStandardizer implements Transformer
                 $quartiles = Descriptive::quartiles($values);
 
                 $this->medians[$column] = $quartiles['Q2'];
-                $this->iqrs[$column] = $quartiles['IQR'];
+                $this->iqrs[$column] = $quartiles['IQR'] + self::EPSILON;
             }
         }
     }
 
     /**
-     * Transform the features into a z score.
+     * Center and scale the features of the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -88,8 +113,13 @@ class QuartileStandardizer implements Transformer
 
         foreach ($samples as &$sample) {
             foreach ($sample as $column => &$feature) {
-                $feature = ($feature - $this->medians[$column])
-                    / ($this->iqrs[$column] + self::EPSILON);
+                if ($this->center === true) {
+                    $feature -= $this->medians[$column];
+                }
+
+                if ($this->scale === true) {
+                    $feature =  $feature / $this->iqrs[$column];
+                }
             }
         }
     }

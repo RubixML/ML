@@ -70,8 +70,7 @@ class Momentum implements Optimizer
      */
     public function initialize(Matrix $weights) : void
     {
-        $this->velocities = MatrixFactory::zero($weights->getM(),
-            $weights->getN());
+        $this->velocities = MatrixFactory::zero($weights->getM(), $weights->getN());
     }
 
     /**

@@ -35,28 +35,28 @@ class Linear implements Output
     /**
      * The weight matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $weights;
 
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $input;
 
     /**
      * The memoized output activations matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
 
     /**
      * The memoized gradient matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $gradients;
 
@@ -81,6 +81,10 @@ class Linear implements Output
 
         $this->alpha = $alpha;
         $this->width = 1;
+        $this->weights = new Matrix([]);
+        $this->input = new Matrix([]);
+        $this->computed = new Matrix([]);
+        $this->gradients = new Matrix([]);
     }
 
     /**
@@ -95,19 +99,22 @@ class Linear implements Output
      * Initialize the layer by fully connecting each neuron to every input and
      * generating a random weight for each parameter/synapse in the layer.
      *
-     * @param  int  $prevWidth
+     * @param  int  $fanIn
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return int
      */
-    public function initialize(int $prevWidth, Optimizer $optimizer) : int
+    public function initialize(int $fanIn, Optimizer $optimizer) : int
     {
-        $r = (6 / $prevWidth) ** 0.25;
+        $r = (6 / sqrt($fanIn));
+
+        $min = (int) (-$r * self::PHI);
+        $max = (int) ($r * self::PHI);
 
         $weights = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
-            for ($j = 0; $j < $prevWidth; $j++) {
-                $weights[$i][$j] = rand((int) (-$r * 1e8), (int) ($r * 1e8)) / 1e8;
+            for ($j = 0; $j < $fanIn; $j++) {
+                $weights[$i][$j] = rand($min, $max) / self::PHI;
             }
         }
 
