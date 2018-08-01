@@ -2515,12 +2515,13 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 3 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 
-$optimizer = new AdaGrad(0.035);
+$optimizer = new AdaGrad(0.035, 1e-5);
 ```
 
 ### Adam
@@ -2565,12 +2566,13 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | decay | 0.9 | float | The RMS decay rate. |
+| 3 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
-$optimizer = new RMSProp(0.01, 0.9);
+$optimizer = new RMSProp(0.01, 0.9, 1e-10);
 ```
 
 ### Step Decay

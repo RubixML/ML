@@ -35,6 +35,14 @@ class RMSProp implements Optimizer
     protected $decay;
 
     /**
+     * The smoothing parameter. i.e. a tiny number that helps provide numerical
+     * smoothing and stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * The rolling sum of squared gradient matrices.
      *
      * @var \SplObjectStorage
@@ -47,7 +55,7 @@ class RMSProp implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $decay = 0.9)
+    public function __construct(float $rate = 0.001, float $decay = 0.9, float $epsilon = 1e-8)
     {
         if ($rate <= 0.0) {
             throw new InvalidArgumentException('The learning rate must be set'
@@ -59,8 +67,14 @@ class RMSProp implements Optimizer
                 . ' and 1.');
         }
 
+        if ($epsilon <= 0.0) {
+            throw new InvalidArgumentException('Epsilon must be greater than'
+                . ' 0');
+        }
+
         $this->rate = $rate;
         $this->decay = $decay;
+        $this->epsilon = $epsilon;
         $this->cache = new SplObjectStorage();
     }
 
@@ -93,7 +107,7 @@ class RMSProp implements Optimizer
         foreach ($gradients->getMatrix() as $i => $row) {
             foreach ($row as $j => $gradient) {
                 $steps[$i][$j] = $this->rate * $gradient
-                    / (sqrt($cache[$i][$j]) + self::EPSILON);
+                    / (sqrt($cache[$i][$j]) + $this->epsilon);
             }
         }
 

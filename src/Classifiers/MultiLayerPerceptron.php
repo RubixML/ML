@@ -278,7 +278,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             $this->train($dataset);
         }
 
-        list($training, $testing) = $dataset->stratifiedSplit(1 - $this->holdout);
+        list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
 
         list($min, $max) = $this->metric->range();
 

@@ -29,6 +29,14 @@ class AdaGrad implements Optimizer
     protected $rate;
 
     /**
+     * The smoothing parameter. i.e. a tiny number that helps provide numerical
+     * smoothing and stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * The memoized sum of squared gradient matrices for each parameter.
      *
      * @var \SplObjectStorage
@@ -37,17 +45,24 @@ class AdaGrad implements Optimizer
 
     /**
      * @param  float  $rate
+     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001)
+    public function __construct(float $rate = 0.001, float $epsilon = 1e-8)
     {
         if ($rate <= 0.0) {
             throw new InvalidArgumentException('The learning rate must be set'
                 . ' to a positive value.');
         }
 
+        if ($epsilon <= 0.0) {
+            throw new InvalidArgumentException('Epsilon must be greater than'
+                . ' 0');
+        }
+
         $this->rate = $rate;
+        $this->epsilon = $epsilon;
         $this->cache = new SplObjectStorage();
     }
 
@@ -78,7 +93,7 @@ class AdaGrad implements Optimizer
         foreach ($gradients->getMatrix() as $i => $row) {
             foreach ($row as $j => $gradient) {
                 $step[$i][$j] = $this->rate * $gradient
-                    / (sqrt($cache[$i][$j]) + self::EPSILON);
+                    / (sqrt($cache[$i][$j]) + $this->epsilon);
             }
         }
 

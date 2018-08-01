@@ -264,7 +264,7 @@ class MLPRegressor implements Regressor, Online, Persistable
             $this->train($dataset);
         }
 
-        list($training, $testing) = $dataset->randomize()->split(1 - $this->holdout);
+        list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
 
         list($min, $max) = $this->metric->range();
 
@@ -272,7 +272,7 @@ class MLPRegressor implements Regressor, Online, Persistable
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             $batches = $training->randomize()->batch($this->batchSize);
-            
+
             $step = 0.0;
 
             foreach ($batches as $batch) {

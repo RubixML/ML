@@ -89,8 +89,9 @@ class Adam implements Optimizer
                 . ' 0 and 1.');
         }
 
-        if ($epsilon === 0.0) {
-            throw new InvalidArgumentException('Epsilon cannot be 0.');
+        if ($epsilon <= 0.0) {
+            throw new InvalidArgumentException('Epsilon must be greater than'
+                . ' 0');
         }
 
         $this->rate = $rate;
@@ -116,7 +117,7 @@ class Adam implements Optimizer
         } else {
             $m = $parameter->w()->getM();
             $n = $parameter->w()->getN();
-            
+
             $velocities = MatrixFactory::zero($m, $n);
             $cache = MatrixFactory::zero($m, $n);
 

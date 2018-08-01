@@ -89,14 +89,18 @@ class StepDecay implements Optimizer
     public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
         if ($this->cache->contains($parameter)) {
-            $cache = $this->cache[$parameter];
+            $steps = $this->cache[$parameter];
         } else {
-            $cache = 0;
+            $steps = 0;
 
-            $this->cache->attach($parameter, $cache);
+            $this->cache->attach($parameter, $steps);
         }
 
-        $rate = $this->rate * (1 / (1 + $this->decay * ($cache / $this->steps)));
+        $steps++;
+
+        $rate = $this->rate * (1 / (1 + $this->decay * ($steps / $this->steps)));
+
+        $this->cache[$parameter] = $steps;
 
         return $gradients->scalarMultiply($rate);
     }

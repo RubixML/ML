@@ -26,11 +26,11 @@ use InvalidArgumentException;
 class Dense implements Hidden
 {
     /**
-     * The number of neurons in this layer.
+     * The width of the layer. i.e. the number of neurons.
      *
      * @var int
      */
-    protected $neurons;
+    protected $width;
 
     /**
      * The function that outputs the activation or implulse of each neuron.
@@ -38,13 +38,6 @@ class Dense implements Hidden
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
-
-    /**
-     * The width of the layer. i.e. the number of neurons.
-     *
-     * @var int
-     */
-    protected $width;
 
     /**
      * The weights.
@@ -87,7 +80,6 @@ class Dense implements Hidden
                 . ' less than 1.');
         }
 
-        $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
         $this->width = $neurons + 1;
         $this->weights = new Parameter(new Matrix([]));

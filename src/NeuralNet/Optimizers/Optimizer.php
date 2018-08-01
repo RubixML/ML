@@ -7,8 +7,6 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface Optimizer
 {
-    const EPSILON = 1e-8;
-
     /**
      * Calculate a gradient descent step for a given parameter.
      *
