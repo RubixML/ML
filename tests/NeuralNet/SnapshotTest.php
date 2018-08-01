@@ -4,7 +4,6 @@ namespace Rubix\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +17,7 @@ class SnapshotTest extends TestCase
     {
         $this->layer = new Dense(5, new ELU());
 
-        $this->layer->initialize(5, new Stochastic());
+        $this->layer->init(5);
 
         $this->snapshot = new Snapshot([$this->layer]);
     }

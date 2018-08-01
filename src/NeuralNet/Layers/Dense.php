@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -46,9 +47,9 @@ class Dense implements Hidden
     protected $width;
 
     /**
-     * The weight matrix.
+     * The weights.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \Rubix\ML\NeuralNet\Parameter
      */
     protected $weights;
 
@@ -74,20 +75,6 @@ class Dense implements Hidden
     protected $computed;
 
     /**
-     * The memoized gradient matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $gradients;
-
-    /**
-     * The gradient descent optimizer.
-     *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer|null
-     */
-    protected $optimizer;
-
-    /**
      * @param  int  $neurons
      * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
      * @throws \InvalidArgumentException
@@ -103,11 +90,10 @@ class Dense implements Hidden
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
         $this->width = $neurons + 1;
-        $this->weights = new Matrix([]);
+        $this->weights = new Parameter(new Matrix([]));
         $this->input = new Matrix([]);
         $this->z = new Matrix([]);
         $this->computed = new Matrix([]);
-        $this->gradients = new Matrix([]);
     }
 
     /**
@@ -120,13 +106,12 @@ class Dense implements Hidden
 
     /**
      * Initialize the layer by fully connecting each neuron to every input and
-     * generating a random weight for each parameter/synapse in the layer.
+     * generating a random weight for each synapse.
      *
      * @param  int  $fanIn
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return int
      */
-    public function initialize(int $fanIn, Optimizer $optimizer) : int
+    public function init(int $fanIn) : int
     {
         if ($this->activationFunction instanceof HyperbolicTangent) {
             $r = (6 / $fanIn) ** 0.25;
@@ -139,18 +124,15 @@ class Dense implements Hidden
         $min = (int) (-$r * self::PHI);
         $max = (int) ($r * self::PHI);
 
-        $weights = [[]];
+        $w = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
-                $weights[$i][$j] = rand($min, $max) / self::PHI;
+                $w[$i][$j] = rand($min, $max) / self::PHI;
             }
         }
 
-        $this->weights = new Matrix($weights);
-        $this->optimizer = $optimizer;
-
-        $this->optimizer->initialize($this->weights);
+        $this->weights = new Parameter(new Matrix($w));
 
         return $this->width;
     }
@@ -166,47 +148,39 @@ class Dense implements Hidden
     {
         $this->input = $input;
 
-        $this->z = $this->weights->multiply($input);
+        $this->z = $this->weights->w()->multiply($input);
 
-        $this->computed = $this->activationFunction->compute($this->z);
+        $temp = $this->z->rowExclude($this->z->getM() - 1);
 
-        $biases = MatrixFactory::one(1, $this->computed->getN());
+        $biases = MatrixFactory::one(1, $this->z->getN());
 
-        return $this->computed
-            ->rowExclude($this->computed->getM() - 1)
+        $this->computed = $this->activationFunction->compute($temp)
             ->augmentBelow($biases);
+
+        return $this->computed;
     }
 
     /**
-     * Calculate the errors and gradients of the layer.
+     * Calculate the errors and gradients of the layer and update the parameters.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return array
      */
-    public function back(Matrix $prevWeights, Matrix $prevErrors) : array
+    public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array
     {
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($prevWeights->transpose()->multiply($prevErrors));
 
-        $this->gradients = $errors->multiply($this->input->transpose());
+        $gradients = $errors->multiply($this->input->transpose());
 
-        return [$this->weights, $errors];
-    }
+        $step = $optimizer->step($this->weights, $gradients);
 
-    /**
-     * Update the parameters in the layer and return the magnitude of the step.
-     *
-     * @return float
-     */
-    public function update() : float
-    {
-        $steps = $this->optimizer->step($this->gradients);
+        $this->weights->update($step);
 
-        $this->weights = $this->weights->add($steps);
-
-        return $steps->maxNorm();
+        return [$this->weights->w(), $errors, $step->maxNorm()];
     }
 
     /**

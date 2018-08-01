@@ -2574,7 +2574,7 @@ $optimizer = new RMSProp(0.01, 0.9);
 ```
 
 ### Step Decay
-A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter when it reaches a new floor (takes k steps).
+A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter when it reaches a new floor. The number of steps needed to reach a new floor is given by the steps parameter.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

@@ -2,9 +2,11 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
+use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 /**
  * Adam
@@ -48,16 +50,16 @@ class Adam implements Optimizer
     protected $epsilon;
 
     /**
-     * The velocity matrix.
+     * The memoized velocity matrices.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \SplObjectStorage
      */
     protected $velocities;
 
     /**
-     * The RMS matrix.
+     * The rolling sum of squared gradient matrices.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \SplObjectStorage
      */
     protected $cache;
 
@@ -95,47 +97,53 @@ class Adam implements Optimizer
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
         $this->epsilon = $epsilon;
+        $this->velocities = new SplObjectStorage();
+        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Initialize the layer optimizer.
+     * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
-     * @return void
-     */
-    public function initialize(Matrix $weights) : void
-    {
-        $this->velocities = MatrixFactory::zero($weights->getM(), $weights->getN());
-
-        $this->cache = MatrixFactory::zero($weights->getM(), $weights->getN());
-    }
-
-    /**
-     * Calculate a gradient descent step for a layer given a matrix of gradients.
-     *
+     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
      * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
      * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
-        $this->velocities = $this->velocities->scalarMultiply($this->momentumDecay)
+        if ($this->velocities->contains($parameter)) {
+            $velocities = $this->velocities[$parameter];
+            $cache = $this->cache[$parameter];
+        } else {
+            $m = $parameter->w()->getM();
+            $n = $parameter->w()->getN();
+            
+            $velocities = MatrixFactory::zero($m, $n);
+            $cache = MatrixFactory::zero($m, $n);
+
+            $this->velocities->attach($parameter, $velocities);
+            $this->cache->attach($parameter, $cache);
+        }
+
+        $velocities = $velocities
+            ->scalarMultiply($this->momentumDecay)
             ->add($gradients->scalarMultiply(1 - $this->momentumDecay));
 
-        $this->cache = $this->cache->scalarMultiply($this->rmsDecay)
-            ->add($gradients->hadamardProduct($gradients->scalarMultiply(1 - $this->rmsDecay)));
+        $cache = $cache
+            ->scalarMultiply($this->rmsDecay)
+            ->add($gradients->hadamardProduct($gradients)->scalarMultiply(1 - $this->rmsDecay));
 
-        $m = $gradients->getM();
-        $n = $gradients->getN();
+        $step = [[]];
 
-        $steps = [[]];
-
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $steps[$i][$j] = $this->rate * $this->velocities[$i][$j]
-                    / (sqrt($this->cache[$i][$j]) + $this->epsilon);
+        foreach ($velocities->getMatrix() as $i => $row) {
+            foreach ($row as $j => $velocity) {
+                $step[$i][$j] = $this->rate * $velocity
+                    / (sqrt($cache[$i][$j]) + $this->epsilon);
             }
         }
 
-        return new Matrix($steps);
+        $this->velocities[$parameter] = $velocities;
+        $this->cache[$parameter] = $cache;
+
+        return new Matrix($step);
     }
 }

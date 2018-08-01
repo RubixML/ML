@@ -2,9 +2,11 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
+use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 /**
  * Momentum
@@ -34,9 +36,9 @@ class Momentum implements Optimizer
     protected $decay;
 
     /**
-     * A table storing the current velocity of each parameter.
+     * The memoized velocity matrices.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \SplObjectStorage
      */
     protected $velocities;
 
@@ -60,31 +62,35 @@ class Momentum implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
+        $this->velocities = new SplObjectStorage();
     }
 
     /**
-     * Initialize the layer optimizer.
+     * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
-     * @return void
-     */
-    public function initialize(Matrix $weights) : void
-    {
-        $this->velocities = MatrixFactory::zero($weights->getM(), $weights->getN());
-    }
-
-    /**
-     * Calculate a gradient descent step for a layer given a matrix of gradients.
-     *
+     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
      * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
      * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
-        $this->velocities = $gradients
-            ->add($this->velocities->scalarMultiply($this->decay))
-            ->scalarMultiply($this->rate);
+        if ($this->velocities->contains($parameter)) {
+            $velocities = $this->velocities[$parameter];
+        } else {
+            $m = $parameter->w()->getM();
+            $n = $parameter->w()->getN();
 
-        return $this->velocities;
+            $velocities = MatrixFactory::zero($m, $n);
+
+            $this->velocities->attach($parameter, $velocities);
+        }
+
+        $velocities = $gradients
+            ->scalarMultiply($this->rate)
+            ->add($velocities->scalarMultiply($this->decay));
+
+        $this->velocities[$parameter] = $velocities;
+
+        return $velocities;
     }
 }

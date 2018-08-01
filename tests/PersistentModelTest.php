@@ -17,7 +17,7 @@ class PersistentModelTest extends TestCase
         $this->model = new PersistentModel(new DummyClassifier());
     }
 
-    public function test_build_persistent_model()
+    public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(PersistentModel::class, $this->model);
         $this->assertInstanceOf(MetaEstimator::class, $this->model);

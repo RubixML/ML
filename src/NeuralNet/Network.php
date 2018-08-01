@@ -37,20 +37,20 @@ class Network
     ];
 
     /**
+     * The memoized pathing of the backward pass.
+     *
+     * @var array
+     */
+    protected $backPass = [
+        //
+    ];
+
+    /**
      * The gradient descent optimizer used to train the network.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
     protected $optimizer;
-
-    /**
-     * The memoized pathing of the backward pass.
-     *
-     * @var array
-     */
-    protected $backPath = [
-        //
-    ];
 
     /**
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
@@ -74,13 +74,15 @@ class Network
 
         $this->layers[] = $output;
 
-        $prevWidth = $this->input()->width();
+        $fanIn = $this->input()->width();
 
         foreach ($this->parametric() as $layer) {
-            $prevWidth = $layer->initialize($prevWidth, clone $optimizer);
+            $fanIn = $layer->init($fanIn);
         }
 
-        $this->backPath = array_reverse($this->parametric());
+        $this->backPass = array_reverse($this->parametric());
+
+        $this->optimizer = $optimizer;
     }
 
     /**
@@ -162,25 +164,31 @@ class Network
     }
 
     /**
-     * Backpropagate the error determined by the given outcome and return the
-     * gradients at each layer.
+     * Backpropagate the error determined by the previous layer and take a step
+     * in the direction of the steepest descent.
      *
      * @param  array  $labels
-     * @return self
+     * @return float
      */
-    public function backpropagate(array $labels) : self
+    public function backpropagate(array $labels) : float
     {
-        $errors = $weights = null;
+        $prevErrors = $prevWeights = null;
 
-        foreach ($this->backPath as $layer) {
+        $magnitude = 0.0;
+
+        foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {
-                list($weights, $errors) = $layer->back($labels);
+                list($prevWeights, $prevErrors, $norm)
+                    = $layer->back($labels, $this->optimizer);
             } else {
-                list($weights, $errors) = $layer->back($weights, $errors);
+                list($prevWeights, $prevErrors, $norm)
+                    = $layer->back($prevWeights, $prevErrors, $this->optimizer);
             }
+
+            $magnitude += $norm;
         }
 
-        return $this;
+        return $magnitude;
     }
 
     /**
@@ -190,23 +198,7 @@ class Network
      */
     public function activations() : array
     {
-        return $this->output()->activations()->transpose()->getMatrix();
-    }
-
-    /**
-     * Take a step of gradient descent and return the magnitude.
-     *
-     * @return float
-     */
-    public function step() : float
-    {
-        $magnitude = 0.0;
-
-        foreach ($this->backPath as $layer) {
-            $magnitude += $layer->update();
-        }
-
-        return $magnitude;
+        return $this->output()->activations()->getMatrix();
     }
 
     /**
@@ -218,7 +210,6 @@ class Network
     {
         return new Snapshot($this->parametric());
     }
-
 
     /**
      * Restore the network parameters from a snapshot.

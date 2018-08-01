@@ -50,7 +50,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
-    1e-4, new MCC(), 0.1, 3, 1e-3, 100), [
+    1e-4, new MCC(), 0.1, 3, 1e-3, 20), [
         new OneHotEncoder(),
         new SparseRandomProjector(30),
         new ZScaleStandardizer(),
@@ -64,7 +64,11 @@ $report = new AggregateReport([
 
 list($training, $testing) = $dataset->randomize()->stratifiedSplit(0.8);
 
+$start = microtime(true);
+
 $estimator->train($training);
+
+echo 'Training took ' . (string) (microtime(true) -  $start) . ' seconds' . "\n";
 
 var_dump($estimator->scores());
 

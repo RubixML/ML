@@ -2,14 +2,17 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
+use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 /**
  * Step Decay
  *
  * A learning rate decay stochastic optimizer that reduces the learning rate by
- * a factor of the decay parameter when it reaches a new floor (takes k steps).
+ * a factor of the decay parameter when it reaches a new floor. The number of
+ * steps needed to reach a new floor is given by the steps parameter.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -30,7 +33,7 @@ class StepDecay implements Optimizer
      *
      * @var int
      */
-    protected $k;
+    protected $steps;
 
     /**
      * The factor to decrease the learning rate by over a period of k steps.
@@ -40,66 +43,60 @@ class StepDecay implements Optimizer
     protected $decay;
 
     /**
-     * The number of steps each parameter has taken until the next floor.
+     * The number of steps each parameter has taken.
      *
-     * @var int
+     * @var \SplObjectStorage
      */
-    protected $steps;
-
-    /**
-     * The number of floors passed.
-     *
-     * @var int
-     */
-    protected $floors;
+    protected $cache;
 
     /**
      * @param  float  $rate
-     * @param  int  $k
+     * @param  int  $steps
      * @param  float  $decay
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, int $k = 10, float $decay = 1e-5)
+    public function __construct(float $rate = 0.001, int $steps = 10, float $decay = 1e-5)
     {
         if ($rate <= 0.0) {
             throw new InvalidArgumentException('The learning rate must be set'
                 . ' to a positive value.');
         }
 
+        if ($steps < 1) {
+            throw new InvalidArgumentException('The number of steps per floor'
+                . ' must be greater than 0.');
+        }
+
+        if ($decay < 0) {
+            throw new InvalidArgumentException('The decay rate must be'
+                . ' positive');
+        }
+
         $this->rate = $rate;
-        $this->k = $k;
+        $this->steps = $steps;
         $this->decay = $decay;
+        $this->cache = new SplObjectStorage();
     }
 
     /**
-     * Initialize the layer optimizer.
+     * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $weights
-     * @return void
-     */
-    public function initialize(Matrix $weights) : void
-    {
-        $this->steps = 0;
-        $this->floors = 0;
-    }
-
-    /**
-     * Calculate a gradient descent step for a layer given a matrix of gradients.
-     *
+     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
      * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
      * @return \MathPHP\LinearAlgebra\Matrix
      */
-    public function step(Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
-        $this->steps++;
+        if ($this->cache->contains($parameter)) {
+            $cache = $this->cache[$parameter];
+        } else {
+            $cache = 0;
 
-        if ($this->steps > $this->k) {
-            $this->steps = 0;
-            $this->floors++;
+            $this->cache->attach($parameter, $cache);
         }
 
-        $rate = $this->rate * (1 / (1 + $this->decay * $this->floors));
+        $rate = $this->rate * (1 / (1 + $this->decay * ($cache / $this->steps)));
 
         return $gradients->scalarMultiply($rate);
     }

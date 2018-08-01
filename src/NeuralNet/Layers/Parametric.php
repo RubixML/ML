@@ -2,26 +2,18 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-
 interface Parametric extends Layer
 {
     const PHI = 1e8;
 
     /**
-     * Initialize the layer with an indegree and optimizer instance.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
-    public function initialize(int $fanIn, Optimizer $optimizer) : int;
-
-    /**
-     * Update the parameters in the layer and return the magnitude of the step.
-     *
-     * @return float
-     */
-    public function update() : float;
+    public function init(int $fanIn) : int;
 
     /**
      * Read the parameters and return them in an associative array.

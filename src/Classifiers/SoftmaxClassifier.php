@@ -206,8 +206,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
 
             foreach ($batches as $batch) {
                 $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels())
-                    ->step();
+                    ->backpropagate($batch->labels());
             }
 
             $this->steps[] = $step;

@@ -271,12 +271,13 @@ class MLPRegressor implements Regressor, Online, Persistable
         $best = ['score' => -INF, 'snapshot' => null];
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $batches = $training->randomize()->batch($this->batchSize);
+            
             $step = 0.0;
 
-            foreach ($training->randomize()->batch($this->batchSize) as $batch) {
+            foreach ($batches as $batch) {
                 $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels())
-                    ->step();
+                    ->backpropagate($batch->labels());
             }
 
             $score = $this->metric->score($this, $testing);

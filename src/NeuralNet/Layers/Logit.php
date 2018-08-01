@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 
 /**
@@ -30,13 +30,6 @@ class Logit implements Output
     ];
 
     /**
-     * The function that outputs the activation or implulse of each neuron.
-     *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
-     */
-    protected $activationFunction;
-
-    /**
      * The L2 regularization parameter.
      *
      * @var float
@@ -51,9 +44,9 @@ class Logit implements Output
     protected $width;
 
     /**
-     * The weight matrix.
+     * The weights.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \Rubix\ML\NeuralNet\Parameter
      */
     protected $weights;
 
@@ -65,32 +58,11 @@ class Logit implements Output
     protected $input;
 
     /**
-     * The memoized z matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $z;
-
-    /**
      * The memoized activation matrix.
      *
      * @var \MathPHP\LinearAlgebra\Matrix
      */
     protected $computed;
-
-    /**
-     * The memoized gradient matrix.
-     *
-     * @var \MathPHP\LinearAlgebra\Matrix
-     */
-    protected $gradients;
-
-    /**
-     * The gradient descent optimizer.
-     *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer|null
-     */
-    protected $optimizer;
 
     /**
      * @param  array  $labels
@@ -113,14 +85,11 @@ class Logit implements Output
         }
 
         $this->classes = [$labels[0] => 0, $labels[1] => 1];
-        $this->activationFunction = new Sigmoid();
         $this->alpha = $alpha;
         $this->width = 1;
-        $this->weights = new Matrix([]);
+        $this->weights = new Parameter(new Matrix([]));
         $this->input = new Matrix([]);
-        $this->z = new Matrix([]);
         $this->computed = new Matrix([]);
-        $this->gradients = new Matrix([]);
     }
 
     /**
@@ -136,28 +105,24 @@ class Logit implements Output
      * generating a random weight for each parameter/synapse in the layer.
      *
      * @param  int  $fanIn
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return int
      */
-    public function initialize(int $fanIn, Optimizer $optimizer) : int
+    public function init(int $fanIn) : int
     {
         $r = sqrt(6 / $fanIn);
 
         $min = (int) (-$r * self::PHI);
         $max = (int) ($r * self::PHI);
 
-        $weights = [[]];
+        $w = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
-                $weights[$i][$j] = rand($min, $max) / self::PHI;
+                $w[$i][$j] = rand($min, $max) / self::PHI;
             }
         }
 
-        $this->weights = new Matrix($weights);
-        $this->optimizer = $optimizer;
-
-        $this->optimizer->initialize($this->weights);
+        $this->weights = new Parameter(new Matrix($w));
 
         return $this->width;
     }
@@ -173,40 +138,46 @@ class Logit implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->multiply($input);
+        $z = $this->weights->w()->multiply($input);
 
-        $this->computed = $this->activationFunction->compute($this->z);
+        $this->computed = $z->map(function ($value) {
+            return 1 / (1 + exp(-($value)));
+        });
 
         return $this->computed;
     }
 
     /**
-     * Calculate the errors and gradients for each output neuron.
+     * Calculate the errors and gradients for each output neuron and update.
      *
      * @param  array  $labels
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return array
      */
-    public function back(array $labels) : array
+    public function back(array $labels, Optimizer $optimizer) : array
     {
-        $l2penalty = 0.5 * $this->alpha * array_sum($this->weights[0]) ** 2;
+        $penalty = 0.5 * $this->alpha
+            * array_sum($this->weights->w()->getRow(0)) ** 2;
 
         $errors = [];
 
         foreach ($this->computed->getRow(0) as $i => $activation) {
             $expected = $this->classes[$labels[$i]];
 
-            $errors[$i] = ($expected - $activation) + $l2penalty;
+            $errors[$i] = ($expected - $activation)
+                * ($activation * (1 - $activation))
+                + $penalty;
         }
 
         $errors = new Matrix([$errors]);
 
-        $errors = $this->activationFunction
-            ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($errors);
+        $gradients = $errors->multiply($this->input->transpose());
 
-        $this->gradients = $errors->multiply($this->input->transpose());
+        $step = $optimizer->step($this->weights, $gradients);
 
-        return [$this->weights, $errors];
+        $this->weights->update($step);
+
+        return [$this->weights->w(), $errors, $step->maxNorm()];
     }
 
     /**
@@ -216,21 +187,7 @@ class Logit implements Output
      */
     public function activations() : Matrix
     {
-        return $this->computed;
-    }
-
-    /**
-     * Update the parameters in the layer and return the magnitude of the step.
-     *
-     * @return float
-     */
-    public function update() : float
-    {
-        $steps = $this->optimizer->step($this->gradients);
-
-        $this->weights = $this->weights->add($steps);
-
-        return $steps->maxNorm();
+        return $this->computed->transpose();
     }
 
     /**

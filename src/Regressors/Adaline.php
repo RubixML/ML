@@ -194,8 +194,7 @@ class Adaline implements Regressor, Online, Persistable
 
             foreach ($batches as $batch) {
                 $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels())
-                    ->step();
+                    ->backpropagate($batch->labels());
             }
 
             $this->steps[] = $step;
