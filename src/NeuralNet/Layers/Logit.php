@@ -111,14 +111,14 @@ class Logit implements Output
     {
         $r = sqrt(6 / $fanIn);
 
-        $min = (int) (-$r * self::PHI);
-        $max = (int) ($r * self::PHI);
+        $min = (int) (-$r * self::SCALE);
+        $max = (int) ($r * self::SCALE);
 
         $w = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::PHI;
+                $w[$i][$j] = rand($min, $max) / self::SCALE;
             }
         }
 

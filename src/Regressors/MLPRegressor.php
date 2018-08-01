@@ -294,7 +294,7 @@ class MLPRegressor implements Regressor, Online, Persistable
                 break 1;
             }
 
-            if ($epoch >= $this->window) {
+            if ($epoch >= ($this->window - 1)) {
                 $window = array_slice($this->scores, -$this->window);
 
                 $worst = $window;

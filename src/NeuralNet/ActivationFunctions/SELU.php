@@ -40,16 +40,13 @@ class SELU implements Rectifier
      */
     public function __construct(float $scale = 1.05070, float $alpha = 1.67326)
     {
-        if ($scale < 1) {
-            if ($alpha < 0) {
-                throw new InvalidArgumentException('Scale parameter must be'
-                    . ' greater than 1.');
-            }
+        if ($scale < 1.0) {
+            throw new InvalidArgumentException('Scale must be greater than 1');
         }
 
-        if ($alpha < 0) {
-            throw new InvalidArgumentException('Alpha parameter must be a'
-                . ' positive value.');
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('Alpha parameter must be'
+                . ' positive.');
         }
 
         $this->scale = $scale;
@@ -76,7 +73,7 @@ class SELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0
+            return $value > 0.0
                 ? $this->scale * $value
                 : $this->scale * $this->alpha * (exp($value) - 1);
         });
@@ -92,7 +89,7 @@ class SELU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation >= 0.0
+            return $activation > 0.0
                 ? $this->scale * 1.0
                 : $this->scale * $activation + 1;
         });

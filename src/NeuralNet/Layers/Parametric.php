@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 interface Parametric extends Layer
 {
-    const PHI = 1e8;
+    const SCALE = 1e8;
 
     /**
      * Initialize the layer with the fan in from the previous layer and return

@@ -52,7 +52,7 @@ class SELUTest extends TestCase
 
         $this->assertEquals(1.0507, $derivatives[0][0]);
         $this->assertEquals(0.27317176349528105, $derivatives[1][0]);
-        $this->assertEquals(1.05070, $derivatives[2][0]);
+        $this->assertEquals(1.0, $derivatives[2][0]);
         $this->assertEquals(1.05070, $derivatives[3][0]);
         $this->assertEquals(-0.8471457980004855, $derivatives[4][0]);
     }

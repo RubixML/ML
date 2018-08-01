@@ -106,6 +106,7 @@ MIT
 			- [Identity](#identity)
 			- [ISRU](#isru)
 			- [Leaky ReLU](#leaky-relu)
+			- [Noisy ReLU](#noisy-relu)
 			- [SELU](#selu)
 			- [Sigmoid](#sigmoid)
 			- [Soft Plus](#soft-plus)
@@ -2350,6 +2351,21 @@ Leaky Rectified Linear Units are functions that output x when x > 0 or a small l
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 $activationFunction = new LeakyReLU(0.001);
+```
+
+### Noisy ReLU
+Noisy ReLU neurons emit Gaussian noise with a standard deviation given by the noise parameter along with their activation. Noise in a neural network acts as a regularizer by adding a penalty to the weights through the cost function in the output layer.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | noise | 0.1 | float | The standard deviation of Gaussian noise added to each activation. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\NoisyReLU;
+
+$activationFunction = new NoisyReLU(0.05);
 ```
 
 ### SELU

@@ -35,9 +35,9 @@ class ISRU implements ActivationFunction
      */
     public function __construct(float $alpha = 1.0)
     {
-        if ($alpha < 0) {
-            throw new InvalidArgumentException('Alpha parameter must be a'
-                . ' positive value.');
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('Alpha parameter must be'
+                . ' positive.');
         }
 
         $this->alpha = $alpha;

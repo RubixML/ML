@@ -32,9 +32,9 @@ class ELU implements Rectifier
      */
     public function __construct(float $alpha = 1.0)
     {
-        if ($alpha < 0) {
-            throw new InvalidArgumentException('Alpha parameter must be a'
-                . ' positive value.');
+        if ($alpha < 0.0) {
+            throw new InvalidArgumentException('Alpha parameter must be'
+                . ' positive.');
         }
 
         $this->alpha = $alpha;
@@ -60,7 +60,7 @@ class ELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value >= 0.0 ? $value : $this->alpha * (exp($value) - 1);
+            return $value > 0.0 ? $value : $this->alpha * (exp($value) - 1);
         });
     }
 
@@ -74,7 +74,7 @@ class ELU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($output) {
-            return $output >= 0.0 ? 1.0 : $output + $this->alpha;
+            return $output > 0.0 ? 1.0 : $output + $this->alpha;
         });
     }
 }

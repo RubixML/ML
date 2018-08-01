@@ -32,7 +32,7 @@ class MLPRegressorTest extends TestCase
 
         $this->estimator = new MLPRegressor([
             new Dense(20, new ELU()),
-        ], 5, new Adam(0.01), 1e-4, new MeanSquaredError(), 0.1, 3, 1e-4, 100);
+        ], 1, new Adam(0.01), 1e-4, new MeanSquaredError(), 0.1, 3, 1e-4, 100);
     }
 
     public function test_build_regressor()

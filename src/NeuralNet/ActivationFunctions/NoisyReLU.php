@@ -6,39 +6,49 @@ use MathPHP\LinearAlgebra\Matrix;
 use InvalidArgumentException;
 
 /**
- * Leaky ReLU
+ * Noisy ReLU
  *
- * Leaky Rectified Linear Units are functions that output x when x > 0 or a
- * small leakage value when x < 0. The amount of leakage is controlled by the
- * user-specified parameter.
+ * Noisy ReLU neurons emit Gaussian noise with a standard deviation given by the
+ * noise parameter along with their activation. Noise in a neural network acts
+ * as a regularizer by adding a penalty to the weights through the cost function
+ * in the output layer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeakyReLU implements Rectifier
+class NoisyReLU implements Rectifier
 {
-    /**
-     * The amount of leakage as a ratio of the input value to allow to pass
-     * through when not activated.
-     *
-     * @var float
-     */
-    protected $leakage;
+    const SCALE = 1e8;
 
     /**
-     * @param  float  $leakage
+     * The scaled minimum gaussian noise value.
+     *
+     * @var int
+     */
+    protected $min;
+
+    /**
+     * The scaled maximum gaussian noise value.
+     *
+     * @var int
+     */
+    protected $max;
+
+    /**
+     * @param  float  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $leakage = 0.01)
+    public function __construct(float $noise = 0.1)
     {
-        if ($leakage < 0.0 or $leakage > 1.0) {
-            throw new InvalidArgumentException('Leakage parameter must be'
-                . ' between 0 and 1.');
+        if ($noise < 0.0) {
+            throw new InvalidArgumentException('Noise parameter must be'
+                . '0 or greater.');
         }
 
-        $this->leakage = $leakage;
+        $this->max = (int) ($noise * self::SCALE);
+        $this->min = -$this->max;
     }
 
     /**
@@ -49,7 +59,7 @@ class LeakyReLU implements Rectifier
      */
     public function range() : array
     {
-        return [-INF, INF];
+        return [$this->min / self::SCALE, INF];
     }
 
     /**
@@ -61,7 +71,9 @@ class LeakyReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > 0.0 ? $value : $this->leakage * $value;
+            $noise = rand($this->min, $this->max) / self::SCALE;
+
+            return $value > 0.0 ? max(0, $value + $noise) : -abs($noise);
         });
     }
 
@@ -75,7 +87,7 @@ class LeakyReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation > 0.0 ? 1.0 : $this->leakage;
+            return $activation > 0.0 ? 1.0 : 0.0;
         });
     }
 }
