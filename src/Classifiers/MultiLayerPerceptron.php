@@ -17,6 +17,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Multi Layer Perceptron
@@ -276,52 +277,54 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         if (is_null($this->network)) {
             $this->train($dataset);
-        }
+        } else {
+            list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
 
-        list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
+            list($min, $max) = $this->metric->range();
 
-        list($min, $max) = $this->metric->range();
+            $best = ['score' => $min, 'snapshot' => null];
 
-        $best = ['score' => -INF, 'snapshot' => null];
+            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+                $batches = $training->randomize()->batch($this->batchSize);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            $batches = $training->randomize()->batch($this->batchSize);
+                $step = 0.0;
 
-            $step = 0.0;
+                foreach ($batches as $batch) {
+                    $step += $this->network->feed($batch->samples())
+                        ->backpropagate($batch->labels());
+                }
 
-            foreach ($batches as $batch) {
-                $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
-            }
+                $score = $this->metric->score($this, $testing);
 
-            $score = $this->metric->score($this, $testing);
+                $this->scores[] = $score;
+                $this->steps[] = $step;
 
-            $this->scores[] = $score;
-            $this->steps[] = $step;
+                if ($score > $best['score']) {
+                    $best['score'] = $score;
+                    $best['snapshot'] = $this->network->read();
+                }
 
-            if ($score > $best['score']) {
-                $best['score'] = $score;
-                $best['snapshot'] = $this->network->read();
-            }
-
-            if ($score > ($max - $this->tolerance)) {
-                break 1;
-            }
-
-            if ($epoch >= ($this->window - 1)) {
-                $window = array_slice($this->scores, -$this->window);
-
-                $worst = $window;
-                rsort($worst);
-
-                if ($window === $worst) {
+                if ($score > ($max - $this->tolerance)) {
                     break 1;
                 }
-            }
-        }
 
-        if (end($this->scores) !== $best['score']) {
-            $this->network->restore($best['snapshot']);
+                if ($epoch >= ($this->window - 1)) {
+                    $window = array_slice($this->scores, -$this->window);
+
+                    $worst = $window;
+                    rsort($worst);
+
+                    if ($window === $worst) {
+                        break 1;
+                    }
+                }
+            }
+
+            if (end($this->scores) < $best['score']) {
+                if (isset($best['snapshot'])) {
+                    $this->network->restore($best['snapshot']);
+                }
+            }
         }
     }
 
@@ -347,10 +350,15 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (is_null($this->network)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $results = $this->network->feed($dataset->samples())->activations();
 
         $probabilities = [];

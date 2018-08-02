@@ -14,6 +14,7 @@ use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Softmax Classifier
@@ -193,29 +194,29 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
             . ' continuous features.');
         }
 
-        if (!isset($this->network)) {
+        if (is_null($this->network)) {
             $this->train($dataset);
-        }
+        } else {
+            $previous = 0.0;
 
-        $previous = 0.0;
+            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+                $batches = $dataset->randomize()->batch($this->batchSize);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            $batches = $dataset->randomize()->batch($this->batchSize);
+                $step = 0.0;
 
-            $step = 0.0;
+                foreach ($batches as $batch) {
+                    $step += $this->network->feed($batch->samples())
+                        ->backpropagate($batch->labels());
+                }
 
-            foreach ($batches as $batch) {
-                $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
+                $this->steps[] = $step;
+
+                if (abs($previous - $step) < $this->minChange) {
+                    break 1;
+                }
+
+                $previous = $step;
             }
-
-            $this->steps[] = $step;
-
-            if (abs($previous - $step) < $this->minChange) {
-                break 1;
-            }
-
-            $previous = $step;
         }
     }
 
@@ -245,6 +246,10 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
      */
     public function proba(Dataset $dataset) : array
     {
+        if (is_null($this->network)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $results = $this->network->feed($dataset->samples())->activations();
 
         $probabilities = [];

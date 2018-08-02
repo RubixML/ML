@@ -12,6 +12,7 @@ use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class AdalineTest extends TestCase
 {
@@ -57,5 +58,12 @@ class AdalineTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

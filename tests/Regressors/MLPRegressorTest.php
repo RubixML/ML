@@ -15,6 +15,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class MLPRegressorTest extends TestCase
 {
@@ -62,5 +63,12 @@ class MLPRegressorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

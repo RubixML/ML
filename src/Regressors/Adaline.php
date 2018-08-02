@@ -12,6 +12,7 @@ use Rubix\ML\NeuralNet\Layers\Linear;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Adaline
@@ -183,27 +184,27 @@ class Adaline implements Regressor, Online, Persistable
 
         if (is_null($this->network)) {
             $this->train($dataset);
-        }
+        } else {
+            $previous = 0.0;
 
-        $previous = 0.0;
+            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+                $batches = $dataset->randomize()->batch($this->batchSize);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            $batches = $dataset->randomize()->batch($this->batchSize);
+                $step = 0.0;
 
-            $step = 0.0;
+                foreach ($batches as $batch) {
+                    $step += $this->network->feed($batch->samples())
+                        ->backpropagate($batch->labels());
+                }
 
-            foreach ($batches as $batch) {
-                $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
+                $this->steps[] = $step;
+
+                if (abs($previous - $step) < $this->minChange) {
+                    break 1;
+                }
+
+                $previous = $step;
             }
-
-            $this->steps[] = $step;
-
-            if (abs($previous - $step) < $this->minChange) {
-                break 1;
-            }
-
-            $previous = $step;
         }
     }
 
@@ -212,10 +213,15 @@ class Adaline implements Regressor, Online, Persistable
      * activation of the output neuron.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (is_null($this->network)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $activations = $this->network->feed($dataset->samples())->activations();
 
         return array_column($activations, 0);

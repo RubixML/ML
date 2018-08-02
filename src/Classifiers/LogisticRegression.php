@@ -14,6 +14,7 @@ use Rubix\ML\NeuralNet\Layers\Logit;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Logistic Regression
@@ -195,27 +196,27 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
 
         if (is_null($this->network)) {
             $this->train($dataset);
-        }
+        } else {
+            $previous = 0.0;
 
-        $previous = 0.0;
+            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+                $batches = $dataset->randomize()->batch($this->batchSize);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            $batches = $dataset->randomize()->batch($this->batchSize);
+                $step = 0.0;
 
-            $step = 0.0;
+                foreach ($batches as $batch) {
+                    $step += $this->network->feed($batch->samples())
+                        ->backpropagate($batch->labels());
+                }
 
-            foreach ($batches as $batch) {
-                $step += $this->network->feed($batch->samples())
-                    ->backpropagate($batch->labels());
+                $this->steps[] = $step;
+
+                if (abs($previous - $step) < $this->minChange) {
+                    break 1;
+                }
+
+                $previous = $step;
             }
-
-            $this->steps[] = $step;
-
-            if (abs($previous - $step) < $this->minChange) {
-                break 1;
-            }
-
-            $previous = $step;
         }
     }
 
@@ -241,17 +242,22 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
-        $activations = $this->network->feed($dataset->samples())->activations();
+        if (is_null($this->network)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $results = $this->network->feed($dataset->samples())->activations();
 
         $probabilities = [];
 
-        foreach ($activations as $i => $activation) {
-            $probabilities[$i][$this->classes[0]] = 1 - $activation[0];
-            $probabilities[$i][$this->classes[1]] = $activation[0];
+        foreach ($results as $i => $activations) {
+            $probabilities[$i][$this->classes[0]] = 1 - $activations[0];
+            $probabilities[$i][$this->classes[1]] = $activations[0];
         }
 
         return $probabilities;
