@@ -8,8 +8,8 @@ use InvalidArgumentException;
 /**
  * L1 Regularizer
  *
- * Augment each sample vector in the sample matrix such that each feature is
- * divided over the L1 or L2 norm (or magnitude) of that vector.
+ * Transform each sample vector in the sample matrix such that each feature is
+ * scaled by the L1 norm (or magnitude) of that vector.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

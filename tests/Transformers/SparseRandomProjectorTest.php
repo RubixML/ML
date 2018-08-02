@@ -31,6 +31,11 @@ class SparseRandomProjectorTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
+    public function test_estimate_min_dimensions()
+    {
+        $this->assertEquals(663, SparseRandomProjector::minDimensions((int) 1e6, 0.5));
+    }
+
     public function test_transform_fitted()
     {
         $this->transformer->fit($this->dataset);

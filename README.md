@@ -86,8 +86,9 @@ MIT
 			- [Grid Search](#grid-search)
 			- [Random Search](#random-search)
 	- [Transformers](#transformers)
-		- [Dense and Sparse Random Projectors](#dense-and-sparse-random-projectors)
-		- [L1 and L2 Regularizers](#l1-and-l2-regularizers)
+		- [Dense Random Projector](#dense-random-projector)
+		- [L1 Regularizer](#l1-regularizer)
+		- [L2 Regularizer](#l2-regularizer)
 		- [Lambda Function](#lambda-function)
 		- [Min Max Normalizer](#min-max-normalizer)
 		- [Missing Data Imputer](#missing-data-imputer)
@@ -96,6 +97,7 @@ MIT
 	    - [Polynomial Expander](#polynomial-expander)
 	    - [Quartile Standardizer](#quartile-standardizer)
 	    - [Robust Standardizer](#robust-standardizer)
+	    - [Sparse Random Projector](#sparse-random-projector)
 		- [TF-IDF Transformer](#tf---idf-transformer)
 		- [Variance Threshold Filter](#variance-threshold-filter)
 		- [Z Scale Standardizer](#z-scale-standardizer)
@@ -1970,12 +1972,8 @@ $transformer = new MinMaxNormalizer();
 $dataset->apply($transformer);
 ```
 
-Here are a list of the Transformers available in Rubix.
-
-### Dense and Sparse Random Projectors
-A Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma "Johnson-Lindenstrauss lemma") that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance.
-
-The difference between the Dense and Sparse Random Projectors are that the Dense version uses a dense random guassian distribution and the Sparse version uses a sparse matrix (mostly 0's).
+### Dense Random Projector
+This is a version of a random projector that uses a random matrix sampled from a dense uniform distribution [-1, 1].
 
 ##### Continuous *Only*
 
@@ -1985,20 +1983,30 @@ The difference between the Dense and Sparse Random Projectors are that the Dense
 | 1 | dimensions | None | int | The number of target dimensions to project onto. |
 
 ##### Additional Methods:
-This Transformer does not have any additional methods.
+
+Estimate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+```php
+public static estimate(int $n, float $maxDistortion = 0.1) : int
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Transformers\DenseRandomProjector;
-use Rubix\ML\Transformers\SparseRandomProjector;
 
 $transformer = new DenseRandomProjector(50);
 
-$transformer = new SparseRandomProjector(50);
+$dimensions = DenseRandomProjector::minDimensions(1e6, 0.1);
+
+var_dump($dimensions);
 ```
 
-### L1 and L2 Regularizers
-Augment each sample vector in the sample matrix such that each feature is divided over the L1 or L2 norm (or *magnitude*) of that vector.
+##### Output:
+```sh
+int(11841)
+```
+
+### L1 Regularizer
+Transform each sample vector in the sample matrix such that each feature is scaled by the L1 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
 
@@ -2011,9 +2019,25 @@ This Transformer does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Transformers\L1Regularizer;
-use Rubix\ML\Transformers\L2Regularizer;
 
 $transformer = new L1Regularizer();
+```
+
+### L2 Regularizer
+Transform each sample vector in the sample matrix such that each feature is scaled by the L2 norm (or *magnitude*) of that vector.
+
+##### Continuous *Only*
+
+##### Parameters:
+This Transformer does not have any parameters.
+
+##### Additional Methods:
+This Transformer does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Transformers\L2Regularizer;
+
 $transformer = new L2Regularizer();
 ```
 
@@ -2201,6 +2225,41 @@ public mads() : array
 use Rubix\ML\Transformers\RobustStandardizer;
 
 $transformer = new RobustStandardizer();
+```
+
+### Sparse Random Projector
+A Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma) that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance in regards to maintaining the information in the data.
+
+The sparse version uses a random matrix sampled from a sparse uniform distribution (mostly 0s).
+
+##### Continuous *Only*
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | None | int | The number of target dimensions to project onto. |
+
+##### Additional Methods:
+
+Calculate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+```php
+public static minDimensions(int $n, float $maxDistortion = 0.1) : int
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\SparseRandomProjector;
+
+$transformer = new SparseRandomProjector(30);
+
+$dimensions = SparseRandomProjector::minDimensions(1e6, 0.5);
+
+var_dump($dimensions);
+```
+
+##### Output:
+```sh
+int(663)
 ```
 
 ### TF-IDF Transformer

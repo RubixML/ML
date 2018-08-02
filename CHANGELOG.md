@@ -6,9 +6,11 @@
     - Added sort by label to Labeled Dataset
     - Added appending and prepending to Dataset
     - Added Dataset Generators
+    - Added Noisy ReLU activation function
     - Fixed bug in dataset stratified fold
     - Added stop word filter to Word Count Vectorizer
     - Added centering and scaling options for standardizers
+    - Added min dimensionality estimation on random projectors
 
 - 0.0.3-alpha
     - Added Extra Tree classifier

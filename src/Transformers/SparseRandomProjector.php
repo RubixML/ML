@@ -15,9 +15,8 @@ use RuntimeException;
  * Johnson-Lindenstrauss lemma that uses a random matrix to project a feature
  * vector onto a user-specified number of dimensions. It is faster than most
  * non-randomized dimensionality reduction techniques and offers similar
- * performance. The difference between the Dense and Sparse Random Projectors
- * are that the Dense version uses a dense random guassian distribution and the
- * Sparse version uses a sparse matrix (mostly 0’s).
+ * performance. The sparse version uses a random matrix sampled from a sparse
+ * uniform distribution (mostly 0s).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -25,9 +24,9 @@ use RuntimeException;
  */
 class SparseRandomProjector implements Transformer
 {
-    const BETA = 1.73205080757;
+    const DISTRIBUTION = [-self::ROOT_3, 0.0, 0.0, 0.0, 0.0, self::ROOT_3];
 
-    const DISTRIBUTION = [-1, 0, 0, 0, 0, 1];
+    const ROOT_3 = 1.73205080757;
 
     /**
      * The target number of dimensions.
@@ -42,6 +41,20 @@ class SparseRandomProjector implements Transformer
      * @var \MathPHP\LinearAlgebra\Matrix|null
     */
     protected $r;
+
+    /**
+     * Calculate the minimum number of dimensions for n total samples with a
+     * given maximum distortion using the Johnson-Lindenstrauss lemma.
+     *
+     * @param  int  $n
+     * @param  float  $maxDistortion
+     * @return int
+     */
+    public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
+    {
+        return (int) round(4.0 * log($n)
+            / ($maxDistortion ** 2 / 2 - $maxDistortion ** 3 / 3));
+    }
 
     /**
      * @param  int  $dimensions
@@ -78,7 +91,7 @@ class SparseRandomProjector implements Transformer
 
         for ($i = 0; $i < $columns; $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = static::BETA * static::DISTRIBUTION[rand(0, $n)];
+                $r[$i][$j] = static::DISTRIBUTION[rand(0, $n)];
             }
         }
 

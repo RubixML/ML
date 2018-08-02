@@ -9,9 +9,8 @@ namespace Rubix\ML\Transformers;
  * Johnson-Lindenstrauss lemma that uses a random matrix to project a feature
  * vector onto a user-specified number of dimensions. It is faster than most
  * non-randomized dimensionality reduction techniques and offers similar
- * performance. The difference between the Dense and Sparse Random Projectors
- * are that the Dense version uses a dense random guassian distribution and the
- * Sparse version uses a sparse matrix (mostly 0’s).
+ * performance. The dense version uses a random matrix sampled from a dense
+ * uniform distribution.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,7 +18,5 @@ namespace Rubix\ML\Transformers;
  */
 class DenseRandomProjector extends SparseRandomProjector
 {
-    const BETA = 1;
-
-    const DISTRIBUTION = [-1, 1];
+    const DISTRIBUTION = [-1.0, 1.0];
 }
