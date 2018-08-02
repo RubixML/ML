@@ -112,16 +112,17 @@ MIT
 			- [Noisy ReLU](#noisy-relu)
 			- [SELU](#selu)
 			- [Sigmoid](#sigmoid)
+			- [Softmax](#softmax)
 			- [Soft Plus](#soft-plus)
 			- [Softsign](#softsign)
 		- [Layers](#layers)
-			- [Input](#input)
-			- [Hidden](#hidden)
+			- [Input Layer](#input-layer)
+			- [Hidden Layers](#hidden-layers)
 				- [Dense](#dense)
-			- [Output](#output)
-				- [Linear](#linear)
-				- [Logit](#logit)
-				- [Softmax](#softmax)
+			- [Output Layers](#output-layers)
+				- [Binomial](#binomial)
+				- [Continuous](#continuous)
+				- [Multinomial](#multinomial)
 		- [Optimizers](#optimizers)
 			- [AdaGrad](#adagrad)
 			- [Adam](#adam)
@@ -2488,6 +2489,19 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 $activationFunction = new Sigmoid();
 ```
 
+### Softmax
+The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1, and all activations add up to 1.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+
+$activationFunction = new Softmax();
+```
+
 ### Soft Plus
 A smooth approximation of the ReLU function whose output is constrained to be positive.
 
@@ -2525,7 +2539,7 @@ There are three types of Layers that form a network, **Input**, **Hidden**, and 
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Softmax;
+use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
@@ -2533,15 +2547,13 @@ $network = new Network(new Input(784), [
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
-], new Softmax([
-	'dog', 'cat', 'frog', 'car',
-], 1e-4), new Adam(0.001));
+], new Multinomial(['dog', 'cat', 'frog', 'car'], 1e-4), new Adam(0.001));
 ```
 
-### Input
+### Input Layer
 The Input Layer is simply a placeholder layer that represents the value of a sample or batch of samples. The number of placeholder nodes should be equal to the number of feature columns of a sample.
 
-### Hidden
+### Hidden Layers
 In multilayer networks, Hidden layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output layer. The more complex the problem space is, the more Hidden layers and neurons will be necessary to handle the complexity.
 
 ### Dense
@@ -2561,11 +2573,27 @@ use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 $layer = new Dense(100, new LeakyReLU(0.05));
 ```
 
-### Output
+### Output Layers
 Activations are read directly from the Output layer when it comes to making a prediction. The type of Output layer used will determine the type of Estimator the Neural Net can power (Binary Classifier, Multiclass Classifier, or Regressor). The different types of Output layers are listed below.
 
-### Linear
-The Linear Output Layer consists of a single linear neuron that outputs a continuous scalar value useful for Regression problems.
+### Binomial
+This Binomial layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binomial layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | classes | None | array | The unique class labels of the binary classification problem. |
+| 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Binomial;
+
+$layer = new Binomial(['yes', 'no'], 1e-5);
+```
+
+### Continuous
+The Continuous output layer consists of a single linear neuron that outputs a scalar value useful for regression problems.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2579,24 +2607,8 @@ use Rubix\ML\NeuralNet\Layers\Linear;
 $layer = new Linear(1e-5);
 ```
 
-### Logit
-This Logit layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two classes. The Logit layer is useful for neural networks that output a binary class prediction.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | classes | None | array | The unique class labels of the binary classification problem. |
-| 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
-
-##### Example:
-```php
-use Rubix\ML\NeuralNet\Layers\Logit;
-
-$layer = new Logit(['yes', 'no'], 1e-5);
-```
-
-### Softmax
-A generalization of the Logistic Layer, the Softmax Output Layer gives a joint probability estimate of a multiclass classification problem.
+### Multinomial
+The Multinomial output layer gives a joint probability estimate of a multiclass classification problem using the [Softmax](#softmax) activation function.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2606,9 +2618,9 @@ A generalization of the Logistic Layer, the Softmax Output Layer gives a joint p
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Softmax;
+use Rubix\ML\NeuralNet\Layers\Multinomial;
 
-$layer = new Softmax(['yes', 'no', 'maybe'], 1e-6);
+$layer = new Multinomial(['yes', 'no', 'maybe'], 1e-6);
 ```
 
 ---

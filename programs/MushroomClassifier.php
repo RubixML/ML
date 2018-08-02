@@ -50,7 +50,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
-    1e-4, new MCC(), 0.1, 3, 1e-3, 20), [
+    1e-4, new MCC(), 0.1, 3, 1e-3, 30), [
         new OneHotEncoder(),
         new SparseRandomProjector(30),
         new ZScaleStandardizer(),

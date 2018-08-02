@@ -68,4 +68,15 @@ class Input implements Layer
 
         return $input->augmentBelow($biases);
     }
+
+    /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        return $this->forward($input);
+    }
 }

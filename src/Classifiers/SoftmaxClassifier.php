@@ -10,14 +10,14 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Softmax Classifier
+ * Multinomial Classifier
  *
  * A generalization of logistic regression for multiple class outcomes using a
  * single layer neural network.
@@ -167,7 +167,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new Network(new Input($dataset->numColumns()), [],
-           new Softmax($this->classes, $this->alpha), $this->optimizer);
+           new Multinomial($this->classes, $this->alpha), $this->optimizer);
 
         $this->steps = [];
 
@@ -250,11 +250,9 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $results = $this->network->feed($dataset->samples())->activations();
-
         $probabilities = [];
 
-        foreach ($results as $activations) {
+        foreach ($this->network->infer($dataset->samples()) as $activations) {
             $probabilities[] = array_combine($this->classes, $activations);
         }
 

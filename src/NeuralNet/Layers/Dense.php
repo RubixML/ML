@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Dense
@@ -49,21 +50,21 @@ class Dense implements Hidden
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $z;
 
     /**
      * The memoized output activations matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $computed;
 
@@ -153,15 +154,38 @@ class Dense implements Hidden
     }
 
     /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        $z = $this->weights->w()->multiply($input)
+            ->rowExclude($this->weights->w()->getM() - 1);
+
+        $biases = MatrixFactory::one(1, $z->getN());
+
+        return $this->activationFunction->compute($z)
+            ->augmentBelow($biases);
+    }
+
+    /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @throws \RuntimeException
      * @return array
      */
     public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array
     {
+        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+            throw new RuntimeException('Must perform forward pass before'
+                . ' backpropagating.');
+        }
+
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($prevWeights->transpose()->multiply($prevErrors));
@@ -171,6 +195,8 @@ class Dense implements Hidden
         $step = $optimizer->step($this->weights, $gradients);
 
         $this->weights->update($step);
+
+        unset($this->input, $this->z, $this->computed);
 
         return [$this->weights->w(), $errors, $step->maxNorm()];
     }

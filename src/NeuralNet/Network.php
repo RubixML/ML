@@ -164,6 +164,23 @@ class Network
     }
 
     /**
+     * Return the activations of the neurons at the output layer.
+     *
+     * @param  array  $samples
+     * @return array
+     */
+    public function infer(array $samples) : array
+    {
+        $input = MatrixFactory::create($samples)->transpose();
+
+        foreach ($this->layers as $layer) {
+            $input = $layer->infer($input);
+        }
+
+        return $input->transpose()->getMatrix();
+    }
+
+    /**
      * Backpropagate the error determined by the previous layer and take a step
      * in the direction of the steepest descent.
      *
@@ -189,16 +206,6 @@ class Network
         }
 
         return $magnitude;
-    }
-
-    /**
-     * Return the activations of the neurons at the output layer.
-     *
-     * @return array
-     */
-    public function activations() : array
-    {
-        return $this->output()->activations()->getMatrix();
     }
 
     /**

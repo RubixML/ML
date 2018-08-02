@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use MathPHP\LinearAlgebra\Matrix;
+
 interface Parametric extends Layer
 {
     const SCALE = 1e8;
@@ -14,6 +16,22 @@ interface Parametric extends Layer
      * @return int
      */
     public function init(int $fanIn) : int;
+
+    /**
+     * Compute the training activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function forward(Matrix $input) : Matrix;
+
+    /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix;
 
     /**
      * Read the parameters and return them in an associative array.

@@ -15,11 +15,4 @@ interface Output extends Parametric
      * @return array
      */
     public function back(array $labels, Optimizer $optimizer) : array;
-
-    /**
-     * Return the activations matrix.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function activations() : Matrix;
 }

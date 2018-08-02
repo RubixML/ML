@@ -11,8 +11,8 @@ use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Softmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\Validation;
@@ -248,7 +248,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new Network(new Input($dataset->numColumns()),
-            $this->hidden, new Softmax($this->classes, $this->alpha),
+            $this->hidden, new Multinomial($this->classes, $this->alpha),
             $this->optimizer);
 
         $this->scores = $this->steps = [];
@@ -359,11 +359,9 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $results = $this->network->feed($dataset->samples())->activations();
-
         $probabilities = [];
 
-        foreach ($results as $activations) {
+        foreach ($this->network->infer($dataset->samples()) as $activations) {
             $probabilities[] = array_combine($this->classes, $activations);
         }
 

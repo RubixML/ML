@@ -5,23 +5,24 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
- * Logit
+ * Multinomial
  *
- * This Logit layer consists of a single Sigmoid neuron capable of
- * distinguishing between two classes. The Logit layer is useful for neural
- * networks that output a binary class prediction.
+ * The Multinomial output layer gives a joint probability estimate of a multiclass
+ * classification problem using the Softmax activation function.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Logit implements Output
+class Multinomial implements Output
 {
     /**
-     * The labels of either of the possible outcomes.
+     * The unique class labels.
      *
      * @var array
      */
@@ -35,6 +36,13 @@ class Logit implements Output
      * @var float
      */
     protected $alpha;
+
+    /**
+     * The function that outputs the activation or implulse of each neuron.
+     *
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     */
+    protected $activationFunction;
 
     /**
      * The width of the layer. i.e. the number of neurons.
@@ -53,30 +61,37 @@ class Logit implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $input;
 
     /**
+     * The memoized z matrix.
+     *
+     * @var \MathPHP\LinearAlgebra\Matrix|null
+     */
+    protected $z;
+
+    /**
      * The memoized activation matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $computed;
 
     /**
-     * @param  array  $labels
+     * @param  array  $classes
      * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $labels, float $alpha = 1e-4)
+    public function __construct(array $classes, float $alpha = 1e-4)
     {
-        $labels = array_unique($labels);
+        $classes = array_values(array_unique($classes));
 
-        if (count($labels) !== 2) {
-            throw new InvalidArgumentException('The number of unique class'
-                . ' labels must be exactly 2.');
+        if (count($classes) < 2) {
+            throw new InvalidArgumentException('The number of unique classes'
+                . ' must be 2 or more.');
         }
 
         if ($alpha < 0) {
@@ -84,12 +99,11 @@ class Logit implements Output
                 . ' must be 0 or greater.');
         }
 
-        $this->classes = [$labels[0] => 0, $labels[1] => 1];
+        $this->classes = $classes;
         $this->alpha = $alpha;
-        $this->width = 1;
+        $this->activationFunction = new Softmax();
+        $this->width = count($classes);
         $this->weights = new Parameter(new Matrix([]));
-        $this->input = new Matrix([]);
-        $this->computed = new Matrix([]);
     }
 
     /**
@@ -138,13 +152,24 @@ class Logit implements Output
     {
         $this->input = $input;
 
-        $z = $this->weights->w()->multiply($input);
+        $this->z = $this->weights->w()->multiply($input);
 
-        $this->computed = $z->map(function ($value) {
-            return 1 / (1 + exp(-($value)));
-        });
+        $this->computed = $this->activationFunction->compute($this->z);
 
         return $this->computed;
+    }
+
+    /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        $z = $this->weights->w()->multiply($input);
+
+        return $this->activationFunction->compute($z);
     }
 
     /**
@@ -152,24 +177,35 @@ class Logit implements Output
      *
      * @param  array  $labels
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @throws \RuntimeException
      * @return array
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        $penalty = 0.5 * $this->alpha
-            * array_sum($this->weights->w()->getRow(0)) ** 2;
-
-        $errors = [];
-
-        foreach ($this->computed->getRow(0) as $i => $activation) {
-            $expected = $this->classes[$labels[$i]];
-
-            $errors[$i] = ($expected - $activation)
-                * ($activation * (1 - $activation))
-                + $penalty;
+        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+            throw new RuntimeException('Must perform forward pass before'
+                . ' backpropagating.');
         }
 
-        $errors = new Matrix([$errors]);
+        $w = $this->weights->w();
+
+        $errors = [[]];
+
+        foreach ($this->classes as $i => $class) {
+            $penalty = 0.5 * $this->alpha * array_sum($w->getRow($i)) ** 2;
+
+            foreach ($this->computed->getRow($i) as $j => $activation) {
+                $expected = $class === $labels[$j] ? 1.0 : 0.0;
+
+                $errors[$i][$j] = ($expected - $activation) + $penalty;
+            }
+        }
+
+        $errors = new Matrix($errors);
+
+        $errors = $this->activationFunction
+            ->differentiate($this->z, $this->computed)
+            ->hadamardProduct($errors);
 
         $gradients = $errors->multiply($this->input->transpose());
 
@@ -177,17 +213,9 @@ class Logit implements Output
 
         $this->weights->update($step);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
-    }
+        unset($this->input, $this->z, $this->computed);
 
-    /**
-     * Return the computed activation matrix.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function activations() : Matrix
-    {
-        return $this->computed->transpose();
+        return [$w, $errors, $step->maxNorm()];
     }
 
     /**

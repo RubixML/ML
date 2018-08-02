@@ -8,8 +8,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Linear;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -155,7 +155,7 @@ class Adaline implements Regressor, Online, Persistable
         }
 
         $this->network = new Network(new Input($dataset->numColumns()), [],
-            new Linear($this->alpha), $this->optimizer);
+            new Continuous($this->alpha), $this->optimizer);
 
         $this->steps = [];
 
@@ -222,8 +222,6 @@ class Adaline implements Regressor, Online, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $activations = $this->network->feed($dataset->samples())->activations();
-
-        return array_column($activations, 0);
+        return array_column($this->network->infer($dataset->samples()), 0);
     }
 }

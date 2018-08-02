@@ -5,22 +5,25 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
- * Softmax
+ * Binomial
  *
- * A generalization of the Logistic Layer, the Softmax Output Layer gives a
- * joint probability estimate of a multiclass classification problem.
+ * This Binomial layer consists of a single Sigmoid neuron capable of
+ * distinguishing between two discrete classes. The Binomial layer is useful for
+ * neural networks that output a binary class prediction such as yes or no.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Softmax implements Output
+class Binomial implements Output
 {
     /**
-     * The unique class labels.
+     * The labels of either of the possible outcomes.
      *
      * @var array
      */
@@ -43,6 +46,13 @@ class Softmax implements Output
     protected $width;
 
     /**
+     * The function that outputs the activation or implulse of each neuron.
+     *
+     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     */
+    protected $activationFunction;
+
+    /**
      * The weights.
      *
      * @var \Rubix\ML\NeuralNet\Parameter
@@ -52,37 +62,37 @@ class Softmax implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $z;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $computed;
 
     /**
-     * @param  array  $classes
+     * @param  array  $labels
      * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $classes, float $alpha = 1e-4)
+    public function __construct(array $labels, float $alpha = 1e-4)
     {
-        $classes = array_values(array_unique($classes));
+        $labels = array_unique($labels);
 
-        if (count($classes) < 2) {
-            throw new InvalidArgumentException('The number of unique classes'
-                . ' must be 2 or more.');
+        if (count($labels) !== 2) {
+            throw new InvalidArgumentException('The number of unique class'
+                . ' labels must be exactly 2.');
         }
 
         if ($alpha < 0) {
@@ -90,13 +100,11 @@ class Softmax implements Output
                 . ' must be 0 or greater.');
         }
 
-        $this->classes = $classes;
+        $this->classes = [$labels[0] => 0, $labels[1] => 1];
         $this->alpha = $alpha;
-        $this->width = count($classes);
+        $this->activationFunction = new Sigmoid();
+        $this->width = 1;
         $this->weights = new Parameter(new Matrix([]));
-        $this->input = new Matrix([]);
-        $this->z = new Matrix([]);
-        $this->computed = new Matrix([]);
     }
 
     /**
@@ -147,25 +155,22 @@ class Softmax implements Output
 
         $this->z = $this->weights->w()->multiply($input);
 
-        $activations = [[]];
-
-        foreach ($this->z->asVectors() as $i => $z) {
-            $cache = [];
-
-            foreach ($z->getVector() as $j => $value) {
-                $cache[$j] = exp($value);
-            }
-
-            $sigma = array_sum($cache) + self::EPSILON;
-
-            foreach ($cache as $j => $value) {
-                $activations[$j][$i] = $value / $sigma;
-            }
-        }
-
-        $this->computed = new Matrix($activations);
+        $this->computed = $this->activationFunction->compute($this->z);
 
         return $this->computed;
+    }
+
+    /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        $z = $this->weights->w()->multiply($input);
+
+        return $this->activationFunction->compute($z);
     }
 
     /**
@@ -173,27 +178,32 @@ class Softmax implements Output
      *
      * @param  array  $labels
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @throws \RuntimeException
      * @return array
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        $w = $this->weights->w();
-
-        $errors = [[]];
-
-        foreach ($this->classes as $i => $class) {
-            $penalty = 0.5 * $this->alpha * array_sum($w->getRow($i)) ** 2;
-
-            foreach ($this->computed->getRow($i) as $j => $activation) {
-                $expected = $class === $labels[$j] ? 1.0 : 0.0;
-
-                $errors[$i][$j] = ($expected - $activation)
-                    * ($activation * (1 - $activation))
-                    + $penalty;
-            }
+        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+            throw new RuntimeException('Must perform forward pass before'
+                . ' backpropagating.');
         }
 
-        $errors = new Matrix($errors);
+        $penalty = 0.5 * $this->alpha
+            * array_sum($this->weights->w()->getRow(0)) ** 2;
+
+        $errors = [];
+
+        foreach ($this->computed->getRow(0) as $i => $activation) {
+            $expected = $this->classes[$labels[$i]];
+
+            $errors[$i] = ($expected - $activation) + $penalty;
+        }
+
+        $errors = new Matrix([$errors]);
+
+        $errors = $this->activationFunction
+            ->differentiate($this->z, $this->computed)
+            ->hadamardProduct($errors);
 
         $gradients = $errors->multiply($this->input->transpose());
 
@@ -201,17 +211,9 @@ class Softmax implements Output
 
         $this->weights->update($step);
 
-        return [$w, $errors, $step->maxNorm()];
-    }
+        unset($this->input, $this->z, $this->computed);
 
-    /**
-     * Return the computed activation matrix.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function activations() : Matrix
-    {
-        return $this->computed->transpose();
+        return [$this->weights->w(), $errors, $step->maxNorm()];
     }
 
     /**

@@ -6,18 +6,19 @@ use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
- * Linear
+ * Continuous
  *
- * The Linear Output Layer consists of a single linear neuron that outputs a
- * continuous scalar value useful for Regression problems.
+ * The Continuous output layer consists of a single linear neuron that outputs a
+ * scalar value useful for regression problems.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Linear implements Output
+class Continuous implements Output
 {
     /**
      * The L2 regularization parameter.
@@ -43,14 +44,14 @@ class Linear implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized output activations matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \MathPHP\LinearAlgebra\Matrix|null
      */
     protected $computed;
 
@@ -69,8 +70,6 @@ class Linear implements Output
         $this->alpha = $alpha;
         $this->width = 1;
         $this->weights = new Parameter(new Matrix([]));
-        $this->input = new Matrix([]);
-        $this->computed = new Matrix([]);
     }
 
     /**
@@ -125,14 +124,31 @@ class Linear implements Output
     }
 
     /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        return $this->weights->w()->multiply($input);
+    }
+
+    /**
      * Calculate the errors and gradients for each output neuron and update.
      *
      * @param  array  $labels
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @throws \RuntimeException
      * @return array
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
+        if (is_null($this->input) or is_null($this->computed)) {
+            throw new RuntimeException('Must perform forward pass before'
+                . ' backpropagating.');
+        }
+
         $penalty = 0.5 * $this->alpha
             * array_sum($this->weights->w()->getRow(0)) ** 2;
 
@@ -150,17 +166,9 @@ class Linear implements Output
 
         $this->weights->update($step);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
-    }
+        unset($this->input, $this->computed);
 
-    /**
-     * Return the computed activation matrix.
-     *
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function activations() : Matrix
-    {
-        return $this->computed->transpose();
+        return [$this->weights->w(), $errors, $step->maxNorm()];
     }
 
     /**

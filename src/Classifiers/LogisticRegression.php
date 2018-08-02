@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Logit;
+use Rubix\ML\NeuralNet\Layers\Binomial;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
@@ -167,7 +167,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new Network(new Input($dataset->numColumns()), [],
-            new Logit($this->classes, $this->alpha), $this->optimizer);
+            new Binomial($this->classes, $this->alpha), $this->optimizer);
 
         $this->steps = [];
 
@@ -251,13 +251,13 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $results = $this->network->feed($dataset->samples())->activations();
-
         $probabilities = [];
 
-        foreach ($results as $i => $activations) {
-            $probabilities[$i][$this->classes[0]] = 1 - $activations[0];
-            $probabilities[$i][$this->classes[1]] = $activations[0];
+        foreach ($this->network->infer($dataset->samples()) as $activations) {
+            $probabilities[] = [
+                $this->classes[0] => 1 - $activations[0],
+                $this->classes[1] => $activations[0],
+            ];
         }
 
         return $probabilities;
