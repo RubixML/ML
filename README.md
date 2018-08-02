@@ -3256,7 +3256,7 @@ var_dump($result);
 ```
 
 ### Residual Breakdown
-Residual Breakdown is a Report that measures the differences between the predicted and actual values of a regression problem in detail. The statistics provided in the report cover the first (*mean*), second (*variance*), and third order (*skewness*) moments of the residuals produced by a testing set.
+Residual Breakdown is a Report that measures the differences between the predicted and actual values of a regression problem in detail. The statistics provided in the report cover the first (*mean*), second (*variance*), third (*skewness*), and fourth order (*kurtosis*) moments of the distribution of residuals produced by a testing set as well as standard error metrics and r squared.
 
 ##### Regression
 
@@ -3277,19 +3277,20 @@ var_dump($result);
 
 ##### Output:
 ```sh
-  array(10) {
-    ["mean_absolute_error"]=> float(0.34933579859939)
-    ["median_absolute_error"]=> float(0.21300775363239)
-    ["mean_squared_error"]=> float(0.2419350712862)
-    ["rms_error"]=> float(0.49186895743298)
-    ["error_variance"]=> float(0.22339331638581)
-    ["error_skewness"]=> float(-1.0985438685886)
-    ["error_min"]=> float(0.00055135116675764)
-    ["error_max"]=> float(1.8017109710137)
-    ["r_squared"]=> float(0.99620410561275)
+  array(12) {
+    ["mean_absolute_error"]=> float(0.44927554249285)
+    ["median_absolute_error"]=> float(0.30273889978541)
+    ["mean_squared_error"]=> float(0.44278193357447)
+    ["rms_error"]=> float(0.66541861529001)
+    ["error_mean"]=> float(0.14748941084881)
+    ["error_variance"]=> float(0.42102880726195)
+    ["error_skewness"]=> float(-2.7901397847317)
+    ["error_kurtosis"]=> float(12.967400285518)
+    ["error_min"]=> float(-3.5540079974946)
+    ["error_max"]=> float(1.4097829828182)
+    ["r_squared"]=> float(0.99393263320234)
     ["cardinality"]=> int(80)
   }
-
 ```
 
 ---

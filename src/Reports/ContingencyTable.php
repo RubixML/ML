@@ -53,7 +53,7 @@ class ContingencyTable implements Report
         }
 
         foreach ($predictions as $i => $outcome) {
-            $table[$outcome][$labels[$i]] += 1;
+            $table[$outcome][$labels[$i]]++;
         }
 
         return $table;

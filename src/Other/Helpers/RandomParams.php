@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+use MathPHP\Probability\Distribution\Continuous\Uniform;
 use InvalidArgumentException;
 
 /**

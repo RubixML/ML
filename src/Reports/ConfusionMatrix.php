@@ -80,9 +80,9 @@ class ConfusionMatrix implements Report
             }
 
             if ($outcome === $labels[$i]) {
-                $matrix[$outcome][$outcome] += 1;
+                $matrix[$outcome][$outcome]++;
             } else {
-                $matrix[$outcome][$labels[$i]] += 1;
+                $matrix[$outcome][$labels[$i]]++;
             }
         }
 
