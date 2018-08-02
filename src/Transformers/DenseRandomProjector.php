@@ -5,12 +5,8 @@ namespace Rubix\ML\Transformers;
 /**
  * Dense Random Projector
  *
- * A Random Projector is a dimensionality reducer based on the
- * Johnson-Lindenstrauss lemma that uses a random matrix to project a feature
- * vector onto a user-specified number of dimensions. It is faster than most
- * non-randomized dimensionality reduction techniques and offers similar
- * performance. The dense version uses a random matrix sampled from a dense
- * uniform distribution.
+ * The Dense Random Projector uses a random matrix sampled from a dense uniform
+ * distribution [-1, 1] to project a sample matrix onto a target dimensionality.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

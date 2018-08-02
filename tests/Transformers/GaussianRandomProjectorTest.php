@@ -4,11 +4,11 @@ namespace Rubix\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\GaussianRandomProjector;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class SparseRandomProjectorTest extends TestCase
+class GaussianRandomProjectorTest extends TestCase
 {
     protected $transformer;
 
@@ -22,13 +22,18 @@ class SparseRandomProjectorTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new SparseRandomProjector(2);
+        $this->transformer = new GaussianRandomProjector(2);
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
+        $this->assertInstanceOf(GaussianRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    public function test_estimate_min_dimensions()
+    {
+        $this->assertEquals(663, GaussianRandomProjector::minDimensions((int) 1e6, 0.5));
     }
 
     public function test_transform_fitted()

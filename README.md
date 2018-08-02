@@ -87,6 +87,7 @@ MIT
 			- [Random Search](#random-search)
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
+		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [L1 Regularizer](#l1-regularizer)
 		- [L2 Regularizer](#l2-regularizer)
 		- [Lambda Function](#lambda-function)
@@ -1973,7 +1974,7 @@ $dataset->apply($transformer);
 ```
 
 ### Dense Random Projector
-This is a version of a random projector that uses a random matrix sampled from a dense uniform distribution [-1, 1].
+The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project a sample matrix onto a target dimensionality.
 
 ##### Continuous *Only*
 
@@ -2003,6 +2004,39 @@ var_dump($dimensions);
 ##### Output:
 ```sh
 int(11841)
+```
+
+### Gaussian Random Projector
+A Random Projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance. This version uses a random matrix sampled from a Gaussian distribution.
+
+##### Continuous *Only*
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | None | int | The number of target dimensions to project onto. |
+
+##### Additional Methods:
+
+Estimate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+```php
+public static estimate(int $n, float $maxDistortion = 0.1) : int
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\GaussianRandomProjector;
+
+$transformer = new GaussianRandomProjector(100);
+
+$dimensions = GaussianRandomProjector::minDimensions(1e4, 0.1);
+
+var_dump($dimensions);
+```
+
+##### Output:
+```sh
+int(7894)
 ```
 
 ### L1 Regularizer
@@ -2228,9 +2262,7 @@ $transformer = new RobustStandardizer();
 ```
 
 ### Sparse Random Projector
-A Random Projector is a dimensionality reducer based on the [Johnson-Lindenstrauss lemma](https://en.wikipedia.org/wiki/Johnson-Lindenstrauss_lemma) that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance in regards to maintaining the information in the data.
-
-The sparse version uses a random matrix sampled from a sparse uniform distribution (mostly 0s).
+The Sparse Random Projector uses a random matrix sampled from a sparse uniform distribution (mostly 0s) to project a sample matrix onto a target dimensionality.
 
 ##### Continuous *Only*
 

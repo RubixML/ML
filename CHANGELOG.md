@@ -11,6 +11,7 @@
     - Added stop word filter to Word Count Vectorizer
     - Added centering and scaling options for standardizers
     - Added min dimensionality estimation on random projectors
+    - Added Gaussian Random Projector
 
 - 0.0.3-alpha
     - Added Extra Tree classifier
