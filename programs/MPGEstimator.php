@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Regressors\MLPRegressor;
-use Rubix\ML\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\ResidualBreakdown;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
@@ -48,7 +48,7 @@ $estimator = new Pipeline(new MLPRegressor($hidden, 10, new Adam(0.001),
     ]);
 
 $report = new AggregateReport([
-    new ResidualAnalysis(),
+    new ResidualBreakdown(),
     new PredictionSpeed(),
 ]);
 

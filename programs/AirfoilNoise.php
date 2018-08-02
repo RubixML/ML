@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\ResidualBreakdown;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Transformers\NumericStringConverter;
 use League\Csv\Reader;
@@ -36,7 +36,7 @@ $estimator = new Pipeline(new BootstrapAggregator(RegressionTree::class, [10, 3,
     ]);
 
 $report = new AggregateReport([
-    new ResidualAnalysis(),
+    new ResidualBreakdown(),
     new PredictionSpeed(),
 ]);
 

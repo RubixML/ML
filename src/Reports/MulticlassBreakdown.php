@@ -75,7 +75,7 @@ class MulticlassBreakdown implements Report
 
         $overall = array_fill_keys([
             'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
-            'fall_out', 'f1_score', 'mcc', 'informedness', 'cardinality',
+            'fall_out', 'f1_score', 'mcc', 'informedness',
         ], 0.0);
 
         foreach ($truePositives as $label => $tp) {
@@ -114,18 +114,11 @@ class MulticlassBreakdown implements Report
             $overall['f1_score'] += $table[$label]['f1_score'];
             $overall['mcc'] += $table[$label]['mcc'];
             $overall['informedness'] += $table[$label]['informedness'];
-            $overall['cardinality'] += $table[$label]['cardinality'];
         }
 
         $n = count($classes);
 
         foreach ($overall as $metric => &$score) {
-            if ($metric === 'cardinality') {
-                $score = (int) $score;
-
-                continue 1;
-            }
-
             $score /= $n;
         }
 

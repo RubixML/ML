@@ -49,7 +49,6 @@ class MulticlassBreakdownTest extends TestCase
                 'f1_score' => 0.5833333259722223,
                 'informedness' => 0.16666666194444435,
                 'mcc' => 0.16666666638888888,
-                'cardinality' => 5,
             ],
             'label' => [
                 'wolf' => [

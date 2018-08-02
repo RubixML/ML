@@ -4,6 +4,7 @@ namespace Rubix\ML\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
+use InvalidArgumentException;
 
 /**
  * Aggregate Report
@@ -61,10 +62,16 @@ class AggregateReport implements Report
      *
      * @param  \Rubix\ML\Reports\Report  $report
      * @param  mixed  $index
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function addReport(Report $report, $index) : void
     {
+        if (!is_string($index) and !is_numeric($index)) {
+            throw new InvalidArgumentException('Report index must be a string'
+                . ' or numeric type.');
+        }
+
         $this->reports[$index] = $report;
     }
 }

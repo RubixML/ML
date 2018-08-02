@@ -5,10 +5,10 @@ namespace Rubix\Tests\Reports;
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\ResidualBreakdown;
 use PHPUnit\Framework\TestCase;
 
-class ResidualAnalysisTest extends TestCase
+class ResidualBreakdownTest extends TestCase
 {
     protected $report;
 
@@ -27,12 +27,12 @@ class ResidualAnalysisTest extends TestCase
             10, 12, 15, 42, 56, 12, 17, 9, 1, 7,
         ]);
 
-        $this->report = new ResidualAnalysis();
+        $this->report = new ResidualBreakdown();
     }
 
     public function test_build_report()
     {
-        $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
+        $this->assertInstanceOf(ResidualBreakdown::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
@@ -43,10 +43,11 @@ class ResidualAnalysisTest extends TestCase
             'median_absolute_error' => 1.0,
             'mean_squared_error' => 1.0,
             'rms_error' => 1.0,
+            'error_variance' => 0.9599999999999997,
+            'error_skewness' => -0.22963966338592326,
+            'error_min' => 0,
+            'error_max' => 2,
             'r_squared' => 0.9958930551562692,
-            'min' => 0,
-            'max' => 2,
-            'variance' => 0.36000000000000004,
             'cardinality' => 10,
         ];
 

@@ -9,7 +9,8 @@ use Rubix\ML\Datasets\Dataset;
  * Prediction Speed
  *
  * This Report measures the prediction speed of an Estimator given as the number
- * of predictions per second (*PPM*).
+ * of predictions per second (PPM) as well as the average time to make a single
+ * prediction.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -18,7 +19,7 @@ use Rubix\ML\Datasets\Dataset;
 class PredictionSpeed implements Report
 {
     /**
-     * Generate a confusion matrix.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing

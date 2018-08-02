@@ -157,7 +157,7 @@ MIT
 		- [Multiclass Breakdown](#multiclass-breakdown)
 		- [Outlier Ratio](#outlier-ratio)
 		- [Prediction Speed](#prediction-speed)
-		- [Residual Analysis](#residual-analysis)
+		- [Residual Breakdown](#residual-breakdown)
 	- [Other](#other)
 		- [Generators](#generators)
 			- [Agglomerate](#agglomerate)
@@ -3173,9 +3173,8 @@ var_dump($result);
 ##### Output:
 ```sh
 ...
-    array(2) {
-      ["benign"]=>
-      array(15) {
+["benign"]=>
+	array(15) {
         ["accuracy"]=> int(1)
         ["precision"]=> float(0.99999999998723)
         ["recall"]=> float(0.99999999998723)
@@ -3191,7 +3190,7 @@ var_dump($result);
         ["false_negatives"]=> int(0)
         ["cardinality"]=> int(783)
         ["density"]=> float(0.48184615384615)
-      }
+	}
 ...
 ```
 
@@ -3226,7 +3225,7 @@ var_dump($result);
 ```
 
 ### Prediction Speed
-This Report measures the number of predictions an Estimator can make per second as given by the PPS (predictions per second) score.
+ This report measures the prediction speed of an Estimator given as the number of predictions per second (PPM) as well as the average time to make a single prediction.
 
 ##### Classification, Regression, Clustering, Anomaly Detection
 
@@ -3256,8 +3255,8 @@ var_dump($result);
 
 ```
 
-### Residual Analysis
-Residual Analysis is a type of Report that measures the differences between the predicted and actual values of a regression problem.
+### Residual Breakdown
+Residual Breakdown is a Report that measures the differences between the predicted and actual values of a regression problem in detail. The statistics provided in the report cover the first (*mean*), second (*variance*), and third order (*skewness*) moments of the residuals produced by a testing set.
 
 ##### Regression
 
@@ -3266,10 +3265,10 @@ This Report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\ResidualAnalysis;
+use Rubix\ML\Reports\ResidualBreakdown;
 
 ...
-$report = new ResidualAnalysis();
+$report = new ResidualBreakdown();
 
 $result = $report->generate($estimator, $testing);
 
@@ -3278,26 +3277,19 @@ var_dump($result);
 
 ##### Output:
 ```sh
-  array(9) {
-    ["mean_absolute_error"]=>
-    float(2.1971189157834)
-    ["median_absolute_error"]=>
-    float(1.714)
-    ["mean_squared_error"]=>
-    float(8.7020753279997)
-    ["rms_error"]=>
-    float(2.9499280208167)
-    ["min"]=>
-    float(0.0069999999999908)
-    ["max"]=>
-    float(14.943333333333)
-    ["variance"]=>
-    float(3.8747437979066)
-    ["r_squared"]=>
-    float(0.82286934000174)
-    ["cardinality"]=>
-    int(301)
+  array(10) {
+    ["mean_absolute_error"]=> float(0.34933579859939)
+    ["median_absolute_error"]=> float(0.21300775363239)
+    ["mean_squared_error"]=> float(0.2419350712862)
+    ["rms_error"]=> float(0.49186895743298)
+    ["error_variance"]=> float(0.22339331638581)
+    ["error_skewness"]=> float(-1.0985438685886)
+    ["error_min"]=> float(0.00055135116675764)
+    ["error_max"]=> float(1.8017109710137)
+    ["r_squared"]=> float(0.99620410561275)
+    ["cardinality"]=> int(80)
   }
+
 ```
 
 ---

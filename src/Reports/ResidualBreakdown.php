@@ -8,19 +8,20 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Regressors\Regressor;
 use MathPHP\Statistics\Descriptive;
+use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
 /**
- * Residual Analysis
+ * Residual Breakdown
  *
- * Residual Analysis is a type of Report that measures the differences between
+ * Residual Breakdown is a type of Report that measures the differences between
  * the predicted and actual values of a regression problem.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ResidualAnalysis implements Report
+class ResidualBreakdown implements Report
 {
     /**
      * Generate a residual analysis of a regression.
@@ -42,7 +43,7 @@ class ResidualAnalysis implements Report
                 . ' Labeled testing set.');
         }
 
-        $l1 = $l2 = [];
+        $errors = $l1 = $l2 = [];
 
         $sse = $sst = 0.0;
 
@@ -51,7 +52,7 @@ class ResidualAnalysis implements Report
         $mean = Average::mean($testing->labels());
 
         foreach ($predictions as $i => $prediction) {
-            $error = $testing->label($i) - $prediction;
+            $errors[] = $error = $testing->label($i) - $prediction;
 
             $l1[] = abs($error);
             $l2[] = $error ** 2;
@@ -67,9 +68,10 @@ class ResidualAnalysis implements Report
             'median_absolute_error' => Average::median($l1),
             'mean_squared_error' => $mse,
             'rms_error' => sqrt($mse),
-            'min' => min($l1),
-            'max' => max($l1),
-            'variance' => Descriptive::populationVariance($l1),
+            'error_variance' => Descriptive::populationVariance($errors),
+            'error_skewness' => RandomVariable::populationSkewness($errors),
+            'error_min' => min($l1),
+            'error_max' => max($l1),
             'r_squared' => 1 - ($sse / $sst),
             'cardinality' => $testing->numRows(),
         ];
