@@ -9,9 +9,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Binomial;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -166,7 +166,7 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(new Input($dataset->numColumns()), [],
+        $this->network = new FeedForward(new Placeholder($dataset->numColumns()), [],
             new Binomial($this->classes, $this->alpha), $this->optimizer);
 
         $this->steps = [];

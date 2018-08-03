@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
-
 interface Layer
 {
     const EPSILON = 1e-8;

@@ -14,19 +14,8 @@ use MathPHP\LinearAlgebra\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Softmax implements ActivationFunction
+class Softmax extends Sigmoid
 {
-    /**
-     * Return a tuple of the min and max output value for this activation
-     * function.
-     *
-     * @return array
-     */
-    public function range() : array
-    {
-        return [0, 1];
-    }
-
     /**
      * Compute the output value.
      *
@@ -52,19 +41,5 @@ class Softmax implements ActivationFunction
         }
 
         return new Matrix($activations);
-    }
-
-    /**
-     * Calculate the derivative of the activation function at a given output.
-     *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $z
-     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
-     * @return \MathPHP\LinearAlgebra\Matrix
-     */
-    public function differentiate(Matrix $z, Matrix $computed) : Matrix
-    {
-        return $computed->map(function ($activation) {
-            return $activation * (1 - $activation);
-        });
     }
 }

@@ -4,10 +4,10 @@ namespace Rubix\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ class FeedForwardTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Input(5);
+        $this->input = new Placeholder(5);
 
         $this->hidden = [
             new Dense(5, new ELU()),
@@ -49,7 +49,7 @@ class FeedForwardTest extends TestCase
 
     public function test_get_input_layer()
     {
-        $this->assertInstanceOf(Input::class, $this->network->input());
+        $this->assertInstanceOf(Placeholder::class, $this->network->input());
     }
 
     public function test_get_hidden_layers()

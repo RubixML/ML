@@ -111,14 +111,14 @@ class Dense implements Hidden
             $r = sqrt(6 / $fanIn);
         }
 
-        $min = (int) (-$r * self::SCALE);
-        $max = (int) ($r * self::SCALE);
+        $min = (int) round(-$r * self::PHI);
+        $max = (int) round($r * self::PHI);
 
         $w = [[]];
 
         for ($i = 0; $i < $this->width; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::SCALE;
+                $w[$i][$j] = rand($min, $max) / self::PHI;
             }
         }
 

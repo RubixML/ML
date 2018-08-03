@@ -9,8 +9,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
@@ -166,7 +166,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(new Input($dataset->numColumns()), [],
+        $this->network = new FeedForward(new Placeholder($dataset->numColumns()), [],
            new Multinomial($this->classes, $this->alpha), $this->optimizer);
 
         $this->steps = [];

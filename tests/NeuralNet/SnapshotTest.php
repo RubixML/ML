@@ -4,9 +4,9 @@ namespace Rubix\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binomial;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class SnapshotTest extends TestCase
 
     public function setUp()
     {
-        $this->network = new FeedForward(new Input(1), [
+        $this->network = new FeedForward(new Placeholder(1), [
             new Dense(5, new ELU()),
         ], new Binomial(['yes', 'no']), new Stochastic());
 

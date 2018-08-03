@@ -28,6 +28,7 @@ MIT
 	 - [Choosing an Estimator](#choosing-an-estimator)
 	 - [Training and Prediction](#training-and-prediction)
 	 - [Evaluation](#evaluating-model-performance)
+	 - [Visualization](#visualization)
 	 - [Next Steps](#what-next)
 - [API Reference](#api-reference)
 	- [Datasets](#datasets)
@@ -116,7 +117,8 @@ MIT
 			- [Soft Plus](#soft-plus)
 			- [Softsign](#softsign)
 		- [Layers](#layers)
-			- [Input Layer](#input-layer)
+			- [Input Layers](#input-layers)
+				- [Placeholder](#placeholder)
 			- [Hidden Layers](#hidden-layers)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
@@ -137,7 +139,6 @@ MIT
 			- [Canberra](#canberra)
 			- [Cosine](#cosine)
 			- [Diagonal](#diagonal)
-			- [Ellipsoidal](#ellipsoidal)
 			- [Euclidean](#euclidean)
 			- [Hamming](#hamming)
 			- [Manhattan](#manhattan)
@@ -190,9 +191,15 @@ Machine learning is the process by which a computer program is able to progressi
 ### Obtaining Data
 Machine learning projects typically begin with a question. For example, who of my friends are most likely to stay married to their spouse? One way to go about answering this question with machine learning would be to go out and ask a bunch of long-time married and divorced couples the same set of questions and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers from your friends.
 
-Although this is certainly a valid way of obtaining data, in reality, chances are someone has already done the work of measuring the data for you and it is your job to find it, aggregate it, clean it, and otherwise make it usable by the machine learning algorithm. There are a number of PHP libraries out there that make extracting data from [CSV](https://github.com/thephpleague/csv), JSON, databases, and cloud services a whole lot easier, and we recommend checking them out before attempting it manually.
+Although this is certainly a valid way of obtaining data, in reality, chances are someone has already done the work of measuring the data for you and it is your job to find it, aggregate it, clean it, and otherwise make it usable by the machine learning algorithm. There are a number of PHP libraries out there that make extracting data from CSV, databases, and cloud services a whole lot easier, and we recommend checking them out before attempting it manually.
 
-Having that said, Rubix will be able to handle any dataset as long as it can fit into one its predefined Dataset objects (Labeled, Unlabeled, etc.).
+Here are a few libraries that we recommend that will help you get started extracting data:
+
+- [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extrator
+- [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstration layer
+- [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
+
+Having that said, Rubix will be able to handle any dataset as long as it can fit into one its pre-defined Dataset objects (*Labeled*, *Unlabeled*).
 
 #### The Dataset Object
 Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) extend the PHP array structure with methods that properly handle selecting, splitting, folding, and randomizing the samples. In general, there are two types of Datasets, *Labeled* and *Unlabeled*. Labeled datasets are typically used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions.
@@ -309,6 +316,12 @@ float(0.945)
 ```
 
 Since we are measuring accuracy, this output indicates that our Estimator is 94.5% accurate given the data we've trained and tested it with. Not bad.
+
+### Visualization
+Visualization is how you communicate the findings of your experiment to the end-user and is key to derive value from your hard work in engineering a performant model. Although visualization is important (imporant enough for us to mention it), we consider it to be beyond the scope of what a machine learning library should offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions made.
+
+If you are looking for a place to start, we recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
+
 
 ### What Next?
 Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation at least twice to fully understand all of the features at your disposal. If you're eager to get started, a great place to begin is by downloading some datasets from the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) where they have many pre-cleaned datasets available for free.
@@ -2537,22 +2550,37 @@ There are three types of Layers that form a network, **Input**, **Hidden**, and 
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Network;
-use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$network = new Network(new Input(784), [
+$network = new FeedForward(new Placeholder(784), [
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
 ], new Multinomial(['dog', 'cat', 'frog', 'car'], 1e-4), new Adam(0.001));
 ```
 
-### Input Layer
-The Input Layer is simply a placeholder layer that represents the value of a sample or batch of samples. The number of placeholder nodes should be equal to the number of feature columns of a sample.
+### Input Layers
+The entry point for data into a neural network is the input layer which is the first layer in the network. Input layers do not have any learnable parameters.
+
+### Placeholder
+The Placeholder input layer serves to represent the *future* input values of a mini batch as well as add a bias to the forward pass.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | inputs | None | int | The number of inputs to the network. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Placeholder;
+
+$layer = new Placeholder(100);
+```
 
 ### Hidden Layers
 In multilayer networks, Hidden layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output layer. The more complex the problem space is, the more Hidden layers and neurons will be necessary to handle the complexity.
@@ -2621,9 +2649,9 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Linear;
+use Rubix\ML\NeuralNet\Layers\Continuous;
 
-$layer = new Linear(1e-5);
+$layer = new Continuous(1e-5);
 ```
 
 ### Multinomial
@@ -2644,7 +2672,7 @@ $layer = new Multinomial(['yes', 'no', 'maybe'], 1e-6);
 
 ---
 ### Optimizers
-Gradient Descent is an algorithm that takes iterative steps towards minimizing an objective function. There have been many papers that describe enhancements to the standard Stochastic Gradient Descent algorithm whose methods are encapsulated in pluggable Optimizers by Rubix. More specifically, Optimizers control the amount of Gradient Descent step to take for each parameter in the network upon each training iteration.
+Gradient Descent is an algorithm that takes iterative steps towards finding the best set of weights in a neural network. Rubix provides a number of pluggable Gradient Descent optimizers that control the step of each parameter in the network.
 
 ### AdaGrad
 Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
@@ -2714,7 +2742,7 @@ $optimizer = new RMSProp(0.01, 0.9, 1e-10);
 ```
 
 ### Step Decay
-A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter when it reaches a new floor. The number of steps needed to reach a new floor is given by the steps parameter.
+A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2805,19 +2833,6 @@ This Kernel does not have any parameters.
 use Rubix\ML\Kernels\Distance\Diagonal;
 
 $kernel = new Diagonal();
-```
-
-### Ellipsoidal
-The Ellipsoidal distance measures the distance between two points on a 3-dimensional ellipsoid.
-
-##### Parameters:
-This Kernel does not have any parameters.
-
-##### Example:
-```php
-use Rubix\ML\Kernels\Distance\Ellipsoidal;
-
-$kernel = new Ellipsoidal();
 ```
 
 ### Euclidean

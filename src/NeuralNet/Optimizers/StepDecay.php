@@ -10,9 +10,9 @@ use SplObjectStorage;
 /**
  * Step Decay
  *
- * A learning rate decay stochastic optimizer that reduces the learning rate by
- * a factor of the decay parameter when it reaches a new floor. The number of
- * steps needed to reach a new floor is given by the steps parameter.
+ * A learning rate decay stochastic optimizer that reduces the learning rate by a
+ * factor of the decay parameter whenever it reaches a new *floor*. The number of
+ * steps needed to reach a new floor is defined by the *steps* parameter.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

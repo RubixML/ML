@@ -7,9 +7,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -154,7 +154,7 @@ class Adaline implements Regressor, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new FeedForward(new Input($dataset->numColumns()), [],
+        $this->network = new FeedForward(new Placeholder($dataset->numColumns()), [],
             new Continuous($this->alpha), $this->optimizer);
 
         $this->steps = [];

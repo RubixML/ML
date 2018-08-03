@@ -13,6 +13,7 @@
     - Added centering and scaling options for standardizers
     - Added min dimensionality estimation on random projectors
     - Added Gaussian Random Projector
+    - Removed Ellipsoidal distance kernel
 
 - 0.0.3-alpha
     - Added Extra Tree classifier

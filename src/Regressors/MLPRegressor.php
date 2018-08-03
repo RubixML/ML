@@ -8,10 +8,10 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Validation;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
@@ -235,7 +235,7 @@ class MLPRegressor implements Regressor, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new FeedForward(new Input($dataset->numColumns()),
+        $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
             $this->hidden, new Continuous($this->alpha), $this->optimizer);
 
         $this->scores = $this->steps = [];

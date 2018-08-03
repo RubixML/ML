@@ -18,7 +18,7 @@ class SELUTest extends TestCase
     {
         $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activationFunction = new SELU(1.05070, 1.67326);
+        $this->activationFunction = new SELU();
     }
 
     public function test_build_activation_function()
@@ -30,18 +30,18 @@ class SELUTest extends TestCase
 
     public function test_get_range()
     {
-        $this->assertEquals([-1.7580942819999998, INF], $this->activationFunction->range());
+        $this->assertEquals([-1.7580993408473766, INF], $this->activationFunction->range());
     }
 
     public function test_compute()
     {
         $activations = $this->activationFunction->compute($this->input);
 
-        $this->assertEquals(1.0507, $activations[0][0]);
-        $this->assertEquals(-0.6917561973015314, $activations[1][0]);
-        $this->assertEquals(0.0, $activations[2][0]);
-        $this->assertEquals(21.014, $activations[3][0]);
-        $this->assertEquals(-1.7580144646430813, $activations[4][0]);
+        $this->assertEquals(1.0507009873554805, $activations[0][0]);
+        $this->assertEquals(-0.6069220893098719, $activations[1][0]);
+        $this->assertEquals(0.08483609849299945, $activations[2][0]);
+        $this->assertEquals(21.014019747109607, $activations[3][0]);
+        $this->assertEquals(-1.6731834247677873, $activations[4][0]);
     }
 
     public function test_differentiate()
@@ -50,11 +50,11 @@ class SELUTest extends TestCase
 
         $derivatives = $this->activationFunction->differentiate($this->input, $activations);
 
-        $this->assertEquals(1.0507, $derivatives[0][0]);
-        $this->assertEquals(0.27317176349528105, $derivatives[1][0]);
-        $this->assertEquals(1.0, $derivatives[2][0]);
-        $this->assertEquals(1.05070, $derivatives[3][0]);
-        $this->assertEquals(-0.8471457980004855, $derivatives[4][0]);
+        $this->assertEquals(1.0507009873554805, $derivatives[0][0]);
+        $this->assertEquals(1.12040570236164325, $derivatives[1][0]);
+        $this->assertEquals(1.0507009873554805, $derivatives[2][0]);
+        $this->assertEquals(1.0507009873554805, $derivatives[3][0]);
+        $this->assertEquals(8.38644170383661E-5, $derivatives[4][0]);
     }
 
     public function test_within_range()

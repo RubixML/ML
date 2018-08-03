@@ -23,7 +23,7 @@ use RuntimeException;
  */
 class Dropout extends Dense
 {
-    const SCALE = 100000;
+    const PHI = 100000000;
 
     /**
      * The ratio of neurons that are dropped during each training pass.
@@ -83,8 +83,8 @@ class Dropout extends Dense
         $n = $this->z->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
-            return (rand(0, self::SCALE) / self::SCALE)
-                > $this->ratio ? $this->scale : 0.0;
+            return (rand(0, self::PHI) / self::PHI) > $this->ratio
+                ? $this->scale : 0.0;
         });
 
         $biases = MatrixFactory::one(1, $n);
@@ -111,8 +111,7 @@ class Dropout extends Dense
      */
     public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array
     {
-        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)
-            or is_null($this->mask)) {
+        if (is_null($this->input) or is_null($this->z) or is_null($this->computed) or is_null($this->mask)) {
                 throw new RuntimeException('Must perform forward pass before'
                     . ' backpropagating.');
             }

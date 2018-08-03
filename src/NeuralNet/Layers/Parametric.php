@@ -6,7 +6,7 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface Parametric extends Layer
 {
-    const SCALE = 1e8;
+    const PHI = 1e10;
 
     const ROOT_2 = 1.41421356237;
 
