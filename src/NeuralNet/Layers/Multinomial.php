@@ -207,9 +207,9 @@ class Multinomial implements Output
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($errors);
 
-        $gradients = $errors->multiply($this->input->transpose());
+        $gradient = $errors->multiply($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradients);
+        $step = $optimizer->step($this->weights, $gradient);
 
         $this->weights->update($step);
 

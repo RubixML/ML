@@ -84,9 +84,6 @@ class Dense implements Hidden
         $this->activationFunction = $activationFunction;
         $this->width = $neurons + 1;
         $this->weights = new Parameter(new Matrix([]));
-        $this->input = new Matrix([]);
-        $this->z = new Matrix([]);
-        $this->computed = new Matrix([]);
     }
 
     /**
@@ -190,9 +187,9 @@ class Dense implements Hidden
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($prevWeights->transpose()->multiply($prevErrors));
 
-        $gradients = $errors->multiply($this->input->transpose());
+        $gradient = $errors->multiply($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradients);
+        $step = $optimizer->step($this->weights, $gradient);
 
         $this->weights->update($step);
 

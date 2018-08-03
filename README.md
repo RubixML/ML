@@ -119,6 +119,7 @@ MIT
 			- [Input Layer](#input-layer)
 			- [Hidden Layers](#hidden-layers)
 				- [Dense](#dense)
+				- [Dropout](#dropout)
 			- [Output Layers](#output-layers)
 				- [Binomial](#binomial)
 				- [Continuous](#continuous)
@@ -2571,6 +2572,24 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 $layer = new Dense(100, new LeakyReLU(0.05));
+```
+
+### Dropout
+Dropout layers temporarily disable neurons during each training pass. Dropout is a regularization technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data. It is a very efficient way of performing model averaging with neural networks.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | neurons | None | int | The number of neurons in the layer. |
+| 2 | activation fn | None | object | The activation function to use. |
+| 3 | ratio | 0.5 | float | The ratio of neurons that are dropped during each training pass. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Dropout;
+use Rubix\ML\NeuralNet\ActivationFunctions\NoisyReLU;
+
+$layer = new Dropout(100, new NoisyReLU(0.05), 0.5);
 ```
 
 ### Output Layers

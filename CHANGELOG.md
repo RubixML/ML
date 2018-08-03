@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Dropout hidden layer
     - Added K-d Neighbors classifier and regressor
     - Added Extra Tree Regressor
     - Added Adaline regressor
