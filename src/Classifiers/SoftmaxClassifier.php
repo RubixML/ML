@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -76,7 +76,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     /**
      * The underlying computational graph.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
     protected $network;
 
@@ -145,9 +145,9 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return \Rubix\ML\NeuralNet\FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -166,7 +166,7 @@ class SoftmaxClassifier implements Multiclass, Online, Probabilistic, Persistabl
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new Network(new Input($dataset->numColumns()), [],
+        $this->network = new FeedForward(new Input($dataset->numColumns()), [],
            new Multinomial($this->classes, $this->alpha), $this->optimizer);
 
         $this->steps = [];

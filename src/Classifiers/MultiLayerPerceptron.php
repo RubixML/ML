@@ -7,7 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -115,7 +116,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * The underlying computational graph.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
     protected $network;
 
@@ -226,9 +227,9 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return \Rubix\ML\NeuralNet\FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -247,7 +248,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new Network(new Input($dataset->numColumns()),
+        $this->network = new FeedForward(new Input($dataset->numColumns()),
             $this->hidden, new Multinomial($this->classes, $this->alpha),
             $this->optimizer);
 
@@ -301,7 +302,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
                 if ($score > $best['score']) {
                     $best['score'] = $score;
-                    $best['snapshot'] = $this->network->read();
+                    $best['snapshot'] = Snapshot::take($this->network);
                 }
 
                 if ($score > ($max - $this->tolerance)) {

@@ -2,21 +2,28 @@
 
 namespace Rubix\ML\NeuralNet;
 
+use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use SplObjectStorage;
 
 class Snapshot extends SplObjectStorage
 {
     /**
-     * @param  array  $layers
-     * @return void
+     * Take a snapshot
+     *
+     * @param  \Rubix\ML\NeuralNet\Network  $network
+     * @return self
      */
-    public function __construct(array $layers = [])
+    public static function take(Network $network) : self
     {
-        foreach ($layers as $layer) {
+        $snapshot = new self();
+
+        foreach ($network->parametric() as $layer) {
             if ($layer instanceof Parametric) {
-                $this->attach($layer, $layer->read());
+                $snapshot->attach($layer, $layer->read());
             }
         }
+
+        return $snapshot;
     }
 }

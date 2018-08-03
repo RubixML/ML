@@ -8,6 +8,8 @@ interface Parametric extends Layer
 {
     const SCALE = 1e8;
 
+    const ROOT_2 = 1.41421356237;
+
     /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
@@ -41,7 +43,7 @@ interface Parametric extends Layer
     public function read() : array;
 
     /**
-     * Restore the parameters in the layer.
+     * Restore the parameters in the layer from an associative array.
      *
      * @param  array  $parameters
      * @return void

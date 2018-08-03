@@ -2368,7 +2368,7 @@ $transformer = new ZScaleStandardizer();
 
 ---
 ### Neural Network
-A number of the Estimators in Rubix are implemented as a computational graph commonly referred to as a Neural Network due to its inspiration from the human brain. Neural Nets are trained using an iterative process called Gradient Descent and use Backpropagation (sometimes called Reverse Mode Autodiff) to calculate the error of each parameter in the network.
+A number of the Estimators in Rubix are implemented as a computational graph commonly referred to as a Neural Network due to its inspiration from the human brain. Neural Nets are trained using an iterative process called Gradient Descent and use Backpropagation (sometimes called Reverse Mode Autodiff) to calculate the gradient of each parameter in the network.
 
 The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-regressor) are both neural networks capable of being built with an almost limitless combination of [Hidden layers](#hidden) employing various Activation Functions. The strength of deep neural nets (with 1 or more hidden layers) is its diversity in handling large amounts of data. In general, the deeper the neural network, the better it will perform.
 
@@ -2748,12 +2748,12 @@ $optimizer = new Stochastic(0.001);
 ### Snapshots
 Snapshots are a way to capture the state of a neural network at a moment in time. A Snapshot object holds all of the parameters in the network and can be used to restore the network back to a previous state.
 
-To take a snapshot of your network simply call the `read()` method on the Network object. To restore the network from a snapshot pass the snapshot to the `restore()` method.
+To take a snapshot of your network simply call the `take()` method on the Snapshot object. To restore the network from a snapshot pass the Snapshot to the `restore()` method on a network.
 
 The example below shows how to take a snapshot and then restore the network via the snapshot.
 ```php
 ...
-$snapshot = $network->read();
+$snapshot = Snapshot::take($network);
 
 ...
 

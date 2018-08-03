@@ -6,8 +6,6 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface Layer
 {
-    const ROOT_2 = 1.41421356237;
-
     const EPSILON = 1e-8;
 
     /**

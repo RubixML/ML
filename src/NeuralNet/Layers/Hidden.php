@@ -8,7 +8,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 interface Hidden extends Parametric
 {
     /**
-     * Calculate the errors and gradients of the layer and update the paramters.
+     * Calculate the errors and gradients of the layer and update the parameters.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
      * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors

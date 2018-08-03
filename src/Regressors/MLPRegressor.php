@@ -6,7 +6,8 @@ use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\Network;
+use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -104,7 +105,7 @@ class MLPRegressor implements Regressor, Online, Persistable
     /**
      * The underlying computational graph.
      *
-     * @var \Rubix\ML\NeuralNet\Network|null
+     * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
     protected $network;
 
@@ -215,9 +216,9 @@ class MLPRegressor implements Regressor, Online, Persistable
     /**
      * Return the underlying neural network instance or null if not trained.
      *
-     * @return \Rubix\ML\NeuralNet\Network|null
+     * @return \Rubix\ML\NeuralNet\FeedForward|null
      */
-    public function network() : ?Network
+    public function network() : ?FeedForward
     {
         return $this->network;
     }
@@ -234,7 +235,7 @@ class MLPRegressor implements Regressor, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new Network(new Input($dataset->numColumns()),
+        $this->network = new FeedForward(new Input($dataset->numColumns()),
             $this->hidden, new Continuous($this->alpha), $this->optimizer);
 
         $this->scores = $this->steps = [];
@@ -287,7 +288,7 @@ class MLPRegressor implements Regressor, Online, Persistable
 
                 if ($score > $best['score']) {
                     $best['score'] = $score;
-                    $best['snapshot'] = $this->network->read();
+                    $best['snapshot'] = Snapshot::take($this->network);
                 }
 
                 if ($score > ($max - $this->tolerance)) {
