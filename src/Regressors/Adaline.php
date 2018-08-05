@@ -11,6 +11,8 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -57,6 +59,14 @@ class Adaline implements Regressor, Online, Persistable
     protected $alpha;
 
     /**
+     * The function that computes the cost of an erroneous activation during
+     * training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
      * The minimum change in the weights necessary to continue training.
      *
      * @var float
@@ -64,14 +74,14 @@ class Adaline implements Regressor, Online, Persistable
     protected $minChange;
 
     /**
-     * The underlying computational graph.
+     * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
     protected $network;
 
     /**
-     * The sizes of each training step at each epoch.
+     * The average cost of a training sample at each epoch.
      *
      * @var array
      */
@@ -84,12 +94,13 @@ class Adaline implements Regressor, Online, Persistable
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  float  $minChange
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null,
-                                float $alpha = 1e-4, float $minChange = 1e-8)
+                    float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-8)
     {
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at'
@@ -115,15 +126,20 @@ class Adaline implements Regressor, Online, Persistable
             $optimizer = new Adam();
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new Quadratic();
+        }
+
         $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
+        $this->costFunction = $costFunction;
         $this->minChange = $minChange;
     }
 
     /**
-     * Return the sizes of each training step at each epoch.
+     * Return the average cost at every epoch.
      *
      * @return array
      */
@@ -190,20 +206,20 @@ class Adaline implements Regressor, Online, Persistable
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $dataset->randomize()->batch($this->batchSize);
 
-                $step = 0.0;
+                $cost = 0.0;
 
                 foreach ($batches as $batch) {
-                    $step += $this->network->feed($batch->samples())
+                    $cost += $this->network->feed($batch->samples())
                         ->backpropagate($batch->labels());
                 }
 
-                $this->steps[] = $step;
+                $this->steps[] = $cost;
 
-                if (abs($previous - $step) < $this->minChange) {
+                if (abs($previous - $cost) < $this->minChange) {
                     break 1;
                 }
 
-                $previous = $step;
+                $previous = $cost;
             }
         }
     }
@@ -222,6 +238,8 @@ class Adaline implements Regressor, Online, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_column($this->network->infer($dataset->samples()), 0);
+        $activations = $this->network->infer($dataset->samples());
+
+        return array_column($activations, 0);
     }
 }

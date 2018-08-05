@@ -13,7 +13,9 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use InvalidArgumentException;
 use RuntimeException;
@@ -64,6 +66,21 @@ class MLPRegressor implements Regressor, Online, Persistable
     protected $alpha;
 
     /**
+     * The function that computes the cost of an erroneous activation during
+     * training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
+     * The minimum change in the cost function necessary to continue training.
+     *
+     * @var float
+     */
+    protected $minChange;
+
+    /**
      * The Validation metric used to validate the performance of the model.
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Validation
@@ -87,14 +104,6 @@ class MLPRegressor implements Regressor, Online, Persistable
     protected $window;
 
     /**
-     * The amount of validation metric to tolerate when considering early
-     * stopping due to max validation score.
-     *
-     * @var float
-     */
-    protected $tolerance;
-
-    /**
      * The maximum number of training epochs. i.e. the number of times to iterate
      * over the entire training set before the algorithm terminates.
      *
@@ -103,7 +112,7 @@ class MLPRegressor implements Regressor, Online, Persistable
     protected $epochs;
 
     /**
-     * The underlying computational graph.
+     * The underlying neural network instance.
      *
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
@@ -119,7 +128,7 @@ class MLPRegressor implements Regressor, Online, Persistable
     ];
 
     /**
-     * The sizes of each training step at each epoch.
+     * The average cost of a training sample at each epoch.
      *
      * @var array
      */
@@ -132,17 +141,18 @@ class MLPRegressor implements Regressor, Online, Persistable
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
+     * @param  float  $minChange
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation|null  $metric
      * @param  float $holdout
      * @param  int  $window
-     * @param  float  $tolerance
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $hidden, int $batchSize = 50, Optimizer $optimizer = null,
-        float $alpha = 1e-4, Validation $metric = null, float $holdout = 0.1, int $window = 3,
-        float $tolerance = 1e-5, int $epochs = PHP_INT_MAX)
+            float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-3,
+            Validation $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -152,6 +162,11 @@ class MLPRegressor implements Regressor, Online, Persistable
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('Regularization parameter must'
                 . ' be non-negative.');
+        }
+
+        if ($minChange < 0.0) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
+                . ' than 0.');
         }
 
         if ($holdout < 0.01 or $holdout > 1.0) {
@@ -164,11 +179,6 @@ class MLPRegressor implements Regressor, Online, Persistable
                 . ' be at least 2 epochs.');
         }
 
-        if ($tolerance < -1 or $tolerance > 1) {
-            throw new InvalidArgumentException('Validation metric tolerance'
-                . ' must be between -1 and 1.');
-        }
-
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at'
                 . ' least 1 epoch.');
@@ -176,6 +186,10 @@ class MLPRegressor implements Regressor, Online, Persistable
 
         if (is_null($optimizer)) {
             $optimizer = new Adam();
+        }
+
+        if (is_null($costFunction)) {
+            $costFunction = new Quadratic();
         }
 
         if (is_null($metric)) {
@@ -186,10 +200,11 @@ class MLPRegressor implements Regressor, Online, Persistable
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
+        $this->costFunction = $costFunction;
+        $this->minChange = $minChange;
         $this->metric = $metric;
         $this->holdout = $holdout;
         $this->window = $window;
-        $this->tolerance = $tolerance;
         $this->epochs = $epochs;
     }
 
@@ -204,7 +219,7 @@ class MLPRegressor implements Regressor, Online, Persistable
     }
 
     /**
-     * Return the sizes of each training step at each epoch.
+     * Return the average cost at every epoch.
      *
      * @return array
      */
@@ -236,7 +251,8 @@ class MLPRegressor implements Regressor, Online, Persistable
         }
 
         $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            $this->hidden, new Continuous($this->alpha), $this->optimizer);
+            $this->hidden, new Continuous($this->alpha, $this->costFunction),
+            $this->optimizer);
 
         $this->scores = $this->steps = [];
 
@@ -271,27 +287,31 @@ class MLPRegressor implements Regressor, Online, Persistable
 
             $best = ['score' => $min, 'snapshot' => null];
 
+            $previous = 0.0;
+
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $training->randomize()->batch($this->batchSize);
 
-                $step = 0.0;
+                $cost = 0.0;
 
                 foreach ($batches as $batch) {
-                    $step += $this->network->feed($batch->samples())
+                    $cost += $this->network->feed($batch->samples())
                         ->backpropagate($batch->labels());
                 }
 
+                $cost /= $dataset->numRows();
+
                 $score = $this->metric->score($this, $testing);
 
+                $this->steps[] = $cost;
                 $this->scores[] = $score;
-                $this->steps[] = $step;
 
                 if ($score > $best['score']) {
                     $best['score'] = $score;
                     $best['snapshot'] = Snapshot::take($this->network);
                 }
 
-                if ($score > ($max - $this->tolerance)) {
+                if (abs($previous - $cost) < $this->minChange) {
                     break 1;
                 }
 
@@ -329,6 +349,8 @@ class MLPRegressor implements Regressor, Online, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_column($this->network->infer($dataset->samples()), 0);
+        $activations = $this->network->infer($dataset->samples());
+
+        return array_column($activations, 0);
     }
 }

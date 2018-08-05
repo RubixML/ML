@@ -191,21 +191,19 @@ class FeedForward implements Network
     {
         $prevErrors = $prevWeights = null;
 
-        $magnitude = 0.0;
+        $cost = 0.0;
 
         foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {
-                list($prevWeights, $prevErrors, $norm)
+                list($prevWeights, $prevErrors, $cost)
                     = $layer->back($labels, $this->optimizer);
             } else {
-                list($prevWeights, $prevErrors, $norm)
+                list($prevWeights, $prevErrors)
                     = $layer->back($prevWeights, $prevErrors, $this->optimizer);
             }
-
-            $magnitude += $norm;
         }
 
-        return $magnitude;
+        return $cost;
     }
 
     /**

@@ -116,6 +116,9 @@ MIT
 			- [Softmax](#softmax)
 			- [Soft Plus](#soft-plus)
 			- [Softsign](#softsign)
+		- [Cost Functions](#cost-functions)
+			- [Cross Entropy](#cross-entropy)
+			- [Quadratic](#quadratic)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
 				- [Placeholder](#placeholder)
@@ -1124,11 +1127,12 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
-| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
+| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
+| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
-Return the size of the training step at each epoch:
+Return the average cost of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1142,8 +1146,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, 1e-5);
+$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-4);
 ```
 
 ### Multi Layer Perceptron
@@ -1156,23 +1161,25 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 |--|--|--|--|--|
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
 | 2 | batch size | 50 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
-| 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 8 | tolerance | 1e-3 | float | The amount of error to tolerate in the validation metric. |
-| 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
+| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
+| 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 10 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 ##### Additional Methods:
+
+Return the average cost of a sample at each epoch of training:
+```php
+public steps() : array
+```
+
 Return the validation scores at each epoch of training:
 ```php
 public scores() : array
-```
-
-Return the size of the training step at each epoch:
-```php
-public steps() : array
 ```
 
 Returns the underlying neural network instance or *null* if untrained:
@@ -1186,15 +1193,14 @@ use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
-$hidden = [
+$estimator = new MultiLayerPerceptron([
 	new Dense(30, new ELU()),
-	new Dense(20, new ELU()),
-	new Dense(10, new ELU()),
-];
-
-$estimator = new MultiLayerPerceptron($hidden, 100, new Adam(0.001), 1e-4, new MCC(), 0.2, 3, PHP_INT_MAX);
+	new Dense(30, new ELU()),
+	new Dense(30, new ELU()),
+], 100, new Adam(0.001), 1e-4, new Quadratic(), 1e-3, new MCC(), 0.1, 3, PHP_INT_MAX);
 ```
 
 ### Naive Bayes
@@ -1263,13 +1269,14 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 |--|--|--|--|--|
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
-| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
+| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
+| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
-Return the size of the training step at each epoch:
+Return the average cost of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1283,8 +1290,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, 1e-5);
+$estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new CrossEntropy(), 1e-5);
 ```
 
 ---
@@ -1425,11 +1433,12 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
-| 5 | min change | 1e-8 | float | The minimum change in the weights necessary to continue training. |
+| 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
+| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
-Return the size of the training step at each epoch:
+Return the average cost of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1443,8 +1452,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 
-$estimator = new Adaline(300, 10, new Adam(0.001), 1e-4, 1e-8);
+$estimator = new Adaline(300, 10, new Adam(0.001), 1e-4, new Quadratic(), 1e-4);
 ```
 
 ### Dummy Regressor
@@ -1545,26 +1555,27 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
-| 2 | batch size | 10 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent step optimizer used to train the underlying network. |
+| 2 | batch size | 50 | int | The number of training samples to process at a time. |
+| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
-| 5 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
-| 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 7 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 8 | tolerance | 1e-5 | float | The amount of error to tolerate in the validation metric. |
-| 9 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
+| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
+| 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 10 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 
 
 ##### Additional Methods:
 
+Return the average cost of a sample at each epoch of training:
+```php
+public steps() : array
+```
+
 Return the validation scores at each epoch of training:
 ```php
 public scores() : array
-```
-
-Return the size of the training step at each epoch:
-```php
-public steps() : array
 ```
 
 Returns the underlying neural network instance or *null* if untrained:
@@ -1576,15 +1587,16 @@ public network() : Network|null
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 
-$hidden = [
-	new Dense(100, new ISRU()),
-];
-
-$estimator = new MLPRegressor($hidden, 50, new RMSProp(0.001), 1e-2, new MeanSquaredError(), 0.1, 3, PHP_INT_MAX);
+$estimator = new MLPRegressor([
+	new Dense(50, new SELU()),
+	new Dense(50, new SELU()),
+	new Dense(50, new SELU()),
+	new Dense(50, new SELU()),
+], 50, new RMSProp(0.001), 1e-2, new Quadratic(), 1e-4, new MeanSquaredError(), 0.1, 3, PHP_INT_MAX);
 ```
 
 ### Regression Tree
@@ -2540,6 +2552,36 @@ This Activation Function does not have any parameters.
 use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 
 $activationFunction = new Softsign();
+```
+
+### Cost Functions
+In neural networks, the cost function is a function that the network wants to minimize during training. The cost of a particular sample is defined as the difference between the output of the network and what the correct output should be given the label. Different cost functions have different ways of punishing erroneous activations.
+
+### Cross Entropy
+Cross Entropy, or log loss, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
+
+##### Parameters:
+This Cost Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+
+$costFunction = new CrossEntropy();
+```
+
+
+### Quadratic
+Quadratic loss, *squared error*, or *maximum likelihood* is a function that measures the squared difference between the target output and the actual output of a network.
+
+##### Parameters:
+This Cost Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+
+$costFunction = new Quadratic();
 ```
 
 ---

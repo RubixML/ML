@@ -11,6 +11,7 @@ use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,7 @@ class MLPRegressorTest extends TestCase
 
         $this->estimator = new MLPRegressor([
             new Dense(20, new ELU()),
-        ], 1, new Adam(0.01), 1e-4, new MeanSquaredError(), 0.1, 3, 1e-4, 100);
+        ], 1, new Adam(0.01), 1e-4, new Quadratic(), 1e-3, new MeanSquaredError(), 0.1, 3, 100);
     }
 
     public function test_build_regressor()

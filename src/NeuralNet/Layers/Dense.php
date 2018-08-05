@@ -31,7 +31,7 @@ class Dense implements Hidden
      *
      * @var int
      */
-    protected $width;
+    protected $neurons;
 
     /**
      * The function that outputs the activation or implulse of each neuron.
@@ -81,8 +81,8 @@ class Dense implements Hidden
                 . ' less than 1.');
         }
 
+        $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
-        $this->width = $neurons + 1;
         $this->weights = new Parameter(new Matrix([]));
     }
 
@@ -91,7 +91,7 @@ class Dense implements Hidden
      */
     public function width() : int
     {
-        return $this->width;
+        return $this->neurons + 1;
     }
 
     /**
@@ -114,9 +114,11 @@ class Dense implements Hidden
         $min = (int) round(-$r * self::PHI);
         $max = (int) round($r * self::PHI);
 
+        $fanOut =  $this->width();
+
         $w = [[]];
 
-        for ($i = 0; $i < $this->width; $i++) {
+        for ($i = 0; $i < $fanOut; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
                 $w[$i][$j] = rand($min, $max) / self::PHI;
             }
@@ -124,7 +126,7 @@ class Dense implements Hidden
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return $this->width;
+        return $fanOut;
     }
 
     /**
@@ -195,7 +197,7 @@ class Dense implements Hidden
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
+        return [$this->weights->w(), $errors];
     }
 
     /**

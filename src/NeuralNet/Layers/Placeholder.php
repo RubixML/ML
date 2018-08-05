@@ -26,13 +26,6 @@ class Placeholder implements Input
     protected $inputs;
 
     /**
-     * The width of the layer. i.e. the number of neurons.
-     *
-     * @var int
-     */
-    protected $width;
-
-    /**
      * @param  int  $inputs
      * @throws \InvalidArgumentException
      * @return void
@@ -45,7 +38,6 @@ class Placeholder implements Input
         }
 
         $this->inputs = $inputs;
-        $this->width = $inputs + 1;
     }
 
     /**
@@ -55,7 +47,7 @@ class Placeholder implements Input
      */
     public function width() : int
     {
-        return $this->width;
+        return $this->inputs + 1;
     }
 
     /**

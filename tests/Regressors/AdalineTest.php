@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -28,7 +29,7 @@ class AdalineTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new Adaline(100, 1, new Adam(0.01), 1e-4, 1e-8);
+        $this->estimator = new Adaline(100, 1, new Adam(0.01), 1e-4, new Quadratic(), 1e-3);
     }
 
     public function test_build_regressor()

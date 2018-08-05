@@ -13,6 +13,7 @@ use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -29,15 +30,9 @@ class LogisticRegressionTest extends TestCase
     {
         $this->training = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
 
-        $transformer = new ZScaleStandardizer();
-
-        $transformer->fit($this->training);
-
-        $this->training->apply($transformer);
-
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new LogisticRegression(100, 1, new Adam(0.001), 1e-4, 1e-4);
+        $this->estimator = new LogisticRegression(100, 1, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3);
     }
 
     public function test_build_classifier()

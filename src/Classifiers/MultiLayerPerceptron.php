@@ -17,6 +17,8 @@ use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -35,6 +37,8 @@ use RuntimeException;
  */
 class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
 {
+    const TOLERANCE = 1e-3;
+
     /**
      * The user-specified hidden layers of the network.
      *
@@ -66,6 +70,21 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     protected $alpha;
 
     /**
+     * The function that computes the cost of an erroneous activation during
+     * training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
+     * The minimum change in the cost function necessary to continue training.
+     *
+     * @var float
+     */
+    protected $minChange;
+
+    /**
      * The Validation metric used to validate the performance of the model.
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Validation
@@ -87,14 +106,6 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @var int
      */
     protected $window;
-
-    /**
-     * The amount of validation metric to tolerate when considering early
-     * stopping due to max validation score.
-     *
-     * @var float
-     */
-    protected $tolerance;
 
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -130,7 +141,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     ];
 
     /**
-     * The sizes of each training step at each epoch.
+     * The average cost of a training sample at each epoch.
      *
      * @var array
      */
@@ -143,17 +154,18 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
+     * @param  float  $minChange
      * @param  \Rubix\ML\CrossValidation\Metrics\Validation|null  $metric
      * @param  float $holdout
      * @param  int  $window
-     * @param  float  $tolerance
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 50, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, Validation $metric = null, float $holdout = 0.1,
-                    int $window = 3, float $tolerance = 1e-3, int $epochs = PHP_INT_MAX)
+            float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-3,
+            Validation $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -163,6 +175,11 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('Regularization parameter must'
                 . ' be non-negative.');
+        }
+
+        if ($minChange < 0.0) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
+                . ' than 0.');
         }
 
         if ($holdout < 0.01 or $holdout > 1.0) {
@@ -175,11 +192,6 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
                 . ' be at least 2 epochs.');
         }
 
-        if ($tolerance < -1 or $tolerance > 1) {
-            throw new InvalidArgumentException('Validation metric tolerance'
-                . ' must be between -1 and 1.');
-        }
-
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at'
                 . ' least 1 epoch.');
@@ -187,6 +199,10 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
         if (is_null($optimizer)) {
             $optimizer = new Adam();
+        }
+
+        if (is_null($costFunction)) {
+            $costFunction = new CrossEntropy();
         }
 
         if (is_null($metric)) {
@@ -197,10 +213,11 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
+        $this->costFunction = $costFunction;
+        $this->minChange = $minChange;
         $this->metric = $metric;
         $this->holdout = $holdout;
         $this->window = $window;
-        $this->tolerance = $tolerance;
         $this->epochs = $epochs;
     }
 
@@ -215,7 +232,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     }
 
     /**
-     * Return the sizes of each training step at each epoch.
+     * Return the average cost at every epoch.
      *
      * @return array
      */
@@ -249,7 +266,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            $this->hidden, new Multinomial($this->classes, $this->alpha),
+            $this->hidden, new Multinomial($this->classes, $this->alpha, $this->costFunction),
             $this->optimizer);
 
         $this->scores = $this->steps = [];
@@ -285,27 +302,35 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
             $best = ['score' => $min, 'snapshot' => null];
 
+            $previous = 0.0;
+
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $training->randomize()->batch($this->batchSize);
 
-                $step = 0.0;
+                $cost = 0.0;
 
                 foreach ($batches as $batch) {
-                    $step += $this->network->feed($batch->samples())
+                    $cost += $this->network->feed($batch->samples())
                         ->backpropagate($batch->labels());
                 }
 
+                $cost /= $dataset->numRows();
+
                 $score = $this->metric->score($this, $testing);
 
+                $this->steps[] = $cost;
                 $this->scores[] = $score;
-                $this->steps[] = $step;
 
                 if ($score > $best['score']) {
                     $best['score'] = $score;
                     $best['snapshot'] = Snapshot::take($this->network);
                 }
 
-                if ($score > ($max - $this->tolerance)) {
+                if (abs($previous - $cost) < $this->minChange) {
+                    break 1;
+                }
+
+                if ($score > ($max - self::TOLERANCE)) {
                     break 1;
                 }
 
@@ -319,6 +344,8 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
                         break 1;
                     }
                 }
+
+                $previous = $cost;
             }
 
             if (end($this->scores) < $best['score']) {

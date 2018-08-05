@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 use RuntimeException;
@@ -39,18 +41,18 @@ class Binomial implements Output
     protected $alpha;
 
     /**
-     * The width of the layer. i.e. the number of neurons.
-     *
-     * @var int
-     */
-    protected $width;
-
-    /**
      * The function that outputs the activation or implulse of each neuron.
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
+
+    /**
+     * The function that computes the cost of an erroneous activation.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
 
     /**
      * The weights.
@@ -83,10 +85,11 @@ class Binomial implements Output
     /**
      * @param  array  $labels
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $labels, float $alpha = 1e-4)
+    public function __construct(array $labels, float $alpha = 1e-4, CostFunction $costFunction = null)
     {
         $labels = array_unique($labels);
 
@@ -100,10 +103,14 @@ class Binomial implements Output
                 . ' must be 0 or greater.');
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new CrossEntropy();
+        }
+
         $this->classes = [$labels[0] => 0, $labels[1] => 1];
         $this->alpha = $alpha;
         $this->activationFunction = new Sigmoid();
-        $this->width = 1;
+        $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([]));
     }
 
@@ -112,7 +119,7 @@ class Binomial implements Output
      */
     public function width() : int
     {
-        return $this->width;
+        return 1;
     }
 
     /**
@@ -131,15 +138,13 @@ class Binomial implements Output
 
         $w = [[]];
 
-        for ($i = 0; $i < $this->width; $i++) {
-            for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::PHI;
-            }
+        for ($j = 0; $j < $fanIn; $j++) {
+            $w[0][$j] = rand($min, $max) / self::PHI;
         }
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return $this->width;
+        return 1;
     }
 
     /**
@@ -188,18 +193,24 @@ class Binomial implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = 0.5 * $this->alpha
-            * array_sum($this->weights->w()->getRow(0)) ** 2;
+        $penalty = $this->alpha * array_sum($this->weights->w()->getRow(0));
 
-        $errors = [];
+        $errors = [[]];
+
+        $cost = 0.0;
 
         foreach ($this->computed->getRow(0) as $i => $activation) {
             $expected = $this->classes[$labels[$i]];
 
-            $errors[$i] = ($expected - $activation) + $penalty;
+            $cost += $this->costFunction
+                ->compute($expected, $activation);
+
+            $errors[0][$i] = $this->costFunction
+                ->differentiate($expected, $activation)
+                + $penalty;
         }
 
-        $errors = new Matrix([$errors]);
+        $errors = new Matrix($errors);
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
@@ -213,7 +224,7 @@ class Binomial implements Output
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
+        return [$this->weights->w(), $errors, $cost];
     }
 
     /**

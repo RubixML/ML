@@ -17,6 +17,7 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -51,7 +52,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
-    1e-4, new MCC(), 0.1, 3, 1e-3, 30), [
+    1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
         new OneHotEncoder(),
         new SparseRandomProjector(30),
         new ZScaleStandardizer(),
@@ -72,6 +73,8 @@ $estimator->train($training);
 echo 'Training took ' . (string) (microtime(true) -  $start) . ' seconds' . "\n";
 
 var_dump($estimator->scores());
+
+var_dump($estimator->steps());
 
 var_dump($report->generate($estimator, $testing));
 

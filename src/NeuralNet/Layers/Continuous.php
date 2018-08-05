@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,11 +30,11 @@ class Continuous implements Output
     protected $alpha;
 
     /**
-     * The width of the layer. i.e. the number of neurons.
+     * The function that computes the cost of an erroneous activation.
      *
-     * @var int
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
-    protected $width;
+    protected $costFunction;
 
     /**
      * The weights.
@@ -57,18 +59,23 @@ class Continuous implements Output
 
     /**
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1e-4)
+    public function __construct(float $alpha = 1e-4, CostFunction $costFunction = null)
     {
         if ($alpha < 0) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be 0 or greater.');
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new Quadratic();
+        }
+
         $this->alpha = $alpha;
-        $this->width = 1;
+        $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([]));
     }
 
@@ -77,7 +84,7 @@ class Continuous implements Output
      */
     public function width() : int
     {
-        return $this->width;
+        return 1;
     }
 
     /**
@@ -89,22 +96,20 @@ class Continuous implements Output
      */
     public function init(int $fanIn) : int
     {
-        $r = (6 / sqrt($fanIn));
+        $r = sqrt(6 / $fanIn);
 
         $min = (int) round(-$r * self::PHI);
         $max = (int) round($r * self::PHI);
 
         $w = [[]];
 
-        for ($i = 0; $i < $this->width; $i++) {
-            for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::PHI;
-            }
+        for ($j = 0; $j < $fanIn; $j++) {
+            $w[0][$j] = rand($min, $max) / self::PHI;
         }
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return $this->width;
+        return 1;
     }
 
     /**
@@ -149,16 +154,24 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = 0.5 * $this->alpha
-            * array_sum($this->weights->w()->getRow(0)) ** 2;
+        $penalty = $this->alpha * array_sum($this->weights->w()->getRow(0));
 
-        $errors = [];
+        $errors = [[]];
+
+        $cost = 0.0;
 
         foreach ($this->computed->getRow(0) as $i => $activation) {
-            $errors[$i] = ($labels[$i] - $activation) + $penalty;
+            $expected = $labels[$i];
+
+            $cost += $this->costFunction
+                ->compute($expected, $activation);
+
+            $errors[0][$i] = $this->costFunction
+                ->differentiate($expected, $activation)
+                + $penalty;
         }
 
-        $errors = new Matrix([$errors]);
+        $errors = new Matrix($errors);
 
         $gradient = $errors->multiply($this->input->transpose());
 
@@ -168,7 +181,7 @@ class Continuous implements Output
 
         unset($this->input, $this->computed);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
+        return [$this->weights->w(), $errors, $cost];
     }
 
     /**

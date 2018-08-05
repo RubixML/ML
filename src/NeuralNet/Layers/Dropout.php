@@ -129,6 +129,6 @@ class Dropout extends Dense
 
         unset($this->input, $this->z, $this->computed, $this->mask);
 
-        return [$this->weights->w(), $errors, $step->maxNorm()];
+        return [$this->weights->w(), $errors];
     }
 }

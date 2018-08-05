@@ -16,6 +16,7 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -43,7 +44,7 @@ class MultiLayerPerceptronTest extends TestCase
         $this->estimator = new MultiLayerPerceptron([
             new Dense(10, new ELU()),
             new Dense(10, new ELU()),
-        ], 1, new Adam(0.001), 1e-4, new MCC(), 0.10, 3, 1e-2, 100);
+        ], 1, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.10, 3, 100);
     }
 
     public function test_build_classifier()

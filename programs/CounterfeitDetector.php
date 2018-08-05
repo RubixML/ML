@@ -12,6 +12,7 @@ use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -35,7 +36,7 @@ $labels = iterator_to_array($reader->fetchColumn('label'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new LogisticRegression(100, 50, new Adam(0.001), 1e-4, 1e-8), [
+$estimator = new Pipeline(new LogisticRegression(300, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);

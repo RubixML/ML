@@ -5,6 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use InvalidArgumentException;
 use RuntimeException;
@@ -45,11 +47,11 @@ class Multinomial implements Output
     protected $activationFunction;
 
     /**
-     * The width of the layer. i.e. the number of neurons.
+     * The function that computes the cost of an erroneous activation.
      *
-     * @var int
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
-    protected $width;
+    protected $costFunction;
 
     /**
      * The weights.
@@ -82,10 +84,11 @@ class Multinomial implements Output
     /**
      * @param  array  $classes
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $classes, float $alpha = 1e-4)
+    public function __construct(array $classes, float $alpha = 1e-4, CostFunction $costFunction = null)
     {
         $classes = array_values(array_unique($classes));
 
@@ -99,10 +102,14 @@ class Multinomial implements Output
                 . ' must be 0 or greater.');
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new CrossEntropy();
+        }
+
         $this->classes = $classes;
         $this->alpha = $alpha;
         $this->activationFunction = new Softmax();
-        $this->width = count($classes);
+        $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([]));
     }
 
@@ -111,7 +118,7 @@ class Multinomial implements Output
      */
     public function width() : int
     {
-        return $this->width;
+        return count($this->classes);
     }
 
     /**
@@ -128,9 +135,11 @@ class Multinomial implements Output
         $min = (int) round(-$r * self::PHI);
         $max = (int) round($r * self::PHI);
 
+        $fanOut = $this->width();
+
         $w = [[]];
 
-        for ($i = 0; $i < $this->width; $i++) {
+        for ($i = 0; $i < $fanOut; $i++) {
             for ($j = 0; $j < $fanIn; $j++) {
                 $w[$i][$j] = rand($min, $max) / self::PHI;
             }
@@ -138,7 +147,7 @@ class Multinomial implements Output
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return $this->width;
+        return $fanOut;
     }
 
     /**
@@ -191,13 +200,20 @@ class Multinomial implements Output
 
         $errors = [[]];
 
+        $cost = 0.0;
+
         foreach ($this->classes as $i => $class) {
-            $penalty = 0.5 * $this->alpha * array_sum($w->getRow($i)) ** 2;
+            $penalty = $this->alpha * array_sum($w->getRow($i));
 
             foreach ($this->computed->getRow($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1.0 : 0.0;
 
-                $errors[$i][$j] = ($expected - $activation) + $penalty;
+                $cost += $this->costFunction
+                    ->compute($expected, $activation);
+
+                $errors[$i][$j] = $this->costFunction
+                    ->differentiate($expected, $activation)
+                    + $penalty;
             }
         }
 
@@ -215,7 +231,7 @@ class Multinomial implements Output
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$w, $errors, $step->maxNorm()];
+        return [$w, $errors, $cost];
     }
 
     /**
