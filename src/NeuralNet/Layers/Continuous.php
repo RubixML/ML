@@ -163,11 +163,13 @@ class Continuous implements Output
         foreach ($this->computed->getRow(0) as $i => $activation) {
             $expected = $labels[$i];
 
-            $cost += $this->costFunction
+            $computed = $this->costFunction
                 ->compute($expected, $activation);
 
+            $cost =+ $computed;
+
             $errors[0][$i] = $this->costFunction
-                ->differentiate($expected, $activation)
+                ->differentiate($expected, $activation, $computed)
                 + $penalty;
         }
 

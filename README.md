@@ -118,6 +118,7 @@ MIT
 			- [Softsign](#softsign)
 		- [Cost Functions](#cost-functions)
 			- [Cross Entropy](#cross-entropy)
+			- [Exponential](#exponential)
 			- [Quadratic](#quadratic)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
@@ -1146,9 +1147,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 
-$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-4);
+$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new Exponential(), 1e-4);
 ```
 
 ### Multi Layer Perceptron
@@ -1193,14 +1194,14 @@ use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultiLayerPerceptron([
 	new Dense(30, new ELU()),
 	new Dense(30, new ELU()),
 	new Dense(30, new ELU()),
-], 100, new Adam(0.001), 1e-4, new Quadratic(), 1e-3, new MCC(), 0.1, 3, PHP_INT_MAX);
+], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, PHP_INT_MAX);
 ```
 
 ### Naive Bayes
@@ -2340,12 +2341,12 @@ $transformer = new TfIdfTransformer();
 ### Variance Threshold Filter
 A type of feature selector that removes all columns that have a lower variance than the threshold. Variance is computed as the population variance of all the values in the feature column.
 
-##### Categorical and Continuous
+##### Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | threshold | 0.0 | float | The threshold at which lower scoring columns will be dropped from the dataset. |
+| 1 | threshold | 0.0 | float | The threshold at which feature columns will be dropped from the dataset. |
 
 ##### Additional Methods:
 
@@ -2570,6 +2571,18 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 $costFunction = new CrossEntropy();
 ```
 
+### Exponential
+This cost function calculates the exponential of a prediction's squared error thus applying a large penalty to wrong predictions. The resulting gradient of the Exponential loss tends to be steeper than most other cost functions.
+
+##### Parameters:
+This Cost Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\CostFunctions\Exponential;
+
+$costFunction = new Exponential();
+```
 
 ### Quadratic
 Quadratic loss, *squared error*, or *maximum likelihood* is a function that measures the squared difference between the target output and the actual output of a network.

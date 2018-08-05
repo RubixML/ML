@@ -3,20 +3,17 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 /**
- * Cross Entropy
+ * Exponential
  *
- * Cross Entropy, or log loss, measures the performance of a classification model
- * whose output is a probability value between 0 and 1. Cross-entropy loss
- * increases as the predicted probability diverges from the actual label. So
- * predicting a probability of .012 when the actual observation label is 1 would
- * be bad and result in a high loss value. A perfect score would have a log loss
- * of 0.
+ * This cost function calculates the exponential of a prediction's squared error
+ * thus applying a large penalty to wrong predictions. The resulting gradient of
+ * the Exponential loss tends to be steeper than most other cost functions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CrossEntropy implements CostFunction
+class Exponential implements CostFunction
 {
     /**
      * Return a tuple of the min and max output value for this function.
@@ -37,8 +34,7 @@ class CrossEntropy implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return -($expected * log($activation)
-            + (1 - $expected) * log(1 - $activation));
+        return exp(($expected - $activation) ** 2);
     }
 
     /**
@@ -51,7 +47,6 @@ class CrossEntropy implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        return ($expected - $activation)
-            / ((1 - $activation) * $activation);
+        return ($expected - $activation) * $computed;
     }
 }

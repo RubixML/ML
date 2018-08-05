@@ -68,15 +68,15 @@ class VarianceThresholdFilter implements Transformer
         $this->selected = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === self::CATEGORICAL) {
-                $counts = array_count_values($dataset->column($column));
+            if ($type === self::CONTINUOUS) {
+                $values = $dataset->column($column);
 
-                $variance = Descriptive::populationVariance($counts);
+                $variance = Descriptive::populationVariance($values);
+
+                if ($variance > $this->threshold) {
+                    $this->selected[$column] = true;
+                }
             } else {
-                $variance = Descriptive::populationVariance($dataset->column($column));
-            }
-
-            if ($variance > $this->threshold) {
                 $this->selected[$column] = true;
             }
         }
@@ -92,7 +92,7 @@ class VarianceThresholdFilter implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->selected)) {
+        if (is_null($this->selected)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

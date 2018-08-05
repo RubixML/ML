@@ -2,6 +2,17 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+/**
+ * Quadratic
+ *
+ * Quadratic loss, *squared error*, or *maximum likelihood* is a function that
+ * measures the squared difference between the target output and the actual
+ * output of a network.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Quadratic implements CostFunction
 {
     /**
@@ -31,9 +42,10 @@ class Quadratic implements CostFunction
      *
      * @param  float  $expected
      * @param  float  $activation
+     * @param  float  $computed
      * @return float
      */
-    public function differentiate(float $expected, float $activation) : float
+    public function differentiate(float $expected, float $activation, float $computed) : float
     {
         return $expected - $activation;
     }

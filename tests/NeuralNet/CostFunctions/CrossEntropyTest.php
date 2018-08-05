@@ -14,11 +14,15 @@ class CrossEntropyTest extends TestCase
 
     protected $activation;
 
+    protected $computed;
+
     public function setUp()
     {
         $this->expected = 1.0;
 
         $this->activation = 0.8;
+
+        $this->computed = 0.2231435513142097;
 
         $this->costFunction = new CrossEntropy();
     }
@@ -33,12 +37,12 @@ class CrossEntropyTest extends TestCase
     {
         $cost = $this->costFunction->compute($this->expected, $this->activation);
 
-        $this->assertEquals(0.2231435513142097, $cost);
+        $this->assertEquals($this->computed, $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction->differentiate($this->expected, $this->activation);
+        $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
         $this->assertEquals(1.25, $derivative);
     }

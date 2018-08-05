@@ -27,7 +27,8 @@ interface CostFunction
      *
      * @param  float  $expected
      * @param  float  $activation
+     * @param  float  $computed
      * @return float
      */
-    public function differentiate(float $expected, float $activation) : float;
+    public function differentiate(float $expected, float $activation, float $computed) : float;
 }

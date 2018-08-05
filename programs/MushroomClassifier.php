@@ -48,7 +48,6 @@ $hidden = [
     new Dense(20, new SELU()),
     new Dense(20, new SELU()),
     new Dense(20, new SELU()),
-    new Dense(20, new SELU()),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),

@@ -208,11 +208,13 @@ class Multinomial implements Output
             foreach ($this->computed->getRow($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1.0 : 0.0;
 
-                $cost += $this->costFunction
+                $computed = $this->costFunction
                     ->compute($expected, $activation);
 
+                $cost += $computed;
+
                 $errors[$i][$j] = $this->costFunction
-                    ->differentiate($expected, $activation)
+                    ->differentiate($expected, $activation, $computed)
                     + $penalty;
             }
         }

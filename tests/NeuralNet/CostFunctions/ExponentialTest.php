@@ -2,11 +2,11 @@
 
 namespace Rubix\Tests\NeuralNet\CostFunctions;
 
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
 
-class QuadraticTest extends TestCase
+class ExponentialTest extends TestCase
 {
     protected $costFunction;
 
@@ -22,14 +22,14 @@ class QuadraticTest extends TestCase
 
         $this->activation = 0.8;
 
-        $this->computed = 0.01999999999999999;
+        $this->computed = 1.0408107741923882;
 
-        $this->costFunction = new Quadratic();
+        $this->costFunction = new Exponential();
     }
 
     public function test_build_cost_function()
     {
-        $this->assertInstanceOf(Quadratic::class, $this->costFunction);
+        $this->assertInstanceOf(Exponential::class, $this->costFunction);
         $this->assertInstanceOf(CostFunction::class, $this->costFunction);
     }
 
@@ -44,6 +44,6 @@ class QuadraticTest extends TestCase
     {
         $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
-        $this->assertEquals(0.19999999999999996, $derivative);
+        $this->assertEquals(0.2081621548384776, $derivative);
     }
 }
