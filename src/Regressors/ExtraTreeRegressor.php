@@ -30,14 +30,16 @@ class ExtraTreeRegressor extends RegressionTree
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
-        $best = [
-            'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
-        ];
+        $bestSsd = INF;
+        $bestIndex = $bestValue = null;
+        $bestGroups = [];
+
+        $max = $dataset->numRows() - 1;
 
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            $sample = $dataset->row(rand(0, count($dataset) - 1));
+            $sample = $dataset->row(rand(0, $max));
 
             $value = $sample[$index];
 
@@ -45,11 +47,11 @@ class ExtraTreeRegressor extends RegressionTree
 
             $ssd = $this->calculateSsd($groups);
 
-            if ($ssd < $best['ssd']) {
-                $best['ssd'] = $ssd;
-                $best['index'] = $index;
-                $best['value'] = $value;
-                $best['groups'] = $groups;
+            if ($ssd < $bestSsd) {
+                $bestSsd = $ssd;
+                $bestIndex = $index;
+                $bestValue = $value;
+                $bestGroups = $groups;
             }
 
             if ($ssd <= $this->tolerance) {
@@ -57,7 +59,6 @@ class ExtraTreeRegressor extends RegressionTree
             }
         }
 
-        return new Comparison($best['index'], $best['value'], $best['groups'],
-            $best['ssd']);
+        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestSsd);
     }
 }

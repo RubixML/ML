@@ -140,9 +140,7 @@ class CommitteeMachine implements MetaEstimator, Ensemble, Persistable
     {
         if ($this->experts[0] instanceof Classifier) {
             return array_map(function ($votes) {
-                $counts = array_count_values($votes);
-
-                return Argmax::compute($counts);
+                return Argmax::compute(array_count_values($votes));
             }, $predictions);
         } else if ($this->experts[0] instanceof Detector) {
             return array_map(function ($votes) {

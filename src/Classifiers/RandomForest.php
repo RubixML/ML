@@ -25,7 +25,7 @@ use ReflectionClass;
  */
 class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 {
-    const TREES = [
+    const AVAILABLE_TREES = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
@@ -109,8 +109,8 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
      * @return void
      */
     public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 10,
-        int $minSamples = 5, int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-3,
-        string $base = ClassificationTree::class)
+            int $minSamples = 5, int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-3,
+            string $base = ClassificationTree::class)
     {
         if ($trees < 1) {
             throw new InvalidArgumentException('The number of trees cannot be'
@@ -144,7 +144,7 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 
         $reflector = new ReflectionClass($base);
 
-        if (!in_array($reflector->getName(), self::TREES)) {
+        if (!in_array($reflector->getName(), self::AVAILABLE_TREES)) {
             throw new InvalidArgumentException('Base classifier must be a'
                 . ' type of classification tree.');
         }
@@ -185,7 +185,7 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $n = (int) ($this->ratio * $dataset->numRows());
+        $n = (int) round($this->ratio * $dataset->numRows());
 
         $this->forest = [];
 

@@ -23,6 +23,8 @@ use ReflectionClass;
  */
 class AdaBoost implements Binary, Ensemble, Persistable
 {
+    const PHI = 1e8;
+    
     /**
      * The class name of the base classifier.
      *
@@ -271,17 +273,18 @@ class AdaBoost implements Binary, Ensemble, Persistable
     protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
     {
         $n = $dataset->numRows();
-        $k = (int) ($this->ratio * $n);
+        $k = (int) round($this->ratio * $n);
 
         $samples = $dataset->samples();
         $labels = $dataset->labels();
 
         $total = array_sum($this->weights);
+        $max = (int) round($total * self::PHI);
 
         $subset = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $alpha = rand(0, (int) ($total * 1e8)) / 1e8;
+            $alpha = rand(0, $max) / self::PHI;
 
             for ($index = 0; $index < $n; $index++) {
                 $alpha -= $this->weights[$index];

@@ -123,9 +123,9 @@ class RegressionTree extends CART implements Regressor, Persistable
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
-        $best = [
-            'ssd' => INF, 'index' => null, 'value' => null, 'groups' => [],
-        ];
+        $bestSsd = INF;
+        $bestIndex = $bestValue = null;
+        $bestGroups = [];
 
         shuffle($this->indices);
 
@@ -137,21 +137,20 @@ class RegressionTree extends CART implements Regressor, Persistable
 
                 $ssd = $this->calculateSsd($groups);
 
-                if ($ssd < $best['ssd']) {
-                    $best['ssd'] = $ssd;
-                    $best['index'] = $index;
-                    $best['value'] = $value;
-                    $best['groups'] = $groups;
+                if ($ssd < $bestSsd) {
+                    $bestSsd = $ssd;
+                    $bestIndex = $index;
+                    $bestValue = $value;
+                    $bestGroups = $groups;
                 }
 
-                if ($ssd < $this->tolerance) {
+                if ($ssd <= $this->tolerance) {
                     break 2;
                 }
             }
         }
 
-        return new Comparison($best['index'], $best['value'], $best['groups'],
-            $best['ssd']);
+        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestSsd);
     }
 
     /**

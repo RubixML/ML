@@ -150,9 +150,9 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
-        $best = [
-            'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
-        ];
+        $bestGini = INF;
+        $bestIndex = $bestValue = null;
+        $bestGroups = [];
 
         shuffle($this->indices);
 
@@ -162,11 +162,11 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
 
                 $gini = $this->calculateGiniImpurity($groups);
 
-                if ($gini < $best['gini']) {
-                    $best['gini'] = $gini;
-                    $best['index'] = $index;
-                    $best['value'] = $sample[$index];
-                    $best['groups'] = $groups;
+                if ($gini < $bestGini) {
+                    $bestGini = $gini;
+                    $bestIndex = $index;
+                    $bestValue = $sample[$index];
+                    $bestGroups = $groups;
                 }
 
                 if ($gini <= $this->tolerance) {
@@ -175,8 +175,7 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
             }
         }
 
-        return new Comparison($best['index'], $best['value'], $best['groups'],
-            $best['gini']);
+        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestGini);
     }
 
     /**
@@ -222,7 +221,9 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
                 continue 1;
             }
 
-            foreach (array_count_values($group->labels()) as $count) {
+            $counts = array_count_values($group->labels());
+
+            foreach ($counts as $count) {
                 $gini += (1.0 - ($count / $n) ** 2) * ($n / $total);
             }
         }

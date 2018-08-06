@@ -80,12 +80,12 @@ class MeanShift implements Clusterer, Persistable
     public function __construct(float $radius, Distance $kernel = null, float $minChange = 1e-4,
                                 int $epochs = PHP_INT_MAX)
     {
-        if ($radius <= 0) {
+        if ($radius <= 0.0) {
             throw new InvalidArgumentException('Radius must be greater than'
                 . ' 0');
         }
 
-        if ($minChange < 0) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Threshold cannot be set to less'
                 . ' than 0.');
         }
@@ -206,18 +206,19 @@ class MeanShift implements Clusterer, Persistable
      */
     protected function label(array $sample) : int
     {
-        $best = ['distance' => INF, 'label' => -1];
+        $bestDistance = INF;
+        $bestLabel = -1;
 
         foreach ($this->centroids as $label => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
-            if ($distance < $best['distance']) {
-                $best['distance'] = $distance;
-                $best['label'] = (int) $label;
+            if ($distance < $bestDistance) {
+                $bestDistance = $distance;
+                $bestLabel = (int) $label;
             }
         }
 
-        return $best['label'];
+        return $bestLabel;
     }
 
     /**

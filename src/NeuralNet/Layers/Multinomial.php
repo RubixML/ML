@@ -97,7 +97,7 @@ class Multinomial implements Output
                 . ' must be 2 or more.');
         }
 
-        if ($alpha < 0) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be 0 or greater.');
         }

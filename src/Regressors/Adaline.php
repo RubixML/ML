@@ -100,7 +100,7 @@ class Adaline implements Regressor, Online, Persistable
      * @return void
      */
     public function __construct(int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-8)
+                    float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-3)
     {
         if ($epochs < 1) {
             throw new InvalidArgumentException('Estimator must train for at'
@@ -117,7 +117,7 @@ class Adaline implements Regressor, Online, Persistable
                 . ' be non-negative.');
         }
 
-        if ($minChange < 0) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }

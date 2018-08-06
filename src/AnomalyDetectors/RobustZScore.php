@@ -65,12 +65,12 @@ class RobustZScore implements Detector, Persistable
      */
     public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
     {
-        if ($tolerance < 0) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Z score tolerance must be'
                 . ' 0 or greater.');
         }
 
-        if ($threshold < 0) {
+        if ($threshold < 0.0) {
             throw new InvalidArgumentException('Z score threshold must be'
                 . ' 0 or greater.');
         }
@@ -134,6 +134,8 @@ class RobustZScore implements Detector, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        $numFeatures = $dataset->numColumns();
+        
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -152,7 +154,7 @@ class RobustZScore implements Detector, Persistable
                 $score += $z;
             }
 
-            $score /= count($sample);
+            $score /= $numFeatures;
 
             $predictions[] = $score > $this->tolerance ? 1 : 0;
         }

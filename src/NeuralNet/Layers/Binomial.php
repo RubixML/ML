@@ -98,7 +98,7 @@ class Binomial implements Output
                 . ' labels must be exactly 2.');
         }
 
-        if ($alpha < 0) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be 0 or greater.');
         }

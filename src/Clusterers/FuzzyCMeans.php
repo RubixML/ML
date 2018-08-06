@@ -87,8 +87,8 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
-                                float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
+    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null, float $minChange = 1e-4,
+                                int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'

@@ -31,14 +31,16 @@ class ExtraTreeClassifier extends ClassificationTree
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
-        $best = [
-            'gini' => INF, 'index' => null, 'value' => null, 'groups' => [],
-        ];
+        $bestGini = INF;
+        $bestIndex = $bestValue = null;
+        $bestGroups = [];
+
+        $max = $dataset->numRows() - 1;
 
         shuffle($this->indices);
 
         foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
-            $sample = $dataset->row(rand(0, count($dataset) - 1));
+            $sample = $dataset->row(rand(0, $max));
 
             $value = $sample[$index];
 
@@ -46,11 +48,11 @@ class ExtraTreeClassifier extends ClassificationTree
 
             $gini = $this->calculateGiniImpurity($groups);
 
-            if ($gini < $best['gini']) {
-                $best['gini'] = $gini;
-                $best['index'] = $index;
-                $best['value'] = $value;
-                $best['groups'] = $groups;
+            if ($gini < $bestGini) {
+                $bestGini = $gini;
+                $bestIndex = $index;
+                $bestValue = $sample[$index];
+                $bestGroups = $groups;
             }
 
             if ($gini <= $this->tolerance) {
@@ -58,7 +60,6 @@ class ExtraTreeClassifier extends ClassificationTree
             }
         }
 
-        return new Comparison($best['index'], $best['value'], $best['groups'],
-            $best['gini']);
+        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestGini);
     }
 }

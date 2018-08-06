@@ -300,8 +300,8 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
 
             list($min, $max) = $this->metric->range();
 
-            $best = ['score' => $min, 'snapshot' => null];
-
+            $bestScore = $min;
+            $bestSnapshot = null;
             $previous = 0.0;
 
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
@@ -321,9 +321,9 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
                 $this->steps[] = $cost;
                 $this->scores[] = $score;
 
-                if ($score > $best['score']) {
-                    $best['score'] = $score;
-                    $best['snapshot'] = Snapshot::take($this->network);
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestSnapshot = Snapshot::take($this->network);
                 }
 
                 if (abs($previous - $cost) < $this->minChange) {
@@ -348,9 +348,9 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
                 $previous = $cost;
             }
 
-            if (end($this->scores) < $best['score']) {
-                if (isset($best['snapshot'])) {
-                    $this->network->restore($best['snapshot']);
+            if (end($this->scores) < $bestScore) {
+                if (isset($bestSnapshot)) {
+                    $this->network->restore($bestSnapshot);
                 }
             }
         }

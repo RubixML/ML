@@ -182,9 +182,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
     {
         if (in_array(Classifier::class, $this->reflector->getInterfaceNames())) {
             return array_map(function ($outcomes) {
-                $counts = array_count_values($outcomes);
-
-                return Argmax::compute($counts);
+                return Argmax::compute(array_count_values($outcomes));
             }, $predictions);
         } else if (in_array(Detector::class, $this->reflector->getInterfaceNames())) {
             return array_map(function ($outcomes) {
@@ -192,7 +190,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
             }, $predictions);
         } else {
             return array_map(function ($outcomes) {
-                return Average::median($outcomes);
+                return Average::mean($outcomes);
             }, $predictions);
         }
     }
