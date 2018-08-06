@@ -38,9 +38,9 @@ $labels = iterator_to_array($reader->fetchColumn('mpg'));
 $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MLPRegressor([
-    new Dense(20, new LeakyReLU()),
-    new Dense(20, new LeakyReLU()),
-], 50, new Adam(0.001), 1e-4, new Quadratic(), 1e-3, new MeanSquaredError(), 0.1, 3, 300), [
+    new Dense(30, new LeakyReLU()),
+    new Dense(30, new LeakyReLU()),
+], 50, new Adam(0.001), 1e-3, new Quadratic(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
         new NumericStringConverter(),
         new MissingDataImputer('?'),
         new ZScaleStandardizer(),

@@ -1129,7 +1129,7 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
@@ -1165,7 +1165,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
@@ -1273,7 +1273,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
@@ -1423,7 +1423,7 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 Regression analysis is used to predict the outcome of an event where the value is continuous.
 
 ### Adaline
-Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear). The Adaline converges to the least squares error which is the same error function as linear regression.
+Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear).
 
 ##### Supervised | Online | Persistable | Linear
 
@@ -1435,7 +1435,7 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
 | 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
 
@@ -1455,7 +1455,7 @@ use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 
-$estimator = new Adaline(300, 10, new Adam(0.001), 1e-4, new Quadratic(), 1e-4);
+$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new Quadratic(), 1e-4);
 ```
 
 ### Dummy Regressor
@@ -1560,7 +1560,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The L2 regularization term. |
 | 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
@@ -1596,8 +1596,7 @@ $estimator = new MLPRegressor([
 	new Dense(50, new SELU()),
 	new Dense(50, new SELU()),
 	new Dense(50, new SELU()),
-	new Dense(50, new SELU()),
-], 50, new RMSProp(0.001), 1e-2, new Quadratic(), 1e-4, new MeanSquaredError(), 0.1, 3, PHP_INT_MAX);
+], 50, new RMSProp(0.001), 1e-2, new Quadratic(), 1e-5, new MeanSquaredError(), 0.1, 3, 100);
 ```
 
 ### Regression Tree
@@ -1631,7 +1630,7 @@ L2 penalized least squares linear regression. Can be used for simple regression 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The L2 regularization term. |
+| 1 | alpha | 1.0 | float | The L2 regularization parameter. |
 
 ##### Additional Methods:
 

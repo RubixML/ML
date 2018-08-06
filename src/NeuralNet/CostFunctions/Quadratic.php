@@ -34,7 +34,7 @@ class Quadratic implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return 0.5 * ($expected - $activation) ** 2;
+        return 0.5 * ($activation - $expected) ** 2;
     }
 
     /**
@@ -47,6 +47,6 @@ class Quadratic implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        return $expected - $activation;
+        return $activation - $expected;
     }
 }

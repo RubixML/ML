@@ -37,8 +37,12 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 . ' or numeric type ' . gettype($placeholder) . ' found.');
         }
 
+        $samples = array_values($samples);
+
+        $numFeatures = count(is_array($samples[0] ?? null) ? $samples[0] : []);
+
         foreach ($samples as &$sample) {
-            if (count($sample) !== count(reset($samples) ?? [])) {
+            if (count($sample) !== $numFeatures) {
                 throw new InvalidArgumentException('The number of feature'
                     . ' columns must be equal for all samples.');
             }
@@ -59,7 +63,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             $sample = array_values($sample);
         }
 
-        $this->samples = array_values($samples);
+        $this->samples = $samples;
     }
 
     /**
@@ -167,11 +171,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function rotate() : array
     {
-        if (empty($this->samples)) {
-            return [[]];
-        }
-
-        return array_map(null, ...$this->samples);
+        return empty($this->samples) ? [[]] : array_map(null, ...$this->samples);
     }
 
     /**

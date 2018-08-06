@@ -40,7 +40,7 @@ class Parameter
      */
     public function update(Matrix $step) : void
     {
-        $this->w = $this->w->add($step);
+        $this->w = $this->w->subtract($step);
     }
 
     /**

@@ -44,6 +44,6 @@ class ExponentialTest extends TestCase
     {
         $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
-        $this->assertEquals(0.2081621548384776, $derivative);
+        $this->assertEquals(-0.4163243096769552, $derivative);
     }
 }

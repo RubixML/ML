@@ -34,7 +34,7 @@ class Exponential implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return exp(($expected - $activation) ** 2);
+        return exp(($activation - $expected) ** 2);
     }
 
     /**
@@ -47,6 +47,6 @@ class Exponential implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        return ($expected - $activation) * $computed;
+        return 2.0 * ($activation - $expected) * $computed;
     }
 }

@@ -164,7 +164,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 50, Optimizer $optimizer = null,
-            float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-3,
+            float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4,
             Validation $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {

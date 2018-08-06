@@ -44,6 +44,6 @@ class QuadraticTest extends TestCase
     {
         $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
-        $this->assertEquals(0.19999999999999996, $derivative);
+        $this->assertEquals(-0.19999999999999996, $derivative);
     }
 }
