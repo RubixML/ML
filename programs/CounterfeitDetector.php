@@ -36,7 +36,7 @@ $labels = iterator_to_array($reader->fetchColumn('label'));
 
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new Pipeline(new LogisticRegression(300, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3), [
+$estimator = new Pipeline(new LogisticRegression(300, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-4), [
     new NumericStringConverter(),
     new ZScaleStandardizer(),
 ]);

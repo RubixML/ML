@@ -116,6 +116,7 @@ MIT
 			- [Softmax](#softmax)
 			- [Soft Plus](#soft-plus)
 			- [Softsign](#softsign)
+			- [Thresholded ReLU](#thresholded-relu)
 		- [Cost Functions](#cost-functions)
 			- [Cross Entropy](#cross-entropy)
 			- [Exponential](#exponential)
@@ -2552,6 +2553,21 @@ This Activation Function does not have any parameters.
 use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 
 $activationFunction = new Softsign();
+```
+
+### Thresholded ReLU
+Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | threshold | 0.0 | float | The input value necessary to trigger an activation. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
+
+$activationFunction = new ThresholdedReLU(0.5);
 ```
 
 ### Cost Functions

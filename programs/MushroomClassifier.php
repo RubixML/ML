@@ -16,8 +16,8 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -45,9 +45,9 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $hidden = [
-    new Dense(20, new SELU()),
-    new Dense(20, new SELU()),
-    new Dense(20, new SELU()),
+    new Dense(20, new ThresholdedReLU(0.0)),
+    new Dense(20, new ThresholdedReLU(0.0)),
+    new Dense(20, new ThresholdedReLU(0.0)),
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
