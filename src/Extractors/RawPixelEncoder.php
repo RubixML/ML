@@ -8,19 +8,18 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Pixel Encoder
+ * Raw Pixel Encoder
  *
- * Images must first be converted to color channel values in order to be passed
- * to an Estimator. The Pixel Encoder takes an array of images (as PHP Resources)
- * and converts them to a flat vector of color channel data. Image scaling and
- * cropping is handled automatically by Intervention Image. The GD extension is
- * required to use this feature.
+ * The Raw Pixel Encoder takes an array of images (as PHP Resources)
+ * and converts them into a flat vector of raw color channel data. Scaling and
+ * cropping is handled automatically by Intervention Image for PHP. Note that
+ * the GD extension is required to use this feature.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PixelEncoder implements Extractor
+class RawPixelEncoder implements Extractor
 {
     /**
      * The image will be scaled and cropped according to the setting of this
@@ -31,20 +30,11 @@ class PixelEncoder implements Extractor
     protected $size;
 
     /**
-     * The number of channels to encode. Each channel requires width x height
-     * number of features.
+     * The number of color channels to encode.
      *
      * @var int
      */
     protected $channels;
-
-    /**
-     * The amount of sharpness to apply to the image before vectorization.
-     * 0 - 100.
-     *
-     * @var int
-     */
-    protected $sharpen;
 
     /**
      * The Intervention image manager instance.
@@ -60,29 +50,25 @@ class PixelEncoder implements Extractor
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $size = [32, 32], bool $rgb = true,
-                                int $sharpen = 0, string $driver = 'gd')
+    public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
         if (count($size) !== 2) {
             throw new InvalidArgumentException('Size must have a width and a'
                 . ' height.');
         }
 
-        foreach ($size as $dimension) {
-            if ($dimension < 1) {
-                throw new InvalidArgumentException('Width and height must be'
-                    . ' greater than 1 pixel.');
-            }
+        if (!is_int($size[0]) and !is_int($size[1])) {
+            throw new InvalidArgumentException('Width and height must be'
+                . ' integers.');
         }
 
-        if ($sharpen < 0 or $sharpen > 100) {
-            throw new InvalidArgumentException('Sharpness factor must be'
-                . ' between 0 and 100');
+        if ($size[0] < 1 or $size[1] < 1) {
+            throw new InvalidArgumentException('Width and height must be'
+                . ' greater than 1 pixel.');
         }
 
         $this->size = $size;
         $this->channels = $rgb ? 3 : 1;
-        $this->sharpen = $sharpen;
         $this->intervention = new ImageManager(['driver' => $driver]);
     }
 
@@ -115,8 +101,7 @@ class PixelEncoder implements Extractor
                     $image = $image->greyscale();
                 }
 
-                $image->fit(...$this->size)
-                    ->sharpen($this->sharpen);
+                $image->fit(...$this->size);
 
                 $vectors[] = $this->vectorize($image);
             }
@@ -139,11 +124,11 @@ class PixelEncoder implements Extractor
 
         for ($x = 0; $x < $this->size[0]; $x++) {
             for ($y = 0; $y < $this->size[1]; $y++) {
-                $rgba = imagecolorsforindex($image,
-                    imagecolorat($image, $x, $y));
+                $rgba = imagecolorsforindex($image, imagecolorat($image, $x, $y));
 
-                $vector = array_merge($vector,
-                    array_values(array_slice($rgba, 0, $this->channels)));
+                foreach (array_slice($rgba, 0, $this->channels) as $value) {
+                    $vector[] = $value;
+                };
             }
         }
 

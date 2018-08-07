@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.4-alpha
     - Added Dropout hidden layer
     - Added K-d Neighbors classifier and regressor
     - Added Extra Tree Regressor
@@ -14,6 +14,8 @@
     - Added min dimensionality estimation on random projectors
     - Added Gaussian Random Projector
     - Removed Ellipsoidal distance kernel
+    - Added Thresholded ReLU activation function
+    - Changed API of Raw Pixel Encoder
 
 - 0.0.3-alpha
     - Added Extra Tree classifier

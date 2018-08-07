@@ -46,7 +46,7 @@ $dataset = new Labeled($samples, $labels);
 
 $hidden = [
     new Dense(20, new ThresholdedReLU(0.0)),
-    new Dense(20, new ThresholdedReLU(0.0)),
+    new Dense(25, new ThresholdedReLU(0.0)),
     new Dense(20, new ThresholdedReLU(0.0)),
 ];
 

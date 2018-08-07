@@ -37,7 +37,7 @@ MIT
 			- [Unlabeled](#unlabeled)
 	- [Feature Extractors](#feature-extractors)
     	- [Word Count Vectorizer](#word-count-vectorizer)
-		- [Pixel Encoder](#pixel-encoder)
+		- [Raw Pixel Encoder](#raw-pixel-encoder)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -765,16 +765,15 @@ use Rubix\ML\Extractors\Tokenizers\Word;
 $extractor = new WordCountVectorizer(5000, ['the', 'what', 'has'], true, new Word());
 ```
 
-### Pixel Encoder
-Images must first be converted to color channel values in order to be passed to an Estimator. The Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of color channel data. Image scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/). The GD extension is required to use this feature.
+### Raw Pixel Encoder
+The Raw Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP. Note that the GD extension is required to use this feature.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
 | 2 | rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
-| 3 | sharpen | 0 | int | A value between 0 and 100 indicating the amount of sharpness to add to each sample. |
-| 4 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:
 This Extractor does not have any additional methods.
@@ -783,7 +782,7 @@ This Extractor does not have any additional methods.
 ```php
 use Rubix\ML\Extractors\PixelEncoder;
 
-$extractor = new PixelEncoder([28, 28], false, 'imagick');
+$extractor = new PixelEncoder([28, 28], true, 'gd');
 ```
 
 ---
