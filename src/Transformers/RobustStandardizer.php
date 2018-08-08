@@ -130,7 +130,8 @@ class RobustStandardizer implements Transformer
                 }
 
                 if ($this->scale === true) {
-                    $feature = (self::LAMBDA * $feature) / $this->mads[$column];
+                    $feature = (self::LAMBDA * $feature)
+                        / $this->mads[$column];
                 }
             }
         }

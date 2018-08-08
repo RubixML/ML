@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Functions\MeanVar;
 use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
@@ -155,43 +155,34 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
             $this->train($dataset);
         }
 
-        foreach ($dataset->stratify() as $class => $samples) {
-            foreach ($samples->rotate() as $column => $values) {
-                $n = count($values);
+        foreach ($dataset->stratify() as $class => $stratum) {
+            $n = count($stratum);
 
-                $total = $this->weights[$class] + $n + self::EPSILON;
+            $total = $this->weights[$class] + $n;
 
-                $mean = Average::mean($values);
-
-                $ssd = 0.0;
-
-                foreach ($values as $value) {
-                    $ssd += ($value - $mean) ** 2;
-                }
-
-                $variance = $ssd / $n;
+            foreach ($stratum->rotate() as $column => $values) {
+                list($mean, $variance) = MeanVar::compute($values);
 
                 $meanNew = (($n * $mean)
                     + ($this->weights[$class] * $this->means[$class][$column]))
                     / $total;
 
-                $ssdNew = ($this->weights[$class] * $this->variances[$class][$column]
-                    + ($n * $variance)
+                $this->variances[$class][$column] = ($this->weights[$class]
+                    * $this->variances[$class][$column] + ($n * $variance)
                     + ($this->weights[$class] / ($n * $total))
-                    * ($n * $this->means[$class][$column] - $n * $mean) ** 2);
+                    * ($n * $this->means[$class][$column] - $n * $mean) ** 2)
+                    / $total;
 
                 $this->means[$class][$column] = $meanNew;
-
-                $this->variances[$class][$column] = $ssdNew / $total;
             }
 
-            $this->weights[$class] += count($samples);
+            $this->weights[$class] = $total;
         }
 
-        $total = array_sum($this->weights) + self::EPSILON;
+        $total = array_sum($this->weights);
 
         foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log(($weight + self::EPSILON) / $total);
+            $this->priors[$class] = log($weight / $total);
         }
     }
 
@@ -226,10 +217,10 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $max = LogSumExp::compute($jll);
+            $total = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $max);
+                $probabilities[$i][$class] = exp($likelihood - $total);
             }
         }
 

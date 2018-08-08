@@ -26,6 +26,8 @@ use InvalidArgumentException;
  */
 class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
 {
+    const LOG_EPSILON = -8;
+
     /**
      * The amount of additive (Laplace) smoothing to apply to the feature
      * probabilities.
@@ -165,38 +167,41 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
             $this->train($dataset);
         }
 
-        foreach ($dataset->stratify() as $class => $samples) {
-            foreach ($samples->rotate() as $column => $values) {
-                $counts = array_count_values((array) $values);
+        foreach ($dataset->stratify() as $class => $stratum) {
+            foreach ($stratum->rotate() as $column => $values) {
+                $counts = $this->counts[$class][$column] ?? [];
 
-                foreach ($counts as $value => $count) {
-                    if (!isset($this->counts[$class][$column][$value])) {
-                        $this->counts[$class][$column][$value] = $count;
+                foreach (array_count_values($values) as $category => $count) {
+                    if (!isset($counts[$category])) {
+                        $counts[$category] = $count;
                     } else {
-                        $this->counts[$class][$column][$value] += $count;
+                        $counts[$category] += $count;
                     }
                 }
 
-                $n = count($this->counts[$class][$column]);
+                $total = array_sum($counts) +
+                    (count($counts) * $this->smoothing);
 
-                $total = array_sum($this->counts[$class][$column])
-                    + ($n * $this->smoothing);
+                $probs = [];
 
-                foreach ($this->counts[$class][$column] as $value => $count) {
-                    $probability = ($count + $this->smoothing) / $total;
-
-                    $this->probs[$class][$column][$value] = log($probability);
+                foreach ($counts as $category => $count) {
+                    $probs[$category] = log(($count + $this->smoothing)
+                        / $total);
                 }
+
+                $this->counts[$class][$column] = $counts;
+                $this->probs[$class][$column] = $probs;
             }
 
-            $this->weights[$class] += count($samples);
+            $this->weights[$class] += count($stratum);
         }
 
-        $total = (count($this->weights) * $this->smoothing)
-            + array_sum($this->weights);
+        $total = array_sum($this->weights)
+            + (count($this->weights) * $this->smoothing);
 
         foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log(($weight + $this->smoothing) / $total);
+            $this->priors[$class] = log(($weight + $this->smoothing)
+                / $total);
         }
     }
 
@@ -231,10 +236,10 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->computeJointLogLikelihood($sample);
 
-            $max = LogSumExp::compute($jll);
+            $total = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $max);
+                $probabilities[$i][$class] = exp($likelihood - $total);
             }
         }
 
@@ -256,7 +261,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
 
             foreach ($sample as $column => $feature) {
                 $score += $this->probs[$class][$column][$feature]
-                    ?? log(self::EPSILON);
+                    ?? self::LOG_EPSILON;
             }
 
             $likelihood[$class] = $score;
