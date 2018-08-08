@@ -25,7 +25,7 @@ class Hamming implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0;
+        $distance = 0.0;
 
         foreach ($a as $i => $coordinate) {
             if ($coordinate !== $b[$i]) {
@@ -33,6 +33,6 @@ class Hamming implements Distance
             }
         }
 
-        return (float) $distance;
+        return $distance;
     }
 }

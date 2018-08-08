@@ -85,10 +85,6 @@ class WordCountVectorizer implements Extractor
             }
         }
 
-        if (is_null($tokenizer)) {
-            $tokenizer = new Word();
-        }
-
         if ($normalize === true) {
             $stopWords = array_map(function ($word) {
                 return strtolower(trim($word));
@@ -96,6 +92,10 @@ class WordCountVectorizer implements Extractor
         }
 
         $stopWords = array_flip(array_unique($stopWords));
+
+        if (is_null($tokenizer)) {
+            $tokenizer = new Word();
+        }
 
         $this->maxVocabulary = $maxVocabulary;
         $this->stopWords = $stopWords;
@@ -114,6 +114,16 @@ class WordCountVectorizer implements Extractor
     }
 
     /**
+     * Return the size of the vocabulary in words.
+     *
+     * @return int
+     */
+    public function size() : int
+    {
+        return count($this->vocabulary);
+    }
+
+    /**
      * Build the vocabulary for the vectorizer.
      *
      * @param  array  $samples
@@ -124,8 +134,8 @@ class WordCountVectorizer implements Extractor
         $this->vocabulary = $frequencies = [];
 
         foreach ($samples as $sample) {
-            if ($this->normalize) {
-                $sample = preg_replace('/\s+/', ' ', trim(strtolower($sample)));
+            if ($this->normalize === true) {
+                $sample = preg_replace('/\s+/', ' ', strtolower($sample));
             }
 
             foreach ($this->tokenizer->tokenize($sample) as $token) {
@@ -145,11 +155,8 @@ class WordCountVectorizer implements Extractor
             $frequencies = array_slice($frequencies, 0, $this->maxVocabulary);
         }
 
-        $index = 0;
-
-        foreach ($frequencies as $token => $count) {
-            $this->vocabulary[$token] = $index++;
-        }
+        $this->vocabulary = array_combine(array_keys($frequencies),
+            range(0, count($frequencies) - 1));
     }
 
     /**
@@ -189,7 +196,7 @@ class WordCountVectorizer implements Extractor
         $vector = array_fill(0, count($this->vocabulary), 0);
 
         if ($this->normalize) {
-            $sample = preg_replace('/\s+/', ' ', trim(strtolower($sample)));
+            $sample = preg_replace('/\s+/', ' ', strtolower($sample));
         }
 
         foreach ($this->tokenizer->tokenize($sample) as $token) {

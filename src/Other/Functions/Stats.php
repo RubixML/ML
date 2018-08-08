@@ -5,25 +5,25 @@ namespace Rubix\ML\Other\Functions;
 use MathPHP\Statistics\Average;
 
 /**
- * MeanVar
+ * Stats
  *
- * Compute the population mean and variance and return them in a 2-tuple (2 item
- * array). This function is to be used in place of two separate mean / variance
- * computations as it prevents computing the mean twice.
+ * Optimized stats functions for common operations.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanVar
+class Stats
 {
     /**
-     * Compute the population mean and variance
+     * Compute the population mean and variance and return them in a 2-tuple (2 item
+     * array). This function is to be used in place of two separate mean / variance
+     * computations as it prevents computing the mean twice.
      *
      * @param  array  $values
      * @return array
      */
-    public static function compute(array $values) : array
+    public static function meanVar(array $values) : array
     {
         if (empty($values)) {
             return [0.0, 0.0];

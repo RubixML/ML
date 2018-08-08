@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Functions\Stats;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Functions\MeanVar;
 use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
@@ -151,7 +151,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
                 . ' continuous features.');
         }
 
-        if (empty($this->weights)) {
+        if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
             $this->train($dataset);
         }
 
@@ -161,7 +161,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
             $total = $this->weights[$class] + $n;
 
             foreach ($stratum->rotate() as $column => $values) {
-                list($mean, $variance) = MeanVar::compute($values);
+                list($mean, $variance) = Stats::meanVar($values);
 
                 $meanNew = (($n * $mean)
                     + ($this->weights[$class] * $this->means[$class][$column]))
@@ -242,7 +242,7 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
 
             foreach ($sample as $column => $feature) {
                 $mean = $this->means[$class][$column];
-                $variance = $this->variances[$class][$column];
+                $variance = $this->variances[$class][$column] + self::EPSILON;
 
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;

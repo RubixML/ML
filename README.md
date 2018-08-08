@@ -757,6 +757,11 @@ Return the fitted vocabulary i.e. the words that will be vectorized:
 public vocabulary() : array
 ```
 
+Return the size of the vocabulary:
+```php
+public size() : int
+```
+
 ##### Example:
 ```php
 use Rubix\ML\Extractors\WordCountVectorizer;

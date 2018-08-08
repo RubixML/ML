@@ -163,7 +163,7 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
                 . ' categorical features.');
         }
 
-        if (empty($this->classes) or empty($this->priors)) {
+        if (empty($this->weights) or empty($this->counts)) {
             $this->train($dataset);
         }
 
