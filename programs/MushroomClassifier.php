@@ -16,7 +16,7 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 use League\Csv\Reader;
 
@@ -51,7 +51,7 @@ $hidden = [
 ];
 
 $estimator = new Pipeline(new MultiLayerPerceptron($hidden, 50, new Adam(0.001),
-    1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
+    1e-4, new RelativeEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
         new OneHotEncoder(),
         new SparseRandomProjector(30),
         new ZScaleStandardizer(),

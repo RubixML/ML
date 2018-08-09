@@ -121,6 +121,7 @@ MIT
 			- [Cross Entropy](#cross-entropy)
 			- [Exponential](#exponential)
 			- [Quadratic](#quadratic)
+			- [Relative Entropy](#relative-entropy)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
 				- [Placeholder](#placeholder)
@@ -2614,6 +2615,19 @@ This Cost Function does not have any parameters.
 use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 
 $costFunction = new Quadratic();
+```
+
+### Relative Entropy
+Relative Entropy or *Kullback-Leibler divergence* is a measure of how the expectation and activation of the network diverge.
+
+##### Parameters:
+This Cost Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
+
+$costFunction = new RelativeEntropy();
 ```
 
 ---

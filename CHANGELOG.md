@@ -1,3 +1,6 @@
+- Unreleased
+    - Added Relative Entropy cost function to nn
+
 - 0.0.4-alpha
     - Added Dropout hidden layer
     - Added K-d Neighbors classifier and regressor
