@@ -239,10 +239,12 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
 
         foreach ($this->classes as $class) {
             $score = $this->priors[$class];
+            $means = $this->means[$class];
+            $variances = $this->variances[$class];
 
             foreach ($sample as $column => $feature) {
-                $mean = $this->means[$class][$column];
-                $variance = $this->variances[$class][$column] + self::EPSILON;
+                $mean = $means[$column];
+                $variance = $variances[$column] + self::EPSILON;
 
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;

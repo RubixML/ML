@@ -168,8 +168,10 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {
+            $categories = $this->counts[$class];
+
             foreach ($stratum->rotate() as $column => $values) {
-                $counts = $this->counts[$class][$column] ?? [];
+                $counts = $categories[$column];
 
                 foreach (array_count_values($values) as $category => $count) {
                     if (!isset($counts[$category])) {
@@ -179,14 +181,12 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
                     }
                 }
 
-                $total = array_sum($counts) +
-                    (count($counts) * $this->smoothing);
+                $total = array_sum($counts) + (count($counts) * $this->smoothing);
 
                 $probs = [];
 
                 foreach ($counts as $category => $count) {
-                    $probs[$category] = log(($count + $this->smoothing)
-                        / $total);
+                    $probs[$category] = log(($count + $this->smoothing) / $total);
                 }
 
                 $this->counts[$class][$column] = $counts;
@@ -196,12 +196,10 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
             $this->weights[$class] += count($stratum);
         }
 
-        $total = array_sum($this->weights)
-            + (count($this->weights) * $this->smoothing);
+        $total = array_sum($this->weights) + (count($this->weights) * $this->smoothing);
 
         foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log(($weight + $this->smoothing)
-                / $total);
+            $this->priors[$class] = log(($weight + $this->smoothing) / $total);
         }
     }
 
@@ -258,10 +256,10 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
 
         foreach ($this->classes as $class) {
             $score = $this->priors[$class];
+            $probs = $this->probs[$class];
 
             foreach ($sample as $column => $feature) {
-                $score += $this->probs[$class][$column][$feature]
-                    ?? self::LOG_EPSILON;
+                $score += $probs[$column][$feature] ?? self::LOG_EPSILON;
             }
 
             $likelihood[$class] = $score;

@@ -8,6 +8,8 @@ use RuntimeException;
 
 class Unlabeled extends DataFrame implements Dataset
 {
+    const PHI = 1e8;
+
     /**
      * Restore an unlabeled dataset from a serialized object file.
      *
@@ -271,6 +273,42 @@ class Unlabeled extends DataFrame implements Dataset
 
         for ($i = 0; $i < $n; $i++) {
             $subset[] = $this->samples[array_rand($this->samples)];
+        }
+
+        return new self($subset);
+    }
+
+    /**
+     * Generate a random weighted subset with replacement.
+     *
+     * @param  int  $n
+     * @param  array  $weights
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function randomWeightedSubsetWithReplacement(int $n = 1, array $weights) : self
+    {
+        if (count($weights) !== count($this->samples)) {
+            throw new InvalidArgumentException('The number of weights must be'
+                . ' equals to the number of samples in the dataset.');
+        }
+
+        $total = array_sum($weights);
+        $max = (int) round($total * self::PHI);
+
+        $subset = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            $delta = rand(0, $max) / self::PHI;
+
+            foreach ($weights as $row => $weight) {
+                $delta -= $weight;
+
+                if ($delta < 0.0) {
+                    $subset[] = $this->samples[$row];
+                    break 1;
+                }
+            }
         }
 
         return new self($subset);

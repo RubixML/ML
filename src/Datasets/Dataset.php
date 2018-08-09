@@ -210,6 +210,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function randomSubsetWithReplacement(int $n = 1);
 
     /**
+     * Generate a random weighted subset with replacement.
+     *
+     * @param  int  $n
+     * @param  array  $weights
+     * @return self
+     */
+    public function randomWeightedSubsetWithReplacement(int $n = 1, array $weights);
+
+    /**
      * Prepend the given dataset to the beginning of this dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

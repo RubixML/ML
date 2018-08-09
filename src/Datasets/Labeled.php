@@ -8,6 +8,8 @@ use RuntimeException;
 
 class Labeled extends DataFrame implements Dataset
 {
+    const PHI = 1e8;
+
     /**
      * The labeled outcomes for each sample in the dataset.
      *
@@ -468,6 +470,43 @@ class Labeled extends DataFrame implements Dataset
 
             $subset[0][] = $this->samples[$index];
             $subset[1][] = $this->labels[$index];
+        }
+
+        return new self(...$subset);
+    }
+
+    /**
+     * Generate a random weighted subset with replacement.
+     *
+     * @param  int  $n
+     * @param  array  $weights
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function randomWeightedSubsetWithReplacement(int $n = 1, array $weights) : self
+    {
+        if (count($weights) !== count($this->samples)) {
+            throw new InvalidArgumentException('The number of weights must be'
+                . ' equals to the number of samples in the dataset.');
+        }
+
+        $total = array_sum($weights);
+        $max = (int) round($total * self::PHI);
+
+        $subset = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            $delta = rand(0, $max) / self::PHI;
+
+            foreach ($weights as $row => $weight) {
+                $delta -= $weight;
+
+                if ($delta < 0.0) {
+                    $subset[0][] = $this->samples[$row];
+                    $subset[1][] = $this->labels[$row];
+                    break 1;
+                }
+            }
         }
 
         return new self(...$subset);

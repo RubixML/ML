@@ -13,6 +13,8 @@ class UnlabeledTest extends TestCase
 
     protected $samples;
 
+    protected $weights;
+
     public function setUp()
     {
         $this->samples = [
@@ -22,6 +24,10 @@ class UnlabeledTest extends TestCase
             ['mean', 'rough', 'friendly'],
             ['nice', 'rough', 'friendly'],
             ['nice', 'furry', 'loner'],
+        ];
+
+        $this->weights = [
+            1, 1, 2, 1, 2, 3,
         ];
 
         $this->dataset = new Unlabeled($this->samples);
@@ -102,6 +108,27 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $folds);
         $this->assertCount(3, $folds[0]);
         $this->assertCount(3, $folds[1]);
+    }
+
+    public function test_random_subset()
+    {
+        $subset = $this->dataset->randomSubset(3);
+
+        $this->assertCount(3, $subset);
+    }
+
+    public function test_random_subset_with_replacement()
+    {
+        $subset = $this->dataset->randomSubsetWithReplacement(3);
+
+        $this->assertCount(3, $subset);
+    }
+
+    public function test_random_weighted_subset_with_replacement()
+    {
+        $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, $this->weights);
+
+        $this->assertCount(3, $subset);
     }
 
     public function test_save_and_restore()

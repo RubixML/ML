@@ -23,8 +23,6 @@ use ReflectionClass;
  */
 class AdaBoost implements Binary, Ensemble, Persistable
 {
-    const PHI = 1e8;
-
     /**
      * The class name of the base classifier.
      *
@@ -188,6 +186,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
                 . ' Labeled training set.');
         }
 
+        $n = $dataset->numRows();
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {
@@ -198,12 +197,16 @@ class AdaBoost implements Binary, Ensemble, Persistable
         $this->classes = [1 => $classes[0], -1 => $classes[1]];
         $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
 
+        $k = (int) round($this->ratio * $n);
+
         $this->ensemble = $this->influence = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = new $this->base(...$this->params);
 
-            $estimator->train($this->generateRandomWeightedSubset($dataset));
+            $subset = $dataset->randomWeightedSubsetWithReplacement($k, $this->weights);
+
+            $estimator->train($subset);
 
             $predictions = $estimator->predict($dataset);
 
@@ -266,42 +269,5 @@ class AdaBoost implements Binary, Ensemble, Persistable
         }
 
         return $predictions;
-    }
-
-    /**
-     * Generate a random weighted subset with replacement.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Datasets\Labeled
-     */
-    protected function generateRandomWeightedSubset(Labeled $dataset) : Labeled
-    {
-        $n = $dataset->numRows();
-        $k = (int) round($this->ratio * $n);
-
-        $samples = $dataset->samples();
-        $labels = $dataset->labels();
-
-        $total = array_sum($this->weights);
-        $max = (int) round($total * self::PHI);
-
-        $subset = [];
-
-        for ($i = 0; $i < $k; $i++) {
-            $alpha = rand(0, $max) / self::PHI;
-
-            for ($index = 0; $index < $n; $index++) {
-                $alpha -= $this->weights[$index];
-
-                if ($alpha < 0) {
-                    break 1;
-                }
-            }
-
-            $subset[0][] = $samples[$index];
-            $subset[1][] = $labels[$index];
-        }
-
-        return new Labeled(...$subset);
     }
 }

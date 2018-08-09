@@ -43,6 +43,8 @@ class TfIdfTransformer implements Transformer
                 . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         $this->idfs = array_fill(0, $dataset->numColumns(), 0);
 
         foreach ($dataset as $sample) {
@@ -54,7 +56,7 @@ class TfIdfTransformer implements Transformer
         }
 
         foreach ($this->idfs as &$idf) {
-            $idf = log($dataset->numRows() / ($idf + self::EPSILON), 10);
+            $idf = log(($n + self::EPSILON) / ($idf + self::EPSILON), 10);
         }
     }
 
@@ -75,7 +77,7 @@ class TfIdfTransformer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->idfs)) {
+        if (is_null($this->idfs)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

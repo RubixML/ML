@@ -15,6 +15,8 @@ class LabeledTest extends TestCase
 
     protected $labels;
 
+    protected $weights;
+
     public function setUp()
     {
         $this->samples = [
@@ -29,6 +31,10 @@ class LabeledTest extends TestCase
         $this->labels = [
             'not monster', 'monster', 'not monster',
             'monster', 'not monster', 'not monster',
+        ];
+
+        $this->weights = [
+            1, 1, 2, 1, 2, 3,
         ];
 
         $this->dataset = new Labeled($this->samples, $this->labels);
@@ -168,6 +174,27 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $strata['monster']);
         $this->assertCount(4, $strata['not monster']);
 
+    }
+
+    public function test_random_subset()
+    {
+        $subset = $this->dataset->randomSubset(3);
+
+        $this->assertCount(3, $subset);
+    }
+
+    public function test_random_subset_with_replacement()
+    {
+        $subset = $this->dataset->randomSubsetWithReplacement(3);
+
+        $this->assertCount(3, $subset);
+    }
+
+    public function test_random_weighted_subset_with_replacement()
+    {
+        $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, $this->weights);
+
+        $this->assertCount(3, $subset);
     }
 
     public function test_save_and_restore()
