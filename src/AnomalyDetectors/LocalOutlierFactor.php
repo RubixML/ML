@@ -10,6 +10,7 @@ use MathPHP\Statistics\Average;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Local Outlier Factor
@@ -147,10 +148,15 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
      * median density of the local region.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (empty($this->samples)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probablities = [];
 
         foreach ($dataset as $sample) {

@@ -74,7 +74,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      *
      * @var array
      */
-    protected $distances = [
+    protected $steps = [
         //
     ];
 
@@ -136,9 +136,9 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      *
      * @return array
      */
-    public function distances() : array
+    public function steps() : array
     {
-        return $this->distances;
+        return $this->steps;
     }
 
     /**
@@ -165,7 +165,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
         $this->centroids = $dataset->randomize()->tail($this->c)->samples();
 
-        $this->distances = $memberships = [];
+        $this->steps = $memberships = [];
 
         $previous = 0.0;
 
@@ -191,7 +191,7 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
 
             $distance = $this->computeInterClusterDistance($dataset, $memberships);
 
-            $this->distances[] = $distance;
+            $this->steps[] = $distance;
 
             if (abs($distance - $previous) < $this->minChange) {
                 break 1;
@@ -222,10 +222,15 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
      * Return an array of cluster probabilities for each sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = [];
 
         foreach ($dataset as $sample) {

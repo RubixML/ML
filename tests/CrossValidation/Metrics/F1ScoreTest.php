@@ -31,7 +31,7 @@ class F1ScoreTest extends TestCase
 
         $this->metric = new F1Score();
 
-        $this->outcome = 0.5833333433333334;
+        $this->outcome = 0.5833333342361111;
     }
 
     public function test_build_metric()
@@ -49,7 +49,7 @@ class F1ScoreTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

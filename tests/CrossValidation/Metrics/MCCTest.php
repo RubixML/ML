@@ -16,6 +16,8 @@ class MCCTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,6 +30,8 @@ class MCCTest extends TestCase
         ]);
 
         $this->metric = new MCC();
+
+        $this->outcome = 0.16666666805555555;
     }
 
     public function test_build_metric()
@@ -45,7 +49,7 @@ class MCCTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.16666666555555557, $score);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

@@ -41,11 +41,11 @@ class Accuracy implements Validation
                 . ' testing set.');
         }
 
-        $score = 0.0;
-
         if ($testing->numRows() === 0) {
-            return $score;
+            return 0.0;
         }
+
+        $score = 0.0;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {
             if ($prediction === $testing->label($i)) {

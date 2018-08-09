@@ -24,7 +24,7 @@ use ReflectionClass;
 class AdaBoost implements Binary, Ensemble, Persistable
 {
     const PHI = 1e8;
-    
+
     /**
      * The class name of the base classifier.
      *
@@ -196,7 +196,6 @@ class AdaBoost implements Binary, Ensemble, Persistable
         }
 
         $this->classes = [1 => $classes[0], -1 => $classes[1]];
-
         $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
 
         $this->ensemble = $this->influence = [];
@@ -217,8 +216,8 @@ class AdaBoost implements Binary, Ensemble, Persistable
             }
 
             $total = array_sum($this->weights);
-            $error /= $total;
-            $influence = 0.5 * log((1 - $error) / ($error + self::EPSILON));
+            $error = ($error / $total) + self::EPSILON;
+            $influence = 0.5 * log((1 - $error) / $error);
 
             foreach ($predictions as $i => $prediction) {
                 $x = $prediction === $this->classes[1] ? 1 : -1;
@@ -241,10 +240,15 @@ class AdaBoost implements Binary, Ensemble, Persistable
      * label closest to the value of the weighted sum of each expert's prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->ensemble)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $sigmas = array_fill(0, $dataset->numRows(), 0.0);
 
         foreach ($this->ensemble as $i => $estimator) {

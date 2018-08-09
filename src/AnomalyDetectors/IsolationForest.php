@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Isolation Forest
@@ -139,22 +140,27 @@ class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
-        $n = count($this->forest) + self::EPSILON;
+        if (empty($this->forest)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $n = count($this->forest);
 
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probability = 0.0;
+            $score = 0.0;
 
             foreach ($this->forest as $tree) {
-                $probability += $tree->search($sample)->score();
+                $score += $tree->search($sample)->score();
             }
 
-            $probabilities[] = $probability / $n;
+            $probabilities[] = $score / $n;
         }
 
         return $probabilities;

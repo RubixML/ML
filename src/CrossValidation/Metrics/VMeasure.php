@@ -41,6 +41,10 @@ class VMeasure implements Validation
                 . ' testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
@@ -66,23 +70,20 @@ class VMeasure implements Validation
             $table[1][$class][$predictions[$i]] += 1;
         }
 
-        $homogeneity = 0.0;
+        $homogeneity = $completeness = 0.0;
 
         foreach ($table[0] as $distribution) {
-            $homogeneity += max($distribution) / (array_sum($distribution)
-                + self::EPSILON);
+            $homogeneity += (max($distribution) + self::EPSILON)
+                / (array_sum($distribution) + self::EPSILON);
         }
-
-        $homogeneity /= (count($table[0]) + self::EPSILON);
-
-        $completeness = 0.0;
 
         foreach ($table[1] as $distribution) {
-            $completeness += max($distribution) / (array_sum($distribution)
-                + self::EPSILON);
+            $completeness += (max($distribution) + self::EPSILON)
+                / (array_sum($distribution) + self::EPSILON);
         }
 
-        $completeness /= (count($table[0]) + self::EPSILON);
+        $homogeneity /= count($table[0]);
+        $completeness /= count($table[1]);
 
         return 2 * ($homogeneity * $completeness)
             / ($homogeneity + $completeness);

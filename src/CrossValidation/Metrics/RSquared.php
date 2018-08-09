@@ -54,6 +54,6 @@ class RSquared implements Validation
             $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        return 1 - ($ssr / ($sst + self::EPSILON));
+        return 1 - (($ssr + self::EPSILON) / ($sst + self::EPSILON));
     }
 }

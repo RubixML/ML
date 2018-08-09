@@ -16,6 +16,8 @@ class HomogeneityTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,6 +30,8 @@ class HomogeneityTest extends TestCase
         ]);
 
         $this->metric = new Homogeneity();
+
+        $this->outcome = 0.5833333351388889;
     }
 
     public function test_build_metric()
@@ -45,7 +49,7 @@ class HomogeneityTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.5833333280555556, $score);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

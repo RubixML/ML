@@ -34,10 +34,14 @@ class Completeness implements Validation
             throw new InvalidArgumentException('This metric only works on'
                 . ' clusterers.');
         }
-        
+
         if (!$testing instanceof Labeled) {
             throw new InvalidArgumentException('This metric requires a labeled'
                 . ' testing set.');
+        }
+
+        if ($testing->numRows() === 0) {
+            return 0.0;
         }
 
         $predictions = $estimator->predict($testing);
@@ -57,10 +61,10 @@ class Completeness implements Validation
         $score = 0.0;
 
         foreach ($table as $distribution) {
-            $score += max($distribution)
+            $score += (max($distribution) + self::EPSILON)
                 / (array_sum($distribution) + self::EPSILON);
         }
 
-        return $score / (count($table) + self::EPSILON);
+        return $score / count($table);
     }
 }

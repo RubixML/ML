@@ -58,6 +58,11 @@ class ConfusionMatrix implements Report
                 . ' Labeled testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();

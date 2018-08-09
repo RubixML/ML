@@ -43,6 +43,10 @@ class Concentration implements Validation
                 . ' continuous features.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labeled = new Labeled($testing->samples(), $predictions);
@@ -83,7 +87,7 @@ class Concentration implements Validation
             return 1.0;
         }
 
-        return ($extra * ($testing->numRows() - count($strata)))
+        return ($extra * ($testing->numRows() - count($strata)) + self::EPSILON)
             / ($intra * (count($strata) - 1) + self::EPSILON);
     }
 }

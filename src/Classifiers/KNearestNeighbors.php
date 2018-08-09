@@ -11,6 +11,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * K Nearest Neighbors
@@ -151,10 +152,15 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (empty($this->samples) or empty($this->labels)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.0));
 
@@ -164,7 +170,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
             $n = count($neighbors);
 
             foreach (array_count_values($neighbors) as $class => $count) {
-                $probabilities[$i][$class] = $count / ($n + self::EPSILON);
+                $probabilities[$i][$class] = $count / $n;
             }
         }
 

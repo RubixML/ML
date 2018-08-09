@@ -46,6 +46,11 @@ class ResidualBreakdown implements Report
                 . ' Labeled testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
+
         $errors = $l1 = $l2 = [];
 
         $sse = $sst = 0.0;

@@ -14,8 +14,6 @@ use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Reports\MulticlassBreakdown;
-use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
@@ -44,17 +42,13 @@ $labels = iterator_to_array($reader->fetchColumn('diagnosis'));
 
 $dataset = new Labeled($samples, $labels);
 
-$hidden = [
-    new Dense(20, new ELU()),
-    new Dense(20, new ELU()),
-    new Dense(20, new ELU()),
-    new Dense(20, new ELU()),
-];
-
 $estimator = new Pipeline(new CommitteeMachine([
-    new MultiLayerPerceptron($hidden, 50, new Adam(0.001), 1e-4, new MCC()),
-    new RandomForest(500, 0.1, 10, 3, 3, 1e-4, ExtraTreeClassifier::class),
-    new ClassificationTree(100, 3, 5, 1e-4),
+    new MultiLayerPerceptron([
+        new Dense(20, new ELU()),
+        new Dense(20, new ELU()),
+        new Dense(20, new ELU()),
+    ], 50, new Adam(0.001), 1e-4),
+    new RandomForest(300, 0.1, 10, 3, 3, 1e-4, ExtraTreeClassifier::class),
     new GaussianNB(),
 ]), [
     new NumericStringConverter(),

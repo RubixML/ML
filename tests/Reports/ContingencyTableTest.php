@@ -16,6 +16,8 @@ class ContingencyTableTest extends TestCase
 
     protected $estimator;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,6 +30,17 @@ class ContingencyTableTest extends TestCase
         ]);
 
         $this->report = new ContingencyTable();
+
+        $this->outcome = [
+            1 => [
+                'wolf' => 1,
+                'lamb' => 1,
+            ],
+            2 => [
+                'wolf' => 2,
+                'lamb' => 1,
+            ],
+        ];
     }
 
     public function test_build_report()
@@ -38,19 +51,8 @@ class ContingencyTableTest extends TestCase
 
     public function test_generate_report()
     {
-        $actual = [
-            1 => [
-                'wolf' => 1,
-                'lamb' => 1,
-            ],
-            2 => [
-                'wolf' => 2,
-                'lamb' => 1,
-            ],
-        ];
-
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($actual, $result);
+        $this->assertEquals($this->outcome, $result);
     }
 }

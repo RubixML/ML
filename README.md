@@ -1352,7 +1352,7 @@ public centroids() : array
 
 Returns the inter-cluster distances at each epoch of training:
 ```php
-public distances() : array
+public steps() : array
 ```
 
 ##### Example:
@@ -1413,7 +1413,7 @@ public centroids() : array
 
 Returns the amount of centroid shift during each epoch of training:
 ```php
-public shifts() : array
+public steps() : array
 ```
 
 ##### Example:
@@ -3359,7 +3359,7 @@ var_dump($result);
 ```
 
 ### Prediction Speed
- This report measures the prediction speed of an Estimator given as the number of predictions per second (PPM) as well as the average time to make a single prediction.
+ This report measures the prediction speed of an Estimator given as the number of predictions per second (PPS), per minute (PPM), as well as the average time to make a single prediction.
 
 ##### Classification, Regression, Clustering, Anomaly Detection
 
@@ -3381,6 +3381,7 @@ var_dump($result);
 ##### Output:
 ```sh
   array(4) {
+    ["pps"]=> float(72216.1351696)
     ["ppm"]=> float(4332968.1101788)
     ["average_seconds"]=> float(1.3847287706694E-5)
     ["total_seconds"]=> float(0.0041680335998535)

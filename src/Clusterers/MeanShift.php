@@ -65,7 +65,7 @@ class MeanShift implements Clusterer, Persistable
      *
      * @var array
      */
-    protected $shifts = [
+    protected $steps = [
         //
     ];
 
@@ -120,9 +120,9 @@ class MeanShift implements Clusterer, Persistable
      *
      * @return array
      */
-    public function shifts() : array
+    public function steps() : array
     {
-        return $this->shifts;
+        return $this->steps;
     }
 
     /**
@@ -139,7 +139,7 @@ class MeanShift implements Clusterer, Persistable
 
         $this->centroids = $previous = $dataset->samples();
 
-        $this->shifts = [];
+        $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($this->centroids as $i => &$centroid1) {
@@ -169,7 +169,7 @@ class MeanShift implements Clusterer, Persistable
 
             $shift = $this->calculateCentroidShift($previous);
 
-            $this->shifts[] = $shift;
+            $this->steps[] = $shift;
 
             if ($shift < $this->minChange) {
                 break 1;
@@ -185,10 +185,15 @@ class MeanShift implements Clusterer, Persistable
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {

@@ -42,21 +42,19 @@ class MulticlassBreakdown implements Report
                 . ' Labeled testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $table = $truePositives = $trueNegatives
-            = $falsePositives = $falseNegatives = [];
-
-        foreach ($classes as $class) {
-            $truePositives[$class] = $trueNegatives[$class]
-                = $falsePositives[$class] = $falseNegatives[$class] = 0;
-
-            $table[$class] = [];
-        }
+        $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
+            array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {
@@ -73,6 +71,8 @@ class MulticlassBreakdown implements Report
             }
         }
 
+        $table = array_fill_keys($classes, []);
+
         $overall = array_fill_keys([
             'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
             'fall_out', 'f1_score', 'mcc', 'informedness',
@@ -84,17 +84,17 @@ class MulticlassBreakdown implements Report
             $fn = $falseNegatives[$label];
 
             $table[$label]['accuracy'] = ($tp + $tn) / ($tp + $tn + $fp + $fn);
-            $table[$label]['precision'] = $tp / ($tp + $fp + self::EPSILON);
-            $table[$label]['recall'] = $tp / ($tp + $fn + self::EPSILON);
-            $table[$label]['specificity'] = $tn / ($tn + $fp + self::EPSILON);
+            $table[$label]['precision'] = ($tp + self::EPSILON) / ($tp + $fp + self::EPSILON);
+            $table[$label]['recall'] = ($tp + self::EPSILON) / ($tp + $fn + self::EPSILON);
+            $table[$label]['specificity'] = ($tn + self::EPSILON) / ($tn + $fp + self::EPSILON);
             $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
             $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
             $table[$label]['f1_score'] = 2.0 * (($table[$label]['precision']
-                * $table[$label]['recall']) / ($table[$label]['precision']
-                + $table[$label]['recall'] + self::EPSILON));
+                * $table[$label]['recall']) + self::EPSILON)
+                / ($table[$label]['precision'] + $table[$label]['recall'] + self::EPSILON);
             $table[$label]['informedness'] = $table[$label]['recall']
                 + $table[$label]['specificity'] - 1;
-            $table[$label]['mcc'] = ($tp * $tn - $fp * $fn)
+            $table[$label]['mcc'] = (($tp * $tn - $fp * $fn) + self::EPSILON)
                 / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
                 + self::EPSILON);
             $table[$label]['true_positives'] = $tp;

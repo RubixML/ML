@@ -41,18 +41,18 @@ class F1Score implements Validation
                 . ' testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $truePositives = $falsePositives = $falseNegatives = [];
-
-        foreach ($classes as $class) {
-            $truePositives[$class] = $falsePositives[$class]
-                = $falseNegatives[$class] = 0;
-        }
+        $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
+            array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {
@@ -69,11 +69,8 @@ class F1Score implements Validation
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += ((2 * $tp) / ((2 * $tp) + $fp + $fn) + self::EPSILON);
-        }
-
-        if ($testing->numRows() === 0) {
-            return 0.0;
+            $score += ((2 * $tp) + self::EPSILON)
+                / ((2 * $tp) + $fp + $fn + self::EPSILON);
         }
 
         return $score / count($classes);

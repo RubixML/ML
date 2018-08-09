@@ -41,6 +41,10 @@ class MCC implements Validation
                 . ' testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
@@ -72,11 +76,11 @@ class MCC implements Validation
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += (($tp * $tn - $fp * $fn)
+            $score += (($tp * $tn - $fp * $fn) + self::EPSILON)
                 / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-                + self::EPSILON));
+                + self::EPSILON);
         }
 
-        return $score / (count($classes) + self::EPSILON);
+        return $score / count($classes);
     }
 }

@@ -41,6 +41,10 @@ class Informedness implements Validation
                 . ' testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
@@ -72,11 +76,11 @@ class Informedness implements Validation
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += $tp / ($tp + $fn + self::EPSILON)
-                + $tn / ($tn + $fp + self::EPSILON)
+            $score += ($tp + self::EPSILON) / ($tp + $fn + self::EPSILON)
+                + ($tn + self::EPSILON) / ($tn + $fp + self::EPSILON)
                 - 1;
         }
 
-        return $score / (count($classes) + self::EPSILON);
+        return $score / count($classes);
     }
 }

@@ -16,6 +16,8 @@ class InformednessTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,6 +30,8 @@ class InformednessTest extends TestCase
         ]);
 
         $this->metric = new Informedness();
+
+        $this->outcome = 0.1666666702777777;
     }
 
     public function test_build_metric()
@@ -45,7 +49,7 @@ class InformednessTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.16666666111111106, $score);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

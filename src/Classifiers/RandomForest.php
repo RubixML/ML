@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
+use RuntimeException;
 use ReflectionClass;
 
 /**
@@ -220,11 +221,16 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
-        $n = count($this->forest) + self::EPSILON;
+        if (empty($this->forest)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $n = count($this->forest);
 
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.0));

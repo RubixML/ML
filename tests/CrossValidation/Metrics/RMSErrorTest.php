@@ -16,6 +16,8 @@ class RMSErrorTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []], [10, 10, 6, 14, 8]);
@@ -27,6 +29,8 @@ class RMSErrorTest extends TestCase
         ]);
 
         $this->metric = new RMSError();
+
+        $this->outcome = -2.792848008753788;
     }
 
     public function test_build_metric()
@@ -44,7 +48,7 @@ class RMSErrorTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(2.2, $score, '', 5);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

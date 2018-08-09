@@ -35,12 +35,22 @@ class OutlierRatio implements Report
                 . ' anomaly detectors.');
         }
 
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
+
         $counts = array_count_values($estimator->predict($testing));
 
+        $outliers = $counts[1] ?? 0;
+        $inliers = $counts[0] ?? 0;
+
+        $ratio = ($outliers + self::EPSILON) / ($inliers + self::EPSILON);
+
         return [
-            'outliers' => $counts[1],
-            'inliers' => $counts[0],
-            'ratio' => $counts[1] / ($counts[0] + self::EPSILON),
+            'outliers' => $outliers,
+            'inliers' => $inliers,
+            'ratio' => $ratio,
             'cardinality' => $testing->numRows(),
         ];
     }

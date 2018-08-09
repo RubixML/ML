@@ -138,7 +138,7 @@ class KDNeighbors extends KDTree implements Multiclass, Probabilistic, Persistab
             $n = count($neighbors);
 
             foreach (array_count_values($neighbors) as $class => $count) {
-                $probabilities[$i][$class] = $count / ($n + self::EPSILON);
+                $probabilities[$i][$class] = $count / $n;
             }
         }
 

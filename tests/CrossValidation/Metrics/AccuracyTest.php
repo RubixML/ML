@@ -16,6 +16,8 @@ class AccuracyTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], []],
@@ -28,6 +30,8 @@ class AccuracyTest extends TestCase
         ]);
 
         $this->metric = new Accuracy();
+
+        $this->outcome = 0.6;
     }
 
     public function test_build_metric()
@@ -45,7 +49,7 @@ class AccuracyTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals(0.6, $score);
+        $this->assertEquals($this->outcome, $score, '', 1e-8);
     }
 
     public function test_within_range()

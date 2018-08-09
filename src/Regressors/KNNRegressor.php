@@ -10,6 +10,7 @@ use MathPHP\Statistics\Average;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * KNN Regressor
@@ -122,10 +123,15 @@ class KNNRegressor implements Regressor, Online, Persistable
      * Make a prediction based on the nearest neighbors.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->samples) or empty($this->labels)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {

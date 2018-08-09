@@ -39,6 +39,11 @@ class ContingencyTable implements Report
             throw new InvalidArgumentException('This report requires a'
                 . ' Labeled testing set.');
         }
+        
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
 
         $predictions = $estimator->predict($testing);
 

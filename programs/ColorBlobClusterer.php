@@ -33,7 +33,7 @@ $generator = new Agglomerate([
 
 $dataset = $generator->generate(2000);
 
-$estimator = new Pipeline(new MeanShift(0.9, new Euclidean(), 1e-5, 30), [
+$estimator = new Pipeline(new MeanShift(0.9, new Euclidean(), 1e-4, 30), [
     new QuartileStandardizer(),
 ]);
 
@@ -50,7 +50,7 @@ list($training, $testing) = $dataset->randomize()->split(0.8);
 
 $estimator->train($training);
 
-var_dump($estimator->progress());
+var_dump($estimator->steps());
 
 var_dump($report->generate($estimator, $testing));
 

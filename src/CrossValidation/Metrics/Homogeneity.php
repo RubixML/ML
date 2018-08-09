@@ -40,6 +40,10 @@ class Homogeneity implements Validation
                 . ' testing set.');
         }
 
+        if ($testing->numRows() === 0) {
+            return 0.0;
+        }
+
         $predictions = $estimator->predict($testing);
 
         $labels = $testing->labels();
@@ -59,10 +63,10 @@ class Homogeneity implements Validation
         $score = 0.0;
 
         foreach ($table as $distribution) {
-            $score += max($distribution) / (array_sum($distribution)
-                + self::EPSILON);
+            $score += (max($distribution) + self::EPSILON)
+                / (array_sum($distribution) + self::EPSILON);
         }
 
-        return $score / (count($table) + self::EPSILON);
+        return $score / count($table);
     }
 }

@@ -4,6 +4,7 @@ namespace Rubix\ML\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
+use InvalidArgumentException;
 
 /**
  * Prediction Speed
@@ -27,6 +28,11 @@ class PredictionSpeed implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
+        if ($testing->numRows() === 0) {
+            throw new InvalidArgumentException('Testing set must contain at'
+                . ' least one sample.');
+        }
+
         $start = microtime(true);
 
         $estimator->predict($testing);
@@ -35,8 +41,11 @@ class PredictionSpeed implements Report
 
         $total = $end - $start;
 
+        $pps = ($testing->numRows() + self::EPSILON) / ($total + self::EPSILON);
+
         return [
-            'ppm' => ($testing->numRows() / ($total + self::EPSILON)) * 60,
+            'pps' => $pps,
+            'ppm' => 60 * $pps,
             'average_seconds' => $total / ($testing->numRows() + self::EPSILON),
             'total_seconds' => $total,
             'cardinality' => $testing->numRows(),

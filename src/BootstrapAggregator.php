@@ -10,6 +10,7 @@ use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
+use RuntimeException;
 use ReflectionClass;
 
 /**
@@ -154,10 +155,15 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
      * Make a prediction on a given sample dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->ensemble)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $n = $dataset->numRows();
 
         $predictions = [[]];

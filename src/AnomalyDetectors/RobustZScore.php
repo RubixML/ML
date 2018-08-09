@@ -6,6 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Robust Z Score
@@ -100,6 +101,9 @@ class RobustZScore implements Detector, Persistable
     }
 
     /**
+     * Compute the median and median absolute deviations of each feature in
+     * the training set.
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -129,13 +133,21 @@ class RobustZScore implements Detector, Persistable
     }
 
     /**
+     * Compute the per feature z score and compare the average and max values
+     * to a tolerance and threshold respectively.
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->medians) or empty($this->mads)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $numFeatures = $dataset->numColumns();
-        
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -147,7 +159,6 @@ class RobustZScore implements Detector, Persistable
 
                 if ($z > $this->threshold) {
                     $predictions[] = 1;
-
                     continue 2;
                 }
 

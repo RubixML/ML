@@ -9,6 +9,7 @@ use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Ridge
@@ -33,7 +34,7 @@ class Ridge implements Regressor, Persistable
     /**
      * The computed y intercept.
      *
-     * @var float
+     * @var float|null
      */
     protected $intercept;
 
@@ -108,10 +109,15 @@ class Ridge implements Regressor, Persistable
      * Make a prediction based on the line calculated from the training data.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (is_null($this->intercept) or empty($this->coefficients)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {

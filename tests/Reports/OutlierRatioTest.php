@@ -16,6 +16,8 @@ class OutlierRatioTest extends TestCase
 
     protected $testing;
 
+    protected $outcome;
+
     public function setUp()
     {
         $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
@@ -28,6 +30,13 @@ class OutlierRatioTest extends TestCase
         ]);
 
         $this->report = new OutlierRatio();
+
+        $this->outcome = [
+            'outliers' => 1,
+            'inliers' => 9,
+            'ratio' => 0.11111111209876541,
+            'cardinality' => 10,
+        ];
     }
 
     public function test_build_report()
@@ -38,15 +47,8 @@ class OutlierRatioTest extends TestCase
 
     public function test_generate_report()
     {
-        $actual = [
-            'outliers' => 1,
-            'inliers' => 9,
-            'ratio' => 0.1111111109876543,
-            'cardinality' => 10,
-        ];
-
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($actual, $result);
+        $this->assertEquals($this->outcome, $result);
     }
 }
