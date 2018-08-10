@@ -6,8 +6,9 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Validator;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
+use RuntimeException;
 use ReflectionMethod;
 use ReflectionClass;
 
@@ -48,7 +49,7 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * The validation metric used to score the estimator.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Validation
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
      protected $metric;
 
@@ -69,6 +70,13 @@ class GridSearch implements MetaEstimator, Persistable
     ];
 
     /**
+     * The type of estimator this meta estimator wraps.
+     *
+     * @var int
+     */
+    protected $type;
+
+    /**
      * The results of a grid search.
      *
      * @var array
@@ -78,11 +86,18 @@ class GridSearch implements MetaEstimator, Persistable
     ];
 
     /**
-     * The parameters of the best estimator.
+     * The parameters with the highest validation score.
      *
      * @var array|null
      */
     protected $best;
+
+    /**
+     * The highest validation score.
+     *
+     * @var float|null
+     */
+    protected $score;
 
     /**
      * The instance of the estimator with the best parameters.
@@ -94,21 +109,23 @@ class GridSearch implements MetaEstimator, Persistable
     /**
      * @param  string  $base
      * @param  array  $params
-     * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
+     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @param  \Rubix\ML\CrossValidation\Validator|null  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, Validation $metric, Validator $validator = null)
+    public function __construct(string $base, array $params, Metric $metric, Validator $validator = null)
     {
         $reflector = new ReflectionClass($base);
 
-        if (!in_array(Estimator::class, $reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('Base class must implement the'
-                . ' estimator interface.');
+        $proxy = $reflector->newInstanceWithoutConstructor();
+
+        if (!$proxy instanceof Estimator) {
+            throw new InvalidArgumentException('Base class must be an'
+                . ' estimator.');
         }
 
-        if (in_array(MetaEstimator::class, $reflector->getInterfaceNames())) {
+        if ($proxy instanceof MetaEstimator) {
             throw new InvalidArgumentException('Base estimator cannot be a meta'
                 . ' estimator.');
         }
@@ -135,6 +152,17 @@ class GridSearch implements MetaEstimator, Persistable
         $this->params = $params;
         $this->metric = $metric;
         $this->validator = $validator;
+        $this->estimator = $proxy;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return $this->estimator->type();
     }
 
     /**
@@ -158,11 +186,21 @@ class GridSearch implements MetaEstimator, Persistable
     }
 
     /**
+     * Return the highest validation score.
+     *
+     * @return float|null
+     */
+    public function score() : ?float
+    {
+        return $this->score;
+    }
+
+    /**
      * Return the best estimator instance.
      *
-     * @return \Rubix\ML\Estimator|null
+     * @return \Rubix\ML\Estimator
      */
-    public function estimator() : ?Estimator
+    public function estimator() : Estimator
     {
         return $this->estimator;
     }
@@ -206,6 +244,7 @@ class GridSearch implements MetaEstimator, Persistable
         }
 
         $this->best = $bestParams;
+        $this->score = $bestScore;
         $this->estimator = $bestEstimator;
     }
 
@@ -213,6 +252,7 @@ class GridSearch implements MetaEstimator, Persistable
      * Make a prediction on a given sample dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Regressor, Online, Persistable
+class Adaline implements Estimator, Online, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -136,6 +137,16 @@ class Adaline implements Regressor, Online, Persistable
         $this->alpha = $alpha;
         $this->costFunction = $costFunction;
         $this->minChange = $minChange;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::REGRESSOR;
     }
 
     /**

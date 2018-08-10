@@ -5,9 +5,7 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Classifiers\Classifier;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
 class KFold implements Validator
@@ -42,12 +40,12 @@ class KFold implements Validator
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
+     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @return float
      */
-    public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
+    public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($estimator instanceof Classifier or $estimator instanceof Clusterer) {
+        if ($estimator->type() === Estimator::CLASSIFIER or $estimator->type() === Estimator::CLUSTERER) {
             $folds = $dataset->stratifiedFold($this->k);
         } else {
             $folds = $dataset->randomize()->fold($this->k);

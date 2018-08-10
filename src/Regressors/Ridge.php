@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ridge implements Regressor, Persistable
+class Ridge implements Estimator, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the
@@ -60,6 +61,16 @@ class Ridge implements Regressor, Persistable
         }
 
         $this->alpha = $alpha;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::REGRESSOR;
     }
 
     /**

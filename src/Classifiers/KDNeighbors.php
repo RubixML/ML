@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -28,7 +29,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors extends KDTree implements Multiclass, Probabilistic, Persistable
+class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -80,6 +81,16 @@ class KDNeighbors extends KDTree implements Multiclass, Probabilistic, Persistab
         $this->kernel = $kernel;
 
         parent::__construct($neighborhood);
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

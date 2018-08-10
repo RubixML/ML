@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -28,7 +29,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Binary, Online, Probabilistic, Persistable
+class LogisticRegression implements Estimator, Online, Probabilistic, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
@@ -146,6 +147,16 @@ class LogisticRegression implements Binary, Online, Probabilistic, Persistable
         $this->alpha = $alpha;
         $this->costFunction = $costFunction;
         $this->minChange = $minChange;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

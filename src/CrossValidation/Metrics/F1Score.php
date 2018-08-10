@@ -5,11 +5,9 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Classifiers\Classifier;
-use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
-class F1Score implements Validation
+class F1Score implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -31,8 +29,8 @@ class F1Score implements Validation
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if (!$estimator instanceof Classifier and !$estimator instanceof Detector) {
-            throw new InvalidArgumentException('This metric only works on'
+        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
+            throw new InvalidArgumentException('This metric only works with'
                 . ' classifiers and anomaly detectors.');
         }
 

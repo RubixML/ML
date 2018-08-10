@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 
 interface Validator
 {
@@ -13,8 +13,8 @@ interface Validator
     *
     * @param  \Rubix\ML\Estimator  $estimator
     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-    * @param  \Rubix\ML\CrossValidation\Metrics\Validation  $metric
+    * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
     * @return float
     */
-   public function test(Estimator $estimator, Labeled $dataset, Validation $metric) : float;
+   public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float;
 }

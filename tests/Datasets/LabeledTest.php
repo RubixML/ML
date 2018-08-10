@@ -176,13 +176,6 @@ class LabeledTest extends TestCase
 
     }
 
-    public function test_random_subset()
-    {
-        $subset = $this->dataset->randomSubset(3);
-
-        $this->assertCount(3, $subset);
-    }
-
     public function test_random_subset_with_replacement()
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);

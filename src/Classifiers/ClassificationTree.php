@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -22,7 +23,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Multiclass, Probabilistic, Persistable
+class ClassificationTree extends CART implements Estimator, Probabilistic, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.
@@ -77,10 +78,20 @@ class ClassificationTree extends CART implements Multiclass, Probabilistic, Pers
                 . ' greater.');
         }
 
-        parent::__construct($maxDepth, $maxLeafSize);
-
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
+
+        parent::__construct($maxDepth, $maxLeafSize);
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -24,7 +25,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
+class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
     const TWO_PI = 2.0 * M_PI;
 
@@ -72,6 +73,16 @@ class GaussianNB implements Multiclass, Online, Probabilistic, Persistable
     protected $classes = [
         //
     ];
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
+    }
 
     /**
      * Return the class prior log probabilities based on their weight over all

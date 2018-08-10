@@ -4,14 +4,9 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Regressors\Regressor;
-use Rubix\ML\Clusterers\Clusterer;
-use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 use RuntimeException;
-use ReflectionClass;
 
 /**
  * Bootstrap Aggregator
@@ -36,11 +31,11 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
     protected $base;
 
     /**
-     * The base estimator reflector instance.
+     * The type of the base estimator.
      *
-     * @var \ReflectionClass
+     * @var int
      */
-    protected $reflector;
+    protected $type;
 
     /**
      * The constructor arguments of the base estimator.
@@ -84,25 +79,26 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
      */
     public function __construct(string $base, array $params, int $estimators = 10, float $ratio = 0.5)
     {
-        $reflector = new ReflectionClass($base);
+        $proxy = new $base(...$params);
 
-        if (!in_array(Estimator::class, $reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('Base class must implement the'
-                . ' estimator interface.');
-        }
-
-        if (in_array(Clusterer::class, $reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('This meta estimator does not'
-                . ' work with clusterers.');
-        }
-
-        if (in_array(MetaEstimator::class, $reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('Base estimator cannot be a meta'
+        if (!$proxy instanceof Estimator) {
+            throw new InvalidArgumentException('Base class must be an'
                 . ' estimator.');
         }
 
+        if ($proxy instanceof MetaEstimator) {
+            throw new InvalidArgumentException('Base class cannot be a meta'
+                . ' estimator.');
+        }
+
+        if ($proxy->type() !== self::CLASSIFIER and $proxy->type() !== self::REGRESSOR
+            and $proxy->type() !== self::DETECTOR) {
+                throw new InvalidArgumentException('This ensemble only supports'
+                    . ' classifiers, regressors, and detectors.');
+            }
+
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
+            throw new InvalidArgumentException('Ensemble must have at least'
                 . ' 1 estimator.');
         }
 
@@ -112,10 +108,20 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
         }
 
         $this->base = $base;
-        $this->reflector = $reflector;
+        $this->type = $proxy->type();
         $this->params = $params;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return $this->type;
     }
 
     /**
@@ -138,14 +144,16 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $n = (int) ($this->ratio * $dataset->numRows());
+        $n = (int) round($this->ratio * $dataset->numRows());
 
         $this->ensemble = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = new $this->base(...$this->params);
 
-            $estimator->train($dataset->randomSubsetWithReplacement($n));
+            $subset = $dataset->randomSubsetWithReplacement($n);
+
+            $estimator->train($subset);
 
             $this->ensemble[] = $estimator;
         }
@@ -164,40 +172,26 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $n = $dataset->numRows();
-
-        $predictions = [[]];
+        $aggregate = [];
 
         foreach ($this->ensemble as $estimator) {
             foreach ($estimator->predict($dataset) as $i => $prediction) {
-                $predictions[$i][] = $prediction;
+                $aggregate[$i][] = $prediction;
             }
         }
 
-        return $this->aggregate($predictions);
-    }
+        $predictions = [];
 
-    /**
-     * Aggregate the predictions made by the ensemble into a single prediction
-     * based on the type of the base estimator.
-     *
-     * @param  array  $predictions
-     * @return array
-     */
-    protected function aggregate(array $predictions) : array
-    {
-        if (in_array(Classifier::class, $this->reflector->getInterfaceNames())) {
-            return array_map(function ($outcomes) {
-                return Argmax::compute(array_count_values($outcomes));
-            }, $predictions);
-        } else if (in_array(Detector::class, $this->reflector->getInterfaceNames())) {
-            return array_map(function ($outcomes) {
-                return Average::mean($outcomes) >= 0.5 ? 1 : 0;
-            }, $predictions);
-        } else {
-            return array_map(function ($outcomes) {
-                return Average::mean($outcomes);
-            }, $predictions);
+        foreach ($aggregate as $outcomes) {
+            if ($this->type === self::CLASSIFIER) {
+                $predictions[] = Argmax::compute(array_count_values($outcomes));
+            } else if ($this->type === self::DETECTOR) {
+                $predictions[] = Average::mean($outcomes) > 0.5 ? 1 : 0;
+            } else {
+                $predictions[] = Average::mean($outcomes);
+            }
         }
+
+        return $predictions;
     }
 }

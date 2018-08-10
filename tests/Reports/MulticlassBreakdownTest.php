@@ -25,6 +25,8 @@ class MulticlassBreakdownTest extends TestCase
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
+        $this->estimator->method('type')->willReturn(KNearestNeighbors::CLASSIFIER);
+
         $this->estimator->method('predict')->willReturn([
             'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
         ]);

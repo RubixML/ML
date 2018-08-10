@@ -5,7 +5,7 @@ namespace Rubix\Tests\CrossValidation\Metrics;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
 
 class MCCTest extends TestCase
@@ -25,6 +25,8 @@ class MCCTest extends TestCase
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
+        $this->estimator->method('type')->willReturn(KNearestNeighbors::CLASSIFIER);
+
         $this->estimator->method('predict')->willReturn([
             'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
         ]);
@@ -37,7 +39,7 @@ class MCCTest extends TestCase
     public function test_build_metric()
     {
         $this->assertInstanceOf(MCC::class, $this->metric);
-        $this->assertInstanceOf(Validation::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_get_range()

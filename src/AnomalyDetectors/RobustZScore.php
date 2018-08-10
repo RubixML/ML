@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Detector, Persistable
+class RobustZScore implements Estimator, Persistable
 {
     const LAMBDA = 0.6745;
 
@@ -78,6 +79,16 @@ class RobustZScore implements Detector, Persistable
 
         $this->tolerance = $tolerance;
         $this->threshold = $threshold;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::DETECTOR;
     }
 
     /**

@@ -6,10 +6,9 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Clusterers\Clusterer;
 use InvalidArgumentException;
 
-class Concentration implements Validation
+class Concentration implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -33,8 +32,8 @@ class Concentration implements Validation
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if (!$estimator instanceof Clusterer) {
-            throw new InvalidArgumentException('This metric only works on'
+        if ($estimator->type() !== Estimator::CLUSTERER) {
+            throw new InvalidArgumentException('This metric only works with'
                 . ' clusterers.');
         }
 

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -15,8 +16,8 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\CrossValidation\Metrics\Validation;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use InvalidArgumentException;
@@ -35,7 +36,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persistable
+class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persistable
 {
     const TOLERANCE = 1e-3;
 
@@ -87,7 +88,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
     /**
      * The Validation metric used to validate the performance of the model.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Validation
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
     protected $metric;
 
@@ -156,7 +157,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      * @param  float  $alpha
      * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  float  $minChange
-     * @param  \Rubix\ML\CrossValidation\Metrics\Validation|null  $metric
+     * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
      * @param  float $holdout
      * @param  int  $window
      * @param  int  $epochs
@@ -165,7 +166,7 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
      */
     public function __construct(array $hidden = [], int $batchSize = 50, Optimizer $optimizer = null,
             float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4,
-            Validation $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
+            Metric $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -219,6 +220,16 @@ class MultiLayerPerceptron implements Multiclass, Online, Probabilistic, Persist
         $this->holdout = $holdout;
         $this->window = $window;
         $this->epochs = $epochs;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

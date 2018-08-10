@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
@@ -32,9 +31,13 @@ class DummyClassifierTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(DummyClassifier::class, $this->estimator);
-        $this->assertInstanceOf(Classifier::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
     public function test_make_prediction()

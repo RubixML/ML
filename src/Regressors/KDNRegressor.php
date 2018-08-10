@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -22,7 +23,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNRegressor extends KDTree implements Regressor, Persistable
+class KDNRegressor extends KDTree implements Estimator, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -65,6 +66,16 @@ class KDNRegressor extends KDTree implements Regressor, Persistable
         $this->kernel = $kernel;
 
         parent::__construct($neighborhood);
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::REGRESSOR;
     }
 
     /**

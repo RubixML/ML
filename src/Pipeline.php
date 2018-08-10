@@ -54,6 +54,16 @@ class Pipeline implements MetaEstimator, Persistable
     }
 
     /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return $this->estimator->type();
+    }
+
+    /**
      * Return the underlying model instance.
      *
      * @return \Rubix\ML\Estimator

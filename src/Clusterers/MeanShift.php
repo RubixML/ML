@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Average;
@@ -20,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Clusterer, Persistable
+class MeanShift implements Estimator, Persistable
 {
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum
@@ -103,6 +104,16 @@ class MeanShift implements Clusterer, Persistable
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLUSTERER;
     }
 
     /**

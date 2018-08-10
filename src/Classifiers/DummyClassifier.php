@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -20,7 +21,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DummyClassifier implements Multiclass, Persistable
+class DummyClassifier implements Estimator, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.
@@ -40,6 +41,16 @@ class DummyClassifier implements Multiclass, Persistable
         }
 
         $this->strategy = $strategy;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

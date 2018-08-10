@@ -3,12 +3,13 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Ensemble;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 use RuntimeException;
-use ReflectionClass;
 
 /**
  * Ada Boost
@@ -21,7 +22,7 @@ use ReflectionClass;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Binary, Ensemble, Persistable
+class AdaBoost implements Estimator, Ensemble, Persistable
 {
     /**
      * The class name of the base classifier.
@@ -111,24 +112,29 @@ class AdaBoost implements Binary, Ensemble, Persistable
     public function __construct(string $base, array $params = [], int $estimators = 100,
                                 float $ratio = 0.1, float $tolerance = 1e-3)
     {
-        $reflector = new ReflectionClass($base);
+        $proxy = new $base(...$params);
 
-        if (!in_array(Classifier::class, $reflector->getInterfaceNames())) {
-            throw new InvalidArgumentException('Base class must implement the'
-                . ' classifier interface.');
+        if ($proxy instanceof MetaEstimator) {
+            throw new InvalidArgumentException('Base class cannot be a meta'
+                . ' estimator.');
+        }
+
+        if ($proxy->type() !== self::CLASSIFIER) {
+            throw new InvalidArgumentException('Base estimator must be a'
+                . ' classifier.');
         }
 
         if ($estimators < 1) {
             throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 estimator.');
+                . ' 1 classifier.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1) {
+        if ($ratio < 0.01 or $ratio > 1.0) {
             throw new InvalidArgumentException('Sample ratio must be between'
                 . ' 0.01 and 1.0.');
         }
 
-        if ($tolerance < 0 or $tolerance > 1) {
+        if ($tolerance < 0.0 or $tolerance > 1.0) {
             throw new InvalidArgumentException('Tolerance must be between'
                 . ' 0 and 1.');
         }
@@ -138,6 +144,16 @@ class AdaBoost implements Binary, Ensemble, Persistable
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->tolerance = $tolerance;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**
@@ -187,6 +203,7 @@ class AdaBoost implements Binary, Ensemble, Persistable
         }
 
         $n = $dataset->numRows();
+
         $classes = $dataset->possibleOutcomes();
 
         if (count($classes) !== 2) {
@@ -252,20 +269,20 @@ class AdaBoost implements Binary, Ensemble, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $sigmas = array_fill(0, $dataset->numRows(), 0.0);
+        $scores = array_fill(0, $dataset->numRows(), 0.0);
 
         foreach ($this->ensemble as $i => $estimator) {
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $output = $prediction === $this->classes[1] ? 1 : -1;
 
-                $sigmas[$j] += $this->influence[$i] * $output;
+                $scores[$j] += $output * $this->influence[$i];
             }
         }
 
         $predictions = [];
 
-        foreach ($sigmas as $sigma) {
-            $predictions[] = $this->classes[$sigma > 0 ? 1 : -1];
+        foreach ($scores as $score) {
+            $predictions[] = $this->classes[$score > 0 ? 1 : -1];
         }
 
         return $predictions;

@@ -5,7 +5,6 @@ namespace Rubix\ML\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Clusterers\Clusterer;
 use InvalidArgumentException;
 
 /**
@@ -30,8 +29,8 @@ class ContingencyTable implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if (!$estimator instanceof Clusterer) {
-            throw new InvalidArgumentException('This report only works on'
+        if ($estimator->type() !== Estimator::CLUSTERER) {
+            throw new InvalidArgumentException('This report only works with'
                 . ' clusterers.');
         }
 
@@ -39,7 +38,7 @@ class ContingencyTable implements Report
             throw new InvalidArgumentException('This report requires a'
                 . ' Labeled testing set.');
         }
-        
+
         if ($testing->numRows() === 0) {
             throw new InvalidArgumentException('Testing set must contain at'
                 . ' least one sample.');

@@ -5,7 +5,6 @@ namespace Rubix\ML\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Classifiers\Classifier;
 use InvalidArgumentException;
 
 /**
@@ -32,8 +31,8 @@ class MulticlassBreakdown implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if (!$estimator instanceof Classifier) {
-            throw new InvalidArgumentException('This report only works on'
+        if ($estimator->type() !== Estimator::CLASSIFIER) {
+            throw new InvalidArgumentException('This report only works with'
                 . ' classifiers.');
         }
 

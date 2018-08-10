@@ -6,10 +6,22 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Estimator
 {
+    const CLASSIFIER = 1;
+    const REGRESSOR = 2;
+    const CLUSTERER = 3;
+    const DETECTOR = 4;
+
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
 
     const EPSILON = 1e-8;
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int;
 
     /**
      * Train the estimator with a dataset.

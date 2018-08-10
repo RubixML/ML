@@ -25,6 +25,8 @@ class OutlierRatioTest extends TestCase
 
         $this->estimator = $this->createMock(RobustZScore::class);
 
+        $this->estimator->method('type')->willReturn(RobustZScore::DETECTOR);
+
         $this->estimator->method('predict')->willReturn([
             0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
         ]);

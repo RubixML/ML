@@ -4,7 +4,7 @@ namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +24,8 @@ class MeanAbsoluteErrorTest extends TestCase
 
         $this->estimator = $this->createMock(Ridge::class);
 
+        $this->estimator->method('type')->willReturn(Ridge::REGRESSOR);
+
         $this->estimator->method('predict')->willReturn([
             9, 15, 9, 12, 8,
         ]);
@@ -36,7 +38,7 @@ class MeanAbsoluteErrorTest extends TestCase
     public function test_build_metric()
     {
         $this->assertInstanceOf(MeanAbsoluteError::class, $this->metric);
-        $this->assertInstanceOf(Validation::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_get_range()

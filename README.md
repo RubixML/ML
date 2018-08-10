@@ -47,6 +47,7 @@ MIT
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Classification Tree](#classification-tree)
+			- [Committee Machine](#committee-machine)
 			- [Dummy Classifier](#dummy-classifier)
 			- [Extra Tree Classifier](#extra-tree-classifier)
 			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
@@ -71,21 +72,19 @@ MIT
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
-	- [Estimator Interfaces](#estimator-interfaces)
-		- [Online](#online)
-		- [Probabilistic](#probabilistic)
-		- [Persistable](#persistable)
 	- [Meta-Estimators](#meta-estimators)
 		- [Data Preprocessing](#data-preprocessing)
 			- [Pipeline](#pipeline)
 		- [Ensemble](#ensemble)
 			- [Bootstrap Aggregator](#bootstrap-aggregator)
-			- [Committee Machine](#committee-machine)
 		- [Model Persistence](#model-persistence)
 			- [Persistent Model](#persistent-model)
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
-			- [Random Search](#random-search)
+	- [Estimator Interfaces](#estimator-interfaces)
+		- [Online](#online)
+		- [Probabilistic](#probabilistic)
+		- [Persistable](#persistable)
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
@@ -180,6 +179,8 @@ MIT
 			- [Lottery](#lottery)
 			- [Popularity Contest](#popularity-contest)
 			- [Wild Guess](#wild-guess)
+		- [Helpers](#helpers)
+			- [Random Search](#random-search)
 		- [Tokenizers](#tokenizers)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
@@ -456,13 +457,15 @@ Randomize the order of the Dataset and return it:
 ```php
 public randomize() : self
 ```
-Generate a random subset of size **n**:
-```php
-public randomSubset($n = 1) : self
-```
+
 Generate a random subset with replacement of size **n**:
 ```php
-public randomSubsetWithReplacement($n = 1) : self
+public randomSubsetWithReplacement($n) : self
+```
+
+Generate a random *weighted* subset with replacement of size **n**:
+```php
+public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```
 
 ##### Example:
@@ -470,8 +473,8 @@ public randomSubsetWithReplacement($n = 1) : self
 // Randomize and split the dataset into two subsets
 list($left, $right) = $dataset->randomize()->split(0.8);
 
-// Generate a dataset of 500 random samples
-$subset = $dataset->randomSubset(500);
+// Generate a bootstrap dataset of 500 random samples
+$subset = $dataset->randomSubsetWithReplacement(500);
 ```
 
 #### Sorting
@@ -1000,6 +1003,37 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new ClassificationTree(100, 7, 4, 1e-4);
 ```
 
+### Committee Machine
+A voting ensemble that aggregates the predictions of a committee of heterogeneous classifiers (called *experts*). The committee uses a user-specified influence-based scheme to make final predictions. Influence values can be arbitrary as they are normalized anyways upon object creation.
+
+##### Supervised | Ensemble | Probabilistic | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | experts | None | array | An array of classifiers instances that will comprise the committee. |
+| 2 | influence | None | array | The influence values of each expert in the committee. |
+
+
+##### Additional Methods:
+This Meta Estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\CommitteeMachine;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+
+$estimator = new CommitteeMachine([
+	new RandomForest(100, 0.3, 30, 3, 4, 1e-3),
+	new SoftmaxClassifier(50, new Adam(0.001), 0.1),
+	new KNearestNeighbors(3),
+], [
+	4, 6, 5, // Arbitrary influence values for each expert
+]);
+```
 
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
@@ -1658,64 +1692,6 @@ $estimator = new Ridge(2.0);
 ```
 
 ---
-### Estimator Interfaces
-
-### Online
-
-Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
-
-You can partially train an Online Estimator with:
-```php
-public partial(Dataset $dataset) : void
-```
-
-##### Example:
-```php
-...
-$datasets = $dataset->fold(3);
-
-$estimator->partial($dataset[0]);
-
-$estimator->partial($dataset[1]);
-
-$estimator->partial($dataset[2]);
-```
-
-It is *important* to note that an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
-
----
-### Probabilistic
-
-Some [Estimators](#estimators) may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the Estimator is certain about a particular outcome.
-
-Calculate probability estimates:
-```php
-public proba(Dataset $dataset) : array
-```
-
-##### Example:
-```php
-...
-$probabilities = $estimator->proba($dataset->head(2));  
-
-var_dump($probabilities);
-```
-
-##### Output:
-```sh
-array(2) {
-	[0] => array(2) {
-		['married'] => 0.975,
-		['divorced'] => 0.025,
-	}
-	[1] => array(2) {
-		['married'] => 0.200,
-		['divorced'] => 0.800,
-	}
-}
-```
-
----
 ### Meta-Estimators
 Meta-Estimators allow you to progressively enhance your models by adding additional functionality such as [data preprocessing](#data-preprocessing) and [persistence](#model-persistence) or by orchestrating an [Ensemble](#ensemble) of base Estimators. Each Meta-Estimator wraps a base Estimator and you can even wrap certain Meta-Estimators with other Meta-Estimators. Some examples of Meta-Estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Bootstrap Aggregator](#bootstrap-aggregator).
 
@@ -1737,7 +1713,7 @@ $estimator->train($dataset); // Train a classification tree with preprocessing a
 
 $estimator->complexity(); // Call complexity() method on Decision Tree from Pipeline
 ```
----
+
 ### Data Preprocessing
 Often, additional processing of input data is required to deliver correct predictions and/or accelerate the training process. In this section, we'll introduce the Pipeline meta-Estimator and the various [Transformers](#transformers) that it employs to fit the input data to suit the requirements and preferences of the [Estimator](#estimator) that it feeds.
 
@@ -1779,7 +1755,6 @@ Transformer *middleware* will process in the order given when the Pipeline was b
 
 In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data.
 
----
 ### Ensemble
 Ensemble Meta Estimators train and orchestrate a number of base Estimators in order to make their predictions. Certain Estimators (like [AdaBoost](#adaboost) and [Random Forest](#random-forest)) are implemented as Ensembles under the hood, however these *Meta* Estimators are able to work across Estimator types which makes them very useful.
 
@@ -1812,36 +1787,6 @@ $estimator->traing($training); // Trains 100 regression trees
 $estimator->predict($testing); // Aggregates their predictions
 ```
 
-### Committee Machine
-A voting Ensemble that aggregates the predictions of a committee of user-specified, heterogeneous estimators (called *experts*) of a single type (i.e all Classifiers, Regressors, etc). The committee uses a hard-voting scheme to make final predictions.
-
-##### Classifiers, Regressors, Anomaly Detectors
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | experts | [ ] | array | An array of estimator instances. |
-
-
-##### Additional Methods:
-This Meta Estimator does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\Classifiers\CommitteeMachine;
-use Rubix\ML\Classifiers\RandomForest;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-
-$estimator = new CommitteeMachine([
-	new RandomForest(100, 0.3, 30, 3, 4, 1e-3),
-	new SoftmaxClassifier(50, new Adam(0.001), 0.1),
-	new KNearestNeighbors(3),
-]);
-```
-
----
 ### Model Selection
 Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the *Grid Search* meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
 
@@ -1903,53 +1848,7 @@ array(2) {
 }
 ```
 
-### Random Search
-Random search is a hyperparameter selection technique that samples *n* parameters randomly from a user-specified distribution. In Rubix, the Random Params helper can be used along with [Grid Search](#grid-search) to achieve the goal of random search. The Random Params helper automatically takes care of deduplication so you never need to worry about testing a parameter twice. For this reason, however, you cannot generate more parameters than in range of, thus generating 5 unique ints between 1 and 3 is impossible.
 
-To generate a distribution of integer parameters:
-```php
-public static ints(int $min, int $max, int $n = 10) : array
-```
-
-To generate a distribution of floating point parameters:
-```php
-public static floats(float $min, float $max, int $n = 10) : array
-```
-
-##### Example:
-```php
-use Rubix\ML\GridSearch;
-use Rubix\ML\Other\Helpers\RandomParams;
-use Rubix\ML\Clusterers\FuzzyCMeans;
-use Rubix\ML\Kernels\Distance\Diagonal;
-use Rubix\ML\Kernels\Distance\Minkowski;
-use Rubix\CrossValidation\KFold;
-use Rubix\CrossValidation\Metrics\VMeasure;
-
-...
-$params = [
-	[1, 2, 3, 4, 5], RandomParams::floats(1.0, 20.0, 20), [new Diagonal(), new Minkowski(3.0)],
-];
-
-$estimator = new GridSearch(FuzzyCMeans::class, $params, new VMeasure(), new KFold(10));
-
-$estimator->train($dataset);
-
-var_dump($estimator->best());
-```
-
-##### Output:
-
-```sh
-array(3) {
-  [0]=> int(4)
-  [1]=> float(13.65)
-  [2]=> object(Rubix\ML\Kernels\Distance\Diagonal)#15 (0) {
-  }
-}
-```
-
----
 ### Model Persistence
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Rubix persists your models using built in PHP object serialization (similar to pickling in Python). Most Estimators are persistable, but some are not allowed due to their poor storage complexity.
 
@@ -1980,6 +1879,65 @@ $estimator->save(); // Saves to current working directory under unique filename
 $estimator = PersistentModel::restore('path/to/models/folder/random_forest.model');
 ```
 
+---
+### Estimator Interfaces
+
+### Online
+
+Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
+
+You can partially train an Online Estimator with:
+```php
+public partial(Dataset $dataset) : void
+```
+
+##### Example:
+```php
+...
+$datasets = $dataset->fold(3);
+
+$estimator->partial($dataset[0]);
+
+$estimator->partial($dataset[1]);
+
+$estimator->partial($dataset[2]);
+```
+
+It is *important* to note that an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
+
+---
+### Probabilistic
+
+Some [Estimators](#estimators) may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the Estimator is certain about a particular outcome.
+
+Calculate probability estimates:
+```php
+public proba(Dataset $dataset) : array
+```
+
+##### Example:
+```php
+...
+$probabilities = $estimator->proba($dataset->head(2));  
+
+var_dump($probabilities);
+```
+
+##### Output:
+```sh
+array(2) {
+	[0] => array(2) {
+		['married'] => 0.975,
+		['divorced'] => 0.025,
+	}
+	[1] => array(2) {
+		['married'] => 0.200,
+		['divorced'] => 0.800,
+	}
+}
+```
+
+---
 ### Transformers
 Transformers take a sample matrices and transform them in various ways. A common transformation is scaling and centering the values using one of the Standardizers ([Z Scale](#z-scale-standardizer), [Robust](#robust-standardizer), [Quartile](#quartile-standardizer)). Transformers can be used with the [Pipeline](#pipeline) meta-Estimator or they can be used separately.
 
@@ -3714,6 +3672,55 @@ This Strategy does not have any parameters.
 use Rubix\ML\Other\Strategies\WildGuess;
 
 $strategy = new WildGuess();
+```
+
+### Helpers
+
+
+### Random Search
+Random search is a hyperparameter selection technique that samples *n* parameters randomly from a user-specified distribution. In Rubix, the Random Params helper can be used along with [Grid Search](#grid-search) to achieve the goal of random search. The Random Params helper automatically takes care of deduplication so you never need to worry about testing a parameter twice. For this reason, however, you cannot generate more parameters than in range of, thus generating 5 unique ints between 1 and 3 is impossible.
+
+To generate a distribution of integer parameters:
+```php
+public static ints(int $min, int $max, int $n = 10) : array
+```
+
+To generate a distribution of floating point parameters:
+```php
+public static floats(float $min, float $max, int $n = 10) : array
+```
+
+##### Example:
+```php
+use Rubix\ML\GridSearch;
+use Rubix\ML\Other\Helpers\RandomParams;
+use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Kernels\Distance\Diagonal;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\CrossValidation\KFold;
+use Rubix\CrossValidation\Metrics\VMeasure;
+
+...
+$params = [
+	[1, 2, 3, 4, 5], RandomParams::floats(1.0, 20.0, 20), [new Diagonal(), new Minkowski(3.0)],
+];
+
+$estimator = new GridSearch(FuzzyCMeans::class, $params, new VMeasure(), new KFold(10));
+
+$estimator->train($dataset);
+
+var_dump($estimator->best());
+```
+
+##### Output:
+
+```sh
+array(3) {
+  [0]=> int(4)
+  [1]=> float(13.65)
+  [2]=> object(Rubix\ML\Kernels\Distance\Diagonal)#15 (0) {
+  }
+}
 ```
 
 ---

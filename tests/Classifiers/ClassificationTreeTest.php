@@ -8,8 +8,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\Multiclass;
-use Rubix\ML\Classifiers\Classifier;
 use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -35,11 +33,14 @@ class ClassificationTreeTest extends TestCase
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
-        $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Multiclass::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
     public function test_make_prediction()

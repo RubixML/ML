@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -22,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
+class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 {
     /**
      * The target number of clusters.
@@ -119,6 +120,16 @@ class FuzzyCMeans implements Clusterer, Probabilistic, Persistable
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLUSTERER;
     }
 
     /**

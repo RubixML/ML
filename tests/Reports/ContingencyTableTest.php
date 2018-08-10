@@ -25,6 +25,8 @@ class ContingencyTableTest extends TestCase
 
         $this->estimator = $this->createMock(KMeans::class);
 
+        $this->estimator->method('type')->willReturn(KMeans::CLUSTERER);
+
         $this->estimator->method('predict')->willReturn([
             1, 2, 2, 1, 2,
         ]);

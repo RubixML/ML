@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Ensemble;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -22,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
+class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
 {
     /**
      * The number of trees to train in the ensemble.
@@ -85,6 +86,16 @@ class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
     }
 
     /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::DETECTOR;
+    }
+
+    /**
      * Return the ensemble of estimators.
      *
      * @return array
@@ -113,7 +124,7 @@ class IsolationForest implements Detector, Ensemble, Probabilistic, Persistable
         for ($i = 0; $i < $this->trees; $i++) {
             $tree = new IsolationTree($maxDepth, 1, $this->threshold);
 
-            $tree->train($dataset->randomSubset($n));
+            $tree->train($dataset->randomize()->head($n));
 
             $this->forest[] = $tree;
         }

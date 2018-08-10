@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Ensemble;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -24,7 +25,7 @@ use ReflectionClass;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
+class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
 {
     const AVAILABLE_TREES = [
         ClassificationTree::class,
@@ -157,6 +158,16 @@ class RandomForest implements Multiclass, Ensemble, Probabilistic, Persistable
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
         $this->base = $base;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

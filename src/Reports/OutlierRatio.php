@@ -4,7 +4,6 @@ namespace Rubix\ML\Reports;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\AnomalyDetectors\Detector;
 use InvalidArgumentException;
 
 /**
@@ -30,9 +29,9 @@ class OutlierRatio implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if (!$estimator instanceof Detector) {
-            throw new InvalidArgumentException('This report only works on'
-                . ' anomaly detectors.');
+        if ($estimator->type() !== Estimator::DETECTOR) {
+            throw new InvalidArgumentException('This report only works with'
+                . ' detectors.');
         }
 
         if ($testing->numRows() === 0) {

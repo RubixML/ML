@@ -7,7 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -33,9 +32,13 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
-        $this->assertInstanceOf(Regressor::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
     public function test_make_prediction()

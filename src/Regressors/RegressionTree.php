@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -22,7 +23,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegressionTree extends CART implements Regressor, Persistable
+class RegressionTree extends CART implements Estimator, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.
@@ -72,6 +73,16 @@ class RegressionTree extends CART implements Regressor, Persistable
         $this->tolerance = $tolerance;
 
         parent::__construct($maxDepth, $maxLeafSize);
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::REGRESSOR;
     }
 
     /**

@@ -194,20 +194,12 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function partition(int $index, $value) : array;
 
     /**
-     * Generate a random subset of n samples.
-     *
-     * @param  int  $n
-     * @return self
-     */
-    public function randomSubset(int $n = 1);
-
-    /**
      * Generate a random subset of n samples with replacement.
      *
      * @param  int  $n
      * @return self
      */
-    public function randomSubsetWithReplacement(int $n = 1);
+    public function randomSubsetWithReplacement(int $n);
 
     /**
      * Generate a random weighted subset with replacement.
@@ -216,7 +208,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param  array  $weights
      * @return self
      */
-    public function randomWeightedSubsetWithReplacement(int $n = 1, array $weights);
+    public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
      * Prepend the given dataset to the beginning of this dataset.

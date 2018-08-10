@@ -7,7 +7,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -40,10 +39,14 @@ class MLPRegressorTest extends TestCase
     public function test_build_regressor()
     {
         $this->assertInstanceOf(MLPRegressor::class, $this->estimator);
-        $this->assertInstanceOf(Regressor::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
     public function test_make_prediction()

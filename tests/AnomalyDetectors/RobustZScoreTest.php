@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetectors\Detector;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 use PHPUnit\Framework\TestCase;
 
@@ -33,9 +32,13 @@ class RobustZScoreTest extends TestCase
     public function test_build_detector()
     {
         $this->assertInstanceOf(RobustZScore::class, $this->estimator);
-        $this->assertInstanceOf(Detector::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
     }
 
     public function test_make_prediction()

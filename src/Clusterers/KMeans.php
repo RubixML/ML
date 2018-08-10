@@ -3,6 +3,7 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Clusterer, Online, Persistable
+class KMeans implements Estimator, Online, Persistable
 {
     /**
      * The target number of clusters.
@@ -79,6 +80,16 @@ class KMeans implements Clusterer, Online, Persistable
         $this->k = $k;
         $this->kernel = $kernel;
         $this->epochs = $epochs;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLUSTERER;
     }
 
     /**

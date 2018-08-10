@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -25,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
+class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistable
 {
     /**
      * The number of nearest neighbors to consider a local region.
@@ -96,6 +97,16 @@ class LocalOutlierFactor implements Detector, Probabilistic, Online, Persistable
         $this->neighbors = $neighbors;
         $this->threshold = $threshold;
         $this->kernel = $kernel;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::DETECTOR;
     }
 
     /**

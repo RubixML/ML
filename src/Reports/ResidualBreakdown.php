@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Regressors\Regressor;
 use Rubix\ML\Other\Functions\Stats;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
@@ -36,8 +35,8 @@ class ResidualBreakdown implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if (!$estimator instanceof Regressor) {
-            throw new InvalidArgumentException('This report only works on'
+        if ($estimator->type() !== Estimator::REGRESSOR) {
+            throw new InvalidArgumentException('This report only works with'
                 . ' regressors.');
         }
 

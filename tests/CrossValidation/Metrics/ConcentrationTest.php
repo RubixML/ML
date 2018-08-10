@@ -4,7 +4,7 @@ namespace Rubix\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Concentration;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +26,8 @@ class ConcentrationTest extends TestCase
 
         $this->estimator = $this->createMock(KMeans::class);
 
+        $this->estimator->method('type')->willReturn(KMeans::CLUSTERER);
+
         $this->estimator->method('predict')->willReturn([
             1, 2, 2, 1, 2,
         ]);
@@ -38,7 +40,7 @@ class ConcentrationTest extends TestCase
     public function test_build_metric()
     {
         $this->assertInstanceOf(Concentration::class, $this->metric);
-        $this->assertInstanceOf(Validation::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_get_range()

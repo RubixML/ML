@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -25,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistable
+class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -90,17 +91,21 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
     }
 
     /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
-        }
-
         $this->classes = $this->samples = $this->labels = [];
 
         $this->partial($dataset);
@@ -135,6 +140,7 @@ class KNearestNeighbors implements Multiclass, Online, Probabilistic, Persistabl
      * Make a prediction based on the class probabilities.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array

@@ -71,6 +71,16 @@ class PersistentModel implements MetaEstimator
     }
 
     /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return $this->model->type();
+    }
+
+    /**
      * Return the instance of the base estimator.
      *
      * @return \Rubix\ML\Persistable

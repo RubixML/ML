@@ -5,7 +5,7 @@ namespace Rubix\Tests\CrossValidation\Metrics;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
-use Rubix\ML\CrossValidation\Metrics\Validation;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
 
 class VMeasureTest extends TestCase
@@ -25,6 +25,8 @@ class VMeasureTest extends TestCase
 
         $this->estimator = $this->createMock(KMeans::class);
 
+        $this->estimator->method('type')->willReturn(KMeans::CLUSTERER);
+
         $this->estimator->method('predict')->willReturn([
             1, 2, 2, 1, 2,
         ]);
@@ -37,7 +39,7 @@ class VMeasureTest extends TestCase
     public function test_build_metric()
     {
         $this->assertInstanceOf(VMeasure::class, $this->metric);
-        $this->assertInstanceOf(Validation::class, $this->metric);
+        $this->assertInstanceOf(Metric::class, $this->metric);
     }
 
     public function test_get_range()

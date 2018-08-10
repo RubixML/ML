@@ -5,10 +5,9 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Clusterers\Clusterer;
 use InvalidArgumentException;
 
-class VMeasure implements Validation
+class VMeasure implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -31,8 +30,8 @@ class VMeasure implements Validation
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if (!$estimator instanceof Clusterer) {
-            throw new InvalidArgumentException('This metric only works on'
+        if ($estimator->type() !== Estimator::CLUSTERER) {
+            throw new InvalidArgumentException('This metric only works with'
                 . ' clusterers.');
         }
 

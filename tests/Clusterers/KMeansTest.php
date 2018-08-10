@@ -7,7 +7,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\Clusterers\Clusterer;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -27,10 +26,14 @@ class KMeansTest extends TestCase
     public function test_build_clusterer()
     {
         $this->assertInstanceOf(KMeans::class, $this->estimator);
-        $this->assertInstanceOf(Clusterer::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
     public function test_make_prediction()

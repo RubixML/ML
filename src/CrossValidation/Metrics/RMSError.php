@@ -5,10 +5,9 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Regressors\Regressor;
 use InvalidArgumentException;
 
-class RMSError implements Validation
+class RMSError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -30,8 +29,8 @@ class RMSError implements Validation
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if (!$estimator instanceof Regressor) {
-            throw new InvalidArgumentException('This metric only works on'
+        if ($estimator->type() !== Estimator::REGRESSOR) {
+            throw new InvalidArgumentException('This metric only works with'
                 . ' regresors.');
         }
 

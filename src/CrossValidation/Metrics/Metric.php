@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 
-interface Validation
+interface Metric
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -20,7 +21,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Clusterer, Persistable
+class DBSCAN implements Estimator, Persistable
 {
     const NOISE = -1;
 
@@ -71,6 +72,16 @@ class DBSCAN implements Clusterer, Persistable
         $this->radius = $radius;
         $this->minDensity = $minDensity;
         $this->kernel = $kernel;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLUSTERER;
     }
 
     /**

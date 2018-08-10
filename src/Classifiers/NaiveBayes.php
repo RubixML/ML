@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -24,7 +25,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
+class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 {
     const LOG_EPSILON = -8;
 
@@ -95,6 +96,16 @@ class NaiveBayes implements Multiclass, Online, Probabilistic, Persistable
         }
 
         $this->smoothing = $smoothing;
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::CLASSIFIER;
     }
 
     /**

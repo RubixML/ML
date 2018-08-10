@@ -425,38 +425,13 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Generate a random subset.
-     *
-     * @param  int  $n
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function randomSubset(int $n = 1) : self
-    {
-        if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate a subset of'
-                . ' less than 1 sample.');
-        }
-
-        if ($n > $this->numRows()) {
-            throw new InvalidArgumentException('Cannot generate a larger subset'
-                . ' than the sample size.');
-        }
-
-        $indices = (array) array_rand($this->samples, $n);
-
-        return new self(array_intersect_key($this->samples, $indices),
-            array_intersect_key($this->labels, $indices));
-    }
-
-    /**
      * Generate a random subset with replacement.
      *
      * @param  int  $n
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function randomSubsetWithReplacement(int $n = 1) : self
+    public function randomSubsetWithReplacement(int $n) : self
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
@@ -483,7 +458,7 @@ class Labeled extends DataFrame implements Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function randomWeightedSubsetWithReplacement(int $n = 1, array $weights) : self
+    public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
         if (count($weights) !== count($this->samples)) {
             throw new InvalidArgumentException('The number of weights must be'

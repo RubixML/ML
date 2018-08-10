@@ -1,6 +1,7 @@
 <?php
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -21,7 +22,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationTree extends ITree implements Detector, Probabilistic, Persistable
+class IsolationTree extends ITree implements Estimator, Probabilistic, Persistable
 {
     /**
      * The threshold isolation score betweeen 0 and 1 where 0 is not likely to
@@ -48,6 +49,16 @@ class IsolationTree extends ITree implements Detector, Probabilistic, Persistabl
         $this->threshold = $threshold;
 
         parent::__construct($maxDepth, $minSamples);
+    }
+
+    /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::DETECTOR;
     }
 
     /**

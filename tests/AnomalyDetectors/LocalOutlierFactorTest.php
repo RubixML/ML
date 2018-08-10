@@ -8,7 +8,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetectors\Detector;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
@@ -36,11 +35,15 @@ class LocalOutlierFactorTest extends TestCase
     public function test_build_detector()
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
-        $this->assertInstanceOf(Detector::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
     }
 
     public function test_make_prediction()

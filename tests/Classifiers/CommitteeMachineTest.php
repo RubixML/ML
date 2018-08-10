@@ -1,15 +1,16 @@
 <?php
 
-namespace Rubix\Tests;
+namespace Rubix\Tests\Classifiers;
 
 use Rubix\ML\Ensemble;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
-use Rubix\ML\CommitteeMachine;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -24,7 +25,7 @@ class CommitteeMachineTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(__DIR__ . '/iris.dataset');
+        $this->training = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 
@@ -35,12 +36,18 @@ class CommitteeMachineTest extends TestCase
         ]);
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_classifier()
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
-        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
     public function test_make_prediction()
@@ -52,5 +59,11 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals($this->testing->label(0), $predictions[0]);
         $this->assertEquals($this->testing->label(1), $predictions[1]);
         $this->assertEquals($this->testing->label(2), $predictions[2]);
+
+        $probabilities = $this->estimator->proba($this->testing);
+
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
+        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
     }
 }

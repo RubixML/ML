@@ -7,10 +7,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\Binary;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
-use Rubix\ML\Classifiers\Classifier;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -34,11 +32,14 @@ class AdaBoostTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
-        $this->assertInstanceOf(Classifier::class, $this->estimator);
-        $this->assertInstanceOf(Binary::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
     public function test_make_prediction()

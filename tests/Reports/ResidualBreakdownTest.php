@@ -25,6 +25,8 @@ class ResidualBreakdownTest extends TestCase
 
         $this->estimator = $this->createMock(Ridge::class);
 
+        $this->estimator->method('type')->willReturn(Ridge::REGRESSOR);
+
         $this->estimator->method('predict')->willReturn([
             10, 12, 15, 42, 56, 12, 17, 9, 1, 7,
         ]);

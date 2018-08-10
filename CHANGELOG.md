@@ -1,5 +1,9 @@
 - Unreleased
     - Added Relative Entropy cost function to nn
+    - Added random weighted subset to datasets
+    - Committee Machine classifier only and added expert influence
+    - Added type method to Estimator API
+    - Removed classifier, detector, clusterer, regressor interfaces
 
 - 0.0.4-alpha
     - Added Dropout hidden layer
