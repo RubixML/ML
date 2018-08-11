@@ -9,6 +9,9 @@ use Countable;
 
 interface Dataset extends ArrayAccess, IteratorAggregate, Countable
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * Restore a dataset from a serialized object file.
      *

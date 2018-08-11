@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Tests\Datasets\Structures;
+namespace Rubix\Tests\Other\Structures;
 
-use Rubix\ML\Datasets\Structures\DataFrame;
+use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -68,11 +68,6 @@ class DataFrameTest extends TestCase
     {
         $this->assertEquals(array_keys($this->stored[0]),
             $this->dataframe->indices());
-    }
-
-    public function test_get_column_types()
-    {
-        $this->assertEquals([1, 1, 1], $this->dataframe->columnTypes());
     }
 
     public function test_get_num_columns()

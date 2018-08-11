@@ -68,7 +68,7 @@ class VarianceThresholdFilter implements Transformer
         $this->selected = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === self::CONTINUOUS) {
+            if ($type === Dataset::CONTINUOUS) {
                 $values = $dataset->column($column);
 
                 $variance = Descriptive::populationVariance($values);

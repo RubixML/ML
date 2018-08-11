@@ -24,7 +24,7 @@ class L1Regularizer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This transformer only works on'
                 . ' continuous features.');
         }
@@ -47,7 +47,7 @@ class L1Regularizer implements Transformer
             }
 
             foreach ($sample as &$feature) {
-                $feature /= $norm + self::EPSILON;
+                $feature = $norm !== 0.0 ? $feature / $norm : 1.0;
             }
         }
     }

@@ -93,7 +93,7 @@ class RobustStandardizer implements Transformer
         $this->medians = $this->mads = [];
 
         foreach ($dataset->rotate() as $column => $values) {
-            if ($dataset->type($column) === self::CONTINUOUS) {
+            if ($dataset->type($column) === Dataset::CONTINUOUS) {
                 $median = Average::median($values);
 
                 $deviations = [];
@@ -102,8 +102,7 @@ class RobustStandardizer implements Transformer
                     $deviations[] = abs($value - $median);
                 }
 
-                $this->mads[$column] = Average::median($deviations)
-                    + self::EPSILON;
+                $this->mads[$column] = Average::median($deviations);
 
                 $this->medians[$column] = $median;
             }
@@ -124,15 +123,20 @@ class RobustStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($sample as $column => &$feature) {
+            foreach ($this->medians as $column => $median) {
+                $feature = $sample[$column];
+
                 if ($this->center === true) {
-                    $feature -= $this->medians[$column];
+                    $feature -= $median;
                 }
 
                 if ($this->scale === true) {
-                    $feature = (self::LAMBDA * $feature)
-                        / $this->mads[$column];
+                    $mad = $this->mads[$column];
+
+                    $feature = $mad !== 0.0 ? (self::LAMBDA * $feature) / $mad : 1.0;
                 }
+
+                $sample[$column] = $feature;
             }
         }
     }

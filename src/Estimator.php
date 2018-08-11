@@ -11,10 +11,7 @@ interface Estimator
     const CLUSTERER = 3;
     const DETECTOR = 4;
 
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
-    const EPSILON = 1e-8;
+    const EPSILON = 1e-10;
 
     /**
      * Return the integer encoded type of estimator this is.

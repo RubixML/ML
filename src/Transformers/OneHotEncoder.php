@@ -54,16 +54,19 @@ class OneHotEncoder implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
+        $types = $dataset->columnTypes();
+
         if (empty($this->columns)) {
-            $this->columns = array_keys(array_filter($dataset->columnTypes(),
-                function ($type) { return $type === self::CATEGORICAL; }));
+            $this->columns = array_keys(array_filter($types, function ($type) {
+                return $type === Dataset::CATEGORICAL;
+            }));
         }
 
         $this->categories = [[]];
 
         $position = 0;
 
-        foreach ($dataset->samples() as $sample) {
+        foreach ($dataset as $sample) {
             foreach ($this->columns as $column) {
                 if (!isset($this->categories[$column][$sample[$column]])) {
                     $this->categories[$column][$sample[$column]] = $position++;
@@ -83,7 +86,7 @@ class OneHotEncoder implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->categories)) {
+        if (is_null($this->categories)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

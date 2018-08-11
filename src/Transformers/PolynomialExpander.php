@@ -49,7 +49,7 @@ class PolynomialExpander implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }

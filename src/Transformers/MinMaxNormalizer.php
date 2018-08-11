@@ -43,7 +43,7 @@ class MinMaxNormalizer implements Transformer
         $this->minimums = $this->maximums = [];
 
         foreach ($dataset->ColumnTypes() as $column => $type) {
-            if ($type === self::CONTINUOUS) {
+            if ($type === Dataset::CONTINUOUS) {
                 $values = $dataset->column($column);
 
                 $this->minimums[$column] = min($values);
@@ -61,14 +61,18 @@ class MinMaxNormalizer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->minimums) or !isset($this->maximums)) {
+        if (is_null($this->minimums) or is_null($this->maximums)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
             foreach ($this->minimums as $column => $min) {
-                $sample[$column] = ($sample[$column] - $min)
-                    / (($this->maximums[$column] - $min) + self::EPSILON);
+                $max = $this->maximums[$column];
+
+                $denominator = $max - $min;
+
+                $sample[$column] = $denominator !== 0.0
+                    ? ($sample[$column] - $min) / $denominator : 1.0;
             }
         }
     }

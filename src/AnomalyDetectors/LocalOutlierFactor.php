@@ -131,7 +131,7 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
      */
     public function partial(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }

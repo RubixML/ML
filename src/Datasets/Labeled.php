@@ -2,7 +2,8 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Datasets\Structures\DataFrame;
+use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -74,6 +75,30 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Return an array of autodetected feature column types.
+     *
+     * @return array
+     */
+    public function columnTypes() : array
+    {
+        return array_map(function ($feature) {
+            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
+        }, $this->samples[0] ?? []);
+    }
+
+    /**
+     * Get the column type for a given column index.
+     *
+     * @param  int  $index
+     * @return int
+     */
+    public function type(int $index) : int
+    {
+        return is_string($this->samples[0][$index])
+            ? self::CATEGORICAL : self::CONTINUOUS;
+    }
+
+    /**
      * @return array
      */
     public function labels() : array
@@ -106,6 +131,17 @@ class Labeled extends DataFrame implements Dataset
     public function possibleOutcomes() : array
     {
         return array_values(array_unique($this->labels));
+    }
+
+    /**
+     * Apply a transformation to the sample matrix.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return void
+     */
+    public function apply(Transformer $transformer) : void
+    {
+        $transformer->transform($this->samples);
     }
 
     /**

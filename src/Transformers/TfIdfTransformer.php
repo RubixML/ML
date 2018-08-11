@@ -38,14 +38,14 @@ class TfIdfTransformer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This transformer only works on'
                 . ' continuous features.');
         }
 
         $n = $dataset->numRows();
 
-        $this->idfs = array_fill(0, $dataset->numColumns(), 0);
+        $this->idfs = array_fill(0, $dataset->numColumns(), 0.0);
 
         foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
@@ -56,7 +56,7 @@ class TfIdfTransformer implements Transformer
         }
 
         foreach ($this->idfs as &$idf) {
-            $idf = log(($n + self::EPSILON) / ($idf + self::EPSILON), 10);
+            $idf = log(($idf !== 0.0 ? $n / $idf : 1.0), 10);
         }
     }
 

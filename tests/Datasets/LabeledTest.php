@@ -4,7 +4,7 @@ namespace Rubix\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Structures\DataFrame;
+use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
 
 class LabeledTest extends TestCase
@@ -14,6 +14,8 @@ class LabeledTest extends TestCase
     protected $samples;
 
     protected $labels;
+
+    protected $types;
 
     protected $weights;
 
@@ -32,6 +34,8 @@ class LabeledTest extends TestCase
             'not monster', 'monster', 'not monster',
             'monster', 'not monster', 'not monster',
         ];
+
+        $this->types = [Dataset::CATEGORICAL, Dataset::CATEGORICAL, Dataset::CATEGORICAL];
 
         $this->weights = [
             1, 1, 2, 1, 2, 3,
@@ -62,6 +66,18 @@ class LabeledTest extends TestCase
     {
         $this->assertEquals(['not monster', 'monster'],
             $this->dataset->possibleOutcomes());
+    }
+
+    public function test_get_column_types()
+    {
+        $this->assertEquals($this->types, $this->dataset->columnTypes());
+    }
+
+    public function test_get_column_type()
+    {
+        $this->assertEquals($this->types[0], $this->dataset->type(0));
+        $this->assertEquals($this->types[1], $this->dataset->type(1));
+        $this->assertEquals($this->types[2], $this->dataset->type(2));
     }
 
     public function test_randomize()

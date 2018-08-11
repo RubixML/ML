@@ -169,7 +169,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(self::CONTINUOUS, $dataset->columnTypes())) {
+        if (in_array(Dataset::CONTINUOUS, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' categorical features.');
         }

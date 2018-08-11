@@ -96,12 +96,12 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                 . ' cluster.');
         }
 
-        if ($fuzz <= 1) {
+        if ($fuzz <= 1.0) {
             throw new InvalidArgumentException('Fuzz factor must be greater'
                 . ' than 1.');
         }
 
-        if ($minChange < 0) {
+        if ($minChange < 0.0) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
@@ -164,7 +164,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }

@@ -9,7 +9,7 @@ use RuntimeException;
 /**
  * Z Scale Standardizer
  *
- * A way of centering and scaling a sample matrix by computing the Z Score for =
+ * A way of centering and scaling a sample matrix by computing the Z Score for
  * each feature.
  *
  * @category    Machine Learning
@@ -88,11 +88,11 @@ class ZScaleStandardizer implements Transformer
         $this->means = $this->stddevs = [];
 
         foreach ($dataset->rotate() as $column => $values) {
-            if ($dataset->type($column) === self::CONTINUOUS) {
+            if ($dataset->type($column) === Dataset::CONTINUOUS) {
                 list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$column] = $mean;
-                $this->stddevs[$column] = sqrt($variance) + self::EPSILON;
+                $this->stddevs[$column] = sqrt($variance);
             }
         }
     }
@@ -111,14 +111,20 @@ class ZScaleStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($sample as $column => &$feature) {
+            foreach ($this->means as $column => $mean) {
+                $feature = $sample[$column];
+
                 if ($this->center === true) {
-                    $feature -= $this->means[$column];
+                    $feature -= $mean;
                 }
 
                 if ($this->scale === true) {
-                    $feature /= $this->stddevs[$column];
+                    $stddev = $this->stddevs[$column];
+
+                    $feature = $stddev !== 0.0 ? $feature / $stddev : 1.0;
                 }
+
+                $sample[$column] = $feature;
             }
         }
     }

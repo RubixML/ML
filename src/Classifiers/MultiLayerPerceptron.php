@@ -299,7 +299,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
                 . ' Labeled training set.');
         }
 
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This estimator only works with'
             . ' continuous features.');
         }

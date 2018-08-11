@@ -89,11 +89,11 @@ class QuartileStandardizer implements Transformer
         $this->medians = $this->iqrs = [];
 
         foreach ($dataset->rotate() as $column => $values) {
-            if ($dataset->type($column) === self::CONTINUOUS) {
+            if ($dataset->type($column) === Dataset::CONTINUOUS) {
                 $quartiles = Descriptive::quartiles($values);
 
                 $this->medians[$column] = $quartiles['Q2'];
-                $this->iqrs[$column] = $quartiles['IQR'] + self::EPSILON;
+                $this->iqrs[$column] = $quartiles['IQR'];
             }
         }
     }
@@ -112,14 +112,20 @@ class QuartileStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($sample as $column => &$feature) {
+            foreach ($this->medians as $column => $median) {
+                $feature = $sample[$column];
+
                 if ($this->center === true) {
-                    $feature -= $this->medians[$column];
+                    $feature -= $median;
                 }
 
                 if ($this->scale === true) {
-                    $feature =  $feature / $this->iqrs[$column];
+                    $iqr = $this->iqrs[$column];
+
+                    $feature = $iqr !== 0.0 ? $feature / $iqr : 1.0;
                 }
+
+                $sample[$column] = $feature;
             }
         }
     }

@@ -87,7 +87,7 @@ class MissingDataImputer implements Transformer
         $this->imputers = [];
 
         foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === self::CATEGORICAL) {
+            if ($type === Dataset::CATEGORICAL) {
                 $imputer = clone $this->categorical;
             } else {
                 $imputer = clone $this->continuous;

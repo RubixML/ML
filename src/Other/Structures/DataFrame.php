@@ -1,8 +1,7 @@
 <?php
 
-namespace Rubix\ML\Datasets\Structures;
+namespace Rubix\ML\Other\Structures;
 
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -12,9 +11,6 @@ use Countable;
 
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     /**
      * The feature vectors of the dataset. i.e the data table.
      *
@@ -119,30 +115,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return an array of autodetected feature column types.
-     *
-     * @return array
-     */
-    public function columnTypes() : array
-    {
-        return array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $this->samples[0] ?? []);
-    }
-
-    /**
-     * Get the column type for a given column index.
-     *
-     * @param  int  $index
-     * @return int
-     */
-    public function type(int $index) : int
-    {
-        return is_string($this->samples[0][$index])
-            ? self::CATEGORICAL : self::CONTINUOUS;
-    }
-
-    /**
      * Return the number of feature columns in the data frame.
      *
      * @return int
@@ -150,17 +122,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function numColumns() : int
     {
         return count($this->samples[0] ?? []);
-    }
-
-    /**
-     * Apply a transformation to the sample matrix.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
-     */
-    public function apply(Transformer $transformer) : void
-    {
-        $transformer->transform($this->samples);
     }
 
     /**

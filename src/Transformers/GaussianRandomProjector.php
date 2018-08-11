@@ -24,7 +24,7 @@ use RuntimeException;
  */
 class GaussianRandomProjector implements Transformer
 {
-    const SCALE = 1e8;
+    const PHI = 1e8;
 
     /**
      * The target number of dimensions.
@@ -76,21 +76,21 @@ class GaussianRandomProjector implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(self::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
 
         $columns = $dataset->numColumns();
 
-        $max = (int) ((1 / sqrt($this->dimensions)) * self::SCALE);
+        $max = (int) ((1 / sqrt($this->dimensions)) * self::PHI);
         $min = -$max;
 
         $r = [[]];
 
         for ($i = 0; $i < $columns; $i++) {
             for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = rand($min, $max) / self::SCALE;
+                $r[$i][$j] = rand($min, $max) / self::PHI;
             }
         }
 

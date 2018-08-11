@@ -18,8 +18,8 @@ use RuntimeException;
  * Committee Machine
  *
  * A voting ensemble that aggregates the predictions of a committee of heterogeneous
- * classifiers (called experts). The committee uses a user-specified influence-based
- * scheme to make final predictions.
+ * probabilistic classifiers (called experts). The committee uses a user-specified
+ * influence-based scheme to make final predictions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -77,7 +77,12 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
 
             if ($expert->type() !== self::CLASSIFIER) {
                 throw new InvalidArgumentException('Base estimator must be a'
-                    . ' classifier.');
+                    . ' classifier, ' . gettype($expert) . ' found.');
+            }
+
+            if (!$expert instanceof Probabilistic) {
+                throw new InvalidArgumentException('Base classifier must'
+                    . ' implement the probabilistic interface.');
             }
         }
 
@@ -86,7 +91,7 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
         } else {
             if (count($influence) !== $n) {
                 throw new InvalidArgumentException('The number of influence'
-                    . ' parameters must be equal to the number of experts.');
+                    . ' values must be equal to the number of experts.');
             }
 
             $total = array_sum($influence);
@@ -188,8 +193,10 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
             array_fill_keys($this->classes, 0.0));
 
         foreach ($this->experts as $i => $expert) {
-            foreach ($expert->predict($dataset) as $j => $class) {
-                $probabilities[$j][$class] += $this->influence[$i];
+            foreach ($expert->proba($dataset) as $j => $distribution) {
+                foreach ($distribution as $class => $probability) {
+                    $probabilities[$j][$class] += $this->influence[$i] * $probability;
+                }
             }
         }
 

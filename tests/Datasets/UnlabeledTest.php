@@ -4,7 +4,7 @@ namespace Rubix\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Structures\DataFrame;
+use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
 
 class UnlabeledTest extends TestCase
@@ -12,6 +12,8 @@ class UnlabeledTest extends TestCase
     protected $dataset;
 
     protected $samples;
+
+    protected $types;
 
     protected $weights;
 
@@ -26,6 +28,8 @@ class UnlabeledTest extends TestCase
             ['nice', 'furry', 'loner'],
         ];
 
+        $this->types = [Dataset::CATEGORICAL, Dataset::CATEGORICAL, Dataset::CATEGORICAL];
+
         $this->weights = [
             1, 1, 2, 1, 2, 3,
         ];
@@ -38,6 +42,18 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Unlabeled::class, $this->dataset);
         $this->assertInstanceOf(DataFrame::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
+    }
+
+    public function test_get_column_types()
+    {
+        $this->assertEquals($this->types, $this->dataset->columnTypes());
+    }
+
+    public function test_get_column_type()
+    {
+        $this->assertEquals($this->types[0], $this->dataset->type(0));
+        $this->assertEquals($this->types[1], $this->dataset->type(1));
+        $this->assertEquals($this->types[2], $this->dataset->type(2));
     }
 
     public function test_randomize()
