@@ -145,25 +145,35 @@ class KMeans implements Estimator, Online, Persistable
             $this->train($dataset);
         }
 
-        $labels = array_fill(0, $dataset->numRows(), null);
+        $labels = array_fill(0, $dataset->numRows(), -1);
         $sizes = array_fill(0, $this->k, 0);
+
         $changed = true;
 
-        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             foreach ($dataset as $i => $sample) {
-                $label = $this->label($sample);
+                $label = $this->assignLabel($sample);
+
+                $centroid = $this->centroids[$label];
 
                 if ($label !== $labels[$i]) {
                     $labels[$i] = $label;
+
                     $sizes[$label]++;
                 } else {
                     $changed = false;
                 }
 
-                foreach ($this->centroids[$label] as $column => &$mean) {
-                    $mean = ($mean * ($sizes[$label] - 1) + $sample[$column])
-                        / ($sizes[$label] + self::EPSILON);
+                $size = $sizes[$label] + self::EPSILON;
+
+                foreach ($sample as $column => $feature) {
+                    $mean = $centroid[$column];
+
+                    $centroid[$column] = ($mean * ($size - 1) + $feature)
+                        / $size;
                 }
+
+                $this->centroids[$label] = $centroid;
             }
 
             if ($changed === false) {
@@ -188,7 +198,7 @@ class KMeans implements Estimator, Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->label($sample);
+            $predictions[] = $this->assignLabel($sample);
         }
 
         return $predictions;
@@ -200,7 +210,7 @@ class KMeans implements Estimator, Online, Persistable
      * @param  array  $sample
      * @return int
      */
-    protected function label(array $sample) : int
+    protected function assignLabel(array $sample) : int
     {
         $bestDistance = INF;
         $bestLabel = -1;
@@ -210,10 +220,10 @@ class KMeans implements Estimator, Online, Persistable
 
             if ($distance < $bestDistance) {
                 $bestDistance = $distance;
-                $bestLabel = (int) $label;
+                $bestLabel = $label;
             }
         }
 
-        return $bestLabel;
+        return (int) $bestLabel;
     }
 }

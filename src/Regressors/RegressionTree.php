@@ -155,7 +155,7 @@ class RegressionTree extends CART implements Estimator, Persistable
                     $bestGroups = $groups;
                 }
 
-                if ($ssd <= $this->tolerance) {
+                if ($ssd < $this->tolerance) {
                     break 2;
                 }
             }

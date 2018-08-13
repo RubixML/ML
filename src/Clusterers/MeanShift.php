@@ -150,6 +150,8 @@ class MeanShift implements Estimator, Persistable
 
         $this->centroids = $previous = $dataset->samples();
 
+        $denominator = 2.0 * $this->radius ** 2;
+
         $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
@@ -157,10 +159,9 @@ class MeanShift implements Estimator, Persistable
                 foreach ($dataset as $sample) {
                     $distance = $this->kernel->compute($sample, $centroid1);
 
-                    if ($distance <= $this->radius) {
+                    if ($distance < $this->radius) {
                         foreach ($sample as $column => $feature) {
-                            $weight = exp(-(($distance ** 2)
-                                / (2 * $this->radius ** 2)));
+                            $weight = exp(-($distance ** 2 / $denominator));
 
                             $centroid1[$column] = ($weight * $feature) / $weight;
                         }
@@ -168,12 +169,14 @@ class MeanShift implements Estimator, Persistable
                 }
 
                 foreach ($this->centroids as $j => $centroid2) {
-                    if ($i !== $j) {
-                        $distance = $this->kernel->compute($centroid1, $centroid2);
+                    if ($i === $j) {
+                        continue 1;
+                    }
 
-                        if ($distance < $this->radius) {
-                            unset($this->centroids[$j]);
-                        }
+                    $distance = $this->kernel->compute($centroid1, $centroid2);
+
+                    if ($distance < $this->radius) {
+                        unset($this->centroids[$j]);
                     }
                 }
             }
@@ -208,7 +211,7 @@ class MeanShift implements Estimator, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->label($sample);
+            $predictions[] = $this->assignLabel($sample);
         }
 
         return $predictions;
@@ -220,7 +223,7 @@ class MeanShift implements Estimator, Persistable
      * @param  array  $sample
      * @return int
      */
-    protected function label(array $sample) : int
+    protected function assignLabel(array $sample) : int
     {
         $bestDistance = INF;
         $bestLabel = -1;
@@ -230,11 +233,11 @@ class MeanShift implements Estimator, Persistable
 
             if ($distance < $bestDistance) {
                 $bestDistance = $distance;
-                $bestLabel = (int) $label;
+                $bestLabel = $label;
             }
         }
 
-        return $bestLabel;
+        return (int) $bestLabel;
     }
 
     /**

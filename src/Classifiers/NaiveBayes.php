@@ -30,12 +30,11 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     const LOG_EPSILON = -8;
 
     /**
-     * The amount of additive (Laplace) smoothing to apply to the feature
-     * probabilities.
+     * The amount of additive (Laplace) smoothing to apply to the probabilities.
      *
      * @var float
      */
-    protected $smoothing;
+    protected $alpha;
 
     /**
      * The weight of each class as a proportion of the entire training set.
@@ -84,18 +83,18 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  float  $smoothing
+     * @param  float  $alpha
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $smoothing = 1.0)
+    public function __construct(float $alpha = 1.0)
     {
-        if ($smoothing < 0.0) {
+        if ($alpha < 0.0) {
             throw new InvalidArgumentException('Smoothing parameter cannot be'
                 . ' less than 0.');
         }
 
-        $this->smoothing = $smoothing;
+        $this->alpha = $alpha;
     }
 
     /**
@@ -179,38 +178,40 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            $categories = $this->counts[$class];
+            $classCounts = $this->counts[$class];
 
             foreach ($stratum->rotate() as $column => $values) {
-                $counts = $categories[$column];
+                $columnCounts = $classCounts[$column];
 
                 foreach (array_count_values($values) as $category => $count) {
-                    if (!isset($counts[$category])) {
-                        $counts[$category] = $count;
+                    if (isset($counts[$category])) {
+                        $columnCounts[$category] += $count;
                     } else {
-                        $counts[$category] += $count;
+                        $columnCounts[$category] = $count;
                     }
                 }
 
-                $total = array_sum($counts) + (count($counts) * $this->smoothing);
+                $sigma = array_sum($columnCounts)
+                    + (count($columnCounts) * $this->alpha);
 
                 $probs = [];
 
-                foreach ($counts as $category => $count) {
-                    $probs[$category] = log(($count + $this->smoothing) / $total);
+                foreach ($columnCounts as $category => $count) {
+                    $probs[$category] = log(($count + $this->alpha) / $sigma);
                 }
 
-                $this->counts[$class][$column] = $counts;
+                $this->counts[$class][$column] = $columnCounts;
                 $this->probs[$class][$column] = $probs;
             }
 
             $this->weights[$class] += count($stratum);
         }
 
-        $total = array_sum($this->weights) + (count($this->weights) * $this->smoothing);
+        $sigma = array_sum($this->weights)
+            + (count($this->weights) * $this->alpha);
 
         foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log(($weight + $this->smoothing) / $total);
+            $this->priors[$class] = log(($weight + $this->alpha) / $sigma);
         }
     }
 
@@ -226,7 +227,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $jll = $this->computeJointLogLikelihood($sample);
+            $jll = $this->jointLogLikelihood($sample);
 
             $predictions[] = Argmax::compute($jll);
         }
@@ -243,7 +244,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $i => $sample) {
-            $jll = $this->computeJointLogLikelihood($sample);
+            $jll = $this->jointLogLikelihood($sample);
 
             $total = LogSumExp::compute($jll);
 
@@ -261,7 +262,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
      * @param  array  $sample
      * @return array
      */
-    protected function computeJointLogLikelihood(array $sample) : array
+    protected function jointLogLikelihood(array $sample) : array
     {
         $likelihood = [];
 

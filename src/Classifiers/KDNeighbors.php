@@ -69,8 +69,8 @@ class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistabl
         }
 
         if ($k > $neighborhood) {
-            throw new InvalidArgumentException('K cannot be larger than'
-                . ' neighborhood.');
+            throw new InvalidArgumentException('K cannot be larger than the'
+                . ' neighborhood size.');
         }
 
         if (is_null($kernel)) {

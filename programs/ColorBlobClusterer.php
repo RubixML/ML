@@ -5,10 +5,10 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Generators\Blob;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Reports\ContingencyTable;
-use Rubix\ML\Other\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -17,7 +17,7 @@ use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
 echo '║                                                     ║' . "\n";
-echo '║ Color Clusterer using Blob Generator and Mean Shift ║' . "\n";
+echo '║ Color Blob Clusterer using Mean Shift               ║' . "\n";
 echo '║                                                     ║' . "\n";
 echo '╚═════════════════════════════════════════════════════╝' . "\n";
 

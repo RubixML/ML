@@ -8,7 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use MathPHP\LinearAlgebra\DiagonalMatrix;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -148,22 +148,27 @@ class Ridge implements Estimator, Persistable
      * Compute the coefficients of the training data like ordinary least squares,
      * however add a regularization term to the equation.
      *
-     * @param  array  $dataset
+     * @param  array  $samples
      * @param  array  $labels
      * @return array
      */
-    protected function computeCoefficients(array $dataset, array $labels) : array
+    protected function computeCoefficients(array $samples, array $labels) : array
     {
-        foreach ($dataset as &$sample) {
-            array_unshift($sample, 1);
+        foreach ($samples as &$sample) {
+            array_unshift($sample, 1.0);
         }
 
-        $x = new Matrix($dataset);
+        $x = new Matrix($samples);
         $y = new Vector($labels);
-        $a = MatrixFactory::identity($x->getN())->scalarMultiply($this->alpha);
 
-        return $x->transpose()->multiply($x)->add($a)->inverse()
-            ->multiply($x->transpose()->multiply($y))
+        $penalty = new DiagonalMatrix(array_fill(0, $x->getN(), $this->alpha));
+
+        $xT = $x->transpose();
+
+        return $xT->multiply($x)
+            ->add($penalty)
+            ->inverse()
+            ->multiply($xT->multiply($y))
             ->getColumn(0);
     }
 }

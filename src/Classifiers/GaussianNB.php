@@ -169,25 +169,27 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         foreach ($dataset->stratify() as $class => $stratum) {
             $n = count($stratum);
 
-            $total = $this->weights[$class] + $n;
+            $oldWeight = $this->weights[$class];
+            $newWeight = $oldWeight + $n;
+
+            $oldMeans = $this->means[$class];
+            $oldVariances = $this->variances[$class];
 
             foreach ($stratum->rotate() as $column => $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
-                $meanNew = (($n * $mean)
-                    + ($this->weights[$class] * $this->means[$class][$column]))
-                    / $total;
+                $this->means[$class][$column] = (($n * $mean)
+                    + ($oldWeight * $oldMeans[$column]))
+                    / $newWeight;
 
-                $this->variances[$class][$column] = ($this->weights[$class]
-                    * $this->variances[$class][$column] + ($n * $variance)
-                    + ($this->weights[$class] / ($n * $total))
-                    * ($n * $this->means[$class][$column] - $n * $mean) ** 2)
-                    / $total;
-
-                $this->means[$class][$column] = $meanNew;
+                $this->variances[$class][$column] = ($oldWeight
+                    * $oldVariances[$column] + ($n * $variance)
+                    + ($oldWeight / ($n * $newWeight))
+                    * ($n * $oldMeans[$column] - $n * $mean) ** 2)
+                    / $newWeight;
             }
 
-            $this->weights[$class] = $total;
+            $this->weights[$class] = $newWeight;
         }
 
         $total = array_sum($this->weights);
@@ -209,7 +211,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $jll = $this->computeJointLogLikelihood($sample);
+            $jll = $this->jointLogLikelihood($sample);
 
             $predictions[] = Argmax::compute($jll);
         }
@@ -226,7 +228,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $i => $sample) {
-            $jll = $this->computeJointLogLikelihood($sample);
+            $jll = $this->jointLogLikelihood($sample);
 
             $total = LogSumExp::compute($jll);
 
@@ -244,7 +246,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      * @param  array  $sample
      * @return array
      */
-    protected function computeJointLogLikelihood(array $sample) : array
+    protected function jointLogLikelihood(array $sample) : array
     {
         $likelihood = [];
 

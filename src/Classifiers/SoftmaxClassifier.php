@@ -225,7 +225,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
-            $previous = 0.0;
+            $previous = INF;
 
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $dataset->randomize()->batch($this->batchSize);

@@ -40,6 +40,13 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     protected $fuzz;
 
     /**
+     * The memoized exponent of the membership calculation.
+     *
+     * @var float
+     */
+    protected $lambda;
+
+    /**
      * The distance kernel to use when computing the distances between
      * samples.
      *
@@ -117,6 +124,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
         $this->c = $c;
         $this->fuzz = $fuzz;
+        $this->lambda = 2.0 / ($fuzz - 1);
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -176,31 +184,33 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
         $this->centroids = $dataset->randomize()->tail($this->c)->samples();
 
+        $rotated = $dataset->rotate();
+
         $this->steps = $memberships = [];
 
-        $previous = 0.0;
+        $previous = INF;
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            foreach ($dataset as $index => $sample) {
-                $memberships[$index] = $this->calculateMembership($sample);
+            foreach ($dataset as $i => $sample) {
+                $memberships[$i] = $this->calculateMembership($sample);
             }
 
             foreach ($this->centroids as $label => &$centroid) {
-                foreach ($centroid as $column => &$mean) {
+                foreach ($rotated as $column => $values) {
                     $sigma = $total = self::EPSILON;
 
-                    foreach ($dataset as $index => $sample) {
-                        $weight = $memberships[$index][$label] ** $this->fuzz;
+                    foreach ($memberships as $i => $probabilities) {
+                        $weight = $probabilities[$label] ** $this->fuzz;
 
-                        $sigma += $weight * $sample[$column];
+                        $sigma += $weight * $values[$i];
                         $total += $weight;
                     }
 
-                    $mean = $sigma / $total;
+                    $centroid[$column] = $sigma / $total;
                 }
             }
 
-            $distance = $this->computeInterClusterDistance($dataset, $memberships);
+            $distance = $this->interClusterDistance($dataset, $memberships);
 
             $this->steps[] = $distance;
 
@@ -265,16 +275,15 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
         foreach ($this->centroids as $label => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
-            $total = self::EPSILON;
+            $total = 0.0;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += ($a / ($b + self::EPSILON))
-                    ** (2 / ($this->fuzz - 1));
+                $total += ($b !== 0.0 ? ($a / $b) : 1.0) ** $this->lambda;
             }
 
-            $membership[$label] = 1 / $total;
+            $membership[$label] = 1.0 / $total;
         }
 
         return $membership;
@@ -286,7 +295,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return float
      */
-    protected function computeInterClusterDistance(Dataset $dataset, array $memberships) : float
+    protected function interClusterDistance(Dataset $dataset, array $memberships) : float
     {
         $distance = 0.0;
 

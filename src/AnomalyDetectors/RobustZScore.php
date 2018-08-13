@@ -137,9 +137,8 @@ class RobustZScore implements Estimator, Persistable
                 $deviations[] = abs($value - $median);
             }
 
-            $this->mads[$column] = Average::median($deviations);
-
             $this->medians[$column] = $median;
+            $this->mads[$column] = Average::median($deviations);
         }
     }
 
@@ -170,6 +169,7 @@ class RobustZScore implements Estimator, Persistable
 
                 if ($z > $this->threshold) {
                     $predictions[] = 1;
+                    
                     continue 2;
                 }
 

@@ -37,7 +37,7 @@ class Concentration implements Metric
                 . ' clusterers.');
         }
 
-        if (in_array(self::CATEGORICAL, $testing->columnTypes())) {
+        if (in_array(Dataset::CATEGORICAL, $testing->columnTypes())) {
             throw new InvalidArgumentException('This metric only works with'
                 . ' continuous features.');
         }

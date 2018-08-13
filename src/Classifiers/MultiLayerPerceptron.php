@@ -313,7 +313,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
 
             $bestScore = $min;
             $bestSnapshot = null;
-            $previous = 0.0;
+            $previous = INF;
 
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $training->randomize()->batch($this->batchSize);

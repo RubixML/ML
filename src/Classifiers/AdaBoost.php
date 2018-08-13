@@ -240,8 +240,8 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             $influence = 0.5 * log((1 - $error) / $error);
 
             foreach ($predictions as $i => $prediction) {
-                $x = $prediction === $this->classes[1] ? 1 : -1;
-                $y = $dataset->label($i) === $this->classes[1] ? 1 : -1;
+                $x = array_search($prediction, $this->classes);
+                $y = array_search($dataset->label($i), $this->classes);
 
                 $this->weights[$i] *= exp(-$influence * $x * $y) / $total;
             }

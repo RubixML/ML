@@ -111,7 +111,7 @@ class DBSCAN implements Estimator, Persistable
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighborsByDistance($sample, $dataset);
+            $neighbors = $this->groupNeighbors($sample, $dataset);
 
             if (count($neighbors) < $this->minDensity) {
                 $labels[$index] = self::NOISE;
@@ -154,7 +154,7 @@ class DBSCAN implements Estimator, Persistable
 
             $labels[$index] = $current;
 
-            $seeds = $this->groupNeighborsByDistance($dataset->row($index), $dataset);
+            $seeds = $this->groupNeighbors($dataset->row($index), $dataset);
 
             if (count($seeds) >= $this->minDensity) {
                 $neighbors = array_unique(array_merge($neighbors, $seeds));
@@ -166,16 +166,16 @@ class DBSCAN implements Estimator, Persistable
      * Group the samples into a region defined by their distance from a given
      * centroid.
      *
-     * @param  array  $neighbor
+     * @param  array  $sample
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    protected function groupNeighborsByDistance(array $neighbor, Dataset $dataset) : array
+    protected function groupNeighbors(array $sample, Dataset $dataset) : array
     {
         $neighbors = [];
 
-        foreach ($dataset as $index => $sample) {
-            $distance = $this->kernel->compute($neighbor, $sample);
+        foreach ($dataset as $index => $neighbor) {
+            $distance = $this->kernel->compute($sample, $neighbor);
 
             if ($distance <= $this->radius) {
                 $neighbors[] = $index;

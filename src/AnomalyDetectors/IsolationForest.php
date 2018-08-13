@@ -75,7 +75,7 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' value between 0.01 and 1.0.');
         }
 
-        if ($threshold < 0 or $threshold > 1) {
+        if ($threshold < 0.0 or $threshold > 1.0) {
             throw new InvalidArgumentException('Threshold isolation score must'
                 . ' be between 0 and 1.');
         }
@@ -121,10 +121,12 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
 
         $this->forest = [];
 
-        for ($i = 0; $i < $this->trees; $i++) {
+        for ($epoch = 0; $epoch < $this->trees; $epoch++) {
             $tree = new IsolationTree($maxDepth, 1, $this->threshold);
 
-            $tree->train($dataset->randomize()->head($n));
+            $subset = $dataset->randomize()->head($n);
+
+            $tree->train($subset);
 
             $this->forest[] = $tree;
         }

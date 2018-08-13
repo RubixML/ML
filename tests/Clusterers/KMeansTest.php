@@ -20,7 +20,7 @@ class KMeansTest extends TestCase
     {
         $this->dataset = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
 
-        $this->estimator = new KMeans(2, new Euclidean(), 100);
+        $this->estimator = new KMeans(2, new Euclidean(), 300);
     }
 
     public function test_build_clusterer()

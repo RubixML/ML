@@ -86,9 +86,7 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
             }
         }
 
-        if (is_null($influence)) {
-            $influence = array_fill(0, $n, 1 / $n);
-        } else {
+        if (is_array($influence)) {
             if (count($influence) !== $n) {
                 throw new InvalidArgumentException('The number of influence'
                     . ' values must be equal to the number of experts.');
@@ -104,6 +102,8 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
             $influence = array_map(function ($value) use ($total) {
                 return $value / $total;
             }, $influence);
+        } else {
+            $influence = array_fill(0, $n, 1 / $n);
         }
 
         $this->experts = $experts;

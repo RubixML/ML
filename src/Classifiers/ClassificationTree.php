@@ -180,7 +180,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
                     $bestGroups = $groups;
                 }
 
-                if ($gini <= $this->tolerance) {
+                if ($gini < $this->tolerance) {
                     break 2;
                 }
             }

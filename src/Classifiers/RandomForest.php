@@ -139,7 +139,7 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Gini tolerance must be 0 or'
                 . ' greater.');
         }
@@ -147,8 +147,8 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
         $reflector = new ReflectionClass($base);
 
         if (!in_array($reflector->getName(), self::AVAILABLE_TREES)) {
-            throw new InvalidArgumentException('Base classifier must be a'
-                . ' type of classification tree.');
+            throw new InvalidArgumentException('Base classifier not compatible'
+                . ' with this ensemble.');
         }
 
         $this->trees = $trees;
@@ -205,7 +205,9 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
             $tree = new $this->base($this->maxDepth, $this->minSamples,
                 $this->maxFeatures, $this->tolerance);
 
-            $tree->train($dataset->randomSubsetWithReplacement($n));
+            $subset = $dataset->randomSubsetWithReplacement($n);
+
+            $tree->train($subset);
 
             $this->forest[] = $tree;
         }
