@@ -30,6 +30,14 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     const TWO_PI = 2.0 * M_PI;
 
     /**
+     * A small amount of smoothing to apply to the variance of each gaussian for
+     * numerical stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var array
@@ -73,6 +81,21 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     protected $classes = [
         //
     ];
+
+    /**
+     * @param  float  $epsilon
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(float $epsilon = 1e-8)
+    {
+        if ($epsilon < 0.0) {
+            throw new InvalidArgumentException('Smoothing parameter cannot be'
+                . ' less than 0.');
+        }
+
+        $this->epsilon = $epsilon;
+    }
 
     /**
      * Return the integer encoded type of estimator this is.
@@ -201,7 +224,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 
     /**
     * Calculate the likelihood of the sample being a member of a class and
-    * chose the class with the highest likelihood score as the prediction.
+    * choose the class with the highest likelihood as the prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
@@ -220,6 +243,9 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
+     * Calculate the probabilities of each class from the joint log likelihood
+     * of a sample.
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
@@ -230,10 +256,10 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $total = LogSumExp::compute($jll);
+            $sigma = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $total);
+                $probabilities[$i][$class] = exp($likelihood - $sigma);
             }
         }
 
@@ -257,7 +283,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
-                $variance = $variances[$column] + self::EPSILON;
+                $variance = $variances[$column] + $this->epsilon;
 
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;

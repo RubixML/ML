@@ -49,7 +49,7 @@ $estimator = new Pipeline(new CommitteeMachine([
         new Dense(20, new ELU()),
     ], 50, new Adam(0.001), 1e-4),
     new RandomForest(300, 0.1, 10, 3, 3, 1e-4, ExtraTreeClassifier::class),
-    new GaussianNB(),
+    new GaussianNB(1e-8),
 ], [
     5, 4, 6,
 ]), [

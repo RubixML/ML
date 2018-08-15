@@ -4,6 +4,7 @@
     - Committee Machine classifier only and added expert influence
     - Added type method to Estimator API
     - Removed classifier, detector, clusterer, regressor interfaces
+    - Added epsilon smoothing to Gaussian Naive Bayes
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

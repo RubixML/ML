@@ -31,7 +31,7 @@ $samples = iterator_to_array($reader->getRecords([
 
 $dataset = new Unlabeled($samples);
 
-$estimator = new Pipeline(new IsolationForest(500, 0.2, 0.60), [
+$estimator = new Pipeline(new IsolationForest(500, 0.2, 0.58), [
     new NumericStringConverter(),
 ]);
 

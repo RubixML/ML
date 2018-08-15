@@ -1085,7 +1085,9 @@ A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
-This Estimator does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epsilon | 1e-8 | float | A small amount of smoothing to apply to the variance of each gaussian for numerical stability. |
 
 ##### Additional Methods:
 
@@ -1108,7 +1110,7 @@ public variances() : array
 ```php
 use Rubix\ML\Classifiers\GaussianNB;
 
-$estimator = new GaussianNB();
+$estimator = new GaussianNB(0.1);
 ```
 
 ### K-d Neighbors
@@ -1252,7 +1254,7 @@ Probability-based classifier that used probabilistic inference to predict the co
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | smoothing | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
+| 1 | alpha | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
 
 ##### Additional Methods:
 

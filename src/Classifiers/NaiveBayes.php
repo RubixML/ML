@@ -246,10 +246,10 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $total = LogSumExp::compute($jll);
+            $sigma = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $total);
+                $probabilities[$i][$class] = exp($likelihood - $sigma);
             }
         }
 

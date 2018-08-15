@@ -47,9 +47,9 @@ class ConfusionMatrix implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER) {
+        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
             throw new InvalidArgumentException('This report only works with'
-                . ' classifiers.');
+                . ' classifiers and anomaly detectors.');
         }
 
         if (!$testing instanceof Labeled) {

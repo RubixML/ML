@@ -33,7 +33,7 @@ class GaussianNBTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new GaussianNB();
+        $this->estimator = new GaussianNB(1e-8);
     }
 
     public function test_build_classifier()
