@@ -37,8 +37,8 @@ class HammingTest extends TestCase
         $distance2 = $this->kernel->compute($this->a, $this->c);
         $distance3 = $this->kernel->compute($this->b, $this->c);
 
-        $this->assertEquals(2.0, $distance1);
-        $this->assertEquals(2.0, $distance2);
-        $this->assertEquals(3.0, $distance3);
+        $this->assertEquals(0.6666666666666666, $distance1, '', 1e-3);
+        $this->assertEquals(0.6666666666666666, $distance2, '', 1e-3);
+        $this->assertEquals(1.0, $distance3, '', 1e-3);
     }
 }

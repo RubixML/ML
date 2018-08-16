@@ -7,6 +7,7 @@
     - Added epsilon smoothing to Gaussian Naive Bayes
     - Added option to fit priors in Naive Bayes' classifiers
     - Added Jaccard distance kernel
+    - Fixed Hamming distance calculation
 
 - 0.0.4-alpha
     - Added Dropout hidden layer
