@@ -125,6 +125,7 @@ MIT
 			- [Input Layers](#input-layers)
 				- [Placeholder](#placeholder)
 			- [Hidden Layers](#hidden-layers)
+				- [Alpha Dropout](#alpha-dropout)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 			- [Output Layers](#output-layers)
@@ -2636,6 +2637,24 @@ $layer = new Placeholder(100);
 ### Hidden Layers
 In multilayer networks, Hidden layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output layer. The more complex the problem space is, the more Hidden layers and neurons will be necessary to handle the complexity.
 
+### Alpha Dropout
+Alpha Dropout is a type of dropout layer that maintains the mean and variance of the original inputs in order to ensure the self-normalizing property of [SELU](#selu) networks with dropout. Alpha Dropout fits with SELU networks by randomly setting activations to the negative saturation value of the activation function at a given ratio each pass.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | neurons | None | int | The number of neurons in the layer. |
+| 2 | ratio | 0.1 | float | The ratio of neurons that are dropped during each training pass. |
+| 3 | activation fn | SELU | object | The activation function to use. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\AlphaDropout;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+
+$layer = new AlphaDropout(100, new SELU(), 0.1);
+```
+
 ### Dense
 Dense layers are fully connected Hidden layers, meaning each neuron is connected to each other neuron in the previous layer. Dense layers are able to employ a variety of [Activation Functions](#activation-functions) that modify the output of each neuron in the layer.
 
@@ -2666,9 +2685,9 @@ Dropout layers temporarily disable neurons during each training pass. Dropout is
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Dropout;
-use Rubix\ML\NeuralNet\ActivationFunctions\NoisyReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$layer = new Dropout(100, new NoisyReLU(0.05), 0.5);
+$layer = new Dropout(100, new LeakyReLU(0.05), 0.5);
 ```
 
 ### Output Layers

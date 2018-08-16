@@ -25,6 +25,8 @@ class Hamming implements Distance
      */
     public function compute(array $a, array $b) : float
     {
+        $dimensions = count($a);
+
         $distance = 0;
 
         foreach ($a as $i => $coordinate) {
@@ -33,8 +35,6 @@ class Hamming implements Distance
             }
         }
 
-        $dims = count($a);
-
-        return $dims !== 0 ? (float) ($distance / $dims) : 1.0;
+        return $dimensions !== 0 ? $distance / $dimensions : 1.0;
     }
 }

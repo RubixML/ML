@@ -83,14 +83,17 @@ class MulticlassBreakdown implements Report
             $fn = $falseNegatives[$label];
 
             $table[$label]['accuracy'] = ($tp + $tn) / ($tp + $tn + $fp + $fn);
-            $table[$label]['precision'] = ($tp + self::EPSILON) / ($tp + $fp + self::EPSILON);
-            $table[$label]['recall'] = ($tp + self::EPSILON) / ($tp + $fn + self::EPSILON);
-            $table[$label]['specificity'] = ($tn + self::EPSILON) / ($tn + $fp + self::EPSILON);
+            $table[$label]['precision'] = ($tp + self::EPSILON)
+                / ($tp + $fp + self::EPSILON);
+            $table[$label]['recall'] = ($tp + self::EPSILON)
+                / ($tp + $fn + self::EPSILON);
+            $table[$label]['specificity'] = ($tn + self::EPSILON)
+                / ($tn + $fp + self::EPSILON);
             $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
             $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
             $table[$label]['f1_score'] = 2.0 * (($table[$label]['precision']
-                * $table[$label]['recall']) + self::EPSILON)
-                / ($table[$label]['precision'] + $table[$label]['recall'] + self::EPSILON);
+                * $table[$label]['recall']))
+                / ($table[$label]['precision'] + $table[$label]['recall']);
             $table[$label]['informedness'] = $table[$label]['recall']
                 + $table[$label]['specificity'] - 1;
             $table[$label]['mcc'] = (($tp * $tn - $fp * $fn) + self::EPSILON)

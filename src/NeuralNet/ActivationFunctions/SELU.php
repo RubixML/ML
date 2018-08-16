@@ -17,9 +17,8 @@ use InvalidArgumentException;
  */
 class SELU implements Rectifier
 {
-    const DEFAULT_ALPHA = 1.6732632423543772848170429916717;
-
-    const DEFAULT_SCALE = 1.0507009873554804934193349852946;
+    const ALPHA = 1.6732632423543772848170429916717;
+    const SCALE = 1.0507009873554804934193349852946;
 
     /**
      * At which negative value the SELU will saturate. i.e. alpha = 1.0 means
@@ -42,7 +41,7 @@ class SELU implements Rectifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = self::DEFAULT_ALPHA, float $scale = self::DEFAULT_SCALE)
+    public function __construct(float $alpha = self::ALPHA, float $scale = self::SCALE)
     {
         if ($scale < 1.0) {
             throw new InvalidArgumentException('Scale must be greater than 1');

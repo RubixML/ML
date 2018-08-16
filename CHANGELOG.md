@@ -5,9 +5,11 @@
     - Added type method to Estimator API
     - Removed classifier, detector, clusterer, regressor interfaces
     - Added epsilon smoothing to Gaussian Naive Bayes
-    - Added option to fit priors in Naive Bayes' classifiers
+    - Added option to fit priors in Naive Bayes classifiers
     - Added Jaccard distance kernel
     - Fixed Hamming distance calculation
+    - Added Alpha Dropout layer
+    - Fixed divide by 0 in Cross Entropy cost function
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

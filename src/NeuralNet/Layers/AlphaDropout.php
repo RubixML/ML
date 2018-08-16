@@ -5,24 +5,31 @@ namespace Rubix\ML\NeuralNet\Layers;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Dropout
+ * Alpha Dropout
  *
- * Dropout layers temporarily disable neurons during each training pass. Dropout
- * is a regularization technique for reducing overfitting in neural networks
- * by preventing complex co-adaptations on training data. It is a very efficient
- * way of performing model averaging with neural networks.
+ * Alpha Dropout is a type of dropout layer that maintains the mean and variance
+ * of the original inputs in order to ensure the self-normalizing property of
+ * SELU networks with dropout. Alpha Dropout fits with SELU networks by randomly
+ * setting activations to the negative saturation value of the activation
+ * function at a given ratio each pass.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dropout extends Dense
+class AlphaDropout extends Dense
 {
+    const ALPHA = 1.6732632423543772848170429916717;
+    const SCALE = 1.0507009873554804934193349852946;
+
+    const ALPHA_P = -self::ALPHA * self::SCALE;
+
     const PHI = 1000000;
 
     /**
@@ -37,7 +44,14 @@ class Dropout extends Dense
      *
      * @var float
      */
-    protected $scale;
+    protected $a;
+
+    /**
+     * The centering coefficient.
+     *
+     * @var float
+     */
+    protected $b;
 
     /**
      * The memoized dropout mask.
@@ -53,16 +67,21 @@ class Dropout extends Dense
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction,
-                                float $ratio = 0.5)
+    public function __construct(int $neurons, ActivationFunction $activationFunction = null,
+                                float $ratio = 0.1)
     {
         if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Dropout ratio must be between 0'
                 . ' and 1.0.');
         }
 
+        if (is_null($activationFunction)) {
+            $activationFunction = new SELU(self::ALPHA, self::SCALE);
+        }
+
         $this->ratio = $ratio;
-        $this->scale = 1.0 / (1.0 - $ratio);
+        $this->a = ((1 - $ratio) * (1 + $ratio * self::ALPHA_P ** 2)) ** -0.5;
+        $this->b = -$this->a * self::ALPHA_P * $ratio;
 
         parent::__construct($neurons, $activationFunction);
     }
@@ -84,8 +103,11 @@ class Dropout extends Dense
         $n = $this->z->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
-            return (rand(0, self::PHI) / self::PHI) > $this->ratio
-                ? $this->scale : 0.0;
+            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? 1.0 : 0.0;
+        });
+
+        $saturation = $mask->map(function ($value) {
+            return $value === 0.0 ? self::ALPHA_P : 0.0;
         });
 
         $biases = MatrixFactory::one(1, $n);
@@ -94,6 +116,10 @@ class Dropout extends Dense
 
         $this->computed = $this->activationFunction->compute($temp)
             ->hadamardProduct($mask)
+            ->add($saturation)
+            ->map(function ($activation) {
+                return $this->a * $activation + $this->b;
+            })
             ->augmentBelow($biases);
 
         $this->mask = $mask->augmentBelow($biases);
