@@ -5,6 +5,7 @@
     - Added type method to Estimator API
     - Removed classifier, detector, clusterer, regressor interfaces
     - Added epsilon smoothing to Gaussian Naive Bayes
+    - Added option to fit priors in Naive Bayes' classifiers
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

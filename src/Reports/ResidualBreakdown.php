@@ -6,7 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
-use Rubix\ML\Other\Functions\Stats;
+use Rubix\ML\Other\Functions\MeanVar;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
@@ -68,7 +68,7 @@ class ResidualBreakdown implements Report
             $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        list($mean, $variance) = Stats::meanVar($errors);
+        list($mean, $variance) = MeanVar::compute($errors);
 
         $mse = Average::mean($l2);
 

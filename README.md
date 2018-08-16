@@ -1087,7 +1087,8 @@ A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | epsilon | 1e-8 | float | A small amount of smoothing to apply to the variance of each gaussian for numerical stability. |
+| 1 | priors | true | bool | Should we compute the empirical prior probabilities of the class outcomes? |
+| 2 | epsilon | 1e-8 | float | A small amount of smoothing to apply to the variance of each Gaussian for numerical stability. |
 
 ##### Additional Methods:
 
@@ -1110,7 +1111,7 @@ public variances() : array
 ```php
 use Rubix\ML\Classifiers\GaussianNB;
 
-$estimator = new GaussianNB(0.1);
+$estimator = new GaussianNB(true, 1e-2);
 ```
 
 ### K-d Neighbors
@@ -1247,14 +1248,15 @@ $estimator = new MultiLayerPerceptron([
 ```
 
 ### Naive Bayes
-Probability-based classifier that used probabilistic inference to predict the correct class. The probabilities are calculated using [Bayes Rule](https://en.wikipedia.org/wiki/Bayes%27_theorem). The naive part relates to the fact that it assumes that all features are *independent*, which is rarely the case in the real world but tends to work out in practice for most problems.
+Probability-based classifier that uses probabilistic inference to derive the predicted class. The posterior probabilities are calculated using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part relates to the fact that it assumes that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world.
 
 ##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The amount of additive (Laplace) smoothing to apply to the probabilities. |
+| 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing to apply to the probabilities. |
+| 2 | priors | true | bool | Should we compute the empirical prior probabilities of the class outcomes? |
 
 ##### Additional Methods:
 
@@ -1272,7 +1274,7 @@ public probabilities() : array
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 
-$estimator = new NaiveBayes(10.0);
+$estimator = new NaiveBayes(0.5, true);
 ```
 
 ### Random Forest

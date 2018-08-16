@@ -26,7 +26,7 @@ class NaiveBayesTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new NaiveBayes();
+        $this->estimator = new NaiveBayes(1e-4, true);
     }
 
     public function test_build_classifier()

@@ -2,10 +2,10 @@
 
 namespace Rubix\Tests\Other\Functions;
 
-use Rubix\ML\Other\Functions\Stats;
+use Rubix\ML\Other\Functions\MeanVar;
 use PHPUnit\Framework\TestCase;
 
-class StatsTest extends TestCase
+class MeanVarTest extends TestCase
 {
     protected $values;
 
@@ -16,9 +16,9 @@ class StatsTest extends TestCase
         ];
     }
 
-    public function test_compute_mean_var()
+    public function test_compute()
     {
-        list($mean, $variance) = Stats::meanVar($this->values);
+        list($mean, $variance) = MeanVar::compute($this->values);
 
         $this->assertEquals(0.5777777777777778, $mean, '', 1e-3);
         $this->assertEquals(0.09061728395061729, $variance, '', 1e-3);

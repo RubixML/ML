@@ -8,8 +8,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Functions\Stats;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Functions\MeanVar;
 use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
@@ -28,6 +28,14 @@ use InvalidArgumentException;
 class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
     const TWO_PI = 2.0 * M_PI;
+
+    /**
+     * Should we fit the empirical prior probabilities of each class? If not,
+     * then a prior of 1 / possible class outcomes is assumed.
+     *
+     * @var bool
+     */
+    protected $priors;
 
     /**
      * A small amount of smoothing to apply to the variance of each gaussian for
@@ -51,7 +59,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      *
      * @var array
      */
-    protected $priors = [
+    protected $_priors = [
         //
     ];
 
@@ -83,17 +91,19 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
+     * @param  bool  $priors
      * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon = 1e-8)
+    public function __construct(bool $priors = true, float $epsilon = 1e-8)
     {
         if ($epsilon < 0.0) {
             throw new InvalidArgumentException('Smoothing parameter cannot be'
                 . ' less than 0.');
         }
 
+        $this->priors = $priors;
         $this->epsilon = $epsilon;
     }
 
@@ -115,7 +125,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      */
     public function priors() : array
     {
-        return $this->priors;
+        return $this->_priors;
     }
 
     /**
@@ -153,13 +163,15 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        $classes = $dataset->possibleOutcomes();
 
-        $this->weights = array_fill_keys($this->classes, 0);
+        $this->classes = $classes;
 
-        $this->priors = array_fill_keys($this->classes, 0.0);
+        $this->weights = array_fill_keys($classes, 0);
 
-        $this->means = $this->variances = array_fill_keys($this->classes,
+        $this->_priors = array_fill_keys($classes, log(1.0 / count($classes)));
+
+        $this->means = $this->variances = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), 0.0));
 
         $this->partial($dataset);
@@ -199,7 +211,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
             $oldVariances = $this->variances[$class];
 
             foreach ($stratum->rotate() as $column => $values) {
-                list($mean, $variance) = Stats::meanVar($values);
+                list($mean, $variance) = MeanVar::compute($values);
 
                 $this->means[$class][$column] = (($n * $mean)
                     + ($oldWeight * $oldMeans[$column]))
@@ -215,10 +227,12 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
             $this->weights[$class] = $newWeight;
         }
 
-        $total = array_sum($this->weights);
+        if ($this->priors === true) {
+            $sigma = array_sum($this->weights);
 
-        foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log($weight / $total);
+            foreach ($this->weights as $class => $weight) {
+                $this->_priors[$class] = log($weight / $sigma);
+            }
         }
     }
 
@@ -256,10 +270,10 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $sigma = LogSumExp::compute($jll);
+            $max = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $sigma);
+                $probabilities[$i][$class] = exp($likelihood - $max);
             }
         }
 
@@ -277,9 +291,10 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $likelihood = [];
 
         foreach ($this->classes as $class) {
-            $score = $this->priors[$class];
             $means = $this->means[$class];
             $variances = $this->variances[$class];
+
+            $score = $this->_priors[$class];
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];

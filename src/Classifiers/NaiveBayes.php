@@ -15,11 +15,12 @@ use InvalidArgumentException;
 /**
  * Naive Bayes
  *
- * Probability-based classifier that used probabilistic inference to derive the
- * correct class. The probabilities are calculated using Bayes Rule. The naive
- * part relates to the fact that it assumes that all features are independent,
- * which is rarely the case in the real world but tends to work out in practice
- * for most problems.
+ * Probability-based classifier that uses probabilistic inference to derive the
+ * predicted class. The posterior probabilities are calculated using [Bayes'
+ * Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part
+ * relates to the fact that it assumes that all features are independent. In
+ * practice, the independent assumption tends to work out most of the time
+ * despite most features being correlated in the real world.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -37,6 +38,14 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     protected $alpha;
 
     /**
+     * Should we fit the empirical prior probabilities of each class? If not,
+     * then a prior of 1 / possible class outcomes is assumed.
+     *
+     * @var bool
+     */
+    protected $priors;
+
+    /**
      * The weight of each class as a proportion of the entire training set.
      *
      * @var array
@@ -46,11 +55,11 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The precomputed prior log probabilities of each label.
+     * The prior negative log probabilities of each label.
      *
      * @var array
      */
-    protected $priors = [
+    protected $_priors = [
         //
     ];
 
@@ -65,7 +74,8 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
-     * The precomputed log probabilities of each feature given each class label.
+     * The precomputed negative log probabilities of each feature conditioned on
+     * a given class label.
      *
      * @var array
      */
@@ -84,10 +94,11 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 
     /**
      * @param  float  $alpha
+     * @param  bool  $priors
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1.0)
+    public function __construct(float $alpha = 1.0, bool $priors = true)
     {
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('Smoothing parameter cannot be'
@@ -95,6 +106,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         }
 
         $this->alpha = $alpha;
+        $this->priors = $priors;
     }
 
     /**
@@ -115,7 +127,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
      */
     public function priors() : array
     {
-        return $this->priors;
+        return $this->_priors;
     }
 
     /**
@@ -142,13 +154,15 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        $classes = $dataset->possibleOutcomes();
 
-        $this->weights = array_fill_keys($this->classes, 0);
+        $this->classes = $classes;
 
-        $this->priors = array_fill_keys($this->classes, 0.0);
+        $this->weights = array_fill_keys($classes, 0);
 
-        $this->counts = $this->probs = array_fill_keys($this->classes,
+        $this->_priors = array_fill_keys($classes, log(1.0 / count($classes)));
+
+        $this->counts = $this->probs = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), []));
 
         $this->partial($dataset);
@@ -207,11 +221,13 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
             $this->weights[$class] += count($stratum);
         }
 
-        $sigma = array_sum($this->weights)
-            + (count($this->weights) * $this->alpha);
+        if ($this->priors === true) {
+            $sigma = array_sum($this->weights)
+                + (count($this->weights) * $this->alpha);
 
-        foreach ($this->weights as $class => $weight) {
-            $this->priors[$class] = log(($weight + $this->alpha) / $sigma);
+            foreach ($this->weights as $class => $weight) {
+                $this->_priors[$class] = log(($weight + $this->alpha) / $sigma);
+            }
         }
     }
 
@@ -246,10 +262,10 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $sigma = LogSumExp::compute($jll);
+            $max = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $sigma);
+                $probabilities[$i][$class] = exp($likelihood - $max);
             }
         }
 
@@ -267,8 +283,9 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         $likelihood = [];
 
         foreach ($this->classes as $class) {
-            $score = $this->priors[$class];
             $probs = $this->probs[$class];
+
+            $score = $this->_priors[$class];
 
             foreach ($sample as $column => $feature) {
                 $score += $probs[$column][$feature] ?? self::LOG_EPSILON;

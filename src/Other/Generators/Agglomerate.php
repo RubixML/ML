@@ -49,18 +49,11 @@ class Agglomerate implements Generator
      */
     public function __construct(array $generators = [], ?array $weights = null)
     {
-        if (count($generators) === 0) {
+        $n = count($generators);
+
+        if ($n === 0) {
             throw new InvalidArgumentException('Must provide at least one'
                 . ' generator to agglomerate.');
-        }
-
-        if (is_null($weights)) {
-            $weights = array_fill(0, count($generators), 1);
-        }
-
-        if (count($generators) !== count($weights)) {
-            throw new InvalidArgumentException('The number of weights must'
-                . ' the number of generators.');
         }
 
         $dimensions = current($generators)->dimensions();
@@ -76,14 +69,28 @@ class Agglomerate implements Generator
             }
         }
 
-        $total = array_sum($weights) + self::EPSILON;
+        if (is_array($weights)) {
+            if (count($weights) !== $n) {
+                throw new InvalidArgumentException('The number of weights must'
+                    . ' the number of generators.');
+            }
 
-        $normalized = array_map(function ($weight) use ($total) {
-            return $weight / $total;
-        }, $weights);
+            $total = array_sum($weights);
+
+            if ($total === 0.0) {
+                throw new InvalidArgumentException('Total weight for the'
+                    . ' agglomerate cannot be 0.');
+            }
+
+            $weights = array_map(function ($value) use ($total) {
+                return $value / $total;
+            }, $weights);
+        } else {
+            $weights = array_fill(0, $n, 1.0 / $n);
+        }
 
         $this->generators = $generators;
-        $this->weights = array_combine(array_keys($generators), $normalized);
+        $this->weights = array_combine(array_keys($generators), $weights);
         $this->dimensions = $dimensions;
     }
 

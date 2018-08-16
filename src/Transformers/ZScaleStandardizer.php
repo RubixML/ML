@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Functions\Stats;
+use Rubix\ML\Other\Functions\MeanVar;
 use RuntimeException;
 
 /**
@@ -89,7 +89,7 @@ class ZScaleStandardizer implements Transformer
 
         foreach ($dataset->rotate() as $column => $values) {
             if ($dataset->type($column) === Dataset::CONTINUOUS) {
-                list($mean, $variance) = Stats::meanVar($values);
+                list($mean, $variance) = MeanVar::compute($values);
 
                 $this->means[$column] = $mean;
                 $this->stddevs[$column] = sqrt($variance);
