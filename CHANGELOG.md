@@ -6,6 +6,7 @@
     - Removed classifier, detector, clusterer, regressor interfaces
     - Added epsilon smoothing to Gaussian Naive Bayes
     - Added option to fit priors in Naive Bayes' classifiers
+    - Added Jaccard distance kernel
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

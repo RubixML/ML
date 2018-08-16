@@ -146,6 +146,7 @@ MIT
 			- [Diagonal](#diagonal)
 			- [Euclidean](#euclidean)
 			- [Hamming](#hamming)
+			- [Jaccard](#jaccard)
 			- [Manhattan](#manhattan)
 			- [Minkowski](#minkowski)
 	- [Cross Validation](#cross-validation)
@@ -2901,7 +2902,6 @@ $kernel = new Euclidean();
 ### Hamming
 The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
 
-
 ##### Parameters:
 This Kernel does not have any parameters.
 
@@ -2912,6 +2912,18 @@ use Rubix\ML\Kernels\Distance\Hamming;
 $kernel = new Hamming();
 ```
 
+### Jaccard
+The generalized Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
+
+##### Parameters:
+This Kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\Distance\Jaccard;
+
+$kernel = new Jaccard();
+```
 
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.

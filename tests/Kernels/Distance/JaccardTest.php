@@ -2,11 +2,11 @@
 
 namespace Rubix\Tests\Kernels\Distance;
 
-use Rubix\ML\Kernels\Distance\Canberra;
+use Rubix\ML\Kernels\Distance\Jaccard;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 
-class CanberraTest extends TestCase
+class JaccardTest extends TestCase
 {
     protected $kernel;
 
@@ -22,12 +22,12 @@ class CanberraTest extends TestCase
         $this->b = ['x' => 7, 'y' => 9, 'z' => 4];
         $this->c = ['x' => 2, 'y' => 2, 'z' => 3];
 
-        $this->kernel = new Canberra();
+        $this->kernel = new Jaccard();
     }
 
     public function test_build_distance_kernel()
     {
-        $this->assertInstanceOf(Canberra::class, $this->kernel);
+        $this->assertInstanceOf(Jaccard::class, $this->kernel);
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
@@ -37,8 +37,8 @@ class CanberraTest extends TestCase
         $distance2 = $this->kernel->compute($this->a, $this->c);
         $distance3 = $this->kernel->compute($this->b, $this->c);
 
-        $this->assertEquals(1.3555555555555556, $distance1, '', 1e-3);
-        $this->assertEquals(0.47619047619047616, $distance2, '', 1e-3);
-        $this->assertEquals(1.33477633477633485, $distance3, '', 1e-3);
+        $this->assertEquals(0.65, $distance1, '', 1e-3);
+        $this->assertEquals(0.25, $distance2, '', 1e-3);
+        $this->assertEquals(0.65, $distance3, '', 1e-3);
     }
 }

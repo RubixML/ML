@@ -4,12 +4,12 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Generators\Blob;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\Other\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Generators\Circle;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Classifiers\KNearestNeighbors;
