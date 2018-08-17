@@ -152,7 +152,7 @@ class WordCountVectorizer implements Extractor
         if (count($frequencies) > $this->maxVocabulary) {
             arsort($frequencies);
 
-            $frequencies = array_slice($frequencies, 0, $this->maxVocabulary);
+            $frequencies = array_slice($frequencies, 0, $this->maxVocabulary, true);
         }
 
         $this->vocabulary = array_combine(array_keys($frequencies),
@@ -195,7 +195,7 @@ class WordCountVectorizer implements Extractor
     {
         $vector = array_fill(0, count($this->vocabulary), 0);
 
-        if ($this->normalize) {
+        if ($this->normalize === true) {
             $sample = preg_replace('/\s+/', ' ', strtolower($sample));
         }
 

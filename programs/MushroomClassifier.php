@@ -18,7 +18,7 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -50,7 +50,7 @@ $estimator = new Pipeline(new MultiLayerPerceptron([
     new Dense(30, new SELU()),
     new AlphaDropout(20, new SELU(), 0.1),
     new Dense(10, new SELU()),
-], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
+], 100, new Adam(0.001), 1e-3, new Exponential(2.0), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),
     new ZScaleStandardizer(),

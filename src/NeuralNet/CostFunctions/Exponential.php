@@ -2,12 +2,15 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+use InvalidArgumentException;
+
 /**
  * Exponential
  *
  * This cost function calculates the exponential of a prediction's squared error
  * thus applying a large penalty to wrong predictions. The resulting gradient of
- * the Exponential loss tends to be steeper than most other cost functions.
+ * the Exponential loss tends to be steeper than most other cost functions. The
+ * magnitude of the error can be scaled by the parameter tau.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -15,6 +18,28 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
  */
 class Exponential implements CostFunction
 {
+    /**
+     * The scaling parameter i.e. the magnitude of the error to return.
+     *
+     * @var float
+     */
+    protected $tau;
+
+    /**
+     * @param  float  $tau
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(float $tau = 1.0)
+    {
+        if ($tau < 0.0) {
+            throw new InvalidArgumentException('Scaling parameter cannot be'
+                . ' less than 0.');
+        }
+
+        $this->tau = $tau;
+    }
+
     /**
      * Return a tuple of the min and max output value for this function.
      *
@@ -34,7 +59,7 @@ class Exponential implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return exp(($activation - $expected) ** 2);
+        return $this->tau * exp((1.0 / $this->tau) * ($activation - $expected) ** 2);
     }
 
     /**
@@ -47,6 +72,6 @@ class Exponential implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        return 2.0 * ($activation - $expected) * $computed;
+        return (2.0 / $this->tau) * ($activation - $expected) * $computed;
     }
 }

@@ -30,9 +30,9 @@ class Informedness implements Metric
      */
     public function score(Estimator $estimator, Dataset $testing) : float
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER) {
+        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
             throw new InvalidArgumentException('This metric only works with'
-                . ' classifiers.');
+                . ' classifiers and anomaly detectors.');
         }
 
         if (!$testing instanceof Labeled) {

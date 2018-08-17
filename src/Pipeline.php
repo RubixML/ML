@@ -105,19 +105,6 @@ class Pipeline implements MetaEstimator, Persistable
     }
 
     /**
-     * Add a transformer middleware to the pipeline.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return self
-     */
-    public function addTransformer(Transformer $transformer) : self
-    {
-        $this->transformers[] = $transformer;
-
-        return $this;
-    }
-
-    /**
      * Run the transformer middleware over a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -128,6 +115,17 @@ class Pipeline implements MetaEstimator, Persistable
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);
         }
+    }
+
+    /**
+     * Add a transformer middleware to the pipeline.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return void
+     */
+    protected function addTransformer(Transformer $transformer) : void
+    {
+        $this->transformers[] = $transformer;
     }
 
     /**

@@ -101,7 +101,7 @@ class RawPixelEncoder implements Extractor
                     $image = $image->greyscale();
                 }
 
-                $image->fit(...$this->size);
+                $image = $image->fit(...$this->size)->getCore();
 
                 $vectors[] = $this->vectorize($image);
             }
@@ -111,19 +111,24 @@ class RawPixelEncoder implements Extractor
     }
 
     /**
-     * Convert a image into a vector of color channel data.
+     * Convert an image into a vector of raw color channel data.
      *
-     * @param  \Intervention\Image\Image  $image
+     * @param  resource  $image
+     * @throws \InvalidArgumentException
      * @return array
      */
-    public function vectorize(Image $image) : array
+    public function vectorize($image) : array
     {
-        $image = $image->getCore();
+        if (!is_resource($image)) {
+            throw new InvalidArgumentException('Input is not a resource.');
+        }
+
+        list($width, $height) = $this->size;
 
         $vector = [];
 
-        for ($x = 0; $x < $this->size[0]; $x++) {
-            for ($y = 0; $y < $this->size[1]; $y++) {
+        for ($x = 0; $x < $width; $x++) {
+            for ($y = 0; $y < $height; $y++) {
                 $pixels = imagecolorsforindex($image, imagecolorat($image, $x, $y));
 
                 $pixels = array_slice($pixels, 0, $this->channels);

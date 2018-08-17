@@ -2554,16 +2554,18 @@ $costFunction = new CrossEntropy();
 ```
 
 ### Exponential
-This cost function calculates the exponential of a prediction's squared error thus applying a large penalty to wrong predictions. The resulting gradient of the Exponential loss tends to be steeper than most other cost functions.
+This cost function calculates the exponential of a prediction's squared error thus applying a large penalty to wrong predictions. The resulting gradient of the Exponential loss tends to be steeper than most other cost functions. The magnitude of the error can be scaled by the parameter *tau*.
 
 ##### Parameters:
-This Cost Function does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | tau | 1.0 | float | The scaling parameter i.e. the magnitude of the error to return. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 
-$costFunction = new Exponential();
+$costFunction = new Exponential(0.5);
 ```
 
 ### Quadratic

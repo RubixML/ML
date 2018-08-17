@@ -24,7 +24,7 @@ class ExponentialTest extends TestCase
 
         $this->computed = 1.0408107741923882;
 
-        $this->costFunction = new Exponential();
+        $this->costFunction = new Exponential(1.0);
     }
 
     public function test_build_cost_function()

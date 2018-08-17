@@ -39,8 +39,8 @@ class Split extends BinaryNode
     public function __construct(int $index, $value, array $groups)
     {
         if (count($groups) !== 2) {
-            throw new InvalidArgumentException('The number of groups must be'
-                . ' exactly 2.');
+            throw new InvalidArgumentException('The number of sample groups'
+                . ' must be exactly 2.');
         }
 
         $this->index = $index;

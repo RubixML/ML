@@ -10,6 +10,7 @@
     - Fixed Hamming distance calculation
     - Added Alpha Dropout layer
     - Fixed divide by 0 in Cross Entropy cost function
+    - Added scaling parameter to Exponential cost function
 
 - 0.0.4-alpha
     - Added Dropout hidden layer
