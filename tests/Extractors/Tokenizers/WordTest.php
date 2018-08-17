@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Other\Tokenizers;
+namespace Rubix\Tests\Extractors\Tokenizers;
 
-use Rubix\ML\Other\Tokenizers\Word;
-use Rubix\ML\Other\Tokenizers\Tokenizer;
+use Rubix\ML\Extractors\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
 class WordTest extends TestCase

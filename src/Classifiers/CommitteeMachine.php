@@ -193,9 +193,10 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
             array_fill_keys($this->classes, 0.0));
 
         foreach ($this->experts as $i => $expert) {
-            foreach ($expert->proba($dataset) as $j => $distribution) {
-                foreach ($distribution as $class => $probability) {
-                    $probabilities[$j][$class] += $this->influence[$i] * $probability;
+            foreach ($expert->proba($dataset) as $j => $dist) {
+                foreach ($dist as $class => $probability) {
+                    $probabilities[$j][$class] += $this->influence[$i]
+                        * $probability;
                 }
             }
         }

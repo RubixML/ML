@@ -94,7 +94,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
         if ($proxy->type() !== self::CLASSIFIER and $proxy->type() !== self::REGRESSOR
             and $proxy->type() !== self::DETECTOR) {
                 throw new InvalidArgumentException('This ensemble only supports'
-                    . ' classifiers, regressors, and detectors.');
+                    . ' classifiers, regressors, and anomaly detectors.');
             }
 
         if ($estimators < 1) {

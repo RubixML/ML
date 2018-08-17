@@ -2158,14 +2158,12 @@ $transformer = new NumericStringConverter();
 ```
 
 ### One Hot Encoder
-The One Hot Encoder takes a column of categorical features and produces a one-hot vector of n-dimensions where n is equal to the number of unique categories per feature column. This is used when you need to convert all features to continuous format since some Estimators do not work with categorical features.
+The One Hot Encoder takes a column of categorical features and produces a n-d one-hot (numerical) representation where n is equal to the number of unique categories in that column. A 0 indicates that a category is not present in the sample whereas a 1 indicates that a category is present.
 
 ##### Categorical
 
 ##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | columns | Null | array | The user-specified columns to encode indicated by numeric index starting at 0. |
+This Transformer does not have any parameters.
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -2174,11 +2172,11 @@ This Transformer does not have any additional methods.
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$transformer = new OneHotEncoder([0, 3, 5, 7, 9]);
+$transformer = new OneHotEncoder();
 ```
 
 ### Polynomial Expander
-This Transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
+This transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
 
 ##### Continuous *Only*
 
@@ -2229,7 +2227,7 @@ $transformer = new QuartileStandardizer();
 ```
 
 ### Robust Standardizer
-This Transformer standardizes continuous features by centering around the median and scaling by the median absolute deviation (MAD), a value referred to as robust Z Score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
+This transformer standardizes continuous features by centering around the median and scaling by the median absolute deviation (MAD), a value referred to as robust Z Score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
 
 ##### Continuous
 
@@ -2292,7 +2290,7 @@ int(663)
 ```
 
 ### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This Transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
+Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
 ##### Continuous *Only*
 
@@ -3769,7 +3767,7 @@ public tokenize(string $text) : array
 
 ##### Example:
 ```php
-use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Word;
 
 $text = 'I would like to die on Mars, just not on impact.';
 
@@ -3806,7 +3804,7 @@ Tokens are delimited by a user-specified whitespace character.
 
 ##### Example:
 ```php
-use Rubix\ML\Other\Tokenizers\Whitespace;
+use Rubix\ML\Extractors\Tokenizers\Whitespace;
 
 $tokenizer = new Whitespace(',');
 ```
@@ -3819,7 +3817,7 @@ This Tokenizer does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Word;
 
 $tokenizer = new Word();
 ```

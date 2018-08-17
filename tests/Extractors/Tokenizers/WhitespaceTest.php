@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Other\Tokenizers;
+namespace Rubix\Tests\Extractors\Tokenizers;
 
-use Rubix\ML\Other\Tokenizers\Tokenizer;
-use Rubix\ML\Other\Tokenizers\Whitespace;
+use Rubix\ML\Extractors\Tokenizers\Tokenizer;
+use Rubix\ML\Extractors\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase
@@ -15,7 +15,7 @@ class WhitespaceTest extends TestCase
         $this->tokenizer = new Whitespace();
     }
 
-    public function test_build_whitespace_tokenizer()
+    public function test_build_tokenizer()
     {
         $this->assertInstanceOf(Whitespace::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);

@@ -65,11 +65,11 @@ class MissingDataImputer implements Transformer
                 . ' numeric type, ' . gettype($placeholder) . ' found.');
         }
 
-        if (!isset($continuous)) {
+        if (is_null($continuous)) {
             $continuous = new BlurryMean();
         }
 
-        if (!isset($categorical)) {
+        if (is_null($categorical)) {
             $categorical = new PopularityContest();
         }
 
@@ -112,14 +112,16 @@ class MissingDataImputer implements Transformer
      */
     public function transform(array &$samples) : void
     {
-        if (!isset($this->imputers)) {
+        if (is_null($this->imputers)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as $row => &$sample) {
             foreach ($sample as $column => &$feature) {
                 if ($feature === $this->placeholder) {
-                    $feature = $this->imputers[$column]->guess();
+                    $strategy = $this->imputers[$column];
+
+                    $feature = $strategy->guess();
                 }
             }
         }

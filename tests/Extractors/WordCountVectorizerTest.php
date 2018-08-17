@@ -3,7 +3,7 @@
 namespace Rubix\Tests\Extractors;
 
 use Rubix\ML\Extractors\Extractor;
-use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Word;
 use Rubix\ML\Extractors\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
 

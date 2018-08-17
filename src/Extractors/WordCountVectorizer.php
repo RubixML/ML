@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Extractors;
 
-use Rubix\ML\Other\Tokenizers\Word;
-use Rubix\ML\Other\Tokenizers\Tokenizer;
+use Rubix\ML\Extractors\Tokenizers\Word;
+use Rubix\ML\Extractors\Tokenizers\Tokenizer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -50,7 +50,7 @@ class WordCountVectorizer implements Extractor
     /**
      * The tokenizer used to extract text data into tokenable values.
      *
-     * @var \Rubix\ML\Other\Tokenizers\Tokenizer
+     * @var \Rubix\ML\Extractors\Tokenizers\Tokenizer
      */
     protected $tokenizer;
 
@@ -67,7 +67,7 @@ class WordCountVectorizer implements Extractor
      * @param  int  $maxVocabulary
      * @param  array  $stopWords
      * @param  bool  $normalize
-     * @param  \Rubix\ML\Other\Tokenizers\Tokenizer  $tokenizer
+     * @param  \Rubix\ML\Extractors\Tokenizers\Tokenizer  $tokenizer
      * @return void
      */
     public function __construct(int $maxVocabulary = PHP_INT_MAX, array $stopWords = [],

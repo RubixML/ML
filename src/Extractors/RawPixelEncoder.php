@@ -124,11 +124,11 @@ class RawPixelEncoder implements Extractor
 
         for ($x = 0; $x < $this->size[0]; $x++) {
             for ($y = 0; $y < $this->size[1]; $y++) {
-                $rgba = imagecolorsforindex($image, imagecolorat($image, $x, $y));
+                $pixels = imagecolorsforindex($image, imagecolorat($image, $x, $y));
 
-                foreach (array_slice($rgba, 0, $this->channels) as $value) {
-                    $vector[] = $value;
-                };
+                $pixels = array_slice($pixels, 0, $this->channels);
+
+                $vector = array_merge($vector, array_values($pixels));
             }
         }
 

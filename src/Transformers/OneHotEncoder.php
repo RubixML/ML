@@ -8,11 +8,10 @@ use RuntimeException;
 /**
  * One Hot Encoder
  *
- * The One Hot Encoder takes a column of categorical features and produces a
- * one-hot vector of n-dimensions where n is equal to the number of unique
- * categories per feature column. This is used when you need to convert all
- * features to continuous format since some Estimators do not work with
- * categorical features.
+ * The One Hot Encoder takes a column of categorical features and produces a n-d
+ * one-hot (numerical) representation where n is equal to the number of unique
+ * categories in that column. A 0 indicates that a category is not present in the
+ * sample whereas a 1 indicates that a category is present.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -21,16 +20,6 @@ use RuntimeException;
 class OneHotEncoder implements Transformer
 {
     /**
-     * The user specified columns to encode. If this is null, the transformer
-     * will encode all categorical feature columns.
-     *
-     * @var array
-     */
-    protected $columns = [
-        //
-    ];
-
-    /**
      * The set of unique possible categories of the training set.
      *
      * @var array|null
@@ -38,39 +27,30 @@ class OneHotEncoder implements Transformer
     protected $categories;
 
     /**
-     * @param  array  $columns
-     * @return void
-     */
-    public function __construct(array $columns = [])
-    {
-        $this->columns = $columns;
-    }
-
-    /**
-     * Build the list of categories.
+     * Build the list of categories per feature column.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
     public function fit(Dataset $dataset) : void
     {
-        $types = $dataset->columnTypes();
-
-        if (empty($this->columns)) {
-            $this->columns = array_keys(array_filter($types, function ($type) {
-                return $type === Dataset::CATEGORICAL;
-            }));
-        }
-
-        $this->categories = [[]];
+        $this->categories = [];
 
         $position = 0;
 
-        foreach ($dataset as $sample) {
-            foreach ($this->columns as $column) {
-                if (!isset($this->categories[$column][$sample[$column]])) {
-                    $this->categories[$column][$sample[$column]] = $position++;
+        foreach ($dataset->columnTypes() as $column => $type) {
+            if ($type === Dataset::CATEGORICAL) {
+                $categories = [];
+
+                foreach ($dataset as $sample) {
+                    $category = $sample[$column];
+
+                    if (!isset($categories[$category])) {
+                        $categories[$category] = $position++;
+                    }
                 }
+
+                $this->categories[$column] = $categories;
             }
         }
     }
@@ -93,11 +73,15 @@ class OneHotEncoder implements Transformer
         foreach ($samples as &$sample) {
             $vector = [];
 
-            foreach ($this->columns as $column) {
-                $temp = array_fill_keys($this->categories[$column], 0);
+            foreach ($this->categories as $column => $categories) {
+                $temp = array_fill_keys($categories, 0);
 
-                if (isset($this->categories[$column][$sample[$column]])) {
-                    $temp[$this->categories[$column][$sample[$column]]] = 1;
+                $category = $sample[$column];
+
+                if (isset($categories[$category])) {
+                    $position = $categories[$category];
+
+                    $temp[$position] = 1;
                 }
 
                 $vector = array_merge($vector, $temp);

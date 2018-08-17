@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Tokenizers;
+namespace Rubix\ML\Extractors\Tokenizers;
 
 class Word implements Tokenizer
 {

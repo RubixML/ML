@@ -42,7 +42,7 @@ class MinMaxNormalizer implements Transformer
     {
         $this->minimums = $this->maximums = [];
 
-        foreach ($dataset->ColumnTypes() as $column => $type) {
+        foreach ($dataset->columnTypes() as $column => $type) {
             if ($type === Dataset::CONTINUOUS) {
                 $values = $dataset->column($column);
 
