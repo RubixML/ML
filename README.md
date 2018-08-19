@@ -36,6 +36,7 @@ MIT
 			- [Labeled](#labeled)
 			- [Unlabeled](#unlabeled)
 	- [Feature Extractors](#feature-extractors)
+		- [Image Patch Descriptor](#image-patch-descriptor)
     	- [Word Count Vectorizer](#word-count-vectorizer)
 		- [Raw Pixel Encoder](#raw-pixel-encoder)
 	- [Estimators](#estimators)
@@ -745,6 +746,26 @@ $dataset = new Unlabeled($samples);
 $dataset = new Labeled($samples, $labels);
 ```
 
+### Image Patch Descriptor
+This image extractor encodes various user-defined features called descriptors using subsamples of the original image called *patches*.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | descriptors | None | array | The descriptor middelware. Each descriptor encodes a set of features from a patch of the image. |
+| 2 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| 3 | patch size | [4, 4] | array | The width and height of the patch area. |
+| 4 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
+
+##### Additional Methods:
+
+Return the dimensionality of the vector that gets encoded:
+```php
+public numPatches() : int
+```
+
+
+
 ### Word Count Vectorizer
 In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
@@ -770,10 +791,12 @@ public size() : int
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\WordCountVectorizer;
-use Rubix\ML\Extractors\Tokenizers\Word;
+use Rubix\ML\Extractors\ImagePatchDescriptor;
+use Rubix\ML\Extractors\Descriptors\TextureHistogram;
 
-$extractor = new WordCountVectorizer(5000, ['the', 'what', 'has'], true, new Word());
+$extractor = new ImagePatchDescriptor([
+	new TextureHistorgram(),
+], [32, 32], [4, 4], 'gd');
 ```
 
 ### Raw Pixel Encoder
@@ -787,7 +810,11 @@ The Raw Pixel Encoder takes an array of images (as [PHP Resources](http://php.ne
 | 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:
-This Extractor does not have any additional methods.
+
+Return the dimensionality of the vector that gets encoded:
+```php
+public dimensions() : int
+```
 
 ##### Example:
 ```php

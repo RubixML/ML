@@ -27,6 +27,11 @@ class RawPixelEncoderTest extends TestCase
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 
+    public function test_get_dimensionality()
+    {
+        $this->assertEquals(27, $this->extractor->dimensions());
+    }
+
     public function test_transform_dataset()
     {
         $this->extractor->fit($this->samples);

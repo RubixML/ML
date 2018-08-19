@@ -6,9 +6,9 @@ use MathPHP\LinearAlgebra\Matrix;
 
 interface Parametric extends Layer
 {
-    const PHI = 1e10;
-
     const ROOT_2 = 1.41421356237;
+
+    const PHI = 1000000;
 
     /**
      * Initialize the layer with the fan in from the previous layer and return

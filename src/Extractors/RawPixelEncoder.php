@@ -53,23 +53,33 @@ class RawPixelEncoder implements Extractor
     public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
         if (count($size) !== 2) {
-            throw new InvalidArgumentException('Size must have a width and a'
-                . ' height.');
+            throw new InvalidArgumentException('Image size must contain both'
+                . ' width and height.');
         }
 
         if (!is_int($size[0]) and !is_int($size[1])) {
-            throw new InvalidArgumentException('Width and height must be'
+            throw new InvalidArgumentException('Image width and height must be'
                 . ' integers.');
         }
 
         if ($size[0] < 1 or $size[1] < 1) {
-            throw new InvalidArgumentException('Width and height must be'
+            throw new InvalidArgumentException('Image width and height must be'
                 . ' greater than 1 pixel.');
         }
 
         $this->size = $size;
         $this->channels = $rgb ? 3 : 1;
         $this->intervention = new ImageManager(['driver' => $driver]);
+    }
+
+    /**
+     * Return the dimensionality of the vector that gets encoded.
+     *
+     * @return int
+     */
+    public function dimensions() : int
+    {
+        return (int) ($this->size[0] * $this->size[1] * $this->channels);
     }
 
     /**

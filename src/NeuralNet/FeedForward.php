@@ -81,7 +81,6 @@ class FeedForward implements Network
         }
 
         $this->backPass = array_reverse($this->parametric());
-
         $this->optimizer = $optimizer;
     }
 
