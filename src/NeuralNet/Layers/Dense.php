@@ -24,8 +24,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dense implements Hidden
+class Dense implements Hidden, Parametric
 {
+    const ROOT_2 = 1.41421356237;
+    
     /**
      * The width of the layer. i.e. the number of neurons.
      *
@@ -172,13 +174,12 @@ class Dense implements Hidden
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
+     * @param  callable  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return array
+     * @return callable
      */
-    public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array
+    public function back(callable $prevErrors, Optimizer $optimizer) : callable
     {
         if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
@@ -187,7 +188,7 @@ class Dense implements Hidden
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($prevWeights->transpose()->multiply($prevErrors));
+            ->hadamardProduct(call_user_func($prevErrors));
 
         $gradient = $errors->multiply($this->input->transpose());
 
@@ -197,7 +198,9 @@ class Dense implements Hidden
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$this->weights->w(), $errors];
+        return function () use ($errors) {
+            return $this->weights->w()->transpose()->multiply($errors);
+        };
     }
 
     /**

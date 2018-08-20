@@ -14,6 +14,7 @@
     - Added Image Patch Descriptor extractor
     - Added Texture Histogram descriptor
     - Added Average Color descriptor
+    - Removed parameters from Dropout and Alpha Dropout layers
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

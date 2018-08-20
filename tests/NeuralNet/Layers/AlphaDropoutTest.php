@@ -4,8 +4,8 @@ namespace Rubix\Tests\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
+use Rubix\ML\NeuralNet\Layers\Nonparametric;
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ class AlphaDropoutTest extends TestCase
 
     public function setUp()
     {
-        $this->layer = new AlphaDropout(10, new SELU(), 0.1);
+        $this->layer = new AlphaDropout(0.1);
     }
 
     public function test_build_layer()
@@ -23,11 +23,13 @@ class AlphaDropoutTest extends TestCase
         $this->assertInstanceOf(AlphaDropout::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
-        $this->assertInstanceOf(Parametric::class, $this->layer);
+        $this->assertInstanceOf(Nonparametric::class, $this->layer);
     }
 
     public function test_width()
     {
-        $this->assertEquals(11, $this->layer->width());
+        $this->layer->init(10);
+
+        $this->assertEquals(10, $this->layer->width());
     }
 }

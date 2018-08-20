@@ -44,7 +44,7 @@ class FeedForwardTest extends TestCase
 
     public function test_depth()
     {
-        $this->assertEquals(3, $this->network->depth());
+        $this->assertEquals(4, $this->network->depth());
     }
 
     public function test_get_input_layer()

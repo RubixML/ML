@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Layers;
 use MathPHP\LinearAlgebra\Matrix;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -21,10 +20,8 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dropout extends Dense
+class Dropout implements Hidden, Nonparametric
 {
-    const PHI = 1000000;
-
     /**
      * The ratio of neurons that are dropped during each training pass.
      *
@@ -40,6 +37,13 @@ class Dropout extends Dense
     protected $scale;
 
     /**
+     * The width of the layer.
+     *
+     * @var int
+     */
+    protected $width;
+
+    /**
      * The memoized dropout mask.
      *
      * @var \MathPHP\LinearAlgebra\Matrix|null
@@ -47,14 +51,11 @@ class Dropout extends Dense
     protected $mask;
 
     /**
-     * @param  int  $neurons
-     * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction,
-                                float $ratio = 0.5)
+    public function __construct(float $ratio = 0.5)
     {
         if ($ratio <= 0.0 or $ratio >= 1.0) {
             throw new InvalidArgumentException('Dropout ratio must be between 0'
@@ -63,8 +64,28 @@ class Dropout extends Dense
 
         $this->ratio = $ratio;
         $this->scale = 1.0 / (1.0 - $ratio);
+        $this->width = 0;
+    }
 
-        parent::__construct($neurons, $activationFunction);
+    /**
+     * @return int
+     */
+    public function width() : int
+    {
+        return $this->width;
+    }
+
+    /**
+     * Initialize the layer.
+     *
+     * @param  int  $fanIn
+     * @return int
+     */
+    public function init(int $fanIn) : int
+    {
+        $this->width = $fanIn;
+
+        return $fanIn;
     }
 
     /**
@@ -76,60 +97,53 @@ class Dropout extends Dense
      */
     public function forward(Matrix $input) : Matrix
     {
-        $this->input = $input;
-
-        $this->z = $this->weights->w()->multiply($input);
-
-        $m = $this->z->getM() - 1;
-        $n = $this->z->getN();
+        $m = $input->getM();
+        $n = $input->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
             return (rand(0, self::PHI) / self::PHI) > $this->ratio
                 ? $this->scale : 0.0;
         });
 
-        $biases = MatrixFactory::one(1, $n);
+        $activations = $input->hadamardProduct($mask);
 
-        $temp = $this->z->rowExclude($m);
+        $this->mask = $mask;
 
-        $this->computed = $this->activationFunction->compute($temp)
-            ->hadamardProduct($mask)
-            ->augmentBelow($biases);
+        return $activations;
+    }
 
-        $this->mask = $mask->augmentBelow($biases);
-
-        return $this->computed;
+    /**
+     * Compute the inferential activations of each neuron in the layer.
+     *
+     * @param  \MathPHP\LinearAlgebra\Matrix  $input
+     * @return \MathPHP\LinearAlgebra\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        return $input;
     }
 
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
+     * @param  callable  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return array
+     * @return callable
      */
-    public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array
+    public function back(callable $prevErrors, Optimizer $optimizer) : callable
     {
-        if (is_null($this->input) or is_null($this->z) or is_null($this->computed) or is_null($this->mask)) {
+        if (is_null($this->mask)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $errors = $this->activationFunction
-            ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($prevWeights->transpose()->multiply($prevErrors))
-            ->hadamardProduct($this->mask);
+        $errors = call_user_func($prevErrors)->hadamardProduct($this->mask);
 
-        $gradient = $errors->multiply($this->input->transpose());
+        unset($this->mask);
 
-        $step = $optimizer->step($this->weights, $gradient);
-
-        $this->weights->update($step);
-
-        unset($this->input, $this->z, $this->computed, $this->mask);
-
-        return [$this->weights->w(), $errors];
+        return function () use ($errors) {
+            return $errors;
+        };
     }
 }

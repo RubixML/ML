@@ -5,15 +5,14 @@ namespace Rubix\ML\NeuralNet\Layers;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-interface Hidden extends Parametric
+interface Hidden extends Layer
 {
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevWeights
-     * @param  \MathPHP\LinearAlgebra\Matrix  $prevErrors
+     * @param  callable  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
-     * @return array
+     * @return callable
      */
-    public function back(Matrix $prevWeights, Matrix $prevErrors, Optimizer $optimizer) : array;
+    public function back(callable $prevErrors, Optimizer $optimizer) : callable;
 }

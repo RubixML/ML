@@ -51,6 +51,18 @@ class Placeholder implements Input
     }
 
     /**
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
+     *
+     * @param  int  $fanIn
+     * @return int
+     */
+    public function init(int $fanIn) : int
+    {
+        return $this->width();
+    }
+
+    /**
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *

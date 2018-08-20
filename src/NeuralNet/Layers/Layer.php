@@ -4,7 +4,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 interface Layer
 {
-    const EPSILON = 1e-8;
+    const PHI = 100000000;
+
+    const EPSILON = 1e-10;
 
     /**
      * The width of the layer. i.e. the number of neurons or computation nodes.
@@ -12,4 +14,13 @@ interface Layer
      * @return int
      */
     public function width() : int;
+
+    /**
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
+     *
+     * @param  int  $fanIn
+     * @return int
+     */
+    public function init(int $fanIn) : int;
 }

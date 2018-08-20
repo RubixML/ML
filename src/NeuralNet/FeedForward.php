@@ -74,14 +74,14 @@ class FeedForward implements Network
 
         $this->layers[] = $output;
 
-        $fanIn = $this->input()->width();
+        $this->optimizer = $optimizer;
+        $this->backPass = array_reverse(array_slice($this->layers, 1, null, true));
 
-        foreach ($this->parametric() as $layer) {
+        $fanIn = 0;
+
+        foreach ($this->layers as $layer) {
             $fanIn = $layer->init($fanIn);
         }
-
-        $this->backPass = array_reverse($this->parametric());
-        $this->optimizer = $optimizer;
     }
 
     /**
@@ -131,17 +131,19 @@ class FeedForward implements Network
      */
     public function parametric() : array
     {
-        return array_slice($this->layers, 1, count($this->layers), true);
+        return array_filter($this->layers, function ($layer) {
+            return $layer instanceof Parametric;
+        });
     }
 
     /**
-     * The depth of the network. i.e. the number of parametric layers.
+     * The depth of the network. i.e. the number of layers.
      *
      * @return int
      */
     public function depth() : int
     {
-        return count($this->parametric());
+        return count($this->layers);
     }
 
     /**
@@ -188,17 +190,15 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        $prevErrors = $prevWeights = null;
+        $errors = null;
 
         $cost = 0.0;
 
         foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {
-                list($prevWeights, $prevErrors, $cost)
-                    = $layer->back($labels, $this->optimizer);
+                list($errors, $cost) = $layer->back($labels, $this->optimizer);
             } else {
-                list($prevWeights, $prevErrors)
-                    = $layer->back($prevWeights, $prevErrors, $this->optimizer);
+                $errors = $layer->back($errors, $this->optimizer);
             }
         }
 

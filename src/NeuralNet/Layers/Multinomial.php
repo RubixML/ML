@@ -233,7 +233,9 @@ class Multinomial implements Output
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$w, $errors, $cost];
+        return [function () use ($w, $errors) {
+            return $w->transpose()->multiply($errors);
+        }, $cost];
     }
 
     /**

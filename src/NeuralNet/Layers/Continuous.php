@@ -183,7 +183,9 @@ class Continuous implements Output
 
         unset($this->input, $this->computed);
 
-        return [$this->weights->w(), $errors, $cost];
+        return [function () use ($errors) {
+            return $this->weights->w()->transpose()->multiply($errors);
+        }, $cost];
     }
 
     /**

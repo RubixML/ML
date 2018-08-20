@@ -226,7 +226,9 @@ class Binomial implements Output
 
         unset($this->input, $this->z, $this->computed);
 
-        return [$this->weights->w(), $errors, $cost];
+        return [function () use ($errors) {
+            $this->weights->w()->transpose()->multiply($errors);
+        }, $cost];
     }
 
     /**
