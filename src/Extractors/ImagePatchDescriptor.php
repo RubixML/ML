@@ -12,7 +12,10 @@ use RuntimeException;
  * Image Patch Descriptor
  *
  * This image extractor encodes various user-defined features called descriptors
- * using subsamples of the original image called *patches*.
+ * using subsamples of the original image called *patches*. The resolution of
+ * each patch is determined by the patch size and the overall number of patches
+ * depends on both the image size and the patch size. The smaller the patch size
+ * the more patches will be necessary to encode the image and vise versa.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -170,12 +173,12 @@ class ImagePatchDescriptor implements Extractor
             throw new InvalidArgumentException('Input is not a resource.');
         }
 
-        list($imageWidth, $imageHeight) = $this->size;
+        list($width, $height) = $this->size;
 
         list($patchWidth, $patchHeight) = $this->patchSize;
 
-        $nX = (int) floor($imageWidth / $patchWidth);
-        $nY = (int) floor($imageHeight / $patchHeight);
+        $nX = (int) floor($width / $patchWidth);
+        $nY = (int) floor($height / $patchHeight);
 
         $vector = [];
 
@@ -193,11 +196,11 @@ class ImagePatchDescriptor implements Extractor
                     for ($y = $yStart; $y < $yEnd; $y++) {
                         $rgba = imagecolorat($image, $x, $y);
 
-                        $pixels = imagecolorsforindex($image, $rgba);
+                        $pixel = imagecolorsforindex($image, $rgba);
 
-                        $pixels = array_slice($pixels, 0, 3, true);
+                        $pixel = array_slice($pixel, 0, 3);
 
-                        $patch[$x][$y] = $pixels;
+                        $patch[$x][$y] = array_values($pixel);
                     }
                 }
 

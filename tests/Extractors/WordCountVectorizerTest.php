@@ -24,13 +24,13 @@ class WordCountVectorizerTest extends TestCase
         $this->extractor = new WordCountVectorizer(50, ['quick', 'pig'], true, new Word());
     }
 
-    public function test_build_count_vectorizer()
+    public function test_build_extractor()
     {
         $this->assertInstanceOf(WordCountVectorizer::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
     }
 
-    public function test_transform_dataset()
+    public function test_extract_samples()
     {
         $this->extractor->fit($this->samples);
 

@@ -11,6 +11,9 @@
     - Added Alpha Dropout layer
     - Fixed divide by 0 in Cross Entropy cost function
     - Added scaling parameter to Exponential cost function
+    - Added Image Patch Descriptor extractor
+    - Added Texture Histogram descriptor
+    - Added Average Color descriptor
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

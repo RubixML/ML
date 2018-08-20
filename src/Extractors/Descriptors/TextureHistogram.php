@@ -7,6 +7,16 @@ use Rubix\ML\Other\Functions\MeanVar;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
+/**
+ * Texture Histogram
+ *
+ * This descriptor computes the a histogram (represented as mean, variance,
+ * skewness, and kurtosis) of color intensities of an image patch.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class TextureHistogram implements Descriptor
 {
     /**
@@ -19,8 +29,8 @@ class TextureHistogram implements Descriptor
     {
         $intensities = [];
 
-        foreach ($patch as $x => $pixels) {
-            foreach ($pixels as $y => $rgb) {
+        foreach ($patch as $pixels) {
+            foreach ($pixels as $rgb) {
                 $intensities[] = Average::mean($rgb);
             }
         }

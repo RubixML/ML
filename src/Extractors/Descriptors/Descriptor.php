@@ -5,10 +5,10 @@ namespace Rubix\ML\Extractors\Descriptors;
 interface Descriptor
 {
     /**
-     * Extract features from the image and return them in a vector.
+     * Extract features from an image patch and return them in an array.
      *
-     * @param  array  $volume
+     * @param  array  $patch
      * @return array
      */
-    public function describe(array $volume) : array;
+    public function describe(array $patch) : array;
 }

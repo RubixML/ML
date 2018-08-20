@@ -21,7 +21,7 @@ class RawPixelEncoderTest extends TestCase
         $this->extractor = new RawPixelEncoder([3, 3], true, 'gd');
     }
 
-    public function test_build_count_vectorizer()
+    public function test_build_extractor()
     {
         $this->assertInstanceOf(RawPixelEncoder::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
@@ -32,7 +32,7 @@ class RawPixelEncoderTest extends TestCase
         $this->assertEquals(27, $this->extractor->dimensions());
     }
 
-    public function test_transform_dataset()
+    public function test_extract_samples()
     {
         $this->extractor->fit($this->samples);
 

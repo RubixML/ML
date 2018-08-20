@@ -28,7 +28,7 @@ class ImagePatchDescriptorTest extends TestCase
         $this->extractor = new ImagePatchDescriptor($this->descriptors, [8, 8], [4, 4], 'gd');
     }
 
-    public function test_build_count_vectorizer()
+    public function test_build_extractor()
     {
         $this->assertInstanceOf(ImagePatchDescriptor::class, $this->extractor);
         $this->assertInstanceOf(Extractor::class, $this->extractor);
@@ -39,7 +39,7 @@ class ImagePatchDescriptorTest extends TestCase
         $this->assertEquals(4, $this->extractor->numPatches());
     }
 
-    public function test_transform_dataset()
+    public function test_extract_samples()
     {
         $this->extractor->fit($this->samples);
 
