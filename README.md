@@ -2653,12 +2653,13 @@ The Placeholder input layer serves to represent the *future* input values of a m
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | inputs | None | int | The number of inputs to the network. |
+| 2 | bias | true | bool | Should we add a bias node? |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 
-$layer = new Placeholder(100);
+$layer = new Placeholder(100, true);
 ```
 
 ### Hidden Layers
@@ -2687,13 +2688,14 @@ Dense layers are fully connected Hidden layers, meaning each neuron is connected
 |--|--|--|--|--|
 | 1 | neurons | None | int | The number of neurons in the layer. |
 | 2 | activation fn | None | object | The activation function to use. |
+| 3 | bias | true | bool | Should we add a bias node? |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$layer = new Dense(100, new LeakyReLU(0.05));
+$layer = new Dense(100, new LeakyReLU(0.05), true);
 ```
 
 ### Dropout

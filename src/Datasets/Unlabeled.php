@@ -217,8 +217,8 @@ class Unlabeled extends DataFrame implements Dataset
 
         $samples = $this->samples;
 
-        while (!empty($samples)) {
-            $batches[] = new self(array_splice($samples, 0, $n));
+        foreach (array_chunk($this->samples, $n) as $batch) {
+            $batches[] = new self($batch);
         }
 
         return $batches;

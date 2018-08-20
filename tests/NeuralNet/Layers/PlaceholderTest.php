@@ -13,7 +13,7 @@ class PlaceholderTest extends TestCase
 
     public function setUp()
     {
-        $this->layer = new Placeholder(50);
+        $this->layer = new Placeholder(50, true);
     }
 
     public function test_build_layer()

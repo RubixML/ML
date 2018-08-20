@@ -27,7 +27,7 @@ use RuntimeException;
 class Dense implements Hidden, Parametric
 {
     const ROOT_2 = 1.41421356237;
-    
+
     /**
      * The width of the layer. i.e. the number of neurons.
      *
@@ -41,6 +41,13 @@ class Dense implements Hidden, Parametric
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
     protected $activationFunction;
+
+    /**
+     * Should we add a bias neuron?
+     *
+     * @var bool
+     */
+    protected $bias;
 
     /**
      * The weights.
@@ -73,10 +80,11 @@ class Dense implements Hidden, Parametric
     /**
      * @param  int  $neurons
      * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
+     * @param  bool  $bias
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction)
+    public function __construct(int $neurons, ActivationFunction $activationFunction, bool $bias = true)
     {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons cannot be'
@@ -85,6 +93,7 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
+        $this->bias = $bias;
         $this->weights = new Parameter(new Matrix([]));
     }
 
@@ -93,7 +102,7 @@ class Dense implements Hidden, Parametric
      */
     public function width() : int
     {
-        return $this->neurons + 1;
+        return $this->bias ? $this->neurons + 1 : $this->neurons;
     }
 
     /**
@@ -142,16 +151,23 @@ class Dense implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->multiply($input);
+        $this->z = $temp = $this->weights->w()->multiply($input);
 
-        $temp = $this->z->rowExclude($this->z->getM() - 1);
+        if ($this->bias === true) {
+            $temp = $temp->rowExclude($this->z->getM() - 1);
+        }
 
-        $biases = MatrixFactory::one(1, $this->z->getN());
+        $activations = $this->activationFunction->compute($temp);
 
-        $this->computed = $this->activationFunction->compute($temp)
-            ->augmentBelow($biases);
+        if ($this->bias === true) {
+            $biases = MatrixFactory::one(1, $this->z->getN());
 
-        return $this->computed;
+            $activations = $activations->augmentBelow($biases);
+        }
+
+        $this->computed = $activations;
+
+        return $activations;
     }
 
     /**
@@ -162,13 +178,21 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->multiply($input)
-            ->rowExclude($this->weights->w()->getM() - 1);
+        $z = $this->weights->w()->multiply($input);
 
-        $biases = MatrixFactory::one(1, $z->getN());
+        if ($this->bias === true) {
+            $z = $z->rowExclude($z->getM() - 1);
+        }
 
-        return $this->activationFunction->compute($z)
-            ->augmentBelow($biases);
+        $activations = $this->activationFunction->compute($z);
+
+        if ($this->bias === true) {
+            $biases = MatrixFactory::one(1, $z->getN());
+
+            $activations = $activations->augmentBelow($biases);
+        }
+
+        return $activations;
     }
 
     /**
@@ -188,7 +212,7 @@ class Dense implements Hidden, Parametric
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct(call_user_func($prevErrors));
+            ->hadamardProduct($prevErrors());
 
         $gradient = $errors->multiply($this->input->transpose());
 

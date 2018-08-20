@@ -138,7 +138,7 @@ class Dropout implements Hidden, Nonparametric
                 . ' backpropagating.');
         }
 
-        $errors = call_user_func($prevErrors)->hadamardProduct($this->mask);
+        $errors = $prevErrors()->hadamardProduct($this->mask);
 
         unset($this->mask);
 

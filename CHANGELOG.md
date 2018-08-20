@@ -15,6 +15,7 @@
     - Added Texture Histogram descriptor
     - Added Average Color descriptor
     - Removed parameters from Dropout and Alpha Dropout layers
+    - Added option to remove biases in Dense and Placeholder layers
 
 - 0.0.4-alpha
     - Added Dropout hidden layer
