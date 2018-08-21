@@ -22,44 +22,35 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * @param  array  $samples
-     * @param  mixed  $placeholder
+     * @param  bool  $validate
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples = [], $placeholder = '?')
+    public function __construct(array $samples = [], bool $validate = true)
     {
-        if (!is_string($placeholder) and !is_numeric($placeholder)) {
-            throw new InvalidArgumentException('Placeholder must be a string'
-                . ' or numeric type ' . gettype($placeholder) . ' found.');
-        }
+        if ($validate === true) {
+            $numFeatures = is_array(reset($samples))
+                ? count(reset($samples)) : 0;
 
-        $samples = array_values($samples);
-
-        $numFeatures = count(is_array($samples[0] ?? null) ? $samples[0] : []);
-
-        foreach ($samples as &$sample) {
-            if (count($sample) !== $numFeatures) {
-                throw new InvalidArgumentException('The number of feature'
-                    . ' columns must be equal for all samples.');
-            }
-
-            foreach ($sample as &$feature) {
-                if (!isset($feature)) {
-                    $feature = $placeholder;
-                    continue 1;
+            foreach ($samples as &$sample) {
+                if (count($sample) !== $numFeatures) {
+                    throw new InvalidArgumentException('The number of feature'
+                        . ' columns must be equal for all samples.');
                 }
 
-                if (!is_string($feature) and !is_numeric($feature)) {
-                    throw new InvalidArgumentException('Feature must be a'
-                        . ' string, or numeric type, '
-                        . gettype($feature) . ' found.');
+                $sample = array_values($sample);
+
+                foreach ($sample as &$feature) {
+                    if (!is_string($feature) and !is_numeric($feature)) {
+                        throw new InvalidArgumentException('Feature must be a'
+                            . ' string, or numeric type, '
+                            . gettype($feature) . ' found.');
+                    }
                 }
             }
-
-            $sample = array_values($sample);
         }
 
-        $this->samples = $samples;
+        $this->samples = array_values($samples);
     }
 
     /**

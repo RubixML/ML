@@ -7,6 +7,16 @@ use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Unlabeled
+ *
+ * Unlabeled datasets can be used to train *unsupervised* Estimators and for
+ * feeding data into an Estimator to make predictions.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Unlabeled extends DataFrame implements Dataset
 {
     /**
@@ -30,6 +40,16 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return $dataset;
+    }
+
+    /**
+     * @param  array  $samples
+     * @param  bool  $validate
+     * @return void
+     */
+    public function __construct(array $samples = [], bool $validate = true)
+    {
+        parent::__construct($samples, $validate);
     }
 
     /**
@@ -75,7 +95,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function head(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, 0, $n));
+        return new self(array_slice($this->samples, 0, $n), false);
     }
 
     /**
@@ -86,7 +106,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function tail(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, -$n));
+        return new self(array_slice($this->samples, -$n), false);
     }
 
     /**
@@ -121,7 +141,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function splice(int $offset, int $n) : self
     {
-        return new self(array_splice($this->samples, $offset, $n));
+        return new self(array_splice($this->samples, $offset, $n), false);
     }
 
     /**
@@ -168,8 +188,8 @@ class Unlabeled extends DataFrame implements Dataset
 
         $n = (int) ($ratio * $this->numRows());
 
-        $left = new self(array_slice($this->samples, 0, $n));
-        $right = new self(array_slice($this->samples, $n));
+        $left = new self(array_slice($this->samples, 0, $n), false);
+        $right = new self(array_slice($this->samples, $n), false);
 
         return [$left, $right];
     }
@@ -195,7 +215,7 @@ class Unlabeled extends DataFrame implements Dataset
         $folds = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $folds[] = new self(array_splice($samples, 0, $n));
+            $folds[] = new self(array_splice($samples, 0, $n), false);
         }
 
         return $folds;
@@ -216,7 +236,7 @@ class Unlabeled extends DataFrame implements Dataset
         $samples = $this->samples;
 
         foreach (array_chunk($this->samples, $n) as $batch) {
-            $batches[] = new self($batch);
+            $batches[] = new self($batch, false);
         }
 
         return $batches;
@@ -263,7 +283,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return [new self($left), new self($right)];
+        return [new self($left, false), new self($right, false)];
     }
 
     /**
@@ -288,7 +308,7 @@ class Unlabeled extends DataFrame implements Dataset
             $subset[] = $this->samples[rand(0, $max)];
         }
 
-        return new self($subset);
+        return new self($subset, false);
     }
 
     /**
@@ -324,7 +344,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($subset);
+        return new self($subset, false);
     }
 
     /**

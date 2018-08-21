@@ -16,6 +16,7 @@
     - Added Average Color descriptor
     - Removed parameters from Dropout and Alpha Dropout layers
     - Added option to remove biases in Dense and Placeholder layers
+    - Optimized Dataset objects
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

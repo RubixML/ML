@@ -595,7 +595,7 @@ $dataset = Labeled::restore('path/to/dataset');
 There are two types of Dataset objects in Rubix, *labeled* and *unlabeled*.
 
 ### Labeled
-For supervised Estimators you will need to pass it a Labeled Dataset consisting of a sample matrix and an array of labels that correspond to the observed outcomes of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned.
+For *supervised* Estimators you will need to train it with a Labeled dataset consisting of a sample matrix with the addition of an array of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned.
 
 In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label.
 
@@ -604,7 +604,7 @@ In addition to the basic Dataset interface, the Labeled class can sort and *stra
 |--|--|--|--|--|
 | 1 | samples | None | array | A 2-dimensional array consisting of rows of samples and columns of features. |
 | 2 | labels | None | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
-| 3| placeholder | '?' | mixed | The placeholder value for null features. |
+| 3 | validate | true | bool | Should we validate the input? |
 
 ##### Additional Methods:
 Return a 1-dimensional array of labels:
@@ -693,13 +693,13 @@ $strata = $dataset->stratify();
 ```
 
 ### Unlabeled
-Unlabeled datasets can be used for training unsupervised Estimators and for feeding data into an Estimator to make predictions.
+Unlabeled datasets can be used to train *unsupervised* Estimators and for feeding data into an Estimator to make predictions.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
-| 2| placeholder | '?' | mixed | The placeholder value for null features. |
+| 3 | validate | true | bool | Should we validate the input? |
 
 
 ##### Additional Methods:
@@ -755,7 +755,8 @@ This image extractor encodes various user-defined features called descriptors us
 | 1 | descriptors | None | array | The descriptor middelware. Each descriptor encodes a set of features from a patch of the image. |
 | 2 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
 | 3 | patch size | [4, 4] | array | The width and height of the patch area. |
-| 4 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
+| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+
 
 ##### Additional Methods:
 

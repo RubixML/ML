@@ -7,6 +7,19 @@ use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * Labeled
+ *
+ * For *supervised* Estimators you will need to train it with a Labeled dataset
+ * consisting of a sample matrix with the addition of an array of labels that
+ * correspond to the observed outcome of each sample. Splitting, folding,
+ * randomizing, sorting, and subsampling are all done while keeping the indices
+ * of samples and labels aligned.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Labeled extends DataFrame implements Dataset
 {
     /**
@@ -43,33 +56,35 @@ class Labeled extends DataFrame implements Dataset
     /**
      * @param  array  $samples
      * @param  array  $labels
-     * @param  mixed  $placeholder
+     * @param  bool  $validate
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $samples = [], array $labels = [], $placeholder = '?')
+    public function __construct(array $samples = [], array $labels = [], bool $validate = true)
     {
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The ratio of samples to labels'
              . ' must be equal.');
         }
 
-        foreach ($labels as &$label) {
-            if (!is_string($label) and !is_numeric($label)) {
-                throw new InvalidArgumentException('Label must be a string or'
-                    . ' numeric type, ' . gettype($label) . ' found.');
-            }
+        if ($validate === true) {
+            foreach ($labels as &$label) {
+                if (!is_string($label) and !is_numeric($label)) {
+                    throw new InvalidArgumentException('Label must be a string'
+                        . ' or numeric type, ' . gettype($label) . ' found.');
+                }
 
-            if (is_string($label) and is_numeric($label)) {
-                $label = (int) $label == $label
-                    ? (int) $label
-                    : (float) $label;
+                if (is_string($label) and is_numeric($label)) {
+                    $label = (int) $label == $label
+                        ? (int) $label
+                        : (float) $label;
+                }
             }
         }
 
         $this->labels = array_values($labels);
 
-        parent::__construct($samples, $placeholder);
+        parent::__construct($samples, $validate);
     }
 
     /**
@@ -153,7 +168,7 @@ class Labeled extends DataFrame implements Dataset
     public function head(int $n = 10) : self
     {
         return new self(array_slice($this->samples, 0, $n),
-            array_slice($this->labels, 0, $n));
+            array_slice($this->labels, 0, $n), false);
     }
 
     /**
@@ -165,7 +180,7 @@ class Labeled extends DataFrame implements Dataset
     public function tail(int $n = 10) : self
     {
         return new self(array_slice($this->samples, -$n),
-            array_slice($this->labels, -$n));
+            array_slice($this->labels, -$n), false);
     }
 
     /**
@@ -213,7 +228,7 @@ class Labeled extends DataFrame implements Dataset
     public function splice(int $offset, int $n) : self
     {
         return new self(array_splice($this->samples, $offset, $n),
-            array_splice($this->labels, $offset, $n));
+            array_splice($this->labels, $offset, $n), false);
     }
 
     /**
@@ -277,7 +292,7 @@ class Labeled extends DataFrame implements Dataset
         foreach ($this->_stratify() as $label => $stratum) {
             $labels = array_fill(0, count($stratum), $label);
 
-            $strata[$label] = new self($stratum, $labels);
+            $strata[$label] = new self($stratum, $labels, false);
         }
 
         return $strata;
@@ -300,9 +315,9 @@ class Labeled extends DataFrame implements Dataset
         $n = (int) ($ratio * $this->numRows());
 
         $left = new self(array_slice($this->samples, 0, $n),
-            array_slice($this->labels, 0, $n));
+            array_slice($this->labels, 0, $n), false);
         $right = new self(array_slice($this->samples, $n),
-            array_slice($this->labels, $n));
+            array_slice($this->labels, $n), false);
 
         return [$left, $right];
     }
@@ -321,7 +336,7 @@ class Labeled extends DataFrame implements Dataset
             . ' between 0 and 1.');
         }
 
-        $left = $right = [[], []];
+        $left = $right = [[], [], false];
 
         foreach ($this->_stratify() as $label => $stratum) {
             $n = (int) ($ratio * count($stratum));
@@ -359,7 +374,7 @@ class Labeled extends DataFrame implements Dataset
 
         for ($i = 0; $i < $k; $i++) {
             $folds[] = new self(array_splice($samples, 0, $n),
-                array_splice($labels, 0, $n));
+                array_splice($labels, 0, $n), false);
         }
 
         return $folds;
@@ -391,7 +406,7 @@ class Labeled extends DataFrame implements Dataset
                 $labels = array_merge($labels, array_fill(0, $n, $label));
             }
 
-            $folds[] = new self($samples, $labels);
+            $folds[] = new self($samples, $labels, false);
         }
 
         return $folds;
@@ -413,7 +428,7 @@ class Labeled extends DataFrame implements Dataset
         $batches = [];
 
         foreach ($sChunks as $i => $samples) {
-            $batches[] = new self($samples, $lChunks[$i]);
+            $batches[] = new self($samples, $lChunks[$i], false);
         }
 
         return $batches;
@@ -434,7 +449,7 @@ class Labeled extends DataFrame implements Dataset
      */
     public function partition(int $index, $value) : array
     {
-        $left = $right = [];
+        $left = $right = [[], [], false];
 
         if ($this->type($index) === self::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
@@ -486,7 +501,7 @@ class Labeled extends DataFrame implements Dataset
             $labels[] = $this->labels[$index];
         }
 
-        return new self($samples, $labels);
+        return new self($samples, $labels, false);
     }
 
     /**
@@ -524,7 +539,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($samples, $labels);
+        return new self($samples, $labels, false);
     }
 
     /**
