@@ -9,7 +9,7 @@ use RuntimeException;
 
 class Labeled extends DataFrame implements Dataset
 {
-    const PHI = 1e8;
+    const PHI = 100000000;
 
     /**
      * The labeled outcomes for each sample in the dataset.
@@ -405,14 +405,13 @@ class Labeled extends DataFrame implements Dataset
      */
     public function batch(int $n = 50) : array
     {
+        $sChunks = array_chunk($this->samples, $n);
+        $lChunks = array_chunk($this->labels, $n);
+
         $batches = [];
 
-        $samples = $this->samples;
-        $labels = $this->labels;
-
-        while (!empty($samples)) {
-            $batches[] = new self(array_splice($samples, 0, $n),
-                array_splice($labels, 0, $n));
+        foreach ($sChunks as $i => $samples) {
+            $batches[] = new self($samples, $lChunks[$i]);
         }
 
         return $batches;

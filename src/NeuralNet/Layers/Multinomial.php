@@ -196,14 +196,12 @@ class Multinomial implements Output
                 . ' backpropagating.');
         }
 
-        $w = $this->weights->w();
-
         $errors = [[]];
 
         $cost = 0.0;
 
         foreach ($this->classes as $i => $class) {
-            $penalty = $this->alpha * array_sum($w->getRow($i));
+            $penalty = $this->alpha * array_sum($this->weights->w()->getRow($i));
 
             foreach ($this->computed->getRow($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1.0 : 0.0;
@@ -233,8 +231,8 @@ class Multinomial implements Output
 
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($w, $errors) {
-            return $w->transpose()->multiply($errors);
+        return [function () use ($errors) {
+            return $this->weights->w()->transpose()->multiply($errors);
         }, $cost];
     }
 

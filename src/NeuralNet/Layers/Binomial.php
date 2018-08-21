@@ -83,19 +83,19 @@ class Binomial implements Output
     protected $computed;
 
     /**
-     * @param  array  $labels
+     * @param  array  $classes
      * @param  float  $alpha
      * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $labels, float $alpha = 1e-4, CostFunction $costFunction = null)
+    public function __construct(array $classes, float $alpha = 1e-4, CostFunction $costFunction = null)
     {
-        $labels = array_unique($labels);
+        $classes = array_unique($classes);
 
-        if (count($labels) !== 2) {
-            throw new InvalidArgumentException('The number of unique class'
-                . ' labels must be exactly 2.');
+        if (count($classes) !== 2) {
+            throw new InvalidArgumentException('The number of unique classes'
+                . ' must be exactly 2.');
         }
 
         if ($alpha < 0.0) {
@@ -107,7 +107,7 @@ class Binomial implements Output
             $costFunction = new CrossEntropy();
         }
 
-        $this->classes = [$labels[0] => 0, $labels[1] => 1];
+        $this->classes = [$classes[0] => 0, $classes[1] => 1];
         $this->alpha = $alpha;
         $this->activationFunction = new Sigmoid();
         $this->costFunction = $costFunction;
@@ -144,7 +144,7 @@ class Binomial implements Output
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return 1;
+        return $this->width();
     }
 
     /**
@@ -205,7 +205,7 @@ class Binomial implements Output
             $computed = $this->costFunction
                 ->compute($expected, $activation);
 
-            $cost =+ $computed;
+            $cost += $computed;
 
             $errors[0][$i] = $this->costFunction
                 ->differentiate($expected, $activation, $computed)

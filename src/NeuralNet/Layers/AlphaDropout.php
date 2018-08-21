@@ -90,7 +90,8 @@ class AlphaDropout implements Hidden, Nonparametric
     }
 
     /**
-     * Initialize the layer.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
@@ -103,7 +104,7 @@ class AlphaDropout implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the input sum and activation of each nueron in the layer and
+     * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $input

@@ -37,6 +37,13 @@ class FeedForward implements Network
     ];
 
     /**
+     * The gradient descent optimizer used to train the network.
+     *
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
+     */
+    protected $optimizer;
+
+    /**
      * The memoized pathing of the backward pass.
      *
      * @var array
@@ -44,13 +51,6 @@ class FeedForward implements Network
     protected $backPass = [
         //
     ];
-
-    /**
-     * The gradient descent optimizer used to train the network.
-     *
-     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
-     */
-    protected $optimizer;
 
     /**
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
@@ -190,15 +190,15 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        $errors = null;
+        $prevErrors = null;
 
         $cost = 0.0;
 
         foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {
-                list($errors, $cost) = $layer->back($labels, $this->optimizer);
+                list($prevErrors, $cost) = $layer->back($labels, $this->optimizer);
             } else {
-                $errors = $layer->back($errors, $this->optimizer);
+                $prevErrors = $layer->back($prevErrors, $this->optimizer);
             }
         }
 

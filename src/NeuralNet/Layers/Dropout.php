@@ -101,8 +101,7 @@ class Dropout implements Hidden, Nonparametric
         $n = $input->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
-            return (rand(0, self::PHI) / self::PHI) > $this->ratio
-                ? $this->scale : 0.0;
+            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? $this->scale : 0.0;
         });
 
         $activations = $input->hadamardProduct($mask);

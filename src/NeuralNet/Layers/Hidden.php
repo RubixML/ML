@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
 interface Hidden extends Layer

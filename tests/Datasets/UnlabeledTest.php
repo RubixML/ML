@@ -126,6 +126,16 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
+    public function test_batch_dataset()
+    {
+        $batches = $this->dataset->batch(2);
+
+        $this->assertCount(3, $batches);
+        $this->assertCount(2, $batches[0]);
+        $this->assertCount(2, $batches[1]);
+        $this->assertCount(2, $batches[2]);
+    }
+
     public function test_random_subset_with_replacement()
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);

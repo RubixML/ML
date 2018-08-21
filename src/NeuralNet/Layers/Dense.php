@@ -26,8 +26,6 @@ use RuntimeException;
  */
 class Dense implements Hidden, Parametric
 {
-    const ROOT_2 = 1.41421356237;
-
     /**
      * The width of the layer. i.e. the number of neurons.
      *
@@ -117,7 +115,7 @@ class Dense implements Hidden, Parametric
         if ($this->activationFunction instanceof HyperbolicTangent) {
             $r = (6 / $fanIn) ** 0.25;
         } else if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $fanIn) ** (1 / self::ROOT_2);
+            $r = (6 / $fanIn) ** (1.0 / sqrt(2.0));
         } else  {
             $r = sqrt(6 / $fanIn);
         }
@@ -228,6 +226,8 @@ class Dense implements Hidden, Parametric
     }
 
     /**
+     * Read the parameters and return them in an associative array.
+     *
      * @return array
      */
     public function read() : array
@@ -238,7 +238,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Restore the parameters of the layer.
+     * Restore the parameters in the layer from an associative array.
      *
      * @param  array  $parameters
      * @return void

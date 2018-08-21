@@ -109,7 +109,7 @@ class Continuous implements Output
 
         $this->weights = new Parameter(new Matrix($w));
 
-        return 1;
+        return $this->width();
     }
 
     /**
