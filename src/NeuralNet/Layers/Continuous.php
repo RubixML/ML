@@ -175,9 +175,9 @@ class Continuous implements Output
 
         $errors = new Matrix($errors);
 
-        $gradient = $errors->multiply($this->input->transpose());
+        $gradients = $errors->multiply($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradient);
+        $step = $optimizer->step($this->weights, $gradients);
 
         $this->weights->update($step);
 

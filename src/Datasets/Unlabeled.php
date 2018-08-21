@@ -9,8 +9,6 @@ use RuntimeException;
 
 class Unlabeled extends DataFrame implements Dataset
 {
-    const PHI = 1e8;
-
     /**
      * Restore an unlabeled dataset from a serialized object file.
      *
@@ -170,10 +168,10 @@ class Unlabeled extends DataFrame implements Dataset
 
         $n = (int) ($ratio * $this->numRows());
 
-        return [
-            new self(array_slice($this->samples, 0, $n)),
-            new self(array_slice($this->samples, $n)),
-        ];
+        $left = new self(array_slice($this->samples, 0, $n));
+        $right = new self(array_slice($this->samples, $n));
+
+        return [$left, $right];
     }
 
     /**
@@ -192,7 +190,7 @@ class Unlabeled extends DataFrame implements Dataset
 
         $samples = $this->samples;
 
-        $n = (int) (count($samples) / $k);
+        $n = (int) floor(count($samples) / $k);
 
         $folds = [];
 
@@ -282,10 +280,12 @@ class Unlabeled extends DataFrame implements Dataset
                 . ' less than 1 sample.');
         }
 
+        $max = $this->numRows() - 1;
+
         $subset = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $subset[] = $this->samples[array_rand($this->samples)];
+            $subset[] = $this->samples[rand(0, $max)];
         }
 
         return new self($subset);

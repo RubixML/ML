@@ -49,7 +49,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     ];
 
     /**
-     * The memoized random column index array.
+     * The memoized random column indices.
      *
      * @var array
      */
@@ -73,7 +73,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Impurity tolerance must be 0 or'
                 . ' greater.');
         }
@@ -232,10 +232,12 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
                 continue 1;
             }
 
+            $density = $n / $total;
+
             $counts = array_count_values($group->labels());
 
             foreach ($counts as $count) {
-                $gini += (1.0 - ($count / $n) ** 2) * ($n / $total);
+                $gini += (1.0 - ($count / $n) ** 2) * $density;
             }
         }
 

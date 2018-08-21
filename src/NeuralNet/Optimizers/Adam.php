@@ -75,8 +75,8 @@ class Adam implements Optimizer
                                 float $rmsDecay = 0.999, float $epsilon = 1e-8)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set'
-                . ' to a positive value.');
+            throw new InvalidArgumentException('The learning rate must be'
+                . ' greater than 0.');
         }
 
         if ($momentumDecay < 0.0 or $momentumDecay > 1.0) {

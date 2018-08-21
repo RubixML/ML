@@ -24,7 +24,7 @@ use RuntimeException;
  */
 class GaussianRandomProjector implements Transformer
 {
-    const PHI = 1e8;
+    const PHI = 100000000;
 
     /**
      * The target number of dimensions.
@@ -51,7 +51,7 @@ class GaussianRandomProjector implements Transformer
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
     {
         return (int) round(4.0 * log($n)
-            / ($maxDistortion ** 2 / 2 - $maxDistortion ** 3 / 3));
+            / ($maxDistortion ** 2 / 2.0 - $maxDistortion ** 3 / 3.0));
     }
 
     /**
@@ -83,7 +83,7 @@ class GaussianRandomProjector implements Transformer
 
         $columns = $dataset->numColumns();
 
-        $max = (int) ((1 / sqrt($this->dimensions)) * self::PHI);
+        $max = (int) ((1.0 / sqrt($this->dimensions)) * self::PHI);
         $min = -$max;
 
         $r = [[]];

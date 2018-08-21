@@ -52,8 +52,8 @@ class AdaGrad implements Optimizer
     public function __construct(float $rate = 0.001, float $epsilon = 1e-8)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set'
-                . ' to a positive value.');
+            throw new InvalidArgumentException('The learning rate must be'
+                . ' greater than 0.');
         }
 
         if ($epsilon <= 0.0) {

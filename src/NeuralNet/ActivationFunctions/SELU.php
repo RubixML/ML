@@ -36,6 +36,11 @@ class SELU implements Rectifier
     protected $scale;
 
     /**
+     * @var float
+     */
+    protected $beta;
+
+    /**
      * @param  float  $scale
      * @param  float  $alpha
      * @throws \InvalidArgumentException
@@ -43,17 +48,18 @@ class SELU implements Rectifier
      */
     public function __construct(float $alpha = self::ALPHA, float $scale = self::SCALE)
     {
-        if ($scale < 1.0) {
-            throw new InvalidArgumentException('Scale must be greater than 1');
-        }
-
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('Alpha parameter must be'
                 . ' positive.');
         }
 
+        if ($scale < 1.) {
+            throw new InvalidArgumentException('Scale must be greater than 1.');
+        }
+
         $this->scale = $scale;
         $this->alpha = $alpha;
+        $this->beta = $scale * $alpha;
     }
 
     /**
@@ -64,7 +70,7 @@ class SELU implements Rectifier
      */
     public function range() : array
     {
-        return [-($this->scale * $this->alpha), INF];
+        return [-$this->beta, INF];
     }
 
     /**
@@ -78,7 +84,7 @@ class SELU implements Rectifier
         return $z->map(function ($value) {
             return $value > 0.0
                 ? $this->scale * $value
-                : $this->scale * $this->alpha * exp($value) - $this->alpha;
+                : $this->beta * exp($value) - $this->alpha;
         });
     }
 

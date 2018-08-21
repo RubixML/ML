@@ -50,7 +50,7 @@ class HyperbolicTangent implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return 1 - ($activation ** 2);
+            return 1.0 - ($activation ** 2);
         });
     }
 }

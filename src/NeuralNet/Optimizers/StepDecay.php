@@ -59,8 +59,8 @@ class StepDecay implements Optimizer
     public function __construct(float $rate = 0.001, int $steps = 10, float $decay = 1e-5)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set'
-                . ' to a positive value.');
+            throw new InvalidArgumentException('The learning rate must be'
+                . ' greater than 0.');
         }
 
         if ($steps < 1) {
@@ -68,9 +68,9 @@ class StepDecay implements Optimizer
                 . ' must be greater than 0.');
         }
 
-        if ($decay < 0) {
+        if ($decay < 0.0) {
             throw new InvalidArgumentException('The decay rate must be'
-                . ' positive');
+                . ' positive.');
         }
 
         $this->rate = $rate;

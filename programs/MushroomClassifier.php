@@ -10,14 +10,14 @@ use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use League\Csv\Reader;
 
@@ -46,11 +46,12 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MultiLayerPerceptron([
-    new Dense(30, new SELU(), true),
-    new Dense(20, new SELU(), true),
-    new AlphaDropout(0.1),
-    new Dense(10, new SELU(), true),
-], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
+    new Dense(30, new LeakyReLU()),
+    new BatchNorm(),
+    new Dense(20, new LeakyReLU()),
+    new BatchNorm(),
+    new Dense(10, new LeakyReLU()),
+], 100, new Adam(0.001), 1e-3, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),
     new ZScaleStandardizer(),

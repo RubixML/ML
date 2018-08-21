@@ -42,7 +42,11 @@ $report = new AggregateReport([
 
 list($training, $testing) = $dataset->randomize()->split(0.8);
 
+$start = microtime(true);
+
 $estimator->train($training);
+
+echo 'Estimator took ' . (string) (microtime(true) - $start) . ' seconds to train.' . "\n";
 
 var_dump($report->generate($estimator, $testing));
 

@@ -24,17 +24,24 @@ class Minkowski implements Distance
     protected $lambda;
 
     /**
+     * @var float
+     */
+    protected $exponent;
+
+    /**
      * @param  float  $lambda
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $lambda = 3.0)
     {
-        if ($lambda < 1) {
-            throw new InvalidArgumentException('Lambda must be 1 or greater');
+        if ($lambda <= 0.0) {
+            throw new InvalidArgumentException('Lambda must be greater than'
+                . ' 0.');
         }
 
         $this->lambda = $lambda;
+        $this->exponent = 1.0 / $this->lambda;
     }
 
     /**
@@ -52,6 +59,6 @@ class Minkowski implements Distance
             $distance += abs($coordinate - $b[$i]) ** $this->lambda;
         }
 
-        return $distance ** (1.0 / $this->lambda);
+        return $distance ** $this->exponent;
     }
 }

@@ -51,7 +51,7 @@ class ISRU implements ActivationFunction
      */
     public function range() : array
     {
-        $r = 1 / sqrt($this->alpha);
+        $r = 1.0 / sqrt($this->alpha);
 
         return [-$r, $r];
     }
@@ -65,7 +65,7 @@ class ISRU implements ActivationFunction
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value / sqrt(1 + $this->alpha * $value ** 2);
+            return $value / sqrt(1.0 + $this->alpha * $value ** 2);
         });
     }
 
@@ -79,7 +79,7 @@ class ISRU implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $z->map(function ($output) {
-            return (1 / sqrt(1 + $this->alpha * $output ** 2)) ** 3;
+            return (1.0 / sqrt(1.0 + $this->alpha * $output ** 2)) ** 3;
         });
     }
 }

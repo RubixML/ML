@@ -12,6 +12,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
 
+    const PHI = 100000000;
+
     /**
      * Restore a dataset from a serialized object file.
      *

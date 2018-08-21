@@ -60,7 +60,7 @@ class ELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > 0.0 ? $value : $this->alpha * (exp($value) - 1);
+            return $value > 0.0 ? $value : $this->alpha * (exp($value) - 1.0);
         });
     }
 

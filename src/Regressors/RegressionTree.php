@@ -40,7 +40,7 @@ class RegressionTree extends CART implements Estimator, Persistable
     protected $tolerance;
 
     /**
-     * The randomized column indices.
+     * The memoized random column indices.
      *
      * @var array
      */
@@ -64,7 +64,7 @@ class RegressionTree extends CART implements Estimator, Persistable
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0) {
+        if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Impurity tolerance must be 0 or'
                 . ' greater.');
         }

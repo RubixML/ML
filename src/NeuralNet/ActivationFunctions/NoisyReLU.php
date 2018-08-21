@@ -19,7 +19,7 @@ use InvalidArgumentException;
  */
 class NoisyReLU implements Rectifier
 {
-    const SCALE = 1e8;
+    const PHI = 100000000;
 
     /**
      * The scaled minimum gaussian noise value.
@@ -47,7 +47,7 @@ class NoisyReLU implements Rectifier
                 . '0 or greater.');
         }
 
-        $this->max = (int) ($noise * self::SCALE);
+        $this->max = (int) ($noise * self::PHI);
         $this->min = -$this->max;
     }
 
@@ -59,7 +59,7 @@ class NoisyReLU implements Rectifier
      */
     public function range() : array
     {
-        return [$this->min / self::SCALE, INF];
+        return [$this->min / self::PHI, INF];
     }
 
     /**
@@ -71,9 +71,9 @@ class NoisyReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            $noise = rand($this->min, $this->max) / self::SCALE;
+            $noise = rand($this->min, $this->max) / self::PHI;
 
-            return $value > 0.0 ? max(0, $value + $noise) : -abs($noise);
+            return $value > 0.0 ? max(0.0, $value + $noise) : -abs($noise);
         });
     }
 

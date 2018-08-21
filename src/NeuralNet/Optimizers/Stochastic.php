@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  * Stochastic
  *
- * A constant learning rate Optimizer.
+ * A constant learning rate gradient descent optimizer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -32,8 +32,8 @@ class Stochastic implements Optimizer
     public function __construct(float $rate = 0.001)
     {
         if ($rate <= 0.0) {
-            throw new InvalidArgumentException('The learning rate must be set'
-                . ' to a positive value.');
+            throw new InvalidArgumentException('The learning rate must be'
+                . ' greater than 0.');
         }
 
         $this->rate = $rate;

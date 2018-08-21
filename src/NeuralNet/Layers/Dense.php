@@ -212,9 +212,9 @@ class Dense implements Hidden, Parametric
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($prevErrors());
 
-        $gradient = $errors->multiply($this->input->transpose());
+        $gradients = $errors->multiply($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradient);
+        $step = $optimizer->step($this->weights, $gradients);
 
         $this->weights->update($step);
 

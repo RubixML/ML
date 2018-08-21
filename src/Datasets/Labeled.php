@@ -9,10 +9,8 @@ use RuntimeException;
 
 class Labeled extends DataFrame implements Dataset
 {
-    const PHI = 100000000;
-
     /**
-     * The labeled outcomes for each sample in the dataset.
+     * The observed outcomes for each sample in the dataset.
      *
      * @var array
      */
@@ -99,6 +97,8 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Return all of the labels.
+     *
      * @return array
      */
     public function labels() : array
@@ -116,7 +116,7 @@ class Labeled extends DataFrame implements Dataset
     public function label(int $index)
     {
         if (!isset($this->labels[$index])) {
-            throw new \InvalidArgumentException('Row at offset '
+            throw new InvalidArgumentException('Row at offset '
                 . (string) $index . ' does not exist.');
         }
 
@@ -243,7 +243,8 @@ class Labeled extends DataFrame implements Dataset
     {
         $order = $this->column($index);
 
-        array_multisort($order, $this->samples, $this->labels, $descending ? SORT_DESC : SORT_ASC);
+        array_multisort($order, $this->samples, $this->labels,
+            $descending ? SORT_DESC : SORT_ASC);
 
         return $this;
     }
@@ -256,7 +257,8 @@ class Labeled extends DataFrame implements Dataset
      */
     public function sortByLabel(bool $descending = false) : Dataset
     {
-        array_multisort($this->labels, $this->samples, $descending ? SORT_DESC : SORT_ASC);
+        array_multisort($this->labels, $this->samples,
+            $descending ? SORT_DESC : SORT_ASC);
 
         return $this;
     }
@@ -297,12 +299,12 @@ class Labeled extends DataFrame implements Dataset
 
         $n = (int) ($ratio * $this->numRows());
 
-        return [
-            new self(array_slice($this->samples, 0, $n),
-                array_slice($this->labels, 0, $n)),
-            new self(array_slice($this->samples, $n),
-                array_slice($this->labels, $n)),
-        ];
+        $left = new self(array_slice($this->samples, 0, $n),
+            array_slice($this->labels, 0, $n));
+        $right = new self(array_slice($this->samples, $n),
+            array_slice($this->labels, $n));
+
+        return [$left, $right];
     }
 
     /**
@@ -351,7 +353,7 @@ class Labeled extends DataFrame implements Dataset
         $samples = $this->samples;
         $labels = $this->labels;
 
-        $n = (int) (count($samples) / $k);
+        $n = (int) floor(count($samples) / $k);
 
         $folds = [];
 
@@ -383,7 +385,7 @@ class Labeled extends DataFrame implements Dataset
             $samples = $labels = [];
 
             foreach ($this->_stratify() as $label => $stratum) {
-                $n = (int) (count($stratum) / $k);
+                $n = (int) floor(count($stratum) / $k);
 
                 $samples = array_merge($samples, array_slice($stratum, $i * $n, $n));
                 $labels = array_merge($labels, array_fill(0, $n, $label));
@@ -473,16 +475,18 @@ class Labeled extends DataFrame implements Dataset
                 . ' less than 1 sample.');
         }
 
-        $subset = [[], []];
+        $max = $this->numRows() - 1;
+
+        $samples = $labels = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $index = array_rand($this->samples);
+            $index = rand(0, $max);
 
-            $subset[0][] = $this->samples[$index];
-            $subset[1][] = $this->labels[$index];
+            $samples[] = $this->samples[$index];
+            $labels[] = $this->labels[$index];
         }
 
-        return new self(...$subset);
+        return new self($samples, $labels);
     }
 
     /**
@@ -503,7 +507,7 @@ class Labeled extends DataFrame implements Dataset
         $total = array_sum($weights);
         $max = (int) round($total * self::PHI);
 
-        $subset = [];
+        $samples = $labels = [];
 
         for ($i = 0; $i < $n; $i++) {
             $delta = rand(0, $max) / self::PHI;
@@ -512,14 +516,15 @@ class Labeled extends DataFrame implements Dataset
                 $delta -= $weight;
 
                 if ($delta < 0.0) {
-                    $subset[0][] = $this->samples[$row];
-                    $subset[1][] = $this->labels[$row];
+                    $samples[] = $this->samples[$row];
+                    $labels[] = $this->labels[$row];
+
                     break 1;
                 }
             }
         }
 
-        return new self(...$subset);
+        return new self($samples, $labels);
     }
 
     /**
@@ -589,7 +594,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Stratifying routine groups samples by label.
+     * Stratifying subroutine groups samples by label.
      *
      * @return array
      */
