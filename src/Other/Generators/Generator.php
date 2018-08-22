@@ -6,11 +6,6 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Generator
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
-    const EPSILON = 1e-8;
-
     /**
      * Return the dimensionality of the data this generates.
      *
@@ -24,5 +19,5 @@ interface Generator
      * @param  int  $n
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n = 100) : Dataset;
+    public function generate(int $n) : Dataset;
 }

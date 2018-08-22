@@ -124,13 +124,14 @@ class Agglomerate implements Generator
     {
         $dataset = new Labeled();
 
-        foreach ($this->generators as $label => $blob) {
-            $k = round($this->weights[$label] * $n);
+        foreach ($this->generators as $label => $generator) {
+            $k = (int) round($this->weights[$label] * $n);
 
-            $temp = $blob->generate($k);
+            $samples = $generator->generate($k)->samples();
 
-            $dataset->append(new Labeled($temp->samples(),
-                array_fill(0, $temp->numRows(), $label)));
+            $labels = array_fill(0, $k, $label);
+
+            $dataset->append(new Labeled($samples, $labels, false));
         }
 
         return $dataset;

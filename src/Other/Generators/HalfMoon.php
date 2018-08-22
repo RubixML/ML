@@ -28,7 +28,7 @@ class HalfMoon implements Generator
     protected $center;
 
     /**
-     * The center mean of the half moon i.e. the mean vector.
+     * The scaling factor of the moon.
      *
      * @var float
      */
@@ -116,7 +116,7 @@ class HalfMoon implements Generator
                 + $this->gaussian->rand();
         }
 
-        return new Unlabeled($samples);
+        return new Unlabeled($samples, false);
     }
 
 }

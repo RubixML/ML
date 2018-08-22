@@ -18,6 +18,7 @@
     - Removed parameters from Dropout and Alpha Dropout layers
     - Added option to remove biases in Dense and Placeholder layers
     - Optimized Dataset objects
+    - Added grid params to Param helper
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

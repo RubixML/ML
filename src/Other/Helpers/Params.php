@@ -2,23 +2,24 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use MathPHP\Probability\Distribution\Continuous\Uniform;
 use InvalidArgumentException;
 
 /**
- * Random Params
+ * Params
  *
- * Generate a unique distribution of values to use in conjunction with
- * Grid Search to randomize the parameter grid.
+ * Generate distributions of values to use in conjunction with Grid Search or
+ * other forms of model selection and/or cross validation.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomParams
+class Params
 {
+    const PHI = 100000000;
+
     /**
-     * Generate a random parameter distribution of integers.
+     * Generate a random unique integer distribution.
      *
      * @param  int  $min
      * @param  int  $max
@@ -50,18 +51,16 @@ class RandomParams
 
             if (!in_array($r, $distribution)) {
                 $distribution[] = $r;
-
-                continue 1;
+            } else {
+                $i--;
             }
-
-            $i--;
         }
 
         return $distribution;
     }
 
     /**
-     * Generate a random parameter distribution of floating point numbers.
+     * Generate a random distribution of floating point parameters.
      *
      * @param  float  $min
      * @param  float  $max
@@ -71,7 +70,7 @@ class RandomParams
      */
     public static function floats(float $min, float $max, int $n = 10) : array
     {
-        if (($max - $min) < 0) {
+        if (($max - $min) < 0.0) {
             throw new InvalidArgumentException('Maximum cannot be less than'
                 . ' minimum.');
         }
@@ -81,11 +80,45 @@ class RandomParams
                 . ' parameter.');
         }
 
+        $min = (int) round($min * self::PHI);
+        $max = (int) round($max * self::PHI);
+
         $distribution = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $distribution[] = rand((int) ($min * 1e8),
-                (int) ($max * 1e8)) / 1e8;
+            $distribution[] = rand($min, $max) / self::PHI;
+        }
+
+        return $distribution;
+    }
+
+    /**
+     * Generate a grid of evenly distributed parameters.
+     *
+     * @param  float  $start
+     * @param  float  $end
+     * @param  int  $n
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public static function grid(float $start, float $end, int $n = 10) : array
+    {
+        if (($end - $start) < 0.0) {
+            throw new InvalidArgumentException('End cannot be less than'
+                . ' start.');
+        }
+
+        if ($n < 1) {
+            throw new InvalidArgumentException('Cannot generate less than 1'
+                . ' parameter.');
+        }
+
+        $interval = ($end - $start) / ($n - 1);
+
+        $distribution = [];
+
+        for ($i = $start; $i <= $end; $i += $interval) {
+            $distribution[] = $i;
         }
 
         return $distribution;

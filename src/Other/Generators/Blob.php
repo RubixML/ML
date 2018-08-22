@@ -98,6 +98,6 @@ class Blob implements Generator
             }
         }
 
-        return new Unlabeled($samples);
+        return new Unlabeled($samples, false);
     }
 }

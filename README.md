@@ -184,7 +184,7 @@ MIT
 			- [Popularity Contest](#popularity-contest)
 			- [Wild Guess](#wild-guess)
 		- [Helpers](#helpers)
-			- [Random Search](#random-search)
+			- [Params](#params)
 		- [Tokenizers](#tokenizers)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
@@ -1864,11 +1864,13 @@ Model selection is the task of selecting a version of a model with a hyperparame
 ### Grid Search
 Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
 
+You can chose which parameters to search manually or you can generate parameters  to be used with Grid Search using the [Params](#params) helper.
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | None | string | The fully qualified class name of the base Estimator. |
-| 2 | params | [ ] | array | An array containing n-tuples of parameters where each tuple represents a possible parameter for a given parameter location (ordinal). |
+| 2 | params | [ ] | array | An array containing n-tuples of parameters where each tuple (array) represents a possible parameter for a given parameter location (ordinal). |
 | 3 | metric | None | object | The validation metric used to score each set of parameters. |
 | 4 | validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
 
@@ -1900,14 +1902,14 @@ use Rubix\ML\CrossValidation\KFold;
 
 ...
 $params = [
-	[1, 3, 5, 10], [new Euclidean(), new Manhattan()],
+	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], // Tuples containing possible params at that constructor position
 ];
 
 $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
 
 $estimator->train($dataset); // Train one estimator per parameter combination
 
-var_dump($estimator->best()); // Return the best combination
+var_dump($estimator->best()); // Return the best hyperparmeters
 ```
 
 ##### Output:
@@ -1918,7 +1920,6 @@ array(2) {
   }
 }
 ```
-
 
 ### Model Persistence
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Rubix persists your models using built in PHP object serialization (similar to pickling in Python). Most Estimators are persistable, but some are not allowed due to their poor storage complexity.
@@ -3773,10 +3774,10 @@ $strategy = new WildGuess();
 ### Helpers
 
 
-### Random Search
-Random search is a hyperparameter selection technique that samples *n* parameters randomly from a user-specified distribution. In Rubix, the Random Params helper can be used along with [Grid Search](#grid-search) to achieve the goal of random search. The Random Params helper automatically takes care of deduplication so you never need to worry about testing a parameter twice. For this reason, however, you cannot generate more parameters than in range of, thus generating 5 unique ints between 1 and 3 is impossible.
+### Params
+Generate distributions of values to use in conjunction with [Grid Search](#grid-search) or other forms of model selection and/or cross validation.
 
-To generate a distribution of integer parameters:
+To generate a *unique* distribution of integer parameters:
 ```php
 public static ints(int $min, int $max, int $n = 10) : array
 ```
@@ -3786,10 +3787,58 @@ To generate a distribution of floating point parameters:
 public static floats(float $min, float $max, int $n = 10) : array
 ```
 
+To generate a uniform grid of parameters:
+```php
+public static floats(float $start, float $end, int $n = 10) : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Helpers\Params;
+
+$ints = Params::ints(0, 100, 5);
+
+$floats = Params::floats(0, 100, 5);
+
+$grid = Params::grid(0, 100, 5);
+
+var_dump($ints);
+var_dump($floats);
+var_dump($grid);
+```
+
+##### Output:
+```sh
+array(5) {
+  [0]=> int(88)
+  [1]=> int(48)
+  [2]=> int(64)
+  [3]=> int(100)
+  [4]=> int(41)
+}
+
+array(5) {
+  [0]=> float(42.65728411)
+  [1]=> float(66.74335233)
+  [2]=> float(15.1724384)
+  [3]=> float(71.92631156)
+  [4]=> float(4.63886342)
+}
+
+array(5) {
+  [0]=> float(0)
+  [1]=> float(25)
+  [2]=> float(50)
+  [3]=> float(75)
+  [4]=> float(100)
+}
+
+```
+
 ##### Example:
 ```php
 use Rubix\ML\GridSearch;
-use Rubix\ML\Other\Helpers\RandomParams;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -3798,7 +3847,7 @@ use Rubix\CrossValidation\Metrics\VMeasure;
 
 ...
 $params = [
-	[1, 2, 3, 4, 5], RandomParams::floats(1.0, 20.0, 20), [new Diagonal(), new Minkowski(3.0)],
+	Params::grid(1, 5, 5), Params::floats(1.0, 20.0, 20), [new Diagonal(), new Minkowski(3.0)],
 ];
 
 $estimator = new GridSearch(FuzzyCMeans::class, $params, new VMeasure(), new KFold(10));

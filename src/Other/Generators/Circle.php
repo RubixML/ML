@@ -109,6 +109,6 @@ class Circle implements Generator
                 + $this->gaussian->rand();
         }
 
-        return new Unlabeled($samples);
+        return new Unlabeled($samples, false);
     }
 }
