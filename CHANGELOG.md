@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Gaussian Mixture clusterer
     - Added Relative Entropy cost function to nn
     - Added random weighted subset to datasets
     - Committee Machine classifier only and added expert influence

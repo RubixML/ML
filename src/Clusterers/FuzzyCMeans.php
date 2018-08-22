@@ -98,7 +98,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null, float $minChange = 1e-4,
                                 int $epochs = PHP_INT_MAX)
     {
-        if ($c < 1) {
+        if ($c <= 0) {
             throw new InvalidArgumentException('Must target at least one'
                 . ' cluster.');
         }
@@ -195,12 +195,12 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                 $memberships[$i] = $this->calculateMembership($sample);
             }
 
-            foreach ($this->centroids as $label => &$centroid) {
+            foreach ($this->centroids as $cluster => &$centroid) {
                 foreach ($rotated as $column => $values) {
                     $sigma = $total = self::EPSILON;
 
                     foreach ($memberships as $i => $probabilities) {
-                        $weight = $probabilities[$label] ** $this->fuzz;
+                        $weight = $probabilities[$cluster] ** $this->fuzz;
 
                         $sigma += $weight * $values[$i];
                         $total += $weight;
@@ -272,7 +272,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     {
         $membership = [];
 
-        foreach ($this->centroids as $label => $centroid1) {
+        foreach ($this->centroids as $cluster => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
             $total = 0.0;
@@ -283,7 +283,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                 $total += ($b !== 0.0 ? ($a / $b) : 1.0) ** $this->lambda;
             }
 
-            $membership[$label] = 1.0 / $total;
+            $membership[$cluster] = 1.0 / $total;
         }
 
         return $membership;
@@ -300,8 +300,8 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
         $distance = 0.0;
 
         foreach ($dataset as $i => $sample) {
-            foreach ($this->centroids as $j => $centroid) {
-                $distance += $memberships[$i][$j]
+            foreach ($this->centroids as $cluster => $centroid) {
+                $distance += $memberships[$i][$cluster]
                     * $this->kernel->compute($sample, $centroid);
             }
         }

@@ -62,6 +62,7 @@ MIT
 		- [Clusterers](#clusterers)
 			- [DBSCAN](#dbscan)
 			- [Fuzzy C Means](#fuzzy-c-means)
+			- [Gaussian Mixture](#gaussian-mixture)
 			- [K Means](#k-means)
 			- [Mean Shift](#mean-shift)
 		- [Regressors](#regressors)
@@ -1127,12 +1128,12 @@ Return the class prior log probabilities based on their weight over all training
 public priors() : array
 ```
 
-Return the running mean of each feature column of the training data:
+Return the running mean of each feature column for each class:
 ```php
 public means() : array
 ```
 
-Return the running variance of each feature column of the training data:
+Return the running variance of each feature column for each class:
 ```php
 public variances() : array
 ```
@@ -1396,7 +1397,6 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 
 $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
-
 ### Fuzzy C Means
 Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both K Means and Gaussian Mixture Models in that they require apriori knowledge of the number (parameter *c*) of clusters.
 
@@ -1408,7 +1408,7 @@ Distance-based clusterer that allows samples to belong to multiple clusters if t
 | 1 | c | None | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
 | 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| 4 | threshold | 1e-4 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| 4 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
 | 5 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
 
 ##### Additional Methods:
@@ -1421,6 +1421,43 @@ public centroids() : array
 Returns the inter-cluster distances at each epoch of training:
 ```php
 public steps() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Clusterers\FuzzyCMeans;
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
+```
+
+### Gaussian Mixture
+A Gaussian Mixture model is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow not just the centers (*means*) to be learned but the radii (*variances*) as well.
+
+##### Unsupervised | Probabilistic | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | None | int | The number of target clusters. |
+| 2 | min change | 1e-3 | float | The minimum change in the Gaussians necessary for the algorithm to continue training. |
+| 3 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+
+##### Additional Methods:
+
+Return the cluster prior probabilities based on their representation over all training samples:
+```php
+public priors() : array
+```
+
+Return the running means of each feature column for each cluster:
+```php
+public means() : array
+```
+
+Return the variance of each feature column for each cluster:
+```php
+public variances() : array
 ```
 
 ##### Example:
