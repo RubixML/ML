@@ -9,6 +9,7 @@ use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class RidgeTest extends TestCase
 {
@@ -57,5 +58,12 @@ class RidgeTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

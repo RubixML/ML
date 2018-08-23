@@ -291,8 +291,6 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
     {
         $likelihood = [];
 
-        $total = 0.0;
-
         foreach ($this->priors as $cluster => $prior) {
             $means = $this->means[$cluster];
             $variances = $this->variances[$cluster];
@@ -331,9 +329,11 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
     {
         $shift = 0.0;
 
-        foreach ($this->means as $i => $means) {
-            foreach ($means as $j => $mean) {
-                $shift += abs($previous[$i][$j] - $mean);
+        foreach ($this->means as $cluster => $means) {
+            $prevCluster = $previous[$cluster];
+
+            foreach ($means as $column => $mean) {
+                $shift += abs($prevCluster[$column] - $mean);
             }
         }
 

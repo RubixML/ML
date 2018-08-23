@@ -57,7 +57,7 @@ class DBSCAN implements Estimator, Persistable
     public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $kernel = null)
     {
         if ($radius < 0.0) {
-            throw new InvalidArgumentException('Epsilon cannot be less than 0.');
+            throw new InvalidArgumentException('Radius cannot be less than 0.');
         }
 
         if ($minDensity < 0) {
@@ -103,85 +103,74 @@ class DBSCAN implements Estimator, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $labels = [];
-        $current = 0;
+        $samples = $dataset->samples();
 
-        foreach ($dataset as $index => $sample) {
-            if (isset($labels[$index])) {
+        $predictions = [];
+        $cluster = 0;
+
+        foreach ($samples as $i => $sample) {
+            if (isset($predictions[$i])) {
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighbors($sample, $dataset);
+            $neighbors = $this->groupNeighbors($sample, $samples);
 
             if (count($neighbors) < $this->minDensity) {
-                $labels[$index] = self::NOISE;
+                $predictions[$i] = self::NOISE;
 
                 continue 1;
             }
 
-            $labels[$index] = $current;
+            $predictions[$i] = $cluster;
 
-            $this->expand($dataset, $neighbors, $labels, $current);
+            while (!empty($neighbors)) {
+                $index = array_pop($neighbors);
 
-            $current++;
-        }
+                if (isset($predictions[$index])) {
+                    if ($predictions[$index] === self::NOISE) {
+                        $predictions[$index] = $cluster;
+                    }
 
-        return $labels;
-    }
-
-    /**
-     * Expand the cluster by computing the distance between a sample and each
-     * member of the cluster.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @param  array  $neighbors
-     * @param  array  $labels
-     * @param  int  $current
-     * @return void
-     */
-    protected function expand(Dataset $dataset, array $neighbors, array &$labels, int $current) : void
-    {
-        while (!empty($neighbors)) {
-            $index = array_pop($neighbors);
-
-            if (isset($labels[$index])) {
-                if ($labels[$index] === self::NOISE) {
-                    $labels[$index] = $current;
+                    continue 1;
                 }
 
-                continue 1;
+                $predictions[$index] = $cluster;
+
+                $centroid = $dataset->row($index);
+
+                $seeds = $this->groupNeighbors($centroid, $samples);
+
+                if (count($seeds) >= $this->minDensity) {
+                    $neighbors = array_unique(array_merge($neighbors, $seeds));
+                }
             }
 
-            $labels[$index] = $current;
-
-            $seeds = $this->groupNeighbors($dataset->row($index), $dataset);
-
-            if (count($seeds) >= $this->minDensity) {
-                $neighbors = array_unique(array_merge($neighbors, $seeds));
-            }
+            $cluster++;
         }
+
+        return $predictions;
     }
 
     /**
-     * Group the samples into a region defined by their distance from a given
-     * centroid.
+     * Group the samples that are within a given radius of the centroid into a
+     * neighborhood.
      *
-     * @param  array  $sample
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  array  $centroid
+     * @param  array  $samples
      * @return array
      */
-    protected function groupNeighbors(array $sample, Dataset $dataset) : array
+    protected function groupNeighbors(array $centroid, array $samples) : array
     {
-        $neighbors = [];
+        $neighborhood = [];
 
-        foreach ($dataset as $index => $neighbor) {
-            $distance = $this->kernel->compute($sample, $neighbor);
+        foreach ($samples as $i => $sample) {
+            $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance <= $this->radius) {
-                $neighbors[] = $index;
+                $neighborhood[] = $i;
             }
         }
 
-        return $neighbors;
+        return $neighborhood;
     }
 }

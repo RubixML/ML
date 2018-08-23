@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class UnlabeledTest extends TestCase
 {
@@ -34,7 +35,7 @@ class UnlabeledTest extends TestCase
             1, 1, 2, 1, 2, 3,
         ];
 
-        $this->dataset = new Unlabeled($this->samples);
+        $this->dataset = new Unlabeled($this->samples, false);
     }
 
     public function test_build_dataset()
@@ -42,6 +43,34 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Unlabeled::class, $this->dataset);
         $this->assertInstanceOf(DataFrame::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
+    }
+
+    public function test_bad_data_bool()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Unlabeled([['nice', true, 13]], true);
+    }
+
+    public function test_bad_data_array()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Unlabeled([['nice', ['bad'], 13]], true);
+    }
+
+    public function test_bad_data_null()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Unlabeled([['nice', null, 13]], true);
+    }
+
+    public function test_bad_data_object()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Unlabeled([['nice', (object) ['bad'], 13]], true);
     }
 
     public function test_get_column_types()

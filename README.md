@@ -91,7 +91,7 @@ MIT
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [L1 Regularizer](#l1-regularizer)
-		- [L2 Regularizer](#l2-regularizer)
+		- [Unlabeledlarizer](#l2-regularizer)
 		- [Lambda Function](#lambda-function)
 		- [Min Max Normalizer](#min-max-normalizer)
 		- [Missing Data Imputer](#missing-data-imputer)
@@ -1201,7 +1201,7 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 4 | alpha | 1e-4 | float | The larization term. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
@@ -2103,7 +2103,7 @@ int(7894)
 ```
 
 ### L1 Regularizer
-Transform each sample vector in the sample matrix such that each feature is scaled by the L1 norm (or *magnitude*) of that vector.
+Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
 
@@ -2121,7 +2121,7 @@ $transformer = new L1Regularizer();
 ```
 
 ### L2 Regularizer
-Transform each sample vector in the sample matrix such that each feature is scaled by the L2 norm (or *magnitude*) of that vector.
+Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
 

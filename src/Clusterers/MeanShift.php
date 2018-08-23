@@ -32,6 +32,13 @@ class MeanShift implements Estimator, Persistable
     protected $radius;
 
     /**
+     * The precomputed denominator of the weight calculation.
+     *
+     * @var float
+     */
+    protected $delta;
+
+    /**
      * The distance kernel to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
@@ -101,6 +108,7 @@ class MeanShift implements Estimator, Persistable
         }
 
         $this->radius = $radius;
+        $this->delta = 2.0 * $radius ** 2;
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -150,30 +158,30 @@ class MeanShift implements Estimator, Persistable
 
         $this->centroids = $previous = $dataset->samples();
 
-        $denominator = 2.0 * $this->radius ** 2;
-
         $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            foreach ($this->centroids as $i => &$centroid1) {
+            foreach ($this->centroids as $i => &$centroid) {
                 foreach ($dataset as $sample) {
-                    $distance = $this->kernel->compute($sample, $centroid1);
+                    $distance = $this->kernel->compute($sample, $centroid);
 
-                    if ($distance < $this->radius) {
-                        foreach ($sample as $column => $feature) {
-                            $weight = exp(-($distance ** 2 / $denominator));
+                    if ($distance > $this->radius) {
+                        continue 1;
+                    }
 
-                            $centroid1[$column] = ($weight * $feature) / $weight;
-                        }
+                    foreach ($centroid as $column => &$mean) {
+                        $weight = exp(-($distance ** 2 / $this->delta));
+
+                        $mean = ($weight * $sample[$column]) / $weight;
                     }
                 }
 
-                foreach ($this->centroids as $j => $centroid2) {
+                foreach ($this->centroids as $j => $neighbor) {
                     if ($i === $j) {
                         continue 1;
                     }
 
-                    $distance = $this->kernel->compute($centroid1, $centroid2);
+                    $distance = $this->kernel->compute($centroid, $neighbor);
 
                     if ($distance < $this->radius) {
                         unset($this->centroids[$j]);
@@ -211,7 +219,7 @@ class MeanShift implements Estimator, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->assignLabel($sample);
+            $predictions[] = $this->assignCluster($sample);
         }
 
         return $predictions;
@@ -223,21 +231,21 @@ class MeanShift implements Estimator, Persistable
      * @param  array  $sample
      * @return int
      */
-    protected function assignLabel(array $sample) : int
+    protected function assignCluster(array $sample) : int
     {
         $bestDistance = INF;
-        $bestLabel = -1;
+        $bestCluster = -1;
 
-        foreach ($this->centroids as $label => $centroid) {
+        foreach ($this->centroids as $cluster => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $bestDistance) {
                 $bestDistance = $distance;
-                $bestLabel = $label;
+                $bestCluster = $cluster;
             }
         }
 
-        return (int) $bestLabel;
+        return (int) $bestCluster;
     }
 
     /**
@@ -250,9 +258,11 @@ class MeanShift implements Estimator, Persistable
     {
         $shift = 0.0;
 
-        foreach ($this->centroids as $i => $centroid) {
-            foreach ($centroid as $j => $mean) {
-                $shift += abs($previous[$i][$j] - $mean);
+        foreach ($this->centroids as $cluster => $centroid) {
+            $prevCluster = $previous[$cluster];
+
+            foreach ($centroid as $column => $mean) {
+                $shift += abs($prevCluster[$column] - $mean);
             }
         }
 

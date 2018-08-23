@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class ClassificationTreeTest extends TestCase
 {
@@ -67,5 +68,12 @@ class ClassificationTreeTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

@@ -6,7 +6,6 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 use Rubix\ML\NeuralNet\Layers\Nonparametric;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 use PHPUnit\Framework\TestCase;
 
 class AlphaDropoutTest extends TestCase

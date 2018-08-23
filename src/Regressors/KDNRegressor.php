@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * K-d Neighbors Regressor
@@ -102,10 +103,15 @@ class KDNRegressor extends KDTree implements Estimator, Persistable
      * Make a prediction based on the nearest neighbors.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trainied.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -125,8 +131,6 @@ class KDNRegressor extends KDTree implements Estimator, Persistable
     {
         $neighborhood = $this->search($sample);
 
-        $labels = $neighborhood->labels();
-
         $distances = [];
 
         foreach ($neighborhood->samples() as $i => $neighbor) {
@@ -135,7 +139,7 @@ class KDNRegressor extends KDTree implements Estimator, Persistable
 
         asort($distances);
 
-        return array_intersect_key($labels,
+        return array_intersect_key($neighborhood->labels(),
             array_slice($distances, 0, $this->k, true));
 
     }

@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Regression Tree
@@ -111,10 +112,15 @@ class RegressionTree extends CART implements Estimator, Persistable
      * Make a prediction based on the value of a terminal node in the tree.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {

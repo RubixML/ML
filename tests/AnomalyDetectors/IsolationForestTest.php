@@ -8,6 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class IsolationForestTest extends TestCase
 {
@@ -63,5 +64,12 @@ class IsolationForestTest extends TestCase
         $this->assertGreaterThan(0.50, $probabilties[3]);
         $this->assertLessThanOrEqual(0.50, $probabilties[4]);
         $this->assertLessThanOrEqual(0.50, $probabilties[5]);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

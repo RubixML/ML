@@ -184,10 +184,9 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
         $this->centroids = $dataset->randomize()->tail($this->c)->samples();
 
-        $rotated = $dataset->rotate();
-
         $this->steps = $memberships = [];
 
+        $rotated = $dataset->rotate();
         $previous = INF;
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
@@ -300,8 +299,10 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
         $distance = 0.0;
 
         foreach ($dataset as $i => $sample) {
+            $membership = $memberships[$i];
+
             foreach ($this->centroids as $cluster => $centroid) {
-                $distance += $memberships[$i][$cluster]
+                $distance += $membership[$cluster]
                     * $this->kernel->compute($sample, $centroid);
             }
         }

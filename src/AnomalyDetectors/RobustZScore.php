@@ -164,12 +164,14 @@ class RobustZScore implements Estimator, Persistable
             $score = 0.0;
 
             foreach ($sample as $column => $feature) {
-                $z = (self::LAMBDA * ($feature - $this->medians[$column]))
-                    / $this->mads[$column];
+                $median = $this->medians[$column];
+                $mad = $this->mads[$column];
+
+                $z = (self::LAMBDA * ($feature - $median)) / $mad;
 
                 if ($z > $this->threshold) {
                     $predictions[] = 1;
-                    
+
                     continue 2;
                 }
 

@@ -14,6 +14,7 @@ use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\ClassificationTree;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class CommitteeMachineTest extends TestCase
 {
@@ -65,5 +66,12 @@ class CommitteeMachineTest extends TestCase
         $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
         $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
         $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class RobustZScoreTest extends TestCase
 {
@@ -53,5 +54,12 @@ class RobustZScoreTest extends TestCase
         $this->assertEquals($this->testing->label(3), $predictions[3]);
         $this->assertEquals($this->testing->label(4), $predictions[4]);
         $this->assertEquals($this->testing->label(5), $predictions[5]);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

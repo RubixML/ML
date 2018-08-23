@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\AnomalyDetectors\IsolationTree;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class IsolationTreeTest extends TestCase
 {
@@ -55,5 +56,12 @@ class IsolationTreeTest extends TestCase
         $this->assertContains($predictions[3], [1, 0]);
         $this->assertContains($predictions[4], [1, 0]);
         $this->assertContains($predictions[5], [1, 0]);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class BootstrapAggregatorTest extends TestCase
 {
@@ -44,5 +45,12 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
         $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
         $this->assertEquals($this->testing->label(2), $predictions[2], '', 3);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

@@ -12,6 +12,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * K-d Neighbors
@@ -136,10 +137,15 @@ class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistabl
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trainied.');
+        }
+
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.0));
 
@@ -166,8 +172,6 @@ class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistabl
     {
         $neighborhood = $this->search($sample);
 
-        $labels = $neighborhood->labels();
-
         $distances = [];
 
         foreach ($neighborhood->samples() as $i => $neighbor) {
@@ -176,7 +180,7 @@ class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistabl
 
         asort($distances);
 
-        return array_intersect_key($labels,
+        return array_intersect_key($neighborhood->labels(),
             array_slice($distances, 0, $this->k, true));
 
     }

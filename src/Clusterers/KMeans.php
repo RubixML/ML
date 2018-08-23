@@ -148,32 +148,25 @@ class KMeans implements Estimator, Online, Persistable
         $labels = array_fill(0, $dataset->numRows(), -1);
         $sizes = array_fill(0, $this->k, 0);
 
-        $changed = true;
-
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-            foreach ($dataset as $i => $sample) {
-                $label = $this->assignLabel($sample);
+            $changed = false;
 
-                $centroid = $this->centroids[$label];
+            foreach ($dataset as $i => $sample) {
+                $label = $this->assignCluster($sample);
 
                 if ($label !== $labels[$i]) {
                     $labels[$i] = $label;
 
                     $sizes[$label]++;
-                } else {
-                    $changed = false;
+
+                    $changed = true;
                 }
 
                 $size = $sizes[$label] + self::EPSILON;
 
-                foreach ($sample as $column => $feature) {
-                    $mean = $centroid[$column];
-
-                    $centroid[$column] = ($mean * ($size - 1) + $feature)
-                        / $size;
+                foreach ($this->centroids[$label] as $column => &$mean) {
+                    $mean = ($mean * ($size - 1) + $sample[$column]) / $size;
                 }
-
-                $this->centroids[$label] = $centroid;
             }
 
             if ($changed === false) {
@@ -198,7 +191,7 @@ class KMeans implements Estimator, Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->assignLabel($sample);
+            $predictions[] = $this->assignCluster($sample);
         }
 
         return $predictions;
@@ -208,22 +201,23 @@ class KMeans implements Estimator, Online, Persistable
      * Label a given sample based on its distance from a particular centroid.
      *
      * @param  array  $sample
+     * @throws \RuntimeException
      * @return int
      */
-    protected function assignLabel(array $sample) : int
+    protected function assignCluster(array $sample) : int
     {
         $bestDistance = INF;
-        $bestLabel = -1;
+        $bestCluster = -1;
 
-        foreach ($this->centroids as $label => $centroid) {
+        foreach ($this->centroids as $cluster => $centroid) {
             $distance = $this->kernel->compute($sample, $centroid);
 
             if ($distance < $bestDistance) {
                 $bestDistance = $distance;
-                $bestLabel = $label;
+                $bestCluster = $cluster;
             }
         }
 
-        return (int) $bestLabel;
+        return (int) $bestCluster;
     }
 }

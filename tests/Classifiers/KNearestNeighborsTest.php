@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class KNearestNeighborsTest extends TestCase
 {
@@ -89,5 +90,12 @@ class KNearestNeighborsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

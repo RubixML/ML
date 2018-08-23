@@ -108,19 +108,13 @@ class Params
                 . ' start.');
         }
 
-        if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate less than 1'
-                . ' parameter.');
+        if ($n < 2) {
+            throw new InvalidArgumentException('Cannot generate less than 2'
+                . ' parameters.');
         }
 
         $interval = ($end - $start) / ($n - 1);
 
-        $distribution = [];
-
-        for ($i = $start; $i <= $end; $i += $interval) {
-            $distribution[] = $i;
-        }
-
-        return $distribution;
+        return range($start, $end, $interval);
     }
 }

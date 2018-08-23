@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Classification Tree
@@ -121,10 +122,15 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
      * Make a prediction based on the value of a terminal node in the tree.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -138,10 +144,15 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = [];
 
         foreach ($dataset as $sample) {

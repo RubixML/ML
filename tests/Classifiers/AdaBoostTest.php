@@ -11,6 +11,7 @@ use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class AdaBoostTest extends TestCase
 {
@@ -62,5 +63,12 @@ class AdaBoostTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

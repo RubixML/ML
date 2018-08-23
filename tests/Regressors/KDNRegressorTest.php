@@ -10,6 +10,7 @@ use Rubix\ML\Regressors\KDNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class KDNRegressorTest extends TestCase
 {
@@ -58,5 +59,12 @@ class KDNRegressorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

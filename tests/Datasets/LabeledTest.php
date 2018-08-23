@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class LabeledTest extends TestCase
 {
@@ -41,7 +42,7 @@ class LabeledTest extends TestCase
             1, 1, 2, 1, 2, 3,
         ];
 
-        $this->dataset = new Labeled($this->samples, $this->labels);
+        $this->dataset = new Labeled($this->samples, $this->labels, false);
     }
 
     public function test_build_dataset()
@@ -49,6 +50,34 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(Labeled::class, $this->dataset);
         $this->assertInstanceOf(DataFrame::class, $this->dataset);
         $this->assertInstanceOf(Dataset::class, $this->dataset);
+    }
+
+    public function test_bad_data_bool()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Labeled([['nice', true, 13]], ['not monster'], true);
+    }
+
+    public function test_bad_data_array()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Labeled([['nice', ['bad'], 13]], ['not monster'], true);
+    }
+
+    public function test_bad_data_null()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Labeled([['nice', null, 13]], ['not monster'], true);
+    }
+
+    public function test_bad_data_object()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Labeled([['nice', (object) ['bad'], 13]], ['not monster'], true);
     }
 
     public function test_get_labels()

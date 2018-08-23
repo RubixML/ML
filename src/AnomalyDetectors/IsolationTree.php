@@ -9,6 +9,7 @@ use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Isolation Tree
@@ -80,6 +81,10 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
      */
     public function predict(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -94,10 +99,15 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
      * Return the probabilities of a sample being an outllier.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if ($this->bare() === true) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = [];
 
         foreach ($dataset as $sample) {

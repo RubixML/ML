@@ -171,16 +171,19 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
         $probablities = [];
 
         foreach ($dataset as $sample) {
+            $radius = $this->calculateRadius($sample);
+
+            $neighborhood = $this->findLocalRegion($sample);
+
             $radii = [];
 
-            foreach ($this->findLocalRegion($sample) as $neighbor) {
+            foreach ($neighborhood as $neighbor) {
                 $radii[] = $this->calculateRadius($neighbor);
             }
 
-            $radius = $this->calculateRadius($sample);
+            $median = Average::median($radii);
 
-            $probablities[] = 2.0 ** -(Average::median($radii)
-                / ($radius + self::EPSILON));
+            $probablities[] = 2.0 ** -($median / $radius);
         }
 
         return $probablities;
@@ -196,8 +199,8 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
     {
         $distances = [];
 
-        foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->kernel->compute($sample, $neighbor);
+        foreach ($this->samples as $i => $neighbor) {
+            $distances[$i] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);

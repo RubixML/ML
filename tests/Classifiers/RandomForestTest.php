@@ -12,6 +12,7 @@ use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class RandomForestTest extends TestCase
 {
@@ -68,5 +69,12 @@ class RandomForestTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train($dataset);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

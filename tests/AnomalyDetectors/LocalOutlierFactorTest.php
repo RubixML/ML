@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\AnomalyDetectors\LocalOutlierFactor;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class LocalOutlierFactorTest extends TestCase
 {
@@ -76,5 +77,12 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals($this->testing->label(3), $predictions[3]);
         $this->assertEquals($this->testing->label(4), $predictions[4]);
         $this->assertEquals($this->testing->label(5), $predictions[5]);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->testing);
     }
 }

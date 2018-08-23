@@ -8,6 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\GaussianMixture;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class GaussianMixtureTest extends TestCase
 {
@@ -45,5 +46,12 @@ class GaussianMixtureTest extends TestCase
 
         $this->assertEquals(50, $clusters[0], '', 3);
         $this->assertEquals(50, $clusters[1], '', 3);
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict($this->dataset);
     }
 }
