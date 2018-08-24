@@ -20,6 +20,10 @@ use RuntimeException;
  * centroid-based clusterers like K Means but allow not just the means to
  * be learned but the variances (or *radii*) as well.
  *
+ * References:
+ * [1] A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via
+ * the EM Algorithm.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

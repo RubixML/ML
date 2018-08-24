@@ -19,6 +19,10 @@ use RuntimeException;
  * different subset of the training set. The Isolation Forest works by averaging
  * the isolation score of a sample across a user-specified number of trees.
  *
+ * References:
+ * [1] F. T. Liu et al. (2008). Isolation Forest.
+ * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

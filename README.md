@@ -91,7 +91,7 @@ MIT
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [L1 Regularizer](#l1-regularizer)
-		- [Unlabeledlarizer](#l2-regularizer)
+		- [L2 Regularizer](#l2-regularizer)
 		- [Lambda Function](#lambda-function)
 		- [Min Max Normalizer](#min-max-normalizer)
 		- [Missing Data Imputer](#missing-data-imputer)
@@ -131,9 +131,9 @@ MIT
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 			- [Output Layers](#output-layers)
-				- [Binomial](#binomial)
+				- [Binary](#Binary)
 				- [Continuous](#continuous)
-				- [Multinomial](#multinomial)
+				- [Multiclass](#multiclass)
 		- [Optimizers](#optimizers)
 			- [AdaGrad](#adagrad)
 			- [Adam](#adam)
@@ -142,7 +142,7 @@ MIT
 			- [Step Decay](#step-decay)
 			- [Stochastic](#stochastic)
 		- [Snapshots](#snapshots)
-	- [Kernel Functions](#kernel-functions)
+	- [Kernels](#kernels)
 		- [Distance](#distance)
 			- [Canberra](#canberra)
 			- [Cosine](#cosine)
@@ -206,8 +206,8 @@ Although this is certainly a valid way of obtaining data, in reality, chances ar
 
 Here are a few libraries that we recommend that will help you get started extracting data:
 
-- [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extrator
-- [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstration layer
+- [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extractor
+- [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstraction layer
 - [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
 
 Having that said, Rubix will be able to handle any dataset as long as it can fit into one its pre-defined Dataset objects (*Labeled*, *Unlabeled*).
@@ -329,7 +329,7 @@ float(0.945)
 Since we are measuring accuracy, this output indicates that our Estimator is 94.5% accurate given the data we've trained and tested it with. Not bad.
 
 ### Visualization
-Visualization is how you communicate the findings of your experiment to the end-user and is key to derive value from your hard work in engineering a performant model. Although visualization is important (imporant enough for us to mention it), we consider it to be beyond the scope of what a machine learning library should offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions made.
+Visualization is how you communicate the findings of your experiment to the end-user and is key to derive value from your hard work in engineering a performant model. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what a machine learning library should offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions made.
 
 If you are looking for a place to start, we recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
 
@@ -345,7 +345,7 @@ Here you will find information regarding the classes that make up the Rubix libr
 Data is what powers machine learning programs so naturally we treat it as a first-class citizen. Rubix provides a number of classes that help you wrangle and even generate data.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and ncontinuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
 
 There are two types of data that Estimators can process i.e. *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical as a general rule throughout Rubix. This rule makes it easy to distinguish between the types of data while allowing for flexibility. For example, you could represent the number 5 as continuous by using the integer type or as categorical by using the string type (*'5'*).
 
@@ -618,7 +618,7 @@ Return the label at the given row offset:
 public label(int $index) : mixed
 ```
 
-Return all of the possible outcomes i.e the unique labels:
+Return all of the possible outcomes i.e. the unique labels:
 ```php
 public possibleOutcomes() : array
 ```
@@ -753,7 +753,7 @@ This image extractor encodes various user-defined features called descriptors us
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | descriptors | None | array | The descriptor middelware. Each descriptor encodes a set of features from a patch of the image. |
+| 1 | descriptors | None | array | The descriptor middleware. Each descriptor encodes a set of features from a patch of the image. |
 | 2 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
 | 3 | patch size | [4, 4] | array | The width and height of the patch area. |
 | 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
@@ -986,7 +986,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | None | string | The fully qualified class name of the base *weak* classifier. |
-| 2 | params | [ ] | array | The parameters of the base classifer. |
+| 2 | params | [ ] | array | The parameters of the base classifier. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
@@ -1201,7 +1201,7 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The larization term. |
+| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
@@ -1237,7 +1237,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
 | 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
@@ -1346,7 +1346,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
@@ -1398,7 +1398,7 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
 ### Fuzzy C Means
-Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both K Means and Gaussian Mixture Models in that they require apriori knowledge of the number (parameter *c*) of clusters.
+Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both K Means and Gaussian Mixture Models in that they require a priori knowledge of the number (parameter *c*) of clusters.
 
 ##### Unsupervised | Probabilistic | Persistable
 
@@ -1544,7 +1544,7 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
@@ -1577,7 +1577,7 @@ Regressor that guesses the output values based on a [Guessing Strategy](#guessin
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | strategy | BlurryMean | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| 1 | strategy | Blurry Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This Estimator does not have any additional methods.
@@ -1669,7 +1669,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
 | 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The L2 regularization term. |
+| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
@@ -1819,10 +1819,10 @@ $estimator = new Pipeline(new SoftmaxClassifier(100, new RMSProp(0.01), 1e-2), [
 
 $estimator->train($dataset); // Datasets are fit and ...
 
-$estimator->predict($samples); // Transformed automatically.
+$estimator->predict($samples); // transformed automatically.
 ```
 
-Transformer *middleware* will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since Tranformers run sequentially, the order in which they run *matters*. For example, a Transformer near the end of the stack may depend on a previous Transformer to convert all categorical features into continuous ones before it can run.
+Transformer *middleware* will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since Transformers run sequentially, the order in which they run *matters*. For example, a Transformer near the end of the stack may depend on a previous Transformer to convert all categorical features into continuous ones before it can run.
 
 In practice, applying transformations can drastically improve the performance of your model by cleaning, scaling, expanding, compressing, and normalizing the input data.
 
@@ -1909,7 +1909,7 @@ $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), 
 
 $estimator->train($dataset); // Train one estimator per parameter combination
 
-var_dump($estimator->best()); // Return the best hyperparmeters
+var_dump($estimator->best()); // Return the best hyper-parmeters
 ```
 
 ##### Output:
@@ -2014,6 +2014,7 @@ array(2) {
 Transformers take a sample matrices and transform them in various ways. A common transformation is scaling and centering the values using one of the Standardizers ([Z Scale](#z-scale-standardizer), [Robust](#robust-standardizer), [Quartile](#quartile-standardizer)). Transformers can be used with the [Pipeline](#pipeline) meta-Estimator or they can be used separately.
 
 The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a Transformer like *training* an Estimator. Not all Transformers need to be fit to the training set, when in doubt, call `fit()` anyways.
+
 ```php
 public fit(Dataset $dataset) : void
 ```
@@ -2190,8 +2191,8 @@ In the real world, it is common to have data with missing values here and there.
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
-| 2 | continuous strategy | BlurryMean | object | The guessing strategy to employ for continuous feature columns. |
-| 3 | categorical strategy | PopularityContest | object | The guessing strategy to employ for categorical feature columns. |
+| 2 | continuous strategy | Blurry Mean | object | The guessing strategy to employ for continuous feature columns. |
+| 3 | categorical strategy | Popularity Contest | object | The guessing strategy to employ for categorical feature columns. |
 
 ##### Additional Methods:
 This Transformer does not have any additional methods.
@@ -2263,7 +2264,7 @@ $transformer = new PolynomialExpander(3);
 
 ### Quartile Standardizer
 
-This standardizer centers the sample matrix around the median and scales each feature according to the interquantile range (*IQR*) for each column. The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
+This standardizer centers the sample matrix around the median and scales each feature according to the interquartile range (*IQR*) for each column. The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
 
 ##### Continuous
 
@@ -2671,7 +2672,7 @@ There are three types of Layers that form a network, **Input**, **Hidden**, and 
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Multinomial;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
@@ -2679,7 +2680,7 @@ $network = new FeedForward(new Placeholder(784), [
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
 	new Dense(100, new ELU()),
-], new Multinomial(['dog', 'cat', 'frog', 'car'], 1e-4), new Adam(0.001));
+], new Multiclass(['dog', 'cat', 'frog', 'car'], 1e-4), new Adam(0.001));
 ```
 
 ### Input Layers
@@ -2755,20 +2756,22 @@ $layer = new Dropout(0.5);
 ### Output Layers
 Activations are read directly from the Output layer when it comes to making a prediction. The type of Output layer used will determine the type of Estimator the Neural Net can power (Binary Classifier, Multiclass Classifier, or Regressor). The different types of Output layers are listed below.
 
-### Binomial
-This Binomial layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binomial layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
+### Binary
+This Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 3 | cost fn | Cross Entropy | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Binomial;
+use Rubix\ML\NeuralNet\Layers\Binary;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$layer = new Binomial(['yes', 'no'], 1e-5);
+$layer = new Binary(['yes', 'no'], 1e-3, new CrossEntropy());
 ```
 
 ### Continuous
@@ -2778,28 +2781,32 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 2 | cost fn | Quadratic | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 
-$layer = new Continuous(1e-5);
+$layer = new Continuous(1e-5, new Quadratic());
 ```
 
-### Multinomial
-The Multinomial output layer gives a joint probability estimate of a multiclass classification problem using the [Softmax](#softmax) activation function.
+### Multiclass
+The Multiclass output layer gives a joint probability estimate of a multiclass classification problem using the [Softmax](#softmax) activation function.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
-| 2| alpha | 1e-4 | float | The L2 regularization penalty. |
+| 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 3 | cost fn | Cross Entropy | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Multinomial;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$layer = new Multinomial(['yes', 'no', 'maybe'], 1e-6);
+$layer = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new CrossEntropy());
 ```
 
 ---
@@ -2922,8 +2929,8 @@ $network->restore($snapshot);
 ```
 
 ---
-### Kernel Functions
-Kernel functions are used to compute the similarity or distance between two vectors and can be plugged in to a particular Estimator to perform a part of the computation. They are pairwise positive semi-definite functions meaning their output is always 0 or greater. When considered as a hyperparameter, different Kernel functions have properties that can lead to different training and predictions.
+### Kernels
+Kernel functions are used to compute the similarity or distance between two vectors and can be plugged in to a particular Estimator to perform a part of the computation. They are pairwise positive semi-definite meaning their output is always 0 or greater. When considered as a hyperparameter, different Kernel functions have properties that can lead to different training and predictions.
 
 ### Distance
 Distance functions are a type of Kernel that measures the distance between two coordinate vectors. They can be used throughout Rubix in Estimators that use the concept of distance to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
@@ -3020,7 +3027,7 @@ $kernel = new Manhattan();
 ```
 
 ### Minkowski
-The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the l*ambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
+The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the *lambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

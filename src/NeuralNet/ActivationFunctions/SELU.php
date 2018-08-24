@@ -11,6 +11,9 @@ use InvalidArgumentException;
  * Scaled Exponential Linear Unit is a self-normalizing activation function
  * based on the ELU activation function.
  *
+ * References:
+ * [1] G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

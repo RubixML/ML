@@ -19,6 +19,10 @@ use RuntimeException;
  * nodes. Note that this Estimator is considered a weak learner and is typically
  * used within the context of an ensemble (such as Isolation Forest).
  *
+ * References:
+ * [1] Fei Tony Liu Et Al. (2008). Isolation Forest.
+ * [2] Fei Tony Liu Et Al. (2011). Isolation-based Anomaly Detection.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -13,6 +13,9 @@ use InvalidArgumentException;
  * as a regularizer by adding a penalty to the weights through the cost function
  * in the output layer.
  *
+ * References:
+ * [1] C. Gulcehre et al. (2016). Noisy Activation Functions.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

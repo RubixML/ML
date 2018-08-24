@@ -17,6 +17,9 @@ use RuntimeException;
  * setting activations to the negative saturation value of the activation
  * function at a given ratio each pass.
  *
+ * References:
+ * [1] G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

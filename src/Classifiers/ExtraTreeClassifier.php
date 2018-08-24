@@ -16,6 +16,9 @@ use InvalidArgumentException;
  * efficiency as well as increasing variance of the prediction (if that is
  * desired).
  *
+ * References:
+ * [1] P. Geurts et al. (2005). Extremely Randomized Trees.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

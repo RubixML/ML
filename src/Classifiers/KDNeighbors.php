@@ -26,6 +26,9 @@ use RuntimeException;
  * The main advantage K-d Neighbors has over regular KNN is that it is much
  * faster.
  *
+ * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
+ * Associative Searching.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

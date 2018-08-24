@@ -16,6 +16,10 @@ use RuntimeException;
  * by preventing complex co-adaptations on training data. It is a very efficient
  * way of performing model averaging with neural networks.
  *
+ * References:
+ * [1] N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural
+ * Networks from Overfitting.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -5,7 +5,7 @@ namespace Rubix\Tests\NeuralNet;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Binomial;
+use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
@@ -21,7 +21,7 @@ class SnapshotTest extends TestCase
     {
         $this->network = new FeedForward(new Placeholder(1), [
             new Dense(5, new ELU()),
-        ], new Binomial(['yes', 'no']), new Stochastic());
+        ], new Binary(['yes', 'no']), new Stochastic());
 
         $this->snapshot = Snapshot::take($this->network);
     }

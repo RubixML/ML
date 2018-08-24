@@ -11,6 +11,9 @@ use InvalidArgumentException;
  * A smooth approximation of the ReLU function whose output is constrained to be
  * positive.
  *
+ * References:
+ * [1] X. Glorot et al. (2011). Deep Sparse Rectifier Neural Networks.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

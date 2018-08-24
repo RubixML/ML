@@ -56,8 +56,8 @@ class Ridge implements Estimator, Persistable
     public function __construct(float $alpha = 1.0)
     {
         if ($alpha < 0.0) {
-            throw new InvalidArgumentException('L2 regularization term must'
-                . ' be non-negative.');
+            throw new InvalidArgumentException('L2 regularization parameter'
+                . ' must be be non-negative.');
         }
 
         $this->alpha = $alpha;
@@ -161,13 +161,12 @@ class Ridge implements Estimator, Persistable
         $x = new Matrix($samples);
         $y = new Vector($labels);
 
-        $penalty = new DiagonalMatrix(array_fill(0, $x->getN(), $this->alpha));
+        $penalty = new DiagonalMatrix(array_merge([0.0], array_fill(0,
+            $x->getN() - 1, $this->alpha)));
 
         $xT = $x->transpose();
 
-        return $xT->multiply($x)
-            ->add($penalty)
-            ->inverse()
+        return $xT->multiply($x)->add($penalty)->inverse()
             ->multiply($xT->multiply($y))
             ->getColumn(0);
     }

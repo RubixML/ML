@@ -22,6 +22,10 @@ use RuntimeException;
  * its neighbors form. The LOF is the ratio of the sample over the median radius
  * of the local region.
  *
+ * References:
+ * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
+ * Outliers.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

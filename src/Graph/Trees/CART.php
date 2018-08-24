@@ -9,6 +9,19 @@ use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
 
+/**
+ * CART
+ *
+ * Classification and Regression Tree or *CART* is a binary tree that uses
+ * comparision (*decision*) nodes at every split in the training data to
+ * locate a leaf node.
+ *
+ * [1] W. Y. Loh. (2011). Classification and Regression Trees.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 abstract class CART implements Tree
 {
     /**

@@ -15,6 +15,10 @@ use SplObjectStorage;
  * parameters that do not change often and slows down the learning of parameters
  * that do enjoy heavy activity.
  *
+ * References:
+ * [1] J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning
+ * and Stochastic Optimization.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

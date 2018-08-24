@@ -12,16 +12,16 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Multinomial
+ * Multiclass
  *
- * The Multinomial output layer gives a joint probability estimate of a multiclass
+ * The Multiclass output layer gives a joint probability estimate of a multiclass
  * classification problem using the Softmax activation function.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Multinomial implements Output
+class Multiclass implements Output
 {
     /**
      * The unique class labels.
@@ -99,7 +99,7 @@ class Multinomial implements Output
 
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization parameter'
-                . ' must be 0 or greater.');
+                . ' must be be non-negative.');
         }
 
         if (is_null($costFunction)) {

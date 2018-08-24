@@ -11,6 +11,10 @@ use InvalidArgumentException;
  * Exponential Linear Units are a type of rectifier that soften the transition
  * from non-activated to activated using the exponential function.
  *
+ * References:
+ * [1] D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by
+ * Exponential Linear Units.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -67,7 +67,7 @@ class Continuous implements Output
     {
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization parameter'
-                . ' must be 0 or greater.');
+                . ' must be be non-negative.');
         }
 
         if (is_null($costFunction)) {

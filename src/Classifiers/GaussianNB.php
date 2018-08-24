@@ -21,6 +21,10 @@ use InvalidArgumentException;
  * be Gaussian therefore your data might need to be transformed beforehand if
  * it is not normally distributed.
  *
+ * References:
+ * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
+ * Computing Sample Variancess.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -10,7 +10,11 @@ use InvalidArgumentException;
 /**
  * I Tree
  *
- * The base Isloation Tree implementation using completely random splitting.
+ * The base Isloation Tree implementation with completely random splitting.
+ *
+ * References:
+ * [1] F. T. Liu et al. (2008). Isolation Forest.
+ * [2] F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

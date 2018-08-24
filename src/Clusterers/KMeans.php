@@ -18,6 +18,10 @@ use RuntimeException;
  * linearly separable data points given a number of target clusters set by the
  * parameter K.
  *
+ * References:
+ * [1] T. Kanungo et al. (2002). An Efficient K-Means Clustering Algorithm:
+ * Analysis and Implementation.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

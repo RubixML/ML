@@ -20,6 +20,12 @@ use RuntimeException;
  * to employ a variety of Activation Functions that modify the output of each
  * neuron in the layer.
  *
+ * References:
+ * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
+ * Feedforward Neural Networks.
+ * [2] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
+ * Performance on ImageNet Classification.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

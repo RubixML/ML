@@ -12,6 +12,10 @@ use InvalidArgumentException;
  * small leakage value when x < 0. The amount of leakage is controlled by the
  * user-specified parameter.
  *
+ * References:
+ * [1] A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network
+ * Acoustic Models.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -19,6 +19,9 @@ use RuntimeException;
  * within a fuzzy region and thus is able to output probabilities for each
  * cluster via the Probabilistic interface.
  *
+ * References:
+ * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

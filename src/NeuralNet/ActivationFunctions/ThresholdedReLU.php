@@ -10,6 +10,10 @@ use MathPHP\LinearAlgebra\Matrix;
  * Thresholded ReLU has a user-defined threshold parameter that controls the
  * level at which the neuron is activated.
  *
+ * References:
+ * [1] K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of
+ * Co-adapting Features.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

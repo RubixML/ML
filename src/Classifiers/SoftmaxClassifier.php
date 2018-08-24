@@ -11,8 +11,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
-use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -194,7 +194,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            [], new Multinomial($this->classes, $this->alpha, $this->costFunction),
+            [], new Multiclass($this->classes, $this->alpha, $this->costFunction),
             $this->optimizer);
 
         $this->steps = [];

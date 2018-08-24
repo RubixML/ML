@@ -21,6 +21,9 @@ use ReflectionClass;
  * Trees) on a random subset of the training data. A prediction is made based on
  * the probability scores returned from each tree in the forest.
  *
+ * References:
+ * [1] L. Breiman et al. (2005). Extremely Randomized Trees.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

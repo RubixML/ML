@@ -12,11 +12,15 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Ada Boost
+ * AdaBoost
  *
  * Short for Adaptive Boosting, this ensemble classifier can improve the
  * performance of an otherwise weak classifier by focusing more attention on
  * samples that are harder to classify.
+ *
+ * References:
+ * [1] Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line
+ * Learning and an Application to Boosting.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

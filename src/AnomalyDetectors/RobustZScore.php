@@ -18,6 +18,9 @@ use RuntimeException;
  * deviation thus making the statistic more robust to training sets that may
  * already contain outliers.
  *
+ * References:
+ * [1] P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

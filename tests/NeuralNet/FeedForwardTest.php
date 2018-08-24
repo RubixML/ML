@@ -7,8 +7,8 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
-use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ class FeedForwardTest extends TestCase
             new Dense(5, new ELU()),
         ];
 
-        $this->output = new Multinomial(['yes', 'no', 'maybe']);
+        $this->output = new Multiclass(['yes', 'no', 'maybe']);
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }

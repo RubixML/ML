@@ -14,6 +14,10 @@ use InvalidArgumentException;
  * the aforementioned. In addition, ISRU allows the parameter alpha to control
  * the range of activation such that it equals + or - 1 / sqrt(alpha).
  *
+ * References:
+ * [1] B. Carlile et al. (2017). Improving Deep Learning by Inverse Square Root
+ * Linear Units.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

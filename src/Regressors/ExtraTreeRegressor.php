@@ -15,6 +15,9 @@ use InvalidArgumentException;
  * tree. Extra Tree can be used in an Ensemble, such as Bootstrap Aggregator, or
  * by itself, however, it is generally considered a weak learner by itself.
  *
+ * References:
+ * [1] P. Geurts et al. (2005). Extremely Randomized Trees.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

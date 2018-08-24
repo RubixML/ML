@@ -17,6 +17,10 @@ use RuntimeException;
  * A hierarchical clustering algorithm that uses peak finding to locate the
  * local maxima (centroids) of a training set given by a radius constraint.
  *
+ * References:
+ * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms
+ * for Clustering.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

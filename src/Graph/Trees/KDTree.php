@@ -11,8 +11,20 @@ use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
-use SplPriorityQueue;
 
+/**
+ * K-d Tree
+ *
+ * A multidimensional binary search tree or *K-d* Tree is a structure for fast
+ * retrieval (log n) by associative search.
+ *
+ * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
+ * Associative Searching.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 abstract class KDTree implements Tree
 {
     /**

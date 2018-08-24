@@ -11,6 +11,10 @@ use InvalidArgumentException;
  * A function that squashes the output of a neuron to + or - 1 from 0. In other
  * words, the output is between -1 and 1.
  *
+ * References:
+ * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
+ * Feedforward Neural Networks.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

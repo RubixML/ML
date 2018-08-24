@@ -12,17 +12,17 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Binomial
+ * Binary
  *
- * This Binomial layer consists of a single Sigmoid neuron capable of
- * distinguishing between two discrete classes. The Binomial layer is useful for
- * neural networks that output a binary class prediction such as yes or no.
+ * This Binary layer consists of a single sigmoid neuron capable of
+ * distinguishing between two discrete classes. The Binary layer is useful for
+ * neural networks that output an either/or prediction such as yes or no.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Binomial implements Output
+class Binary implements Output
 {
     /**
      * The labels of either of the possible outcomes.
@@ -100,7 +100,7 @@ class Binomial implements Output
 
         if ($alpha < 0.0) {
             throw new InvalidArgumentException('L2 regularization parameter'
-                . ' must be 0 or greater.');
+                . ' must be be non-negative.');
         }
 
         if (is_null($costFunction)) {

@@ -24,6 +24,10 @@ use RuntimeException;
  * linear output layer. The Adaline converges to the least squares error
  * which is the same error function as linear regression.
  *
+ * References:
+ * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical
+ * "Memistors".
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

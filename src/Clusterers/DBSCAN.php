@@ -17,6 +17,9 @@ use InvalidArgumentException;
  * clusters. In addition, DBSCAN also has the ability to mark outliers as noise
  * and thus can be used as a quasi Anomaly Detector as well.
  *
+ * References:
+ * [1] M. Ester et al. (1996). A Densty-Based Algorithmfor Discovering Clusters.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

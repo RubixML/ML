@@ -13,8 +13,8 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
-use Rubix\ML\NeuralNet\Layers\Multinomial;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -277,7 +277,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            $this->hidden, new Multinomial($this->classes, $this->alpha, $this->costFunction),
+            $this->hidden, new Multiclass($this->classes, $this->alpha, $this->costFunction),
             $this->optimizer);
 
         $this->scores = $this->steps = [];

@@ -14,6 +14,9 @@ use SplObjectStorage;
  * Short for Adaptive Momentum Estimation, the Adam Optimizer uses both Momentum
  * and RMS properties to achieve a balance of velocity and stability.
  *
+ * References:
+ * [1] D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
