@@ -107,6 +107,7 @@ MIT
 	- [Neural Network](#neural-network)
 		- [Activation Functions](#activation-functions)
 			- [ELU](#elu)
+			- [Gaussian](#gaussian)
 			- [Hyperbolic Tangent](#hyperbolic-tangent)
 			- [Identity](#identity)
 			- [ISRU](#isru)
@@ -121,7 +122,7 @@ MIT
 		- [Cost Functions](#cost-functions)
 			- [Cross Entropy](#cross-entropy)
 			- [Exponential](#exponential)
-			- [Quadratic](#quadratic)
+			- [Least Squares](#least-squares)
 			- [Relative Entropy](#relative-entropy)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
@@ -1545,7 +1546,7 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 | 2 | batch size | 10 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
+| 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 
 ##### Additional Methods:
@@ -1564,9 +1565,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
-$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new Quadratic(), 1e-4);
+$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new LeastSquares(), 1e-4);
 ```
 
 ### Dummy Regressor
@@ -1670,7 +1671,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Quadratic | object | The function that computes the cost of an erroneous activation during training. |
+| 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
@@ -1707,7 +1708,7 @@ $estimator = new MLPRegressor([
 	new Dense(50, new SELU()),
 	new Dense(50, new SELU()),
 	new Dense(50, new SELU()),
-], 50, new RMSProp(0.001), 1e-2, new Quadratic(), 1e-5, new MeanSquaredError(), 0.1, 3, 100);
+], 50, new RMSProp(0.001), 1e-2, new LeastSquares(), 1e-5, new MeanSquaredError(), 0.1, 3, 100);
 ```
 
 ### Regression Tree
@@ -2450,6 +2451,19 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 $activationFunction = new ELU(5.0);
 ```
 
+### Gaussian
+The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
+
+##### Parameters:
+This Activation Function does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
+
+$activationFunction = new Gaussian();
+```
+
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
@@ -2635,17 +2649,17 @@ use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 $costFunction = new Exponential(0.5);
 ```
 
-### Quadratic
-Quadratic loss, *squared error*, or *maximum likelihood* is a function that measures the squared difference between the target output and the actual output of a network.
+### Least Squares
+Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of a network.
 
 ##### Parameters:
 This Cost Function does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
-$costFunction = new Quadratic();
+$costFunction = new LeastSquares();
 ```
 
 ### Relative Entropy
@@ -2781,14 +2795,14 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
-| 2 | cost fn | Quadratic | The cost function to use to reward and punish activity the network makes during training. |
+| 2 | cost fn | Least Squares | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
-$layer = new Continuous(1e-5, new Quadratic());
+$layer = new Continuous(1e-5, new LeastSquares());
 ```
 
 ### Multiclass

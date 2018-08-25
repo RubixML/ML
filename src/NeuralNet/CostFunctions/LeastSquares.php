@@ -3,17 +3,16 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 /**
- * Quadratic
+ * Least Squares
  *
- * Quadratic loss, *squared error*, or *maximum likelihood* is a function that
- * measures the squared difference between the target output and the actual
- * output of a network.
+ * Least Squares or *quadratic* loss is a function that measures the squared
+ * error between the target output and the actual output of a network.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Quadratic implements CostFunction
+class LeastSquares implements CostFunction
 {
     /**
      * Return a tuple of the min and max output value for this function.

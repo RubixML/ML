@@ -5,7 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use MathPHP\LinearAlgebra\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 use RuntimeException;
@@ -71,7 +71,7 @@ class Continuous implements Output
         }
 
         if (is_null($costFunction)) {
-            $costFunction = new Quadratic();
+            $costFunction = new LeastSquares();
         }
 
         $this->alpha = $alpha;
@@ -96,7 +96,7 @@ class Continuous implements Output
      */
     public function init(int $fanIn) : int
     {
-        $r = sqrt(6 / $fanIn);
+        $r = (6 / $fanIn) ** 0.25;
 
         $min = (int) round(-$r * self::PHI);
         $max = (int) round($r * self::PHI);

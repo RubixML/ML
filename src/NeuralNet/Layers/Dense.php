@@ -118,10 +118,10 @@ class Dense implements Hidden, Parametric
      */
     public function init(int $fanIn) : int
     {
-        if ($this->activationFunction instanceof HyperbolicTangent) {
-            $r = (6 / $fanIn) ** 0.25;
-        } else if ($this->activationFunction instanceof Rectifier) {
+        if ($this->activationFunction instanceof Rectifier) {
             $r = (6 / $fanIn) ** (1.0 / sqrt(2.0));
+        } else if ($this->activationFunction instanceof HyperbolicTangent) {
+            $r = (6 / $fanIn) ** 0.25;
         } else  {
             $r = sqrt(6 / $fanIn);
         }
@@ -129,7 +129,7 @@ class Dense implements Hidden, Parametric
         $min = (int) round(-$r * self::PHI);
         $max = (int) round($r * self::PHI);
 
-        $fanOut =  $this->width();
+        $fanOut = $this->width();
 
         $w = [[]];
 
@@ -155,16 +155,16 @@ class Dense implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $temp = $this->weights->w()->multiply($input);
+        $this->z = $z = $this->weights->w()->multiply($input);
 
         if ($this->bias === true) {
-            $temp = $temp->rowExclude($this->z->getM() - 1);
+            $z = $z->rowExclude($z->getM() - 1);
         }
 
-        $activations = $this->activationFunction->compute($temp);
+        $activations = $this->activationFunction->compute($z);
 
         if ($this->bias === true) {
-            $biases = MatrixFactory::one(1, $this->z->getN());
+            $biases = MatrixFactory::one(1, $z->getN());
 
             $activations = $activations->augmentBelow($biases);
         }
@@ -200,7 +200,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Calculate the errors and gradients of the layer and update the parameters.
+     * Calculate the gradients of the layer and update the parameters.
      *
      * @param  callable  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
@@ -214,20 +214,18 @@ class Dense implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $errors = $this->activationFunction
+        $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
             ->hadamardProduct($prevErrors());
 
-        $gradients = $errors->multiply($this->input->transpose());
+        $dX = $dA->multiply($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradients);
-
-        $this->weights->update($step);
+        $this->weights->update($optimizer->step($this->weights, $dX));
 
         unset($this->input, $this->z, $this->computed);
 
-        return function () use ($errors) {
-            return $this->weights->w()->transpose()->multiply($errors);
+        return function () use ($dA) {
+            return $this->weights->w()->transpose()->multiply($dA);
         };
     }
 

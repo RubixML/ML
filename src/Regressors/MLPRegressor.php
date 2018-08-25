@@ -15,8 +15,8 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use InvalidArgumentException;
 use RuntimeException;
@@ -190,7 +190,7 @@ class MLPRegressor implements Estimator, Online, Persistable
         }
 
         if (is_null($costFunction)) {
-            $costFunction = new Quadratic();
+            $costFunction = new LeastSquares();
         }
 
         if (is_null($metric)) {

@@ -17,7 +17,7 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -45,9 +45,9 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MultiLayerPerceptron([
-    new Dense(30, new LeakyReLU()),
-    new Dense(20, new LeakyReLU()),
-    new Dense(10, new LeakyReLU()),
+    new Dense(30, new Gaussian()),
+    new Dense(20, new Gaussian()),
+    new Dense(10, new Gaussian()),
 ], 100, new Adam(0.001), 1e-3, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),

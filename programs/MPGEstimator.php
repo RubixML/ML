@@ -12,8 +12,8 @@ use Rubix\ML\Reports\ResidualBreakdown;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\ZScaleStandardizer;
-use Rubix\ML\NeuralNet\CostFunctions\Quadratic;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use League\Csv\Reader;
@@ -40,7 +40,7 @@ $dataset = new Labeled($samples, $labels);
 $estimator = new Pipeline(new MLPRegressor([
     new Dense(30, new LeakyReLU()),
     new Dense(30, new LeakyReLU()),
-], 50, new Adam(0.001), 1e-3, new Quadratic(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
+], 50, new Adam(0.001), 1e-3, new LeastSquares(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
         new NumericStringConverter(),
         new MissingDataImputer('?'),
         new ZScaleStandardizer(),

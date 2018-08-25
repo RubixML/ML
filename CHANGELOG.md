@@ -19,6 +19,8 @@
     - Added option to remove biases in Dense and Placeholder layers
     - Optimized Dataset objects
     - Added grid params to Param helper
+    - Added Gaussian RBF activation function
+    - Renamed Quadratic cost function to Least Squares
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

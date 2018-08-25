@@ -33,7 +33,7 @@ class NoisyReLUTest extends TestCase
         $this->assertEquals([-0.1, INF], $this->activationFunction->range());
     }
 
-    public function test_within_range()
+    public function test_compute()
     {
         list($min, $max) = $this->activationFunction->range();
 
