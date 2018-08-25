@@ -41,7 +41,7 @@ class MCC implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -68,7 +68,7 @@ class MCC implements Metric
             }
         }
 
-        $score = 0.0;
+        $score = 0.;
 
         foreach ($truePositives as $class => $tp) {
             $tn = $trueNegatives[$class];

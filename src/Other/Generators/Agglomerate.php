@@ -77,7 +77,7 @@ class Agglomerate implements Generator
 
             $total = array_sum($weights);
 
-            if ($total === 0.0) {
+            if ($total === 0.) {
                 throw new InvalidArgumentException('Total weight for the'
                     . ' agglomerate cannot be 0.');
             }
@@ -86,7 +86,7 @@ class Agglomerate implements Generator
                 return $value / $total;
             }, $weights);
         } else {
-            $weights = array_fill(0, $n, 1.0 / $n);
+            $weights = array_fill(0, $n, 1./ $n);
         }
 
         $this->generators = $generators;

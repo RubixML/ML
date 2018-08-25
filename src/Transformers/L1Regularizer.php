@@ -40,14 +40,14 @@ class L1Regularizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $norm = 0.0;
+            $norm = 0.;
 
             foreach ($sample as &$feature) {
                 $norm += abs($feature);
             }
 
             foreach ($sample as &$feature) {
-                $feature = $norm !== 0.0 ? $feature / $norm : 1.0;
+                $feature = $norm !== 0.? $feature / $norm : 1.;
             }
         }
     }

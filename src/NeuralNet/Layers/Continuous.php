@@ -65,7 +65,7 @@ class Continuous implements Output
      */
     public function __construct(float $alpha = 1e-4, CostFunction $costFunction = null)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be be non-negative.');
         }
@@ -158,7 +158,7 @@ class Continuous implements Output
 
         $errors = [[]];
 
-        $cost = 0.0;
+        $cost = 0.;
 
         foreach ($this->computed->getRow(0) as $i => $activation) {
             $expected = $labels[$i];

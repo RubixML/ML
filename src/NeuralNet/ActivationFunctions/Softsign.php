@@ -41,7 +41,7 @@ class Softsign implements ActivationFunction
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value / (1.0 + abs($value));
+            return $value / (1. + abs($value));
         });
     }
 
@@ -55,7 +55,7 @@ class Softsign implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $z->map(function ($output) {
-            return 1.0 / (1.0 + abs($output)) ** 2;
+            return 1. / (1. + abs($output)) ** 2;
         });
     }
 }

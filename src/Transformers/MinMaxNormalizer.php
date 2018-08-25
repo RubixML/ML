@@ -72,7 +72,7 @@ class MinMaxNormalizer implements Transformer
                 $denominator = $max - $min;
 
                 $sample[$column] = $denominator !== 0.0
-                    ? ($sample[$column] - $min) / $denominator : 1.0;
+                    ? ($sample[$column] - $min) / $denominator : 1.;
             }
         }
     }

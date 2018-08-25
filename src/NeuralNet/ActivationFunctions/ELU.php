@@ -22,7 +22,7 @@ use InvalidArgumentException;
 class ELU implements Rectifier
 {
     /**
-     * At which negative value the ELU will saturate. i.e. alpha = 1.0 means
+     * At which negative value the ELU will saturate. i.e. alpha = 1.means
      * that the leakage will never be more than -1.0.
      *
      * @var float
@@ -34,9 +34,9 @@ class ELU implements Rectifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1.0)
+    public function __construct(float $alpha = 1.)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('Alpha parameter must be'
                 . ' positive.');
         }
@@ -64,7 +64,7 @@ class ELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > 0.0 ? $value : $this->alpha * (exp($value) - 1.0);
+            return $value > 0. ? $value : $this->alpha * (exp($value) - 1.);
         });
     }
 
@@ -78,7 +78,7 @@ class ELU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($output) {
-            return $output > 0.0 ? 1.0 : $output + $this->alpha;
+            return $output > 0. ? 1. : $output + $this->alpha;
         });
     }
 }

@@ -150,7 +150,7 @@ class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistabl
         }
 
         $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.0));
+            array_fill_keys($this->classes, 0.));
 
         foreach ($dataset as $i => $sample) {
             $neighbors = $this->findNearestNeighbors($sample);

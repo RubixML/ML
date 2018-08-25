@@ -74,12 +74,12 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' less than 1.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Sample ratio must be a float'
                 . ' value between 0.01 and 1.0.');
         }
 
-        if ($threshold < 0.0 or $threshold > 1.0) {
+        if ($threshold < 0. or $threshold > 1.) {
             throw new InvalidArgumentException('Threshold isolation score must'
                 . ' be between 0 and 1.');
         }
@@ -171,7 +171,7 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $score = 0.0;
+            $score = 0.;
 
             foreach ($this->forest as $tree) {
                 $score += $tree->search($sample)->score();

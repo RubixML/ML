@@ -38,7 +38,7 @@ class CrossEntropy implements CostFunction
     public function compute(float $expected, float $activation) : float
     {
         return -($activation * log($activation)
-            + (1.0 - $expected) * log(1.0 - $activation));
+            + (1. - $expected) * log(1. - $activation));
     }
 
     /**
@@ -51,8 +51,8 @@ class CrossEntropy implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        $delta = ((1.0 - $activation) * $activation);
+        $delta = ((1. - $activation) * $activation);
 
-        return $delta !== 0.0 ? ($activation - $expected) / $delta : 1.0;
+        return $delta !== 0. ? ($activation - $expected) / $delta : 1.;
     }
 }

@@ -122,7 +122,7 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' less than 1.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Sample ratio must be between'
                 . ' 0.01 and 1.');
         }
@@ -142,7 +142,7 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0.0) {
+        if ($tolerance < 0.) {
             throw new InvalidArgumentException('Gini tolerance must be 0 or'
                 . ' greater.');
         }
@@ -249,7 +249,7 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
         $n = count($this->forest);
 
         $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.0));
+            array_fill_keys($this->classes, 0.));
 
         foreach ($this->forest as $tree) {
             foreach ($tree->proba($dataset) as $i => $distribution) {

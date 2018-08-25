@@ -40,7 +40,7 @@ class Completeness implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -57,7 +57,7 @@ class Completeness implements Metric
             $table[$class][$predictions[$i]] += 1;
         }
 
-        $score = 0.0;
+        $score = 0.;
 
         foreach ($table as $distribution) {
             $score += (max($distribution) + self::EPSILON)

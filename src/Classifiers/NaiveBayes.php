@@ -100,7 +100,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
      */
     public function __construct(float $alpha = 1.0, bool $priors = true)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('Smoothing parameter cannot be'
                 . ' less than 0.');
         }
@@ -160,7 +160,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->_priors = array_fill_keys($classes, log(1.0 / count($classes)));
+        $this->_priors = array_fill_keys($classes, log(1./ count($classes)));
 
         $this->counts = $this->probs = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), []));

@@ -30,9 +30,9 @@ class Exponential implements CostFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $tau = 1.0)
+    public function __construct(float $tau = 1.)
     {
-        if ($tau < 0.0) {
+        if ($tau < 0.) {
             throw new InvalidArgumentException('Scaling parameter cannot be'
                 . ' less than 0.');
         }
@@ -59,7 +59,7 @@ class Exponential implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return $this->tau * exp((1.0 / $this->tau) * ($activation - $expected) ** 2);
+        return $this->tau * exp((1. / $this->tau) * ($activation - $expected) ** 2);
     }
 
     /**
@@ -72,6 +72,6 @@ class Exponential implements CostFunction
      */
     public function differentiate(float $expected, float $activation, float $computed) : float
     {
-        return (2.0 / $this->tau) * ($activation - $expected) * $computed;
+        return (2. / $this->tau) * ($activation - $expected) * $computed;
     }
 }

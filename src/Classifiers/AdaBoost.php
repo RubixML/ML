@@ -133,12 +133,12 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 . ' 1 classifier.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Sample ratio must be between'
                 . ' 0.01 and 1.0.');
         }
 
-        if ($tolerance < 0.0 or $tolerance > 1.0) {
+        if ($tolerance < 0. or $tolerance > 1.) {
             throw new InvalidArgumentException('Tolerance must be between'
                 . ' 0 and 1.');
         }
@@ -231,7 +231,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $predictions = $estimator->predict($dataset);
 
-            $error = 0.0;
+            $error = 0.;
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction !== $dataset->label($i)) {
@@ -273,7 +273,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $scores = array_fill(0, $dataset->numRows(), 0.0);
+        $scores = array_fill(0, $dataset->numRows(), 0.);
 
         foreach ($this->ensemble as $i => $estimator) {
             foreach ($estimator->predict($dataset) as $j => $prediction) {

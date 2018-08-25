@@ -106,12 +106,12 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                 . ' cluster.');
         }
 
-        if ($fuzz <= 1.0) {
+        if ($fuzz <= 1.) {
             throw new InvalidArgumentException('Fuzz factor must be greater'
                 . ' than 1.');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
@@ -127,7 +127,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
         $this->c = $c;
         $this->fuzz = $fuzz;
-        $this->lambda = 2.0 / ($fuzz - 1);
+        $this->lambda = 2./ ($fuzz - 1);
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -277,15 +277,15 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
         foreach ($this->centroids as $cluster => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
-            $total = 0.0;
+            $total = 0.;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += ($b !== 0.0 ? ($a / $b) : 1.0) ** $this->lambda;
+                $total += ($b !== 0.? ($a / $b) : 1.) ** $this->lambda;
             }
 
-            $membership[$cluster] = 1.0 / $total;
+            $membership[$cluster] = 1./ $total;
         }
 
         return $membership;
@@ -299,7 +299,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      */
     protected function interClusterDistance(Dataset $dataset, array $memberships) : float
     {
-        $distance = 0.0;
+        $distance = 0.;
 
         foreach ($dataset as $i => $sample) {
             $membership = $memberships[$i];

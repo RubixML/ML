@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class RelativeEntropyTest extends TestCase
 {
+    const TOLERANCE = 1e-10;
+    
     protected $costFunction;
 
     protected $expected;
@@ -22,7 +24,7 @@ class RelativeEntropyTest extends TestCase
 
         $this->activation = 0.8;
 
-        $this->computed = 0.22314354881420956;
+        $this->computed = 0.22314355128920965;
 
         $this->costFunction = new RelativeEntropy();
     }
@@ -37,13 +39,13 @@ class RelativeEntropyTest extends TestCase
     {
         $cost = $this->costFunction->compute($this->expected, $this->activation);
 
-        $this->assertEquals($this->computed, $cost);
+        $this->assertEquals($this->computed, $cost, '', self::TOLERANCE);
     }
 
     public function test_differentiate()
     {
         $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
-        $this->assertEquals(-0.24999998437500012, $derivative);
+        $this->assertEquals(-0.24999999984374993, $derivative, '', self::TOLERANCE);
     }
 }

@@ -40,7 +40,7 @@ class Homogeneity implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -59,7 +59,7 @@ class Homogeneity implements Metric
             $table[$outcome][$labels[$i]] += 1;
         }
 
-        $score = 0.0;
+        $score = 0.;
 
         foreach ($table as $distribution) {
             $score += (max($distribution) + self::EPSILON)

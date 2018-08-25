@@ -75,7 +75,7 @@ class MulticlassBreakdown implements Report
         $overall = array_fill_keys([
             'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
             'fall_out', 'f1_score', 'mcc', 'informedness',
-        ], 0.0);
+        ], 0.);
 
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
@@ -91,7 +91,7 @@ class MulticlassBreakdown implements Report
                 / ($tn + $fp + self::EPSILON);
             $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
             $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
-            $table[$label]['f1_score'] = 2.0 * (($table[$label]['precision']
+            $table[$label]['f1_score'] = 2.* (($table[$label]['precision']
                 * $table[$label]['recall']))
                 / ($table[$label]['precision'] + $table[$label]['recall']);
             $table[$label]['informedness'] = $table[$label]['recall']

@@ -12,7 +12,7 @@ class KFoldTest extends TestCase
 
     public function setUp()
     {
-        $this->validator = new KFold(10);
+        $this->validator = new KFold(10, false);
     }
 
     public function test_build_validator()

@@ -65,7 +65,7 @@ class RegressionTree extends CART implements Estimator, Persistable
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0.0) {
+        if ($tolerance < 0.) {
             throw new InvalidArgumentException('Impurity tolerance must be 0 or'
                 . ' greater.');
         }
@@ -189,7 +189,7 @@ class RegressionTree extends CART implements Estimator, Persistable
      */
     protected function calculateSsd(array $groups) : float
     {
-        $ssd = 0.0;
+        $ssd = 0.;
 
         foreach ($groups as $group) {
             if ($group->numRows() === 0) {

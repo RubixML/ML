@@ -41,7 +41,7 @@ class VMeasure implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -69,7 +69,7 @@ class VMeasure implements Metric
             $table[1][$class][$predictions[$i]] += 1;
         }
 
-        $homogeneity = $completeness = 0.0;
+        $homogeneity = $completeness = 0.;
 
         foreach ($table[0] as $distribution) {
             $homogeneity += (max($distribution) + self::EPSILON)

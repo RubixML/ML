@@ -24,13 +24,13 @@ class Jaccard implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = $mins = $maxs = 0.0;
+        $distance = $mins = $maxs = 0.;
 
         foreach ($a as $i => $coordinate) {
             $mins += min($coordinate, $b[$i]);
             $maxs += max($coordinate, $b[$i]);
         }
 
-        return 1.0 - ($mins / $maxs);
+        return 1.- ($mins / $maxs);
     }
 }

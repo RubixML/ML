@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class ExponentialTest extends TestCase
 {
+    const TOLERANCE = 1e-10;
+
     protected $costFunction;
 
     protected $expected;
@@ -37,13 +39,13 @@ class ExponentialTest extends TestCase
     {
         $cost = $this->costFunction->compute($this->expected, $this->activation);
 
-        $this->assertEquals($this->computed, $cost);
+        $this->assertEquals($this->computed, $cost, '', self::TOLERANCE);
     }
 
     public function test_differentiate()
     {
         $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
 
-        $this->assertEquals(-0.4163243096769552, $derivative);
+        $this->assertEquals(-0.4163243096769552, $derivative, '', self::TOLERANCE);
     }
 }

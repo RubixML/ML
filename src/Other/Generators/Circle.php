@@ -62,19 +62,19 @@ class Circle implements Generator
                 . ' dimensions.');
         }
 
-        if ($scale < 0.0) {
+        if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . ' than 0.');
         }
 
-        if ($noise <= 0.0 or $noise > 1.0) {
+        if ($noise <= 0.or $noise > 1.) {
             throw new InvalidArgumentException('Noise factor must be great than'
                 . ' 0 and less than or equal to 1.');
         }
 
         $this->center = $center;
         $this->scale = $scale;
-        $this->uniform = new Uniform(0, 2.0 * M_PI);
+        $this->uniform = new Uniform(0, 2.* M_PI);
         $this->gaussian = new Normal(0, $scale * $noise);
     }
 

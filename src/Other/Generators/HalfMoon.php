@@ -74,7 +74,7 @@ class HalfMoon implements Generator
                 . ' 360 degrees.');
         }
 
-        if ($noise <= 0.0 or $noise > 1.0) {
+        if ($noise <= 0.or $noise > 1.) {
             throw new InvalidArgumentException('Noise factor must be great than'
                 . ' 0 and less than or equal to 1.');
         }

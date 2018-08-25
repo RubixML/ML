@@ -52,7 +52,7 @@ class ResidualBreakdown implements Report
 
         $errors = $l1 = $l2 = [];
 
-        $sse = $sst = 0.0;
+        $sse = $sst = 0.;
 
         $predictions = $estimator->predict($testing);
 

@@ -123,12 +123,12 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
                 . ' per batch.');
         }
 
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization term must'
                 . ' be non-negative.');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
@@ -230,7 +230,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $dataset->randomize()->batch($this->batchSize);
 
-                $cost = 0.0;
+                $cost = 0.;
 
                 foreach ($batches as $batch) {
                     $cost += $this->network->feed($batch->samples())
@@ -285,7 +285,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
 
         foreach ($this->network->infer($dataset->samples()) as $activations) {
             $probabilities[] = [
-                $this->classes[0] => 1.0 - $activations[0],
+                $this->classes[0] => 1. - $activations[0],
                 $this->classes[1] => $activations[0],
             ];
         }

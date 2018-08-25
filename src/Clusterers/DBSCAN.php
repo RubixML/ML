@@ -59,7 +59,7 @@ class DBSCAN implements Estimator, Persistable
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $kernel = null)
     {
-        if ($radius < 0.0) {
+        if ($radius < 0.) {
             throw new InvalidArgumentException('Radius cannot be less than 0.');
         }
 

@@ -41,12 +41,12 @@ class RSquared implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $mean = Average::mean($testing->labels());
 
-        $ssr = $sst = 0.0;
+        $ssr = $sst = 0.;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {
             $ssr += ($testing->label($i) - $prediction) ** 2;

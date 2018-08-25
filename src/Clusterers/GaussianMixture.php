@@ -30,7 +30,7 @@ use RuntimeException;
  */
 class GaussianMixture implements Estimator, Probabilistic, Persistable
 {
-    const TWO_PI = 2.0 * M_PI;
+    const TWO_PI = 2.* M_PI;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the
@@ -97,14 +97,14 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, float $minChange = 1e-3, int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, float $minChange = 1e-3, int $epochs = 100)
     {
         if ($k <= 0) {
             throw new InvalidArgumentException('Must target at least one'
                 . ' cluster.');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
@@ -150,7 +150,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
     }
 
     /**
-     * Return the multivariate standard deviation of each component.
+     * Return the multivariate variance of each component.
      *
      * @return array
      */
@@ -188,12 +188,12 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 . ' than the number of components.');
         }
 
-        $this->priors = array_fill(0, $this->k, 1.0 / $this->k);
+        $this->priors = array_fill(0, $this->k, 1./ $this->k);
 
         $this->means = $previous = $dataset->randomize()->tail($this->k)->samples();
 
         $this->variances = array_fill(0, $this->k, array_fill(0,
-            $dataset->numColumns(), 1.0));
+            $dataset->numColumns(), 1.));
 
         $this->steps = $memberships = [];
 
@@ -305,8 +305,8 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 $mean = $means[$column];
                 $variance = $variances[$column] + self::EPSILON;
 
-                $pdf = 1.0 / sqrt(self::TWO_PI * $variance);
-                $pdf *= exp(-(($feature - $mean) ** 2 / (2.0 * $variance)));
+                $pdf = 1./ sqrt(self::TWO_PI * $variance);
+                $pdf *= exp(-(($feature - $mean) ** 2 / (2.* $variance)));
 
                 $score *= $pdf;
             }
@@ -331,7 +331,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
      */
     protected function calculateGaussianShift(array $previous) : float
     {
-        $shift = 0.0;
+        $shift = 0.;
 
         foreach ($this->means as $cluster => $means) {
             $prevCluster = $previous[$cluster];

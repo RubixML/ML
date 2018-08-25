@@ -17,18 +17,27 @@ class HoldOut implements Validator
     protected $ratio;
 
     /**
+     * Should we stratify the dataset before splitting?
+     *
+     * @var bool
+     */
+    protected $stratify;
+
+    /**
      * @param  float  $ratio
+     * @param  bool  $stratify
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $ratio = 0.2)
+    public function __construct(float $ratio = 0.2, bool $stratify = false)
     {
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
 
         $this->ratio = $ratio;
+        $this->stratify = $stratify;
     }
 
     /**
@@ -42,10 +51,10 @@ class HoldOut implements Validator
      */
     public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($estimator->type() === Estimator::CLASSIFIER or $estimator->type() === Estimator::CLUSTERER) {
-            list($training, $testing) = $dataset->stratifiedSplit(1 - $this->ratio);
+        if ($this->stratify === true) {
+            list($training, $testing) = $dataset->stratifiedSplit(1. - $this->ratio);
         } else {
-            list($training, $testing) = $dataset->randomize()->split(1 - $this->ratio);
+            list($training, $testing) = $dataset->randomize()->split(1. - $this->ratio);
         }
 
         $estimator->train($training);

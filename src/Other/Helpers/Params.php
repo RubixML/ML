@@ -70,7 +70,7 @@ class Params
      */
     public static function floats(float $min, float $max, int $n = 10) : array
     {
-        if (($max - $min) < 0.0) {
+        if (($max - $min) < 0.) {
             throw new InvalidArgumentException('Maximum cannot be less than'
                 . ' minimum.');
         }
@@ -103,7 +103,7 @@ class Params
      */
     public static function grid(float $start, float $end, int $n = 10) : array
     {
-        if (($end - $start) < 0.0) {
+        if (($end - $start) < 0.) {
             throw new InvalidArgumentException('End cannot be less than'
                 . ' start.');
         }

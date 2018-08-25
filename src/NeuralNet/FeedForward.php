@@ -192,7 +192,7 @@ class FeedForward implements Network
     {
         $prevErrors = null;
 
-        $cost = 0.0;
+        $cost = 0.;
 
         foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {

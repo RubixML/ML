@@ -181,7 +181,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function split(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0 or $ratio >= 1) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Split ratio must be strictly'
             . ' between 0 and 1.');
         }
@@ -337,7 +337,7 @@ class Unlabeled extends DataFrame implements Dataset
             foreach ($weights as $row => $weight) {
                 $delta -= $weight;
 
-                if ($delta < 0.0) {
+                if ($delta < 0.) {
                     $subset[] = $this->samples[$row];
                     break 1;
                 }

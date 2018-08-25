@@ -36,7 +36,7 @@ class Blob implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $center = [0.0, 0.0], $stddev = 1.0)
+    public function __construct(array $center = [0.0, 0.0], $stddev = 1.)
     {
         if (count($center) === 0) {
             throw new InvalidArgumentException('Cannot generate data of less'

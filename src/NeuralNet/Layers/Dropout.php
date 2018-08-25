@@ -61,13 +61,13 @@ class Dropout implements Hidden, Nonparametric
      */
     public function __construct(float $ratio = 0.5)
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Dropout ratio must be between 0'
                 . ' and 1.0.');
         }
 
         $this->ratio = $ratio;
-        $this->scale = 1.0 / (1.0 - $ratio);
+        $this->scale = 1. / (1. - $ratio);
         $this->width = 0;
     }
 
@@ -93,8 +93,8 @@ class Dropout implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the input sum and activation of each nueron in the layer and
-     * return an activation matrix.
+     * Generate a random dropout mask with the probability of dropping an input
+     * equal to the ratio.
      *
      * @param  \MathPHP\LinearAlgebra\Matrix  $input
      * @return \MathPHP\LinearAlgebra\Matrix
@@ -105,7 +105,7 @@ class Dropout implements Hidden, Nonparametric
         $n = $input->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
-            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? $this->scale : 0.0;
+            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? $this->scale : 0.;
         });
 
         $activations = $input->hadamardProduct($mask);
@@ -127,7 +127,7 @@ class Dropout implements Hidden, Nonparametric
     }
 
     /**
-     * Calculate the errors and gradients of the layer and update the parameters.
+     * Calculate the gradients of the layer and update the parameters.
      *
      * @param  callable  $prevErrors
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer

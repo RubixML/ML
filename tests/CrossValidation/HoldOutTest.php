@@ -12,7 +12,7 @@ class HoldOutTest extends TestCase
 
     public function setUp()
     {
-        $this->validator = new HoldOut(0.2);
+        $this->validator = new HoldOut(0.2, false);
     }
 
     public function test_build_validator()

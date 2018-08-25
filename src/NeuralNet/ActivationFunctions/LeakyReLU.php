@@ -37,7 +37,7 @@ class LeakyReLU implements Rectifier
      */
     public function __construct(float $leakage = 0.01)
     {
-        if ($leakage < 0.0 or $leakage > 1.0) {
+        if ($leakage < 0. or $leakage > 1.) {
             throw new InvalidArgumentException('Leakage parameter must be'
                 . ' between 0 and 1.');
         }
@@ -65,7 +65,7 @@ class LeakyReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > 0.0 ? $value : $this->leakage * $value;
+            return $value > 0. ? $value : $this->leakage * $value;
         });
     }
 
@@ -79,7 +79,7 @@ class LeakyReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation > 0.0 ? 1.0 : $this->leakage;
+            return $activation > 0. ? 1. : $this->leakage;
         });
     }
 }

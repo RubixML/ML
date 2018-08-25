@@ -50,8 +50,8 @@ class GaussianRandomProjector implements Transformer
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
     {
-        return (int) round(4.0 * log($n)
-            / ($maxDistortion ** 2 / 2.0 - $maxDistortion ** 3 / 3.0));
+        return (int) round(4.* log($n)
+            / ($maxDistortion ** 2 / 2.- $maxDistortion ** 3 / 3.));
     }
 
     /**
@@ -83,7 +83,7 @@ class GaussianRandomProjector implements Transformer
 
         $columns = $dataset->numColumns();
 
-        $max = (int) ((1.0 / sqrt($this->dimensions)) * self::PHI);
+        $max = (int) ((1./ sqrt($this->dimensions)) * self::PHI);
         $min = -$max;
 
         $r = [[]];

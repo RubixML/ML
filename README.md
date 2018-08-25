@@ -1442,7 +1442,7 @@ A Gaussian Mixture model is a probabilistic model for representing the presence 
 |--|--|--|--|--|
 | 1 | k | None | int | The number of target clusters. |
 | 2 | min change | 1e-3 | float | The minimum change in the Gaussians necessary for the algorithm to continue training. |
-| 3 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 
 ##### Additional Methods:
 
@@ -1507,7 +1507,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | 1 | radius | None | float | The radius of each cluster centroid. |
 | 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 | 3 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| 4 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
 
 
 ##### Additional Methods:
@@ -2434,7 +2434,9 @@ A number of the Estimators in Rubix are implemented as a computational graph com
 The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-regressor) are both neural networks capable of being built with an almost limitless combination of [Hidden layers](#hidden) employing various Activation Functions. The strength of deep neural nets (with 1 or more hidden layers) is its diversity in handling large amounts of data. In general, the deeper the neural network, the better it will perform.
 
 ### Activation Functions
-The input to every neuron is passed through an Activation Function which determines its output. There are different properties of Activation Functions that make them more or less desirable depending on your problem.
+The input to a node in the network is sometimes passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a biologically inspired neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
+
+Activation Functions can be broken down into three classes - Sigmoidal (or *S* shaped) such as [Hyperbolic Tangent](#hyperbolic-tangent), Rectifiers such as [ELU](#elu), and Radial Basis Functions (*RBFs*) such as [Gaussian](#gaussian).
 
 ### ELU
 Exponential Linear Units are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
@@ -2735,7 +2737,7 @@ $layer = new AlphaDropout(0.1);
 ```
 
 ### Dense
-Dense layers are fully connected Hidden layers, meaning each neuron is connected to each other neuron in the previous layer. Dense layers are able to employ a variety of [Activation Functions](#activation-functions) that modify the output of each neuron in the layer.
+Dense layers are fully connected hidden layers, meaning each neuron is connected to each other neuron in the previous layer by a weighted *synapse*. Dense layers employ [Activation Functions](#activation-functions) that control the output of each neuron in the layer.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3092,13 +3094,14 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
+| 2 | stratify | false | bool | Should we stratify the dataset before splitting? |
 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-$validator = new HoldOut(0.25);
+$validator = new HoldOut(0.25, true);
 ```
 
 ### K Fold
@@ -3108,12 +3111,13 @@ K Fold is a technique that splits the training set into K individual sets and fo
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 10 | int | The number of times to split the training set into equal sized folds. |
+| 2 | stratify | false | bool | Should we stratify the dataset before folding? |
 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\KFold;
 
-$validator = new KFold(5);
+$validator = new KFold(5, false);
 ```
 
 ### Leave P Out

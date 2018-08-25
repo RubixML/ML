@@ -70,12 +70,12 @@ class RobustZScore implements Estimator, Persistable
      */
     public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
     {
-        if ($tolerance < 0.0) {
+        if ($tolerance < 0.) {
             throw new InvalidArgumentException('Z score tolerance must be'
                 . ' 0 or greater.');
         }
 
-        if ($threshold < 0.0) {
+        if ($threshold < 0.) {
             throw new InvalidArgumentException('Z score threshold must be'
                 . ' 0 or greater.');
         }
@@ -164,7 +164,7 @@ class RobustZScore implements Estimator, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $score = 0.0;
+            $score = 0.;
 
             foreach ($sample as $column => $feature) {
                 $median = $this->medians[$column];

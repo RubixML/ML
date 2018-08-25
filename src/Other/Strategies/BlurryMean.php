@@ -42,7 +42,7 @@ class BlurryMean implements Continuous
      */
     public function __construct(float $blur = 0.1)
     {
-        if ($blur < 0.0) {
+        if ($blur < 0.) {
             throw new InvalidArgumentException('Blurr factor must be between 0'
                 . ' and 1.');
         }

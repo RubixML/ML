@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase
 {
+    const TOLERANCE = 3;
+
     protected $estimator;
 
     protected $dataset;
@@ -42,7 +44,7 @@ class DBSCANTest extends TestCase
 
         $clusters = array_count_values($results);
 
-        $this->assertEquals(50, $clusters[0], '', 3);
-        $this->assertEquals(50, $clusters[1], '', 3);
+        $this->assertEquals(50, $clusters[0], '', self::TOLERANCE);
+        $this->assertEquals(50, $clusters[1], '', self::TOLERANCE);
     }
 }

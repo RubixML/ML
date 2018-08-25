@@ -74,7 +74,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
                 . ' feature to determine a split.');
         }
 
-        if ($tolerance < 0.0) {
+        if ($tolerance < 0.) {
             throw new InvalidArgumentException('Impurity tolerance must be 0 or'
                 . ' greater.');
         }
@@ -209,7 +209,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
      */
     protected function terminate(Labeled $dataset) : Decision
     {
-        $probabilities = array_fill_keys($this->classes, 0.0);
+        $probabilities = array_fill_keys($this->classes, 0.);
 
         $n = $dataset->numRows();
 
@@ -234,7 +234,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     {
         $total = array_sum(array_map('count', $groups));
 
-        $gini = 0.0;
+        $gini = 0.;
 
         foreach ($groups as $group) {
             $n = $group->numRows();
@@ -248,7 +248,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
             $counts = array_count_values($group->labels());
 
             foreach ($counts as $count) {
-                $gini += (1.0 - ($count / $n) ** 2) * $density;
+                $gini += (1. - ($count / $n) ** 2) * $density;
             }
         }
 

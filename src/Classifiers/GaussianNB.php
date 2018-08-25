@@ -31,7 +31,7 @@ use InvalidArgumentException;
  */
 class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
-    const TWO_PI = 2.0 * M_PI;
+    const TWO_PI = 2.* M_PI;
 
     /**
      * Should we fit the empirical prior probabilities of each class? If not,
@@ -102,7 +102,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      */
     public function __construct(bool $priors = true, float $epsilon = 1e-8)
     {
-        if ($epsilon < 0.0) {
+        if ($epsilon < 0.) {
             throw new InvalidArgumentException('Smoothing parameter cannot be'
                 . ' less than 0.');
         }
@@ -173,10 +173,10 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->_priors = array_fill_keys($classes, log(1.0 / count($classes)));
+        $this->_priors = array_fill_keys($classes, log(1./ count($classes)));
 
         $this->means = $this->variances = array_fill_keys($classes,
-            array_fill(0, $dataset->numColumns(), 0.0));
+            array_fill(0, $dataset->numColumns(), 0.));
 
         $this->partial($dataset);
     }

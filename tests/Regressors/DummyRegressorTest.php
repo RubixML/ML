@@ -13,6 +13,8 @@ use InvalidArgumentException;
 
 class DummyRegressorTest extends TestCase
 {
+    const TOLERANCE = INF;
+
     protected $estimator;
 
     protected $training;
@@ -46,9 +48,9 @@ class DummyRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', INF);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', INF);
-        $this->assertEquals($this->testing->label(1), $predictions[2], '', INF);
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
     }
 
     public function test_train_with_unlabeled()

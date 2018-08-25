@@ -90,14 +90,14 @@ class MeanShift implements Estimator, Persistable
      * @return void
      */
     public function __construct(float $radius, Distance $kernel = null, float $minChange = 1e-4,
-                                int $epochs = PHP_INT_MAX)
+                                int $epochs = 100)
     {
-        if ($radius <= 0.0) {
+        if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be greater than'
                 . ' 0');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Threshold cannot be set to less'
                 . ' than 0.');
         }
@@ -112,7 +112,7 @@ class MeanShift implements Estimator, Persistable
         }
 
         $this->radius = $radius;
-        $this->delta = 2.0 * $radius ** 2;
+        $this->delta = 2.* $radius ** 2;
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -260,7 +260,7 @@ class MeanShift implements Estimator, Persistable
      */
     protected function calculateCentroidShift(array $previous) : float
     {
-        $shift = 0.0;
+        $shift = 0.;
 
         foreach ($this->centroids as $cluster => $centroid) {
             $prevCluster = $previous[$cluster];

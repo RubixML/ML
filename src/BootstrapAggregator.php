@@ -102,7 +102,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
                 . ' 1 estimator.');
         }
 
-        if ($ratio < 0.01 or $ratio > 1.0) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Sample ratio must be between'
                 . ' 0.01 and 1.');
         }

@@ -19,6 +19,8 @@ use RuntimeException;
 
 class MLPRegressorTest extends TestCase
 {
+    const TOLERANCE = 3.5;
+
     protected $estimator;
 
     protected $training;
@@ -33,7 +35,7 @@ class MLPRegressorTest extends TestCase
 
         $this->estimator = new MLPRegressor([
             new Dense(20, new ELU()),
-        ], 1, new Adam(0.01), 1e-4, new LeastSquares(), 1e-3, new MeanSquaredError(), 0.1, 3, 100);
+        ], 1, new Adam(0.01), 1e-3, new LeastSquares(), 1e-3, new MeanSquaredError(), 0.1, 3, 100);
     }
 
     public function test_build_regressor()
@@ -55,9 +57,9 @@ class MLPRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', 3);
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
     }
 
     public function test_train_with_unlabeled()

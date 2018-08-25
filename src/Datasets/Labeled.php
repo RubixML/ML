@@ -331,7 +331,7 @@ class Labeled extends DataFrame implements Dataset
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
-        if ($ratio <= 0 or $ratio >= 1) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Split ratio must be strictly'
             . ' between 0 and 1.');
         }
@@ -530,7 +530,7 @@ class Labeled extends DataFrame implements Dataset
             foreach ($weights as $row => $weight) {
                 $delta -= $weight;
 
-                if ($delta < 0.0) {
+                if ($delta < 0.) {
                     $samples[] = $this->samples[$row];
                     $labels[] = $this->labels[$row];
 

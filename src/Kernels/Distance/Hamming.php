@@ -35,6 +35,6 @@ class Hamming implements Distance
             }
         }
 
-        return $dimensions !== 0 ? $distance / $dimensions : 1.0;
+        return $dimensions !== 0 ? $distance / $dimensions : 1.;
     }
 }

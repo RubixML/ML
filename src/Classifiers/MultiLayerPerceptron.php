@@ -173,17 +173,17 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
                 . ' per batch.');
         }
 
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('Regularization parameter must'
                 . ' be non-negative.');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
 
-        if ($holdout < 0.01 or $holdout > 1.0) {
+        if ($holdout < 0.01 or $holdout > 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
@@ -318,7 +318,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $training->randomize()->batch($this->batchSize);
 
-                $cost = 0.0;
+                $cost = 0.;
 
                 foreach ($batches as $batch) {
                     $cost += $this->network->feed($batch->samples())

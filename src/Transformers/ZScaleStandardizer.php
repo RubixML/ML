@@ -121,7 +121,7 @@ class ZScaleStandardizer implements Transformer
                 if ($this->scale === true) {
                     $stddev = $this->stddevs[$column];
 
-                    $feature = $stddev !== 0.0 ? $feature / $stddev : 1.0;
+                    $feature = $stddev !== 0.? $feature / $stddev : 1.;
                 }
 
                 $sample[$column] = $feature;

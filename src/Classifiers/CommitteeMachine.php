@@ -94,7 +94,7 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
 
             $total = array_sum($influence);
 
-            if ($total === 0.0) {
+            if ($total == 0) {
                 throw new InvalidArgumentException('Total influence for the'
                     . ' committee cannot be 0.');
             }
@@ -190,7 +190,7 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
         }
 
         $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.0));
+            array_fill_keys($this->classes, 0.));
 
         foreach ($this->experts as $i => $expert) {
             foreach ($expert->proba($dataset) as $j => $dist) {

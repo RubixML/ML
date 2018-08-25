@@ -14,6 +14,8 @@ use RuntimeException;
 
 class ExtraTreeRegressorTest extends TestCase
 {
+    const TOLERANCE = 3.5;
+
     protected $estimator;
 
     protected $training;
@@ -48,9 +50,9 @@ class ExtraTreeRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', 3);
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
     }
 
     public function test_train_with_unlabeled()

@@ -73,13 +73,13 @@ class AlphaDropout implements Hidden, Nonparametric
      */
     public function __construct(float $ratio = 0.1)
     {
-        if ($ratio <= 0.0 or $ratio >= 1.0) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Dropout ratio must be between 0'
                 . ' and 1.0.');
         }
 
         $this->ratio = $ratio;
-        $this->a = ((1 - $ratio) * (1 + $ratio * self::ALPHA_P ** 2)) ** -0.5;
+        $this->a = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
         $this->b = -$this->a * self::ALPHA_P * $ratio;
         $this->width = 0;
     }
@@ -119,11 +119,11 @@ class AlphaDropout implements Hidden, Nonparametric
         $n = $input->getN();
 
         $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
-            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? 1.0 : 0.0;
+            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? 1. : 0.;
         });
 
         $saturation = $mask->map(function ($value) {
-            return $value === 0.0 ? self::ALPHA_P : 0.0;
+            return $value === 0. ? self::ALPHA_P : 0.;
         });
 
         $activations = $input->hadamardProduct($mask)

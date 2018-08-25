@@ -40,10 +40,10 @@ class Accuracy implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
-        $score = 0.0;
+        $score = 0.;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {
             if ($prediction === $testing->label($i)) {

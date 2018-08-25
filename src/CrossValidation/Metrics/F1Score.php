@@ -40,7 +40,7 @@ class F1Score implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -61,7 +61,7 @@ class F1Score implements Metric
             }
         }
 
-        $score = 0.0;
+        $score = 0.;
 
         foreach ($truePositives as $class => $tp) {
             $fp = $falsePositives[$class];

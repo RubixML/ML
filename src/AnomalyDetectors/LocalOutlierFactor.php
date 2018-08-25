@@ -187,7 +187,7 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
 
             $median = Average::median($radii);
 
-            $probablities[] = 2.0 ** -($median / $radius);
+            $probablities[] = 2. ** -($median / $radius);
         }
 
         return $probablities;

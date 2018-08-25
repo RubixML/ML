@@ -32,7 +32,7 @@ class ThresholdedReLU implements Rectifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $threshold = 0.0)
+    public function __construct(float $threshold = 0.)
     {
         $this->threshold = $threshold;
     }
@@ -45,7 +45,7 @@ class ThresholdedReLU implements Rectifier
      */
     public function range() : array
     {
-        return [min(0.0, $this->threshold), INF];
+        return [min(0, $this->threshold), INF];
     }
 
     /**
@@ -57,7 +57,7 @@ class ThresholdedReLU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > $this->threshold ? $value : 0.0;
+            return $value > $this->threshold ? $value : 0.;
         });
     }
 
@@ -71,7 +71,7 @@ class ThresholdedReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation > $this->threshold ? 1.0 : 0.0;
+            return $activation > $this->threshold ? 1. : 0.;
         });
     }
 }

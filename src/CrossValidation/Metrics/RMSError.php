@@ -40,10 +40,10 @@ class RMSError implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
-        $error = 0.0;
+        $error = 0.;
 
         foreach ($estimator->predict($testing) as $i => $prediction) {
             $error += ($testing->label($i) - $prediction) ** 2;

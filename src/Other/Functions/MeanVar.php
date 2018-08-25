@@ -31,7 +31,7 @@ class MeanVar
 
         $mean = Average::mean($values);
 
-        $ssd = 0.0;
+        $ssd = 0.;
 
         foreach ($values as $value) {
             $ssd += ($value - $mean) ** 2;

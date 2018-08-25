@@ -26,7 +26,7 @@ class ISRU implements ActivationFunction
 {
     /**
      * At which point the output values of the function will saturdate. i.e.
-     * alpha = 2.0 means that the output will be between + or - 1 / sqrt(2.0).
+     * alpha = 2.means that the output will be between + or - 1 / sqrt(2.).
      *
      * @var float
      */
@@ -37,9 +37,9 @@ class ISRU implements ActivationFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1.0)
+    public function __construct(float $alpha = 1.)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('Alpha parameter must be'
                 . ' positive.');
         }
@@ -55,7 +55,7 @@ class ISRU implements ActivationFunction
      */
     public function range() : array
     {
-        $r = 1.0 / sqrt($this->alpha);
+        $r = 1. / sqrt($this->alpha);
 
         return [-$r, $r];
     }
@@ -69,7 +69,7 @@ class ISRU implements ActivationFunction
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value / sqrt(1.0 + $this->alpha * $value ** 2);
+            return $value / sqrt(1. + $this->alpha * $value ** 2);
         });
     }
 
@@ -83,7 +83,7 @@ class ISRU implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $z->map(function ($output) {
-            return (1.0 / sqrt(1.0 + $this->alpha * $output ** 2)) ** 3;
+            return (1. / sqrt(1. + $this->alpha * $output ** 2)) ** 3;
         });
     }
 }

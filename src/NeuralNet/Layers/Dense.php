@@ -15,9 +15,9 @@ use RuntimeException;
 /**
  * Dense
  *
- * Dense layers are fully connected Hidden layers, meaning each neuron is
- * connected to each other neuron in the previous layer. Dense layers are able
- * to employ a variety of Activation Functions that modify the output of each
+ * Dense layers are fully connected hidden layers, meaning each neuron is
+ * connected to each other neuron in the previous layer by a weighted *synapse*.
+ * Dense layers employ activation functions that control the output of each
  * neuron in the layer.
  *
  * References:
@@ -119,7 +119,7 @@ class Dense implements Hidden, Parametric
     public function init(int $fanIn) : int
     {
         if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $fanIn) ** (1.0 / sqrt(2.0));
+            $r = (6 / $fanIn) ** (1. / sqrt(2));
         } else if ($this->activationFunction instanceof HyperbolicTangent) {
             $r = (6 / $fanIn) ** 0.25;
         } else  {

@@ -24,7 +24,7 @@ class SELU implements Rectifier
     const SCALE = 1.0507009873554804934193349852946;
 
     /**
-     * At which negative value the SELU will saturate. i.e. alpha = 1.0 means
+     * At which negative value the SELU will saturate. i.e. alpha = 1.means
      * that the leakage will never be more than -1.0.
      *
      * @var float
@@ -51,7 +51,7 @@ class SELU implements Rectifier
      */
     public function __construct(float $alpha = self::ALPHA, float $scale = self::SCALE)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('Alpha parameter must be'
                 . ' positive.');
         }
@@ -85,7 +85,7 @@ class SELU implements Rectifier
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return $value > 0.0
+            return $value > 0.
                 ? $this->scale * $value
                 : $this->beta * exp($value) - $this->alpha;
         });
@@ -101,7 +101,7 @@ class SELU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation > 0.0
+            return $activation > 0.
                 ? $this->scale
                 : $this->scale * ($activation + $this->alpha);
         });

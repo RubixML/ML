@@ -122,7 +122,7 @@ class QuartileStandardizer implements Transformer
                 if ($this->scale === true) {
                     $iqr = $this->iqrs[$column];
 
-                    $feature = $iqr !== 0.0 ? $feature / $iqr : 1.0;
+                    $feature = $iqr !== 0.? $feature / $iqr : 1.;
                 }
 
                 $sample[$column] = $feature;

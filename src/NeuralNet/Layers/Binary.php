@@ -98,7 +98,7 @@ class Binary implements Output
                 . ' must be exactly 2.');
         }
 
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be be non-negative.');
         }
@@ -197,7 +197,7 @@ class Binary implements Output
 
         $errors = [[]];
 
-        $cost = 0.0;
+        $cost = 0.;
 
         foreach ($this->computed->getRow(0) as $i => $activation) {
             $expected = $this->classes[$labels[$i]];

@@ -97,7 +97,7 @@ class Multiclass implements Output
                 . ' must be 2 or more.');
         }
 
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be be non-negative.');
         }
@@ -198,13 +198,13 @@ class Multiclass implements Output
 
         $errors = [[]];
 
-        $cost = 0.0;
+        $cost = 0.;
 
         foreach ($this->classes as $i => $class) {
             $penalty = $this->alpha * array_sum($this->weights->w()->getRow($i));
 
             foreach ($this->computed->getRow($i) as $j => $activation) {
-                $expected = $class === $labels[$j] ? 1.0 : 0.0;
+                $expected = $class === $labels[$j] ? 1. : 0.;
 
                 $computed = $this->costFunction
                     ->compute($expected, $activation);

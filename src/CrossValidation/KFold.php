@@ -19,11 +19,19 @@ class KFold implements Validator
     protected $k;
 
     /**
+     * Should we stratify the dataset before folding?
+     *
+     * @var bool
+     */
+    protected $stratify;
+
+    /**
      * @param  int  $k
+     * @param  bool  $stratify
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 10)
+    public function __construct(int $k = 10, bool $stratify = false)
     {
         if ($k < 2) {
             throw new InvalidArgumentException('The number of folds cannot be'
@@ -31,6 +39,7 @@ class KFold implements Validator
         }
 
         $this->k = $k;
+        $this->stratify = $stratify;
     }
 
     /**
@@ -45,7 +54,7 @@ class KFold implements Validator
      */
     public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($estimator->type() === Estimator::CLASSIFIER or $estimator->type() === Estimator::CLUSTERER) {
+        if ($this->stratify === true) {
             $folds = $dataset->stratifiedFold($this->k);
         } else {
             $folds = $dataset->randomize()->fold($this->k);

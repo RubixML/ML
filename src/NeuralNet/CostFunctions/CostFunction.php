@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 interface CostFunction
 {
-    const EPSILON = 1e-8;
+    const EPSILON = 1e-10;
 
     /**
      * Return a tuple of the min and max output value for this function.

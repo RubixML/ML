@@ -53,9 +53,9 @@ class Ridge implements Estimator, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1.0)
+    public function __construct(float $alpha = 1.)
     {
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be be non-negative.');
         }
@@ -155,7 +155,7 @@ class Ridge implements Estimator, Persistable
     protected function computeCoefficients(array $samples, array $labels) : array
     {
         foreach ($samples as &$sample) {
-            array_unshift($sample, 1.0);
+            array_unshift($sample, 1.);
         }
 
         $x = new Matrix($samples);

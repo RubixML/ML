@@ -33,15 +33,15 @@ class Minkowski implements Distance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $lambda = 3.0)
+    public function __construct(float $lambda = 3.)
     {
-        if ($lambda <= 0.0) {
+        if ($lambda <= 0.) {
             throw new InvalidArgumentException('Lambda must be greater than'
                 . ' 0.');
         }
 
         $this->lambda = $lambda;
-        $this->exponent = 1.0 / $this->lambda;
+        $this->exponent = 1./ $this->lambda;
     }
 
     /**
@@ -53,7 +53,7 @@ class Minkowski implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0.0;
+        $distance = 0.;
 
         foreach ($a as $i => $coordinate) {
             $distance += abs($coordinate - $b[$i]) ** $this->lambda;

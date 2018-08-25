@@ -46,7 +46,7 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5, float $threshold = 0.5)
     {
-        if ($threshold < 0 or $threshold > 1) {
+        if ($threshold < 0. or $threshold > 1.) {
             throw new InvalidArgumentException('Threshold isolation score must'
                 . ' be between 0 and 1.');
         }

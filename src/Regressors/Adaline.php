@@ -117,12 +117,12 @@ class Adaline implements Estimator, Online, Persistable
                 . ' per batch.');
         }
 
-        if ($alpha < 0.0) {
+        if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization term must'
                 . ' be non-negative.');
         }
 
-        if ($minChange < 0.0) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . ' than 0.');
         }
@@ -221,7 +221,7 @@ class Adaline implements Estimator, Online, Persistable
             for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
                 $batches = $dataset->randomize()->batch($this->batchSize);
 
-                $cost = 0.0;
+                $cost = 0.;
 
                 foreach ($batches as $batch) {
                     $cost += $this->network->feed($batch->samples())

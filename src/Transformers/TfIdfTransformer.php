@@ -45,7 +45,7 @@ class TfIdfTransformer implements Transformer
 
         $n = $dataset->numRows();
 
-        $this->idfs = array_fill(0, $dataset->numColumns(), 0.0);
+        $this->idfs = array_fill(0, $dataset->numColumns(), 0.);
 
         foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
@@ -56,7 +56,7 @@ class TfIdfTransformer implements Transformer
         }
 
         foreach ($this->idfs as &$idf) {
-            $idf = log(($idf !== 0.0 ? $n / $idf : 1.0), 10);
+            $idf = log(($idf !== 0.? $n / $idf : 1.), 10);
         }
     }
 

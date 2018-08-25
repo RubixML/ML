@@ -45,12 +45,12 @@ class NoisyReLU implements Rectifier
      */
     public function __construct(float $noise = 0.1)
     {
-        if ($noise < 0.0) {
+        if ($noise < 0.) {
             throw new InvalidArgumentException('Noise parameter must be'
                 . '0 or greater.');
         }
 
-        $this->max = (int) ($noise * self::PHI);
+        $this->max = (int) round($noise * self::PHI);
         $this->min = -$this->max;
     }
 
@@ -76,7 +76,7 @@ class NoisyReLU implements Rectifier
         return $z->map(function ($value) {
             $noise = rand($this->min, $this->max) / self::PHI;
 
-            return $value > 0.0 ? max(0.0, $value + $noise) : -abs($noise);
+            return $value > 0. ? max(0., $value + $noise) : -abs($noise);
         });
     }
 
@@ -90,7 +90,7 @@ class NoisyReLU implements Rectifier
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $computed->map(function ($activation) {
-            return $activation > 0.0 ? 1.0 : 0.0;
+            return $activation > 0. ? 1. : 0.;
         });
     }
 }

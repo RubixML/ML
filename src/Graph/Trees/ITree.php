@@ -174,7 +174,7 @@ class ITree implements Tree
             }
         }
 
-        return new Cell(0, 0.0);
+        return new Cell(0, 0.);
     }
 
     /**
@@ -210,7 +210,7 @@ class ITree implements Tree
 
         $c = $this->calculateCFactor($n);
 
-        $score = 2.0 ** -(($depth + $c) / $this->c);
+        $score = 2.** -(($depth + $c) / $this->c);
 
         return new Cell($n, $score);
     }
@@ -224,10 +224,10 @@ class ITree implements Tree
     protected function calculateCFactor(int $n) : float
     {
         if ($n <= 1) {
-            return 0.0;
+            return 0.;
         }
 
-        return 2.0 * (log($n - 1) + M_EULER) - (2.0 * ($n - 1) / $n);
+        return 2.* (log($n - 1) + M_EULER) - (2.* ($n - 1) / $n);
     }
 
     /**

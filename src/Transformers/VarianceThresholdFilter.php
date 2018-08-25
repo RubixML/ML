@@ -39,9 +39,9 @@ class VarianceThresholdFilter implements Transformer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $threshold = 0.0)
+    public function __construct(float $threshold = 0.)
     {
-        if ($threshold < 0.0) {
+        if ($threshold < 0.) {
             throw new InvalidArgumentException('Threshold must be a positive'
                 . ' value.');
         }

@@ -24,7 +24,7 @@ class Manhattan implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = 0.0;
+        $distance = 0.;
 
         foreach ($a as $i => $coordinate) {
             $distance += abs($coordinate - $b[$i]);

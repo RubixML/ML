@@ -43,7 +43,7 @@ class Concentration implements Metric
         }
 
         if ($testing->numRows() === 0) {
-            return 0.0;
+            return 0.;
         }
 
         $predictions = $estimator->predict($testing);
@@ -54,7 +54,7 @@ class Concentration implements Metric
             return Average::mean($values);
         }, $testing->rotate());
 
-        $intra = $extra = 0.0;
+        $intra = $extra = 0.;
 
         $strata = $labeled->stratify();
 
@@ -71,7 +71,7 @@ class Concentration implements Metric
                 }
             }
 
-            $temp = 0.0;
+            $temp = 0.;
 
             foreach ($centroid as $column => $mean) {
                 $temp += ($mean - $globals[$column]) ** 2;
@@ -82,8 +82,8 @@ class Concentration implements Metric
             $extra += $temp;
         }
 
-        if ($intra === 0.0) {
-            return 1.0;
+        if ($intra === 0.) {
+            return 1.;
         }
 
         return ($extra * ($testing->numRows() - count($strata)) + self::EPSILON)
