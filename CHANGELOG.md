@@ -22,6 +22,7 @@
     - Added Gaussian RBF activation function
     - Renamed Quadratic cost function to Least Squares
     - Added option to stratify dataset in Hold Out and K Fold
+    - Added Monte Carlo cross validator
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

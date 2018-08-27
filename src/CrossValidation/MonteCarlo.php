@@ -4,22 +4,30 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use MathPHP\Statistics\Average;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
 /**
- * Hold Out
+ * Monte Carlo
  *
- * In the holdout method, we randomly assign data points to two sets (training
- * and testing set). The size of each of the testing set is given by the holdout
- * ratio and is typically smaller than the training set.
+ * Repeated Random Subsampling or Monte Carlo cross validation is a technique
+ * that takes the average validation score over a user-supplied number of
+ * simulations (random splits of the dataset).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HoldOut implements Validator
+class MonteCarlo implements Validator
 {
+    /**
+     * The number of simulations to run i.e the number of tests to average.
+     *
+     * @var int
+     */
+    protected $simulations;
+
     /**
      * The hold out ratio. i.e. the ratio of samples to use for testing.
      *
@@ -35,18 +43,25 @@ class HoldOut implements Validator
     protected $stratify;
 
     /**
+     * @param  int  $simulations
      * @param  float  $ratio
      * @param  bool  $stratify
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $ratio = 0.2, bool $stratify = false)
+    public function __construct(int $simulations = 10, float $ratio = 0.2, bool $stratify = false)
     {
+        if ($simulations < 2) {
+            throw new InvalidArgumentException('Must run at least 2'
+                . ' simulations.');
+        }
+
         if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
                 . ' between 0.01 and 1.0.');
         }
 
+        $this->simulations = $simulations;
         $this->ratio = $ratio;
         $this->stratify = $stratify;
     }
@@ -61,16 +76,22 @@ class HoldOut implements Validator
      */
     public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($this->stratify === true) {
-            list($testing, $training) = $dataset->stratifiedSplit($this->ratio);
-        } else {
-            list($testing, $training) = $dataset->randomize()->split($this->ratio);
+        $scores = [];
+
+        for ($epoch = 0; $epoch < $this->simulations; $epoch++) {
+            $dataset->randomize();
+
+            if ($this->stratify === true) {
+                list($testing, $training) = $dataset->stratifiedSplit($this->ratio);
+            } else {
+                list($testing, $training) = $dataset->split($this->ratio);
+            }
+
+            $estimator->train($training);
+
+            $scores[] = $metric->score($estimator, $testing);
         }
 
-        $estimator->train($training);
-
-        $score = $metric->score($estimator, $testing);
-
-        return $score;
+        return Average::mean($scores);
     }
 }

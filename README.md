@@ -158,6 +158,7 @@ MIT
 			- [Hold Out](#hold-out)
 			- [K Fold](#k-fold)
 			- [Leave P Out](#leave-p-out)
+			- [Monte Carlo](#monte-carlo)
 		- [Metrics](#validation-metrics)
 			- [Anomaly Detection](#anomaly-detection)
 			- [Classification](#classification)
@@ -3099,7 +3100,6 @@ Hold Out is the simplest form of cross validation available in Rubix. It uses a 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
 $validator = new HoldOut(0.25, true);
 ```
@@ -3117,7 +3117,7 @@ K Fold is a technique that splits the training set into K individual sets and fo
 ```php
 use Rubix\ML\CrossValidation\KFold;
 
-$validator = new KFold(5, false);
+$validator = new KFold(5, true);
 ```
 
 ### Leave P Out
@@ -3132,7 +3132,24 @@ Leave P Out tests the model with a unique holdout set of P samples for each roun
 ```php
 use Rubix\ML\CrossValidation\LeavePOut;
 
-$validator = new LeavePOut(30);
+$validator = new LeavePOut(50);
+```
+
+### Monte Carlo
+Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (random splits of the dataset).
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | simulations | 10 | int | The number of simulations to run i.e the number of tests to average. |
+| 2 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
+| 3 | stratify | false | bool | Should we stratify the dataset before splitting? |
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\MonteCarlo;
+
+$validator = new MonteCarlo(30, 0.1);
 ```
 
 ### Validation Metrics

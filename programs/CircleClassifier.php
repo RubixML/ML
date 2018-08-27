@@ -3,12 +3,11 @@
 include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
-use Rubix\ML\CrossValidation\KFold;
-use Rubix\ML\Other\Generators\Blob;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\Other\Generators\Circle;
+use Rubix\ML\CrossValidation\MonteCarlo;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\CrossValidation\Metrics\MCC;
@@ -35,7 +34,7 @@ $dataset = $generator->generate(2000);
 
 $estimator = new KNearestNeighbors(3, new Euclidean());
 
-$validator = new KFold(10);
+$validator = new MonteCarlo(5, 0.2, true);
 
 $report = new AggregateReport([
     new ConfusionMatrix(),

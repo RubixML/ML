@@ -9,7 +9,7 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 interface Validator
 {
     /**
-    * Test the estimator with the suppplied dataset and return a score.
+    * Test the estimator with the supplied dataset and return a score.
     *
     * @param  \Rubix\ML\Estimator  $estimator
     * @param  \Rubix\ML\Datasets\Labeled  $dataset

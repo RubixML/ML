@@ -45,6 +45,8 @@ class LeavePOut implements Validator
     }
 
     /**
+     * Test the estimator with the supplied dataset and return a score.
+     *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric

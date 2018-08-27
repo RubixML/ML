@@ -59,9 +59,7 @@ class KFold implements Validator
     }
 
     /**
-     * Run k training rounds where k is the number of folds. For each round use
-     * one fold for testing and the rest to train the model. Return the average
-     * validation score for each training round.
+     * Test the estimator with the supplied dataset and return a score.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
