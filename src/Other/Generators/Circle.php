@@ -74,7 +74,7 @@ class Circle implements Generator
 
         $this->center = $center;
         $this->scale = $scale;
-        $this->uniform = new Uniform(0, 2.* M_PI);
+        $this->uniform = new Uniform(0, 2. * M_PI);
         $this->gaussian = new Normal(0, $scale * $noise);
     }
 

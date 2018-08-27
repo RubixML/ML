@@ -28,7 +28,7 @@ class SoftPlus implements Rectifier
      */
     public function range() : array
     {
-        return [0, INF];
+        return [.0, INF];
     }
 
     /**

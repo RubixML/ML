@@ -34,7 +34,7 @@ class ConcentrationTest extends TestCase
 
         $this->metric = new Concentration();
 
-        $this->outcome = 193.36363635836284;
+        $this->outcome = 193.36363636363635;
     }
 
     public function test_build_metric()
@@ -52,7 +52,7 @@ class ConcentrationTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', 1e-8);
+        $this->assertEquals($this->outcome, $score);
     }
 
     public function test_within_range()

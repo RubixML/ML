@@ -13,7 +13,7 @@ class Concentration implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -42,7 +42,9 @@ class Concentration implements Metric
                 . ' continuous features.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -54,39 +56,36 @@ class Concentration implements Metric
             return Average::mean($values);
         }, $testing->rotate());
 
-        $intra = $extra = 0.;
-
         $strata = $labeled->stratify();
 
-        foreach ($strata as $cluster => $dataset) {
+        $k = count($strata);
+
+        $intra = $extra = 0.;
+
+        foreach ($strata as $cluster => $stratum) {
             $centroid = [];
 
-            foreach ($dataset->rotate() as $column => $values) {
-                $centroid[$column] = Average::mean((array) $values);
+            foreach ($stratum->rotate() as $column => $values) {
+                $mean = Average::mean((array) $values);
+
+                $dispersion = ($mean - $globals[$column]) ** 2;
+
+                $extra += $dispersion * $stratum->numRows();
+
+                $centroid[] = $mean;
             }
 
-            foreach ($dataset as $row => $sample) {
+            foreach ($stratum as $row => $sample) {
                 foreach ($sample as $column => $feature) {
                     $intra += ($feature - $centroid[$column]) ** 2;
                 }
             }
-
-            $temp = 0.;
-
-            foreach ($centroid as $column => $mean) {
-                $temp += ($mean - $globals[$column]) ** 2;
-            }
-
-            $temp *= $dataset->numRows();
-
-            $extra += $temp;
         }
 
         if ($intra === 0.) {
             return 1.;
         }
 
-        return ($extra * ($testing->numRows() - count($strata)) + self::EPSILON)
-            / ($intra * (count($strata) - 1) + self::EPSILON);
+        return $extra * ($n - $k) / $intra * ($k - 1);
     }
 }

@@ -8,12 +8,22 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
+/**
+ * Median Absolute Error
+ *
+ * Median Absolute Error (MAE) is a robust measure of the error that ignores
+ * highly erroneous predections.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MedianAbsoluteError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {

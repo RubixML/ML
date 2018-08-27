@@ -8,12 +8,23 @@ use Rubix\ML\Datasets\Labeled;
 use MathPHP\Statistics\Average;
 use InvalidArgumentException;
 
+/**
+ * R Squared
+ *
+ * The *coefficient of determination* or R Squared is the proportion of the
+ * variance in the dependent variable that is predictable from the independent
+ * variable(s).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RSquared implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -53,6 +64,6 @@ class RSquared implements Metric
             $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        return 1 - (($ssr + self::EPSILON) / ($sst + self::EPSILON));
+        return 1. - (($ssr + self::EPSILON) / ($sst + self::EPSILON));
     }
 }

@@ -101,7 +101,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null, float $minChange = 1e-4,
                                 int $epochs = PHP_INT_MAX)
     {
-        if ($c <= 0) {
+        if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'
                 . ' cluster.');
         }
@@ -127,7 +127,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
         $this->c = $c;
         $this->fuzz = $fuzz;
-        $this->lambda = 2./ ($fuzz - 1);
+        $this->lambda = 2. / ($fuzz - 1.);
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;
@@ -282,10 +282,10 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += ($b !== 0.? ($a / $b) : 1.) ** $this->lambda;
+                $total += ($b !== 0. ? ($a / $b) : 1.) ** $this->lambda;
             }
 
-            $membership[$cluster] = 1./ $total;
+            $membership[$cluster] = 1. / $total;
         }
 
         return $membership;

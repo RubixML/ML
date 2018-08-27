@@ -41,7 +41,7 @@ class Minkowski implements Distance
         }
 
         $this->lambda = $lambda;
-        $this->exponent = 1./ $this->lambda;
+        $this->exponent = 1. / $this->lambda;
     }
 
     /**

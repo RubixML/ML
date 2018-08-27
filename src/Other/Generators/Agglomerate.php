@@ -86,7 +86,7 @@ class Agglomerate implements Generator
                 return $value / $total;
             }, $weights);
         } else {
-            $weights = array_fill(0, $n, 1./ $n);
+            $weights = array_fill(0, $n, 1. / $n);
         }
 
         $this->generators = $generators;

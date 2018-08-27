@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 class InformednessTest extends TestCase
 {
+    const TOLERANCE = 1e-10;
+
     protected $metric;
 
     protected $estimator;
@@ -33,7 +35,7 @@ class InformednessTest extends TestCase
 
         $this->metric = new Informedness();
 
-        $this->outcome = 0.1666666702777777;
+        $this->outcome = 0.16666666670277763;
     }
 
     public function test_build_metric()
@@ -44,14 +46,14 @@ class InformednessTest extends TestCase
 
     public function test_get_range()
     {
-        $this->assertEquals([-1, 1], $this->metric->range());
+        $this->assertEquals([0., 1.], $this->metric->range());
     }
 
     public function test_score_predictions()
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', 1e-8);
+        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

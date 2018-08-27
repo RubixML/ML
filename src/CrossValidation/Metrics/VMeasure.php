@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * V Measure
+ *
+ * V Measure is the hamonic balance between homogeneity and completness and is
+ * used as a measure to determine the quality of a clustering.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class VMeasure implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -81,10 +91,10 @@ class VMeasure implements Metric
                 / (array_sum($distribution) + self::EPSILON);
         }
 
-        $homogeneity /= count($table[0]);
-        $completeness /= count($table[1]);
+        $homogeneity /= count($clusters);
+        $completeness /= count($classes);
 
-        return 2 * ($homogeneity * $completeness)
+        return 2. * ($homogeneity * $completeness)
             / ($homogeneity + $completeness);
     }
 }

@@ -141,7 +141,7 @@ class Adam implements Optimizer
         foreach ($velocities->getMatrix() as $i => $row) {
             foreach ($row as $j => $velocity) {
                 $step[$i][$j] = $this->rate * $velocity
-                    / (sqrt($cache[$i][$j]) + $this->epsilon);
+                    / ($cache[$i][$j] ** 0.5 + $this->epsilon);
             }
         }
 

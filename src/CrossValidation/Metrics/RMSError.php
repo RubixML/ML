@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Root Mean Squared Error
+ *
+ * Root Mean Squared Error or average L2 loss is a metric that is used to
+ * measure the residuals of a regression problem.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class RMSError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -39,7 +49,9 @@ class RMSError implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -49,6 +61,6 @@ class RMSError implements Metric
             $error += ($testing->label($i) - $prediction) ** 2;
         }
 
-        return -sqrt($error / $testing->numRows());
+        return -sqrt($error / $n);
     }
 }

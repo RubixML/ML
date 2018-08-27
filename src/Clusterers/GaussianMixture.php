@@ -30,7 +30,7 @@ use RuntimeException;
  */
 class GaussianMixture implements Estimator, Probabilistic, Persistable
 {
-    const TWO_PI = 2.* M_PI;
+    const TWO_PI = 2. * M_PI;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the
@@ -99,7 +99,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
      */
     public function __construct(int $k, float $minChange = 1e-3, int $epochs = 100)
     {
-        if ($k <= 0) {
+        if ($k < 1) {
             throw new InvalidArgumentException('Must target at least one'
                 . ' cluster.');
         }
@@ -188,7 +188,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 . ' than the number of components.');
         }
 
-        $this->priors = array_fill(0, $this->k, 1./ $this->k);
+        $this->priors = array_fill(0, $this->k, 1. / $this->k);
 
         $this->means = $previous = $dataset->randomize()->tail($this->k)->samples();
 
@@ -305,8 +305,8 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 $mean = $means[$column];
                 $variance = $variances[$column] + self::EPSILON;
 
-                $pdf = 1./ sqrt(self::TWO_PI * $variance);
-                $pdf *= exp(-(($feature - $mean) ** 2 / (2.* $variance)));
+                $pdf = 1. / (self::TWO_PI * $variance) ** 0.5;
+                $pdf *= exp(-(($feature - $mean) ** 2 / (2. * $variance)));
 
                 $score *= $pdf;
             }

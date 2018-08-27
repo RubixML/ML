@@ -112,7 +112,7 @@ class MeanShift implements Estimator, Persistable
         }
 
         $this->radius = $radius;
-        $this->delta = 2.* $radius ** 2;
+        $this->delta = 2. * $radius ** 2;
         $this->kernel = $kernel;
         $this->minChange = $minChange;
         $this->epochs = $epochs;

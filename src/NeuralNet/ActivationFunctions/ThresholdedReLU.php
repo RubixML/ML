@@ -45,7 +45,7 @@ class ThresholdedReLU implements Rectifier
      */
     public function range() : array
     {
-        return [min(0, $this->threshold), INF];
+        return [min(0., $this->threshold), INF];
     }
 
     /**

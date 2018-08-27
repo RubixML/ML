@@ -7,12 +7,23 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Completeness
+ *
+ * A ground-truth clustering metric that measures the ratio of samples in a
+ * class that are also members of the same cluster. A cluster is said to be
+ * *complete* when all the samples ina class are contained in a cluster.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Completeness implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {

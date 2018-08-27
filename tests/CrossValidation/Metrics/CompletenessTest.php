@@ -33,7 +33,7 @@ class CompletenessTest extends TestCase
 
         $this->metric = new Completeness();
 
-        $this->outcome = 0.5833333351388889;
+        $this->outcome = 0.5833333333513888;
     }
 
     public function test_build_metric()
@@ -51,7 +51,7 @@ class CompletenessTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', 1e-8);
+        $this->assertEquals($this->outcome, $score);
     }
 
     public function test_within_range()

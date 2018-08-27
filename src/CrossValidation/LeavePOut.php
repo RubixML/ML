@@ -8,6 +8,18 @@ use MathPHP\Statistics\Average;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
+/**
+ * Leave P Out
+ *
+ * Leave P Out cross-validation involves using p observations as the validation
+ * set and the remaining observations as the training set. This is repeated on
+ * all ways to cut the original sample on a validation set of p observations
+ * and a training set. The resulting score is an average of all the tests.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class LeavePOut implements Validator
 {
     /**

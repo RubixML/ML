@@ -29,7 +29,7 @@ class Softsign implements ActivationFunction
      */
     public function range() : array
     {
-        return [-1, 1];
+        return [-1., 1.];
     }
 
     /**

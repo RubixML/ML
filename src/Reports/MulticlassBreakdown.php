@@ -41,7 +41,9 @@ class MulticlassBreakdown implements Report
                 . ' Labeled testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             throw new InvalidArgumentException('Testing set must contain at'
                 . ' least one sample.');
         }
@@ -51,6 +53,8 @@ class MulticlassBreakdown implements Report
         $labels = $testing->labels();
 
         $classes = array_unique(array_merge($predictions, $labels));
+
+        $k = count($classes);
 
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
             array_fill_keys($classes, 0);
@@ -91,21 +95,20 @@ class MulticlassBreakdown implements Report
                 / ($tn + $fp + self::EPSILON);
             $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
             $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
-            $table[$label]['f1_score'] = 2.* (($table[$label]['precision']
+            $table[$label]['f1_score'] = 2. * (($table[$label]['precision']
                 * $table[$label]['recall']))
                 / ($table[$label]['precision'] + $table[$label]['recall']);
             $table[$label]['informedness'] = $table[$label]['recall']
                 + $table[$label]['specificity'] - 1;
             $table[$label]['mcc'] = (($tp * $tn - $fp * $fn) + self::EPSILON)
-                / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
+                / ((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ** 0.5
                 + self::EPSILON);
             $table[$label]['true_positives'] = $tp;
             $table[$label]['true_negatives'] = $tn;
             $table[$label]['false_positives'] = $fp;
             $table[$label]['false_negatives'] = $fn;
             $table[$label]['cardinality'] = $tp + $fn;
-            $table[$label]['density'] = $table[$label]['cardinality']
-                / count($predictions);
+            $table[$label]['density'] = $table[$label]['cardinality'] / $n;
 
             $overall['accuracy'] += $table[$label]['accuracy'];
             $overall['precision'] += $table[$label]['precision'];
@@ -118,10 +121,8 @@ class MulticlassBreakdown implements Report
             $overall['informedness'] += $table[$label]['informedness'];
         }
 
-        $n = count($classes);
-
         foreach ($overall as $metric => &$score) {
-            $score /= $n;
+            $score /= $k;
         }
 
         return [

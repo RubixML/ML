@@ -160,7 +160,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->_priors = array_fill_keys($classes, log(1./ count($classes)));
+        $this->_priors = array_fill_keys($classes, log(1. / count($classes)));
 
         $this->counts = $this->probs = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), []));

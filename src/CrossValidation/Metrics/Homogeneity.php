@@ -7,12 +7,24 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Homogeneity
+ *
+ * A ground-truth clustering metric that measures the ratio of samples in a
+ * cluster that are also members of the same class. A cluster is said to be
+ * *homogenous* when the entire cluster is comprised of a single class of
+ * samples.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Homogeneity implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {

@@ -68,11 +68,20 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $tolerance;
 
     /**
-     * The actual labels of the binary class outcomes.
+     * The unique binary class labels of the trainign set.
      *
      * @var array
      */
     protected $classes = [
+        //
+    ];
+
+    /**
+     * The memoized inverse of the classes associative array for optimization.
+     *
+     * @var array
+     */
+    protected $beta = [
         //
     ];
 
@@ -215,10 +224,12 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 . ' must be exactly 2, ' . (string) count($classes) . ' found.');
         }
 
-        $this->classes = [1 => $classes[0], -1 => $classes[1]];
-        $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
-
         $k = (int) round($this->ratio * $n);
+
+        $this->classes = [1 => $classes[0], -1 => $classes[1]];
+        $this->beta = array_flip($this->classes);
+
+        $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
 
         $this->ensemble = $this->influence = [];
 
@@ -241,11 +252,11 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $total = array_sum($this->weights);
             $error = ($error / $total) + self::EPSILON;
-            $influence = 0.5 * log((1 - $error) / $error);
+            $influence = 0.5 * log((1. - $error) / $error);
 
             foreach ($predictions as $i => $prediction) {
-                $x = array_search($prediction, $this->classes);
-                $y = array_search($dataset->label($i), $this->classes);
+                $x = $this->beta[$prediction];
+                $y = $this->beta[$dataset->label($i)];
 
                 $this->weights[$i] *= exp(-$influence * $x * $y) / $total;
             }

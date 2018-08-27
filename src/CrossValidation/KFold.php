@@ -8,6 +8,22 @@ use MathPHP\Statistics\Average;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
+/**
+ * K Fold
+ *
+ * In k-fold cross-validation, the dataset is partitioned into k equal sized
+ * subsets. Of the k subsets, a single fold is retained as the validation set
+ * for testing the model, and the remaining k − 1 subsets are used as training
+ * data. The cross-validation process is then repeated k times, with each of the
+ * k folds used exactly once as the validation data. The k results are then
+ * averaged to produce a single validation score. The advantage of this method
+ * over Hold Out is that all observations are used for both training and
+ * validation, and each observation is used for validation exactly once.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class KFold implements Validator
 {
     /**

@@ -67,7 +67,7 @@ class KMeans implements Estimator, Online, Persistable
      */
     public function __construct(int $k, Distance $kernel = null, int $epochs = PHP_INT_MAX)
     {
-        if ($k <= 0) {
+        if ($k < 1) {
             throw new InvalidArgumentException('Must target at least one'
                 . ' cluster.');
         }

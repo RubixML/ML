@@ -7,12 +7,32 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * MCC
+ *
+ * Matthews Correlation Coefficient measures the quality of a classification. It
+ * takes into account true and false positives and negatives and is generally
+ * regarded as a balanced measure which can be used even if the classes are of
+ * very different sizes. The MCC is in essence a correlation coefficient between
+ * the observed and predicted binary classifications; it returns a value between
+ * −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better
+ * than random prediction and −1 indicates total disagreement between prediction
+ * and observation.
+ *
+ * References:
+ * [1] B. W. Matthews. (1975). Comparison of the Predicted and Observed Secondary
+ * Structure of T4 Phage Lysozyme.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MCC implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -50,6 +70,8 @@ class MCC implements Metric
 
         $classes = array_unique(array_merge($predictions, $labels));
 
+        $k = count($classes);
+
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives
             = array_fill_keys($classes, 0);
 
@@ -76,10 +98,10 @@ class MCC implements Metric
             $fn = $falseNegatives[$class];
 
             $score += (($tp * $tn - $fp * $fn) + self::EPSILON)
-                / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-                + self::EPSILON);
+                / ((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
+                ** 0.5 + self::EPSILON);
         }
 
-        return $score / count($classes);
+        return $score / $k;
     }
 }

@@ -7,16 +7,33 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Informedness
+ *
+ * Informedness is a measure of the probability that an estimator will make an
+ * informed decision. The index was suggested by W.J. Youden as a way of
+ * summarising the performance of a diagnostic test. Its value ranges from 0
+ * through 1 and has a zero value when the test gives the same proportion of
+ * positive results for groups with and without the disease, i.e the test is
+ * useless.
+ *
+ * References:
+ * [1] W. J. Youden. (1950). Index for Rating Diagnostic Tests.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Informedness implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
-        return [-1., 1.];
+        return [0., 1.];
     }
 
     /**
@@ -40,7 +57,9 @@ class Informedness implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -49,6 +68,8 @@ class Informedness implements Metric
         $labels = $testing->labels();
 
         $classes = array_unique(array_merge($predictions, $labels));
+
+        $k = count($classes);
 
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives
             = array_fill_keys($classes, 0);
@@ -77,9 +98,9 @@ class Informedness implements Metric
 
             $score += ($tp + self::EPSILON) / ($tp + $fn + self::EPSILON)
                 + ($tn + self::EPSILON) / ($tn + $fp + self::EPSILON)
-                - 1;
+                - 1.;
         }
 
-        return $score / count($classes);
+        return $score / $k;
     }
 }

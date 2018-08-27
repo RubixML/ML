@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 class F1ScoreTest extends TestCase
 {
+    const TOLERANCE = 1e-10;
+
     protected $metric;
 
     protected $estimator;
@@ -33,7 +35,7 @@ class F1ScoreTest extends TestCase
 
         $this->metric = new F1Score();
 
-        $this->outcome = 0.5833333342361111;
+        $this->outcome = 0.5833333333423611;
     }
 
     public function test_build_metric()
@@ -51,7 +53,7 @@ class F1ScoreTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', 1e-8);
+        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

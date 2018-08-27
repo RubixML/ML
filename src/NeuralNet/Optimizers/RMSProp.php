@@ -111,7 +111,7 @@ class RMSProp implements Optimizer
         foreach ($gradients->getMatrix() as $i => $row) {
             foreach ($row as $j => $gradient) {
                 $steps[$i][$j] = $this->rate * $gradient
-                    / (sqrt($cache[$i][$j]) + $this->epsilon);
+                    / ($cache[$i][$j] ** 0.5 + $this->epsilon);
             }
         }
 

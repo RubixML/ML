@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Mean Absolute Error
+ *
+ * A metric that measures the average amount that a prediction is off by given
+ * some ground truth (labels).
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MeanAbsoluteError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -39,7 +49,9 @@ class MeanAbsoluteError implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -49,6 +61,6 @@ class MeanAbsoluteError implements Metric
             $error += abs($testing->label($i) - $prediction);
         }
 
-        return -($error / $testing->numRows());
+        return -($error / $n);
     }
 }

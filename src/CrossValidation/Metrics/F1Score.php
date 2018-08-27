@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * F1 Score
+ *
+ * The F1 Score is the harmanic balance between *precision* and *recall*. A
+ * score of 1 indicates perfect precision and recall.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class F1Score implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -47,7 +57,9 @@ class F1Score implements Metric
 
         $labels = $testing->labels();
 
-        $classes = array_unique(array_merge($predictions, $labels));
+        $classes = array_unique(array_merge($predictions, $labels));;
+
+        $k = count($classes);
 
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
             array_fill_keys($classes, 0);
@@ -71,6 +83,6 @@ class F1Score implements Metric
                 / ((2 * $tp) + $fp + $fn + self::EPSILON);
         }
 
-        return $score / count($classes);
+        return $score / $k;
     }
 }

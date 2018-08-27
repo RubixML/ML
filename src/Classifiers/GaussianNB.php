@@ -31,7 +31,7 @@ use InvalidArgumentException;
  */
 class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
-    const TWO_PI = 2.* M_PI;
+    const TWO_PI = 2. * M_PI;
 
     /**
      * Should we fit the empirical prior probabilities of each class? If not,
@@ -173,7 +173,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->_priors = array_fill_keys($classes, log(1./ count($classes)));
+        $this->_priors = array_fill_keys($classes, log(1. / count($classes)));
 
         $this->means = $this->variances = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), 0.));

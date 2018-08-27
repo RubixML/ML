@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Mean Squared Error
+ *
+ * A metric that punishes bad predictions the worse they get by taking the
+ * squared error and averaging it over the testing set.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class MeanSquaredError implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -39,7 +49,9 @@ class MeanSquaredError implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -49,6 +61,6 @@ class MeanSquaredError implements Metric
             $error += ($testing->label($i) - $prediction) ** 2;
         }
 
-        return -($error / $testing->numRows());
+        return -($error / $n);
     }
 }

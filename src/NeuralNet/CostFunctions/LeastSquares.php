@@ -21,7 +21,7 @@ class LeastSquares implements CostFunction
      */
     public function range() : array
     {
-        return [0, INF];
+        return [0., INF];
     }
 
     /**

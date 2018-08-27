@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 class MeanAbsoluteErrorTest extends TestCase
 {
+    const TOLERANCE = 1e-10;
+
     protected $metric;
 
     protected $estimator;
@@ -50,7 +52,7 @@ class MeanAbsoluteErrorTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', 1e-8);
+        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

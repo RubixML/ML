@@ -7,12 +7,22 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+/**
+ * Accuracy
+ *
+ * A simple metric that measures the true positive rate over the entire testing
+ * set.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Accuracy implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -39,7 +49,9 @@ class Accuracy implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n === 0) {
             return 0.;
         }
 
@@ -51,6 +63,6 @@ class Accuracy implements Metric
             }
         }
 
-        return $score / $testing->numRows();
+        return $score / $n;
     }
 }
