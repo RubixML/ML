@@ -38,8 +38,6 @@ use RuntimeException;
  */
 class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persistable
 {
-    const TOLERANCE = 1e-3;
-
     /**
      * The user-specified hidden layers of the network.
      *
@@ -276,9 +274,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            $this->hidden, new Multiclass($this->classes, $this->alpha, $this->costFunction),
-            $this->optimizer);
+        $this->network = new FeedForward(
+            new Placeholder($dataset->numColumns(), true),
+            $this->hidden,
+            new Multiclass($this->classes, $this->alpha, $this->costFunction),
+            $this->optimizer
+        );
 
         $this->scores = $this->steps = [];
 
@@ -337,11 +338,11 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
                     $bestSnapshot = Snapshot::take($this->network);
                 }
 
-                if (abs($previous - $cost) < $this->minChange) {
+                if ($score === $max) {
                     break 1;
                 }
 
-                if ($score > ($max - self::TOLERANCE)) {
+                if (abs($previous - $cost) < $this->minChange) {
                     break 1;
                 }
 

@@ -185,8 +185,12 @@ class Adaline implements Estimator, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            [], new Continuous($this->alpha), $this->optimizer);
+        $this->network = new FeedForward(
+            new Placeholder($dataset->numColumns(), true),
+            [],
+            new Continuous($this->alpha, $this->costFunction),
+            $this->optimizer
+        );
 
         $this->steps = [];
 

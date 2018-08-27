@@ -12,7 +12,7 @@ interface Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return array
+     * @return array  2-tuple of floats (min, max)
      */
     public function range() : array;
 

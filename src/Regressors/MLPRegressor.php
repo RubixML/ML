@@ -261,9 +261,12 @@ class MLPRegressor implements Estimator, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            $this->hidden, new Continuous($this->alpha, $this->costFunction),
-            $this->optimizer);
+        $this->network = new FeedForward(
+            new Placeholder($dataset->numColumns(), true),
+            $this->hidden,
+            new Continuous($this->alpha, $this->costFunction),
+            $this->optimizer
+        );
 
         $this->scores = $this->steps = [];
 
@@ -320,6 +323,10 @@ class MLPRegressor implements Estimator, Online, Persistable
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestSnapshot = Snapshot::take($this->network);
+                }
+
+                if ($score === $max) {
+                    break 1;
                 }
 
                 if (abs($previous - $cost) < $this->minChange) {

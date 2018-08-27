@@ -16,7 +16,7 @@ class MCC implements Metric
      */
     public function range() : array
     {
-        return [-1, 1];
+        return [-1., 1.];
     }
 
     /**

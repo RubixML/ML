@@ -16,7 +16,7 @@ class Accuracy implements Metric
      */
     public function range() : array
     {
-        return [0, 1];
+        return [0., 1.];
     }
 
     /**

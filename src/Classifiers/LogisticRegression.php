@@ -193,9 +193,12 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->network = new FeedForward(new Placeholder($dataset->numColumns()),
-            [], new Binary($this->classes, $this->alpha, $this->costFunction),
-            $this->optimizer);
+        $this->network = new FeedForward(
+            new Placeholder($dataset->numColumns(), true),
+            [],
+            new Binary($this->classes, $this->alpha, $this->costFunction),
+            $this->optimizer
+        );
 
         $this->steps = [];
 

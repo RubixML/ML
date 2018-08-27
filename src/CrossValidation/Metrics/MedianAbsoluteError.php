@@ -17,7 +17,7 @@ class MedianAbsoluteError implements Metric
      */
     public function range() : array
     {
-        return [-INF, 0];
+        return [-INF, 0.];
     }
 
     /**

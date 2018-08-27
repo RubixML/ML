@@ -10,16 +10,14 @@ use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\NeuralNet\Layers\RadialBasis;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
-use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use League\Csv\Reader;
 
 echo '╔═════════════════════════════════════════════════════╗' . "\n";
@@ -46,23 +44,10 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 
 $dataset = new Labeled($samples, $labels);
 
-$gmm = new Pipeline(new GaussianMixture(40, 1e-2, 1), [
-    new OneHotEncoder(),
-    new SparseRandomProjector(30),
-    new ZScaleStandardizer(),
-]);
-
-$start = microtime(true);
-
-$gmm->train($dataset);
-
-echo 'Trained GMM in ' . (string) (microtime(true) - $start) . ' seconds.' . "\n";
-
 $estimator = new Pipeline(new MultiLayerPerceptron([
-    // new Dense(30, new Gaussian()),
-    // new Dense(20, new Gaussian()),
-    // new Dense(10, new Gaussian()),
-    new RadialBasis($gmm->means(), $gmm->variances()),
+    new Dense(30, new LeakyReLU()),
+    new Dense(20, new LeakyReLU()),
+    new Dense(10, new LeakyReLU()),
 ], 100, new Adam(0.001), 1e-3, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),

@@ -17,7 +17,7 @@ class RSquared implements Metric
      */
     public function range() : array
     {
-        return [-INF, 1];
+        return [-INF, 1.];
     }
 
     /**
