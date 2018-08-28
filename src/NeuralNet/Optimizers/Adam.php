@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
-use Rubix\ML\Other\Structures\MatrixFactory;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -134,20 +133,14 @@ class Adam implements Optimizer
 
         $cache = $cache
             ->scalarMultiply($this->rmsDecay)
-            ->add($gradients->elementwiseProduct($gradients)->scalarMultiply(1. - $this->rmsDecay));
+            ->add($gradients->square()->scalarMultiply(1. - $this->rmsDecay));
 
-        $step = [[]];
-
-        foreach ($velocities->asArray() as $i => $row) {
-            foreach ($row as $j => $velocity) {
-                $step[$i][$j] = $this->rate * $velocity
-                    / ($cache[$i][$j] ** 0.5 + $this->epsilon);
-            }
-        }
+        $step = $velocities->scalarMultiply($this->rate)
+            ->divide($cache->sqrt()->scalarAdd($this->epsilon));
 
         $this->velocities[$parameter] = $velocities;
         $this->cache[$parameter] = $cache;
 
-        return new Matrix($step);
+        return $step;
     }
 }

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use InvalidArgumentException;
 
 /**

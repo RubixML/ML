@@ -3,8 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -34,9 +33,9 @@ class GaussianRandomProjector implements Transformer
     protected $dimensions;
 
     /**
-     * The randomized matrix R.
+     * The random matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
     */
     protected $r;
 
@@ -111,8 +110,8 @@ class GaussianRandomProjector implements Transformer
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = MatrixFactory::create($samples)
-            ->multiply($this->r)
-            ->getMatrix();
+        $samples = Matrix::build($samples)
+            ->dot($this->r)
+            ->asArray();
     }
 }

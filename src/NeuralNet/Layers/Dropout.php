@@ -107,7 +107,7 @@ class Dropout implements Hidden, Nonparametric
             return (rand(0, self::PHI) / self::PHI) > $this->ratio ? $this->scale : 0.;
         });
 
-        $activations = $input->elementwiseProduct($mask);
+        $activations = $input->multiply($mask);
 
         $this->mask = $mask;
 
@@ -140,7 +140,7 @@ class Dropout implements Hidden, Nonparametric
                 . ' backpropagating.');
         }
 
-        $errors = $prevErrors()->elementwiseProduct($this->mask);
+        $errors = $prevErrors()->multiply($this->mask);
 
         unset($this->mask);
 

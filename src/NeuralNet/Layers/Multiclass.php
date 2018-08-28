@@ -161,7 +161,7 @@ class Multiclass implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->multiply($input);
+        $this->z = $this->weights->w()->dot($input);
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -176,7 +176,7 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->multiply($input);
+        $z = $this->weights->w()->dot($input);
 
         return $this->activationFunction->compute($z);
     }
@@ -200,13 +200,12 @@ class Multiclass implements Output
         $cost = 0.;
 
         foreach ($this->classes as $i => $class) {
-            $penalty = $this->alpha * array_sum($this->weights->w()->row($i));
+            $penalty = $this->alpha * $this->weights->w()->rowSum($i);
 
             foreach ($this->computed->row($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1. : 0.;
 
-                $computed = $this->costFunction
-                    ->compute($expected, $activation);
+                $computed = $this->costFunction->compute($expected, $activation);
 
                 $cost += $computed;
 
@@ -220,9 +219,9 @@ class Multiclass implements Output
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->elementwiseProduct($errors);
+            ->multiply($errors);
 
-        $gradients = $errors->multiply($this->input->transpose());
+        $gradients = $errors->dot($this->input->transpose());
 
         $step = $optimizer->step($this->weights, $gradients);
 
@@ -231,7 +230,7 @@ class Multiclass implements Output
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($errors) {
-            return $this->weights->w()->transpose()->multiply($errors);
+            return $this->weights->w()->transpose()->dot($errors);
         }, $cost];
     }
 

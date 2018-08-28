@@ -154,7 +154,7 @@ class Dense implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $z = $this->weights->w()->multiply($input);
+        $this->z = $z = $this->weights->w()->dot($input);
 
         if ($this->bias === true) {
             $z = $z->rowExclude($z->m() - 1);
@@ -181,7 +181,7 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->multiply($input);
+        $z = $this->weights->w()->dot($input);
 
         if ($this->bias === true) {
             $z = $z->rowExclude($z->m() - 1);
@@ -215,16 +215,16 @@ class Dense implements Hidden, Parametric
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->elementwiseProduct($prevErrors());
+            ->multiply($prevErrors());
 
-        $dW = $dA->multiply($this->input->transpose());
+        $dW = $dA->dot($this->input->transpose());
 
         $this->weights->update($optimizer->step($this->weights, $dW));
 
         unset($this->input, $this->z, $this->computed);
 
         return function () use ($dA) {
-            return $this->weights->w()->transpose()->multiply($dA);
+            return $this->weights->w()->transpose()->dot($dA);
         };
     }
 

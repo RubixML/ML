@@ -125,11 +125,10 @@ class AlphaDropout implements Hidden, Nonparametric
             return $value === 0. ? self::ALPHA_P : 0.;
         });
 
-        $activations = $input->elementwiseProduct($mask)
+        $activations = $input->multiply($mask)
             ->add($saturation)
-            ->map(function ($activation) {
-                return $this->a * $activation + $this->b;
-            });
+            ->scalarMultiply($this->a)
+            ->scalarAdd($this->b);
 
         $this->mask = $mask;
 
@@ -162,7 +161,7 @@ class AlphaDropout implements Hidden, Nonparametric
                 . ' backpropagating.');
         }
 
-        $errors = $prevErrors()->elementwiseProduct($this->mask);
+        $errors = $prevErrors()->multiply($this->mask);
 
         unset($this->mask);
 

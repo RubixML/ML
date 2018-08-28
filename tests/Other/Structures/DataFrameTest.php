@@ -26,7 +26,7 @@ class DataFrameTest extends TestCase
         $this->dataframe = new DataFrame($this->samples);
     }
 
-    public function test_build_data_frame()
+    public function test_build_structure()
     {
         $this->assertInstanceOf(DataFrame::class, $this->dataframe);
     }

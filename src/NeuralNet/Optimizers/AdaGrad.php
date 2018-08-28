@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
-use Rubix\ML\Other\Structures\MatrixFactory;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -85,24 +84,18 @@ class AdaGrad implements Optimizer
             $m = $parameter->w()->m();
             $n = $parameter->w()->n();
 
-            $cache =  Matrix::zeros($m, $n);
+            $cache = Matrix::zeros($m, $n);
 
             $this->cache->attach($parameter, $cache);
         }
 
-        $cache = $cache->add($gradients->elementwiseProduct($gradients));
+        $cache = $cache->add($gradients->square());
 
-        $step = [[]];
-
-        foreach ($gradients->asArray() as $i => $row) {
-            foreach ($row as $j => $gradient) {
-                $step[$i][$j] = $this->rate * $gradient
-                    / ($cache[$i][$j] ** 0.5 + $this->epsilon);
-            }
-        }
+        $step = $gradients->scalarMultiply($this->rate)
+            ->divide($cache->sqrt()->scalarAdd($this->epsilon));
 
         $this->cache[$parameter] = $cache;
 
-        return new Matrix($step);
+        return $step;
     }
 }

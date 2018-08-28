@@ -36,7 +36,7 @@ class Gaussian implements ActivationFunction
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return exp(-($value ** 2));
+            return M_E ** -($value ** 2);
         });
     }
 
@@ -49,6 +49,6 @@ class Gaussian implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->elementwiseProduct($computed)->scalarMultiply(-2.);
+        return $z->multiply($computed)->scalarMultiply(-2.);
     }
 }

@@ -158,7 +158,7 @@ class Binary implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->multiply($input);
+        $this->z = $this->weights->w()->dot($input);
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -173,7 +173,7 @@ class Binary implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->multiply($input);
+        $z = $this->weights->w()->dot($input);
 
         return $this->activationFunction->compute($z);
     }
@@ -193,7 +193,7 @@ class Binary implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = $this->alpha * array_sum($this->weights->w()->row(0));
+        $penalty = $this->alpha * $this->weights->w()->rowSum(0);
 
         $errors = [];
         $cost = 0.;
@@ -214,9 +214,9 @@ class Binary implements Output
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->elementwiseProduct($errors);
+            ->multiply($errors);
 
-        $gradients = $errors->multiply($this->input->transpose());
+        $gradients = $errors->dot($this->input->transpose());
 
         $step = $optimizer->step($this->weights, $gradients);
 
@@ -225,7 +225,7 @@ class Binary implements Output
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($errors) {
-            $this->weights->w()->transpose()->multiply($errors);
+            $this->weights->w()->transpose()->dot($errors);
         }, $cost];
     }
 

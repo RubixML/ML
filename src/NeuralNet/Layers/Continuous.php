@@ -123,7 +123,7 @@ class Continuous implements Output
     {
         $this->input = $input;
 
-        $this->computed = $this->weights->w()->multiply($input);
+        $this->computed = $this->weights->w()->dot($input);
 
         return $this->computed;
     }
@@ -136,7 +136,7 @@ class Continuous implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->weights->w()->multiply($input);
+        return $this->weights->w()->dot($input);
     }
 
     /**
@@ -154,7 +154,7 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = $this->alpha * array_sum($this->weights->w()->row(0));
+        $penalty = $this->alpha * $this->weights->w()->rowSum(0);
 
         $errors = [];
         $cost = 0.;
@@ -173,14 +173,14 @@ class Continuous implements Output
 
         $errors = new Matrix([$errors]);
 
-        $dW = $errors->multiply($this->input->transpose());
+        $dW = $errors->dot($this->input->transpose());
 
         $this->weights->update($optimizer->step($this->weights, $dW));
 
         unset($this->input, $this->computed);
 
         return [function () use ($errors) {
-            return $this->weights->w()->transpose()->multiply($errors);
+            return $this->weights->w()->transpose()->dot($errors);
         }, $cost];
     }
 

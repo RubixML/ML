@@ -59,7 +59,7 @@ class Exponential implements CostFunction
      */
     public function compute(float $expected, float $activation) : float
     {
-        return $this->tau * exp((1. / $this->tau) * ($activation - $expected) ** 2);
+        return $this->tau * M_E ** ((1. / $this->tau) * ($activation - $expected) ** 2);
     }
 
     /**

@@ -30,7 +30,7 @@ class Softmax extends Sigmoid
             $cache = [];
 
             foreach ($vector as $j => $value) {
-                $cache[$j] = exp($value);
+                $cache[$j] = M_E ** $value;
             }
 
             $sigma = array_sum($cache) + self::EPSILON;

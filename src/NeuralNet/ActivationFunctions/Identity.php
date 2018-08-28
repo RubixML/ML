@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\ML\Other\Structures\Matrix;
-use Rubix\ML\Other\Structures\MatrixFactory;
 
 /**
  * Identity

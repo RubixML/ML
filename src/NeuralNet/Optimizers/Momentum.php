@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
-use Rubix\ML\Other\Structures\MatrixFactory;
 use InvalidArgumentException;
 use SplObjectStorage;
 
