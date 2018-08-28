@@ -305,6 +305,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
             . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
@@ -326,7 +328,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
                         ->backpropagate($batch->labels());
                 }
 
-                $cost /= $dataset->numRows();
+                $cost /= $n;
 
                 $score = $this->metric->score($this, $testing);
 

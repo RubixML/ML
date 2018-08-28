@@ -2,23 +2,23 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 
 interface Input extends Layer
 {
     /**
      * Feed the input forward to the next layer in the network.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix;
 
     /**
      * Forward pass during inference.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix;
 }

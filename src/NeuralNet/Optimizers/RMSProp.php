@@ -3,8 +3,8 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
+use Rubix\ML\Other\Structures\MatrixFactory;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -86,29 +86,29 @@ class RMSProp implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $gradients
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
         if ($this->cache->contains($parameter)) {
             $cache = $this->cache[$parameter];
         } else {
-            $m = $parameter->w()->getM();
-            $n = $parameter->w()->getN();
+            $m = $parameter->w()->m();
+            $n = $parameter->w()->n();
 
-            $cache = MatrixFactory::zero($m, $n);
+            $cache = Matrix::zeros($m, $n);
 
             $this->cache->attach($parameter, $cache);
         }
 
         $cache = $cache
             ->scalarMultiply($this->decay)
-            ->add($gradients->hadamardProduct($gradients)->scalarMultiply(1 - $this->decay));
+            ->add($gradients->elementwiseProduct($gradients)->scalarMultiply(1 - $this->decay));
 
         $steps = [[]];
 
-        foreach ($gradients->getMatrix() as $i => $row) {
+        foreach ($gradients->asArray() as $i => $row) {
             foreach ($row as $j => $gradient) {
                 $steps[$i][$j] = $this->rate * $gradient
                     / ($cache[$i][$j] ** 0.5 + $this->epsilon);

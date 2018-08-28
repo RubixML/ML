@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -64,21 +64,21 @@ class Binary implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $z;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $computed;
 
@@ -111,7 +111,7 @@ class Binary implements Output
         $this->alpha = $alpha;
         $this->activationFunction = new Sigmoid();
         $this->costFunction = $costFunction;
-        $this->weights = new Parameter(new Matrix([]));
+        $this->weights = new Parameter(new Matrix([[]]));
     }
 
     /**
@@ -138,11 +138,11 @@ class Binary implements Output
 
         $w = [[]];
 
-        for ($j = 0; $j < $fanIn; $j++) {
-            $w[0][$j] = rand($min, $max) / self::PHI;
+        for ($i = 0; $i < $fanIn; $i++) {
+            $w[$i] = rand($min, $max) / self::PHI;
         }
 
-        $this->weights = new Parameter(new Matrix($w));
+        $this->weights = new Parameter(new Matrix([$w]));
 
         return $this->width();
     }
@@ -151,8 +151,8 @@ class Binary implements Output
      * Compute the input sum and activation of each neuron in the layer and return
      * an activation matrix.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -168,8 +168,8 @@ class Binary implements Output
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -193,30 +193,28 @@ class Binary implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = $this->alpha * array_sum($this->weights->w()->getRow(0));
+        $penalty = $this->alpha * array_sum($this->weights->w()->row(0));
 
-        $errors = [[]];
-
+        $errors = [];
         $cost = 0.;
 
-        foreach ($this->computed->getRow(0) as $i => $activation) {
+        foreach ($this->computed[0] as $i => $activation) {
             $expected = $this->classes[$labels[$i]];
 
-            $computed = $this->costFunction
-                ->compute($expected, $activation);
+            $computed = $this->costFunction->compute($expected, $activation);
 
             $cost += $computed;
 
-            $errors[0][$i] = $this->costFunction
+            $errors[$i] = $this->costFunction
                 ->differentiate($expected, $activation, $computed)
                 + $penalty;
         }
 
-        $errors = new Matrix($errors);
+        $errors = new Matrix([$errors]);
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($errors);
+            ->elementwiseProduct($errors);
 
         $gradients = $errors->multiply($this->input->transpose());
 

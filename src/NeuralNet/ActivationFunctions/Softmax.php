@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 
 /**
  * Softmax
@@ -19,17 +19,17 @@ class Softmax extends Sigmoid
     /**
      * Compute the output value.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $z
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $z
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {
         $activations = [[]];
 
-        foreach ($z->asVectors() as $i => $vector) {
+        foreach ($z->transpose()->asArray() as $i => $vector) {
             $cache = [];
 
-            foreach ($vector->getVector() as $j => $value) {
+            foreach ($vector as $j => $value) {
                 $cache[$j] = exp($value);
             }
 
@@ -40,6 +40,6 @@ class Softmax extends Sigmoid
             }
         }
 
-        return new Matrix($activations);
+        return new Matrix($activations, false);
     }
 }

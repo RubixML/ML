@@ -3,7 +3,7 @@
 namespace Rubix\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use PHPUnit\Framework\TestCase;
 
 class ParameterTest extends TestCase

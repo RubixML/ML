@@ -292,6 +292,8 @@ class MLPRegressor implements Estimator, Online, Persistable
             . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
@@ -313,7 +315,7 @@ class MLPRegressor implements Estimator, Online, Persistable
                         ->backpropagate($batch->labels());
                 }
 
-                $cost /= $dataset->numRows();
+                $cost /= $n;
 
                 $score = $this->metric->score($this, $testing);
 

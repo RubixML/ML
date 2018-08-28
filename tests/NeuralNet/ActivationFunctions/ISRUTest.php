@@ -2,7 +2,7 @@
 
 namespace Rubix\Tests\NeuralNet\ActivationFunctions;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;

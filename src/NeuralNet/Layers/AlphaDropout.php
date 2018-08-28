@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -62,7 +61,7 @@ class AlphaDropout implements Hidden, Nonparametric
     /**
      * The memoized dropout mask.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $mask;
 
@@ -110,15 +109,15 @@ class AlphaDropout implements Hidden, Nonparametric
      * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
-        $m = $input->getM();
-        $n = $input->getN();
+        $m = $input->m();
+        $n = $input->n();
 
-        $mask = MatrixFactory::zero($m, $n)->map(function ($value) {
+        $mask = Matrix::zeros($m, $n)->map(function ($value) {
             return (rand(0, self::PHI) / self::PHI) > $this->ratio ? 1. : 0.;
         });
 
@@ -126,7 +125,7 @@ class AlphaDropout implements Hidden, Nonparametric
             return $value === 0. ? self::ALPHA_P : 0.;
         });
 
-        $activations = $input->hadamardProduct($mask)
+        $activations = $input->elementwiseProduct($mask)
             ->add($saturation)
             ->map(function ($activation) {
                 return $this->a * $activation + $this->b;
@@ -140,8 +139,8 @@ class AlphaDropout implements Hidden, Nonparametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -163,7 +162,7 @@ class AlphaDropout implements Hidden, Nonparametric
                 . ' backpropagating.');
         }
 
-        $errors = $prevErrors()->hadamardProduct($this->mask);
+        $errors = $prevErrors()->elementwiseProduct($this->mask);
 
         unset($this->mask);
 

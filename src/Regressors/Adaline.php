@@ -217,6 +217,8 @@ class Adaline implements Estimator, Online, Persistable
             . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
@@ -231,6 +233,8 @@ class Adaline implements Estimator, Online, Persistable
                     $cost += $this->network->feed($batch->samples())
                         ->backpropagate($batch->labels());
                 }
+
+                $cost /= $n;
 
                 $this->steps[] = $cost;
 

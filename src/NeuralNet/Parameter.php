@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 
 /**
  * Parameter
@@ -20,7 +20,7 @@ class Parameter
     /**
      * The parameter matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix
+     * @var \Rubix\ML\Other\Structures\Matrix
      */
     protected $w;
 
@@ -35,7 +35,7 @@ class Parameter
     /**
      * Update the parameter matrix.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $step
+     * @param  \Rubix\ML\Other\Structures\Matrix  $step
      * @return void
      */
     public function update(Matrix $step) : void
@@ -44,7 +44,7 @@ class Parameter
     }
 
     /**
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function w() : Matrix
     {

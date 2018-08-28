@@ -3,8 +3,8 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
+use Rubix\ML\Other\Structures\MatrixFactory;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -69,18 +69,18 @@ class Momentum implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $gradients
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {
         if ($this->velocities->contains($parameter)) {
             $velocities = $this->velocities[$parameter];
         } else {
-            $m = $parameter->w()->getM();
-            $n = $parameter->w()->getN();
+            $m = $parameter->w()->m();
+            $n = $parameter->w()->n();
 
-            $velocities = MatrixFactory::zero($m, $n);
+            $velocities = Matrix::zeros($m, $n);
 
             $this->velocities->attach($parameter, $velocities);
         }

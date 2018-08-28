@@ -3,7 +3,7 @@
 namespace Rubix\Tests\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use PHPUnit\Framework\TestCase;

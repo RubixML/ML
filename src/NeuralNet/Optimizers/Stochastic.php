@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -43,8 +43,8 @@ class Stochastic implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \MathPHP\LinearAlgebra\Matrix  $gradients
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $gradients
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {

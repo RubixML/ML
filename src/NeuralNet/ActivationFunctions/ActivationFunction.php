@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 
 interface ActivationFunction
 {
@@ -19,17 +19,17 @@ interface ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $z
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $z
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function compute(Matrix $z) : Matrix;
 
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $z
-     * @param  \MathPHP\LinearAlgebra\Matrix  $computed
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $z
+     * @param  \Rubix\ML\Other\Structures\Matrix  $computed
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix;
 }

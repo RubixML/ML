@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -63,21 +63,21 @@ class Multiclass implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $z;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $computed;
 
@@ -110,7 +110,7 @@ class Multiclass implements Output
         $this->alpha = $alpha;
         $this->activationFunction = new Softmax();
         $this->costFunction = $costFunction;
-        $this->weights = new Parameter(new Matrix([]));
+        $this->weights = new Parameter(new Matrix([[]]));
     }
 
     /**
@@ -154,8 +154,8 @@ class Multiclass implements Output
      * Compute the input sum and activation of each neuron in the layer and return
      * an activation matrix.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -171,8 +171,8 @@ class Multiclass implements Output
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -197,13 +197,12 @@ class Multiclass implements Output
         }
 
         $errors = [[]];
-
         $cost = 0.;
 
         foreach ($this->classes as $i => $class) {
-            $penalty = $this->alpha * array_sum($this->weights->w()->getRow($i));
+            $penalty = $this->alpha * array_sum($this->weights->w()->row($i));
 
-            foreach ($this->computed->getRow($i) as $j => $activation) {
+            foreach ($this->computed->row($i) as $j => $activation) {
                 $expected = $class === $labels[$j] ? 1. : 0.;
 
                 $computed = $this->costFunction
@@ -221,7 +220,7 @@ class Multiclass implements Output
 
         $errors = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($errors);
+            ->elementwiseProduct($errors);
 
         $gradients = $errors->multiply($this->input->transpose());
 

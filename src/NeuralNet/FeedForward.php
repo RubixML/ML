@@ -2,12 +2,11 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
-use MathPHP\LinearAlgebra\MatrixFactory;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
@@ -155,7 +154,7 @@ class FeedForward implements Network
      */
     public function feed(array $samples) : self
     {
-        $input = MatrixFactory::create($samples)->transpose();
+        $input = Matrix::build($samples)->transpose();
 
         foreach ($this->layers as $layer) {
             $input = $layer->forward($input);
@@ -172,13 +171,13 @@ class FeedForward implements Network
      */
     public function infer(array $samples) : array
     {
-        $input = MatrixFactory::create($samples)->transpose();
+        $input = Matrix::build($samples)->transpose();
 
         foreach ($this->layers as $layer) {
             $input = $layer->infer($input);
         }
 
-        return $input->transpose()->getMatrix();
+        return $input->transpose()->asArray();
     }
 
     /**

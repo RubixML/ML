@@ -40,7 +40,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
                 $sample = array_values($sample);
 
-                foreach ($sample as &$feature) {
+                foreach ($sample as $feature) {
                     if (!is_string($feature) and !is_numeric($feature)) {
                         throw new InvalidArgumentException('Feature must be a'
                             . ' string, or numeric type, '

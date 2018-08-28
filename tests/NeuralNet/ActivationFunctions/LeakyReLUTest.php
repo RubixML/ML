@@ -2,7 +2,7 @@
 
 namespace Rubix\Tests\NeuralNet\ActivationFunctions;
 
-use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;

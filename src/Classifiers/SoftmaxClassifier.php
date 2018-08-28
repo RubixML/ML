@@ -225,6 +225,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
             . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
@@ -240,7 +242,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
                         ->backpropagate($batch->labels());
                 }
 
-                $cost /= $dataset->numRows();
+                $cost /= $n;
 
                 $this->steps[] = $cost;
 

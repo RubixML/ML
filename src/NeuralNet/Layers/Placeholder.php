@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -73,22 +72,22 @@ class Placeholder implements Input
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
-        if ($input->getM() !== $this->inputs) {
+        if ($input->m() !== $this->inputs) {
             throw new InvalidArgumentException('The number of feature columns'
                 . ' must equal the number of input inputs. '
-                . (string) $input->getM() . ' found, '
+                . (string) $input->m() . ' found, '
                 . (string) $this->inputs . ' needed.');
         }
 
         $activations = $input;
 
         if ($this->bias === true) {
-            $biases = MatrixFactory::one(1, $activations->getN());
+            $biases = Matrix::ones(1, $input->n());
 
             $activations = $activations->augmentBelow($biases);
         }
@@ -99,8 +98,8 @@ class Placeholder implements Input
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

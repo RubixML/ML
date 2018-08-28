@@ -3,8 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\MatrixFactory;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
@@ -63,21 +62,21 @@ class Dense implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized z matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $z;
 
     /**
      * The memoized output activations matrix.
      *
-     * @var \MathPHP\LinearAlgebra\Matrix|null
+     * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $computed;
 
@@ -98,7 +97,7 @@ class Dense implements Hidden, Parametric
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
         $this->bias = $bias;
-        $this->weights = new Parameter(new Matrix([]));
+        $this->weights = new Parameter(new Matrix([[]]));
     }
 
     /**
@@ -148,8 +147,8 @@ class Dense implements Hidden, Parametric
      * Compute the input sum and activation of each nueron in the layer and
      * return an activation matrix.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -158,13 +157,13 @@ class Dense implements Hidden, Parametric
         $this->z = $z = $this->weights->w()->multiply($input);
 
         if ($this->bias === true) {
-            $z = $z->rowExclude($z->getM() - 1);
+            $z = $z->rowExclude($z->m() - 1);
         }
 
         $activations = $this->activationFunction->compute($z);
 
         if ($this->bias === true) {
-            $biases = MatrixFactory::one(1, $z->getN());
+            $biases = Matrix::ones(1, $z->n());
 
             $activations = $activations->augmentBelow($biases);
         }
@@ -177,21 +176,21 @@ class Dense implements Hidden, Parametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \MathPHP\LinearAlgebra\Matrix  $input
-     * @return \MathPHP\LinearAlgebra\Matrix
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
         $z = $this->weights->w()->multiply($input);
 
         if ($this->bias === true) {
-            $z = $z->rowExclude($z->getM() - 1);
+            $z = $z->rowExclude($z->m() - 1);
         }
 
         $activations = $this->activationFunction->compute($z);
 
         if ($this->bias === true) {
-            $biases = MatrixFactory::one(1, $z->getN());
+            $biases = Matrix::ones(1, $z->n());
 
             $activations = $activations->augmentBelow($biases);
         }
@@ -216,11 +215,11 @@ class Dense implements Hidden, Parametric
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->hadamardProduct($prevErrors());
+            ->elementwiseProduct($prevErrors());
 
-        $dX = $dA->multiply($this->input->transpose());
+        $dW = $dA->multiply($this->input->transpose());
 
-        $this->weights->update($optimizer->step($this->weights, $dX));
+        $this->weights->update($optimizer->step($this->weights, $dW));
 
         unset($this->input, $this->z, $this->computed);
 

@@ -225,6 +225,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
             . ' continuous features.');
         }
 
+        $n = $dataset->numRows();
+
         if (is_null($this->network)) {
             $this->train($dataset);
         } else {
@@ -240,7 +242,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
                         ->backpropagate($batch->labels());
                 }
 
-                $cost /= $dataset->numRows();
+                $cost /= $n;
 
                 $this->steps[] = $cost;
 
@@ -286,10 +288,10 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
 
         $probabilities = [];
 
-        foreach ($this->network->infer($dataset->samples()) as $activations) {
+        foreach ($this->network->infer($dataset->samples()) as $activation) {
             $probabilities[] = [
-                $this->classes[0] => 1. - $activations[0],
-                $this->classes[1] => $activations[0],
+                $this->classes[0] => 1. - $activation[0],
+                $this->classes[1] => $activation[0],
             ];
         }
 
