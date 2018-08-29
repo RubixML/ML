@@ -201,12 +201,12 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevErrors
+     * @param  callable  $prevGradients
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevErrors, Optimizer $optimizer) : callable
+    public function back(callable $prevGradients, Optimizer $optimizer) : callable
     {
         if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
@@ -215,7 +215,7 @@ class Dense implements Hidden, Parametric
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->multiply($prevErrors());
+            ->multiply($prevGradients());
 
         $dW = $dA->dot($this->input->transpose());
 

@@ -30,6 +30,20 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     ];
 
     /**
+     * The number of rows in the matrix.
+     *
+     * @var int
+     */
+    protected $m;
+
+    /**
+     * The number of columns in the matrix.
+     *
+     * @var int
+     */
+    protected $n;
+
+    /**
      * Factory method to build a new matrix from an array.
      *
      * @param  array  $a
@@ -38,7 +52,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function build(array $a, bool $validate = true) : self
     {
-        return new static($a, $validate);
+        return new self($a, $validate);
     }
 
     /**
@@ -59,11 +73,11 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
 
         for ($i = 0; $i < $n; $i++) {
             for ($j = 0; $j < $n; $j++) {
-                $a[$i][$j] = $i == $j ? 1 : 0;
+                $a[$i][$j] = $i === $j ? 1 : 0;
             }
         }
 
-        return new static($a, false);
+        return new self($a, false);
     }
 
     /**
@@ -81,7 +95,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
                 . ' greater than 0 along both axis.');
         }
 
-        return new static(array_fill(0, $m, array_fill(0, $n, 0)), false);
+        return new self(array_fill(0, $m, array_fill(0, $n, 0)), false);
     }
 
     /**
@@ -99,7 +113,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
                 . ' greater than 0 along both axis.');
         }
 
-        return new static(array_fill(0, $m, array_fill(0, $n, 1)), false);
+        return new self(array_fill(0, $m, array_fill(0, $n, 1)), false);
     }
 
     /**
@@ -127,7 +141,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($a, false);
+        return new self($a, false);
     }
 
     /**
@@ -162,6 +176,8 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         $this->a = $a;
+        $this->m = count($a);
+        $this->n = isset($a[0]) ? count($a[0]) : 0;
     }
 
     /**
@@ -171,7 +187,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function shape() : array
     {
-        return [$this->m(), $this->n()];
+        return [$this->m, $this->n];
     }
 
     /**
@@ -181,7 +197,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function size() : int
     {
-        return $this->m() * $this->n();
+        return $this->m * $this->n;
     }
 
     /**
@@ -191,7 +207,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function m() : int
     {
-        return count($this->a);
+        return $this->m;
     }
 
     /**
@@ -201,7 +217,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function n() : int
     {
-        return isset($this->a[0]) ? count($this->a[0]) : 0;
+        return $this->n;
     }
 
     /**
@@ -233,15 +249,17 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function transpose() : self
     {
-        $n = $this->n();
+        if ($this->m > 1) {
+            $b = array_map(null, ...$this->a);
+        } else {
+            $b = [];
 
-        $aT = [];
-
-        for ($i = 0; $i < $n; $i++) {
-            $aT[$i] = array_column($this->a, $i);
+            for ($i = 0; $i < $this->n; $i++) {
+                $b[$i] = array_column($this->a, $i);
+            }
         }
 
-        return new static($aT, false);
+        return new self($b, false);
     }
 
     /**
@@ -260,7 +278,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, true);
+        return new self($b, true);
     }
 
     /**
@@ -272,13 +290,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function dot(Matrix $b) : self
     {
-        if ($b->m() !== $this->n()) {
+        if ($b->m() !== $this->n) {
             throw new InvalidArgumentException('Matrix dimensions do not'
                 . ' match.');
         }
 
         $bT = $b->transpose();
-
         $c = [[]];
 
         foreach ($this->a as $i => $row) {
@@ -293,7 +310,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
     }
 
     /**
@@ -305,12 +322,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function multiply(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of rows.');
         }
 
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of columns.');
         }
@@ -325,7 +342,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
     }
 
     /**
@@ -337,12 +354,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function divide(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of rows.');
         }
 
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of columns.');
         }
@@ -357,7 +374,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
     }
 
     /**
@@ -369,12 +386,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function add(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of rows.');
         }
 
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of columns.');
         }
@@ -389,7 +406,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
     }
 
     /**
@@ -401,12 +418,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function subtract(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of rows.');
         }
 
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
                 . ' of columns.');
         }
@@ -421,7 +438,17 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
+    }
+
+    /**
+     * Return the elementwise reciprocal of the matrix.
+     *
+     * @return self
+     */
+    public function reciprocal() : self
+    {
+        return self::ones(...$this->shape())->divide($this);
     }
 
     /**
@@ -443,7 +470,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($c, false);
+        return new self($c, false);
     }
 
     /**
@@ -468,7 +495,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -493,7 +520,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -518,7 +545,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -543,7 +570,35 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
+    }
+
+    /**
+     * Sum the matrix along a specified axis.
+     *
+     * @param  int  $axis
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function sum(int $axis = 0)
+    {
+        if ($axis < 0 or $axis > 1) {
+            throw new InvalidArgumentException('Axis can be 0 or 1'
+                . (string) $axis . ' given.');
+        }
+        $b = [[]];
+
+        if ($axis === 0) {
+            foreach ($this->transpose() as $i => $column) {
+                $b[0][$i] = array_sum($column);
+            }
+        } else {
+            foreach ($this->a as $i => $row) {
+                $b[$i][0] = array_sum($row);
+            }
+        }
+
+        return new self($b, false);
     }
 
     /**
@@ -569,7 +624,25 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the square of the matrix.
+     * Return the absolute value of each element in the matrix.
+     *
+     * @return self
+     */
+    public function abs() : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = abs($value);
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Return the square of the matrix elementwise.
      *
      * @return self
      */
@@ -583,7 +656,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -601,7 +674,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -619,12 +692,13 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
      * Return the logarithm of the matrix in specified base.
      *
+     * @param  float  $base
      * @return self
      */
     public function log(float $base = M_E) : self
@@ -637,7 +711,130 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new static($b, false);
+        return new self($b, false);
+    }
+
+    /**
+     * Round the elements in the matrix to a given decimal place.
+     *
+     * @param  int  $precision
+     * @return self
+     */
+    public function round(int $precision = 0) : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = round($value, $precision);
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Round the elements in the matrix down to the nearest integer.
+     *
+     * @return self
+     */
+    public function floor() : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = floor($value);
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Round the elements in the matrix up to the nearest integer.
+     *
+     * @return self
+     */
+    public function ceil() : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = ceil($value);
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Return the L1 norm of the matrix.
+     *
+     * @return float
+     */
+    public function l1Norm() : float
+    {
+        $norm = 0.;
+
+        foreach ($this->transpose() as $column) {
+            $norm = max($norm, array_sum(array_map('abs', $column)));
+        }
+
+        return $norm;
+    }
+
+    /**
+     * Return the L2 norm of the matrix.
+     *
+     * @return float
+     */
+    public function l2Norm() : float
+    {
+        $norm = 0.;
+
+        foreach ($this->a as $row) {
+            foreach ($row as $value) {
+                $norm += $value ** 2;
+            }
+        }
+
+        return sqrt($norm);
+    }
+
+    /**
+     * Retrn the infinity norm of the matrix.
+     *
+     * @return float
+     */
+    public function infinityNorm() : float
+    {
+        $norm = 0.;
+
+        foreach ($this->a as $row) {
+            $norm = max($norm, array_sum(array_map('abs', $row)));
+        }
+
+        return $norm;
+    }
+
+    /**
+     * Return the max norm of the matrix.
+     *
+     * @return float
+     */
+    public function maxNorm() : float
+    {
+        $norm = 0.;
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $norm = max($norm, abs($value));
+            }
+        }
+
+        return $norm;
     }
 
     /**
@@ -652,7 +849,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
 
         unset($b[$index]);
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -671,7 +868,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             $row = array_values($row);
         }
 
-        return new static($b, false);
+        return new self($b, false);
     }
 
     /**
@@ -683,7 +880,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentAbove(Matrix $b) : self
     {
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of columns.');
         }
@@ -700,7 +897,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentBelow(Matrix $b) : self
     {
-        if ($b->n() !== $this->n()) {
+        if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of columns.');
         }
@@ -728,7 +925,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             $c[] = array_merge($b[$i], $row);
         }
 
-        return new static($c);
+        return new self($c);
     }
 
     /**
@@ -751,7 +948,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             $c[] = array_merge($row, $b[$i]);
         }
 
-        return new static($c);
+        return new self($c);
     }
 
     /**

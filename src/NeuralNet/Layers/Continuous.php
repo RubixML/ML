@@ -156,7 +156,7 @@ class Continuous implements Output
 
         $penalty = $this->alpha * $this->weights->w()->rowSum(0);
 
-        $errors = [];
+        $dL = [];
         $cost = 0.;
 
         foreach ($this->computed->row(0) as $i => $activation) {
@@ -166,21 +166,21 @@ class Continuous implements Output
 
             $cost =+ $computed;
 
-            $errors[$i] = $this->costFunction
+            $dL[$i] = $this->costFunction
                 ->differentiate($expected, $activation, $computed)
                 + $penalty;
         }
 
-        $errors = new Matrix([$errors]);
+        $dL = new Matrix([$dL]);
 
-        $dW = $errors->dot($this->input->transpose());
+        $dW = $dL->dot($this->input->transpose());
 
         $this->weights->update($optimizer->step($this->weights, $dW));
 
         unset($this->input, $this->computed);
 
-        return [function () use ($errors) {
-            return $this->weights->w()->transpose()->dot($errors);
+        return [function () use ($dL) {
+            return $this->weights->w()->transpose()->dot($dL);
         }, $cost];
     }
 

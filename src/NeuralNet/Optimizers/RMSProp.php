@@ -93,10 +93,7 @@ class RMSProp implements Optimizer
         if ($this->cache->contains($parameter)) {
             $cache = $this->cache[$parameter];
         } else {
-            $m = $parameter->w()->m();
-            $n = $parameter->w()->n();
-
-            $cache = Matrix::zeros($m, $n);
+            $cache = Matrix::zeros(...$parameter->w()->shape());
 
             $this->cache->attach($parameter, $cache);
         }

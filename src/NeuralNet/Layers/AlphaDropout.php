@@ -114,11 +114,9 @@ class AlphaDropout implements Hidden, Nonparametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $m = $input->m();
-        $n = $input->n();
-
-        $mask = Matrix::zeros($m, $n)->map(function ($value) {
-            return (rand(0, self::PHI) / self::PHI) > $this->ratio ? 1. : 0.;
+        $mask = Matrix::zeros(...$input->shape())->map(function () {
+            return (rand(0, self::PHI) / self::PHI)
+                > $this->ratio ? 1. : 0.;
         });
 
         $saturation = $mask->map(function ($value) {
@@ -149,24 +147,24 @@ class AlphaDropout implements Hidden, Nonparametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevErrors
+     * @param  callable  $prevGradients
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevErrors, Optimizer $optimizer) : callable
+    public function back(callable $prevGradients, Optimizer $optimizer) : callable
     {
         if (is_null($this->mask)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $errors = $prevErrors()->multiply($this->mask);
+        $dOut = $prevGradients()->multiply($this->mask);
 
         unset($this->mask);
 
-        return function () use ($errors) {
-            return $errors;
+        return function () use ($dOut) {
+            return $dOut;
         };
     }
 }

@@ -90,8 +90,8 @@ MIT
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
-		- [L1 Regularizer](#l1-regularizer)
-		- [L2 Regularizer](#l2-regularizer)
+		- [L1 Normalizer](#l1-normalizer)
+		- [L2 Normalizer](#l2-normalizer)
 		- [Lambda Function](#lambda-function)
 		- [Min Max Normalizer](#min-max-normalizer)
 		- [Missing Data Imputer](#missing-data-imputer)
@@ -2105,7 +2105,7 @@ var_dump($dimensions);
 int(7894)
 ```
 
-### L1 Regularizer
+### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
@@ -2118,12 +2118,12 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\Transformers\L1Regularizer;
+use Rubix\ML\Transformers\L1Normalizer;
 
-$transformer = new L1Regularizer();
+$transformer = new L1Normalizer();
 ```
 
-### L2 Regularizer
+### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
 ##### Continuous *Only*
@@ -2136,9 +2136,9 @@ This Transformer does not have any additional methods.
 
 ##### Example:
 ```php
-use Rubix\ML\Transformers\L2Regularizer;
+use Rubix\ML\Transformers\L2Normalizer;
 
-$transformer = new L2Regularizer();
+$transformer = new L2Normalizer();
 ```
 
 ### Lambda Function
@@ -2836,14 +2836,14 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
 | 3 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 
-$optimizer = new AdaGrad(0.035, 1e-5);
+$optimizer = new AdaGrad(0.025, 1e-5);
 ```
 
 ### Adam

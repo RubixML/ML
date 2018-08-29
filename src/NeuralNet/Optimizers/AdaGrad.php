@@ -52,7 +52,7 @@ class AdaGrad implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $epsilon = 1e-8)
+    public function __construct(float $rate = 0.01, float $epsilon = 1e-8)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('The learning rate must be'
@@ -81,10 +81,7 @@ class AdaGrad implements Optimizer
         if ($this->cache->contains($parameter)) {
             $cache = $this->cache[$parameter];
         } else {
-            $m = $parameter->w()->m();
-            $n = $parameter->w()->n();
-
-            $cache = Matrix::zeros($m, $n);
+            $cache = Matrix::zeros(...$parameter->w()->shape());
 
             $this->cache->attach($parameter, $cache);
         }

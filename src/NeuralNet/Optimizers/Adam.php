@@ -117,8 +117,7 @@ class Adam implements Optimizer
             $velocities = $this->velocities[$parameter];
             $cache = $this->cache[$parameter];
         } else {
-            $m = $parameter->w()->m();
-            $n = $parameter->w()->n();
+            list($m, $n) = $parameter->w()->shape();
 
             $velocities = Matrix::zeros($m, $n);
             $cache = Matrix::zeros($m, $n);
@@ -135,7 +134,8 @@ class Adam implements Optimizer
             ->scalarMultiply($this->rmsDecay)
             ->add($gradients->square()->scalarMultiply(1. - $this->rmsDecay));
 
-        $step = $velocities->scalarMultiply($this->rate)
+        $step = $velocities
+            ->scalarMultiply($this->rate)
             ->divide($cache->sqrt()->scalarAdd($this->epsilon));
 
         $this->velocities[$parameter] = $velocities;

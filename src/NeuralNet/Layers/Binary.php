@@ -195,7 +195,7 @@ class Binary implements Output
 
         $penalty = $this->alpha * $this->weights->w()->rowSum(0);
 
-        $errors = [];
+        $dL = [];
         $cost = 0.;
 
         foreach ($this->computed[0] as $i => $activation) {
@@ -205,27 +205,25 @@ class Binary implements Output
 
             $cost += $computed;
 
-            $errors[$i] = $this->costFunction
+            $dL[$i] = $this->costFunction
                 ->differentiate($expected, $activation, $computed)
                 + $penalty;
         }
 
-        $errors = new Matrix([$errors]);
+        $dL = new Matrix([$dL]);
 
-        $errors = $this->activationFunction
+        $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
-            ->multiply($errors);
+            ->multiply($dL);
 
-        $gradients = $errors->dot($this->input->transpose());
+        $dW = $dA->dot($this->input->transpose());
 
-        $step = $optimizer->step($this->weights, $gradients);
-
-        $this->weights->update($step);
+        $this->weights->update($optimizer->step($this->weights, $dW));
 
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($errors) {
-            $this->weights->w()->transpose()->dot($errors);
+        return [function () use ($dA) {
+            $this->weights->w()->transpose()->dot($dA);
         }, $cost];
     }
 

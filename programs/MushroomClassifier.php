@@ -5,7 +5,6 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
@@ -48,7 +47,6 @@ $dataset = new Labeled($samples, $labels);
 $estimator = new Pipeline(new MultiLayerPerceptron([
     new Dense(30, new LeakyReLU()),
     new Dense(20, new LeakyReLU()),
-    new Dropout(0.1),
     new Dense(10, new LeakyReLU()),
 ], 100, new Adam(0.001), 1e-2, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),

@@ -76,10 +76,7 @@ class Momentum implements Optimizer
         if ($this->velocities->contains($parameter)) {
             $velocities = $this->velocities[$parameter];
         } else {
-            $m = $parameter->w()->m();
-            $n = $parameter->w()->n();
-
-            $velocities = Matrix::zeros($m, $n);
+            $velocities = Matrix::zeros(...$parameter->w()->shape());
 
             $this->velocities->attach($parameter, $velocities);
         }

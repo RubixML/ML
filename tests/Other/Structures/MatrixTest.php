@@ -233,6 +233,19 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_reciprocal()
+    {
+        $d = $this->a->reciprocal()->asArray();
+
+        $outcome = [
+            [0.045454545454545456, -0.058823529411764705, 0.08333333333333333],
+            [0.25, 0.09090909090909091, -0.5],
+            [0.05, -0.16666666666666666, -0.1111111111111111],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
     public function test_power()
     {
         $d = $this->a->power($this->c)->asArray();
@@ -298,6 +311,12 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_sum()
+    {
+        $this->assertEquals([[46, -12, 1]], $this->a->sum(0)->asArray());
+        $this->assertEquals([[17], [13], [5]], $this->a->sum(1)->asArray());
+    }
+
     public function test_row_sum()
     {
         $this->assertEquals(17., $this->a->rowSum(0));
@@ -310,6 +329,19 @@ class MatrixTest extends TestCase
         $this->assertEquals(46., $this->a->columnSum(0));
         $this->assertEquals(0., $this->b->columnSum(1));
         $this->assertEquals(7., $this->c->columnSum(2));
+    }
+
+    public function test_abs()
+    {
+        $d = $this->a->abs()->asArray();
+
+        $outcome = [
+            [22, 17, 12],
+            [4, 11, 2],
+            [20, 6, 9],
+        ];
+
+        $this->assertEquals($outcome, $d);
     }
 
     public function test_square()
@@ -362,6 +394,73 @@ class MatrixTest extends TestCase
         ];
 
         $this->assertEquals($outcome, $d);
+    }
+
+    public function test_round()
+    {
+        $d = $this->a->round(2)->asArray();
+
+        $outcome = [
+            [22, -17, 12],
+            [4, 11, -2],
+            [20, -6, -9],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
+    public function test_floor()
+    {
+        $d = $this->a->floor()->asArray();
+
+        $outcome = [
+            [22, -17, 12],
+            [4, 11, -2],
+            [20, -6, -9],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
+    public function test_ceil()
+    {
+        $d = $this->a->ceil()->asArray();
+
+        $outcome = [
+            [22, -17, 12],
+            [4, 11, -2],
+            [20, -6, -9],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
+    public function test_l1_norm()
+    {
+        $this->assertEquals(46., $this->a->l1Norm());
+        $this->assertEquals(33., $this->b->l1Norm());
+        $this->assertEquals(31., $this->c->l1Norm());
+    }
+
+    public function test_l2_norm()
+    {
+        $this->assertEquals(39.68626966596886, $this->a->l2Norm());
+        $this->assertEquals(19.261360284258224, $this->b->l2Norm());
+        $this->assertEquals(22.978250586152114, $this->c->l2Norm());
+    }
+
+    public function test_infinity_norm()
+    {
+        $this->assertEquals(51.0, $this->a->infinityNorm());
+        $this->assertEquals(13.0, $this->b->infinityNorm());
+        $this->assertEquals(25.0, $this->c->infinityNorm());
+    }
+
+    public function test_max_norm()
+    {
+        $this->assertEquals(22.0, $this->a->maxNorm());
+        $this->assertEquals(13.0, $this->b->maxNorm());
+        $this->assertEquals(14.0, $this->c->maxNorm());
     }
 
     public function test_row_exclude()

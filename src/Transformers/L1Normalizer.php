@@ -6,16 +6,16 @@ use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 /**
- * L1 Regularizer
+ * L1 Normalizer
  *
  * Transform each sample vector in the sample matrix such that each feature is
- * scaled by the L1 norm (or magnitude) of that vector.
+ * divided by the L1 norm (or magnitude) of that vector.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L1Regularizer implements Transformer
+class L1Normalizer implements Transformer
 {
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
