@@ -118,27 +118,18 @@ class Dense implements Hidden, Parametric
     public function init(int $fanIn) : int
     {
         if ($this->activationFunction instanceof Rectifier) {
-            $r = (6 / $fanIn) ** (1. / sqrt(2));
+            $scale = (6 / $fanIn) ** (1. / sqrt(2));
         } else if ($this->activationFunction instanceof HyperbolicTangent) {
-            $r = (6 / $fanIn) ** 0.25;
+            $scale = (6 / $fanIn) ** 0.25;
         } else  {
-            $r = sqrt(6 / $fanIn);
+            $scale = sqrt(6 / $fanIn);
         }
-
-        $min = (int) round(-$r * self::PHI);
-        $max = (int) round($r * self::PHI);
 
         $fanOut = $this->width();
 
-        $w = [[]];
+        $w = Matrix::uniform($fanOut, $fanIn)->scalarMultiply($scale);
 
-        for ($i = 0; $i < $fanOut; $i++) {
-            for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::PHI;
-            }
-        }
-
-        $this->weights = new Parameter(new Matrix($w));
+        $this->weights = new Parameter($w);
 
         return $fanOut;
     }

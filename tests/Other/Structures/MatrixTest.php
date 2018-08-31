@@ -100,6 +100,20 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_build_gaussian()
+    {
+        $d = Matrix::gaussian(3, 3);
+
+        $this->assertCount(9, $d);
+    }
+
+    public function test_build_uniform()
+    {
+        $d = Matrix::uniform(3, 3);
+
+        $this->assertCount(9, $d);
+    }
+
     public function test_shape()
     {
         $this->assertEquals([3, 3], $this->a->shape());

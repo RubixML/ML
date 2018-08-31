@@ -130,22 +130,13 @@ class Multiclass implements Output
      */
     public function init(int $fanIn) : int
     {
-        $r = sqrt(6 / $fanIn);
-
-        $min = (int) round(-$r * self::PHI);
-        $max = (int) round($r * self::PHI);
+        $scale = sqrt(6 / $fanIn);
 
         $fanOut = $this->width();
 
-        $w = [[]];
+        $w = Matrix::uniform($fanOut, $fanIn)->scalarMultiply($scale);
 
-        for ($i = 0; $i < $fanOut; $i++) {
-            for ($j = 0; $j < $fanIn; $j++) {
-                $w[$i][$j] = rand($min, $max) / self::PHI;
-            }
-        }
-
-        $this->weights = new Parameter(new Matrix($w));
+        $this->weights = new Parameter($w);
 
         return $fanOut;
     }

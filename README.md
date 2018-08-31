@@ -112,7 +112,6 @@ MIT
 			- [Identity](#identity)
 			- [ISRU](#isru)
 			- [Leaky ReLU](#leaky-relu)
-			- [Noisy ReLU](#noisy-relu)
 			- [SELU](#selu)
 			- [Sigmoid](#sigmoid)
 			- [Softmax](#softmax)
@@ -131,6 +130,7 @@ MIT
 				- [Alpha Dropout](#alpha-dropout)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
+				- [Noise](#noise)
 			- [Output Layers](#output-layers)
 				- [Binary](#Binary)
 				- [Continuous](#continuous)
@@ -2768,6 +2768,23 @@ Dropout layers temporarily disable neurons during each training pass. Dropout is
 use Rubix\ML\NeuralNet\Layers\Dropout;
 
 $layer = new Dropout(0.5);
+```
+
+### Noise
+This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network
+activations acts as a regularizer by indirectly adding a penalty to the
+weights through the cost function in the output layer.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | amount | 0.1 | float | The amount of gaussian noise to add to the inputs i.e the standard deviation of the noise. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Noise;
+
+$layer = new Noise(0.3);
 ```
 
 ### Output Layers

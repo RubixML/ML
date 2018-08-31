@@ -131,20 +131,13 @@ class Binary implements Output
      */
     public function init(int $fanIn) : int
     {
-        $r = sqrt(6 / $fanIn);
+        $scale = sqrt(6 / $fanIn);
 
-        $min = (int) round(-$r * self::PHI);
-        $max = (int) round($r * self::PHI);
+        $w = Matrix::uniform(1, $fanIn)->scalarMultiply($scale);
 
-        $w = [[]];
+        $this->weights = new Parameter($w);
 
-        for ($i = 0; $i < $fanIn; $i++) {
-            $w[$i] = rand($min, $max) / self::PHI;
-        }
-
-        $this->weights = new Parameter(new Matrix([$w]));
-
-        return $this->width();
+        return 1;
     }
 
     /**

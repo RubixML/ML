@@ -96,20 +96,13 @@ class Continuous implements Output
      */
     public function init(int $fanIn) : int
     {
-        $r = (6 / $fanIn) ** 0.25;
+        $scale = (6 / $fanIn) ** 0.25;
 
-        $min = (int) round(-$r * self::PHI);
-        $max = (int) round($r * self::PHI);
+        $w = Matrix::uniform(1, $fanIn)->scalarMultiply($scale);
 
-        $w = [[]];
+        $this->weights = new Parameter($w);
 
-        for ($i = 0; $i < $fanIn; $i++) {
-            $w[$i] = rand($min, $max) / self::PHI;
-        }
-
-        $this->weights = new Parameter(new Matrix([$w]));
-
-        return $this->width();
+        return 1;
     }
 
     /**

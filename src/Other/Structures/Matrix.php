@@ -20,6 +20,10 @@ use Countable;
  */
 class Matrix implements ArrayAccess, IteratorAggregate, Countable
 {
+    const TWO_PI = 2. * M_PI;
+
+    const PHI = 100000000;
+
     /**
      * The 2 dimensional array that holds the values of the matrix.
      *
@@ -142,6 +146,52 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($a, false);
+    }
+
+    /**
+     * Return a standard normally distributed random matrix i.e values between
+     * -1 and 1.
+     *
+     * @param  int  $m
+     * @param  int  $n
+     * @return self
+     */
+    public static function gaussian(int $m, int $n) : self
+    {
+        $a = [[]];
+
+        for ($i = 0; $i < $m; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+                $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+
+                $a[$i][$j] = ((-2. * log($r1)) ** 0.5)
+                    * cos(self::TWO_PI * $r2);
+            }
+        }
+
+        return new self($a);
+    }
+
+    /**
+     * Return a uniform random matrix with mean 0 and unit variance.
+     *
+     * @param  int  $m
+     * @param  int  $n
+     * @return self
+     */
+    public static function uniform(int $m, int $n) : self
+    {
+        $max = getrandmax();
+        $a = [[]];
+
+        for ($i = 0; $i < $m; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                $a[$i][$j] = rand(-$max, $max) / $max;
+            }
+        }
+
+        return new self($a);
     }
 
     /**
