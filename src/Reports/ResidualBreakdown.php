@@ -5,8 +5,7 @@ namespace Rubix\ML\Reports;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
-use Rubix\ML\Other\Functions\MeanVar;
+use Rubix\ML\Other\Helpers\Stats;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
@@ -56,7 +55,7 @@ class ResidualBreakdown implements Report
 
         $predictions = $estimator->predict($testing);
 
-        $mean = Average::mean($testing->labels());
+        $mean = Stats::mean($testing->labels());
 
         foreach ($predictions as $i => $prediction) {
             $errors[] = $error = $testing->label($i) - $prediction;
@@ -68,13 +67,13 @@ class ResidualBreakdown implements Report
             $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        list($mean, $variance) = MeanVar::compute($errors);
+        list($mean, $variance) = Stats::meanVar($errors);
 
-        $mse = Average::mean($l2);
+        $mse = Stats::mean($l2);
 
         return [
-            'mean_absolute_error' => Average::mean($l1),
-            'median_absolute_error' => Average::median($l1),
+            'mean_absolute_error' => Stats::mean($l1),
+            'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
             'rms_error' => sqrt($mse),
             'error_mean' => $mean,

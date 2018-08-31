@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
@@ -93,6 +93,6 @@ class KFold implements Validator
             $scores[] = $metric->score($estimator, $testing);
         }
 
-        return Average::mean($scores);
+        return Stats::mean($scores);
     }
 }

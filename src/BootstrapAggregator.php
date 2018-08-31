@@ -3,7 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;
@@ -186,9 +186,9 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
             if ($this->type === self::CLASSIFIER) {
                 $predictions[] = Argmax::compute(array_count_values($outcomes));
             } else if ($this->type === self::DETECTOR) {
-                $predictions[] = Average::mean($outcomes) > 0.5 ? 1 : 0;
+                $predictions[] = Stats::mean($outcomes) > 0.5 ? 1 : 0;
             } else {
-                $predictions[] = Average::mean($outcomes);
+                $predictions[] = Stats::mean($outcomes);
             }
         }
 

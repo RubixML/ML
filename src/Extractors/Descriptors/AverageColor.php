@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Extractors\Descriptors;
 
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 /**

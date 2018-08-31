@@ -29,8 +29,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function __construct(array $samples = [], bool $validate = true)
     {
         if ($validate === true) {
-            $numFeatures = is_array(reset($samples))
-                ? count(reset($samples)) : 0;
+            $samples = array_values($samples);
+
+            $numFeatures = isset($samples[0]) ? count($samples[0]) : 0;
 
             foreach ($samples as &$sample) {
                 if (count($sample) !== $numFeatures) {
@@ -50,7 +51,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        $this->samples = array_values($samples);
+        $this->samples = $samples;
     }
 
     /**
@@ -116,6 +117,16 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return a tuple containing the size of the dataframe.
+     *
+     * @var array
+     */
+    public function size() : array
+    {
+        return [$this->numRows(), $this->numColumns()];
+    }
+
+    /**
      * Rotate the sample matrix and return it in an array. i.e. rows become
      * columns and columns become rows. This is equivalent to transposing.
      *
@@ -123,15 +134,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function rotate() : array
     {
-        return empty($this->samples) ? [[]] : array_map(null, ...$this->samples);
-    }
+        if ($this->numRows() > 1) {
+            $rotated = array_map(null, ...$this->samples);
+        } else {
+            $n = $this->numColumns();
 
-    /**
-     * @return int
-     */
-    public function count() : int
-    {
-        return $this->numRows();
+            $rotated = [];
+
+            for ($i = 0; $i < $n; $i++) {
+                $rotated[$i] = array_column($this->samples, $i);
+            }
+        }
+
+        return $rotated;
     }
 
     /**
@@ -142,6 +157,14 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function empty() : bool
     {
         return empty($this->samples);
+    }
+
+    /**
+     * @return int
+     */
+    public function count() : int
+    {
+        return $this->numRows();
     }
 
     /**

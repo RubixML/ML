@@ -7,7 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -185,7 +185,7 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
                 $radii[] = $this->calculateRadius($neighbor);
             }
 
-            $median = Average::median($radii);
+            $median = Stats::median($radii);
 
             $probablities[] = 2. ** -($median / $radius);
         }

@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Graph\Nodes\Neighborhood;
@@ -161,7 +161,7 @@ abstract class KDTree implements Tree
     {
         $index = $depth % $this->dimensionality;
 
-        $value = Average::median($dataset->column($index));
+        $value = Stats::median($dataset->column($index));
 
         $groups = $dataset->partition($index, $value);
 

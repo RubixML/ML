@@ -5,7 +5,7 @@ namespace Rubix\ML\AnomalyDetectors;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -132,16 +132,10 @@ class RobustZScore implements Estimator, Persistable
         }
 
         foreach ($dataset->rotate() as $column => $values) {
-            $median = Average::median($values);
-
-            $deviations = [];
-
-            foreach ($values as $value) {
-                $deviations[] = abs($value - $median);
-            }
-
+            list($median, $mad) = Stats::medMad($values);
+            
             $this->medians[$column] = $median;
-            $this->mads[$column] = Average::median($deviations);
+            $this->mads[$column] = $mad;
         }
     }
 
@@ -159,7 +153,7 @@ class RobustZScore implements Estimator, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $numFeatures = $dataset->numColumns();
+        $n = $dataset->numColumns();
 
         $predictions = [];
 
@@ -181,7 +175,7 @@ class RobustZScore implements Estimator, Persistable
                 $score += $z;
             }
 
-            $score /= $numFeatures;
+            $score /= $n;
 
             $predictions[] = $score > $this->tolerance ? 1 : 0;
         }

@@ -2,8 +2,7 @@
 
 namespace Rubix\ML\Extractors\Descriptors;
 
-use MathPHP\Statistics\Average;
-use Rubix\ML\Other\Functions\MeanVar;
+use Rubix\ML\Other\Helpers\Stats;
 use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
@@ -31,11 +30,11 @@ class TextureHistogram implements Descriptor
 
         foreach ($patch as $pixels) {
             foreach ($pixels as $rgb) {
-                $intensities[] = Average::mean($rgb);
+                $intensities[] = Stats::mean($rgb);
             }
         }
 
-        list($mean, $variance) = MeanVar::compute($intensities);
+        list($mean, $variance) = Stats::meanVar($intensities);
 
         $skewness = RandomVariable::skewness($intensities);
 

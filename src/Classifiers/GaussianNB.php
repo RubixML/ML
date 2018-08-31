@@ -9,7 +9,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Functions\MeanVar;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 
@@ -215,7 +215,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
             $oldVariances = $this->variances[$class];
 
             foreach ($stratum->rotate() as $column => $values) {
-                list($mean, $variance) = MeanVar::compute($values);
+                list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$class][$column] = (($n * $mean)
                     + ($oldWeight * $oldMeans[$column]))

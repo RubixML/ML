@@ -3,7 +3,7 @@
 namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use MathPHP\Probability\Distribution\Continuous\Normal;
 use InvalidArgumentException;
 use RuntimeException;
@@ -62,7 +62,7 @@ class BlurryMedian implements Continuous
                 . ' at least one value.');
         }
 
-        $median = Average::median($values);
+        $median = Stats::median($values);
 
         $this->distribution = new Normal($median, $this->blur * $median);
     }
