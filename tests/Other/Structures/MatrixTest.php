@@ -100,6 +100,13 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_build_random()
+    {
+        $d = Matrix::gaussian(4, 4);
+
+        $this->assertCount(16, $d);
+    }
+
     public function test_build_gaussian()
     {
         $d = Matrix::gaussian(3, 3);

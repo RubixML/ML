@@ -114,23 +114,19 @@ class AlphaDropout implements Hidden, Nonparametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $mask = Matrix::zeros(...$input->shape())->map(function () {
-            return (rand(0, self::PHI) / self::PHI)
-                > $this->ratio ? 1. : 0.;
-        });
+        $mask = Matrix::rand(...$input->shape())
+            ->binarize($this->ratio);
 
         $saturation = $mask->map(function ($value) {
             return $value === 0. ? self::ALPHA_P : 0.;
         });
 
-        $activations = $input->multiply($mask)
+        $this->mask = $mask;
+
+        return $input->multiply($mask)
             ->add($saturation)
             ->scalarMultiply($this->a)
             ->scalarAdd($this->b);
-
-        $this->mask = $mask;
-
-        return $activations;
     }
 
     /**

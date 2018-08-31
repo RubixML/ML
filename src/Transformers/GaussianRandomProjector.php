@@ -23,8 +23,6 @@ use RuntimeException;
  */
 class GaussianRandomProjector implements Transformer
 {
-    const PHI = 100000000;
-
     /**
      * The target number of dimensions.
      *
@@ -80,20 +78,7 @@ class GaussianRandomProjector implements Transformer
                 . ' with continuous features.');
         }
 
-        $columns = $dataset->numColumns();
-
-        $max = (int) ((1. / sqrt($this->dimensions)) * self::PHI);
-        $min = -$max;
-
-        $r = [[]];
-
-        for ($i = 0; $i < $columns; $i++) {
-            for ($j = 0; $j < $this->dimensions; $j++) {
-                $r[$i][$j] = rand($min, $max) / self::PHI;
-            }
-        }
-
-        $this->r = new Matrix($r);
+        $this->r = Matrix::gaussian($dataset->numColumns(), $this->dimensions);
     }
 
     /**

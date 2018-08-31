@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
@@ -76,11 +76,7 @@ class FeedForward implements Network
         $this->optimizer = $optimizer;
         $this->backPass = array_reverse(array_slice($this->layers, 1, null, true));
 
-        $fanIn = 0;
-
-        foreach ($this->layers as $layer) {
-            $fanIn = $layer->init($fanIn);
-        }
+        $this->initialize();
     }
 
     /**
@@ -143,6 +139,20 @@ class FeedForward implements Network
     public function depth() : int
     {
         return count($this->layers);
+    }
+
+    /**
+     * Initialize the layers in the network.
+     *
+     * @return void
+     */
+    public function initialize() : void
+    {
+        $fanIn = 0;
+
+        foreach ($this->layers as $layer) {
+            $fanIn = $layer->init($fanIn);
+        }
     }
 
     /**

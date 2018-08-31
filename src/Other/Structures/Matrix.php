@@ -22,8 +22,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
 {
     const TWO_PI = 2. * M_PI;
 
-    const PHI = 100000000;
-
     /**
      * The 2 dimensional array that holds the values of the matrix.
      *
@@ -149,6 +147,26 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return a random uniform matrix with values between 0 and 1.
+     *
+     * @param  int  $m
+     * @param  int  $n
+     * @return self
+     */
+    public static function rand(int $m, int $n) : self
+    {
+        $a = [[]];
+
+        for ($i = 0; $i < $m; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                $a[$i][$j] = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+            }
+        }
+
+        return new self($a, false);
+    }
+
+    /**
      * Return a standard normally distributed random matrix i.e values between
      * -1 and 1.
      *
@@ -170,7 +188,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new self($a);
+        return new self($a, false);
     }
 
     /**
@@ -191,7 +209,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new self($a);
+        return new self($a, false);
     }
 
     /**
@@ -878,13 +896,33 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         $norm = 0.;
 
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
+        foreach ($this->a as $row) {
+            foreach ($row as $value) {
                 $norm = max($norm, abs($value));
             }
         }
 
         return $norm;
+    }
+
+    /**
+     * Return a binary matrix with values above the threshold encoded as 1 and
+     * everything else 0.
+     *
+     * @param  float  $threshold
+     * @return self
+     */
+    public function binarize(float $threshold = 0.) : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = $value > $threshold ? 1 : 0;
+            }
+        }
+
+        return new self($b, false);
     }
 
     /**
