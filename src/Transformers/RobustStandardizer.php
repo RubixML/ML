@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
 
 /**
@@ -92,19 +92,12 @@ class RobustStandardizer implements Transformer
     {
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->rotate() as $column => $values) {
-            if ($dataset->type($column) === Dataset::CONTINUOUS) {
-                $median = Average::median($values);
-
-                $deviations = [];
-
-                foreach ($values as $value) {
-                    $deviations[] = abs($value - $median);
-                }
-
-                $this->mads[$column] = Average::median($deviations);
+        foreach ($dataset->columnTypes() as $column => $type) {
+            if ($type === Dataset::CONTINUOUS) {
+                list($median, $mad) = Stats::medMad($dataset->column($column));
 
                 $this->medians[$column] = $median;
+                $this->mads[$column] = $mad;
             }
         }
     }
@@ -133,7 +126,9 @@ class RobustStandardizer implements Transformer
                 if ($this->scale === true) {
                     $mad = $this->mads[$column];
 
-                    $feature = $mad !== 0.? (self::LAMBDA * $feature) / $mad : 1.;
+                    $feature = $mad !== 0.
+                        ? (self::LAMBDA * $feature) / $mad
+                        : 1.;
                 }
 
                 $sample[$column] = $feature;

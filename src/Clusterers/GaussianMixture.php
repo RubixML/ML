@@ -6,7 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;

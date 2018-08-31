@@ -9,7 +9,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;

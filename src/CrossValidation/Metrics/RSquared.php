@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 /**
@@ -55,7 +55,7 @@ class RSquared implements Metric
             return 0.;
         }
 
-        $mean = Average::mean($testing->labels());
+        $mean = Stats::mean($testing->labels());
 
         $ssr = $sst = 0.;
 

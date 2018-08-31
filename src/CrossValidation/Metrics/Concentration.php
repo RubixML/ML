@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 class Concentration implements Metric
@@ -53,7 +53,7 @@ class Concentration implements Metric
         $labeled = new Labeled($testing->samples(), $predictions);
 
         $globals = array_map(function ($values) {
-            return Average::mean($values);
+            return Stats::mean($values);
         }, $testing->rotate());
 
         $strata = $labeled->stratify();
@@ -66,7 +66,7 @@ class Concentration implements Metric
             $centroid = [];
 
             foreach ($stratum->rotate() as $column => $values) {
-                $mean = Average::mean((array) $values);
+                $mean = Stats::mean((array) $values);
 
                 $dispersion = ($mean - $globals[$column]) ** 2;
 

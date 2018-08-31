@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use MathPHP\Statistics\RandomVariable;
@@ -178,7 +178,7 @@ class RegressionTree extends CART implements Estimator, Persistable
      */
     protected function terminate(Labeled $dataset) : Decision
     {
-        return new Decision(Average::mean($dataset->labels()));
+        return new Decision(Stats::mean($dataset->labels()));
     }
 
     /**

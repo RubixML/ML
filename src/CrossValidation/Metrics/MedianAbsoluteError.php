@@ -5,7 +5,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use MathPHP\Statistics\Average;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 /**
@@ -60,6 +60,6 @@ class MedianAbsoluteError implements Metric
             $errors[] = abs($testing->label($i) - $prediction);
         }
 
-        return -Average::median($errors);
+        return -Stats::median($errors);
     }
 }
