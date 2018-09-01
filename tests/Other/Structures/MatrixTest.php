@@ -334,8 +334,8 @@ class MatrixTest extends TestCase
 
     public function test_sum()
     {
-        $this->assertEquals([[46, -12, 1]], $this->a->sum(0)->asArray());
-        $this->assertEquals([[17], [13], [5]], $this->a->sum(1)->asArray());
+        $this->assertEquals([[46, -12, 1]], $this->a->sum(true)->asArray());
+        $this->assertEquals([[17], [13], [5]], $this->a->sum(false)->asArray());
     }
 
     public function test_row_sum()

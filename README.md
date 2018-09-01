@@ -128,6 +128,7 @@ MIT
 				- [Placeholder](#placeholder)
 			- [Hidden Layers](#hidden-layers)
 				- [Alpha Dropout](#alpha-dropout)
+				- [Batch Norm](#batch-norm)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 				- [Noise](#noise)
@@ -2735,6 +2736,21 @@ Alpha Dropout is a type of dropout layer that maintains the mean and variance of
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 
 $layer = new AlphaDropout(0.1);
+```
+
+### Batch Norm
+Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of covariate shift within the network making it possible to use higher learning rates and converge faster under some circumstances.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epsilon | 1e-8 | float | The variance smoothing parameter i.e a small value added to the variance for numerical stability. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\BatchNorm;
+
+$layer = new BatchNorm(1e-3);
 ```
 
 ### Dense

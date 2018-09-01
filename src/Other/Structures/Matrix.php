@@ -644,19 +644,14 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Sum the matrix along a specified axis.
      *
-     * @param  int  $axis
-     * @throws \InvalidArgumentException
+     * @param  bool  $column
      * @return self
      */
-    public function sum(int $axis = 0)
+    public function sum(bool $column = true)
     {
-        if ($axis < 0 or $axis > 1) {
-            throw new InvalidArgumentException('Axis can be 0 or 1'
-                . (string) $axis . ' given.');
-        }
         $b = [[]];
 
-        if ($axis === 0) {
+        if ($column === true) {
             foreach ($this->transpose() as $i => $column) {
                 $b[0][$i] = array_sum($column);
             }
