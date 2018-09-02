@@ -25,7 +25,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-abstract class KDTree implements Tree
+class KDTree implements Tree
 {
     /**
      * The root node of the tree.
