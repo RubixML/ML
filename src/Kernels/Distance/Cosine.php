@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use MathPHP\LinearAlgebra\Vector;
+use Rubix\ML\Other\Structures\Vector;
 
 /**
  * Cosine
@@ -12,7 +12,7 @@ use MathPHP\LinearAlgebra\Vector;
  * vectors with the same orientation have a cosine similarity of 1, two vectors
  * oriented at 90° relative to each other have a similarity of 0, and two
  * vectors diametrically opposed have a similarity of -1. To be used as a
- * distance function, we subtract the Cosine Similarity from 1 in order to
+ * distance kernel, we subtract the Cosine Similarity from 1 in order to
  * satisfy the positive semi-definite condition, therefore the Cosine distance
  * is a number between 0 and 2.
  *
@@ -31,9 +31,9 @@ class Cosine implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $a = new Vector(array_values($a));
-        $b = new Vector(array_values($b));
+        $a = new Vector($a);
+        $b = new Vector($b);
 
-        return 1 - ($a->dotProduct($b) / ($a->length() * $b->length()));
+        return 1. - ($a->dot($b) / ($a->l2Norm() * $b->l2Norm()));
     }
 }

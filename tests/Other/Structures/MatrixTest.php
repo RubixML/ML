@@ -3,6 +3,7 @@
 namespace Rubix\Tests\Other\Structures;
 
 use Rubix\ML\Other\Structures\Matrix;
+use Rubix\ML\Other\Structures\Vector;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -161,6 +162,26 @@ class MatrixTest extends TestCase
         $this->assertEquals([-17, 11, -6], $this->a->column(1));
         $this->assertEquals([13, 11, 9], $this->b->column(0));
         $this->assertEquals([-12, 5, 14], $this->c->column(2));
+    }
+
+    public function test_as_array()
+    {
+        $outcome = [
+            [22, -17, 12],
+            [4, 11, -2],
+            [20, -6, -9],
+        ];
+
+        $this->assertEquals($outcome, $this->a->asArray());
+    }
+
+    public function test_as_vectors()
+    {
+        $vectors = $this->a->asVectors();
+
+        $this->assertEquals([22, -17, 12], $vectors[0]->asArray());
+        $this->assertEquals([4, 11, -2], $vectors[1]->asArray());
+        $this->assertEquals([20, -6, -9], $vectors[2]->asArray());
     }
 
     public function test_transpose()

@@ -311,6 +311,28 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return the elements of the matrix in a 2-d array.
+     *
+     * @return array
+     */
+    public function asArray() : array
+    {
+        return $this->a;
+    }
+
+    /**
+     * Return each row as a vector in an array.
+     *
+     * @return array
+     */
+    public function asVectors() : array
+    {
+        return array_map(function ($row) {
+            return new Vector($row);
+        }, $this->a);
+    }
+
+    /**
      * Transpose the matrix.
      *
      * @return self
@@ -347,6 +369,51 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($b, true);
+    }
+
+    /**
+     * Sum the matrix along a specified axis.
+     *
+     * @param  bool  $column
+     * @return self
+     */
+    public function sum(bool $column = true)
+    {
+        $b = [[]];
+
+        if ($column === true) {
+            foreach ($this->transpose() as $i => $column) {
+                $b[0][$i] = array_sum($column);
+            }
+        } else {
+            foreach ($this->a as $i => $row) {
+                $b[$i][0] = array_sum($row);
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * The sum of all the elements in a row of the matrix.
+     *
+     * @param  int  $index
+     * @return float
+     */
+    public function rowSum(int $index) : float
+    {
+        return array_sum($this->offsetGet($index));
+    }
+
+    /**
+     * The sum of all the elements in a column of the matrix.
+     *
+     * @param  int  $index
+     * @return float
+     */
+    public function columnSum(int $index) : float
+    {
+        return array_sum($this->column($index));
     }
 
     /**
@@ -551,7 +618,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function scalarMultiply($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Factor must be an integer or'
+            throw new InvalidArgumentException('Scalar must be an integer or'
                 . ' float ' . gettype($scalar) . ' found.');
         }
 
@@ -576,7 +643,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function scalarDivide($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Factor must be an integer or'
+            throw new InvalidArgumentException('Scalar must be an integer or'
                 . ' float ' . gettype($scalar) . ' found.');
         }
 
@@ -601,7 +668,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function scalarAdd($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Factor must be an integer or'
+            throw new InvalidArgumentException('Scalar must be an integer or'
                 . ' float ' . gettype($scalar) . ' found.');
         }
 
@@ -626,7 +693,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function scalarSubtract($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Factor must be an integer or'
+            throw new InvalidArgumentException('Scalar must be an integer or'
                 . ' float ' . gettype($scalar) . ' found.');
         }
 
@@ -639,51 +706,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($b, false);
-    }
-
-    /**
-     * Sum the matrix along a specified axis.
-     *
-     * @param  bool  $column
-     * @return self
-     */
-    public function sum(bool $column = true)
-    {
-        $b = [[]];
-
-        if ($column === true) {
-            foreach ($this->transpose() as $i => $column) {
-                $b[0][$i] = array_sum($column);
-            }
-        } else {
-            foreach ($this->a as $i => $row) {
-                $b[$i][0] = array_sum($row);
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * The sum of all the elements in a row of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function rowSum(int $index) : float
-    {
-        return array_sum($this->offsetGet($index));
-    }
-
-    /**
-     * The sum of all the elements in a column of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function columnSum(int $index) : float
-    {
-        return array_sum($this->column($index));
     }
 
     /**
@@ -1066,16 +1088,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $a;
-    }
-
-    /**
-     * Return the elements of the matrix in a 2-d array.
-     *
-     * @return array
-     */
-    public function asArray() : array
-    {
-        return $this->a;
     }
 
     /**

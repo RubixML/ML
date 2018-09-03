@@ -24,7 +24,7 @@ class SoftmaxTest extends TestCase
             [0.9999999910858036], [9.357622885424485E-14],
         ]);
 
-        $this->activationFunction = new Softmax();
+        $this->activationFunction = new Softmax(1e-10);
     }
 
     public function test_build_activation_function()

@@ -2571,13 +2571,15 @@ $activationFunction = new Sigmoid();
 The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1, and all activations add up to 1.
 
 ##### Parameters:
-This Activation Function does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epsilon | 1e-8 | float | The smoothing parameter i.e a small value to add to the denominator for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 
-$activationFunction = new Softmax();
+$activationFunction = new Softmax(1e-10);
 ```
 
 ### Soft Plus

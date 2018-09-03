@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\ML\Other\Structures\Matrix;
+use InvalidArgumentException;
 
 /**
  * Softmax
@@ -17,6 +18,29 @@ use Rubix\ML\Other\Structures\Matrix;
 class Softmax extends Sigmoid
 {
     /**
+     * The smoothing parameter i.e a small value to add to the denominator for
+     * numerical stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
+     * @param  float  $epsilon
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(float $epsilon = 1e-8)
+    {
+        if ($epsilon <= 0.) {
+            throw new InvalidArgumentException('Epsilon must be greater than'
+                . ' 0');
+        }
+
+        $this->epsilon = $epsilon;
+    }
+
+    /**
      * Compute the output value.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $z
@@ -26,14 +50,10 @@ class Softmax extends Sigmoid
     {
         $activations = [[]];
 
-        foreach ($z->transpose()->asArray() as $i => $vector) {
-            $cache = [];
+        foreach ($z->transpose()->asVectors() as $i => $vector) {
+            $cache = $vector->exp();
 
-            foreach ($vector as $j => $value) {
-                $cache[$j] = M_E ** $value;
-            }
-
-            $sigma = array_sum($cache) + self::EPSILON;
+            $sigma = $cache->sum() + $this->epsilon;
 
             foreach ($cache as $j => $value) {
                 $activations[$j][$i] = $value / $sigma;
