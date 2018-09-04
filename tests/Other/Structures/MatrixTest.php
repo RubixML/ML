@@ -201,7 +201,7 @@ class MatrixTest extends TestCase
     {
         $d = $this->a->map(function ($value) {
             return $value > 0. ? 1 : -1;
-        })->asArray();
+        });
 
         $outcome = [
             [1, -1, 1],
@@ -209,7 +209,16 @@ class MatrixTest extends TestCase
             [1, -1, -1],
         ];
 
-        $this->assertEquals($outcome, $d);
+        $this->assertEquals($outcome, $d->asArray());
+    }
+
+    public function test_reduce()
+    {
+        $scalar = $this->a->reduce(function ($value, $carry) {
+            return $carry + ($value / 2.);
+        });
+
+        $this->assertEquals(17.5, $scalar);
     }
 
     public function test_dot()

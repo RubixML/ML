@@ -333,6 +333,45 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Run a function over all of the elements in the matrix.
+     *
+     * @param  callable  $fn
+     * @return self
+     */
+    public function map(callable $fn) : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = $fn($value);
+            }
+        }
+
+        return new self($b, true);
+    }
+
+    /**
+     * Reduce the matrix down to a scalar.
+     *
+     * @param  callable  $fn
+     * @param  float  $initial
+     * @return float
+     */
+    public function reduce(callable $fn, float $initial = 0.) : float
+    {
+        $carry = $initial;
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $carry = $fn($value, $carry);
+            }
+        }
+
+        return $carry;
+    }
+
+    /**
      * Transpose the matrix.
      *
      * @return self
@@ -350,25 +389,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($b, false);
-    }
-
-    /**
-     * Run a function over all of the elements in the matrix.
-     *
-     * @param  callable  $fn
-     * @return self
-     */
-    public function map(callable $fn) : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = $fn($value);
-            }
-        }
-
-        return new self($b, true);
     }
 
     /**

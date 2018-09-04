@@ -30,9 +30,60 @@ class VectorTest extends TestCase
         $this->assertInstanceOf(ArrayAccess::class, $this->a);
     }
 
+    public function test_build_zeros()
+    {
+        $this->assertEquals([0, 0, 0, 0], Vector::zeros(4)->asArray());
+    }
+
+    public function test_build_ones()
+    {
+        $this->assertEquals([1, 1, 1, 1], Vector::ones(4)->asArray());
+    }
+
     public function test_get_n()
     {
         $this->assertEquals(8, $this->a->n());
+    }
+
+    public function test_as_array()
+    {
+        $outcome = [-15, 25, 35, -36, -72, 89, 106, 45];
+
+        $this->assertEquals($outcome, $this->a->asArray());
+    }
+
+    public function test_as_row_matrix()
+    {
+        $outcome = [[-15, 25, 35, -36, -72, 89, 106, 45]];
+
+        $this->assertEquals($outcome, $this->a->asRowMatrix()->asArray());
+    }
+
+    public function test_as_column_matrix()
+    {
+        $outcome = [[-15], [25], [35], [-36], [-72], [89], [106], [45]];
+
+        $this->assertEquals($outcome, $this->a->asColumnMatrix()->asArray());
+    }
+
+    public function test_map()
+    {
+        $c = $this->a->map(function ($value) {
+            return $value > 0. ? 1 : 0;
+        });
+
+        $outcome = [0, 1, 1, 0, 0, 1, 1, 1];
+
+        $this->assertEquals($outcome, $c->asArray());
+    }
+
+    public function test_reduce()
+    {
+        $scalar = $this->a->reduce(function ($value, $carry) {
+            return $carry + ($value / 2.);
+        });
+
+        $this->assertEquals(110.3671875, $scalar);
     }
 
     public function test_sum()
@@ -144,5 +195,10 @@ class VectorTest extends TestCase
     public function test_l2_norm()
     {
         $this->assertEquals(172.4441938715247, $this->a->l2Norm());
+    }
+
+    public function test_max_norm()
+    {
+        $this->assertEquals(106., $this->a->maxNorm());
     }
 }

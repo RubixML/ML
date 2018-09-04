@@ -37,6 +37,18 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     protected $n;
 
     /**
+     * Factory method to build a new vector from an array.
+     *
+     * @param  array  $a
+     * @param  bool  $validate
+     * @return self
+     */
+    public static function build(array $a, bool $validate = true) : self
+    {
+        return new self($a, $validate);
+    }
+
+    /**
      * Build a vector of zeros with n elements.
      *
      * @param  int  $n
@@ -100,6 +112,51 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     public function asArray() : array
     {
         return $this->a;
+    }
+
+    /**
+     * Return this vector as a row matrix.
+     *
+     * @return \Rubix\ML\Other\Structures\Matrix
+     */
+    public function asRowMatrix() : Matrix
+    {
+        return new Matrix([$this->a], false);
+    }
+
+    /**
+     * Return this vector as a column matrix.
+     *
+     * @return \Rubix\ML\Other\Structures\Matrix
+     */
+    public function asColumnMatrix() : Matrix
+    {
+        return new Matrix(array_map(function ($value) {
+            return [$value];
+        }, $this->a), false);
+    }
+
+    /**
+     * Map a function over the elements in the vector and return a new vector.
+     *
+     * @param  callable  $fn
+     * @return self
+     */
+    public function map(callable $fn) : self
+    {
+        return new self(array_map($fn, $this->a));
+    }
+
+    /**
+     * Reduce the vector down to a scalar.
+     *
+     * @param  callable  $fn
+     * @param  float  $initial
+     * @return float
+     */
+    public function reduce(callable $fn, float $initial = 0.) : float
+    {
+        return array_reduce($this->a, $fn, $initial);
     }
 
     /**
@@ -363,13 +420,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      */
     public function l1Norm() : float
     {
-        $norm = 0.;
-
-        foreach ($this->a as $value) {
-            $norm += abs($value);
-        }
-
-        return $norm;
+        return (float) array_sum(array_map('abs', $this->a));
     }
 
     /**
@@ -386,6 +437,16 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $norm ** 0.5;
+    }
+
+    /**
+     * Calculate the max norm of the vector.
+     *
+     * @return float
+     */
+    public function maxNorm() : float
+    {
+        return (float) max(array_map('abs', $this->a));
     }
 
     /**
