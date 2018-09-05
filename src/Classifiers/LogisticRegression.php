@@ -12,6 +12,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -220,7 +221,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
                 . ' Labeled training set.');
         }
 
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
             . ' continuous features.');
         }

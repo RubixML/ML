@@ -36,7 +36,7 @@ class LabeledTest extends TestCase
             'monster', 'not monster', 'not monster',
         ];
 
-        $this->types = [Dataset::CATEGORICAL, Dataset::CATEGORICAL, Dataset::CATEGORICAL];
+        $this->types = [DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL];
 
         $this->weights = [
             1, 1, 2, 1, 2, 3,
@@ -99,14 +99,14 @@ class LabeledTest extends TestCase
 
     public function test_get_column_types()
     {
-        $this->assertEquals($this->types, $this->dataset->columnTypes());
+        $this->assertEquals($this->types, $this->dataset->types());
     }
 
     public function test_get_column_type()
     {
-        $this->assertEquals($this->types[0], $this->dataset->type(0));
-        $this->assertEquals($this->types[1], $this->dataset->type(1));
-        $this->assertEquals($this->types[2], $this->dataset->type(2));
+        $this->assertEquals($this->types[0], $this->dataset->columnType(0));
+        $this->assertEquals($this->types[1], $this->dataset->columnType(1));
+        $this->assertEquals($this->types[2], $this->dataset->columnType(2));
     }
 
     public function test_randomize()
@@ -299,33 +299,17 @@ class LabeledTest extends TestCase
         $this->assertTrue(unlink(__DIR__ . '/test.dataset'));
     }
 
-    public function test_prepend_dataset()
+    public function test_merge_dataset()
     {
         $this->assertCount(count($this->samples), $this->dataset);
 
         $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
 
-        $this->dataset->prepend($dataset);
+        $merged = $this->dataset->merge($dataset);
 
-        $this->assertCount(count($this->samples) + 1, $this->dataset);
+        $this->assertCount(count($this->samples) + 1, $merged);
 
-        $this->assertEquals(['nice', 'furry', 'friendly'], $this->dataset->row(0));
-        $this->assertEquals('not monster', $this->dataset->label(0));
-    }
-
-    public function test_append_dataset()
-    {
-        $this->assertCount(count($this->samples), $this->dataset);
-
-        $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
-
-        $this->dataset->append($dataset);
-
-        $this->assertCount(count($this->samples) + 1, $this->dataset);
-
-        $row = count($this->dataset) - 1;
-
-        $this->assertEquals(['nice', 'furry', 'friendly'], $this->dataset->row($row));
-        $this->assertEquals('not monster', $this->dataset->label($row));
+        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
+        $this->assertEquals('not monster', $merged->label(6));
     }
 }

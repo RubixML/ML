@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
 /**
@@ -87,8 +88,8 @@ class ZScaleStandardizer implements Transformer
     {
         $this->means = $this->stddevs = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CONTINUOUS) {
                 list($mean, $variance) = Stats::meanVar($dataset->column($column));
 
                 $this->means[$column] = $mean;

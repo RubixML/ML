@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\BlurryMean;
 use Rubix\ML\Other\Strategies\Categorical;
@@ -86,8 +87,8 @@ class MissingDataImputer implements Transformer
     {
         $this->imputers = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CATEGORICAL) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CATEGORICAL) {
                 $imputer = clone $this->categorical;
             } else {
                 $imputer = clone $this->continuous;

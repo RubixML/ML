@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 
 /**
@@ -182,7 +183,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(Dataset::CONTINUOUS, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' categorical features.');
         }

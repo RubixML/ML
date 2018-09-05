@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 
 /**
@@ -24,7 +25,7 @@ class L1Normalizer implements Transformer
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This transformer only works on'
                 . ' continuous features.');
         }

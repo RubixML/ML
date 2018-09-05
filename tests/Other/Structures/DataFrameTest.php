@@ -59,7 +59,7 @@ class DataFrameTest extends TestCase
     public function test_get_column_indices()
     {
         $this->assertEquals(array_keys($this->samples[0]),
-            $this->dataframe->indices());
+            $this->dataframe->axes());
     }
 
     public function test_get_num_columns()

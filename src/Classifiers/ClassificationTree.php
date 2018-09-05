@@ -111,7 +111,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
         }
 
         $this->classes = $dataset->possibleOutcomes();
-        $this->indices = $dataset->indices();
+        $this->indices = $dataset->axes();
 
         $this->grow($dataset);
 

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
 /**
@@ -42,8 +43,8 @@ class MinMaxNormalizer implements Transformer
     {
         $this->minimums = $this->maximums = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CONTINUOUS) {
                 $values = $dataset->column($column);
 
                 $this->minimums[$column] = min($values);

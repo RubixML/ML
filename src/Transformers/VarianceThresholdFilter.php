@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use MathPHP\Statistics\Descriptive;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -67,8 +68,8 @@ class VarianceThresholdFilter implements Transformer
     {
         $this->selected = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CONTINUOUS) {
                 $values = $dataset->column($column);
 
                 $variance = Descriptive::populationVariance($values);

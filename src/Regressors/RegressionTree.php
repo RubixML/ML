@@ -101,7 +101,7 @@ class RegressionTree extends CART implements Estimator, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->indices = $dataset->indices();
+        $this->indices = $dataset->axes();
 
         $this->grow($dataset);
 

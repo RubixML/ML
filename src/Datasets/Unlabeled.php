@@ -53,30 +53,6 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Return an array of autodetected feature column types.
-     *
-     * @return array
-     */
-    public function columnTypes() : array
-    {
-        return array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $this->samples[0] ?? []);
-    }
-
-    /**
-     * Get the column type for a given column index.
-     *
-     * @param  int  $index
-     * @return int
-     */
-    public function type(int $index) : int
-    {
-        return is_string($this->samples[0][$index])
-            ? self::CATEGORICAL : self::CONTINUOUS;
-    }
-
-    /**
      * Return a dataset containing only the first n samples.
      *
      * @param  int  $n
@@ -118,6 +94,17 @@ class Unlabeled extends DataFrame implements Dataset
     public function leave(int $n = 1) : self
     {
         return $this->splice($n, $this->numRows());
+    }
+
+    /**
+     * Merge this dataset with another dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function merge(Dataset $dataset) : Dataset
+    {
+        return new self(array_merge($this->samples, $dataset->samples()), false);
     }
 
     /**
@@ -274,7 +261,7 @@ class Unlabeled extends DataFrame implements Dataset
 
         $left = $right = [];
 
-        if ($this->type($index) === self::CATEGORICAL) {
+        if ($this->columnType($index) === DataFrame::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] === $value) {
                     $left[] = $sample;
@@ -380,31 +367,5 @@ class Unlabeled extends DataFrame implements Dataset
         if (!$success) {
             throw new RuntimeException('Failed to serialize object to storage.');
         }
-    }
-
-    /**
-     * Append the given dataset to the end of this dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    public function prepend(Dataset $dataset) : Dataset
-    {
-        $this->samples = array_merge($dataset->samples(), $this->samples);
-
-        return $this;
-    }
-
-    /**
-     * Append the given dataset to the end of this dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    public function append(Dataset $dataset) : Dataset
-    {
-        $this->samples = array_merge($this->samples, $dataset->samples());
-
-        return $this;
     }
 }

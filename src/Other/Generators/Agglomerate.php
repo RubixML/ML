@@ -131,7 +131,7 @@ class Agglomerate implements Generator
 
             $labels = array_fill(0, $k, $label);
 
-            $dataset->append(new Labeled($samples, $labels, false));
+            $dataset = $dataset->merge(new Labeled($samples, $labels, false));
         }
 
         return $dataset;
