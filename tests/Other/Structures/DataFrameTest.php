@@ -12,6 +12,8 @@ class DataFrameTest extends TestCase
 
     protected $samples;
 
+    protected $headers;
+
     public function setUp()
     {
         $this->samples = [
@@ -23,7 +25,7 @@ class DataFrameTest extends TestCase
             ['nice', 'furry', 'loner'],
         ];
 
-        $this->dataframe = new DataFrame($this->samples);
+        $this->dataframe = new DataFrame($this->samples, true);
     }
 
     public function test_build_structure()
@@ -49,8 +51,9 @@ class DataFrameTest extends TestCase
 
     public function test_get_column()
     {
-        $this->assertEquals(array_column($this->samples, 2),
-            $this->dataframe->column(2));
+        $outcome = ['friendly', 'loner', 'friendly', 'friendly', 'friendly', 'loner'];
+
+        $this->assertEquals($outcome, $this->dataframe->column(2));
     }
 
     public function test_get_column_indices()

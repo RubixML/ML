@@ -485,6 +485,20 @@ list($left, $right) = $dataset->randomize()->split(0.8);
 $subset = $dataset->randomSubsetWithReplacement(500);
 ```
 
+#### Filtering
+
+To filter a Dataset by a feature column:
+```php
+public filterByColumn(int $index, callable $fn) : self
+```
+
+##### example:
+```php
+$tallPeople = $dataset->filterByColumn(2, function ($value) {
+	return $value > 178.5;
+});
+```
+
 #### Sorting
 
 To sort a Dataset by a specific feature column:
@@ -625,6 +639,11 @@ public label(int $index) : mixed
 Return all of the possible outcomes i.e. the unique labels:
 ```php
 public possibleOutcomes() : array
+```
+
+Filter the Dataset by label:
+```php
+public filterByLabel(callable $fn) : self
 ```
 
 Sort the Dataset by label:

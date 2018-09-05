@@ -92,6 +92,22 @@ class UnlabeledTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function test_filter_by_column()
+    {
+        $filtered = $this->dataset->filterByColumn(2, function ($value) {
+            return $value === 'friendly';
+        });
+
+        $outcome = [
+            ['nice', 'furry', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+            ['mean', 'rough', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+        ];
+
+        $this->assertEquals($outcome, $filtered->samples());
+    }
+
     public function test_sort_by_column()
     {
         $this->dataset->sortByColumn(2);

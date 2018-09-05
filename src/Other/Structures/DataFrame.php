@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Structures;
 
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -86,17 +87,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the feature column at the given index.
-     *
-     * @param  int  $index
-     * @return array
-     */
-    public function column(int $index) : array
-    {
-        return array_column($this->samples, $index);
-    }
-
-    /**
      * Return an array of column indices.
      *
      * @return array
@@ -104,6 +94,17 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function indices() : array
     {
         return array_keys($this->samples[0] ?? []);
+    }
+
+    /**
+     * Return the feature column at the given index.
+     *
+     * @param  int  $index
+     * @return array
+     */
+    public function column($index) : array
+    {
+        return array_column($this->samples, $index);
     }
 
     /**
@@ -124,6 +125,17 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function size() : array
     {
         return [$this->numRows(), $this->numColumns()];
+    }
+
+    /**
+     * Apply a transformation to the sample matrix.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return void
+     */
+    public function apply(Transformer $transformer) : void
+    {
+        $transformer->transform($this->samples);
     }
 
     /**

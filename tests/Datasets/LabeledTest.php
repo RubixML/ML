@@ -116,6 +116,44 @@ class LabeledTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function test_filter_by_column()
+    {
+        $filtered = $this->dataset->filterByColumn(2, function ($value) {
+            return $value === 'friendly';
+        });
+
+        $outcome = [
+            ['nice', 'furry', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+            ['mean', 'rough', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+        ];
+
+        $labels = ['not monster', 'not monster', 'monster', 'not monster'];
+
+        $this->assertEquals($outcome, $filtered->samples());
+        $this->assertEquals($labels, $filtered->labels());
+    }
+
+    public function test_filter_by_label()
+    {
+        $filtered = $this->dataset->filterByLabel(function ($label) {
+            return $label === 'not monster';
+        });
+
+        $outcome = [
+            ['nice', 'furry', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+            ['nice', 'rough', 'friendly'],
+            ['nice', 'furry', 'loner'],
+        ];
+
+        $labels = ['not monster', 'not monster', 'not monster', 'not monster'];
+
+        $this->assertEquals($outcome, $filtered->samples());
+        $this->assertEquals($labels, $filtered->labels());
+    }
+
     public function test_sort_by_column()
     {
         $this->dataset->sortByColumn(1);

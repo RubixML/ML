@@ -77,17 +77,6 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Apply a transformation to the sample matrix.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
-     */
-    public function apply(Transformer $transformer) : void
-    {
-        $transformer->transform($this->samples);
-    }
-
-    /**
      * Return a dataset containing only the first n samples.
      *
      * @param  int  $n
@@ -154,6 +143,26 @@ class Unlabeled extends DataFrame implements Dataset
         shuffle($this->samples);
 
         return $this;
+    }
+
+    /**
+     * Run a filter over the dataset using the values of a given column.
+     *
+     * @param  int  $index
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByColumn(int $index, callable $fn) : self
+    {
+        $samples = [];
+
+        foreach ($this->samples as $i => $sample) {
+            if ($fn($sample[$index]) === true) {
+                $samples[] = $sample;
+            }
+        }
+
+        return new self($samples);
     }
 
     /**

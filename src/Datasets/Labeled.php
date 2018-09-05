@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -149,17 +148,6 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Apply a transformation to the sample matrix.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
-     */
-    public function apply(Transformer $transformer) : void
-    {
-        $transformer->transform($this->samples);
-    }
-
-    /**
      * Return a dataset containing only the first n samples.
      *
      * @param  int  $n
@@ -245,6 +233,47 @@ class Labeled extends DataFrame implements Dataset
         array_multisort($order, $this->samples, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * Run a filter over the dataset using the values of a given column.
+     *
+     * @param  int  $index
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByColumn(int $index, callable $fn) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($this->samples as $i => $sample) {
+            if ($fn($sample[$index]) === true) {
+                $samples[] = $sample;
+                $labels[] = $this->labels[$i];
+            }
+        }
+
+        return new self($samples, $labels);
+    }
+
+    /**
+     * Run a filter over the dataset using the labels for comparison.
+     *
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByLabel(callable $fn) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($this->labels as $i => $label) {
+            if ($fn($label) === true) {
+                $samples[] = $this->samples[$i];
+                $labels[] = $label;
+            }
+        }
+
+        return new self($samples, $labels);
     }
 
     /**

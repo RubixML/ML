@@ -154,6 +154,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function randomize();
 
     /**
+     * Run a filter over the dataset using the values of a given column.
+     *
+     * @param  int  $index
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByColumn(int $index, callable $fn);
+
+    /**
      * Sort the dataset by a column in the sample matrix.
      *
      * @param  int  $index
