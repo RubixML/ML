@@ -143,7 +143,7 @@ abstract class CART implements Tree
         $current->cleanup();
 
         if ($left->empty() or $right->empty()) {
-            $node = $this->terminate($left->append($right));
+            $node = $this->terminate($left->merge($right));
 
             $current->attachLeft($node);
             $current->attachRight($node);

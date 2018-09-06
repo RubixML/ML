@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -88,30 +87,6 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Return an array of autodetected feature column types.
-     *
-     * @return array
-     */
-    public function columnTypes() : array
-    {
-        return array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
-        }, $this->samples[0] ?? []);
-    }
-
-    /**
-     * Get the column type for a given column index.
-     *
-     * @param  int  $index
-     * @return int
-     */
-    public function type(int $index) : int
-    {
-        return is_string($this->samples[0][$index])
-            ? self::CATEGORICAL : self::CONTINUOUS;
-    }
-
-    /**
      * Return all of the labels.
      *
      * @return array
@@ -146,17 +121,6 @@ class Labeled extends DataFrame implements Dataset
     public function possibleOutcomes() : array
     {
         return array_values(array_unique($this->labels));
-    }
-
-    /**
-     * Apply a transformation to the sample matrix.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
-     */
-    public function apply(Transformer $transformer) : void
-    {
-        $transformer->transform($this->samples);
     }
 
     /**
@@ -218,6 +182,26 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Merge this dataset with another dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function merge(Dataset $dataset) : Dataset
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Can only merge with a labeled'
+                . 'dataset.');
+        }
+
+        $samples = array_merge($this->samples, $dataset->samples());
+        $labels = array_merge($this->labels, $dataset->labels());
+
+        return new self($samples, $labels, false);
+    }
+
+    /**
      * Remove a size n chunk of the dataset starting at offset and return it in
      * a new dataset.
      *
@@ -245,6 +229,47 @@ class Labeled extends DataFrame implements Dataset
         array_multisort($order, $this->samples, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * Run a filter over the dataset using the values of a given column.
+     *
+     * @param  int  $index
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByColumn(int $index, callable $fn) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($this->samples as $i => $sample) {
+            if ($fn($sample[$index]) === true) {
+                $samples[] = $sample;
+                $labels[] = $this->labels[$i];
+            }
+        }
+
+        return new self($samples, $labels);
+    }
+
+    /**
+     * Run a filter over the dataset using the labels for comparison.
+     *
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByLabel(callable $fn) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($this->labels as $i => $label) {
+            if ($fn($label) === true) {
+                $samples[] = $this->samples[$i];
+                $labels[] = $label;
+            }
+        }
+
+        return new self($samples, $labels);
     }
 
     /**
@@ -451,7 +476,7 @@ class Labeled extends DataFrame implements Dataset
     {
         $left = $right = [[], [], false];
 
-        if ($this->type($index) === self::CATEGORICAL) {
+        if ($this->columnType($index) === DataFrame::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] === $value) {
                     $left[0][] = $sample;
@@ -566,46 +591,6 @@ class Labeled extends DataFrame implements Dataset
         if (!$success) {
             throw new RuntimeException('Failed to serialize object to storage.');
         }
-    }
-
-    /**
-     * Prepend the given dataset to the beginning of this dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    public function prepend(Dataset $dataset) : Dataset
-    {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only append a labeled'
-                . 'dataset.');
-        }
-
-        $this->samples = array_merge($dataset->samples(), $this->samples);
-        $this->labels = array_merge($dataset->labels(), $this->labels);
-
-        return $this;
-    }
-
-    /**
-     * Append the given dataset to the end of this dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    public function append(Dataset $dataset) : Dataset
-    {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('Can only append a labeled'
-                . 'dataset.');
-        }
-
-        $this->samples = array_merge($this->samples, $dataset->samples());
-        $this->labels = array_merge($this->labels, $dataset->labels());
-
-        return $this;
     }
 
     /**

@@ -9,9 +9,6 @@ use Countable;
 
 interface Dataset extends ArrayAccess, IteratorAggregate, Countable
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
-
     const PHI = 100000000;
 
     /**
@@ -53,26 +50,27 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function column(int $index) : array;
 
     /**
-     * Return an array of column indices.
+     * Return an array representing the indices of each feature column.
      *
      * @return array
      */
-    public function indices() : array;
+    public function axes() : array;
 
     /**
-     * Return an array of autodetected feature column types.
+     * Return an array of feature column datatypes autodectected using the first
+     * sample in the dataframe.
      *
      * @return array
      */
-    public function columnTypes() : array;
+    public function types() : array;
 
     /**
-     * Get the column type for a given column index.
+     * Get the datatype for a feature column given a column index.
      *
      * @param  int  $index
      * @return int
      */
-    public function type(int $index) : int;
+    public function columnType(int $index) : int;
 
     /**
      * Return the number of feature columns in the datasets.
@@ -98,11 +96,11 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function save(?string $path = null) : void;
 
     /**
-     * Rotate the sample matrix.
+     * Rotate the dataframe.
      *
-     * @return array
+     * @return self
      */
-    public function rotate() : array;
+    public function rotate();
 
     /**
      * Return a dataset containing only the first n samples.
@@ -152,6 +150,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     public function randomize();
+
+    /**
+     * Run a filter over the dataset using the values of a given column.
+     *
+     * @param  int  $index
+     * @param  callable  $fn
+     * @return self
+     */
+    public function filterByColumn(int $index, callable $fn);
 
     /**
      * Sort the dataset by a column in the sample matrix.
@@ -216,20 +223,12 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
-     * Prepend the given dataset to the beginning of this dataset.
+     * Merge this dataset with another dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function prepend(Dataset $dataset) : Dataset;
-
-    /**
-     * Append the given dataset to the end of this dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return \Rubix\ML\Datasets\Dataset
-     */
-    public function append(Dataset $dataset) : Dataset;
+    public function merge(Dataset $dataset) : Dataset;
 
     /**
      * Is the dataset empty?

@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -121,7 +122,7 @@ class KNNRegressor implements Estimator, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }

@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 
 class Concentration implements Metric
@@ -37,7 +38,7 @@ class Concentration implements Metric
                 . ' clusterers.');
         }
 
-        if (in_array(Dataset::CATEGORICAL, $testing->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $testing->types())) {
             throw new InvalidArgumentException('This metric only works with'
                 . ' continuous features.');
         }
@@ -54,7 +55,7 @@ class Concentration implements Metric
 
         $globals = array_map(function ($values) {
             return Stats::mean($values);
-        }, $testing->rotate());
+        }, $testing->rotate()->samples());
 
         $strata = $labeled->stratify();
 

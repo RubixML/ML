@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use MathPHP\LinearAlgebra\Vector;
 use MathPHP\LinearAlgebra\Matrix;
+use Rubix\ML\Other\Structures\DataFrame;
 use MathPHP\LinearAlgebra\DiagonalMatrix;
 use InvalidArgumentException;
 use RuntimeException;
@@ -104,7 +105,7 @@ class Ridge implements Estimator, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }

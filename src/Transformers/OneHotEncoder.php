@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
 /**
@@ -38,8 +39,8 @@ class OneHotEncoder implements Transformer
 
         $position = 0;
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CATEGORICAL) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CATEGORICAL) {
                 $categories = [];
 
                 foreach ($dataset as $sample) {

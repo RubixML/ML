@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Structures;
 
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -11,6 +12,9 @@ use Countable;
 
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
+    const CATEGORICAL = 1;
+    const CONTINUOUS = 2;
+
     /**
      * The feature vectors of the dataset. i.e the data table.
      *
@@ -31,10 +35,11 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         if ($validate === true) {
             $samples = array_values($samples);
 
-            $numFeatures = isset($samples[0]) ? count($samples[0]) : 0;
+            $numColumns = (isset($samples[0]) and is_array($samples[0]))
+                ? count($samples[0]) : 0;
 
             foreach ($samples as &$sample) {
-                if (count($sample) !== $numFeatures) {
+                if (count($sample) !== $numColumns) {
                     throw new InvalidArgumentException('The number of feature'
                         . ' columns must be equal for all samples.');
                 }
@@ -44,7 +49,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 foreach ($sample as $feature) {
                     if (!is_string($feature) and !is_numeric($feature)) {
                         throw new InvalidArgumentException('Feature must be a'
-                            . ' string, or numeric type, '
+                            . ' string or numeric type, '
                             . gettype($feature) . ' found.');
                     }
                 }
@@ -86,6 +91,16 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return an array representing the indices of each feature column.
+     *
+     * @return array
+     */
+    public function axes() : array
+    {
+        return array_keys($this->samples[0] ?? []);
+    }
+
+    /**
      * Return the feature column at the given index.
      *
      * @param  int  $index
@@ -94,16 +109,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function column(int $index) : array
     {
         return array_column($this->samples, $index);
-    }
-
-    /**
-     * Return an array of column indices.
-     *
-     * @return array
-     */
-    public function indices() : array
-    {
-        return array_keys($this->samples[0] ?? []);
     }
 
     /**
@@ -117,22 +122,75 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a tuple containing the size of the dataframe.
+     * Return an array of feature column datatypes autodectected using the first
+     * sample in the dataframe.
+     *
+     * @return array
+     */
+    public function types() : array
+    {
+        if (!isset($this->samples[0])) {
+            return [];
+        }
+
+        return array_map(function ($feature) {
+            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
+        }, $this->samples[0]);
+    }
+
+    /**
+     * Get the datatype for a feature column given a column index.
+     *
+     * @param  int  $index
+     * @return int
+     */
+    public function columnType(int $index) : int
+    {
+        return is_string($this->samples[0][$index])
+            ? self::CATEGORICAL
+            : self::CONTINUOUS;
+    }
+
+    /**
+     * Return a tuple containing the shape of the dataframe i.e the number of
+     * rows and columns.
      *
      * @var array
      */
-    public function size() : array
+    public function shape() : array
     {
         return [$this->numRows(), $this->numColumns()];
     }
 
     /**
-     * Rotate the sample matrix and return it in an array. i.e. rows become
-     * columns and columns become rows. This is equivalent to transposing.
+     * Return the number of elements in the dataframe.
      *
-     * @return array
+     * @return int
      */
-    public function rotate() : array
+    public function size() : int
+    {
+        return $this->numRows() * $this->numColumns();
+    }
+
+    /**
+     * Apply a transformation to the dataframe.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return void
+     */
+    public function apply(Transformer $transformer) : void
+    {
+        $transformer->transform($this->samples);
+    }
+
+    /**
+     * Rotate the dataframe and return it in an array. i.e. rows become
+     * columns and columns become rows. This operation is equivalent to
+     * transposing a matrix.
+     *
+     * @return self
+     */
+    public function rotate() : self
     {
         if ($this->numRows() > 1) {
             $rotated = array_map(null, ...$this->samples);
@@ -146,11 +204,11 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return $rotated;
+        return new self($rotated);
     }
 
     /**
-     * Is the dataset empty?
+     * Is the dataframe empty?
      *
      * @return bool
      */
@@ -209,8 +267,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function offsetGet($index) : array
     {
         if (!isset($this->samples[$index])) {
-            throw new InvalidArgumentException('Sample not found at the given'
-                . ' index ' . (string) $index . '.');
+            throw new InvalidArgumentException('Sample not found at index'
+                . (string) $index . '.');
         }
 
         return $this->samples[$index];

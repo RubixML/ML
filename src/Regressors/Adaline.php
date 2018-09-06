@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -212,7 +213,7 @@ class Adaline implements Estimator, Online, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
             . ' continuous features.');
         }

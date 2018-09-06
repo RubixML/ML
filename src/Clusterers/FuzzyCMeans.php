@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -175,7 +176,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }

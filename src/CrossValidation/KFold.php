@@ -84,7 +84,7 @@ class KFold implements Validator
                 if ($i === $j) {
                     $testing = clone $folds[$j];
                 } else {
-                    $training->append($folds[$j]);
+                    $training->merge($folds[$j]);
                 }
             }
 

@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -126,14 +127,14 @@ class RobustZScore implements Estimator, Persistable
     {
         $this->medians = $this->mads = [];
 
-        if (in_array(Dataset::CATEGORICAL, $dataset->columnTypes())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
 
         foreach ($dataset->rotate() as $column => $values) {
             list($median, $mad) = Stats::medMad($values);
-            
+
             $this->medians[$column] = $median;
             $this->mads[$column] = $mad;
         }

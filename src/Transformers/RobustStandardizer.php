@@ -4,6 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
 /**
@@ -92,8 +93,8 @@ class RobustStandardizer implements Transformer
     {
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->columnTypes() as $column => $type) {
-            if ($type === Dataset::CONTINUOUS) {
+        foreach ($dataset->types() as $column => $type) {
+            if ($type === DataFrame::CONTINUOUS) {
                 list($median, $mad) = Stats::medMad($dataset->column($column));
 
                 $this->medians[$column] = $median;
