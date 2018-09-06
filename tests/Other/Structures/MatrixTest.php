@@ -364,8 +364,7 @@ class MatrixTest extends TestCase
 
     public function test_sum()
     {
-        $this->assertEquals([[46, -12, 1]], $this->a->sum(true)->asArray());
-        $this->assertEquals([[17], [13], [5]], $this->a->sum(false)->asArray());
+        $this->assertEquals([46, -12, 1], $this->a->sum()->asArray());
     }
 
     public function test_row_sum()
@@ -442,6 +441,30 @@ class MatrixTest extends TestCase
             [2.5649493574615367],
             [2.3978952727983707],
             [2.1972245773362196],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
+    public function test_mean()
+    {
+        $d = $this->a->mean()->asArray();
+
+        $outcome = [15.333333333333334, -4, 0.3333333333333333];
+
+        $this->assertEquals($outcome, $d);
+    }
+
+    public function test_covariance()
+    {
+        $mean = $this->a->mean();
+
+        $d = $this->a->covariance($mean)->asArray();
+
+        $outcome = [
+            [116.51851851851852, -99.25925925925925, -17.259259259259263],
+            [-99.25925925925925, 119.62962962962963, -20.370370370370367],
+            [-17.259259259259263, -20.370370370370367, 37.62962962962963],
         ];
 
         $this->assertEquals($outcome, $d);

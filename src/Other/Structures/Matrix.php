@@ -392,51 +392,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Sum the matrix along a specified axis.
-     *
-     * @param  bool  $column
-     * @return self
-     */
-    public function sum(bool $column = true)
-    {
-        $b = [[]];
-
-        if ($column === true) {
-            foreach ($this->transpose() as $i => $column) {
-                $b[0][$i] = array_sum($column);
-            }
-        } else {
-            foreach ($this->a as $i => $row) {
-                $b[$i][0] = array_sum($row);
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * The sum of all the elements in a row of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function rowSum(int $index) : float
-    {
-        return array_sum($this->offsetGet($index));
-    }
-
-    /**
-     * The sum of all the elements in a column of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function columnSum(int $index) : float
-    {
-        return array_sum($this->column($index));
-    }
-
-    /**
      * Take the dot product of this matrix and another matrix.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $b
@@ -729,6 +684,44 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Sum the columns of the matrix and return a vector.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function sum() : Vector
+    {
+        $b = [];
+
+        foreach ($this->transpose() as $values) {
+            $b[] = array_sum($values);
+        }
+
+        return new Vector($b, false);
+    }
+
+    /**
+     * The sum of all the elements in a row of the matrix.
+     *
+     * @param  int  $index
+     * @return float
+     */
+    public function rowSum(int $index) : float
+    {
+        return array_sum($this->offsetGet($index));
+    }
+
+    /**
+     * The sum of all the elements in a column of the matrix.
+     *
+     * @param  int  $index
+     * @return float
+     */
+    public function columnSum(int $index) : float
+    {
+        return array_sum($this->column($index));
+    }
+
+    /**
      * Return the absolute value of each element in the matrix.
      *
      * @return self
@@ -817,6 +810,44 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($b, false);
+    }
+
+    /**
+     * Compute the means of each column and return them in a vector.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function mean() : Vector
+    {
+        $b = [];
+
+        foreach ($this->transpose() as $values) {
+            $b[] = array_sum($values) / $this->n;
+        }
+
+        return new Vector($b, false);
+    }
+
+    /**
+     * Compute the covariance of this matrix and return it in a new matrix.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $mean
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function covariance(Vector $mean) : self
+    {
+        if ($mean->n() !== $this->n) {
+            throw new InvalidArgumentException('Dimensionality of the mean'
+                . ' vector does not match this matrix.');
+        }
+
+        $mean = $mean->asRowMatrix()->repeat($this->m, 1);
+
+        $b = $this->subtract($mean);
+
+        return $b->dot($b->transpose())
+            ->scalarDivide($this->n);
     }
 
     /**

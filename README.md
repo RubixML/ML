@@ -4,7 +4,7 @@
 Rubix ML is a library that lets you build intelligent programs that learn from data in [PHP](https://php.net).
 
 ## Our Mission
-The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. We aspire to provide the framework to facilitate small to medium sized projects, rapid prototyping, and education. If you would like to join in on the mission, you get up and running fast by following the instructions below.
+The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. We aspire to provide the framework to facilitate rapid prototyping, small to medium sized projects, and education. If you're eager to get started you can follow along with the [basic introduction](#basic-introduction) or browse the [API reference](#api-reference).
 
 ## Installation
 Install Rubix using composer:
@@ -23,13 +23,16 @@ MIT
 
 ### Table of Contents
 
- - [Introduction](#an-introduction-to-machine-learning-in-rubix)
+ - [Basic Introduction](#basic-introduction)
 	 - [Obtaining Data](#obtaining-data)
 	 - [Choosing an Estimator](#choosing-an-estimator)
 	 - [Training and Prediction](#training-and-prediction)
 	 - [Evaluation](#evaluating-model-performance)
 	 - [Visualization](#visualization)
-	 - [Next Steps](#what-next)
+     - [Next Steps](#next-steps)
+- [Environments](#environments)
+    - [Command Line](#command-line)
+    - [Web Server](#web-server)
 - [API Reference](#api-reference)
 	- [Datasets](#datasets)
 		- [Dataset Objects](#dataset-objects)
@@ -194,19 +197,24 @@ MIT
 			- [Word](#word-tokenizer)
 
 ---
-### An Introduction to Machine Learning in Rubix
-Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of learning that Rubix offers out of the box, *Supervised* and *Unsupervised*.
+### Basic Introduction
+Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of machine learning that Rubix supports out of the box, *Supervised* and *Unsupervised*.
+
  - **Supervised** learning is a technique to train computer models with a dataset in which the outcome of each sample data point has been *labeled* either by a human expert or another ML model prior to training. There are two types of supervised learning to consider in Rubix:
-	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of Iris flower based on its sepal and petal dimensions.
-	 - **Regression** involves predicting continuous *values* rather than discrete classes. An example in which a regression model is appropriate would be predicting the life expectancy of a population based on economic factors.
-- **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and relies on the information within the training samples to learn insights.
-	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering might be used is in differentiating tissues in PET scan images.
-	- **Anomaly Detection** is the flagging of samples that do not conform to an expected pattern. Anomalous samples can often indicate adversarial activity, bad data, or exceptional performance.
+	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of Iris flower or predicting someone's MBTI personality type.
+	 - **Regression** aims at predicting continuous *values* such as the sale price of a house in a particular city or the average life expectancy of an individual. A major difference between classification and regression is that while there are a finite number of classes that a sample can belong to, there are infinitely many real values that a regression model can predict.
+- **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and works by finding patterns within the training samples to learn new insights.
+	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating tissues in PET scan images.
+	- **Anomaly Detection** is the flagging of samples that do not conform to an expected pattern that is learned during training. Anomalous samples can often indicate adversarial activity, bad data, or exceptional performance.
+
+When first starting out, it sometimes helps to make the distinction between *traditional* programming and machine learning. In traditional programming, you are given an input and output specification and it is your job to write the logic that maps inputs to the desired outputs. With machine learning, it is the algorithm that writes the function that does the input/output mapping and instead it is your job to design the model such that, when you feed it data, it can learn the mapping. For this reason, you can think of machine learning as "programming with data."
 
 ### Obtaining Data
-Machine learning projects typically begin with a question. For example, who of my friends are most likely to stay married to their spouse? One way to go about answering this question with machine learning would be to go out and ask a bunch of long-time married and divorced couples the same set of questions and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers from your friends.
+Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the dimensionality of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The idea is to engineer enough of the right features for the model to be able to recognize patterns in the data.
 
-Although this is certainly a valid way of obtaining data, in reality, chances are someone has already done the work of measuring the data for you and it is your job to find it, aggregate it, clean it, and otherwise make it usable by the machine learning algorithm. There are a number of PHP libraries out there that make extracting data from CSV, databases, and cloud services a whole lot easier, and we recommend checking them out before attempting it manually.
+An alternative to collecting data yourself is to access one of the many datasets that are free to use from a public repository. The advantage of using a public dataset is that, chances are, it has already been cleaned and therefore ready to use right out of the box. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) as a great place to get started.
+
+Note that there are a number of PHP libraries that make extracting data from CSV, databases, and cloud services a lot easier, and we recommend checking them out as well.
 
 Here are a few libraries that we recommend that will help you get started extracting data:
 
@@ -214,78 +222,71 @@ Here are a few libraries that we recommend that will help you get started extrac
 - [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstraction layer
 - [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
 
-Having that said, Rubix will be able to handle any dataset as long as it can fit into one its pre-defined Dataset objects (*Labeled*, *Unlabeled*).
-
 #### The Dataset Object
-Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) extend the PHP array structure with methods that properly handle selecting, splitting, folding, and randomizing the samples. In general, there are two types of Datasets, *Labeled* and *Unlabeled*. Labeled datasets are typically used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions.
+Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) extend the PHP array structure with methods that properly handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of Datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions. Dataset objects have a mutability policy of *generally* immutable except for performance reasons such as applying a [Transformer](#transformers).
 
-For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate (between 1 and 5) their similarity, communication, and partner attractiveness. We could construct a [Labeled Dataset](#labeled) object from the data you collected in the following way:
+For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) about their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled Dataset](#labeled) from this data like so:
 
 ```php
 use \Rubix\ML\Datasets\Labeled;
 
-$samples = [[3, 4, 2], [1, 5, 3], [4, 4, 3], [2, 1, 5], ...];
+$samples = [
+    [3, 4, 50.5], [1, 5, 24.7], [4, 4, 62.], [3, 2, 31.1], ...
+];
 
 $labels = ['married', 'divorced', 'married', 'divorced', ...];
 
 $dataset = new Labeled($samples, $labels);
 ```
 
-The Dataset object is now ready to be used throughout Rubix.
-
 ### Choosing an Estimator
 
-There are many different algorithms to chose from in Rubix and each one is designed to handle specific (sometimes overlapping) tasks. Choosing the right [Estimator](#estimators) for the job is crucial to building an accurate and performant computer model.
+Estimators make up the core of the Rubix library as they are responsible for making predictions. There are many different algorithms to choose from and each one is designed to handle a specific (sometimes overlapping) task. Choosing the right [Estimator](#estimators) for the job is crucial to creating a system that is both accurate and performant.
 
-There are a couple ways that we could model our marriage satisfaction predictor. We could have asked a fourth question - that is, to rate each couple's overall marriage satisfaction from say 1 to 10 and then train a [Regressor](#regressors) to predict a continuous "satisfaction score" for each new sample. But since all we have to go by for now is whether they are still married or currently divorced, a [Classifier](#classifiers) will be better suited.
-
-In practice, one will experiment with more than one type of Estimator to find the best fit to the data, but for the purposes of this introduction we will simply demonstrate a common and intuitive algorithm called *K Nearest Neighbors*.
+In practice, one will try a number of different ways to model a problem including choosing a handful of Estimators to test out to get a better sense of what works. For our example problem we will start with a simple classifier called K Nearest Neighbors. Since the label of each training sample we collect will be a class (*married couples* or *divorced couples*), we need an Estimator that is designed to output class predictions. K Nearest Neighbors works by locating the closest training samples to an unknown sample and choosing the class label that appears most often.
 
 #### Creating the Estimator Instance
 
-Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a number of parameters (called *Hyperparameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Rubix provides a meta-Estimator called [Grid Search](#grid-search) that searches the parameter space provided for the most effective combination. For the purposes of this example we will just go with our intuition and chose the parameters outright.
+Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a set of parameters (called *hyper-parameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Fortunately, the defaults provided in Rubix are good for most typical machine learning problems. In addition, Rubix provides a meta-Estimator called [Grid Search](#grid-search) that optimizes the hyper-parameter space by searching for the most effective combination. For the purposes of our example we will just go with our intuition and chose the parameters outright.
 
-It is important to understand the effect that each parameter has on the performance of the Estimator since different settings can often lead to different results.
+You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) which we highly recommend reading a few times to get a grasp for how each parameter effects the training.
 
-You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) which we highly recommend reading a few times to get a grasp for what each parameter does.
+The K Nearest Neighbors algorithm works by comparing the *distance* between a sample and each of samples from the training set. It will use the K *closest* points to base its prediction. For example, if the 5 closest neighbors to a given unknown sample have 4 married labels and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.80.
 
-The K Nearest Neighbors algorithm works by comparing the *distance* between a sample and each of the points from the training set. It will then use the K *nearest* points to base its prediction on. For example, if the 5 closest neighbors to a sample are 4 married and 1 divorced, the algorithm will output a prediction of married with a probability of 0.80.
-
-To create a K Nearest Neighbors Classifier instance:
+To instantiate a K Nearest Neighbors Classifier:
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Euclidean;
 
 // Using the default parameters
 $estimator = new KNearestNeighbors();
 
-// Specifying parameters
-$estimator = new KNearestNeighbors(3, new Manhattan());
+// Specifying the parameters
+$estimator = new KNearestNeighbors(3, new Euclidean());
 ```
 
-Now that we've chosen and instantiated an Estimator and our Dataset object is ready to go, it is time to train our model and use it to make some predictions.
+Now that we've chosen and instantiated an Estimator and our Dataset object is ready to go, it is time to train our model and use it to make some predictions. We're almost to the good stuff, so hang in there!
 
 ### Training and Prediction
-Training is the process of feeding the Estimator data so that it can learn. The unique way in which the Estimator learns is based upon the underlying algorithm which has been implemented for you already. All you have to do is supply enough clean data so that the process can converge to a satisfactory optimum.
+Training is the process of feeding the Estimator data so that it can learn the parameters of the model that best minimize some cost function. A *cost function* is a function that measures the performance of a model during training. The lower the cost, the better the model fits the training data. The overall way in which each Estimator *learns* is based on the underlying algorithm which has been implemented under the hood. As mentioned earlier, hyper-parameters allow the user to modify the way that the Estimator is trained.
 
-Passing the Labeled Dataset object we created earlier we can train the KNN estimator like so:
+Passing the Labeled Dataset object we created earlier, we can train our K Nearest Neighbors estimator simply like so:
 ```php
 ...
 $estimator->train($dataset);
 ```
-That's it.
 
-For our 100 sample dataset, this should only take a few microseconds, but larger datasets and more sophisticated Estimators can take much longer.
-
-Once the Estimator has been fully trained we can feed in some new sample data points to see what the model predicts. Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make a prediction on whether they look more like the class of married or divorced couples by taking their answers and running them through the trained Estimator's `predict()` method.
+For our 100 sample training set, this should only take a matter of a few microseconds, but larger datasets with higher dimensions and more sophisticated Estimators can take much longer. Once the Estimator has been fully trained, we can feed in some unknown samples to see what the model predicts. Turning back to out example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
 ```php
 use Rubix\ML\Dataset\Unlabeled;
 
-$samples = [[4, 1, 3], [2, 2, 1], [2, 4, 5], [5, 2, 4], [3, 2, 1];
+$unknown = [
+    [4, 3, 44.2], [2, 2, 16.7], [2, 4, 19.5], [1, 5, 8.6], [3, 3, 55.],
+];
 
-$friends = new Unlabeled($samples);
+$dataset = new Unlabeled($unknown);
 
-$predictions = $estimator->predict($friends);
+$predictions = $estimator->predict($dataset);
 
 var_dump($predictions);
 ```
@@ -294,23 +295,22 @@ var_dump($predictions);
 
 ```sh
 array(5) {
-	[0] => 'divorced'
+	[0] => 'married'
 	[1] => 'divorced'
-	[2] => 'married'
-	[3] => 'married'
-	[4] => 'divorced'
+	[2] => 'divorced'
+	[3] => 'divorced'
+	[4] => 'married'
 }
 ```
-Note that we are not using a Labeled Dataset here because we don't know the outcomes yet. In fact, the label is exactly what we are trying to predict. Next we'll look at how we can test the accuracy of the predictions our model makes using cross validation.
+
+From these results, we can deduce that, based on the data that the model has been trained with, it is important for couples to communicate and spend time together if they are going to stay happily married. We didn't need a machine learning model to tell us that, but imagine scaling this example to use a whole self-report inventory with 100 or more questions instead. With more features to work with, our model gains flexibility. But how do we when our model is any good at making accurate predictions in the real world? We'll address a technique called Cross Validation in the next section that aims at testing the generalization performance of a trained model.
 
 ### Evaluating Model Performance
-Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training. [Cross Validation](#cross-validation) is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](#hold-out) validator will take care of randomizing and splitting the dataset into  training and testing sets automatically, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is  because we want to test the Estimator on samples that it has never seen before.
+Making predictions is not very useful unless the Estimator can correctly generalize what it has learned during training to the real world. [Cross Validation](#cross-validation) is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](#hold-out) validator will take care of randomizing and splitting the dataset into training and testing sets for us, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is because we want to test the Estimator on samples that it has never seen before.
 
-Hold Out requires you to set the ratio of testing to training samples to use. In this case, let's chose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to understand here is the trade off between more data for training and more precise testing results. Once you get the hang of Hold Out, the next step is to consider more elaborate cross validation techniques such as [K Fold](#k-fold), and [Leave P Out](#leave-p-out).
+The Hold Out validator requires you to set the ratio of testing to training samples as a constructor parameter. In this case, let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce precise testing results. Once you get the hang of Hold Out, the next step is to consider more advanced cross validation techniques such as [K Fold](#k-fold), [Leave P Out](#leave-p-out), and [Monte Carlo](#monte-carlo) simulations.
 
-To return a validation score from the Hold Out Validator using the Accuracy Metric just pass it the untrained Estimator instance and a dataset.
-
-##### Example:
+To return a score from the Hold Out validator using the Accuracy metric just pass it the untrained Estimator instance and a dataset:
 
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
@@ -330,28 +330,39 @@ var_dump($score);
 float(0.945)
 ```
 
-Since we are measuring accuracy, this output indicates that our Estimator is 94.5% accurate given the data we've trained and tested it with. Not bad.
-
 ### Visualization
-Visualization is how you communicate the findings of your experiment to the end-user and is key to derive value from your hard work in engineering a performant model. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what a machine learning library should offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions made.
+Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what Rubix has to offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions.
 
-If you are looking for a place to start, we recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
+If you are looking for a place to start, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
 
+### Next Steps
+After you've gone through this basic introduction to machine learning in Rubix, we highly recommend reading over the [API Reference](#api-reference) to get an idea of what the library can do. The API Reference is the place you'll go to get detailed information and examples about the classes that make up the library. If you have a question or need help, feel free to post on our Github page.
 
-### What Next?
-Now that you've gone through a brief introduction of a simple machine learning problem in Rubix, the next step is to become more familiar with the API and to experiment with some data on your own. We highly recommend reading the entire documentation at least twice to fully understand all of the features at your disposal. If you're eager to get started, a great place to begin is by downloading some datasets from the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) where they have many pre-cleaned datasets available for free.
+---
+### Environments
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. For more information regarding the environments that PHP can run you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+
+### Command Line
+The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time by default. Note that you may need to adjust your memory limit in php.ini.
+
+To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
+```sh
+$ php Model.php
+```
+
+### Web Server
+There are many considerations to be taken into account when designing a machine learning model for production use - including allocation of resources, request times, and security just to name a few. Having that said, it is theoretically possible to run a model trained with Rubix in a live system on a web server either during a request or in the background in a queue.
 
 ---
 ### API Reference
-Here you will find information regarding the classes that make up the Rubix library.
 
 ### Datasets
 Data is what powers machine learning programs so naturally we treat it as a first-class citizen. Rubix provides a number of classes that help you wrangle and even generate data.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to slice and transport data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to handle data in a canonical way.
 
-There are two types of data that Estimators can process i.e. *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical as a general rule throughout Rubix. This rule makes it easy to distinguish between the types of data while allowing for flexibility. For example, you could represent the number 5 as continuous by using the integer type or as categorical by using the string type (*'5'*).
+There are two *types* of data that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently in Rubix.
 
 ##### Example:
 ```php
@@ -363,6 +374,8 @@ $samples = [
 
 $dataset = new Unlabeled($samples);
 ```
+
+The Dataset interface has a robust API designed to make handling datasets fast and easy. Below you'll find a description of the various methods available.
 
 #### Selecting
 

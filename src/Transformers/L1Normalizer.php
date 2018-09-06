@@ -47,7 +47,7 @@ class L1Normalizer implements Transformer
             }
 
             foreach ($sample as &$feature) {
-                $feature = $norm !== 0.? $feature / $norm : 1.;
+                $feature = $norm !== 0. ? $feature / $norm : 1.;
             }
         }
     }

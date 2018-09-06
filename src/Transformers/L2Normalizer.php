@@ -49,7 +49,7 @@ class L2Normalizer implements Transformer
             $norm = $norm ** 0.5;
 
             foreach ($sample as &$feature) {
-                $feature = $norm !== 0.? $feature / $norm : 1.;
+                $feature = $norm !== 0. ? $feature / $norm : 1.;
             }
         }
     }
