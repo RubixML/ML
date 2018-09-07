@@ -259,10 +259,10 @@ class BatchNorm implements Hidden, Parametric
 
             $dXHat = $dOut->multiply($this->gamma->w()->repeat(1, $n));
 
-            return $dXHat->scalarMultiply($m)
+            return $dXHat->multiplyScalar($m)
                 ->subtract($dXHat->sum()->repeat($m, 1))
                 ->subtract($xHat->multiply($dXHat->multiply($xHat)->sum()->repeat($m, 1)))
-                ->multiply($stdInv->scalarMultiply(1. / $m));
+                ->multiply($stdInv->multiplyScalar(1. / $m));
         };
     }
 

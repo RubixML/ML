@@ -312,7 +312,7 @@ class MatrixTest extends TestCase
 
     public function test_scalar_multiply()
     {
-        $d = $this->a->scalarMultiply(2.5)->asArray();
+        $d = $this->a->multiplyScalar(2.5)->asArray();
 
         $outcome = [
             [55, -42.5, 30],
@@ -325,12 +325,12 @@ class MatrixTest extends TestCase
 
     public function test_scalar_divide()
     {
-        $d = $this->a->scalarMultiply(2.)->asArray();
+        $d = $this->a->divideScalar(2.)->asArray();
 
         $outcome = [
-            [44., -34., 24.],
-            [8., 22., -4.],
-            [40., -12., -18.],
+            [11., -8.5, 6.],
+            [2., 5.5, -1.],
+            [10., -3., -4.5],
         ];
 
         $this->assertEquals($outcome, $d);
@@ -338,7 +338,7 @@ class MatrixTest extends TestCase
 
     public function test_scalar_add()
     {
-        $d = $this->a->scalarAdd(1)->asArray();
+        $d = $this->a->addScalar(1)->asArray();
 
         $outcome = [
             [23, -16, 13],
@@ -351,7 +351,7 @@ class MatrixTest extends TestCase
 
     public function test_scalar_subtract()
     {
-        $d = $this->a->scalarSubtract(10)->asArray();
+        $d = $this->a->subtractScalar(10)->asArray();
 
         $outcome = [
             [12, -27, 2],
@@ -364,7 +364,7 @@ class MatrixTest extends TestCase
 
     public function test_sum()
     {
-        $this->assertEquals([46, -12, 1], $this->a->sum()->asArray());
+        $this->assertEquals([17, 13, 5], $this->a->sum()->asArray());
     }
 
     public function test_row_sum()
@@ -379,6 +379,11 @@ class MatrixTest extends TestCase
         $this->assertEquals(46., $this->a->columnSum(0));
         $this->assertEquals(0., $this->b->columnSum(1));
         $this->assertEquals(7., $this->c->columnSum(2));
+    }
+
+    public function test_product()
+    {
+        $this->assertEquals([-4488., -88., 1080.], $this->a->product()->asArray());
     }
 
     public function test_abs()
@@ -450,14 +455,14 @@ class MatrixTest extends TestCase
     {
         $d = $this->a->mean()->asArray();
 
-        $outcome = [15.333333333333334, -4, 0.3333333333333333];
+        $outcome = [5.666666666666667, 4.333333333333333, 1.6666666666666667];
 
         $this->assertEquals($outcome, $d);
     }
 
     public function test_covariance()
     {
-        $mean = $this->a->mean();
+        $mean = $this->a->transpose()->mean();
 
         $d = $this->a->covariance($mean)->asArray();
 

@@ -263,7 +263,7 @@ class MLPRegressor implements Estimator, Online, Persistable
         }
 
         $this->network = new FeedForward(
-            new Placeholder($dataset->numColumns(), true),
+            new Placeholder($dataset->numColumns()),
             $this->hidden,
             new Continuous($this->alpha, $this->costFunction),
             $this->optimizer

@@ -247,11 +247,11 @@ In practice, one will try a number of different ways to model a problem includin
 
 #### Creating the Estimator Instance
 
-Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a set of parameters (called *hyper-parameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Fortunately, the defaults provided in Rubix are good for most typical machine learning problems. In addition, Rubix provides a meta-Estimator called [Grid Search](#grid-search) that optimizes the hyper-parameter space by searching for the most effective combination. For the purposes of our example we will just go with our intuition and chose the parameters outright.
+Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a set of parameters (called *hyper-parameters*) to be chosen up front. These parameters can be selected based on some prior knowledge of the problem space, or at random. Fortunately, the defaults provided in Rubix are a good place to start for most machine learning problems. In addition, Rubix provides a meta-Estimator called [Grid Search](#grid-search) that optimizes the hyper-parameter space by searching for the most effective combination. For the purposes of our example we will just go with our intuition and choose the parameters outright.
 
-You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) which we highly recommend reading a few times to get a grasp for how each parameter effects the training.
+You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) guide which we highly recommend reading over a few times to get a good grasp for how each parameter effects the training.
 
-The K Nearest Neighbors algorithm works by comparing the *distance* between a sample and each of samples from the training set. It will use the K *closest* points to base its prediction. For example, if the 5 closest neighbors to a given unknown sample have 4 married labels and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.80.
+The K Nearest Neighbors algorithm works by comparing the *distance* between a sample and each of samples from the training set. It will use the K *closest* points to base its prediction. For example, if the 5 closest neighbors to a given unknown sample have 4 married labels and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.8.
 
 To instantiate a K Nearest Neighbors Classifier:
 ```php
@@ -265,18 +265,20 @@ $estimator = new KNearestNeighbors();
 $estimator = new KNearestNeighbors(3, new Euclidean());
 ```
 
-Now that we've chosen and instantiated an Estimator and our Dataset object is ready to go, it is time to train our model and use it to make some predictions. We're almost to the good stuff, so hang in there!
+The first hyper-parameter that K Nearest Neighbors accepts is the number of nearest neighbors (*k*) to consider when making a prediction. The second parameter is the distance kernel that determines how distance is measured within the model.
+
+Now that we've chosen and instantiated an Estimator and our Dataset object is ready to go, we are ready to train the model and use it to make some predictions.
 
 ### Training and Prediction
-Training is the process of feeding the Estimator data so that it can learn the parameters of the model that best minimize some cost function. A *cost function* is a function that measures the performance of a model during training. The lower the cost, the better the model fits the training data. The overall way in which each Estimator *learns* is based on the underlying algorithm which has been implemented under the hood. As mentioned earlier, hyper-parameters allow the user to modify the way that the Estimator is trained.
+Training is the process of feeding the Estimator data so that it can learn the parameters of the model that best minimize some cost function. A *cost function* is a function that measures the performance of a model during training. The lower the cost, the better the model fits the training data. The overall way in which each Estimator *learns* is based on the underlying algorithm which has been implemented under the hood.
 
-Passing the Labeled Dataset object we created earlier, we can train our K Nearest Neighbors estimator simply like so:
+Passing the Labeled Dataset object we created earlier, we can train our K Nearest Neighbors classifier like so:
 ```php
 ...
 $estimator->train($dataset);
 ```
 
-For our 100 sample training set, this should only take a matter of a few microseconds, but larger datasets with higher dimensions and more sophisticated Estimators can take much longer. Once the Estimator has been fully trained, we can feed in some unknown samples to see what the model predicts. Turning back to out example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
+For our 100 sample example training set, this should only take a matter of microseconds, but larger datasets with higher dimensionality and more sophisticated Estimators can take much longer. Once the Estimator has been fully trained, we can feed in some unknown samples to see what the model predicts. Turning back to out example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
 ```php
 use Rubix\ML\Dataset\Unlabeled;
 
@@ -340,10 +342,10 @@ After you've gone through this basic introduction to machine learning in Rubix, 
 
 ---
 ### Environments
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. For more information regarding the environments that PHP can run you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
 
 ### Command Line
-The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time by default. Note that you may need to adjust your memory limit in php.ini.
+The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time set by default. Note that you may need to adjust your memory limit in php.ini however.
 
 To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
 ```sh
@@ -351,7 +353,7 @@ $ php Model.php
 ```
 
 ### Web Server
-There are many considerations to be taken into account when designing a machine learning model for production use - including allocation of resources, request times, and security just to name a few. Having that said, it is theoretically possible to run a model trained with Rubix in a live system on a web server either during a request or in the background in a queue.
+It is possible to run a model trained with Rubix in a live system on a web server either during a request or in the background in a queue but many considerations need to be taken into account to ensure a smooth system. The primary consideration is one of resource allocation as machine learning models tend to be highly resource (CPU and memory) intensive. It is generally discouraged to run an ML model within a web request cycle, but if you must, you will need to consider the execution time of the script as it can be used as a denial of service (DOS) attack if not handled properly.
 
 ---
 ### API Reference
@@ -2738,19 +2740,18 @@ $network = new FeedForward(new Placeholder(784), [
 The entry point for data into a neural network is the input layer which is the first layer in the network. Input layers do not have any learnable parameters.
 
 ### Placeholder
-The Placeholder input layer serves to represent the *future* input values of a mini batch as well as add a bias to the forward pass.
+The Placeholder input layer serves to represent the *future* input values of a mini batch to the network.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | inputs | None | int | The number of inputs to the network. |
-| 2 | bias | true | bool | Should we add a bias node? |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 
-$layer = new Placeholder(100, true);
+$layer = new Placeholder(100);
 ```
 
 ### Hidden Layers
@@ -2794,14 +2795,13 @@ Dense layers are fully connected hidden layers, meaning each neuron is connected
 |--|--|--|--|--|
 | 1 | neurons | None | int | The number of neurons in the layer. |
 | 2 | activation fn | None | object | The activation function to use. |
-| 3 | bias | true | bool | Should we add a bias node? |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$layer = new Dense(100, new LeakyReLU(0.05), true);
+$layer = new Dense(100, new LeakyReLU(0.05));
 ```
 
 ### Dropout

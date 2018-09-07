@@ -62,6 +62,13 @@ class Binary implements Output
     protected $weights;
 
     /**
+     * The biases.
+     *
+     * @var \Rubix\ML\NeuralNet\Parameter
+     */
+    protected $biases;
+
+    /**
      * The memoized input matrix.
      *
      * @var \Rubix\ML\Other\Structures\Matrix|null
@@ -112,6 +119,7 @@ class Binary implements Output
         $this->activationFunction = new Sigmoid();
         $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([[]]));
+        $this->biases = new Parameter(Matrix::ones(1, 1));
     }
 
     /**
@@ -133,7 +141,7 @@ class Binary implements Output
     {
         $scale = sqrt(6 / $fanIn);
 
-        $w = Matrix::uniform(1, $fanIn)->scalarMultiply($scale);
+        $w = Matrix::uniform(1, $fanIn)->multiplyScalar($scale);
 
         $this->weights = new Parameter($w);
 
@@ -151,7 +159,8 @@ class Binary implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input);
+        $this->z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -166,7 +175,8 @@ class Binary implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->dot($input);
+        $z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
         return $this->activationFunction->compute($z);
     }
@@ -210,13 +220,17 @@ class Binary implements Output
             ->multiply($dL);
 
         $dW = $dA->dot($this->input->transpose());
+        $dB = $dA->mean()->asColumnMatrix();
+
+        $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
+        $this->biases->update($optimizer->step($this->biases, $dB));
 
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($dA) {
-            $this->weights->w()->transpose()->dot($dA);
+        return [function () use ($w, $dA) {
+            $w->transpose()->dot($dA);
         }, $cost];
     }
 
@@ -227,6 +241,7 @@ class Binary implements Output
     {
         return [
             'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -239,5 +254,6 @@ class Binary implements Output
     public function restore(array $parameters) : void
     {
         $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

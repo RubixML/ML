@@ -187,7 +187,7 @@ class Adaline implements Estimator, Online, Persistable
         }
 
         $this->network = new FeedForward(
-            new Placeholder($dataset->numColumns(), true),
+            new Placeholder($dataset->numColumns()),
             [],
             new Continuous($this->alpha, $this->costFunction),
             $this->optimizer

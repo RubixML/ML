@@ -44,6 +44,13 @@ class Continuous implements Output
     protected $weights;
 
     /**
+     * The biases.
+     *
+     * @var \Rubix\ML\NeuralNet\Parameter
+     */
+    protected $biases;
+
+    /**
      * The memoized input matrix.
      *
      * @var \Rubix\ML\Other\Structures\Matrix|null
@@ -51,11 +58,11 @@ class Continuous implements Output
     protected $input;
 
     /**
-     * The memoized output activations matrix.
+     * The memoized output of the layer.
      *
      * @var \Rubix\ML\Other\Structures\Matrix|null
      */
-    protected $computed;
+    protected $z;
 
     /**
      * @param  float  $alpha
@@ -77,6 +84,7 @@ class Continuous implements Output
         $this->alpha = $alpha;
         $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([[]]));
+        $this->biases = new Parameter(Matrix::ones(1, 1));
     }
 
     /**
@@ -98,7 +106,7 @@ class Continuous implements Output
     {
         $scale = (6 / $fanIn) ** 0.25;
 
-        $w = Matrix::uniform(1, $fanIn)->scalarMultiply($scale);
+        $w = Matrix::uniform(1, $fanIn)->multiplyScalar($scale);
 
         $this->weights = new Parameter($w);
 
@@ -116,9 +124,10 @@ class Continuous implements Output
     {
         $this->input = $input;
 
-        $this->computed = $this->weights->w()->dot($input);
+        $this->z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
-        return $this->computed;
+        return $this->z;
     }
 
     /**
@@ -129,7 +138,8 @@ class Continuous implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->weights->w()->dot($input);
+        return $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
     }
 
     /**
@@ -142,7 +152,7 @@ class Continuous implements Output
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        if (is_null($this->input) or is_null($this->computed)) {
+        if (is_null($this->input) or is_null($this->z)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
@@ -152,12 +162,12 @@ class Continuous implements Output
         $dL = [];
         $cost = 0.;
 
-        foreach ($this->computed->row(0) as $i => $activation) {
+        foreach ($this->z->row(0) as $i => $activation) {
             $expected = $labels[$i];
 
             $computed = $this->costFunction->compute($expected, $activation);
 
-            $cost =+ $computed;
+            $cost += $computed;
 
             $dL[$i] = $this->costFunction
                 ->differentiate($expected, $activation, $computed)
@@ -167,13 +177,17 @@ class Continuous implements Output
         $dL = new Matrix([$dL]);
 
         $dW = $dL->dot($this->input->transpose());
+        $dB = $dL->mean()->asColumnMatrix();
+
+        $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
+        $this->biases->update($optimizer->step($this->biases, $dB));
 
-        unset($this->input, $this->computed);
+        unset($this->input, $this->z);
 
-        return [function () use ($dL) {
-            return $this->weights->w()->transpose()->dot($dL);
+        return [function () use ($w, $dL) {
+            return $w->transpose()->dot($dL);
         }, $cost];
     }
 
@@ -184,6 +198,7 @@ class Continuous implements Output
     {
         return [
             'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -196,5 +211,6 @@ class Continuous implements Output
     public function restore(array $parameters) : void
     {
         $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

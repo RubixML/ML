@@ -125,8 +125,8 @@ class AlphaDropout implements Hidden, Nonparametric
 
         return $input->multiply($mask)
             ->add($saturation)
-            ->scalarMultiply($this->a)
-            ->scalarAdd($this->b);
+            ->multiplyScalar($this->a)
+            ->addScalar($this->b);
     }
 
     /**

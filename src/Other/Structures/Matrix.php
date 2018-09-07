@@ -590,7 +590,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarMultiply($scalar) : self
+    public function multiplyScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -615,7 +615,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarDivide($scalar) : self
+    public function divideScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -640,7 +640,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarAdd($scalar) : self
+    public function addScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -665,7 +665,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarSubtract($scalar) : self
+    public function subtractScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -684,7 +684,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Sum the columns of the matrix and return a vector.
+     * Sum the rows of the matrix and return a vector.
      *
      * @return \Rubix\ML\Other\Structures\Vector
      */
@@ -692,8 +692,8 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         $b = [];
 
-        foreach ($this->transpose() as $values) {
-            $b[] = array_sum($values);
+        foreach ($this->a as $row) {
+            $b[] = array_sum($row);
         }
 
         return new Vector($b, false);
@@ -719,6 +719,28 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function columnSum(int $index) : float
     {
         return array_sum($this->column($index));
+    }
+
+    /**
+     * Calculate the row product of the matrix.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function product() : Vector
+    {
+        $b = [];
+
+        foreach ($this->a as $row) {
+            $product = 1.;
+
+            foreach ($row as $value) {
+                $product *= $value;
+            }
+
+            $b[] = $product;
+        }
+
+        return new Vector($b, false);
     }
 
     /**
@@ -813,7 +835,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Compute the means of each column and return them in a vector.
+     * Compute the means of each row and return them in a vector.
      *
      * @return \Rubix\ML\Other\Structures\Vector
      */
@@ -821,8 +843,8 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         $b = [];
 
-        foreach ($this->transpose() as $values) {
-            $b[] = array_sum($values) / $this->n;
+        foreach ($this->a as $row) {
+            $b[] = array_sum($row) / $this->m;
         }
 
         return new Vector($b, false);
@@ -847,7 +869,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         $b = $this->subtract($mean);
 
         return $b->dot($b->transpose())
-            ->scalarDivide($this->n);
+            ->divideScalar($this->n);
     }
 
     /**
@@ -1081,7 +1103,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             $c[] = array_merge($b[$i], $row);
         }
 
-        return new self($c);
+        return new self($c, false);
     }
 
     /**
@@ -1104,7 +1126,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             $c[] = array_merge($row, $b[$i]);
         }
 
-        return new self($c);
+        return new self($c, false);
     }
 
     /**
@@ -1122,23 +1144,25 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
                 . ' or column.');
         }
 
-        $m -= 1;
         $n -= 1;
 
-        $a = $this;
-        $b = $a;
+        $b = $this->a;
 
-        for ($i = 0; $i < $n; $i++) {
-            $a = $a->augmentRight($b);
+        if ($n > 0) {
+            foreach ($this->a as $i => $row) {
+                for ($j = 0; $j < $n; $j++) {
+                    $b[$i] = array_merge($b[$i], $row);
+                }
+            }
         }
 
-        $c = $a;
+        $c = [];
 
         for ($i = 0; $i < $m; $i++) {
-            $a = $a->augmentBelow($c);
+            $c = array_merge($c, $b);
         }
 
-        return $a;
+        return new self($c, false);
     }
 
     /**

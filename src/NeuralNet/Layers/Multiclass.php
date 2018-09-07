@@ -61,6 +61,13 @@ class Multiclass implements Output
     protected $weights;
 
     /**
+     * The biases.
+     *
+     * @var \Rubix\ML\NeuralNet\Parameter
+     */
+    protected $biases;
+
+    /**
      * The memoized input matrix.
      *
      * @var \Rubix\ML\Other\Structures\Matrix|null
@@ -111,6 +118,7 @@ class Multiclass implements Output
         $this->activationFunction = new Softmax();
         $this->costFunction = $costFunction;
         $this->weights = new Parameter(new Matrix([[]]));
+        $this->biases = new Parameter(Matrix::ones($this->width(), 1));
     }
 
     /**
@@ -134,7 +142,7 @@ class Multiclass implements Output
 
         $fanOut = $this->width();
 
-        $w = Matrix::uniform($fanOut, $fanIn)->scalarMultiply($scale);
+        $w = Matrix::uniform($fanOut, $fanIn)->multiplyScalar($scale);
 
         $this->weights = new Parameter($w);
 
@@ -152,7 +160,8 @@ class Multiclass implements Output
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input);
+        $this->z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -167,7 +176,8 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->dot($input);
+        $z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
         return $this->activationFunction->compute($z);
     }
@@ -213,13 +223,17 @@ class Multiclass implements Output
             ->multiply($dL);
 
         $dW = $dA->dot($this->input->transpose());
+        $dB = $dA->mean()->asColumnMatrix();
+
+        $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
+        $this->biases->update($optimizer->step($this->biases, $dB));
 
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($dA) {
-            return $this->weights->w()->transpose()->dot($dA);
+        return [function () use ($w, $dA) {
+            return $w->transpose()->dot($dA);
         }, $cost];
     }
 
@@ -230,6 +244,7 @@ class Multiclass implements Output
     {
         return [
             'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -242,5 +257,6 @@ class Multiclass implements Output
     public function restore(array $parameters) : void
     {
         $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

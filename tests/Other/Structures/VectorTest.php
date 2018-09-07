@@ -152,21 +152,21 @@ class VectorTest extends TestCase
     {
         $outcome = [-30, 50, 70, -72, -144, 178, 212, 90];
 
-        $this->assertEquals($outcome, $this->a->scalarMultiply(2)->asArray());
+        $this->assertEquals($outcome, $this->a->multiplyScalar(2)->asArray());
     }
 
     public function test_scalar_divide()
     {
         $outcome = [-7.5, 12.5, 17.5, -18, -36, 44.5, 53, 22.5];
 
-        $this->assertEquals($outcome, $this->a->scalarDivide(2)->asArray());
+        $this->assertEquals($outcome, $this->a->divideScalar(2)->asArray());
     }
 
     public function test_scalar_add()
     {
         $outcome = [-5, 35, 45, -26, -62, 99, 116, 55];
 
-        $this->assertEquals($outcome, $this->a->scalarAdd(10)->asArray());
+        $this->assertEquals($outcome, $this->a->addScalar(10)->asArray());
     }
 
     public function test_exp()
@@ -184,7 +184,7 @@ class VectorTest extends TestCase
     {
         $outcome = [-25, 15, 25, -46, -82, 79, 96, 35];
 
-        $this->assertEquals($outcome, $this->a->scalarSubtract(10)->asArray());
+        $this->assertEquals($outcome, $this->a->subtractScalar(10)->asArray());
     }
 
     public function test_l1_norm()

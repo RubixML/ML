@@ -25,19 +25,11 @@ class Placeholder implements Input
     protected $inputs;
 
     /**
-     * Should we add a bias node?
-     *
-     * @var bool
-     */
-    protected $bias;
-
-    /**
      * @param  int  $inputs
-     * @param  bool  $bias
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $inputs, bool $bias = true)
+    public function __construct(int $inputs)
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of input nodes must'
@@ -45,7 +37,6 @@ class Placeholder implements Input
         }
 
         $this->inputs = $inputs;
-        $this->bias = $bias;
     }
 
     /**
@@ -53,7 +44,7 @@ class Placeholder implements Input
      */
     public function width() : int
     {
-        return $this->bias ? $this->inputs + 1 : $this->inputs;
+        return $this->inputs;
     }
 
     /**
@@ -65,7 +56,7 @@ class Placeholder implements Input
      */
     public function init(int $fanIn) : int
     {
-        return $this->width();
+        return $this->inputs;
     }
 
     /**
@@ -84,15 +75,7 @@ class Placeholder implements Input
                 . (string) $this->inputs . ' needed.');
         }
 
-        $activations = $input;
-
-        if ($this->bias === true) {
-            $biases = Matrix::ones(1, $input->n());
-
-            $activations = $activations->augmentBelow($biases);
-        }
-
-        return $activations;
+        return $input;
     }
 
     /**

@@ -312,7 +312,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarMultiply($scalar) : self
+    public function multiplyScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -335,7 +335,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarDivide($scalar) : self
+    public function divideScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'
@@ -358,7 +358,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarAdd($scalar) : self
+    public function addScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Factor must be an integer or'
@@ -381,7 +381,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function scalarSubtract($scalar) : self
+    public function subtractScalar($scalar) : self
     {
         if (!is_int($scalar) and !is_float($scalar)) {
             throw new InvalidArgumentException('Scalar must be an integer or'

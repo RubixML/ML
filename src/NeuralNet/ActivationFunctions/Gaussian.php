@@ -49,6 +49,6 @@ class Gaussian implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->multiply($computed)->scalarMultiply(-2.);
+        return $z->multiply($computed)->multiplyScalar(-2.);
     }
 }

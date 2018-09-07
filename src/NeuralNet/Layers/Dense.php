@@ -46,18 +46,18 @@ class Dense implements Hidden, Parametric
     protected $activationFunction;
 
     /**
-     * Should we add a bias neuron?
-     *
-     * @var bool
-     */
-    protected $bias;
-
-    /**
      * The weights.
      *
      * @var \Rubix\ML\NeuralNet\Parameter
      */
     protected $weights;
+
+    /**
+     * The biases.
+     *
+     * @var \Rubix\ML\NeuralNet\Parameter
+     */
+    protected $biases;
 
     /**
      * The memoized input matrix.
@@ -83,11 +83,10 @@ class Dense implements Hidden, Parametric
     /**
      * @param  int  $neurons
      * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
-     * @param  bool  $bias
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction, bool $bias = true)
+    public function __construct(int $neurons, ActivationFunction $activationFunction)
     {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons cannot be'
@@ -96,8 +95,8 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
-        $this->bias = $bias;
         $this->weights = new Parameter(new Matrix([[]]));
+        $this->biases = new Parameter(Matrix::ones($neurons, 1));
     }
 
     /**
@@ -105,7 +104,7 @@ class Dense implements Hidden, Parametric
      */
     public function width() : int
     {
-        return $this->bias ? $this->neurons + 1 : $this->neurons;
+        return $this->neurons;
     }
 
     /**
@@ -125,13 +124,12 @@ class Dense implements Hidden, Parametric
             $scale = sqrt(6 / $fanIn);
         }
 
-        $fanOut = $this->width();
-
-        $w = Matrix::uniform($fanOut, $fanIn)->scalarMultiply($scale);
+        $w = Matrix::uniform($this->neurons, $fanIn)
+            ->multiplyScalar($scale);
 
         $this->weights = new Parameter($w);
 
-        return $fanOut;
+        return $this->neurons;
     }
 
     /**
@@ -145,23 +143,12 @@ class Dense implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $z = $this->weights->w()->dot($input);
+        $this->z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
-        if ($this->bias === true) {
-            $z = $z->rowExclude($z->m() - 1);
-        }
+        $this->computed = $this->activationFunction->compute($this->z);
 
-        $activations = $this->activationFunction->compute($z);
-
-        if ($this->bias === true) {
-            $biases = Matrix::ones(1, $z->n());
-
-            $activations = $activations->augmentBelow($biases);
-        }
-
-        $this->computed = $activations;
-
-        return $activations;
+        return $this->computed;
     }
 
     /**
@@ -172,25 +159,14 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->dot($input);
+        $z = $this->weights->w()->dot($input)
+            ->add($this->biases->w()->repeat(1, $input->n()));
 
-        if ($this->bias === true) {
-            $z = $z->rowExclude($z->m() - 1);
-        }
-
-        $activations = $this->activationFunction->compute($z);
-
-        if ($this->bias === true) {
-            $biases = Matrix::ones(1, $z->n());
-
-            $activations = $activations->augmentBelow($biases);
-        }
-
-        return $activations;
+        return $this->activationFunction->compute($z);
     }
 
     /**
-     * Calculate the gradients of the layer and update the parameters.
+     * Calculate the gradients and update the parameters of the layer.
      *
      * @param  callable  $prevGradients
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
@@ -209,13 +185,17 @@ class Dense implements Hidden, Parametric
             ->multiply($prevGradients());
 
         $dW = $dA->dot($this->input->transpose());
+        $dB = $dA->mean()->asColumnMatrix();
+
+        $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
+        $this->biases->update($optimizer->step($this->biases, $dB));
 
         unset($this->input, $this->z, $this->computed);
 
-        return function () use ($dA) {
-            return $this->weights->w()->transpose()->dot($dA);
+        return function () use ($w, $dA) {
+            return $w->transpose()->dot($dA);
         };
     }
 
@@ -228,6 +208,7 @@ class Dense implements Hidden, Parametric
     {
         return [
             'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -240,5 +221,6 @@ class Dense implements Hidden, Parametric
     public function restore(array $parameters) : void
     {
         $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

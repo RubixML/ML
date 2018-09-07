@@ -15,7 +15,7 @@ class DenseTest extends TestCase
 
     public function setUp()
     {
-        $this->layer = new Dense(10, new ELU(), true);
+        $this->layer = new Dense(10, new ELU());
     }
 
     public function test_build_layer()
@@ -28,6 +28,6 @@ class DenseTest extends TestCase
 
     public function test_width()
     {
-        $this->assertEquals(11, $this->layer->width());
+        $this->assertEquals(10, $this->layer->width());
     }
 }
