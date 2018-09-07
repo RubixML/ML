@@ -122,6 +122,32 @@ class MatrixTest extends TestCase
         $this->assertCount(9, $d);
     }
 
+    public function test_minimum()
+    {
+        $minimum = Matrix::minimum($this->a, $this->c)->asArray();
+
+        $outcome = [
+            [4, -17, -12],
+            [1, 3, -2],
+            [-10, -6, -9],
+        ];
+
+        $this->assertEquals($outcome, $minimum);
+    }
+
+    public function test_maximum()
+    {
+        $minimum = Matrix::maximum($this->a, $this->c)->asArray();
+
+        $outcome = [
+            [22, 6, 12],
+            [4, 11, 5],
+            [20, -1, 14],
+        ];
+
+        $this->assertEquals($outcome, $minimum);
+    }
+
     public function test_shape()
     {
         $this->assertEquals([3, 3], $this->a->shape());
@@ -540,6 +566,28 @@ class MatrixTest extends TestCase
         $this->assertEquals(22.0, $this->a->maxNorm());
         $this->assertEquals(13.0, $this->b->maxNorm());
         $this->assertEquals(14.0, $this->c->maxNorm());
+    }
+
+    public function test_binarize()
+    {
+        $outcome = [
+            [1, 0, 1],
+            [1, 1, 0],
+            [1, 0, 0],
+        ];
+
+        $this->assertEquals($outcome, $this->a->binarize()->asArray());
+    }
+
+    public function test_negate()
+    {
+        $outcome = [
+            [-22, 17, -12],
+            [-4, -11, 2],
+            [-20, 6, 9],
+        ];
+
+        $this->assertEquals($outcome, $this->a->negate()->asArray());
     }
 
     public function test_row_exclude()

@@ -157,24 +157,18 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = $this->alpha * $this->weights->w()->rowSum(0);
+        $expected = new Matrix([$labels], false);
 
-        $dL = [];
-        $cost = 0.;
+        $delta = $this->costFunction
+            ->compute($expected, $this->z);
 
-        foreach ($this->z->row(0) as $i => $activation) {
-            $expected = $labels[$i];
+        $penalties = $this->weights->w()->sum()->asColumnMatrix()
+            ->multiplyScalar($this->alpha)
+            ->repeat(1, $this->z->n());
 
-            $computed = $this->costFunction->compute($expected, $activation);
-
-            $cost += $computed;
-
-            $dL[$i] = $this->costFunction
-                ->differentiate($expected, $activation, $computed)
-                + $penalty;
-        }
-
-        $dL = new Matrix([$dL]);
+        $dL = $this->costFunction
+            ->differentiate($expected, $this->z, $delta)
+            ->add($penalties);
 
         $dW = $dL->dot($this->input->transpose());
         $dB = $dL->mean()->asColumnMatrix();
@@ -183,6 +177,8 @@ class Continuous implements Output
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
+
+        $cost = $delta->sum()->sum();
 
         unset($this->input, $this->z);
 

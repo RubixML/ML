@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
+
 /**
  * Least Squares
  *
@@ -27,25 +29,26 @@ class LeastSquares implements CostFunction
     /**
      * Compute the cost.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function compute(float $expected, float $activation) : float
+    public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return 0.5 * ($activation - $expected) ** 2;
+        return $activations->subtract($expected)->square()
+            ->multiplyScalar(0.5);
     }
 
     /**
      * Calculate the derivative of the cost function.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @param  float  $computed
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @param  \Rubix\ML\Other\Structures\Matrix  $delta
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function differentiate(float $expected, float $activation, float $computed) : float
+    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        return $activation - $expected;
+        return $activations->subtract($expected);
     }
 }

@@ -196,24 +196,24 @@ class Binary implements Output
                 . ' backpropagating.');
         }
 
-        $penalty = $this->alpha * $this->weights->w()->rowSum(0);
+        $expected = [];
 
-        $dL = [];
-        $cost = 0.;
-
-        foreach ($this->computed[0] as $i => $activation) {
-            $expected = $this->classes[$labels[$i]];
-
-            $computed = $this->costFunction->compute($expected, $activation);
-
-            $cost += $computed;
-
-            $dL[$i] = $this->costFunction
-                ->differentiate($expected, $activation, $computed)
-                + $penalty;
+        foreach ($labels as $j => $label) {
+            $expected[$j] = $this->classes[$label];
         }
 
-        $dL = new Matrix([$dL]);
+        $expected = new Matrix([$expected], false);
+
+        $delta = $this->costFunction
+            ->compute($expected, $this->computed);
+
+        $penalties = $this->weights->w()->sum()->asColumnMatrix()
+            ->multiplyScalar($this->alpha)
+            ->repeat(1, $this->computed->n());
+
+        $dL = $this->costFunction
+            ->differentiate($expected, $this->computed, $delta)
+            ->add($penalties);
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)
@@ -226,6 +226,8 @@ class Binary implements Output
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
+
+        $cost = $delta->sum()->sum();
 
         unset($this->input, $this->z, $this->computed);
 

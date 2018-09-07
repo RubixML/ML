@@ -93,7 +93,7 @@ class Adam implements Optimizer
 
         if ($epsilon <= 0.) {
             throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0');
+                . ' 0.');
         }
 
         $this->rate = $rate;

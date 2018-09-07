@@ -2,6 +2,7 @@
 
 namespace Rubix\Tests\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
@@ -9,22 +10,28 @@ use PHPUnit\Framework\TestCase;
 class RelativeEntropyTest extends TestCase
 {
     const TOLERANCE = 1e-10;
-    
+
     protected $costFunction;
 
     protected $expected;
 
     protected $activation;
 
-    protected $computed;
+    protected $delta;
 
     public function setUp()
     {
-        $this->expected = 1.0;
+        $this->expected = new Matrix([[1.], [0.], [0.], [1.], [0.]]);
 
-        $this->activation = 0.8;
+        $this->activation = new Matrix([[0.99], [0.2], [0.7], [0.80], [0.02]]);
 
-        $this->computed = 0.22314355128920965;
+        $this->delta = new Matrix([
+            [0.010050335852491413],
+            [-0.],
+            [-0.],
+            [0.22314355128920965],
+            [-0.],
+        ]);
 
         $this->costFunction = new RelativeEntropy();
     }
@@ -37,15 +44,27 @@ class RelativeEntropyTest extends TestCase
 
     public function test_compute()
     {
-        $cost = $this->costFunction->compute($this->expected, $this->activation);
+        $cost = $this->costFunction
+            ->compute($this->expected, $this->activation)
+            ->asArray();
 
-        $this->assertEquals($this->computed, $cost, '', self::TOLERANCE);
+        $this->assertEquals($this->delta->asArray(), $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
+        $derivative = $this->costFunction
+            ->differentiate($this->expected, $this->activation, $this->delta)
+            ->asArray();
 
-        $this->assertEquals(-0.24999999984374993, $derivative, '', self::TOLERANCE);
+        $outcome = [
+            [-0.010101009998979706],
+            [1.],
+            [1.],
+            [-0.24999999984374993],
+            [1.],
+        ];
+
+        $this->assertEquals($outcome, $derivative);
     }
 }

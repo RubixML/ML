@@ -40,7 +40,7 @@ $dataset = new Labeled($samples, $labels);
 $estimator = new Pipeline(new MLPRegressor([
     new Dense(30, new LeakyReLU()),
     new Dense(30, new LeakyReLU()),
-], 50, new Adam(0.001), 1e-3, new LeastSquares(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
+], 50, new Adam(0.001), 1e-4, new LeastSquares(), 1e-5, new MeanSquaredError(), 0.1, 3, 300), [
         new NumericStringConverter(),
         new MissingDataImputer('?'),
         new ZScaleStandardizer(),

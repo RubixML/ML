@@ -2,6 +2,7 @@
 
 namespace Rubix\Tests\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;
@@ -14,15 +15,21 @@ class LeastSquaresTest extends TestCase
 
     protected $activation;
 
-    protected $computed;
+    protected $delta;
 
     public function setUp()
     {
-        $this->expected = 1.0;
+        $this->expected = new Matrix([[36.], [22.], [18.], [41.5], [38.]]);
 
-        $this->activation = 0.8;
+        $this->activation = new Matrix([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
-        $this->computed = 0.01999999999999999;
+        $this->delta = new Matrix([
+            [2.0402000000000062],
+            [2.],
+            [89.78],
+            [3.6450000000000076],
+            [0.125],
+        ]);
 
         $this->costFunction = new LeastSquares();
     }
@@ -35,15 +42,27 @@ class LeastSquaresTest extends TestCase
 
     public function test_compute()
     {
-        $cost = $this->costFunction->compute($this->expected, $this->activation);
+        $cost = $this->costFunction
+            ->compute($this->expected, $this->activation)
+            ->asArray();
 
-        $this->assertEquals($this->computed, $cost);
+        $this->assertEquals($this->delta->asArray(), $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction->differentiate($this->expected, $this->activation, $this->computed);
+        $derivative = $this->costFunction
+            ->differentiate($this->expected, $this->activation, $this->delta)
+            ->asArray();
 
-        $this->assertEquals(-0.19999999999999996, $derivative);
+        $outcome = [
+            [-2.020000000000003],
+            [-2.0],
+            [-13.4],
+            [2.700000000000003],
+            [0.5],
+        ];
+
+        $this->assertEquals($outcome, $derivative);
     }
 }

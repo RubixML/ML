@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -53,25 +54,29 @@ class Exponential implements CostFunction
     /**
      * Compute the cost.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function compute(float $expected, float $activation) : float
+    public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return $this->tau * M_E ** ((1. / $this->tau) * ($activation - $expected) ** 2);
+        return $activations->subtract($expected)->square()
+            ->multiplyScalar((1. / $this->tau))->exp()
+            ->multiplyScalar($this->tau);
     }
 
     /**
      * Calculate the derivative of the cost function.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @param  float  $computed
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @param  \Rubix\ML\Other\Structures\Matrix  $delta
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function differentiate(float $expected, float $activation, float $computed) : float
+    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        return (2. / $this->tau) * ($activation - $expected) * $computed;
+        return $activations->subtract($expected)
+            ->multiply($delta)
+            ->multiplyScalar(2. / $this->tau);
     }
 }

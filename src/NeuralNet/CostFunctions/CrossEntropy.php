@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
+use InvalidArgumentException;
+
 /**
  * Cross Entropy
  *
@@ -19,6 +22,29 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 class CrossEntropy implements CostFunction
 {
     /**
+     * The derivative smoothing parameter i.e a small value to add to the
+     * denominator of the derivative calculation for numerical stability.
+     *
+     * @var float
+     */
+    protected $epsilon;
+
+    /**
+     * @param  float  $epsilon
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(float $epsilon = 1e-10)
+    {
+        if ($epsilon <= 0.) {
+            throw new InvalidArgumentException('Epsilon must be greater than'
+                . ' 0.');
+        }
+
+        $this->epsilon = $epsilon;
+    }
+
+    /**
      * Return a tuple of the min and max output value for this function.
      *
      * @return array
@@ -31,28 +57,38 @@ class CrossEntropy implements CostFunction
     /**
      * Compute the cost.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function compute(float $expected, float $activation) : float
+    public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return -($activation * log($activation)
-            + (1. - $expected) * log(1. - $activation));
+        $ones = Matrix::ones(...$activations->shape());
+
+        $eHat = $ones->subtract($expected);
+        $aHat = $ones->subtract($activations);
+
+        return $activations->multiply($activations->log())
+            ->add($eHat->multiply($aHat->log()))
+            ->negate();
     }
 
     /**
      * Calculate the derivative of the cost function.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @param  float  $computed
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @param  \Rubix\ML\Other\Structures\Matrix  $delta
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function differentiate(float $expected, float $activation, float $computed) : float
+    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        $delta = ((1. - $activation) * $activation);
+        $denominator = $activations->subtractScalar(1.)
+            ->multiply($activations)
+            ->addScalar($this->epsilon);
 
-        return $delta !== 0. ? ($activation - $expected) / $delta : 1.;
+        return $expected->subtract($activations)
+            ->addScalar($this->epsilon)
+            ->divide($denominator);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
+use Rubix\ML\Other\Structures\Matrix;
+
 interface CostFunction
 {
-    const EPSILON = 1e-10;
-
     /**
      * Return a tuple of the min and max output value for this function.
      *
@@ -16,19 +16,19 @@ interface CostFunction
     /**
      * Compute the cost.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function compute(float $expected, float $activation) : float;
+    public function compute(Matrix $expected, Matrix $activations) : Matrix;
 
     /**
      * Calculate the derivative of the cost function.
      *
-     * @param  float  $expected
-     * @param  float  $activation
-     * @param  float  $computed
-     * @return float
+     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
+     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
+     * @param  \Rubix\ML\Other\Structures\Matrix  $delta
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function differentiate(float $expected, float $activation, float $computed) : float;
+    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix;
 }

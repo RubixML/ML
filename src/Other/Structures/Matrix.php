@@ -213,6 +213,52 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Calculate the elementwise minima between two matrices and return them
+     * in a new matrix.
+     *
+     * @param  \Rubix\ML\Other\Structures\Matrix  $a
+     * @param  \Rubix\ML\Other\Structures\Matrix  $b
+     * @return self
+     */
+    public static function minimum(self $a, self $b) : self
+    {
+        $c = [[]];
+
+        foreach ($a as $i => $rowA) {
+            $rowB = $b[$i];
+
+            foreach ($rowA as $j => $value) {
+                $c[$i][$j] = min($value, $rowB[$j]);
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Calculate the elementwise maxima between two matrices and return them
+     * in a new matrix.
+     *
+     * @param  \Rubix\ML\Other\Structures\Matrix  $a
+     * @param  \Rubix\ML\Other\Structures\Matrix  $b
+     * @return self
+     */
+    public static function maximum(self $a, self $b) : self
+    {
+        $c = [[]];
+
+        foreach ($a as $i => $rowA) {
+            $rowB = $b[$i];
+
+            foreach ($rowA as $j => $value) {
+                $c[$i][$j] = max($value, $rowB[$j]);
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
      * @param  array[]  $a
      * @param  bool  $validate
      * @throws \InvalidArgumentException
@@ -835,6 +881,38 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return the minimum of each row in the matrix.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function min() : Vector
+    {
+        $b = [];
+
+        foreach ($this->a as $row) {
+            $b[] = min($row);
+        }
+
+        return new Vector($b, false);
+    }
+
+    /**
+     * Return the maximum of each row in the matrix.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function max() : Vector
+    {
+        $b = [];
+
+        foreach ($this->a as $row) {
+            $b[] = max($row);
+        }
+
+        return new Vector($b, false);
+    }
+
+    /**
      * Compute the means of each row and return them in a vector.
      *
      * @return \Rubix\ML\Other\Structures\Vector
@@ -853,18 +931,12 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Compute the covariance of this matrix and return it in a new matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Vector  $mean
-     * @throws \InvalidArgumentException
      * @return self
      */
-    public function covariance(Vector $mean) : self
+    public function covariance() : self
     {
-        if ($mean->n() !== $this->n) {
-            throw new InvalidArgumentException('Dimensionality of the mean'
-                . ' vector does not match this matrix.');
-        }
-
-        $mean = $mean->asRowMatrix()->repeat($this->m, 1);
+        $mean = $this->transpose()->mean()
+            ->asRowMatrix()->repeat($this->m, 1);
 
         $b = $this->subtract($mean);
 
@@ -1009,6 +1081,24 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         foreach ($this->a as $i => $row) {
             foreach ($row as $j => $value) {
                 $b[$i][$j] = $value > $threshold ? 1 : 0;
+            }
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Negate the matrix i.e take the negative of each value elementwise.
+     *
+     * @return self
+     */
+    public function negate() : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[$i][$j] = -$value;
             }
         }
 
