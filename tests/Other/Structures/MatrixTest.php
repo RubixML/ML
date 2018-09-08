@@ -568,6 +568,17 @@ class MatrixTest extends TestCase
         $this->assertEquals(14.0, $this->c->maxNorm());
     }
 
+    public function test_clip()
+    {
+        $outcome = [
+            [22, 0., 12],
+            [4, 11, 0.],
+            [20, 0., 0.],
+        ];
+
+        $this->assertEquals($outcome, $this->a->clip(0., INF)->asArray());
+    }
+
     public function test_binarize()
     {
         $outcome = [

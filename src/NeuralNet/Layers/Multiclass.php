@@ -117,8 +117,8 @@ class Multiclass implements Output
         $this->alpha = $alpha;
         $this->activationFunction = new Softmax();
         $this->costFunction = $costFunction;
-        $this->weights = new Parameter(new Matrix([[]]));
-        $this->biases = new Parameter(Matrix::ones($this->width(), 1));
+        $this->weights = new Parameter(Matrix::empty());
+        $this->biases = new Parameter(Matrix::empty());
     }
 
     /**
@@ -142,9 +142,13 @@ class Multiclass implements Output
 
         $fanOut = $this->width();
 
-        $w = Matrix::uniform($fanOut, $fanIn)->multiplyScalar($scale);
+        $w = Matrix::uniform($fanOut, $fanIn)
+            ->multiplyScalar($scale);
+
+        $b = Matrix::zeros($fanOut, 1);
 
         $this->weights = new Parameter($w);
+        $this->biases = new Parameter($b);
 
         return $fanOut;
     }

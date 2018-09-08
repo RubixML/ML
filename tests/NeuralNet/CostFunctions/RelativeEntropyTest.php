@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class RelativeEntropyTest extends TestCase
 {
-    const TOLERANCE = 1e-10;
-
     protected $costFunction;
 
     protected $expected;
@@ -27,10 +25,10 @@ class RelativeEntropyTest extends TestCase
 
         $this->delta = new Matrix([
             [0.010050335852491413],
-            [-0.],
-            [-0.],
+            [-4.444226394744681E-19],
+            [-4.569502691594218E-19],
             [0.22314355128920965],
-            [-0.],
+            [-4.2139678854452766E-19],
         ]);
 
         $this->costFunction = new RelativeEntropy();
@@ -58,11 +56,11 @@ class RelativeEntropyTest extends TestCase
             ->asArray();
 
         $outcome = [
-            [-0.010101009998979706],
-            [1.],
-            [1.],
-            [-0.24999999984374993],
-            [1.],
+            [-0.01010101010101011],
+            [1.0],
+            [1.0],
+            [-0.24999999999999994],
+            [1.0],
         ];
 
         $this->assertEquals($outcome, $derivative);

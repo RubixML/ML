@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use MathPHP\Probability\Distribution\Continuous\Uniform;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Wild Guess
  *
- * It's just what you think it is. Make a guess somewhere in between the minimum
- * and maximum values observed during fitting.
+ * It is what you think it is. Make a guess somewhere in between the minimum
+ * and maximum values observed during fitting with equal probability given to
+ * all values within range.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,11 +19,40 @@ use RuntimeException;
 class WildGuess implements Continuous
 {
     /**
-     * The probability distribution to sample from.
+     * The number of decimal places of precision for each guess.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Uniform|null
+     * @var int
      */
-    protected $distribution;
+    protected $precision;
+
+    /**
+     * The minimum value of the fitted data.
+     *
+     * @var float|null
+     */
+    protected $min;
+
+    /**
+     * The maximum value of the fitted data.
+     *
+     * @var float|null
+     */
+    protected $max;
+
+    /**
+     * @param  int  $precision
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(int $precision = 2)
+    {
+        if ($precision < 0) {
+            throw new InvalidArgumentException('The number of decimal places'
+                . ' cannot be less than 0.');
+        }
+
+        $this->precision = $precision;
+    }
 
     /**
      * Copy the values.
@@ -39,7 +68,8 @@ class WildGuess implements Continuous
                 . ' at least one value.');
         }
 
-        $this->distribution = new Uniform(min($values), max($values));
+        $this->min = min($values);
+        $this->max = max($values);
     }
 
     /**
@@ -50,10 +80,13 @@ class WildGuess implements Continuous
      */
     public function guess()
     {
-        if (is_null($this->distribution)) {
+        if (is_null($this->min) or is_null($this->max)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->distribution->rand();
+        $min = (int) round($this->min * $this->precision);
+        $max = (int) round($this->max * $this->precision);
+
+        return rand($min, $max) / $this->precision;
     }
 }

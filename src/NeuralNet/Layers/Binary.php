@@ -118,8 +118,8 @@ class Binary implements Output
         $this->alpha = $alpha;
         $this->activationFunction = new Sigmoid();
         $this->costFunction = $costFunction;
-        $this->weights = new Parameter(new Matrix([[]]));
-        $this->biases = new Parameter(Matrix::ones(1, 1));
+        $this->weights = new Parameter(Matrix::empty());
+        $this->biases = new Parameter(Matrix::empty());
     }
 
     /**
@@ -141,9 +141,13 @@ class Binary implements Output
     {
         $scale = sqrt(6 / $fanIn);
 
-        $w = Matrix::uniform(1, $fanIn)->multiplyScalar($scale);
+        $w = Matrix::uniform(1, $fanIn)
+            ->multiplyScalar($scale);
+
+        $b = Matrix::zeros(1, 1);
 
         $this->weights = new Parameter($w);
+        $this->biases = new Parameter($b);
 
         return 1;
     }

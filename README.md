@@ -2664,7 +2664,9 @@ In neural networks, the cost function is a function that the network wants to mi
 Cross Entropy, or log loss, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
 
 ##### Parameters:
-This Cost Function does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epsilon | 1e-20 | float | The smoothing parameter i.e a small value to add to the loss for numerical stability. |
 
 ##### Example:
 ```php
@@ -2705,7 +2707,9 @@ $costFunction = new LeastSquares();
 Relative Entropy or *Kullback-Leibler divergence* is a measure of how the expectation and activation of the network diverge.
 
 ##### Parameters:
-This Cost Function does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | epsilon | 1e-20 | float | The smoothing parameter i.e a small value to add to the loss for numerical stability. |
 
 ##### Example:
 ```php
@@ -3784,14 +3788,14 @@ Strategies are broken up into the Categorical type and the Continuous type. You 
 Here are the guessing Strategies available to use in Rubix.
 
 ### Blurry Mean
-This continuous Strategy that adds a blur factor to the mean of a set of values producing a random guess around the mean.
+This strategy adds a blur factor to the mean of a set of values producing a random guess centered around the mean. The amount of blur is determined as the blur factor times the standard deviation of the fitted data.
 
 ##### Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | blur | 0.2 | float | The amount of Gaussian noise by ratio of the standard deviation to add to the guess. |
+| 1 | blur | 0.3 | float | The amount of gaussian noise to add to the guess. |
 
 ##### Example:
 ```php
@@ -3801,14 +3805,14 @@ $strategy = new BlurryMean(0.05);
 ```
 
 ### Blurry Median
-Adds random Gaussian noise to the median of a set of values.
+A robust strategy that uses the median and median absolute deviation (MAD) of the fitted data to make guesses.
 
 ##### Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | blur | 0.2 | float | The amount of Gaussian noise by ratio of the interquartile range to add to the guess. |
+| 1 | blur | 0.3 | float | The amount of gaussian noise to add to the guess. |
 
 ##### Example:
 ```php
@@ -3865,18 +3869,20 @@ $strategy = new PopularityContest();
 ```
 
 ### Wild Guess
-It's just what you think it is. Make a guess somewhere in between the minimum and maximum values observed during fitting.
+It is what you think it is. Make a guess somewhere in between the minimum and maximum values observed during fitting with equal probability given to all values within range.
 
 ##### Continuous
 
 ##### Parameters:
-This Strategy does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | precision | 2 | int | The number of decimal places of precision for each guess. |
 
 ##### Example:
 ```php
 use Rubix\ML\Other\Strategies\WildGuess;
 
-$strategy = new WildGuess();
+$strategy = new WildGuess(5);
 ```
 
 ### Helpers

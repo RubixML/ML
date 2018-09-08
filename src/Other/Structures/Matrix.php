@@ -213,6 +213,16 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Build an empty matrix.
+     *
+     * @return self
+     */
+    public static function empty() : self
+    {
+        return new self([[]], false);
+    }
+
+    /**
      * Calculate the elementwise minima between two matrices and return them
      * in a new matrix.
      *
@@ -1065,6 +1075,39 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $norm;
+    }
+
+    /**
+     * Clip the elements in the matrix to be between given minimum and maximum
+     * and return a new matrix.
+     *
+     * @param  float  $min
+     * @param  float  $max
+     * @return self
+     */
+    public function clip(float $min, float $max) : self
+    {
+        $b = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                if ($value > $max) {
+                    $b[$i][$j] = $max;
+
+                    continue 1;
+                }
+
+                if ($value < $min) {
+                    $b[$i][$j] = $min;
+
+                    continue 1;
+                }
+
+                $b[$i][$j] = $value;
+            }
+        }
+
+        return new self($b, false);
     }
 
     /**

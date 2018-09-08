@@ -110,8 +110,8 @@ class BatchNorm implements Hidden, Parametric
 
         $this->epsilon = $epsilon;
         $this->width = 0;
-        $this->beta = new Parameter(new Matrix([[]]));
-        $this->gamma = new Parameter(new Matrix([[]]));
+        $this->beta = new Parameter(Matrix::empty());
+        $this->gamma = new Parameter(Matrix::empty());
         $this->counter = 0;
     }
 

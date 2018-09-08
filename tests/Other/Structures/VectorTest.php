@@ -15,11 +15,15 @@ class VectorTest extends TestCase
 
     protected $b;
 
+    protected $c;
+
     public function setUp()
     {
         $this->a = new Vector([-15, 25, 35, -36, -72, 89, 106, 45], true);
 
-        $this->b =  new Vector([0.25, 0.1, 2., -0.5, -1., -3.0, 3.3, 2.0], false);
+        $this->b = new Vector([0.25, 0.1, 2., -0.5, -1., -3.0, 3.3, 2.0], false);
+
+        $this->c = new Vector([4., 6.5, 2.9, 20., 2.6, 11.9]);
     }
 
     public function test_build_structure()
@@ -84,11 +88,6 @@ class VectorTest extends TestCase
         });
 
         $this->assertEquals(110.3671875, $scalar);
-    }
-
-    public function test_sum()
-    {
-        $this->assertEquals(177., $this->a->sum());
     }
 
     public function test_dot()
@@ -169,6 +168,40 @@ class VectorTest extends TestCase
         $this->assertEquals($outcome, $this->a->addScalar(10)->asArray());
     }
 
+    public function test_sum()
+    {
+        $this->assertEquals(177., $this->a->sum());
+    }
+
+    public function test_product()
+    {
+        $this->assertEquals(-14442510600000.0, $this->a->product());
+    }
+
+    public function test_abs()
+    {
+        $outcome = [15, 25, 35, 36, 72, 89, 106, 45];
+
+        $this->assertEquals($outcome, $this->a->abs()->asArray());
+    }
+
+    public function test_square()
+    {
+        $outcome = [225, 625, 1225, 1296, 5184, 7921, 11236, 2025];
+
+        $this->assertEquals($outcome, $this->a->square()->asArray());
+    }
+
+    public function test_sqrt()
+    {
+        $outcome = [
+            2., 2.5495097567963922, 1.70293863659264, 4.47213595499958,
+            1.61245154965971, 3.449637662132068,
+        ];
+
+        $this->assertEquals($outcome, $this->c->sqrt()->asArray());
+    }
+
     public function test_exp()
     {
         $outcome = [
@@ -178,6 +211,16 @@ class VectorTest extends TestCase
         ];
 
         $this->assertEquals($outcome, $this->a->exp()->asArray());
+    }
+
+    public function test_log()
+    {
+        $outcome = [
+            1.3862943611198906, 1.8718021769015913, 1.0647107369924282,
+            2.995732273553991, 0.9555114450274363, 2.4765384001174837,
+        ];
+
+        $this->assertEquals($outcome, $this->c->log()->asArray());
     }
 
     public function test_scalar_subtract()

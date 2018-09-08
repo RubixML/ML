@@ -4,14 +4,14 @@ namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use MathPHP\Probability\Distribution\Continuous\Normal;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Blurry Median
  *
- * Adds random Gaussian noise to the median of a set of values.
+ * A robust strategy that uses the median and median absolute deviation (MAD)
+ * of the fitted data to make guesses.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,27 +19,35 @@ use RuntimeException;
  */
 class BlurryMedian implements Continuous
 {
+    const TWO_PI = 2. * M_PI;
+
     /**
-     * The amount of gaussian noise as a factor of one interquartile range to add
-     * to the guess.
+     * The amount of gaussian noise to add to the guess.
      *
      * @var float
      */
     protected $blur;
 
     /**
-     * The probability distribution to sample from.
+     * The median of the fitted values.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Normal|null
+     * @var float|null
      */
-    protected $distribution;
+    protected $median;
+
+    /**
+     * The median absolute deviation of the fitted values.
+     *
+     * @var float|null
+     */
+    protected $mad;
 
     /**
      * @param  float  $blur
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.1)
+    public function __construct(float $blur = 0.3)
     {
         if ($blur < 0.or $blur > 1.) {
             throw new InvalidArgumentException('Blur factor must be between 0'
@@ -62,22 +70,33 @@ class BlurryMedian implements Continuous
                 . ' at least one value.');
         }
 
-        $median = Stats::median($values);
-
-        $this->distribution = new Normal($median, $this->blur * $median);
+        list($this->median, $this->mad) = Stats::medMad($values);
     }
 
     /**
-     * Guess a value based on the mean plus a fuzz factor of Gaussian noise.
+     * Make a guess.
      *
      * @return mixed
      */
     public function guess()
     {
-        if (is_null($this->distribution)) {
+        if (is_null($this->median) or is_null($this->mad)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->distribution->rand();
+        return $this->median + $this->blur * $this->gaussian() * $this->mad;
+    }
+
+    /**
+     * Generate a random number from a gaussian distribution between -1 and 1.
+     *
+     * @return float
+     */
+    public function gaussian() : float
+    {
+        $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+        $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+
+        return ((-2. * log($r1)) ** 0.5) * cos(self::TWO_PI * $r2);
     }
 }

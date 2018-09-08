@@ -160,16 +160,6 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * The sum of the vector.
-     *
-     * @return float
-     */
-    public function sum() : float
-    {
-        return (float) array_sum($this->a);
-    }
-
-    /**
      * Compute the dot product of this vector and another vector.
      *
      * @param  \Rubix\ML\Other\Structures\Vector  $b
@@ -211,6 +201,32 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new Matrix($c);
+    }
+
+    /**
+     * The sum of the vector.
+     *
+     * @return float
+     */
+    public function sum() : float
+    {
+        return (float) array_sum($this->a);
+    }
+
+    /**
+     * Return the product of the vector.
+     *
+     * @return float
+     */
+    public function product() : float
+    {
+        $product = 1.;
+
+        foreach ($this->a as $value) {
+            $product *= $value;
+        }
+
+        return $product;
     }
 
     /**
@@ -398,6 +414,54 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Take the absolute value of the vector.
+     *
+     * @return self
+     */
+    public function abs() : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            $b[] = abs($value);
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Square the vector.
+     *
+     * @return self
+     */
+    public function square() : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            $b[] = $value ** 2;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Take the square root of the vector.
+     *
+     * @return self
+     */
+    public function sqrt() : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            $b[] = $value ** 0.5;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
      * Exponentiate each element in the vector.
      *
      * @return self
@@ -411,6 +475,53 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return new self($b, false);
+    }
+
+    /**
+     * Exponentiate each element in the vector.
+     *
+     * @param  float  $base
+     * @return self
+     */
+    public function log(float $base = M_E) : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            $b[] = log($value, $base);
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Return the minimum element in the vector.
+     *
+     * @return float
+     */
+    public function min() : float
+    {
+        return (float) min($this->a);
+    }
+
+    /**
+     * Return the maximum element in the vector.
+     *
+     * @return float
+     */
+    public function max() : float
+    {
+        return (float) max($this->a);
+    }
+
+    /**
+     * Return the mean of the vector.
+     *
+     * @return float
+     */
+    public function mean() : float
+    {
+        return array_sum($this->a) / $this->n;
     }
 
     /**

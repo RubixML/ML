@@ -30,7 +30,7 @@ class RelativeEntropy implements CostFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon = 1e-10)
+    public function __construct(float $epsilon = 1e-20)
     {
         if ($epsilon <= 0.) {
             throw new InvalidArgumentException('Epsilon must be greater than'
@@ -59,11 +59,10 @@ class RelativeEntropy implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        $t = $expected->addScalar($this->epsilon)
-            ->divide($activations->addScalar($this->epsilon))
-            ->log();
+        $expected = $expected->clip($this->epsilon, 1.);
+        $activations = $activations->clip($this->epsilon, 1.);
 
-        return $expected->multiply($t);
+        return $expected->multiply($expected->divide($activations)->log());
     }
 
     /**
@@ -76,8 +75,10 @@ class RelativeEntropy implements CostFunction
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
+        $expected = $expected->clip($this->epsilon, 1.);
+        $activations = $activations->clip($this->epsilon, 1.);
+
         return $activations->subtract($expected)
-            ->addScalar($this->epsilon)
-            ->divide($activations->addScalar($this->epsilon));
+            ->divide($activations);
     }
 }

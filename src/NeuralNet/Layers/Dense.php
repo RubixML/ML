@@ -95,8 +95,8 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->activationFunction = $activationFunction;
-        $this->weights = new Parameter(new Matrix([[]]));
-        $this->biases = new Parameter(Matrix::ones($neurons, 1));
+        $this->weights = new Parameter(Matrix::empty());
+        $this->biases = new Parameter(Matrix::empty());
     }
 
     /**
@@ -127,7 +127,10 @@ class Dense implements Hidden, Parametric
         $w = Matrix::uniform($this->neurons, $fanIn)
             ->multiplyScalar($scale);
 
+        $b = Matrix::zeros($this->neurons, 1);
+
         $this->weights = new Parameter($w);
+        $this->biases = new Parameter($b);
 
         return $this->neurons;
     }

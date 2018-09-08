@@ -4,15 +4,15 @@ namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use MathPHP\Probability\Distribution\Continuous\Normal;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Blurry Mean
  *
- * This continuous Strategy that adds a blur factor to the mean of a set of
- * values producing a random guess around the mean.
+ * This strategy adds a blur factor to the mean of a set of values producing a
+ * random guess centered around the mean. The amount of blur is determined as
+ * the blur factor times the standard deviation of the fitted data.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -20,30 +20,38 @@ use RuntimeException;
  */
 class BlurryMean implements Continuous
 {
+    const TWO_PI = 2. * M_PI;
+
     /**
-     * The amount of gaussian noise as a factor of one standard deviation to add
-     * to the guess.
+     * The amount of gaussian noise to add to the guess.
      *
      * @var float
      */
     protected $blur;
 
     /**
-     * The probability distribution to sample from.
+     * The mean of the fitted values.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Normal|null
+     * @var float|null
      */
-    protected $distribution;
+    protected $mean;
+
+    /**
+     * The standard deviation of the fitted values.
+     *
+     * @var float|null
+     */
+    protected $stddev;
 
     /**
      * @param  float  $blur
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $blur = 0.1)
+    public function __construct(float $blur = 0.3)
     {
         if ($blur < 0.) {
-            throw new InvalidArgumentException('Blurr factor must be between 0'
+            throw new InvalidArgumentException('Blur factor must be between 0'
                 . ' and 1.');
         }
 
@@ -64,23 +72,37 @@ class BlurryMean implements Continuous
                 . ' at least one value.');
         }
 
-        $mean = Stats::mean($values);
+        list($mean, $variance) = Stats::meanVar($values);
 
-        $this->distribution = new Normal($mean, $this->blur * $mean);
+        $this->mean = $mean;
+        $this->stddev = sqrt($variance);
     }
 
     /**
-     * Guess a value based on the mean plus a fuzz factor of Gaussian noise.
+     * Make a guess.
      *
      * @throws \RuntimeException
      * @return mixed
      */
     public function guess()
     {
-        if (is_null($this->distribution)) {
+        if (is_null($this->mean) or is_null($this->stddev)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->distribution->rand();
+        return $this->mean + $this->blur * $this->gaussian() * $this->stddev;
+    }
+
+    /**
+     * Generate a random number from a gaussian distribution between -1 and 1.
+     *
+     * @return float
+     */
+    public function gaussian() : float
+    {
+        $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+        $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
+
+        return ((-2. * log($r1)) ** 0.5) * cos(self::TWO_PI * $r2);
     }
 }

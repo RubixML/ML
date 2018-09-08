@@ -191,7 +191,7 @@ class FeedForward implements Network
     }
 
     /**
-     * Backpropagate the error determined by the previous layer and take a step
+     * Backpropagate the gradients from the previous layer and take a step
      * in the direction of the steepest descent.
      *
      * @param  array  $labels
@@ -199,15 +199,15 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        $prevErrors = null;
+        $prevGradients = null;
 
         $cost = 0.;
 
         foreach ($this->backPass as $layer) {
             if ($layer instanceof Output) {
-                list($prevErrors, $cost) = $layer->back($labels, $this->optimizer);
+                list($prevGradients, $cost) = $layer->back($labels, $this->optimizer);
             } else {
-                $prevErrors = $layer->back($prevErrors, $this->optimizer);
+                $prevGradients = $layer->back($prevGradients, $this->optimizer);
             }
         }
 

@@ -83,8 +83,8 @@ class Continuous implements Output
 
         $this->alpha = $alpha;
         $this->costFunction = $costFunction;
-        $this->weights = new Parameter(new Matrix([[]]));
-        $this->biases = new Parameter(Matrix::ones(1, 1));
+        $this->weights = new Parameter(Matrix::empty());
+        $this->biases = new Parameter(Matrix::empty());
     }
 
     /**
@@ -106,9 +106,13 @@ class Continuous implements Output
     {
         $scale = (6 / $fanIn) ** 0.25;
 
-        $w = Matrix::uniform(1, $fanIn)->multiplyScalar($scale);
+        $w = Matrix::uniform(1, $fanIn)
+            ->multiplyScalar($scale);
+
+        $b = Matrix::zeros(1, 1);
 
         $this->weights = new Parameter($w);
+        $this->biases = new Parameter($b);
 
         return 1;
     }

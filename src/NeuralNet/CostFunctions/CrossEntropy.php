@@ -34,7 +34,7 @@ class CrossEntropy implements CostFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $epsilon = 1e-10)
+    public function __construct(float $epsilon = 1e-20)
     {
         if ($epsilon <= 0.) {
             throw new InvalidArgumentException('Epsilon must be greater than'
@@ -83,12 +83,13 @@ class CrossEntropy implements CostFunction
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        $denominator = $activations->subtractScalar(1.)
+        $ones = Matrix::ones(...$activations->shape());
+
+        $denominator = $ones->subtract($activations)
             ->multiply($activations)
             ->addScalar($this->epsilon);
 
-        return $expected->subtract($activations)
-            ->addScalar($this->epsilon)
+        return $activations->subtract($expected)
             ->divide($denominator);
     }
 }
