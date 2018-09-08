@@ -21,8 +21,6 @@ use RuntimeException;
  */
 class RobustStandardizer implements Transformer
 {
-    const LAMBDA = 0.6745;
-
     /**
      * Should we center the data?
      *
@@ -127,9 +125,7 @@ class RobustStandardizer implements Transformer
                 if ($this->scale === true) {
                     $mad = $this->mads[$column];
 
-                    $feature = $mad !== 0.
-                        ? (self::LAMBDA * $feature) / $mad
-                        : 1.;
+                    $feature = $mad !== 0. ? $feature / $mad : 1.;
                 }
 
                 $sample[$column] = $feature;

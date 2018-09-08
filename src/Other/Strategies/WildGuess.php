@@ -55,7 +55,7 @@ class WildGuess implements Continuous
     }
 
     /**
-     * Copy the values.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \InvalidArgumentException
@@ -73,12 +73,12 @@ class WildGuess implements Continuous
     }
 
     /**
-     * Choose a random value between the minimum and the maximum of the fitted
-     * data.
+     * Make a continuous guess.
      *
-     * @return mixed
+     * @throws \RuntimeException
+     * @return float
      */
-    public function guess()
+    public function guess() : float
     {
         if (is_null($this->min) or is_null($this->max)) {
             throw new RuntimeException('Strategy has not been fitted.');

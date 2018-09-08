@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\NeuralNet;
 
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\Other\Structures\Matrix;
@@ -9,6 +11,7 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 
 /**
@@ -36,6 +39,13 @@ class FeedForward implements Network
     ];
 
     /**
+     * The function that computes the loss of bad activations.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
      * The gradient descent optimizer used to train the network.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
@@ -43,7 +53,7 @@ class FeedForward implements Network
     protected $optimizer;
 
     /**
-     * The memoized pathing of the backward pass.
+     * The memoized pathing of the backward pass through the hidden layers.
      *
      * @var array
      */
@@ -55,10 +65,12 @@ class FeedForward implements Network
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
      * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return void
      */
-    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output,
+                                CostFunction $costFunction, Optimizer $optimizer)
     {
         $this->layers[] = $input;
 
@@ -73,10 +85,11 @@ class FeedForward implements Network
 
         $this->layers[] = $output;
 
-        $this->optimizer = $optimizer;
-        $this->backPass = array_reverse(array_slice($this->layers, 1, null, true));
-
         $this->initialize();
+
+        $this->costFunction = $costFunction;
+        $this->optimizer = $optimizer;
+        $this->backPass = array_reverse($this->hidden());
     }
 
     /**
@@ -106,7 +119,7 @@ class FeedForward implements Network
      */
     public function hidden() : array
     {
-        return array_slice($this->layers, 1, count($this->layers) - 2, true);
+        return array_slice($this->layers, 1, $this->depth() - 2, true);
     }
 
     /**
@@ -116,7 +129,7 @@ class FeedForward implements Network
      */
     public function output() : Output
     {
-        return $this->layers[count($this->layers) - 1];
+        return $this->layers[$this->depth() - 1];
     }
 
     /**
@@ -156,15 +169,28 @@ class FeedForward implements Network
     }
 
     /**
+     * Do a forward and backward pass of the network in one call. Returns the
+     * loss.
+     *
+     * @param  \Rubix\ML\Datasets\Labeled  $batch
+     * @return float
+     */
+    public function roundtrip(Labeled $batch) : float
+    {
+        return $this->feed($batch)->backpropagate($batch);
+    }
+
+    /**
      * Feed a sample through the network and return the output activations
      * of each output neuron.
      *
-     * @param  array  $samples
+     * @param  \Rubix\ML\Datasets\Labeled  $batch
      * @return self
      */
-    public function feed(array $samples) : self
+    public function feed(Labeled $batch) : self
     {
-        $input = Matrix::build($samples)->transpose();
+        $input = Matrix::build($batch->samples())
+            ->transpose();
 
         foreach ($this->layers as $layer) {
             $input = $layer->forward($input);
@@ -174,44 +200,40 @@ class FeedForward implements Network
     }
 
     /**
+     * Backpropagate the gradients from the previous layer and take a step
+     * in the direction of the steepest descent.
+     *
+     * @param  \Rubix\ML\Datasets\Labeled  $batch
+     * @return float
+     */
+    public function backpropagate(Labeled $batch) : float
+    {
+        list($prevGradients, $cost) = $this->output()
+            ->back($batch->labels(), $this->costFunction, $this->optimizer);
+
+        foreach ($this->backPass as $layer) {
+            $prevGradients = $layer->back($prevGradients, $this->optimizer);
+        }
+
+        return $cost;
+    }
+
+    /**
      * Return the activations of the neurons at the output layer.
      *
-     * @param  array  $samples
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
-    public function infer(array $samples) : array
+    public function infer(Dataset $dataset) : array
     {
-        $input = Matrix::build($samples)->transpose();
+        $input = Matrix::build($dataset->samples())
+            ->transpose();
 
         foreach ($this->layers as $layer) {
             $input = $layer->infer($input);
         }
 
         return $input->transpose()->asArray();
-    }
-
-    /**
-     * Backpropagate the gradients from the previous layer and take a step
-     * in the direction of the steepest descent.
-     *
-     * @param  array  $labels
-     * @return float
-     */
-    public function backpropagate(array $labels) : float
-    {
-        $prevGradients = null;
-
-        $cost = 0.;
-
-        foreach ($this->backPass as $layer) {
-            if ($layer instanceof Output) {
-                list($prevGradients, $cost) = $layer->back($labels, $this->optimizer);
-            } else {
-                $prevGradients = $layer->back($prevGradients, $this->optimizer);
-            }
-        }
-
-        return $cost;
     }
 
     /**

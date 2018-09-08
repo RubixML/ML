@@ -13,11 +13,4 @@ interface Strategy
      * @return void
      */
     public function fit(array $values) : void;
-
-    /**
-     * Make a guess.
-     *
-     * @return mixed
-     */
-    public function guess();
 }

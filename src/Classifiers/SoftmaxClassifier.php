@@ -197,7 +197,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             [],
-            new Multiclass($this->classes, $this->alpha, $this->costFunction),
+            new Multiclass($this->classes, $this->alpha),
+            $this->costFunction,
             $this->optimizer
         );
 
@@ -239,8 +240,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
                 $cost = 0.;
 
                 foreach ($batches as $batch) {
-                    $cost += $this->network->feed($batch->samples())
-                        ->backpropagate($batch->labels());
+                    $cost += $this->network->roundtrip($batch);
                 }
 
                 $cost /= $n;
@@ -288,7 +288,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
 
         $probabilities = [];
 
-        foreach ($this->network->infer($dataset->samples()) as $activations) {
+        foreach ($this->network->infer($dataset) as $activations) {
             $probabilities[] = array_combine($this->classes, $activations);
         }
 

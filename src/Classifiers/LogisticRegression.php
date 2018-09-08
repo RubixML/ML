@@ -197,7 +197,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             [],
-            new Binary($this->classes, $this->alpha, $this->costFunction),
+            new Binary($this->classes, $this->alpha),
+            $this->costFunction,
             $this->optimizer
         );
 
@@ -239,8 +240,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
                 $cost = 0.;
 
                 foreach ($batches as $batch) {
-                    $cost += $this->network->feed($batch->samples())
-                        ->backpropagate($batch->labels());
+                    $cost += $this->network->roundtrip($batch);
                 }
 
                 $cost /= $n;
@@ -289,7 +289,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
 
         $probabilities = [];
 
-        foreach ($this->network->infer($dataset->samples()) as $activation) {
+        foreach ($this->network->infer($dataset) as $activation) {
             $probabilities[] = [
                 $this->classes[0] => 1. - $activation[0],
                 $this->classes[1] => $activation[0],

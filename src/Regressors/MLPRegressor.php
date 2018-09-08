@@ -265,7 +265,8 @@ class MLPRegressor implements Estimator, Online, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             $this->hidden,
-            new Continuous($this->alpha, $this->costFunction),
+            new Continuous($this->alpha),
+            $this->costFunction,
             $this->optimizer
         );
 
@@ -312,8 +313,7 @@ class MLPRegressor implements Estimator, Online, Persistable
                 $cost = 0.;
 
                 foreach ($batches as $batch) {
-                    $cost += $this->network->feed($batch->samples())
-                        ->backpropagate($batch->labels());
+                    $cost += $this->network->roundtrip($batch);
                 }
 
                 $cost /= $n;
@@ -370,7 +370,7 @@ class MLPRegressor implements Estimator, Online, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $activations = $this->network->infer($dataset->samples());
+        $activations = $this->network->infer($dataset);
 
         return array_column($activations, 0);
     }

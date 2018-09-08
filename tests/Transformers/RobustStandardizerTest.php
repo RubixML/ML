@@ -38,9 +38,9 @@ class RobustStandardizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
-            [-0.6745, -0.6745, -0.6745, -0.6745],
+            [-1., -1., -1., -1.],
             [0.0, 0.0, 0.0, 0.0],
-            [1.0376923076923077, 10.492222222222221, 4.246851851851852, 43.8425],
+            [1.5384615384615385, 15.555555555555555, 6.296296296296297, 65.],
         ], $this->dataset->samples());
     }
 

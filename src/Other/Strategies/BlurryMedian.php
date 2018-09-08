@@ -58,7 +58,7 @@ class BlurryMedian implements Continuous
     }
 
     /**
-     * Fit the imputer to the feature column of the training data.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array $values
      * @return void
@@ -74,11 +74,12 @@ class BlurryMedian implements Continuous
     }
 
     /**
-     * Make a guess.
+     * Make a continuous guess.
      *
-     * @return mixed
+     * @throws \RuntimeException
+     * @return float
      */
-    public function guess()
+    public function guess() : float
     {
         if (is_null($this->median) or is_null($this->mad)) {
             throw new RuntimeException('Strategy has not been fitted.');

@@ -59,7 +59,7 @@ class BlurryMean implements Continuous
     }
 
     /**
-     * Fit the strategy to the given values.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \InvalidArgumentException
@@ -79,12 +79,12 @@ class BlurryMean implements Continuous
     }
 
     /**
-     * Make a guess.
+     * Make a continuous guess.
      *
      * @throws \RuntimeException
-     * @return mixed
+     * @return float
      */
-    public function guess()
+    public function guess() : float
     {
         if (is_null($this->mean) or is_null($this->stddev)) {
             throw new RuntimeException('Strategy has not been fitted.');

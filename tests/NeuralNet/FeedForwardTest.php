@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
 
 class FeedForwardTest extends TestCase
@@ -33,7 +34,8 @@ class FeedForwardTest extends TestCase
 
         $this->output = new Multiclass(['yes', 'no', 'maybe']);
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output,
+            new LeastSquares(), new Adam(0.001));
     }
 
     public function test_build_network()

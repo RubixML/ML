@@ -2466,9 +2466,11 @@ $transformer = new ZScaleStandardizer();
 
 ---
 ### Neural Network
-A number of the Estimators in Rubix are implemented as a computational graph commonly referred to as a Neural Network due to its inspiration from the human brain. Neural Nets are trained using an iterative process called Gradient Descent and use Backpropagation (sometimes called Reverse Mode Autodiff) to calculate the gradient of each parameter in the network.
+A number of the Estimators in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation (also called *Reverse Mode Autodiff*) that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as feature detection, normalization, and regularization.
 
-The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-regressor) are both neural networks capable of being built with an almost limitless combination of [Hidden layers](#hidden) employing various Activation Functions. The strength of deep neural nets (with 1 or more hidden layers) is its diversity in handling large amounts of data. In general, the deeper the neural network, the better it will perform.
+The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-regressor) are examples of multi layer neural networks capable of being built with a limitless combination of [Hidden layers](#hidden). The strength of deep neural nets (those with 1 or more hidden layers) are their ability to handle complex problems and large amounts of data. In general, the deeper the network, the better it will perform.
+
+In addition to the multi layer networks, there are single layer networks that are designed to handle less complex problems with linear solutions. For example, both [Logistic Regression](#logistic-regression) and [Adaline](#adaline) are implemented as single layer networks under the hood. Single layer networks use a single output layer with no hidden layers.
 
 ### Activation Functions
 The input to a node in the network is sometimes passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a biologically inspired neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
@@ -2851,14 +2853,12 @@ This Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of dis
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
-| 3 | cost fn | Cross Entropy | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Binary;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$layer = new Binary(['yes', 'no'], 1e-3, new CrossEntropy());
+$layer = new Binary(['yes', 'no'], 1e-3);
 ```
 
 ### Continuous
@@ -2868,14 +2868,12 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
-| 2 | cost fn | Least Squares | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
-$layer = new Continuous(1e-5, new LeastSquares());
+$layer = new Continuous(1e-5);
 ```
 
 ### Multiclass
@@ -2886,14 +2884,12 @@ The Multiclass output layer gives a joint probability estimate of a multiclass c
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
-| 3 | cost fn | Cross Entropy | The cost function to use to reward and punish activity the network makes during training. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$layer = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new CrossEntropy());
+$layer = new Multiclass(['yes', 'no', 'maybe'], 1e-4);
 ```
 
 ---

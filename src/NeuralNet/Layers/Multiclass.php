@@ -47,13 +47,6 @@ class Multiclass implements Output
     protected $activationFunction;
 
     /**
-     * The function that computes the cost of an erroneous activation.
-     *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
-     */
-    protected $costFunction;
-
-    /**
      * The weights.
      *
      * @var \Rubix\ML\NeuralNet\Parameter
@@ -91,11 +84,10 @@ class Multiclass implements Output
     /**
      * @param  array  $classes
      * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $classes, float $alpha = 1e-4, CostFunction $costFunction = null)
+    public function __construct(array $classes, float $alpha = 1e-4)
     {
         $classes = array_values(array_unique($classes));
 
@@ -109,14 +101,9 @@ class Multiclass implements Output
                 . ' must be be non-negative.');
         }
 
-        if (is_null($costFunction)) {
-            $costFunction = new CrossEntropy();
-        }
-
         $this->classes = $classes;
         $this->alpha = $alpha;
         $this->activationFunction = new Softmax();
-        $this->costFunction = $costFunction;
         $this->weights = new Parameter(Matrix::empty());
         $this->biases = new Parameter(Matrix::empty());
     }
@@ -187,14 +174,15 @@ class Multiclass implements Output
     }
 
     /**
-     * Calculate the errors and gradients for each output neuron and update.
+     * Calculate the gradients for each output neuron and update.
      *
      * @param  array  $labels
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return array
      */
-    public function back(array $labels, Optimizer $optimizer) : array
+    public function back(array $labels, CostFunction $costFunction, Optimizer $optimizer) : array
     {
         if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
@@ -211,14 +199,14 @@ class Multiclass implements Output
 
         $expected = new Matrix($expected, false);
 
-        $delta = $this->costFunction
+        $delta = $costFunction
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()->asColumnMatrix()
             ->multiplyScalar($this->alpha)
             ->repeat(1, $this->computed->n());
 
-        $dL = $this->costFunction
+        $dL = $costFunction
             ->differentiate($expected, $this->computed, $delta)
             ->add($penalties);
 

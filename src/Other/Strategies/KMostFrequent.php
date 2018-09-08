@@ -8,7 +8,7 @@ use RuntimeException;
 /**
  * K Most Frequent
  *
- * This Strategy outputs one of K most frequent discrete values at random.
+ * This Strategy outputs one of K most frequently occurring classes at random.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -17,14 +17,14 @@ use RuntimeException;
 class KMostFrequent implements Categorical
 {
     /**
-     * The number of most frequent categorical variables to guess from.
+     * The number of most frequent categories to guess from.
      *
      * @var int
      */
     protected $k;
 
     /**
-     * The k most frequent categories to consider when formulating a guess.
+     * The categories to consider when making a guess.
      *
      * @var array
      */
@@ -40,15 +40,15 @@ class KMostFrequent implements Categorical
     public function __construct(int $k = 1)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Cannot make a guess amongst'
-                . ' less than 1 category.');
+            throw new InvalidArgumentException('Cannot guess less than 1'
+                . ' category.');
         }
 
         $this->k = $k;
     }
 
     /**
-     * Rank the classes by most frequent and chose the top k.
+     *  Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \InvalidArgumentException;
@@ -65,21 +65,21 @@ class KMostFrequent implements Categorical
 
         arsort($categories);
 
-        $this->categories = array_keys(array_slice($categories, 0, $this->k));
+        $this->categories = array_slice($categories, 0, $this->k, true);
     }
 
     /**
-     * Select a random discrete value amongst the top k.
+     * Make a categorical guess.
      *
      * @throws \RuntimeException
-     * @return mixed
+     * @return string
      */
-    public function guess()
+    public function guess() : string
     {
         if (empty($this->categories)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->categories[array_rand($this->categories)];
+        return (string) array_rand($this->categories);
     }
 }

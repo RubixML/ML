@@ -20,21 +20,19 @@ class PopularityContest implements Categorical
     /**
      * The size of the population. i.e. the sample size.
      *
-     * @var int
+     * @var int|null
      */
     protected $n;
 
     /**
-     * The popularity scores for each potential class label in the fitted data.
+     * The popularity scores for each potential category.
      *
-     * @var array
+     * @var array|null
      */
-    protected $popularity = [
-        //
-    ];
+    protected $popularity;
 
     /**
-     * Calculate the popularity of each unique class label in the dataset.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \InvalidArgumentException
@@ -52,15 +50,14 @@ class PopularityContest implements Categorical
     }
 
     /**
-     * Hold a popularity contest where the probability of winning is based on a
-     * category's prior probability.
+     * Make a categorical guess.
      *
      * @throws \RuntimeException
-     * @return mixed
+     * @return string
      */
-    public function guess()
+    public function guess() : string
     {
-        if (empty($this->popularity)) {
+        if (is_null($this->n) or is_null($this->popularity)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
@@ -69,13 +66,11 @@ class PopularityContest implements Categorical
         foreach ($this->popularity as $class => $count) {
             $random -= $count;
 
-            $temp = $class;
-
-            if ($random < 0) {
-                break 1;
+            if ($random <= 0) {
+                return $class;
             }
         }
 
-        return $temp ?? null;
+        return (string) array_rand($this->popularity);
     }
 }

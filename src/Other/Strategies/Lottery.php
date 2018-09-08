@@ -17,7 +17,7 @@ use RuntimeException;
 class Lottery implements Categorical
 {
     /**
-     * The unique outcomes each having equal chance of winning lottery.
+     * The possible categories.
      *
      * @var array
      */
@@ -26,7 +26,14 @@ class Lottery implements Categorical
     ];
 
     /**
-     * Store every unique outcome.
+     * The number of categories in the lottery.
+     *
+     * @var int
+     */
+    protected $n;
+
+    /**
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \RuntimeException
@@ -39,20 +46,24 @@ class Lottery implements Categorical
                 . ' at least one value.');
         }
 
-        $this->categories = array_values(array_unique($values));
+        $categories = array_values(array_unique($values));
+
+        $this->categories = $categories;
+        $this->n = count($categories);
     }
 
     /**
-     * Hold a lottery in which each category has an equal chance of being picked.
+     * Make a categorical guess.
      *
-     * @return mixed
+     * @throws \RuntimeException
+     * @return string
      */
-    public function guess()
+    public function guess() : string
     {
         if (empty($this->categories)) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->categories[array_rand($this->categories)];
+        return $this->categories[rand(0, $this->n - 1)];
     }
 }

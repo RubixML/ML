@@ -9,6 +9,7 @@ use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
@@ -21,7 +22,7 @@ class SnapshotTest extends TestCase
     {
         $this->network = new FeedForward(new Placeholder(1), [
             new Dense(5, new ELU()),
-        ], new Binary(['yes', 'no']), new Stochastic());
+        ], new Binary(['yes', 'no']), new LeastSquares(), new Stochastic());
 
         $this->snapshot = Snapshot::take($this->network);
     }

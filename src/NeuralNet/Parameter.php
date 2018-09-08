@@ -33,6 +33,14 @@ class Parameter
     }
 
     /**
+     * @return \Rubix\ML\Other\Structures\Matrix
+     */
+    public function w() : Matrix
+    {
+        return $this->w;
+    }
+
+    /**
      * Update the parameter matrix.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $step
@@ -44,10 +52,14 @@ class Parameter
     }
 
     /**
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * Allow methods to be called on the parameter matrix from the wrapper.
+     *
+     * @param  string  $name
+     * @param  array  $arguments
+     * @return mixed
      */
-    public function w() : Matrix
+    public function __call(string $name, array $arguments)
     {
-        return $this->w;
+        return $this->w->$name(...$arguments);
     }
 }
