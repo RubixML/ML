@@ -183,6 +183,17 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return the inner product of two vectors. Alias of dot().
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @return float
+     */
+    public function inner(Vector $b) : float
+    {
+        return $this->dot($b);
+    }
+
+    /**
      * Calculate the outer product of this and another vector. Return as Matrix.
      *
      * @param  \Rubix\ML\Other\Structures\Vector  $b
@@ -220,13 +231,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      */
     public function product() : float
     {
-        $product = 1.;
-
-        foreach ($this->a as $value) {
-            $product *= $value;
-        }
-
-        return $product;
+        return (float) array_product($this->a);
     }
 
     /**

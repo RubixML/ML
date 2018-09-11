@@ -215,7 +215,7 @@ class Multiclass implements Output
             ->multiply($dL);
 
         $dW = $dA->dot($this->input->transpose());
-        $dB = $dA->mean()->asColumnMatrix();
+        $dB = $dA->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
 

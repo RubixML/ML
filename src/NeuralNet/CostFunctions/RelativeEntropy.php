@@ -66,7 +66,8 @@ class RelativeEntropy implements CostFunction
     }
 
     /**
-     * Calculate the derivative of the cost function.
+     * Calculate the derivatives of the cost function with respect to the
+     * output activation.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $expected
      * @param  \Rubix\ML\Other\Structures\Matrix  $activations

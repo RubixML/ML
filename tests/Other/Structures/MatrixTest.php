@@ -101,6 +101,20 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_build_full()
+    {
+        $d = Matrix::full(5, 4, 4)->asArray();
+
+        $outcome = [
+            [5, 5, 5, 5],
+            [5, 5, 5, 5],
+            [5, 5, 5, 5],
+            [5, 5, 5, 5],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
     public function test_build_random()
     {
         $d = Matrix::gaussian(4, 4);

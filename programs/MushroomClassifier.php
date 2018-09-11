@@ -47,11 +47,11 @@ $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MultiLayerPerceptron([
     new Dense(20, new ReLU()),
-    new Dropout(0.1),
+    // new Dropout(0.1),
     new Dense(20, new ReLU()),
-    new Dropout(0.1),
+    // new Dropout(0.1),
     new Dense(20, new ReLU()),
-    new Dropout(0.1),
+    // new Dropout(0.1),
 ], 100, new Adam(0.001), 1e-5, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),

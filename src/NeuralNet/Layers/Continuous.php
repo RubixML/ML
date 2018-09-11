@@ -163,7 +163,7 @@ class Continuous implements Output
             ->add($penalties);
 
         $dW = $dL->dot($this->input->transpose());
-        $dB = $dL->mean()->asColumnMatrix();
+        $dB = $dL->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
 

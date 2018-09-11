@@ -188,7 +188,7 @@ class Dense implements Hidden, Parametric
             ->multiply($prevGradients());
 
         $dW = $dA->dot($this->input->transpose());
-        $dB = $dA->mean()->asColumnMatrix();
+        $dB = $dA->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
 

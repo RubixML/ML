@@ -147,6 +147,25 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Build a matrix with a given value at each element.
+     *
+     * @param  int|float  $value
+     * @param  int  $m
+     * @param  int  $n
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function full($value, int $m, int $n) : self
+    {
+        if (!is_int($value) and !is_float($value)) {
+            throw new InvalidArgumentException('Fill value must be an integer'
+                . ' or float, ' . gettype($value) . ' found.');
+        }
+
+        return new self(array_fill(0, $m, array_fill(0, $n, $value)), false);
+    }
+
+    /**
      * Return a random uniform matrix with values between 0 and 1.
      *
      * @param  int  $m
@@ -200,12 +219,11 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function uniform(int $m, int $n) : self
     {
-        $max = getrandmax();
         $a = [[]];
 
         for ($i = 0; $i < $m; $i++) {
             for ($j = 0; $j < $n; $j++) {
-                $a[$i][$j] = rand(-$max, $max) / $max;
+                $a[$i][$j] = rand(-PHP_INT_MAX, PHP_INT_MAX) / PHP_INT_MAX;
             }
         }
 
@@ -462,6 +480,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         }
 
         $bT = $b->transpose();
+
         $c = [[]];
 
         foreach ($this->a as $i => $row) {
@@ -787,13 +806,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         $b = [];
 
         foreach ($this->a as $row) {
-            $product = 1.;
-
-            foreach ($row as $value) {
-                $product *= $value;
-            }
-
-            $b[] = $product;
+            $b[] = array_product($row);
         }
 
         return new Vector($b, false);
