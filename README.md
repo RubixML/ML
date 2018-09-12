@@ -136,6 +136,7 @@ MIT
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 				- [Noise](#noise)
+                - [PReLU](#prelu)
 			- [Output Layers](#output-layers)
 				- [Binary](#Binary)
 				- [Continuous](#continuous)
@@ -2826,8 +2827,7 @@ $layer = new Dropout(0.5);
 ```
 
 ### Noise
-This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network
-activations acts as a regularizer by indirectly adding a penalty to the
+This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the
 weights through the cost function in the output layer.
 
 ##### Parameters:
@@ -2840,6 +2840,22 @@ weights through the cost function in the output layer.
 use Rubix\ML\NeuralNet\Layers\Noise;
 
 $layer = new Noise(0.3);
+```
+
+### PReLU
+The PReLU layer uses ReLU activation function's whose leakage coefficients are parameterized and optimized on a per neuron basis along with the weights and biases.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | neurons | None | int | The number of neurons in the layer. |
+| 2 | initial | 0.25 | float | The value to initialize the alpha (leakage) parameters with. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\PReLU;
+
+$layer = new PReLU(50, 0.1);
 ```
 
 ### Output Layers
