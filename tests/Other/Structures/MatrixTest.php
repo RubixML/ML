@@ -592,18 +592,7 @@ class MatrixTest extends TestCase
 
         $this->assertEquals($outcome, $this->a->clip(0., INF)->asArray());
     }
-
-    public function test_binarize()
-    {
-        $outcome = [
-            [1, 0, 1],
-            [1, 1, 0],
-            [1, 0, 0],
-        ];
-
-        $this->assertEquals($outcome, $this->a->binarize()->asArray());
-    }
-
+    
     public function test_negate()
     {
         $outcome = [

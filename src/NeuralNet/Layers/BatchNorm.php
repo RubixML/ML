@@ -190,12 +190,12 @@ class BatchNorm implements Hidden, Parametric
             }
         }
 
-        $this->stdInv = new Matrix($stdInv);
-        $this->xHat = new Matrix($xHat);
+        $this->stdInv = new Matrix($stdInv, false);
+        $this->xHat = new Matrix($xHat, false);
 
         $this->counter += $n;
 
-        return new Matrix($out);
+        return new Matrix($out, false);
     }
 
     /**
@@ -223,7 +223,7 @@ class BatchNorm implements Hidden, Parametric
             }
         }
 
-        return new Matrix($out);
+        return new Matrix($out, false);
     }
 
     /**

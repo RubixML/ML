@@ -47,6 +47,6 @@ class SparseRandomProjector extends GaussianRandomProjector
             }
         }
 
-        $this->r = new Matrix($r);
+        $this->r = new Matrix($r, false);
     }
 }

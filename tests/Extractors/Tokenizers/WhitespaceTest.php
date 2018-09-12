@@ -21,13 +21,13 @@ class WhitespaceTest extends TestCase
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 
-    public function test_guess_value()
+    public function test_tokenize()
     {
         $data = 'I would like to die on Mars, just not on impact.';
 
-        $value = $this->tokenizer->tokenize($data);
+        $tokens = $this->tokenizer->tokenize($data);
 
-        $this->assertEquals($value, ['I', 'would', 'like', 'to', 'die', 'on',
-            'Mars,', 'just', 'not', 'on', 'impact.']);
+        $this->assertEquals(['I', 'would', 'like', 'to', 'die', 'on',
+            'Mars,', 'just', 'not', 'on', 'impact.'], $tokens);
     }
 }

@@ -23,8 +23,8 @@ class SELUTest extends TestCase
         $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
         $this->activations = new Matrix([
-            [1.0507009873554805], [-0.6069220893098719], [0.08483609849299945],
-            [21.014019747109607], [-1.6731834247677873],
+            [1.0507009873554805], [-0.6917581878028713], [0.0],
+            [21.014019747109607], [-1.7580195232607867],
         ]);
 
         $this->activationFunction = new SELU();
@@ -80,9 +80,9 @@ class SELUTest extends TestCase
         $derivatives = $this->activationFunction->differentiate($this->input, $this->activations);
 
         $this->assertEquals(1.0507009873554805, $derivatives[0][0]);
-        $this->assertEquals(1.12040570236164325, $derivatives[1][0]);
-        $this->assertEquals(1.0507009873554805, $derivatives[2][0]);
+        $this->assertEquals(0.30824181219712865, $derivatives[1][0]);
+        $this->assertEquals(1.0, $derivatives[2][0]);
         $this->assertEquals(1.0507009873554805, $derivatives[3][0]);
-        $this->assertEquals(8.38644170383661E-5, $derivatives[4][0]);
+        $this->assertEquals(-0.7580195232607867, $derivatives[4][0]);
     }
 }

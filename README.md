@@ -345,7 +345,7 @@ After you've gone through this basic introduction to machine learning in Rubix, 
 Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
 
 ### Command Line
-The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time set by default. Note that you may need to adjust your memory limit in php.ini however.
+The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time set by default. Note that you may need to adjust your memory limit in php.ini to a suitable value (or -1 for no limit).
 
 To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
 ```sh

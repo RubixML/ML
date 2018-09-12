@@ -136,7 +136,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Compute the input sum and activation of each nueron in the layer and
+     * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $input

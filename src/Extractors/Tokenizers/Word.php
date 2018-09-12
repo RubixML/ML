@@ -2,6 +2,15 @@
 
 namespace Rubix\ML\Extractors\Tokenizers;
 
+/**
+ * Word
+ *
+ * This tokenizer matches words with 1 or more characters.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Word implements Tokenizer
 {
     /**
@@ -14,7 +23,7 @@ class Word implements Tokenizer
     {
         $tokens = [];
 
-        preg_match_all('/\w\w+/u', $string, $tokens);
+        preg_match_all('/\w+/u', $string, $tokens);
 
         return $tokens[0];
     }

@@ -422,7 +422,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new self($b, true);
+        return new self($b, false);
     }
 
     /**
@@ -1124,26 +1124,6 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a binary matrix with values above the threshold encoded as 1 and
-     * everything else 0.
-     *
-     * @param  float  $threshold
-     * @return self
-     */
-    public function binarize(float $threshold = 0.) : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = $value > $threshold ? 1 : 0;
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
      * Negate the matrix i.e take the negative of each value elementwise.
      *
      * @return self
@@ -1361,7 +1341,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function offsetGet($index) : array
     {
         if (!isset($this->a[$index])) {
-            throw new InvalidArgumentException('Element not found at index'
+            throw new InvalidArgumentException('Element not found at index '
                 . (string) $index . '.');
         }
 

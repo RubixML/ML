@@ -78,8 +78,8 @@ class LeakyReLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return $activation > 0. ? 1. : $this->leakage;
+        return $z->map(function ($input) {
+            return $input > 0. ? 1. : $this->leakage;
         });
     }
 }

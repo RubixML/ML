@@ -15,19 +15,19 @@ class WordTest extends TestCase
         $this->tokenizer = new Word();
     }
 
-    public function test_build_word_tokenizer()
+    public function test_build_tokenizer()
     {
         $this->assertInstanceOf(Word::class, $this->tokenizer);
         $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
     }
 
-    public function test_guess_value()
+    public function test_tokenize()
     {
         $data = 'I would like to die on Mars, just not on impact.';
 
-        $value = $this->tokenizer->tokenize($data);
+        $tokens = $this->tokenizer->tokenize($data);
 
-        $this->assertEquals($value, ['would', 'like', 'to', 'die', 'on', 'Mars',
-            'just', 'not', 'on', 'impact']);
+        $this->assertEquals(['I', 'would', 'like', 'to', 'die', 'on', 'Mars',
+            'just', 'not', 'on', 'impact'], $tokens);
     }
 }

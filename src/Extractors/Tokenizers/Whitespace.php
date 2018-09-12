@@ -2,6 +2,16 @@
 
 namespace Rubix\ML\Extractors\Tokenizers;
 
+/**
+ * Whitespace
+ *
+ * Separate each token by a user-specified delimiter such as a single
+ * whitespace.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Whitespace implements Tokenizer
 {
     /**
