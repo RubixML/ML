@@ -113,6 +113,13 @@ class Labeled extends DataFrame implements Dataset
         return $this->labels[$index];
     }
 
+    public function labelType() : int
+    {
+        return is_string($this->labels[0])
+            ? DataFrame::CATEGORICAL
+            : DataFrame::CONTINUOUS;
+    }
+
     /**
      * The set of all possible labeled outcomes.
      *

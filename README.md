@@ -658,6 +658,11 @@ Return the label at the given row offset:
 public label(int $index) : mixed
 ```
 
+Return the type of the label encoded as an integer:
+```php
+public labelType() : int
+```
+
 Return all of the possible outcomes i.e. the unique labels:
 ```php
 public possibleOutcomes() : array

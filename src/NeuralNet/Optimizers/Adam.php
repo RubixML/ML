@@ -11,7 +11,7 @@ use SplObjectStorage;
  * Adam
  *
  * Short for Adaptive Momentum Estimation, the Adam Optimizer uses both Momentum
- * and RMS properties to achieve a balance of velocity and stability.
+ * and RMS properties to achieve a balance of speed and stability.
  *
  * References:
  * [1] D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
@@ -44,6 +44,20 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
+     * Precomputed 1. - momentum decay.
+     *
+     * @var float
+     */
+    protected $beta1;
+
+    /**
+     * Precomputed 1. - RMS decay.
+     *
+     * @var float
+     */
+    protected $beta2;
+
+    /**
      * The smoothing parameter. i.e. a tiny number that helps provide numerical
      * smoothing and stability.
      *
@@ -64,6 +78,13 @@ class Adam implements Optimizer
      * @var \SplObjectStorage
      */
     protected $cache;
+
+    /**
+     * The number of steps taken since instantiation.
+     *
+     * @var int
+     */
+    protected $t;
 
     /**
      * @param  float  $rate
@@ -99,9 +120,12 @@ class Adam implements Optimizer
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
+        $this->beta1 = 1. - $momentumDecay;
+        $this->beta2 = 1. - $rmsDecay;
         $this->epsilon = $epsilon;
         $this->velocities = new SplObjectStorage();
         $this->cache = new SplObjectStorage();
+        $this->t = 0;
     }
 
     /**
@@ -117,26 +141,32 @@ class Adam implements Optimizer
             $velocities = $this->velocities[$parameter];
             $cache = $this->cache[$parameter];
         } else {
-            list($m, $n) = $parameter->w()->shape();
-
-            $velocities = Matrix::zeros($m, $n);
-            $cache = Matrix::zeros($m, $n);
+            $velocities = Matrix::zeros(...$parameter->w()->shape());
+            $cache = Matrix::zeros(...$parameter->w()->shape());
 
             $this->velocities->attach($parameter, $velocities);
             $this->cache->attach($parameter, $cache);
         }
 
+        $this->t++;
+
         $velocities = $velocities
             ->multiplyScalar($this->momentumDecay)
-            ->add($gradients->multiplyScalar(1. - $this->momentumDecay));
+            ->add($gradients->multiplyScalar($this->beta1));
 
         $cache = $cache
             ->multiplyScalar($this->rmsDecay)
-            ->add($gradients->square()->multiplyScalar(1. - $this->rmsDecay));
+            ->add($gradients->square()->multiplyScalar($this->beta2));
 
-        $step = $velocities
+        $vHat = $velocities
+            ->divideScalar(1. - $this->momentumDecay ** $this->t);
+
+        $rHat = $cache
+            ->divideScalar(1. - $this->rmsDecay ** $this->t);
+
+        $step = $vHat
             ->multiplyScalar($this->rate)
-            ->divide($cache->sqrt()->addScalar($this->epsilon));
+            ->divide($rHat->sqrt()->addScalar($this->epsilon));
 
         $this->velocities[$parameter] = $velocities;
         $this->cache[$parameter] = $cache;

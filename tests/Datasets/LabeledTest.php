@@ -91,6 +91,11 @@ class LabeledTest extends TestCase
         $this->assertEquals('monster', $this->dataset->label(1));
     }
 
+    public function test_label_type()
+    {
+        $this->assertEquals(DataFrame::CATEGORICAL, $this->dataset->labelType());
+    }
+
     public function test_possible_outcomes()
     {
         $this->assertEquals(['not monster', 'monster'],
