@@ -30,6 +30,7 @@
     - Added Xavier 1 and 2 initializers
     - Added He initializer
     - Added Le Cun initializer
+    - Added Normal (Gaussian) initializer
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

@@ -129,6 +129,7 @@ MIT
         - [Initializers](#initializers)
             - [He](#he)
             - [Le Cun](#le-cun)
+            - [Normal](#normal)
             - [Xavier 1](#xavier-1)
             - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
@@ -2741,6 +2742,21 @@ This Initializer does not have any parameters.
 use Rubix\ML\NeuralNet\Initializers\LeCun;
 
 $initializer = new LeCun();
+```
+
+### Normal
+Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\Normal;
+
+$initializer = new Normal(0.1);
 ```
 
 ### Xavier 1

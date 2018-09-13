@@ -227,7 +227,7 @@ class Binary implements Output
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        $cost = $delta->sum()->sum();
+        $cost = $delta->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
 
