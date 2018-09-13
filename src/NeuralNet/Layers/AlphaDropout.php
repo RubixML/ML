@@ -100,9 +100,11 @@ class AlphaDropout implements Hidden, Nonparametric
      */
     public function init(int $fanIn) : int
     {
-        $this->width = $fanIn;
+        $fanOut = $fanIn;
+        
+        $this->width = $fanOut;
 
-        return $fanIn;
+        return $fanOut;
     }
 
     /**

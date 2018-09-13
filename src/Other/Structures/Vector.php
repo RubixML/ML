@@ -140,11 +140,12 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      * Map a function over the elements in the vector and return a new vector.
      *
      * @param  callable  $fn
+     * @param  bool  $validate
      * @return self
      */
-    public function map(callable $fn) : self
+    public function map(callable $fn, bool $validate = false) : self
     {
-        return new self(array_map($fn, $this->a));
+        return new self(array_map($fn, $this->a), false);
     }
 
     /**

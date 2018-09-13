@@ -410,9 +410,10 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      * Run a function over all of the elements in the matrix.
      *
      * @param  callable  $fn
+     * @param  bool  $validate
      * @return self
      */
-    public function map(callable $fn) : self
+    public function map(callable $fn, bool $validate = false) : self
     {
         $b = [[]];
 
@@ -422,7 +423,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
             }
         }
 
-        return new self($b, false);
+        return new self($b, $validate);
     }
 
     /**

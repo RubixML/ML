@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
@@ -38,6 +39,13 @@ class Multiclass implements Output
      * @var float
      */
     protected $alpha;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $initializer;
 
     /**
      * The function that outputs the activation or implulse of each neuron.
@@ -103,6 +111,7 @@ class Multiclass implements Output
 
         $this->classes = $classes;
         $this->alpha = $alpha;
+        $this->initializer = new Xavier1();
         $this->activationFunction = new Softmax();
         $this->weights = new Parameter(Matrix::empty());
         $this->biases = new Parameter(Matrix::empty());
@@ -125,12 +134,9 @@ class Multiclass implements Output
      */
     public function init(int $fanIn) : int
     {
-        $scale = sqrt(6 / $fanIn);
-
         $fanOut = $this->width();
 
-        $w = Matrix::uniform($fanOut, $fanIn)
-            ->multiplyScalar($scale);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
         $b = Matrix::zeros($fanOut, 1);
 

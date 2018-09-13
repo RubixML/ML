@@ -26,13 +26,6 @@ use RuntimeException;
 class PReLU implements Hidden, Parametric
 {
     /**
-     * The width of the layer. i.e. the number of neurons.
-     *
-     * @var int
-     */
-    protected $neurons;
-
-    /**
      * The value to initialize the alpha (leakage) parameters with.
      *
      * @var float
@@ -40,18 +33,11 @@ class PReLU implements Hidden, Parametric
     protected $initial;
 
     /**
-     * The weights.
+     * The width of the layer.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var int
      */
-    protected $weights;
-
-    /**
-     * The biases.
-     *
-     * @var \Rubix\ML\NeuralNet\Parameter
-     */
-    protected $biases;
+    protected $width;
 
     /**
      * The parameterized leakage coeficients.
@@ -68,42 +54,27 @@ class PReLU implements Hidden, Parametric
     protected $input;
 
     /**
-     * The memoized z matrix.
-     *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
-     */
-    protected $z;
-
-    /**
-     * The memoized output activations matrix.
+     * The memoized activation matrix.
      *
      * @var \Rubix\ML\Other\Structures\Matrix|null
      */
     protected $computed;
 
     /**
-     * @param  int  $neurons
      * @param  float  $initial
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, float $initial = 0.25)
+    public function __construct(float $initial = 0.25)
     {
-        if ($neurons < 1) {
-            throw new InvalidArgumentException('The number of neurons cannot be'
-                . ' less than 1.');
-        }
-
         if ($initial < 0. or $initial > 1.) {
             throw new InvalidArgumentException('Initial leakage parameter must'
                 . ' be between 0 and 1.');
         }
 
-        $this->neurons = $neurons;
         $this->initial = $initial;
-        $this->weights = new Parameter(Matrix::empty());
-        $this->biases = new Parameter(Matrix::empty());
         $this->alphas = new Parameter(Matrix::empty());
+        $this->width = 0;
     }
 
     /**
@@ -111,7 +82,7 @@ class PReLU implements Hidden, Parametric
      */
     public function width() : int
     {
-        return $this->neurons;
+        return $this->width;
     }
 
     /**
@@ -123,19 +94,15 @@ class PReLU implements Hidden, Parametric
      */
     public function init(int $fanIn) : int
     {
-        $scale = (6 / $fanIn) ** (1. / sqrt(2));
+        $fanOut = $fanIn;
 
-        $w = Matrix::uniform($this->neurons, $fanIn)
-            ->multiplyScalar($scale);
+        $a = Matrix::full($this->initial, $fanOut, 1);
 
-        $b = Matrix::zeros($this->neurons, 1);
-        $a = Matrix::full($this->initial, $this->neurons, 1);
-
-        $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
         $this->alphas = new Parameter($a);
 
-        return $this->neurons;
+        $this->width = $fanOut;
+
+        return $fanOut;
     }
 
     /**
@@ -149,10 +116,7 @@ class PReLU implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
-
-        $this->computed = $this->compute($this->z);
+        $this->computed = $this->compute($input);
 
         return $this->computed;
     }
@@ -165,10 +129,7 @@ class PReLU implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->dot($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
-
-        return $this->compute($z);
+        return $this->compute($input);
     }
 
     /**
@@ -181,35 +142,29 @@ class PReLU implements Hidden, Parametric
      */
     public function back(callable $prevGradients, Optimizer $optimizer) : callable
     {
-        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+        if (is_null($this->input) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
         $dOut = $prevGradients();
 
-        $dA = $this->differentiate($this->z, $this->computed)
-            ->multiply($dOut);
-
-        $dZ = $this->z->map(function ($value) {
+        $dIn = $this->input->map(function ($value) {
             return $value > 0. ? 0. : $value;
         });
 
-        $dAlpha = $dOut->multiply($dZ)->sum()->asColumnMatrix();
-
-        $dW = $dA->dot($this->input->transpose());
-        $dB = $dA->sum()->asColumnMatrix();
-
-        $w = $this->weights->w();
+        $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
 
         $this->alphas->update($optimizer->step($this->alphas, $dAlpha));
-        $this->weights->update($optimizer->step($this->weights, $dW));
-        $this->biases->update($optimizer->step($this->biases, $dB));
 
-        unset($this->input, $this->z, $this->computed);
+        $z = $this->input;
+        $computed = $this->computed;
 
-        return function () use ($w, $dA) {
-            return $w->transpose()->dot($dA);
+        unset($this->input, $this->computed);
+
+        return function () use ($z, $computed, $dOut) {
+            return $this->differentiate($z, $computed)
+                ->multiply($dOut);
         };
     }
 
@@ -270,8 +225,6 @@ class PReLU implements Hidden, Parametric
     public function read() : array
     {
         return [
-            'weights' => clone $this->weights,
-            'biases' => clone $this->biases,
             'alphas' => clone $this->alphas,
         ];
     }
@@ -284,8 +237,6 @@ class PReLU implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        $this->weights = $parameters['weights'];
-        $this->biases = $parameters['biases'];
         $this->alphas = $parameters['alphas'];
     }
 }

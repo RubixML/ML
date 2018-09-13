@@ -1,6 +1,7 @@
 - Unreleased
     - Added Gaussian Mixture clusterer
     - Added Batch Norm hidden layer
+    - Added PReLU hidden layer
     - Added Relative Entropy cost function to nn
     - Added random weighted subset to datasets
     - Committee Machine classifier only and added expert influence
@@ -25,6 +26,10 @@
     - Added option to stratify dataset in Hold Out and K Fold
     - Added Monte Carlo cross validator
     - Implemented noise as layer instead of activation function
+    - Removed Identity activation function
+    - Added Xavier 1 and 2 initializers
+    - Added He initializer
+    - Added Le Cun initializer
 
 - 0.0.4-alpha
     - Added Dropout hidden layer

@@ -70,9 +70,11 @@ class Noise implements Hidden, Nonparametric
      */
     public function init(int $fanIn) : int
     {
-        $this->width = $fanIn;
+        $fanOut = $fanIn;
 
-        return $fanIn;
+        $this->width = $fanOut;
+
+        return $fanOut;
     }
 
     /**

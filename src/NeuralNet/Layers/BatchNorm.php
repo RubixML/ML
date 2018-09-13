@@ -109,10 +109,10 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $this->epsilon = $epsilon;
-        $this->width = 0;
         $this->beta = new Parameter(Matrix::empty());
         $this->gamma = new Parameter(Matrix::empty());
         $this->counter = 0;
+        $this->width = 0;
     }
 
     /**
@@ -132,7 +132,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function init(int $fanIn) : int
     {
-        $this->width = $fanIn;
+        $fanOut = $fanIn;
 
         $this->beta = new Parameter(Matrix::zeros($fanIn, 1));
         $this->gamma = new Parameter(Matrix::ones($fanIn, 1));
@@ -140,7 +140,9 @@ class BatchNorm implements Hidden, Parametric
         $this->means = array_fill(0, $fanIn, 0.);
         $this->variances = array_fill(0, $fanIn, 1.);
 
-        return $fanIn;
+        $this->width = $fanOut;
+
+        return $fanOut;
     }
 
     /**
@@ -243,8 +245,8 @@ class BatchNorm implements Hidden, Parametric
 
         $dOut = $prevGradients();
 
-        $dBeta = $dOut->sum(false);
-        $dGamma = $dOut->multiply($this->xHat)->sum(false);
+        $dBeta = $dOut->sum();
+        $dGamma = $dOut->multiply($this->xHat)->sum();
 
         $this->beta->update($optimizer->step($this->beta, $dBeta));
         $this->gamma->update($optimizer->step($this->gamma, $dGamma));

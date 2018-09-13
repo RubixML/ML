@@ -4,10 +4,9 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
+use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
-use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
-use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -16,14 +15,6 @@ use RuntimeException;
  *
  * Dense layers are fully connected hidden layers, meaning each neuron is
  * connected to each other neuron in the previous layer by a weighted *synapse*.
- * Dense layers employ activation functions that control the output of each
- * neuron in the layer.
- *
- * References:
- * [1] X. Glorot et al. (2010). Understanding the Difficulty of Training Deep
- * Feedforward Neural Networks.
- * [2] K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level
- * Performance on ImageNet Classification.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -39,11 +30,11 @@ class Dense implements Hidden, Parametric
     protected $neurons;
 
     /**
-     * The function that outputs the activation or implulse of each neuron.
+     * The weight initializer.
      *
-     * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $activationFunction;
+    protected $initializer;
 
     /**
      * The weights.
@@ -67,34 +58,24 @@ class Dense implements Hidden, Parametric
     protected $input;
 
     /**
-     * The memoized z matrix.
-     *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
-     */
-    protected $z;
-
-    /**
-     * The memoized output activations matrix.
-     *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
-     */
-    protected $computed;
-
-    /**
      * @param  int  $neurons
-     * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
+     * @param  \Rubix\ML\NeuralNet\Initializers\Initializer  $initializer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $neurons, ActivationFunction $activationFunction)
+    public function __construct(int $neurons, Initializer $initializer = null)
     {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons cannot be'
                 . ' less than 1.');
         }
 
+        if (is_null($initializer)) {
+            $initializer = new He();
+        }
+
         $this->neurons = $neurons;
-        $this->activationFunction = $activationFunction;
+        $this->initializer = $initializer;
         $this->weights = new Parameter(Matrix::empty());
         $this->biases = new Parameter(Matrix::empty());
     }
@@ -116,23 +97,16 @@ class Dense implements Hidden, Parametric
      */
     public function init(int $fanIn) : int
     {
-        if ($this->activationFunction instanceof Rectifier) {
-            $scale = (6 / $fanIn) ** (1. / sqrt(2));
-        } else if ($this->activationFunction instanceof HyperbolicTangent) {
-            $scale = (6 / $fanIn) ** 0.25;
-        } else  {
-            $scale = sqrt(6 / $fanIn);
-        }
+        $fanOut = $this->width();
 
-        $w = Matrix::uniform($this->neurons, $fanIn)
-            ->multiplyScalar($scale);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
-        $b = Matrix::zeros($this->neurons, 1);
+        $b = Matrix::zeros($fanOut, 1);
 
         $this->weights = new Parameter($w);
         $this->biases = new Parameter($b);
 
-        return $this->neurons;
+        return $fanOut;
     }
 
     /**
@@ -146,12 +120,8 @@ class Dense implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input)
+        return $this->weights->w()->dot($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
-
-        $this->computed = $this->activationFunction->compute($this->z);
-
-        return $this->computed;
     }
 
     /**
@@ -162,10 +132,8 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        $z = $this->weights->w()->dot($input)
+        return $this->weights->w()->dot($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
-
-        return $this->activationFunction->compute($z);
     }
 
     /**
@@ -178,27 +146,25 @@ class Dense implements Hidden, Parametric
      */
     public function back(callable $prevGradients, Optimizer $optimizer) : callable
     {
-        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+        if (is_null($this->input)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $dA = $this->activationFunction
-            ->differentiate($this->z, $this->computed)
-            ->multiply($prevGradients());
+        $dOut = $prevGradients();
 
-        $dW = $dA->dot($this->input->transpose());
-        $dB = $dA->sum()->asColumnMatrix();
+        $dW = $dOut->dot($this->input->transpose());
+        $dB = $dOut->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
 
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        unset($this->input, $this->z, $this->computed);
+        unset($this->input);
 
-        return function () use ($w, $dA) {
-            return $w->transpose()->dot($dA);
+        return function () use ($w, $dOut) {
+            return $w->transpose()->dot($dOut);
         };
     }
 

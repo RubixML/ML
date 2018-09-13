@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
@@ -40,8 +41,10 @@ class MultiLayerPerceptronTest extends TestCase
         $this->testing = $this->training->randomize()->head(3);
 
         $this->estimator = new MultiLayerPerceptron([
-            new Dense(10, new ELU()),
-            new Dense(10, new ELU()),
+            new Dense(10),
+            new Activation(new ELU()),
+            new Dense(10),
+            new Activation(new ELU()),
         ], 1, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.10, 3, 100);
     }
 

@@ -5,8 +5,8 @@ namespace Rubix\Tests\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use PHPUnit\Framework\TestCase;
 
 class DenseTest extends TestCase
@@ -15,7 +15,7 @@ class DenseTest extends TestCase
 
     public function setUp()
     {
-        $this->layer = new Dense(10, new ELU());
+        $this->layer = new Dense(10, new He());
     }
 
     public function test_build_layer()

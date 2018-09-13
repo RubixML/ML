@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
@@ -28,6 +29,13 @@ class Continuous implements Output
      * @var float
      */
     protected $alpha;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $initializer;
 
     /**
      * The weights.
@@ -70,6 +78,7 @@ class Continuous implements Output
         }
 
         $this->alpha = $alpha;
+        $this->initializer = new Xavier2();
         $this->weights = new Parameter(Matrix::empty());
         $this->biases = new Parameter(Matrix::empty());
     }
@@ -91,17 +100,16 @@ class Continuous implements Output
      */
     public function init(int $fanIn) : int
     {
-        $scale = (6 / $fanIn) ** 0.25;
+        $fanOut = $this->width();
 
-        $w = Matrix::uniform(1, $fanIn)
-            ->multiplyScalar($scale);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
-        $b = Matrix::zeros(1, 1);
+        $b = Matrix::zeros($fanOut, 1);
 
         $this->weights = new Parameter($w);
         $this->biases = new Parameter($b);
 
-        return 1;
+        return $fanOut;
     }
 
     /**

@@ -112,7 +112,6 @@ MIT
 			- [ELU](#elu)
 			- [Gaussian](#gaussian)
 			- [Hyperbolic Tangent](#hyperbolic-tangent)
-			- [Identity](#identity)
 			- [ISRU](#isru)
 			- [Leaky ReLU](#leaky-relu)
 			- [ReLU](#relu)
@@ -127,10 +126,16 @@ MIT
 			- [Exponential](#exponential)
 			- [Least Squares](#least-squares)
 			- [Relative Entropy](#relative-entropy)
+        - [Initializers](#initializers)
+            - [He](#he)
+            - [Le Cun](#le-cun)
+            - [Xavier 1](#xavier-1)
+            - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
 				- [Placeholder](#placeholder)
 			- [Hidden Layers](#hidden-layers)
+                - [Activation](#activation)
 				- [Alpha Dropout](#alpha-dropout)
 				- [Batch Norm](#batch-norm)
 				- [Dense](#dense)
@@ -2519,19 +2524,6 @@ use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 $activationFunction = new HyperbolicTangent();
 ```
 
-### Identity
-The Identity function (sometimes called Linear Activation Function) simply outputs the value of the input.
-
-##### Parameters:
-This Activation Function does not have any parameters.
-
-##### Example:
-```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Identity;
-
-$activationFunction = new Identity();
-```
-
 ### ISRU
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
 
@@ -2722,6 +2714,62 @@ $costFunction = new RelativeEntropy();
 ```
 
 ---
+### Initializers
+Initializers are responsible for setting the initial weight parameters of a neural network. Different activation layers respond to different weight initializations therefore it is important to choose the  initializer that suits your network architecture.
+
+### He
+The He initializer was designed for hidden layers that feed into rectified linear layers such [ReLU](#relu), [Leaky ReLU](#leaky-relu), [ELU](#elu), and [SELU](#selu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
+
+##### Parameters:
+This Initializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\He;
+
+$initializer = new He();
+```
+
+### Le Cun
+Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
+
+##### Parameters:
+This Initializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\LeCun;
+
+$initializer = new LeCun();
+```
+
+### Xavier 1
+The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
+
+##### Parameters:
+This Initializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
+
+$initializer = new Xavier1();
+```
+
+### Xavier 2
+The Xavier 2 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to (6 / (fanIn + fanOut)) ** 0.25. This initializer is best suited for layers that feed into an activation layer that outputs values between -1 and 1 such as [Hyperbolic Tangent](#hyperbolic-tangent) and [Softsign](#softsign).
+
+##### Parameters:
+This Initializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\Xavier2;
+
+$initializer = new Xavier2();
+```
+
+---
 ### Layers
 Every network is made up of layers of computational units called neurons. Each layer processes and transforms the input from the previous layer.
 
@@ -2732,15 +2780,23 @@ There are three types of Layers that form a network, **Input**, **Hidden**, and 
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $network = new FeedForward(new Placeholder(784), [
-	new Dense(100, new ELU()),
-	new Dense(100, new ELU()),
-	new Dense(100, new ELU()),
-], new Multiclass(['dog', 'cat', 'frog', 'car'], 1e-4), new Adam(0.001));
+	new Dense(300),
+    new Activation(new ELU()),
+    new Dropout(0.3),
+    new Dense(200),
+    new Activation(new ELU()),
+    new Dropout(0.3),
+    new Dense(100),
+    new Activation(new ELU()),
+], new Multiclass(['dog', 'cat', 'frog', 'car'], 1e-4), new CrossEntropy(), new Adam(0.001));
 ```
 
 ### Input Layers
@@ -2762,7 +2818,23 @@ $layer = new Placeholder(100);
 ```
 
 ### Hidden Layers
-In multilayer networks, Hidden layers perform the bulk of the computation. They are responsible for transforming the input space in such a way that can be linearly separable by the Output layer. The more complex the problem space is, the more Hidden layers and neurons will be necessary to handle the complexity.
+In multilayer networks, hidden layers are responsible for transforming the input space in such a way that can be linearly separable by the final output layer. The more complex the problem, the more hidden layers and neurons will be necessary to handle the problem.
+
+### Activation
+Activation layers apply a nonlinear activation function to their inputs.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | activation fn | None | object | The function computes the activation of the layer. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+
+$layer = new Activation(new ReLU());
+```
 
 ### Alpha Dropout
 Alpha Dropout is a type of dropout layer that maintains the mean and variance of the original inputs in order to ensure the self-normalizing property of [SELU](#selu) networks with dropout. Alpha Dropout fits with SELU networks by randomly setting activations to the negative saturation value of the activation function at a given ratio each pass.
@@ -2801,14 +2873,14 @@ Dense layers are fully connected hidden layers, meaning each neuron is connected
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | neurons | None | int | The number of neurons in the layer. |
-| 2 | activation fn | None | object | The activation function to use. |
+| 2 | initializer | He | object | The random weight initializer to use. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
+use Rubix\ML\NeuralNet\Initializers\He;
 
-$layer = new Dense(100, new LeakyReLU(0.05));
+$layer = new Dense(100, new He());
 ```
 
 ### Dropout
@@ -2848,18 +2920,17 @@ The PReLU layer uses ReLU activation function's whose leakage coefficients are p
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | neurons | None | int | The number of neurons in the layer. |
-| 2 | initial | 0.25 | float | The value to initialize the alpha (leakage) parameters with. |
+| 1 | initial | 0.25 | float | The value to initialize the alpha (leakage) parameters with. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\PReLU;
 
-$layer = new PReLU(50, 0.1);
+$layer = new PReLU(0.1);
 ```
 
 ### Output Layers
-Activations are read directly from the Output layer when it comes to making a prediction. The type of Output layer used will determine the type of Estimator the Neural Net can power (Binary Classifier, Multiclass Classifier, or Regressor). The different types of Output layers are listed below.
+Activations are read directly from the Output layer when making predictions. The type of output layer will determine the type of Estimator the neural network can power (i.e Binary Classifier, Multiclass Classifier, or Regressor).
 
 ### Binary
 This Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.

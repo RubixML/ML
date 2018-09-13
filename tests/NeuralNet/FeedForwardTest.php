@@ -7,6 +7,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
@@ -28,8 +29,10 @@ class FeedForwardTest extends TestCase
         $this->input = new Placeholder(5);
 
         $this->hidden = [
-            new Dense(5, new ELU()),
-            new Dense(5, new ELU()),
+            new Dense(5),
+            new Activation(new ELU()),
+            new Dense(5),
+            new Activation(new ELU()),
         ];
 
         $this->output = new Multiclass(['yes', 'no', 'maybe']);
@@ -46,7 +49,7 @@ class FeedForwardTest extends TestCase
 
     public function test_depth()
     {
-        $this->assertEquals(4, $this->network->depth());
+        $this->assertEquals(6, $this->network->depth());
     }
 
     public function test_get_input_layer()
@@ -56,7 +59,7 @@ class FeedForwardTest extends TestCase
 
     public function test_get_hidden_layers()
     {
-        $this->assertCount(2, $this->network->hidden());
+        $this->assertCount(4, $this->network->hidden());
     }
 
     public function test_get_output_layer()

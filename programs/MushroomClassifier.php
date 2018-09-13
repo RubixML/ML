@@ -8,12 +8,13 @@ use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\ConfusionMatrix;
 use Rubix\ML\Reports\PredictionSpeed;
-use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Reports\MulticlassBreakdown;
 use Rubix\ML\Transformers\LambdaFunction;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\MCC;
+use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\Transformers\SparseRandomProjector;
@@ -46,11 +47,14 @@ $labels = iterator_to_array($reader->fetchColumn('class'));
 $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MultiLayerPerceptron([
-    new Dense(30, new SELU()),
+    new Dense(30),
+    new Activation(new SELU()),
     new AlphaDropout(0.1),
-    new Dense(20, new SELU()),
+    new Dense(20),
+    new Activation(new SELU()),
     new AlphaDropout(0.1),
-    new Dense(10, new SELU()),
+    new Dense(10),
+    new Activation(new SELU()),
 ], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, 100), [
     new OneHotEncoder(),
     new SparseRandomProjector(30),

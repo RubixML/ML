@@ -4,6 +4,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\Reports\AggregateReport;
 use Rubix\ML\Reports\PredictionSpeed;
@@ -37,9 +38,12 @@ $labels = iterator_to_array($reader->fetchColumn('mpg'));
 $dataset = new Labeled($samples, $labels);
 
 $estimator = new Pipeline(new MLPRegressor([
-    new PReLU(30, 0.25),
-    new PReLU(10, 0.25),
-    new PReLU(30, 0.25),
+    new Dense(30),
+    new PReLU(0.25),
+    new Dense(10),
+    new PReLU(0.25),
+    new Dense(30),
+    new PReLU(0.25),
 ], 30, new Adam(0.001), 1e-4, new LeastSquares(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
         new NumericStringConverter(),
         new MissingDataImputer('?'),

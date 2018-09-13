@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
@@ -34,7 +35,8 @@ class MLPRegressorTest extends TestCase
         $this->testing = $this->training->randomize()->head(3);
 
         $this->estimator = new MLPRegressor([
-            new Dense(20, new ELU()),
+            new Dense(20),
+            new Activation(new ElU()),
         ], 1, new Adam(0.01), 1e-3, new LeastSquares(), 1e-3, new MeanSquaredError(), 0.1, 3, 100);
     }
 

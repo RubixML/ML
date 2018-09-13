@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
@@ -39,6 +40,13 @@ class Binary implements Output
      * @var float
      */
     protected $alpha;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $initializer;
 
     /**
      * The function that outputs the activation or implulse of each neuron.
@@ -104,6 +112,7 @@ class Binary implements Output
 
         $this->classes = [$classes[0] => 0, $classes[1] => 1];
         $this->alpha = $alpha;
+        $this->initializer = new Xavier1();
         $this->activationFunction = new Sigmoid();
         $this->weights = new Parameter(Matrix::empty());
         $this->biases = new Parameter(Matrix::empty());
@@ -126,17 +135,16 @@ class Binary implements Output
      */
     public function init(int $fanIn) : int
     {
-        $scale = sqrt(6 / $fanIn);
+        $fanOut = $this->width();
 
-        $w = Matrix::uniform(1, $fanIn)
-            ->multiplyScalar($scale);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
-        $b = Matrix::zeros(1, 1);
+        $b = Matrix::zeros($fanOut, 1);
 
         $this->weights = new Parameter($w);
         $this->biases = new Parameter($b);
 
-        return 1;
+        return $fanOut;
     }
 
     /**
