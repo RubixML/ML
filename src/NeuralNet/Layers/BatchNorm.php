@@ -245,8 +245,8 @@ class BatchNorm implements Hidden, Parametric
 
         $dOut = $prevGradients();
 
-        $dBeta = $dOut->sum();
-        $dGamma = $dOut->multiply($this->xHat)->sum();
+        $dBeta = $dOut->sum()->asColumnMatrix();
+        $dGamma = $dOut->multiply($this->xHat)->sum()->asColumnMatrix();
 
         $this->beta->update($optimizer->step($this->beta, $dBeta));
         $this->gamma->update($optimizer->step($this->gamma, $dGamma));
@@ -261,10 +261,16 @@ class BatchNorm implements Hidden, Parametric
 
             $dXHat = $dOut->multiply($this->gamma->w()->repeat(1, $n));
 
+            $xHatSigma = $dXHat->multiply($xHat)->transpose()->sum()
+                ->asRowMatrix()->repeat($m, 1);
+
+            $dXHatSigma = $dXHat->transpose()->sum()
+                ->asRowMatrix()->repeat($m, 1);
+
             return $dXHat->multiplyScalar($m)
-                ->subtract($dXHat->sum()->repeat($m, 1))
-                ->subtract($xHat->multiply($dXHat->multiply($xHat)->sum()->repeat($m, 1)))
-                ->multiply($stdInv->multiplyScalar(1. / $m));
+                ->subtract($dXHatSigma)
+                ->subtract($xHat->multiply($xHatSigma))
+                ->multiply($stdInv->divideScalar($m));
         };
     }
 

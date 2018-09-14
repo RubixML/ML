@@ -35,7 +35,7 @@ class LeakyReLU implements Rectifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $leakage = 0.01)
+    public function __construct(float $leakage = 0.1)
     {
         if ($leakage < 0. or $leakage > 1.) {
             throw new InvalidArgumentException('Leakage parameter must be'
