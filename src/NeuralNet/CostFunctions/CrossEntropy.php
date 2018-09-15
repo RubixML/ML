@@ -63,14 +63,8 @@ class CrossEntropy implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        $ones = Matrix::ones(...$activations->shape());
-
-        $eHat = $ones->subtract($expected);
-        $aHat = $ones->subtract($activations);
-
-        return $activations->multiply($activations->log())
-            ->add($eHat->multiply($aHat->log()))
-            ->negate();
+        return $activations->negate()->multiply($expected)
+            ->add($activations->exp()->addScalar(1.)->log());
     }
 
     /**

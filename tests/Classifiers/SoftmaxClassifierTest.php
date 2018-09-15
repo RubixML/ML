@@ -29,7 +29,7 @@ class SoftmaxClassifierTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new SoftmaxClassifier(100, 10, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3);
+        $this->estimator = new SoftmaxClassifier(100, 10, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-4);
     }
 
     public function test_build_classifier()
