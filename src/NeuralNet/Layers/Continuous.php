@@ -168,7 +168,8 @@ class Continuous implements Output
 
         $dL = $costFunction
             ->differentiate($expected, $this->z, $delta)
-            ->add($penalties);
+            ->add($penalties)
+            ->divideScalar($this->z->n());
 
         $dW = $dL->dot($this->input->transpose());
         $dB = $dL->sum()->asColumnMatrix();

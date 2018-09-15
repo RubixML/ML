@@ -152,7 +152,7 @@ class MLPRegressor implements Estimator, Online, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $hidden, int $batchSize = 50, Optimizer $optimizer = null,
+    public function __construct(array $hidden, int $batchSize = 100, Optimizer $optimizer = null,
             float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4,
             Metric $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {

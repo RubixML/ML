@@ -1249,7 +1249,7 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
@@ -1285,7 +1285,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
-| 2 | batch size | 50 | int | The number of training samples to process at a time. |
+| 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
@@ -1394,7 +1394,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
@@ -1592,7 +1592,7 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 10 | int | The number of training samples to process at a time. |
+| 2 | batch size | 50 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
@@ -1717,7 +1717,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
-| 2 | batch size | 50 | int | The number of training samples to process at a time. |
+| 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
@@ -2551,13 +2551,13 @@ Leaky Rectified Linear Units are functions that output x when x > 0 or a small l
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | leakage | 0.01 | float | The amount of leakage as a ratio of the input value. |
+| 1 | leakage | 0.1 | float | The amount of leakage as a ratio of the input value. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
-$activationFunction = new LeakyReLU(0.001);
+$activationFunction = new LeakyReLU(0.3);
 ```
 
 ### ReLU

@@ -59,6 +59,8 @@ class MulticlassBreakdown implements Report
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
             array_fill_keys($classes, 0);
 
+        $table = array_fill_keys($classes, []);
+
         foreach ($predictions as $i => $outcome) {
             if ($outcome === $labels[$i]) {
                 $truePositives[$outcome]++;
@@ -74,13 +76,6 @@ class MulticlassBreakdown implements Report
             }
         }
 
-        $table = array_fill_keys($classes, []);
-
-        $overall = array_fill_keys([
-            'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
-            'fall_out', 'f1_score', 'mcc', 'informedness',
-        ], 0.);
-
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
             $fp = $falsePositives[$label];
@@ -93,8 +88,8 @@ class MulticlassBreakdown implements Report
                 / ($tp + $fn + self::EPSILON);
             $table[$label]['specificity'] = ($tn + self::EPSILON)
                 / ($tn + $fp + self::EPSILON);
-            $table[$label]['miss_rate'] = 1 - $table[$label]['recall'];
-            $table[$label]['fall_out'] = 1 - $table[$label]['specificity'];
+            $table[$label]['miss_rate'] = 1. - $table[$label]['recall'];
+            $table[$label]['fall_out'] = 1. - $table[$label]['specificity'];
             $table[$label]['f1_score'] = 2. * (($table[$label]['precision']
                 * $table[$label]['recall']))
                 / ($table[$label]['precision'] + $table[$label]['recall']);
@@ -109,20 +104,17 @@ class MulticlassBreakdown implements Report
             $table[$label]['false_negatives'] = $fn;
             $table[$label]['cardinality'] = $tp + $fn;
             $table[$label]['density'] = $table[$label]['cardinality'] / $n;
-
-            $overall['accuracy'] += $table[$label]['accuracy'];
-            $overall['precision'] += $table[$label]['precision'];
-            $overall['recall'] += $table[$label]['recall'];
-            $overall['specificity'] += $table[$label]['specificity'];
-            $overall['miss_rate'] += $table[$label]['miss_rate'];
-            $overall['fall_out'] += $table[$label]['fall_out'];
-            $overall['f1_score'] += $table[$label]['f1_score'];
-            $overall['mcc'] += $table[$label]['mcc'];
-            $overall['informedness'] += $table[$label]['informedness'];
         }
 
-        foreach ($overall as $metric => &$score) {
-            $score /= $k;
+        $overall = array_fill_keys([
+            'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
+            'fall_out', 'f1_score', 'mcc', 'informedness',
+        ], 0.);
+
+        foreach ($table as $row) {
+            foreach ($overall as $metric => &$value) {
+                $value += $row[$metric] / $k;
+            }
         }
 
         return [

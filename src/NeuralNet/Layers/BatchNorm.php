@@ -167,7 +167,7 @@ class BatchNorm implements Hidden, Parametric
 
         $stdInv = $xHat = $out = [[]];
 
-        foreach ($input->asArray() as $i => $row) {
+        foreach ($input as $i => $row) {
             list($mean, $variance) = Stats::meanVar($row);
 
             $this->means[$i] = (($n * $mean)
@@ -213,7 +213,7 @@ class BatchNorm implements Hidden, Parametric
 
         $out = [[]];
 
-        foreach ($input->asArray() as $i => $row) {
+        foreach ($input as $i => $row) {
             $mean = $this->means[$i];
             $stddev = ($this->variances[$i] + $this->epsilon) ** 0.5;
 

@@ -213,7 +213,8 @@ class Binary implements Output
 
         $dL = $costFunction
             ->differentiate($expected, $this->computed, $delta)
-            ->add($penalties);
+            ->add($penalties)
+            ->divideScalar($this->computed->n());
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)

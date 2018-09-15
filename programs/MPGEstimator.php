@@ -44,7 +44,7 @@ $estimator = new Pipeline(new MLPRegressor([
     new PReLU(0.25),
     new Dense(30),
     new PReLU(0.25),
-], 30, new Adam(0.001), 1e-4, new LeastSquares(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
+], 100, new Adam(0.001), 1e-4, new LeastSquares(), 1e-4, new MeanSquaredError(), 0.1, 3, 300), [
         new NumericStringConverter(),
         new MissingDataImputer('?'),
         new ZScaleStandardizer(),

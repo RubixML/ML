@@ -111,7 +111,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $epochs = 100, int $batchSize = 10, Optimizer $optimizer = null,
+    public function __construct(int $epochs = 100, int $batchSize = 50, Optimizer $optimizer = null,
                     float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4)
     {
         if ($epochs < 1) {
