@@ -43,7 +43,7 @@ class MulticlassBreakdownTest extends TestCase
                 'fall_out' => 0.41666666486111115,
                 'f1_score' => 0.5833333351388889,
                 'informedness' => 0.1666666702777777,
-                'mcc' => 0.16666666805555555,
+                'mcc' => 0.1666666666435185,
             ],
             'label' => [
                 'wolf' => [
@@ -55,7 +55,7 @@ class MulticlassBreakdownTest extends TestCase
                     'fall_out' => 0.4999999975,
                     'f1_score' => 0.6666666677777777,
                     'informedness' => 0.1666666702777777,
-                    'mcc' => 0.16666666805555555,
+                    'mcc' => 0.1666666666435185,
                     'cardinality' => 3,
                     'density' => 0.6,
                     'true_positives' => 2,
@@ -72,7 +72,7 @@ class MulticlassBreakdownTest extends TestCase
                     'fall_out' => 0.3333333322222223,
                     'f1_score' => 0.5000000025,
                     'informedness' => 0.1666666702777777,
-                    'mcc' => 0.16666666805555555,
+                    'mcc' => 0.1666666666435185,
                     'cardinality' => 2,
                     'density' => 0.4,
                     'true_positives' => 1,

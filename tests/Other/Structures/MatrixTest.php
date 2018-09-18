@@ -18,6 +18,8 @@ class MatrixTest extends TestCase
 
     protected $c;
 
+    protected $d;
+
     public function setUp()
     {
         $this->a = new Matrix([
@@ -32,11 +34,13 @@ class MatrixTest extends TestCase
             [9],
         ], false);
 
-        $this->c =  new Matrix([
+        $this->c = new Matrix([
             [4, 6, -12],
             [1, 3, 5],
             [-10, -1, 14],
         ], false);
+
+        $this->d = new Vector([2, 10, -1]);
     }
 
     public function test_build_structure()
@@ -197,11 +201,29 @@ class MatrixTest extends TestCase
         $this->assertEquals([-10, -1, 14], $this->c->row(2));
     }
 
+    public function test_row_as_vector()
+    {
+        $d = $this->a->rowAsVector(1);
+
+        $this->assertInstanceOf(Vector::class, $d);
+        $this->assertCount(3, $d);
+        $this->assertEquals([4, 11, -2], $d->asArray());
+    }
+
     public function test_get_column()
     {
         $this->assertEquals([-17, 11, -6], $this->a->column(1));
         $this->assertEquals([13, 11, 9], $this->b->column(0));
         $this->assertEquals([-12, 5, 14], $this->c->column(2));
+    }
+
+    public function test_column_as_vector()
+    {
+        $d = $this->a->columnAsVector(1);
+
+        $this->assertInstanceOf(Vector::class, $d);
+        $this->assertCount(3, $d);
+        $this->assertEquals([-17, 11, -6], $d->asArray());
     }
 
     public function test_as_array()
@@ -322,6 +344,58 @@ class MatrixTest extends TestCase
         ];
 
         $this->assertEquals($outcome, $d);
+    }
+
+    public function test_multiply_vector()
+    {
+        $c = $this->a->multiplyVector($this->d)->asArray();
+
+        $outcome = [
+            [44, -170, -12],
+            [8, 110, 2],
+            [40, -60, 9],
+        ];
+
+        $this->assertEquals($outcome, $c);
+    }
+
+    public function test_divide_vector()
+    {
+        $c = $this->a->divideVector($this->d)->asArray();
+
+        $outcome = [
+            [11, -1.7, -12],
+            [2, 1.1, 2],
+            [10, -0.6, 9],
+        ];
+
+        $this->assertEquals($outcome, $c);
+    }
+
+    public function test_add_vector()
+    {
+        $c = $this->a->addVector($this->d)->asArray();
+
+        $outcome = [
+            [24, -7, 11],
+            [6, 21, -3],
+            [22, 4, -10],
+        ];
+
+        $this->assertEquals($outcome, $c);
+    }
+
+    public function test_subtract_vector()
+    {
+        $c = $this->a->subtractVector($this->d)->asArray();
+
+        $outcome = [
+            [20, -27, 13],
+            [2, 1, -1],
+            [18, -16, -8],
+        ];
+
+        $this->assertEquals($outcome, $c);
     }
 
     public function test_reciprocal()
@@ -483,7 +557,7 @@ class MatrixTest extends TestCase
         $d = $this->b->exp()->asArray();
 
         $outcome = [
-            [442413.3920089202],
+            [442413.3920089205],
             [59874.14171519778],
             [8103.08392757538],
         ];

@@ -30,7 +30,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     ];
 
     /**
-     * The elements in the vector.
+     * The number of elements in the vector.
      *
      * @var int
      */
@@ -68,6 +68,32 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     public static function ones(int $n) : self
     {
         return new self(array_fill(0, $n, 1), false);
+    }
+
+    /**
+     * Calculate the elementwise minima between two vectors and return them
+     * in a new vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $a
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @return self
+     */
+    public static function minimum(self $a, self $b) : self
+    {
+        return new self(array_map('min', $a->asArray(), $b->asArray()), false);
+    }
+
+    /**
+     * Calculate the elementwise maxima between two vectors and return them
+     * in a new vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $a
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @return self
+     */
+    public static function maximum(self $a, self $b) : self
+    {
+        return new self(array_map('max', $a->asArray(), $b->asArray()), false);
     }
 
     /**
@@ -236,203 +262,13 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Multiply this vector with another vector.
-     *
-     * @param  \Rubix\ML\Other\Structures\Vector  $b
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function multiply(Vector $b) : self
-    {
-        if ($this->n !== $b->n()) {
-            throw new InvalidArgumentException('Vectors do not have the same'
-                . ' dimensionality.');
-        }
-
-        $c = [];
-
-        foreach ($this->a as $i => $value) {
-            $c[$i] = $value * $b[$i];
-        }
-
-        return new self($c, false);
-    }
-
-    /**
-     * Divide this vector by another vector.
-     *
-     * @param  \Rubix\ML\Other\Structures\Vector  $b
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function divide(Vector $b) : self
-    {
-        if ($this->n !== $b->n()) {
-            throw new InvalidArgumentException('Vectors do not have the same'
-                . ' dimensionality.');
-        }
-
-        $c = [];
-
-        foreach ($this->a as $i => $value) {
-            $c[$i] = $value / $b[$i];
-        }
-
-        return new self($c, false);
-    }
-
-    /**
-     * Add this vector to another vector.
-     *
-     * @param  \Rubix\ML\Other\Structures\Vector  $b
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function add(Vector $b) : self
-    {
-        if ($this->n !== $b->n()) {
-            throw new InvalidArgumentException('Vectors do not have the same'
-                . ' dimensionality.');
-        }
-
-        $c = [];
-
-        foreach ($this->a as $i => $value) {
-            $c[$i] = $value + $b[$i];
-        }
-
-        return new self($c, false);
-    }
-
-    /**
-     * Subtract this vector from another vector.
-     *
-     * @param  \Rubix\ML\Other\Structures\Vector  $b
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function subtract(Vector $b) : self
-    {
-        if ($this->n !== $b->n()) {
-            throw new InvalidArgumentException('Vectors do not have the same'
-                . ' dimensionality.');
-        }
-
-        $c = [];
-
-        foreach ($this->a as $i => $value) {
-            $c[$i] = $value - $b[$i];
-        }
-
-        return new self($c, false);
-    }
-
-    /**
-     * Multiply this matrix by a scalar.
-     *
-     * @param  mixed  $scalar
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function multiplyScalar($scalar) : self
-    {
-        if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Scalar must be an integer or'
-                . ' float ' . gettype($scalar) . ' found.');
-        }
-
-        $b = [];
-
-        foreach ($this->a as $i => $value) {
-            $b[$i] = $value * $scalar;
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Divide this matrix by a scalar.
-     *
-     * @param  mixed  $scalar
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function divideScalar($scalar) : self
-    {
-        if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Scalar must be an integer or'
-                . ' float ' . gettype($scalar) . ' found.');
-        }
-
-        $b = [];
-
-        foreach ($this->a as $i => $value) {
-            $b[$i] = $value / $scalar;
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Add this matrix by a scalar.
-     *
-     * @param  mixed  $scalar
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function addScalar($scalar) : self
-    {
-        if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Factor must be an integer or'
-                . ' float ' . gettype($scalar) . ' found.');
-        }
-
-        $b = [];
-
-        foreach ($this->a as $i => $value) {
-            $b[$i] = $value + $scalar;
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Subtract this matrix by a scalar.
-     *
-     * @param  mixed  $scalar
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function subtractScalar($scalar) : self
-    {
-        if (!is_int($scalar) and !is_float($scalar)) {
-            throw new InvalidArgumentException('Scalar must be an integer or'
-                . ' float ' . gettype($scalar) . ' found.');
-        }
-
-        $b = [];
-
-        foreach ($this->a as $i => $value) {
-            $b[$i] = $value - $scalar;
-        }
-
-        return new self($b, false);
-    }
-
-    /**
      * Take the absolute value of the vector.
      *
      * @return self
      */
     public function abs() : self
     {
-        $b = [];
-
-        foreach ($this->a as $value) {
-            $b[] = abs($value);
-        }
-
-        return new self($b, false);
+        return new self(array_map('abs', $this->a), false);
     }
 
     /**
@@ -446,7 +282,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Square the vector.
+     * Raise the vector to an exponent.
      *
      * @param  int|float  $exponent
      * @throws \InvalidArgumentException
@@ -475,13 +311,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      */
     public function sqrt() : self
     {
-        $b = [];
-
-        foreach ($this->a as $value) {
-            $b[] = $value ** 0.5;
-        }
-
-        return new self($b, false);
+        return new self(array_map('sqrt', $this->a), false);
     }
 
     /**
@@ -491,13 +321,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      */
     public function exp() : self
     {
-        $b = [];
-
-        foreach ($this->a as $value) {
-            $b[] = M_E ** $value;
-        }
-
-        return new self($b, false);
+        return new self(array_map('exp', $this->a), false);
     }
 
     /**
@@ -512,6 +336,210 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
 
         foreach ($this->a as $value) {
             $b[] = log($value, $base);
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Multiply this vector with another vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function multiply(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector dimensionality does not'
+                . ' match.' . (string) $this->n . ' needed but'
+                . ' found ' . (string) $b->n() . '.');
+        }
+
+        $c = [];
+
+        foreach ($this->a as $i => $value) {
+            $c[$i] = $value * $b[$i];
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Divide this vector by another vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function divide(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector dimensionality does not'
+                . ' match.' . (string) $this->n . ' needed but'
+                . ' found ' . (string) $b->n() . '.');
+        }
+
+        $c = [];
+
+        foreach ($this->a as $i => $value) {
+            $c[$i] = $value / $b[$i];
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Add this vector to another vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function add(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector dimensionality does not'
+                . ' match.' . (string) $this->n . ' needed but'
+                . ' found ' . (string) $b->n() . '.');
+        }
+
+        $c = [];
+
+        foreach ($this->a as $i => $value) {
+            $c[$i] = $value + $b[$i];
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Subtract this vector from another vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function subtract(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector dimensionality does not'
+                . ' match.' . (string) $this->n . ' needed but'
+                . ' found ' . (string) $b->n() . '.');
+        }
+
+        $c = [];
+
+        foreach ($this->a as $i => $value) {
+            $c[$i] = $value - $b[$i];
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Multiply this vector by a scalar.
+     *
+     * @param  mixed  $scalar
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function multiplyScalar($scalar) : self
+    {
+        if (!is_int($scalar) and !is_float($scalar)) {
+            throw new InvalidArgumentException('Scalar must be an integer or'
+                . ' float ' . gettype($scalar) . ' found.');
+        }
+
+        $b = [];
+
+        foreach ($this->a as $i => $value) {
+            $b[$i] = $value * $scalar;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Divide this vector by a scalar.
+     *
+     * @param  mixed  $scalar
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function divideScalar($scalar) : self
+    {
+        if (!is_int($scalar) and !is_float($scalar)) {
+            throw new InvalidArgumentException('Scalar must be an integer or'
+                . ' float ' . gettype($scalar) . ' found.');
+        }
+
+        $b = [];
+
+        foreach ($this->a as $i => $value) {
+            $b[$i] = $value / $scalar;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Add a scalar to this vector.
+     *
+     * @param  mixed  $scalar
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function addScalar($scalar) : self
+    {
+        if (!is_int($scalar) and !is_float($scalar)) {
+            throw new InvalidArgumentException('Factor must be an integer or'
+                . ' float ' . gettype($scalar) . ' found.');
+        }
+
+        $b = [];
+
+        foreach ($this->a as $i => $value) {
+            $b[$i] = $value + $scalar;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Subtract a scalar from this vector.
+     *
+     * @param  mixed  $scalar
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function subtractScalar($scalar) : self
+    {
+        if (!is_int($scalar) and !is_float($scalar)) {
+            throw new InvalidArgumentException('Scalar must be an integer or'
+                . ' float ' . gettype($scalar) . ' found.');
+        }
+
+        $b = [];
+
+        foreach ($this->a as $i => $value) {
+            $b[$i] = $value - $scalar;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
+     * Negate the matrix i.e take the negative of each value elementwise.
+     *
+     * @return self
+     */
+    public function negate() : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            $b[] = -$value;
         }
 
         return new self($b, false);
@@ -570,7 +598,7 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
             $norm += $value ** 2;
         }
 
-        return $norm ** 0.5;
+        return sqrt($norm);
     }
 
     /**

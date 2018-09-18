@@ -95,8 +95,8 @@ class MulticlassBreakdown implements Report
                 / ($table[$label]['precision'] + $table[$label]['recall']);
             $table[$label]['informedness'] = $table[$label]['recall']
                 + $table[$label]['specificity'] - 1;
-            $table[$label]['mcc'] = (($tp * $tn - $fp * $fn) + self::EPSILON)
-                / ((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ** 0.5
+            $table[$label]['mcc'] = ($tp * $tn - $fp * $fn)
+                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
                 + self::EPSILON);
             $table[$label]['true_positives'] = $tp;
             $table[$label]['true_negatives'] = $tn;

@@ -202,7 +202,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
                 $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
                 $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
 
-                $a[$i][$j] = ((-2. * log($r1)) ** 0.5)
+                $a[$i][$j] = sqrt(-2. * log($r1))
                     * cos(self::TWO_PI * $r2);
             }
         }
@@ -237,7 +237,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function empty() : self
     {
-        return new self([[]], false);
+        return new self([], false);
     }
 
     /**
@@ -250,14 +250,10 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function minimum(self $a, self $b) : self
     {
-        $c = [[]];
+        $c = [];
 
-        foreach ($a as $i => $rowA) {
-            $rowB = $b[$i];
-
-            foreach ($rowA as $j => $value) {
-                $c[$i][$j] = min($value, $rowB[$j]);
-            }
+        foreach ($a as $i => $row) {
+            $c[] = array_map('min', $row, $b[$i]);
         }
 
         return new self($c, false);
@@ -273,14 +269,10 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function maximum(self $a, self $b) : self
     {
-        $c = [[]];
+        $c = [];
 
-        foreach ($a as $i => $rowA) {
-            $rowB = $b[$i];
-
-            foreach ($rowA as $j => $value) {
-                $c[$i][$j] = max($value, $rowB[$j]);
-            }
+        foreach ($a as $i => $row) {
+            $c[] = array_map('max', $row, $b[$i]);
         }
 
         return new self($c, false);
@@ -363,7 +355,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return a row form the matrix.
+     * Return a row from the matrix.
      *
      * @param  int  $index
      * @return array
@@ -371,6 +363,17 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function row(int $index) : array
     {
         return $this->offsetGet($index);
+    }
+
+    /**
+     * Return a row as a vector from the matrix.
+     *
+     * @param  int  $index
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function rowAsVector(int $index) : Vector
+    {
+        return new Vector($this->row($index));
     }
 
     /**
@@ -382,6 +385,17 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function column(int $index) : array
     {
         return array_column($this->a, $index);
+    }
+
+    /**
+     * Return a column as a vector from the matrix.
+     *
+     * @param  int  $index
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function columnAsVector(int $index) : Vector
+    {
+        return new Vector($this->column($index));
     }
 
     /**
@@ -402,7 +416,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     public function asVectors() : array
     {
         return array_map(function ($row) {
-            return new Vector($row);
+            return new Vector($row, false);
         }, $this->a);
     }
 
@@ -477,7 +491,8 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($b->m() !== $this->n) {
             throw new InvalidArgumentException('Matrix dimensions do not'
-                . ' match.');
+                . ' match. ' . (string) $this->n . ' rows needed but found'
+                . (string) $b->m() . '.');
         }
 
         $bT = $b->transpose();
@@ -499,6 +514,161 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         return new self($c, false);
     }
 
+
+        /**
+         * Return the elementwise reciprocal of the matrix.
+         *
+         * @return self
+         */
+        public function reciprocal() : self
+        {
+            return self::ones(...$this->shape())->divide($this);
+        }
+
+        /**
+         * Sum the rows of the matrix and return a vector.
+         *
+         * @return \Rubix\ML\Other\Structures\Vector
+         */
+        public function sum() : Vector
+        {
+            return new Vector(array_map('array_sum', $this->a), false);
+        }
+
+        /**
+         * The sum of all the elements in a row of the matrix.
+         *
+         * @param  int  $index
+         * @return float
+         */
+        public function rowSum(int $index) : float
+        {
+            return array_sum($this->offsetGet($index));
+        }
+
+        /**
+         * The sum of all the elements in a column of the matrix.
+         *
+         * @param  int  $index
+         * @return float
+         */
+        public function columnSum(int $index) : float
+        {
+            return array_sum($this->column($index));
+        }
+
+        /**
+         * Calculate the row product of the matrix.
+         *
+         * @return \Rubix\ML\Other\Structures\Vector
+         */
+        public function product() : Vector
+        {
+            return new Vector(array_map('array_product', $this->a), false);
+        }
+
+        /**
+         * Return the absolute value of each element in the matrix.
+         *
+         * @return self
+         */
+        public function abs() : self
+        {
+            $b = [];
+
+            foreach ($this->a as $row) {
+                $b[] = array_map('abs', $row);
+            }
+
+            return new self($b, false);
+        }
+
+        /**
+         * Return the square of the matrix elementwise.
+         *
+         * @return self
+         */
+        public function square() : self
+        {
+            return $this->pow(2);
+        }
+
+        /**
+         * Raise the matrix to a given power.
+         *
+         * @param  int|float  $exponent
+         * @throws \InvalidArgumentException
+         * @return self
+         */
+        public function pow($exponent) : self
+        {
+            if (!is_int($exponent) and !is_float($exponent)) {
+                throw new InvalidArgumentException('Exponent must be an integer or'
+                    . ' float ' . gettype($exponent) . ' found.');
+            }
+
+            $b = [[]];
+
+            foreach ($this->a as $i => $row) {
+                foreach ($row as $j => $value) {
+                    $b[$i][$j] = $value ** $exponent;
+                }
+            }
+
+            return new self($b, false);
+        }
+
+        /**
+         * Return the square root of the matrix.
+         *
+         * @return self
+         */
+        public function sqrt() : self
+        {
+            $b = [];
+
+            foreach ($this->a as $i => $row) {
+                $b[] = array_map('sqrt', $row);
+            }
+
+            return new self($b, false);
+        }
+
+        /**
+         * Return the exponential of the matrix.
+         *
+         * @return self
+         */
+        public function exp() : self
+        {
+            $b = [];
+
+            foreach ($this->a as $i => $row) {
+                $b[] = array_map('exp', $row);
+            }
+
+            return new self($b, false);
+        }
+
+        /**
+         * Return the logarithm of the matrix in specified base.
+         *
+         * @param  float  $base
+         * @return self
+         */
+        public function log(float $base = M_E) : self
+        {
+            $b = [[]];
+
+            foreach ($this->a as $i => $row) {
+                foreach ($row as $j => $value) {
+                    $b[$i][$j] = log($value, $base);
+                }
+            }
+
+            return new self($b, false);
+        }
+
     /**
      * Return the elementwise product between this matrix and another matrix.
      *
@@ -510,12 +680,14 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of rows.');
+                . ' of rows. ' . (string) $this->m . ' needed but found '
+                . (string) $b->m() . '.');
         }
 
         if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of columns.');
+                . ' of columns. ' . (string) $this->n . ' needed but found '
+                . (string) $b->n() . '.');
         }
 
         $c = [[]];
@@ -542,12 +714,14 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of rows.');
+                . ' of rows. ' . (string) $this->m . ' needed but found '
+                . (string) $b->m() . '.');
         }
 
         if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of columns.');
+                . ' of columns. ' . (string) $this->n . ' needed but found '
+                . (string) $b->n() . '.');
         }
 
         $c = [[]];
@@ -574,12 +748,14 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of rows.');
+                . ' of rows. ' . (string) $this->m . ' needed but found '
+                . (string) $b->m() . '.');
         }
 
         if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of columns.');
+                . ' of columns. ' . (string) $this->n . ' needed but found '
+                . (string) $b->n() . '.');
         }
 
         $c = [[]];
@@ -606,12 +782,14 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($b->m() !== $this->m) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of rows.');
+                . ' of rows. ' . (string) $this->m . ' needed but found '
+                . (string) $b->m() . '.');
         }
 
         if ($b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices have different number'
-                . ' of columns.');
+                . ' of columns. ' . (string) $this->n . ' needed but found '
+                . (string) $b->n() . '.');
         }
 
         $c = [[]];
@@ -628,24 +806,27 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the elementwise reciprocal of the matrix.
-     *
-     * @return self
-     */
-    public function reciprocal() : self
-    {
-        return self::ones(...$this->shape())->divide($this);
-    }
-
-    /**
      * Raise this matrix to the power of the elementwise entry in another
      * matrix.
      *
      * @param \Rubix\ML\Other\Structures\Matrix  $b
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function power(Matrix $b) : self
     {
+        if ($b->m() !== $this->m) {
+            throw new InvalidArgumentException('Matrices have different number'
+                . ' of rows. ' . (string) $this->m . ' needed but found '
+                . (string) $b->m() . '.');
+        }
+
+        if ($b->n() !== $this->n) {
+            throw new InvalidArgumentException('Matrices have different number'
+                . ' of columns. ' . (string) $this->n . ' needed but found '
+                . (string) $b->n() . '.');
+        }
+
         $c = [[]];
 
         foreach ($this->a as $i => $rowA) {
@@ -660,9 +841,113 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Multiply this matrix by a vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function multiplyVector(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector does not have the same'
+            . ' number of columns. ' . (string) $this->n . ' needed but found '
+            . (string) $b->n() . '.');
+        }
+
+        $c = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $c[$i][$j] = $value * $b[$j];
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Divide this matrix by a vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function divideVector(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector does not have the same'
+            . ' number of columns. ' . (string) $this->n . ' needed but found '
+            . (string) $b->n() . '.');
+        }
+
+        $c = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $c[$i][$j] = $value / $b[$j];
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Add this matrix by a vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function addVector(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector does not have the same'
+            . ' number of columns. ' . (string) $this->n . ' needed but found '
+            . (string) $b->n() . '.');
+        }
+
+        $c = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $c[$i][$j] = $value + $b[$j];
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Subtract this matrix by a vector.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function subtractVector(Vector $b) : self
+    {
+        if ($this->n !== $b->n()) {
+            throw new InvalidArgumentException('Vector does not have the same'
+            . ' number of columns. ' . (string) $this->n . ' needed but found '
+            . (string) $b->n() . '.');
+        }
+
+        $c = [[]];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $c[$i][$j] = $value - $b[$j];
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
      * Multiply this matrix by a scalar.
      *
-     * @param  mixed  $scalar
+     * @param  int|float  $scalar
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -687,7 +972,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Divide this matrix by a scalar.
      *
-     * @param  mixed  $scalar
+     * @param  int|float  $scalar
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -712,7 +997,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Add this matrix by a scalar.
      *
-     * @param  mixed  $scalar
+     * @param  int|float  $scalar
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -737,7 +1022,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Subtract this matrix by a scalar.
      *
-     * @param  mixed  $scalar
+     * @param  int|float  $scalar
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -760,181 +1045,13 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Sum the rows of the matrix and return a vector.
-     *
-     * @return \Rubix\ML\Other\Structures\Vector
-     */
-    public function sum() : Vector
-    {
-        $b = [];
-
-        foreach ($this->a as $row) {
-            $b[] = array_sum($row);
-        }
-
-        return new Vector($b, false);
-    }
-
-    /**
-     * The sum of all the elements in a row of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function rowSum(int $index) : float
-    {
-        return array_sum($this->offsetGet($index));
-    }
-
-    /**
-     * The sum of all the elements in a column of the matrix.
-     *
-     * @param  int  $index
-     * @return float
-     */
-    public function columnSum(int $index) : float
-    {
-        return array_sum($this->column($index));
-    }
-
-    /**
-     * Calculate the row product of the matrix.
-     *
-     * @return \Rubix\ML\Other\Structures\Vector
-     */
-    public function product() : Vector
-    {
-        $b = [];
-
-        foreach ($this->a as $row) {
-            $b[] = array_product($row);
-        }
-
-        return new Vector($b, false);
-    }
-
-    /**
-     * Return the absolute value of each element in the matrix.
-     *
-     * @return self
-     */
-    public function abs() : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = abs($value);
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Return the square of the matrix elementwise.
-     *
-     * @return self
-     */
-    public function square() : self
-    {
-        return $this->pow(2);
-    }
-
-    /**
-     * Raise the matrix to a given power.
-     *
-     * @param  int|float  $exponent
-     * @throws \InvalidArgumentException
-     * @return self
-     */
-    public function pow($exponent) : self
-    {
-        if (!is_int($exponent) and !is_float($exponent)) {
-            throw new InvalidArgumentException('Exponent must be an integer or'
-                . ' float ' . gettype($exponent) . ' found.');
-        }
-
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = $value ** $exponent;
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Return the square root of the matrix.
-     *
-     * @return self
-     */
-    public function sqrt() : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = $value ** 0.5;
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Return the exponential of the matrix.
-     *
-     * @return self
-     */
-    public function exp() : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = M_E ** $value;
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
-     * Return the logarithm of the matrix in specified base.
-     *
-     * @param  float  $base
-     * @return self
-     */
-    public function log(float $base = M_E) : self
-    {
-        $b = [[]];
-
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = log($value, $base);
-            }
-        }
-
-        return new self($b, false);
-    }
-
-    /**
      * Return the minimum of each row in the matrix.
      *
      * @return \Rubix\ML\Other\Structures\Vector
      */
     public function min() : Vector
     {
-        $b = [];
-
-        foreach ($this->a as $row) {
-            $b[] = min($row);
-        }
-
-        return new Vector($b, false);
+        return new Vector(array_map('min', $this->a), false);
     }
 
     /**
@@ -944,13 +1061,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function max() : Vector
     {
-        $b = [];
-
-        foreach ($this->a as $row) {
-            $b[] = max($row);
-        }
-
-        return new Vector($b, false);
+        return new Vector(array_map('max', $this->a), false);
     }
 
     /**
@@ -976,10 +1087,9 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function covariance() : self
     {
-        $mean = $this->transpose()->mean()
-            ->asRowMatrix()->repeat($this->m, 1);
+        $mean = $this->transpose()->mean();
 
-        $b = $this->subtract($mean);
+        $b = $this->subtractVector($mean);
 
         return $b->dot($b->transpose())
             ->divideScalar($this->n);
@@ -1011,12 +1121,10 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function floor() : self
     {
-        $b = [[]];
+        $b = [];
 
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = floor($value);
-            }
+        foreach ($this->a as $row) {
+            $b[] = array_map('floor', $row);
         }
 
         return new self($b, false);
@@ -1029,12 +1137,10 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function ceil() : self
     {
-        $b = [[]];
+        $b = [];
 
-        foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
-                $b[$i][$j] = ceil($value);
-            }
+        foreach ($this->a as $row) {
+            $b[] = array_map('ceil', $row);
         }
 
         return new self($b, false);
@@ -1171,7 +1277,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
 
         unset($b[$index]);
 
-        return new self($b, false);
+        return new self(array_values($b), false);
     }
 
     /**
@@ -1202,7 +1308,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentAbove(Matrix $b) : self
     {
-        if ($b->n() !== $this->n) {
+        if ($this->m > 0 and $b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of columns.');
         }
@@ -1219,7 +1325,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentBelow(Matrix $b) : self
     {
-        if ($b->n() !== $this->n) {
+        if ($this->m > 0 and $b->n() !== $this->n) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of columns.');
         }
@@ -1236,18 +1342,13 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentLeft(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($this->m > 0 and $b->m() !== $this->m()) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of rows.');
         }
 
-        $c = [];
-
-        foreach ($this->a as $i => $row) {
-            $c[] = array_merge($b[$i], $row);
-        }
-
-        return new self($c, false);
+        return new self(array_map('array_merge',
+            $b->asArray(), $this->a), false);
     }
 
     /**
@@ -1259,18 +1360,13 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function augmentRight(Matrix $b) : self
     {
-        if ($b->m() !== $this->m()) {
+        if ($this->m > 0 and $b->m() !== $this->m()) {
             throw new InvalidArgumentException('Matrices must have the same'
                 . ' number of rows.');
         }
 
-        $c = [];
-
-        foreach ($this->a as $i => $row) {
-            $c[] = array_merge($row, $b[$i]);
-        }
-
-        return new self($c, false);
+        return new self(array_map('array_merge',
+            $this->a, $b->asArray()), false);
     }
 
     /**

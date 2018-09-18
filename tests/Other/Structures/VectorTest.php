@@ -44,6 +44,20 @@ class VectorTest extends TestCase
         $this->assertEquals([1, 1, 1, 1], Vector::ones(4)->asArray());
     }
 
+    public function test_minimum()
+    {
+        $outcome = [-15, 0.1, 2.0, -36, -72, -3.0, 3.3, 2.0];
+
+        $this->assertEquals($outcome, Vector::minimum($this->a, $this->b)->asArray());
+    }
+
+    public function test_maximum()
+    {
+        $outcome = [0.25, 25, 35, -0.5, -1.0, 89, 106, 45];
+
+        $this->assertEquals($outcome, Vector::maximum($this->a, $this->b)->asArray());
+    }
+
     public function test_get_n()
     {
         $this->assertEquals(8, $this->a->n());
@@ -212,9 +226,9 @@ class VectorTest extends TestCase
     public function test_exp()
     {
         $outcome = [
-            3.0590232050182605E-7, 72004899337.38577, 1586013452313427.8,
-            2.319522830243574E-16, 5.380186160021159E-32, 4.489612819174324E+38,
-            1.0844638552900169E+46, 3.4934271057485013E+19,
+            3.059023205018258E-7, 72004899337.38588, 1586013452313430.8,
+            2.3195228302435696E-16, 5.380186160021138E-32, 4.4896128191743455E+38,
+            1.0844638552900231E+46, 3.4934271057485095E+19,
         ];
 
         $this->assertEquals($outcome, $this->a->exp()->asArray());
@@ -228,6 +242,13 @@ class VectorTest extends TestCase
         ];
 
         $this->assertEquals($outcome, $this->c->log()->asArray());
+    }
+
+    public function test_negate()
+    {
+        $outcome = [15, -25, -35, 36, 72, -89, -106, -45];
+
+        $this->assertEquals($outcome, $this->a->negate()->asArray());
     }
 
     public function test_scalar_subtract()

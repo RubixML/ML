@@ -180,7 +180,7 @@ class BatchNorm implements Hidden, Parametric
                 * ($n * $oldMeans[$i] - $n * $mean) ** 2)
                 / $newWeight;
 
-            $stddev = ($variance + $this->epsilon) ** 0.5;
+            $stddev = sqrt($variance + $this->epsilon);
 
             foreach ($row as $j => $value) {
                 $a = 1. / $stddev;
@@ -215,7 +215,7 @@ class BatchNorm implements Hidden, Parametric
 
         foreach ($input as $i => $row) {
             $mean = $this->means[$i];
-            $stddev = ($this->variances[$i] + $this->epsilon) ** 0.5;
+            $stddev = sqrt($this->variances[$i] + $this->epsilon);
 
             foreach ($row as $j => $value) {
                 $out[$i][$j] = $gamma[$i]
@@ -261,15 +261,13 @@ class BatchNorm implements Hidden, Parametric
 
             $dXHat = $dOut->multiply($this->gamma->w()->repeat(1, $n));
 
-            $xHatSigma = $dXHat->multiply($xHat)->transpose()->sum()
-                ->asRowMatrix()->repeat($m, 1);
+            $xHatSigma = $dXHat->multiply($xHat)->transpose()->sum();
 
-            $dXHatSigma = $dXHat->transpose()->sum()
-                ->asRowMatrix()->repeat($m, 1);
+            $dXHatSigma = $dXHat->transpose()->sum();
 
             return $dXHat->multiplyScalar($m)
-                ->subtract($dXHatSigma)
-                ->subtract($xHat->multiply($xHatSigma))
+                ->subtractVector($dXHatSigma)
+                ->subtract($xHat->multiplyVector($xHatSigma))
                 ->multiply($stdInv->divideScalar($m));
         };
     }

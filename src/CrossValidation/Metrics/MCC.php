@@ -97,9 +97,9 @@ class MCC implements Metric
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += (($tp * $tn - $fp * $fn) + self::EPSILON)
-                / ((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-                ** 0.5 + self::EPSILON);
+            $score += ($tp * $tn - $fp * $fn)
+                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
+                + self::EPSILON);
         }
 
         return $score / $k;

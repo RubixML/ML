@@ -306,7 +306,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 $mean = $means[$column];
                 $variance = $variances[$column] + self::EPSILON;
 
-                $pdf = 1. / (self::TWO_PI * $variance) ** 0.5;
+                $pdf = 1. / sqrt(self::TWO_PI * $variance);
                 $pdf *= M_E ** (-(($feature - $mean) ** 2 / (2. * $variance)));
 
                 $score *= $pdf;

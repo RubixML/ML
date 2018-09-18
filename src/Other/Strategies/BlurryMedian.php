@@ -98,6 +98,6 @@ class BlurryMedian implements Continuous
         $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
         $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
 
-        return ((-2. * log($r1)) ** 0.5) * cos(self::TWO_PI * $r2);
+        return sqrt(-2. * log($r1)) * cos(self::TWO_PI * $r2);
     }
 }
