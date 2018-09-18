@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
@@ -28,22 +27,22 @@ class OneHotEncoder implements Transformer
     protected $categories;
 
     /**
-     * Build the list of categories per feature column.
+     * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         $this->categories = [];
 
         $position = 0;
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CATEGORICAL) {
                 $categories = [];
 
-                foreach ($dataset as $sample) {
+                foreach ($dataframe as $sample) {
                     $category = $sample[$column];
 
                     if (!isset($categories[$category])) {
@@ -57,9 +56,7 @@ class OneHotEncoder implements Transformer
     }
 
     /**
-     * Convert a sample into a vector where categorical values are either 1 or 0
-     * depending if a category is present in the sample or not. Continuous data,
-     * if present, is unmodified but moved to the front of the vector.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @throws \RuntimeException

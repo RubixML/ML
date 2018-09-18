@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 
 /**
  * Lambda Function
@@ -26,7 +26,6 @@ class LambdaFunction implements Transformer
 
     /**
      * @param  callable  $lambda
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(callable $lambda)
@@ -35,21 +34,20 @@ class LambdaFunction implements Transformer
     }
 
     /**
-     * Do nothing as this is a stateless transformer.
+     * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         //
     }
 
     /**
-     * Run the lamba function over the sample matrix.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
-     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples) : void

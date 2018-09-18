@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
@@ -82,18 +81,18 @@ class RobustStandardizer implements Transformer
     }
 
     /**
-     * Calculate the medians and median absolute deviations of the dataset.
+     * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                list($median, $mad) = Stats::medMad($dataset->column($column));
+                list($median, $mad) = Stats::medMad($dataframe->column($column));
 
                 $this->medians[$column] = $median;
                 $this->mads[$column] = $mad;
@@ -102,7 +101,7 @@ class RobustStandardizer implements Transformer
     }
 
     /**
-     * Center and scale the features of the sample matrix.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @throws \RuntimeException

@@ -2,17 +2,21 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 
 interface Transformer
 {
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * Fit the transformer to the incoming data frame.
+     *
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void;
+    public function fit(DataFrame $dataframe) : void;
 
     /**
+     * Apply the transformation to the samples in the data frame.
+     *
      * @param  array  $samples
      * @return void
      */

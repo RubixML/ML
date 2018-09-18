@@ -192,6 +192,13 @@ class VectorTest extends TestCase
         $this->assertEquals($outcome, $this->a->square()->asArray());
     }
 
+    public function test_pow()
+    {
+        $outcome = [-3375, 15625, 42875, -46656, -373248, 704969, 1191016, 91125];
+
+        $this->assertEquals($outcome, $this->a->pow(3)->asArray());
+    }
+
     public function test_sqrt()
     {
         $outcome = [

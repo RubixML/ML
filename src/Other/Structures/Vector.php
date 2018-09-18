@@ -442,10 +442,27 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
      */
     public function square() : self
     {
+        return $this->pow(2);
+    }
+
+    /**
+     * Square the vector.
+     *
+     * @param  int|float  $exponent
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function pow($exponent) : self
+    {
+        if (!is_int($exponent) and !is_float($exponent)) {
+            throw new InvalidArgumentException('Scalar must be an integer or'
+                . ' float ' . gettype($exponent) . ' found.');
+        }
+
         $b = [];
 
         foreach ($this->a as $value) {
-            $b[] = $value ** 2;
+            $b[] = $value ** $exponent;
         }
 
         return new self($b, false);

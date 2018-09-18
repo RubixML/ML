@@ -452,6 +452,19 @@ class MatrixTest extends TestCase
         $this->assertEquals($outcome, $d);
     }
 
+    public function test_pow()
+    {
+        $d = $this->a->pow(3)->asArray();
+
+        $outcome = [
+            [10648, -4913, 1728],
+            [64, 1331, -8],
+            [8000, -216, -729],
+        ];
+
+        $this->assertEquals($outcome, $d);
+    }
+
     public function test_square_root()
     {
         $d = $this->b->sqrt()->asArray();
@@ -592,7 +605,7 @@ class MatrixTest extends TestCase
 
         $this->assertEquals($outcome, $this->a->clip(0., INF)->asArray());
     }
-    
+
     public function test_negate()
     {
         $outcome = [

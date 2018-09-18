@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Structures\DataFrame;
 use RuntimeException;
 
@@ -34,18 +33,18 @@ class MinMaxNormalizer implements Transformer
     protected $maximums;
 
     /**
-     * Calculate the minimums and maximums of each feature column in the dataset.
+     * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         $this->minimums = $this->maximums = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
+                $values = $dataframe->column($column);
 
                 $this->minimums[$column] = min($values);
                 $this->maximums[$column] = max($values);
@@ -54,7 +53,7 @@ class MinMaxNormalizer implements Transformer
     }
 
     /**
-     * Transform the features into a value between 0 and 1.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @throws \RuntimeException

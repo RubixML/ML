@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Structures\DataFrame;
 
 /**
  * Numeric String Converter
@@ -18,16 +18,18 @@ use Rubix\ML\Datasets\Dataset;
 class NumericStringConverter implements Transformer
 {
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * Fit the transformer to the incoming data frame.
+     *
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         //
     }
 
     /**
-     * Convert numerial strings to integer and floating point numbers.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @return void

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 
@@ -44,21 +43,22 @@ class PolynomialExpander implements Transformer
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * Fit the transformer to the incoming data frame.
+     *
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
     }
 
     /**
-     * Transform each sample into a dense polynomial feature vector in the degree
-     * given.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @return void

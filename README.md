@@ -1,7 +1,7 @@
 # Rubix ML for PHP
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/andrewdalpino/Rubix-ML.svg?style=for-the-badge)](https://travis-ci.org/andrewdalpino/Rubix-ML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-Rubix ML is a library that lets you build intelligent programs that learn from data in [PHP](https://php.net).
+Rubix ML is a machine learning library that lets you build programs that learn from data in [PHP](https://php.net).
 
 ## Our Mission
 The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. We aspire to provide the framework to facilitate rapid prototyping, small to medium sized projects, and education. If you're eager to get started you can follow along with the [basic introduction](#basic-introduction) or browse the [API reference](#api-reference).

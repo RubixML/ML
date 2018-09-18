@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\BlurryMean;
@@ -80,21 +79,23 @@ class MissingDataImputer implements Transformer
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * Fit the transformer to the incoming data frame.
+     *
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
      * @return void
      */
-    public function fit(Dataset $dataset) : void
+    public function fit(DataFrame $dataframe) : void
     {
         $this->imputers = [];
 
-        foreach ($dataset->types() as $column => $type) {
+        foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CATEGORICAL) {
                 $imputer = clone $this->categorical;
             } else {
                 $imputer = clone $this->continuous;
             }
 
-            $values = array_filter($dataset->column($column), function ($value) {
+            $values = array_filter($dataframe->column($column), function ($value) {
                 return $value !== $this->placeholder;
             });
 
@@ -105,7 +106,7 @@ class MissingDataImputer implements Transformer
     }
 
     /**
-     * Replace missing values within sample set with guessed values.
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @throws \RuntimeException

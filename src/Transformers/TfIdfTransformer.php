@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -31,37 +30,8 @@ class TfIdfTransformer implements Transformer
     protected $idfs;
 
     /**
-     * Calculate the inverse document frequency values for each feature column.
+     * Return the inverse document frequencies calculated during fitting.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function fit(Dataset $dataset) : void
-    {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This transformer only works on'
-                . ' continuous features.');
-        }
-
-        $n = $dataset->numRows();
-
-        $this->idfs = array_fill(0, $dataset->numColumns(), 0.);
-
-        foreach ($dataset as $sample) {
-            foreach ($sample as $column => $feature) {
-                if ($feature > 0) {
-                    $this->idfs[$column]++;
-                }
-            }
-        }
-
-        foreach ($this->idfs as &$idf) {
-            $idf = log(($idf !== 0.? $n / $idf : 1.), 10);
-        }
-    }
-
-    /**
      * @return array
      */
     public function idfs() : ?array
@@ -70,7 +40,38 @@ class TfIdfTransformer implements Transformer
     }
 
     /**
-     * Multiply the term frequency by the inverse document frequency.
+     * Fit the transformer to the incoming data frame.
+     *
+     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function fit(DataFrame $dataframe) : void
+    {
+        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
+            throw new InvalidArgumentException('This transformer only works on'
+                . ' continuous features.');
+        }
+
+        list($m, $n) = $dataframe->shape();
+
+        $this->idfs = array_fill(0, $n, 0.);
+
+        foreach ($dataframe as $sample) {
+            foreach ($sample as $column => $feature) {
+                if ($feature > 0) {
+                    $this->idfs[$column]++;
+                }
+            }
+        }
+
+        foreach ($this->idfs as &$idf) {
+            $idf = log(($idf !== 0. ? $m / $idf : 1.), 10);
+        }
+    }
+
+    /**
+     * Apply the transformation to the samples in the data frame.
      *
      * @param  array  $samples
      * @throws \RuntimeException

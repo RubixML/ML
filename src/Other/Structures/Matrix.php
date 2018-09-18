@@ -838,11 +838,28 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function square() : self
     {
+        return $this->pow(2);
+    }
+
+    /**
+     * Raise the matrix to a given power.
+     *
+     * @param  int|float  $exponent
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function pow($exponent) : self
+    {
+        if (!is_int($exponent) and !is_float($exponent)) {
+            throw new InvalidArgumentException('Exponent must be an integer or'
+                . ' float ' . gettype($exponent) . ' found.');
+        }
+
         $b = [[]];
 
         foreach ($this->a as $i => $row) {
             foreach ($row as $j => $value) {
-                $b[$i][$j] = $value ** 2;
+                $b[$i][$j] = $value ** $exponent;
             }
         }
 
