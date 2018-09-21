@@ -12,6 +12,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Naive Bayes
@@ -58,11 +59,9 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     /**
      * The prior negative log probabilities of each label.
      *
-     * @var array
+     * @var array|null
      */
-    protected $_priors = [
-        //
-    ];
+    protected $_priors;
 
     /**
      * The count of each feature from the training set used for online
@@ -78,11 +77,9 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
      * The precomputed negative log probabilities of each feature conditioned on
      * a given class label.
      *
-     * @var array
+     * @var array|null
      */
-    protected $probs = [
-        //
-    ];
+    protected $probs;
 
     /**
      * The possible class outcomes.
@@ -124,19 +121,20 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
      * Return the class prior log probabilities based on their weight over all
      * training samples.
      *
-     * @return array
+     * @return array|null
      */
-    public function priors() : array
+    public function priors() : ?array
     {
         return $this->_priors;
     }
 
     /**
-     * Return the log probabilities of each feature given each class label.
+     * Return the conditional log probabilities of each feature given each class
+     * label.
      *
-     * @return array
+     * @return array|null
      */
-    public function probabilities() : array
+    public function probabilities() : ?array
     {
         return $this->probs;
     }
@@ -237,10 +235,21 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     * chose the class with the highest likelihood score as the prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' categorical features.');
+        }
+
+        if (is_null($this->probs)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -254,10 +263,21 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' categorical features.');
+        }
+
+        if (is_null($this->probs)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = [];
 
         foreach ($dataset as $i => $sample) {

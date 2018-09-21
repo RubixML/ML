@@ -44,5 +44,6 @@ class StochasticTest extends TestCase
         $step = $this->optimizer->step($this->parameter, $this->gradients);
 
         $this->assertInstanceOf(Matrix::class, $step);
+        $this->assertEquals([3, 3], $step->shape());
     }
 }

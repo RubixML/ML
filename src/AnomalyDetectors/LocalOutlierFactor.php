@@ -164,11 +164,17 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
      * median density of the local region.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->samples)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

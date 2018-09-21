@@ -2,20 +2,26 @@
 
 namespace Rubix\Tests\NeuralNet;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
 
 class FeedForwardTest extends TestCase
 {
+    protected $dataset;
+
+    protected $activations;
+
     protected $network;
 
     protected $input;
@@ -26,13 +32,25 @@ class FeedForwardTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Placeholder(5);
+        $this->dataset = new Labeled([
+            [1., 2.5,],
+            [0.1, 0.],
+            [0.002, -6.],
+        ], ['yes', 'no', 'maybe'], false);
+
+        $this->activations = [
+            [1.0, 2.5],
+            [0.1, 0.0],
+            [0.002, 0.],
+        ];
+
+        $this->input = new Placeholder(2);
 
         $this->hidden = [
             new Dense(5),
-            new Activation(new ELU()),
+            new Activation(new ReLU()),
             new Dense(5),
-            new Activation(new ELU()),
+            new Activation(new ReLU()),
         ];
 
         $this->output = new Multiclass(['yes', 'no', 'maybe']);
@@ -70,5 +88,12 @@ class FeedForwardTest extends TestCase
     public function test_get_parametric_layers()
     {
         $this->assertCount(3, $this->network->parametric());
+    }
+
+    public function test_round_trip()
+    {
+        $loss = $this->network->roundtrip($this->dataset);
+
+        $this->assertEquals(0., $loss, '', INF);
     }
 }

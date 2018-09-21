@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 interface Probabilistic extends Estimator
 {
     /**
-     * Output a vector of probabilities estimates.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array

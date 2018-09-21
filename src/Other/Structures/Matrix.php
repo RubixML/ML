@@ -492,7 +492,7 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
         if ($b->m() !== $this->n) {
             throw new InvalidArgumentException('Matrix dimensions do not'
                 . ' match. ' . (string) $this->n . ' rows needed but found'
-                . (string) $b->m() . '.');
+                . ' ' . (string) $b->m() . '.');
         }
 
         $bT = $b->transpose();

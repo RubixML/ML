@@ -125,12 +125,12 @@ class RobustZScore implements Estimator, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $this->medians = $this->mads = [];
-
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
+
+        $this->medians = $this->mads = [];
 
         foreach ($dataset->rotate() as $column => $values) {
             list($median, $mad) = Stats::medMad($values);
@@ -145,11 +145,17 @@ class RobustZScore implements Estimator, Persistable
      * to a tolerance and threshold respectively.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->medians) or empty($this->mads)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

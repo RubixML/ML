@@ -103,10 +103,16 @@ class DBSCAN implements Estimator, Persistable
 
     /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         $samples = $dataset->samples();
 
         $predictions = [];

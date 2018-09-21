@@ -99,8 +99,8 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null, float $minChange = 1e-4,
-                                int $epochs = PHP_INT_MAX)
+    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
+                                float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
     {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'
@@ -147,9 +147,9 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array
+     * @return array|null
      */
-    public function centroids() : array
+    public function centroids() : ?array
     {
         return $this->centroids;
     }
@@ -246,11 +246,17 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
      * Return an array of cluster probabilities for each sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Structures\DataFrame;
@@ -393,18 +394,26 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
         if (is_null($this->network)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        $samples = Matrix::build($dataset->samples(), false)->transpose();
+
         $probabilities = [];
 
-        foreach ($this->network->infer($dataset) as $activations) {
+        foreach ($this->network->infer($samples)->transpose() as $activations) {
             $probabilities[] = array_combine($this->classes, $activations);
         }
 

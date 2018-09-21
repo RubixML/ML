@@ -177,63 +177,60 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $batch) : float
     {
-        return $this->feed($batch)->backpropagate($batch);
+        $samples = Matrix::build($batch->samples(), false)->transpose();
+
+        $this->feed($samples);
+
+        return $this->backpropagate($batch->labels());
     }
 
     /**
-     * Feed a sample through the network and return the output activations
-     * of each output neuron.
+     * Feed a batch through the network and return a matrix of activations.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $batch
-     * @return self
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
      */
-    public function feed(Labeled $batch) : self
+    public function feed(Matrix $input) : Matrix
     {
-        $input = Matrix::build($batch->samples())
-            ->transpose();
-
         foreach ($this->layers as $layer) {
             $input = $layer->forward($input);
         }
 
-        return $this;
+        return $input;
     }
 
     /**
-     * Backpropagate the gradients from the previous layer and take a step
-     * in the direction of the steepest descent.
+     * Run an inference pass and return the activations at the output layer.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $batch
+     * @param  \Rubix\ML\Other\Structures\Matrix  $input
+     * @return \Rubix\ML\Other\Structures\Matrix
+     */
+    public function infer(Matrix $input) : Matrix
+    {
+        foreach ($this->layers as $layer) {
+            $input = $layer->infer($input);
+        }
+
+        return $input;
+    }
+
+    /**
+     * Backpropagate the gradient produced by the cost function and return the
+     * loss.
+     *
+     * @param  array  $labels
      * @return float
      */
-    public function backpropagate(Labeled $batch) : float
+    public function backpropagate(array $labels) : float
     {
-        list($prevGradients, $cost) = $this->output()
-            ->back($batch->labels(), $this->costFunction, $this->optimizer);
+        list($prevGradients, $loss) = $this->output()
+            ->back($labels, $this->costFunction, $this->optimizer);
 
         foreach ($this->backPass as $layer) {
             $prevGradients = $layer->back($prevGradients, $this->optimizer);
         }
 
-        return $cost;
-    }
-
-    /**
-     * Return the activations of the neurons at the output layer.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return array
-     */
-    public function infer(Dataset $dataset) : array
-    {
-        $input = Matrix::build($dataset->samples())
-            ->transpose();
-
-        foreach ($this->layers as $layer) {
-            $input = $layer->infer($input);
-        }
-
-        return $input->transpose()->asArray();
+        return $loss;
     }
 
     /**

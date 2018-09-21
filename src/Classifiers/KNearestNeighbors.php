@@ -159,11 +159,17 @@ class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
      * Output a vector of class probabilities per sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

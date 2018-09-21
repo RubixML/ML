@@ -13,6 +13,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Gaussian Naive Bayes
@@ -62,29 +63,23 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     /**
      * The precomputed prior log probabilities of each label given by their weight.
      *
-     * @var array
+     * @var array|null
      */
-    protected $_priors = [
-        //
-    ];
+    protected $_priors;
 
     /**
      * The precomputed means of each feature column of the training set.
      *
-     * @var array
+     * @var array|null
      */
-    protected $means = [
-        //
-    ];
+    protected $means;
 
     /**
      * The precomputed variances of each feature column of the training set.
      *
-     * @var array
+     * @var array|null
      */
-    protected $variances = [
-        //
-    ];
+    protected $variances;
 
     /**
      * The possible class outcomes.
@@ -126,9 +121,9 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      * Return the class prior log probabilities based on their weight over all
      * training samples.
      *
-     * @return array
+     * @return array|null
      */
-    public function priors() : array
+    public function priors() : ?array
     {
         return $this->_priors;
     }
@@ -136,9 +131,9 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     /**
      * Return the running mean of each feature column of the training data.
      *
-     * @return array
+     * @return array|null
      */
-    public function means() : array
+    public function means() : ?array
     {
         return $this->means;
     }
@@ -146,9 +141,9 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     /**
      * Return the running variances of each feature column of the training data.
      *
-     * @return array
+     * @return array|null
      */
-    public function variances() : array
+    public function variances() : ?array
     {
         return $this->variances;
     }
@@ -246,10 +241,21 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     * choose the class with the highest likelihood as the prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
+        if (is_null($this->means) or is_null($this->variances)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
         foreach ($dataset as $sample) {
@@ -266,10 +272,21 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
      * of a sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
+        if (is_null($this->means) or is_null($this->variances)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $probabilities = [];
 
         foreach ($dataset as $i => $sample) {

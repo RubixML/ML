@@ -184,11 +184,17 @@ class KMeans implements Estimator, Online, Persistable
      * Cluster the dataset by assigning a label to each sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

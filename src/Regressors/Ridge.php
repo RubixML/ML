@@ -121,11 +121,17 @@ class Ridge implements Estimator, Persistable
      * Make a prediction based on the line calculated from the training data.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (is_null($this->intercept) or empty($this->coefficients)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

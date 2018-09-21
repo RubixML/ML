@@ -267,11 +267,17 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
      * Return an array of cluster probabilities for each sample.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
         if (empty($this->priors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
@@ -307,7 +313,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 $variance = $variances[$column] + self::EPSILON;
 
                 $pdf = 1. / sqrt(self::TWO_PI * $variance);
-                $pdf *= M_E ** (-(($feature - $mean) ** 2 / (2. * $variance)));
+                $pdf *= exp(-(($feature - $mean) ** 2 / (2. * $variance)));
 
                 $score *= $pdf;
             }

@@ -30,9 +30,6 @@ MIT
 	 - [Evaluation](#evaluating-model-performance)
 	 - [Visualization](#visualization)
      - [Next Steps](#next-steps)
-- [Environments](#environments)
-    - [Command Line](#command-line)
-    - [Web Server](#web-server)
 - [API Reference](#api-reference)
 	- [Datasets](#datasets)
 		- [Dataset Objects](#dataset-objects)
@@ -202,6 +199,10 @@ MIT
 		- [Tokenizers](#tokenizers)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
+- [FAQ](#faq)
+	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
+- [Testing](#testing)
+- [Contributing](#contributing)
 
 ---
 ### Basic Introduction
@@ -346,21 +347,6 @@ If you are looking for a place to start, we highly recommend [D3.js](https://d3j
 
 ### Next Steps
 After you've gone through this basic introduction to machine learning in Rubix, we highly recommend reading over the [API Reference](#api-reference) to get an idea of what the library can do. The API Reference is the place you'll go to get detailed information and examples about the classes that make up the library. If you have a question or need help, feel free to post on our Github page.
-
----
-### Environments
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
-
-### Command Line
-The most common use cases for Rubix only require the PHP command line interface (CLI) to run since we don't need to handle any web requests. The CLI runs directly in a terminal and does not have a maximum execution time set by default. Note that you may need to adjust your memory limit in php.ini to a suitable value (or -1 for no limit).
-
-To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
-```sh
-$ php Model.php
-```
-
-### Web Server
-It is possible to run a model trained with Rubix in a live system on a web server either during a request or in the background in a queue but many considerations need to be taken into account to ensure a smooth system. The primary consideration is one of resource allocation as machine learning models tend to be highly resource (CPU and memory) intensive. It is generally discouraged to run an ML model within a web request cycle, but if you must, you will need to consider the execution time of the script as it can be used as a denial of service (DOS) attack if not handled properly.
 
 ---
 ### API Reference
@@ -4150,6 +4136,18 @@ This Tokenizer does not have any parameters.
 use Rubix\ML\Extractors\Tokenizers\Word;
 
 $tokenizer = new Word();
+```
+
+---
+## FAQ
+Here you can find answers to the most frequently asked questions.
+
+### What environment should I run Rubix in?
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. Even then, it is advised to run your models as background services and serve requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+
+To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
+```sh
+$ php program.php
 ```
 
 ---

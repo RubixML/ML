@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\Other\Structures\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\NeuralNet\Layers\Continuous;
@@ -361,17 +362,23 @@ class MLPRegressor implements Estimator, Online, Persistable
      * activation of the output neuron.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+            . ' continuous features.');
+        }
+
         if (is_null($this->network)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $activations = $this->network->infer($dataset);
+        $samples = Matrix::build($dataset->samples(), false)->transpose();
 
-        return array_column($activations, 0);
+        return $this->network->infer($samples)->row(0);
     }
 }
