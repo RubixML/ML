@@ -125,6 +125,17 @@ class VectorTest extends TestCase
         $this->assertEquals($outcome, $this->a->outer($this->b)->asArray());
     }
 
+    public function test_cross()
+    {
+        $a = new Vector([1., -0.5, 6.]);
+
+        $b = new Vector([2., 0., 3.]);
+
+        $outcome = [-1.5, 9., 1.];
+
+        $this->assertEquals($outcome, $a->cross($b)->asArray());
+    }
+
     public function test_multiply()
     {
         $c = $this->a->multiply($this->b);

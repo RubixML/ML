@@ -242,6 +242,28 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Calculate the cross product between two 3 dimensional vectors.
+     *
+     * @param  \Rubix\ML\Other\Structures\Vector  $b
+     * @return self
+     */
+    public function cross(Vector $b) : self
+    {
+        if ($this->n !== 3 or $b->n() !== 3) {
+            throw new InvalidArgumentException('Cross product is only defined'
+                . ' for vectors in 3 dimensions.');
+        }
+
+        $c = [];
+
+        $c[] = ($this->a[1] * $b[2]) - ($this->a[2] * $b[1]);
+        $c[] = ($this->a[2] * $b[0]) - ($this->a[0] * $b[2]);
+        $c[] = ($this->a[0] * $b[1]) - ($this->a[1] * $b[0]);
+
+        return new self($c, false);
+    }
+
+    /**
      * The sum of the vector.
      *
      * @return float

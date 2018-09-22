@@ -201,6 +201,9 @@ MIT
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
+	- [Does Rubix use an underlying BLAS implementation?](#does-rubix-use-an-underlying-blas-implementation)
+	- [Does Rubix support multithreading or GPUs?](#does-rubix-support-multithreading-or-gpus)
+	- [Do you plan to support reinforcement learning?](#do-you-plan-to-support-reinforcement-learning)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -4149,6 +4152,15 @@ To run a program on the command line, make sure the PHP binary is in your defaul
 ```sh
 $ php program.php
 ```
+
+### Does Rubix use an underlying BLAS implementation?
+Not currently. This is an area of PHP that we feel is strongly lacking. The current Basic Linear Algebra Subprograms extension for PHP, called [Lapack](https://php.net/manual/en/book.lapack.php) is very basic and lacks many features that are necessary for modern computing. Not to mention, there is no easy way to install the extension. A better optimized BLAS extension would greatly improve the performance of Estimators that make use of linear algebra under the hood.
+
+### Does Rubix support multithreading or GPUs?
+Not currently, and doing so is not trivial either due to PHP's architecture, however we do plan to add CPU multithreading to some Estimators in the future. We do not intend to support for GPU processing as (outside neural nets) that would not be much of a benefit for the types of problems that Rubix aims to solve.
+
+### Do you plan to support reinforcement learning?
+No. Rubix is for *supervised* and *unsupervised* learning only.
 
 ---
 ## Testing
