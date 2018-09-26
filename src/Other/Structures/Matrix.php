@@ -421,6 +421,54 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Return a new matrix in the shape specified.
+     *
+     * @param  int  $m
+     * @param  int  $n
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function reshape(int $m, int $n) : self
+    {
+        if (($m * $n) !== $this->size()) {
+            throw new InvalidArgumentException('The shape of the new matrix is'
+                . ' incompatible with the current matrix.');
+        }
+
+        $b = $this->flatten()->asArray();
+
+        $index = 0;
+
+        $c = [[]];
+
+        for ($i = 0; $i < $m; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                $c[$i][$j] = $b[$index++];
+            }
+        }
+
+        return new self($c, false);
+    }
+
+    /**
+     * Flatten the matrix into a vector.
+     *
+     * @return \Rubix\ML\Other\Structures\Vector
+     */
+    public function flatten() : Vector
+    {
+        $b = [];
+
+        foreach ($this->a as $i => $row) {
+            foreach ($row as $j => $value) {
+                $b[] = $value;
+            }
+        }
+
+        return new Vector($b, false);
+    }
+
+    /**
      * Run a function over all of the elements in the matrix.
      *
      * @param  callable  $fn

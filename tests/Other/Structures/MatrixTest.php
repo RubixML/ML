@@ -246,6 +246,26 @@ class MatrixTest extends TestCase
         $this->assertEquals([20, -6, -9], $vectors[2]->asArray());
     }
 
+    public function test_reshape()
+    {
+        $d = $this->b->reshape(3, 1);
+
+        $outcome = [[13], [11], [9]];
+
+        $this->assertEquals([3, 1], $d->shape());
+        $this->assertEquals($outcome, $d->asArray());
+    }
+
+    public function test_flatten()
+    {
+        $vector = $this->a->flatten();
+
+        $outcome = [22, -17, 12, 4, 11, -2, 20, -6, -9];
+
+        $this->assertInstanceOf(Vector::class, $vector);
+        $this->assertEquals($outcome, $vector->asArray());
+    }
+
     public function test_transpose()
     {
         $d = $this->a->transpose()->asArray();
