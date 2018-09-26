@@ -87,7 +87,7 @@ class SELU implements Rectifier
         return $z->map(function ($value) {
             return $value > 0.
                 ? $this->scale * $value
-                : $this->beta * (M_E ** $value - 1.);
+                : $this->beta * (exp($value) - 1.);
         });
     }
 

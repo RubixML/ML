@@ -108,7 +108,7 @@ class MulticlassBreakdown implements Report
 
         $overall = array_fill_keys([
             'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
-            'fall_out', 'f1_score', 'mcc', 'informedness',
+            'fall_out', 'f1_score', 'informedness', 'mcc',
         ], 0.);
 
         foreach ($table as $row) {

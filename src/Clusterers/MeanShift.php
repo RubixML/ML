@@ -175,7 +175,7 @@ class MeanShift implements Estimator, Persistable
                     }
 
                     foreach ($centroid as $column => &$mean) {
-                        $weight = M_E ** (-($distance ** 2 / $this->delta));
+                        $weight = exp(-($distance ** 2 / $this->delta));
 
                         $mean = ($weight * $sample[$column]) / $weight;
                     }

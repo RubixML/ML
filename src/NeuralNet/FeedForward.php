@@ -17,11 +17,8 @@ use InvalidArgumentException;
 /**
  * Feed Forward
  *
- * A number of the Estimators in Rubix are implemented as a computational graph
- * commonly referred to as a Neural Network due to its inspiration from the
- * human brain. Neural Nets are trained using an iterative process called
- * Gradient Descent and use Backpropagation (sometimes called Reverse Mode
- * Autodiff) to calculate the error of each parameter in the network.
+ * A feed forward neural network implementation consisting of an input and
+ * output layer and any number of intermediate hidden layers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

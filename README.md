@@ -358,7 +358,7 @@ After you've gone through this basic introduction to machine learning in Rubix, 
 Data is what powers machine learning programs so naturally we treat it as a first-class citizen. Rubix provides a number of classes that help you wrangle and even generate data.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and gracefully handles *null* values with a user-defined placeholder. Dataset objects make it easy to handle data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to handle data in a canonical way.
 
 There are two *types* of data that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently in Rubix.
 
@@ -2467,7 +2467,7 @@ $transformer = new ZScaleStandardizer();
 
 ---
 ### Neural Network
-A number of the Estimators in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation (also called *Reverse Mode Autodiff*) that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as feature detection, normalization, and regularization.
+A number of the Estimators in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as feature detection, normalization, and regularization.
 
 The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-regressor) are examples of multi layer neural networks capable of being built with a limitless combination of [Hidden layers](#hidden). The strength of deep neural nets (those with 1 or more hidden layers) are their ability to handle complex problems and large amounts of data. In general, the deeper the network, the better it will perform.
 
@@ -4154,7 +4154,7 @@ $ php program.php
 ```
 
 ### Does Rubix use an underlying BLAS implementation?
-Not currently. This is an area of PHP that we feel is strongly lacking. The current Basic Linear Algebra Subprograms extension for PHP, called [Lapack](https://php.net/manual/en/book.lapack.php) is very basic and lacks many features that are necessary for modern computing. Not to mention, there is no easy way to install the extension. A better optimized BLAS extension would greatly improve the performance of Estimators that make use of linear algebra under the hood.
+Not currently. As far as we know, PHP does not have any Basic Linear Algebra Subprograms extension yet. There is a high level linear algebra extension called [Lapack](http://php.net/manual/en/book.lapack.php), however it does not cover low level operations like matrix multiplication and it is not easy to install.
 
 ### Does Rubix support multithreading or GPUs?
 Not currently, and doing so is not trivial either due to PHP's architecture, however we do plan to add CPU multithreading to some Estimators in the future. We do not intend to support for GPU processing as (outside neural nets) that would not be much of a benefit for the types of problems that Rubix aims to solve.

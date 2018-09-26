@@ -36,7 +36,7 @@ class Sigmoid implements ActivationFunction
     public function compute(Matrix $z) : Matrix
     {
         return $z->map(function ($value) {
-            return 1. / (1. + M_E ** -$value);
+            return 1. / (1. + exp(-$value));
         });
     }
 

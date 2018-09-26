@@ -67,6 +67,8 @@ class Labeled extends DataFrame implements Dataset
         }
 
         if ($validate === true) {
+            $labels = array_values($labels);
+
             foreach ($labels as &$label) {
                 if (!is_string($label) and !is_numeric($label)) {
                     throw new InvalidArgumentException('Label must be a string'
@@ -81,7 +83,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        $this->labels = array_values($labels);
+        $this->labels = $labels;
 
         parent::__construct($samples, $validate);
     }
@@ -113,6 +115,11 @@ class Labeled extends DataFrame implements Dataset
         return $this->labels[$index];
     }
 
+    /**
+     * Return the integer encoded data type of the label.
+     *
+     * @return int
+     */
     public function labelType() : int
     {
         return is_string($this->labels[0])
@@ -548,7 +555,7 @@ class Labeled extends DataFrame implements Dataset
     {
         if (count($weights) !== count($this->samples)) {
             throw new InvalidArgumentException('The number of weights must be'
-                . ' equals to the number of samples in the dataset.');
+                . ' equal to the number of samples in the dataset.');
         }
 
         $total = array_sum($weights);

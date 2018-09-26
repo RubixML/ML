@@ -286,7 +286,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
             $max = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = M_E ** ($likelihood - $max);
+                $probabilities[$i][$class] = exp($likelihood - $max);
             }
         }
 
