@@ -54,7 +54,7 @@ class PersistentModel implements MetaEstimator
         $model = unserialize(file_get_contents($path) ?: '');
 
         if (!$model instanceof Persistable) {
-            throw new RuntimeException('Model could not be reconstituted.');
+            throw new RuntimeException('Model cannot be reconstituted.');
         }
 
         return new self($model);
@@ -117,11 +117,12 @@ class PersistentModel implements MetaEstimator
      * object that has been serialized.
      *
      * @param  string|null  $path
+     * @param  bool  $overwrite
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function save(?string $path = null) : void
+    public function save(?string $path = null, bool $overwrite = false) : void
     {
         if (is_null($path)) {
             $path = strtolower($this->reflector->getShortName())
@@ -133,10 +134,15 @@ class PersistentModel implements MetaEstimator
                 . ' writable. Check path and permissions.');
         }
 
+        if ($overwrite === false and file_exists($path)) {
+            throw new RuntimeException('Attempting to overwrite an existing'
+                . ' model.');
+        }
+
         $success = file_put_contents($path, serialize($this->model), LOCK_EX);
 
         if (!$success) {
-            throw new RuntimeException('Failed to serialize object to storage.');
+            throw new RuntimeException('Failed to serialize object to a file.');
         }
     }
 

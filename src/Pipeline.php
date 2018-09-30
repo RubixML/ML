@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Transformer;
+use InvalidArgumentException;
 
 /**
  * Pipeline
@@ -42,12 +43,19 @@ class Pipeline implements MetaEstimator, Persistable
     /**
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  array  $transformers
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $estimator, array $transformers)
+    public function __construct(Estimator $estimator, array $transformers = [])
     {
         foreach ($transformers as $transformer) {
-            $this->addTransformer($transformer);
+            if (!$transformer instanceof Transformer) {
+                throw new InvalidArgumentException('Pipeline only accepts'
+                    . ' transformers as middleware, ' . gettype($transformer)
+                    . ' found.');
+            }
+
+            $this->transformers[] = $transformer;
         }
 
         $this->estimator = $estimator;
@@ -82,17 +90,13 @@ class Pipeline implements MetaEstimator, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        foreach ($this->transformers as $transformer) {
-            $transformer->fit($dataset);
-
-            $dataset->apply($transformer);
-        }
+        $this->fit($dataset);
 
         $this->estimator->train($dataset);
     }
 
     /**
-     * Preoprecess the sample dataset and make a prediction.
+     * Preprocess the dataset and return predictions from the estimator.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
@@ -105,7 +109,22 @@ class Pipeline implements MetaEstimator, Persistable
     }
 
     /**
-     * Run the transformer middleware over a dataset.
+     * Fit the transformer middelware to a dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return void
+     */
+    public function fit(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            $transformer->fit($dataset);
+
+            $dataset->apply($transformer);
+        }
+    }
+
+    /**
+     * Apply the transformer middleware over a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
@@ -115,17 +134,6 @@ class Pipeline implements MetaEstimator, Persistable
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);
         }
-    }
-
-    /**
-     * Add a transformer middleware to the pipeline.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
-     */
-    protected function addTransformer(Transformer $transformer) : void
-    {
-        $this->transformers[] = $transformer;
     }
 
     /**

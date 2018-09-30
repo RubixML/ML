@@ -1836,10 +1836,19 @@ Pipeline is responsible for transforming the input sample matrix of a Dataset in
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | estimator | None | object | An instance of a base estimator. |
-| 2 | transformers | [ ] | array | The transformer middleware to be applied to each dataset. |
+| 2 | transformers | [ ] | array | The transformer middleware to be applied to datasets. |
 
 ##### Additional Methods:
-This Meta Estimator does not have any additional methods.
+
+Fit the transformer middleware to a dataset:
+```php
+public fit(Dataset $dataset) : void
+```
+
+Apply the transformer middleware over a dataset:
+```php
+public preprocess(Dataset $dataset) : void
+```
 
 ##### Example:
 ```php
@@ -1967,14 +1976,14 @@ Model persistence is the practice of saving a trained model to disk so that it c
 It is possible to persist a model to disk by wrapping the Estimator instance in a Persistent Model meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface.
 
 ```php
-public save(string $path) : bool
+public save(string $path, bool $overwrite = false) : void
 ```
-Where path is the location of the directory where you want the model saved. `save()` will return true if the model was successfully persisted and false if it failed.
+
+The restore method returns an instantiated model from the save path:
 
 ```php
 public static restore(string $path) : self
 ```
-The restore method will return an instantiated model from the save path.
 
 ##### Example:
 ```php
@@ -1983,9 +1992,9 @@ use Rubix\ML\Classifiers\RandomForest;
 
 $estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3));
 
-$estimator->save('path/to/models/folder/random_forest.model');
+$estimator->save('path/to/models/folder/random_forest.model', false);
 
-$estimator->save(); // Saves to current working directory under unique filename
+$estimator->save(); // Saves to current working directory under a unique filename
 
 $estimator = PersistentModel::restore('path/to/models/folder/random_forest.model');
 ```

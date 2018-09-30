@@ -27,7 +27,7 @@ class PersistentModelTest extends TestCase
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.model'));
 
-        $this->model->save(__DIR__ . '/test.model');
+        $this->model->save(__DIR__ . '/test.model', true);
 
         $this->assertFileExists(__DIR__ . '/test.model');
 

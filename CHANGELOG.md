@@ -1,4 +1,5 @@
 - Unreleased
+    - Added overwrite protection to Persistent Model meta estimator
     - Multiclass Breakdown report now breaks down user-defined classes
 
 - 0.0.5-alpha
