@@ -4,7 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Persisters\Persister;
+use Rubix\ML\Persisters\Persister;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -33,14 +33,14 @@ class PersistentModel implements MetaEstimator
     /**
      * The persister responsible to saveing and restoring the estimator.
      *
-     * @var \Rubix\ML\Other\Persisters\Persister
+     * @var \Rubix\ML\Persisters\Persister
      */
     protected $persister;
 
     /**
      * Factory method to restore the model from a pickled object file at path.
      *
-     * @param  \Rubix\ML\Other\Persisters\Persister  $persister
+     * @param  \Rubix\ML\Persisters\Persister  $persister
      * @return self
      */
     public static function restore(Persister $persister) : self
@@ -50,7 +50,7 @@ class PersistentModel implements MetaEstimator
 
     /**
      * @param  \Rubix\ML\Persistable  $model
-     * @param  \Rubix\ML\Other\Persisters\Persister  $persister
+     * @param  \Rubix\ML\Persisters\Persister  $persister
      * @return void
      */
     public function __construct(Persistable $model, Persister $persister)
@@ -109,6 +109,16 @@ class PersistentModel implements MetaEstimator
     public function save() : void
     {
         $this->persister->save($this->model);
+    }
+
+    /**
+     * Delete the model from persistence.
+     *
+     * @return void
+     */
+    public function delete() : void
+    {
+        $this->persister->delete();
     }
 
     /**

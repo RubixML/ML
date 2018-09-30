@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\Other\Persisters;
+namespace Rubix\Tests\Persisters;
 
-use Rubix\ML\Other\Persisters\Persister;
-use Rubix\ML\Other\Persisters\Filesystem;
+use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Persisters\Filesystem;
 use PHPUnit\Framework\TestCase;
 
 class FilesystemTest extends TestCase

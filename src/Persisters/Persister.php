@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Persisters;
+namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
 
@@ -20,4 +20,11 @@ interface Persister
      * @return void
      */
     public function save(Persistable $persistable) : void;
+
+    /**
+     * Delete the object from persistence.
+     *
+     * @return void;
+     */
+    public function delete() : void;
 }

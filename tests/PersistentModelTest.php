@@ -6,7 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Other\Persisters\Filesystem;
+use Rubix\ML\Persisters\Filesystem;
 use PHPUnit\Framework\TestCase;
 
 class PersistentModelTest extends TestCase
@@ -24,7 +24,7 @@ class PersistentModelTest extends TestCase
         $this->assertInstanceOf(MetaEstimator::class, $this->model);
     }
 
-    public function test_save_and_restore()
+    public function test_save_restore_and_delete()
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.model'));
 
@@ -37,6 +37,8 @@ class PersistentModelTest extends TestCase
         $this->assertInstanceOf(PersistentModel::class, $model);
         $this->assertInstanceOf(Persistable::class, $model->estimator());
 
-        $this->assertTrue(unlink(__DIR__ . '/test.model'));
+        $this->model->delete();
+
+        $this->assertFalse(file_exists(__DIR__ . '/test.model'));
     }
 }

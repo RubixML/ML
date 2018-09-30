@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Generators;
+namespace Rubix\ML\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;

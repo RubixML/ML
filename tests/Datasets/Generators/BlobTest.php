@@ -1,25 +1,25 @@
 <?php
 
-namespace Rubix\Tests\Other\Generators;
+namespace Rubix\Tests\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Generators\HalfMoon;
-use Rubix\ML\Other\Generators\Generator;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Generator;
 use PHPUnit\Framework\TestCase;
 
-class HalfMoonTest extends TestCase
+class BlobTest extends TestCase
 {
     protected $generator;
 
     public function setUp()
     {
-        $this->generator = new HalfMoon([0, 0], 1.0, 90.0, 0.1);
+        $this->generator = new Blob([0.0, 0.0], 1.0);
     }
 
     public function test_build_generator()
     {
-        $this->assertInstanceOf(HalfMoon::class, $this->generator);
+        $this->assertInstanceOf(Blob::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
     }
 
