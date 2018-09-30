@@ -30,10 +30,22 @@ class ConfusionMatrix implements Report
 
     /**
      * @param  array|null  $classes
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(?array $classes = null)
     {
+        if (is_array($classes)) {
+            $classes = array_unique($classes);
+
+            foreach ($classes as $class) {
+                if (!is_string($class) and !is_int($class)) {
+                    throw new InvalidArgumentException('Class type must be a'
+                        . ' string or integer, ' . gettype($class) . ' found.');
+                }
+            }
+        }
+
         $this->classes = $classes;
     }
 
@@ -72,22 +84,14 @@ class ConfusionMatrix implements Report
             $classes = $this->classes;
         }
 
-        $matrix = [];
-
-        foreach ($classes as $class) {
-            $matrix[$class] = array_fill_keys($classes, 0);
-        }
+        $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
         foreach ($predictions as $i => $outcome) {
-            if (!isset($matrix[$outcome]) or !isset($matrix[$labels[$i]])) {
+            if (!isset($matrix[$outcome])) {
                 continue 1;
             }
 
-            if ($outcome === $labels[$i]) {
-                $matrix[$outcome][$outcome]++;
-            } else {
-                $matrix[$outcome][$labels[$i]]++;
-            }
+            $matrix[$outcome][$labels[$i]]++;
         }
 
         return $matrix;

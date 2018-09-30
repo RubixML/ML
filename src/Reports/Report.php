@@ -13,7 +13,7 @@ interface Report
      * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset $testing
+     * @param  \Rubix\ML\Datasets\Dataset  $testing
      * @return array
      */
     public function generate(Estimator $estimator, Dataset $testing) : array;

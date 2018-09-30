@@ -30,12 +30,28 @@ class AggregateReport implements Report
 
     /**
      * @param  array  $reports
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $reports)
     {
+        if (empty($reports)) {
+            throw new InvalidArgumentException('Cannot generate an aggregate of'
+                . ' less than 1 report.');
+        }
+
         foreach ($reports as $index => $report) {
-            $this->addReport($report, $index);
+            if (!is_string($index) and !is_int($index)) {
+                throw new InvalidArgumentException('Report index must be a'
+                    . ' string or integer.');
+            }
+
+            if (!$report instanceof Report) {
+                throw new InvalidArgumentException('Aggregate must contain all'
+                    . ' reports, ' . gettype($report) . ' found.');
+            }
+
+            $this->reports[$index] = $report;
         }
     }
 
@@ -55,23 +71,5 @@ class AggregateReport implements Report
         }
 
         return $reports;
-    }
-
-    /**
-     * Add a report to the stack.
-     *
-     * @param  \Rubix\ML\Reports\Report  $report
-     * @param  mixed  $index
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function addReport(Report $report, $index) : void
-    {
-        if (!is_string($index) and !is_numeric($index)) {
-            throw new InvalidArgumentException('Report index must be a string'
-                . ' or numeric type.');
-        }
-
-        $this->reports[$index] = $report;
     }
 }

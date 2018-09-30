@@ -3550,14 +3550,16 @@ A Report that drills down in to each unique class outcome. The report includes m
 ##### Classification
 
 ##### Parameters:
-This Report does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | classes | All | array | The classes to break down. |
 
 ##### Example:
 ```php
 use Rubix\ML\Reports\MulticlassBreakdown;
 
 ...
-$report = new MulticlassBreakdown();
+$report = new MulticlassBreakdown(['wolf', 'lamb']);
 
 $result = $report->generate($estimator, $testing);
 
@@ -3567,7 +3569,7 @@ var_dump($result);
 ##### Output:
 ```sh
 ...
-["benign"]=>
+["wolf"]=>
 	array(15) {
         ["accuracy"]=> int(1)
         ["precision"]=> float(0.99999999998723)

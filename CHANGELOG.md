@@ -1,4 +1,5 @@
 - Unreleased
+    - Multiclass Breakdown report now breaks down user-defined classes
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

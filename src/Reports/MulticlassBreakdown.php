@@ -21,6 +21,34 @@ use InvalidArgumentException;
 class MulticlassBreakdown implements Report
 {
     /**
+     * The classes to break down.
+     *
+     * @var array|null
+     */
+    protected $classes;
+
+    /**
+     * @param  array|null  $classes
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(?array $classes = null)
+    {
+        if (is_array($classes)) {
+            $classes = array_unique($classes);
+
+            foreach ($classes as $class) {
+                if (!is_string($class) and !is_int($class)) {
+                    throw new InvalidArgumentException('Class type must be a'
+                        . ' string or integer, ' . gettype($class) . ' found.');
+                }
+            }
+        }
+
+        $this->classes = $classes;
+    }
+
+    /**
      * Prepare the classification report. This involves calculating a number of
      * useful metrics on a per outcome basis.
      *
@@ -52,16 +80,20 @@ class MulticlassBreakdown implements Report
 
         $labels = $testing->labels();
 
-        $classes = array_unique(array_merge($predictions, $labels));
-
-        $k = count($classes);
+        if (is_null($this->classes)) {
+            $classes = array_unique(array_merge($predictions, $labels));
+        } else {
+            $classes = $this->classes;
+        }
 
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
             array_fill_keys($classes, 0);
 
-        $table = array_fill_keys($classes, []);
-
         foreach ($predictions as $i => $outcome) {
+            if (!isset($truePositives[$outcome])) {
+                continue 1;
+            }
+
             if ($outcome === $labels[$i]) {
                 $truePositives[$outcome]++;
 
@@ -75,6 +107,8 @@ class MulticlassBreakdown implements Report
                 $falseNegatives[$labels[$i]]++;
             }
         }
+
+        $table = array_fill_keys($classes, []);
 
         foreach ($truePositives as $label => $tp) {
             $tn = $trueNegatives[$label];
@@ -110,6 +144,8 @@ class MulticlassBreakdown implements Report
             'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
             'fall_out', 'f1_score', 'informedness', 'mcc',
         ], 0.);
+
+        $k = count($classes);
 
         foreach ($table as $row) {
             foreach ($overall as $metric => &$value) {

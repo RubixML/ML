@@ -10,7 +10,7 @@ use InvalidArgumentException;
  * Prediction Speed
  *
  * This Report measures the prediction speed of an Estimator given as the number
- * of predictions per second (PPM) as well as the average time to make a single
+ * of predictions per second (PPS) as well as the average time to make a single
  * prediction.
  *
  * @category    Machine Learning
@@ -37,15 +37,13 @@ class PredictionSpeed implements Report
 
         $estimator->predict($testing);
 
-        $end = microtime(true);
-
-        $total = $end - $start;
+        $total = microtime(true) - $start;
 
         $pps = ($testing->numRows() + self::EPSILON) / ($total + self::EPSILON);
 
         return [
             'pps' => $pps,
-            'ppm' => 60 * $pps,
+            'ppm' => 60. * $pps,
             'average_seconds' => $total / ($testing->numRows() + self::EPSILON),
             'total_seconds' => $total,
             'cardinality' => $testing->numRows(),
