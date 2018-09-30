@@ -201,6 +201,7 @@ MIT
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
+    - [What is a Tuple?](#what-is-a-tuple)
 	- [Does Rubix use an underlying BLAS implementation?](#does-rubix-use-an-underlying-blas-implementation)
 	- [Does Rubix support multithreading or GPUs?](#does-rubix-support-multithreading-or-gpus)
 	- [Do you plan to support reinforcement learning?](#do-you-plan-to-support-reinforcement-learning)
@@ -1918,18 +1919,23 @@ You can chose which parameters to search manually or you can generate parameters
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | None | string | The fully qualified class name of the base Estimator. |
-| 2 | params | [ ] | array | An array containing n-tuples of parameters where each tuple (array) represents a possible parameter for a given parameter location (ordinal). |
+| 2 | grid | [ ] | array | A grid of parameters containing [n-tuples](#what-is-a-tuple) where each tuple represents a possible parameter for a given constructor location by ordinal. |
 | 3 | metric | None | object | The validation metric used to score each set of parameters. |
 | 4 | validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
 
 ##### Additional Methods:
 
-Return the results (scores and parameters) of the last search:
+Every combination of parmeters from the last grid search:
 ```php
-public results() : array
+public params() : array
 ```
 
-Return the he parameters with the highest validation score:
+The validation scores of each parmeter search:
+```php
+public scores() : array
+```
+
+A [tuple](#what-is-a-tuple) containing the parameters with the highest validation score and the validation score:
 ```php
 public best() : array
 ```
@@ -1957,46 +1963,49 @@ $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), 
 
 $estimator->train($dataset); // Train one estimator per parameter combination
 
-var_dump($estimator->best()); // Return the best hyper-parmeters
+var_dump($estimator->best()); // Return the best score and hyper-parmeters
 ```
 
 ##### Output:
 ```sh
 array(2) {
-  [0]=> int(5)
-  [1]=> object(Rubix\ML\Kernels\Distance\Euclidean)#15 (0) {
+  ["score"]=> float(1)
+  ["params"]=> array(2) {
+      ["k"]=> int(1)
+      ["kernel"]=> object(Rubix\ML\Kernels\Distance\Euclidean)#47807 (0) {
+    }
   }
 }
+
 ```
 
 ### Model Persistence
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Rubix persists your models using built in PHP object serialization (similar to pickling in Python). Most Estimators are persistable, but some are not allowed due to their poor storage complexity.
 
 ### Persistent Model
-It is possible to persist a model to disk by wrapping the Estimator instance in a Persistent Model meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that serialize and unserialize to and from disk. In order to be persisted the Estimator must implement the Persistable interface.
+It is possible to persist a model to disk by wrapping the Estimator instance in a Persistent Model meta-Estimator. The Persistent Model class gives the Estimator two additional methods `save()` and `restore()` that allow the trained estimators to be persisted and retrieved .
 
 ```php
-public save(string $path, bool $overwrite = false) : void
+public save() : void
 ```
 
 The restore method returns an instantiated model from the save path:
 
 ```php
-public static restore(string $path) : self
+public static restore(Persister $persister) : self
 ```
 
 ##### Example:
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Other\Persisters\Filesystem;
 
-$estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3));
+$estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3), new Filesystem('/random_forest.model'));
 
-$estimator->save('path/to/models/folder/random_forest.model', false);
+$estimator->save();
 
-$estimator->save(); // Saves to current working directory under a unique filename
-
-$estimator = PersistentModel::restore('path/to/models/folder/random_forest.model');
+$estimator = PersistentModel::restore(new Filesystem('/random_forest.model'));
 ```
 
 ---
@@ -3326,7 +3335,7 @@ $validator = new MonteCarlo(30, 0.1);
 
 ### Validation Metrics
 
-Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. The output of the Metric's `score()` method is a scalar score. You can output a tuple of minimum and maximum scores with the `range()` method.
+Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. The output of the Metric's `score()` method is a scalar score. You can output a [tuple](#what-is-a-tuple) of minimum and maximum scores with the `range()` method.
 
 To compute a validation score on an Estimator with a Labeled Dataset:
 ```php
@@ -4163,6 +4172,9 @@ To run a program on the command line, make sure the PHP binary is in your defaul
 ```sh
 $ php program.php
 ```
+
+### What is a Tuple?
+A *tuple* is simply a way to denote an immutable sequential PHP array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
 
 ### Does Rubix use an underlying BLAS implementation?
 Not currently. As far as we know, PHP does not have any Basic Linear Algebra Subprograms extension yet. There is a high level linear algebra extension called [Lapack](http://php.net/manual/en/book.lapack.php), however it does not cover low level operations like matrix multiplication and it is not easy to install.

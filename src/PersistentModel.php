@@ -4,9 +4,9 @@ namespace Rubix\ML;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Persisters\Persister;
 use InvalidArgumentException;
 use RuntimeException;
-use ReflectionClass;
 
 /**
  * Persistent Model
@@ -24,13 +24,6 @@ use ReflectionClass;
 class PersistentModel implements MetaEstimator
 {
     /**
-     * The reflector instance of the base estimator.
-     *
-     * @var \ReflectionClass
-     */
-    protected $reflector;
-
-    /**
      * The underlying persistable estimator instance.
      *
      * @var \Rubix\ML\Persistable
@@ -38,36 +31,32 @@ class PersistentModel implements MetaEstimator
     protected $model;
 
     /**
+     * The persister responsible to saveing and restoring the estimator.
+     *
+     * @var \Rubix\ML\Other\Persisters\Persister
+     */
+    protected $persister;
+
+    /**
      * Factory method to restore the model from a pickled object file at path.
      *
-     * @param  string  $path
-     * @throws \RuntimeException
+     * @param  \Rubix\ML\Other\Persisters\Persister  $persister
      * @return self
      */
-    public static function restore(string $path) : self
+    public static function restore(Persister $persister) : self
     {
-        if (!file_exists($path) or !is_readable($path)) {
-            throw new RuntimeException('File ' . basename($path) . ' cannot be'
-                . ' opened. Check path and permissions.');
-        }
-
-        $model = unserialize(file_get_contents($path) ?: '');
-
-        if (!$model instanceof Persistable) {
-            throw new RuntimeException('Model cannot be reconstituted.');
-        }
-
-        return new self($model);
+        return new self($persister->restore(), $persister);
     }
 
     /**
      * @param  \Rubix\ML\Persistable  $model
+     * @param  \Rubix\ML\Other\Persisters\Persister  $persister
      * @return void
      */
-    public function __construct(Persistable $model)
+    public function __construct(Persistable $model, Persister $persister)
     {
         $this->model = $model;
-        $this->reflector = new ReflectionClass($model);
+        $this->persister = $persister;
     }
 
     /**
@@ -113,37 +102,13 @@ class PersistentModel implements MetaEstimator
     }
 
     /**
-     * Save the estimator to a file given the path. File contains a pickled PHP
-     * object that has been serialized.
+     * Save the model using the user-provided persister.
      *
-     * @param  string|null  $path
-     * @param  bool  $overwrite
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @return void
      */
-    public function save(?string $path = null, bool $overwrite = false) : void
+    public function save() : void
     {
-        if (is_null($path)) {
-            $path = strtolower($this->reflector->getShortName())
-                . '-' . (string) time() . '.model';
-        }
-
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable. Check path and permissions.');
-        }
-
-        if ($overwrite === false and file_exists($path)) {
-            throw new RuntimeException('Attempting to overwrite an existing'
-                . ' model.');
-        }
-
-        $success = file_put_contents($path, serialize($this->model), LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException('Failed to serialize object to a file.');
-        }
+        $this->persister->save($this->model);
     }
 
     /**

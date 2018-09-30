@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator
     - Multiclass Breakdown report now breaks down user-defined classes
 

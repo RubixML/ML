@@ -42,7 +42,7 @@ class GridSearch implements MetaEstimator, Persistable
      *
      * @var array
      */
-    protected $params = [
+    protected $grid = [
         //
     ];
 
@@ -77,27 +77,30 @@ class GridSearch implements MetaEstimator, Persistable
     protected $type;
 
     /**
-     * The results of a grid search.
+     * Every combination of parmeters from the last grid search.
      *
      * @var array
      */
-    protected $results = [
+    protected $params = [
         //
     ];
 
     /**
-     * The parameters with the highest validation score.
+     * The validation scores of each parmeter search.
+     *
+     * @var array
+     */
+    protected $scores = [
+        //
+    ];
+
+    /**
+     * A tuple containing the parameters with the highest validation score and
+     * the validation score.
      *
      * @var array|null
      */
     protected $best;
-
-    /**
-     * The highest validation score.
-     *
-     * @var float|null
-     */
-    protected $score;
 
     /**
      * The instance of the estimator with the best parameters.
@@ -108,13 +111,13 @@ class GridSearch implements MetaEstimator, Persistable
 
     /**
      * @param  string  $base
-     * @param  array  $params
+     * @param  array  $grid
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @param  \Rubix\ML\CrossValidation\Validator|null  $validator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, Metric $metric, Validator $validator = null)
+    public function __construct(string $base, array $grid, Metric $metric, Validator $validator = null)
     {
         $reflector = new ReflectionClass($base);
 
@@ -138,9 +141,15 @@ class GridSearch implements MetaEstimator, Persistable
             $args = [];
         }
 
-        if (count($params) > count($args)) {
+        if (count($grid) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
-                . count($params) . ' given, only ' . count($args) . ' needed.');
+                . count($grid) . ' given, only ' . count($args) . ' needed.');
+        }
+
+        foreach ($grid as &$options) {
+            if (!is_array($options)) {
+                $options = (array) $options;
+            }
         }
 
         if (is_null($validator)) {
@@ -148,8 +157,8 @@ class GridSearch implements MetaEstimator, Persistable
         }
 
         $this->base = $base;
-        $this->args = array_slice($args, 0, count($params));
-        $this->params = $params;
+        $this->grid = $grid;
+        $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator;
         $this->estimator = $proxy;
@@ -166,13 +175,23 @@ class GridSearch implements MetaEstimator, Persistable
     }
 
     /**
-     * The results of the last grid search.
+     * The combination of parameters from the last grid search.
      *
      * @return array
      */
-    public function results() : array
+    public function params() : array
     {
-        return $this->results;
+        return $this->params;
+    }
+
+    /**
+     * The validation scores from the last grid search.
+     *
+     * @return array
+     */
+    public function scores() : array
+    {
+        return $this->scores;
     }
 
     /**
@@ -183,16 +202,6 @@ class GridSearch implements MetaEstimator, Persistable
     public function best() : ?array
     {
         return $this->best;
-    }
-
-    /**
-     * Return the highest validation score.
-     *
-     * @return float|null
-     */
-    public function score() : ?float
-    {
-        return $this->score;
     }
 
     /**
@@ -220,13 +229,13 @@ class GridSearch implements MetaEstimator, Persistable
                 . ' Labeled training set.');
         }
 
-        $this->results = $this->best = [];
+        $this->params = $this->scores = $this->best = [];
 
         $bestScore = -INF;
         $bestParams = [];
         $bestEstimator = null;
 
-        foreach ($this->combineParams($this->params) as $params) {
+        foreach ($this->combineGrid($this->grid) as $params) {
             $estimator = new $this->base(...$params);
 
             $score = $this->validator->test($estimator, $dataset, $this->metric);
@@ -237,14 +246,15 @@ class GridSearch implements MetaEstimator, Persistable
                 $bestEstimator = $estimator;
             }
 
-            $this->results[] = [
-                'score' => $score,
-                'params' => array_combine($this->args, $params),
-            ];
+            $this->params[] = array_combine($this->args, $params);
+            $this->scores[] = $score;
         }
 
-        $this->best = $bestParams;
-        $this->score = $bestScore;
+        $this->best = [
+            'score' => $bestScore,
+            'params' => array_combine($this->args, $bestParams),
+        ];
+
         $this->estimator = $bestEstimator;
     }
 
@@ -261,13 +271,13 @@ class GridSearch implements MetaEstimator, Persistable
     }
 
     /**
-     * Return an array of all possible combinations of parameters. i.e. the
+     * Return an array of all possible combinations of parameters. i.e the
      * Cartesian product of the supplied parameter grid.
      *
      * @param  array  $params
      * @return array
      */
-    protected function combineParams(array $params) : array
+    protected function combineGrid(array $params) : array
     {
         $temp = [[]];
 
