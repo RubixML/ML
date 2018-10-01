@@ -19,6 +19,8 @@
         "markrogoyski/math-php": "^0.43.0"
     },
     "require-dev": {
+        "ext-gd": "*",
+        "ext-redis": "*",
         "phpstan/phpstan": "^0.10.0",
         "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "7.2.*"
