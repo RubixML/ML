@@ -24,7 +24,8 @@
         "phpunit/phpunit": "7.2.*"
     },
     "suggest": {
-        "ext-gd": "For image vectorization"
+        "ext-gd": "For image vectorization",
+        "ext-redis": "To persist models to a Redis DB"
     },
     "autoload": {
         "psr-4": {

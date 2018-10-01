@@ -14,7 +14,8 @@ $ composer require rubix/ml
 
 ## Requirements
 - [PHP](https://php.net) 7.1.3 or above
-- [GD extension](https://php.net/manual/en/book.image.php) for Image Vectorization
+- [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
+- [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 
 ## License
 MIT
@@ -109,6 +110,7 @@ MIT
 			- [Persistent Model](#persistent-model)
 			- [Persisters](#persisters)
 				- [Filesystem](#filesystem)
+				- [Redis DB](#redis-db)
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
 	- [Estimator Interfaces](#estimator-interfaces)
@@ -2673,6 +2675,29 @@ public info() : array
 use Rubix\ML\Persisters\Filesystem;
 
 $persister = new Filesystem('/path/to/example.model', true);
+```
+
+### Redis DB
+Redis is a high performance in-memory key value store that can be used to persist models. The persiter requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
+| 2 | port | 6379 | int | The port of the Redis server. |
+| 3 | db | 0 | int | The database number. |
+| 4 | key | 'rubix' | string | The key to store the object data under.  |
+| 5 | password | null | string | The password to access the database. |
+| 6 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
+
+##### Additional Methods:
+This persister does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Persisters\RedisDB;
+
+$persister = new RedisDB('127.0.0.1', 6379, 1, 'sentiment', 'password', 1.5);
 ```
 
 ---

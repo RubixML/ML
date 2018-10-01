@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Redis persister
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator
