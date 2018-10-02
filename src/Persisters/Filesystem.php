@@ -77,30 +77,6 @@ class Filesystem implements Persister
     }
 
     /**
-     * Restore the persistable object.
-     *
-     * @throws \RuntimeException
-     * @return \Rubix\ML\Persistable
-     */
-    public function restore() : Persistable
-    {
-        if (!file_exists($this->path)) {
-            throw new RuntimeException('File ' . basename($this->path)
-                . ' does not exist. Check the path.');
-        }
-
-        $data = file_get_contents($this->path) ?: '';
-
-        $persistable = unserialize($data);
-
-        if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Object cannot be reconstituted.');
-        }
-
-        return $persistable;
-    }
-
-    /**
      * Save the persitable object.
      *
      * @param  \Rubix\ML\Persistable  $persistable
@@ -122,6 +98,30 @@ class Filesystem implements Persister
             throw new RuntimeException('Failed to serialize object to'
                 . ' filesystem.');
         }
+    }
+
+    /**
+     * Restore the persistable object.
+     *
+     * @throws \RuntimeException
+     * @return \Rubix\ML\Persistable
+     */
+    public function load() : Persistable
+    {
+        if (!file_exists($this->path)) {
+            throw new RuntimeException('File ' . basename($this->path)
+                . ' does not exist. Check the path.');
+        }
+
+        $data = file_get_contents($this->path) ?: '';
+
+        $persistable = unserialize($data);
+
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Object cannot be reconstituted.');
+        }
+
+        return $persistable;
     }
 
     /**

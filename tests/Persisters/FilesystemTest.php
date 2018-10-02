@@ -27,7 +27,7 @@ class FilesystemTest extends TestCase
         $this->assertInstanceOf(Persister::class, $this->persister);
     }
 
-    public function test_save_restore_and_delete()
+    public function test_save_load_and_delete()
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.model'));
 
@@ -35,7 +35,7 @@ class FilesystemTest extends TestCase
 
         $this->assertFileExists(__DIR__ . '/test.model');
 
-        $model = $this->persister->restore();
+        $model = $this->persister->load();
 
         $this->assertInstanceOf(Persistable::class, $model);
 

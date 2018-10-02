@@ -2654,7 +2654,7 @@ array(2) {
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Most estimators in Rubix are persistable, but some are not allowed due to their poor storage complexity.
 
 ### Persistent Model
-It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()`, `restore()`, and `delete()` that allow the estimator to be stored and retrieved.
+It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()`, `load()`, and `delete()` that allow the estimator to be stored and retrieved.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2668,9 +2668,9 @@ Save the model to storage:
 public save() : void
 ```
 
-The restore method returns an instantiated model from a persister:
+Returns an instantiated model from a persister:
 ```php
-public static restore(Persister $persister) : self
+public static load(Persister $persister) : self
 ```
 
 To remove the model from storage:
@@ -2688,11 +2688,26 @@ $estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3), new Filesyst
 
 $estimator->save();
 
-$estimator = PersistentModel::restore(new Filesystem('/random_forest.model'));
+$estimator = PersistentModel::load(new Filesystem('/random_forest.model'));
 ```
 
 ### Persisters
 Persisters are responsible for persisting a *persistable* object and are used by the [Persistable Model](#persistable-model) meta-estimator to save, restore, and delete models.
+
+To store a persistable object:
+```php
+public save(Persistable $persistable) : void
+```
+
+To restore a persistable object from storage:
+```php
+public load() : Persistable
+```
+
+To delete a persistable object from storage:
+```php
+public delete() : void
+```
 
 ### Filesystem
 Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister serializes models to a file at a user-specified path.
@@ -2727,10 +2742,10 @@ Redis is a high performance in-memory key value store that can be used to persis
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
-| 2 | port | 6379 | int | The port of the Redis server. |
-| 3 | db | 0 | int | The database number. |
-| 4 | key | 'rubix' | string | The key to store the object data under.  |
+| 1 | key | None | string | The key of the object in storage. |
+| 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
+| 3 | port | 6379 | int | The port of the Redis server. |
+| 4 | db | 0 | int | The database number. |
 | 5 | password | null | string | The password to access the database. |
 | 6 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
 

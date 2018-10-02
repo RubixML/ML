@@ -21,6 +21,13 @@ use Redis;
 class RedisDB implements Persister
 {
     /**
+     * The key of the object in storage.
+     *
+     * @var string
+     */
+    protected $key;
+
+    /**
      * The connector to the Redis database.
      *
      * @var \Redis
@@ -28,25 +35,18 @@ class RedisDB implements Persister
     protected $connector;
 
     /**
-     * The key of the model in storage.
-     *
-     * @var string
-     */
-    protected $key;
-
-    /**
+     * @param  string  $key
      * @param  string  $host
      * @param  int  $port
      * @param  int  $db
-     * @param  string  $key
      * @param  string  $password
      * @param  float  $timeout
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function __construct(string $host = '127.0.0.1', int $port = 6379, int $db = 0,
-                        string $key = 'rubix', string $password = null, float $timeout = 2.5)
+    public function __construct(string $key, string $host = '127.0.0.1', int $port = 6379,
+                                int $db = 0, string $password = null, float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded. Check'
@@ -71,27 +71,8 @@ class RedisDB implements Persister
                 . (string) $db . '.');
         };
 
-        $this->connector = $connector;
         $this->key = $key;
-    }
-
-    /**
-     * Restore the persistable object.
-     *
-     * @throws \RuntimeException
-     * @return \Rubix\ML\Persistable
-     */
-    public function restore() : Persistable
-    {
-        $data = $this->connector->get($this->key) ?: '';
-
-        $persistable = unserialize($data);
-
-        if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Object cannot be reconstituted.');
-        }
-
-        return $persistable;
+        $this->connector = $connector;
     }
 
     /**
@@ -108,6 +89,29 @@ class RedisDB implements Persister
         if ($this->connector->set($this->key, $data) === false) {
             throw new RuntimeException('There was an error saving the object.');
         };
+    }
+
+    /**
+     * Restore the persistable object.
+     *
+     * @throws \RuntimeException
+     * @return \Rubix\ML\Persistable
+     */
+    public function load() : Persistable
+    {
+        $data = $this->connector->get($this->key) ?: '';
+
+        if (empty($data)) {
+            throw new RuntimeException('Object does not exist in database.');
+        }
+
+        $persistable = unserialize($data);
+
+        if (!$persistable instanceof Persistable) {
+            throw new RuntimeException('Object cannot be reconstituted.');
+        }
+
+        return $persistable;
     }
 
     /**

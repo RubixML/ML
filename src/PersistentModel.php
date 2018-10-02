@@ -43,9 +43,9 @@ class PersistentModel implements MetaEstimator
      * @param  \Rubix\ML\Persisters\Persister  $persister
      * @return self
      */
-    public static function restore(Persister $persister) : self
+    public static function load(Persister $persister) : self
     {
-        return new self($persister->restore(), $persister);
+        return new self($persister->load(), $persister);
     }
 
     /**
