@@ -131,6 +131,15 @@ class TSNE implements Embedder
     protected $precision;
 
     /**
+     * The magnitudes of the gradient at each epoch fro the last embedding.
+     *
+     * @var float[]
+     */
+    protected $steps = [
+        //
+    ];
+
+    /**
      * @param  int  $dimensions
      * @param  int  $perplexity
      * @param  float  $exaggeration
@@ -141,6 +150,7 @@ class TSNE implements Embedder
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  float  $tolerance
      * @param  int  $precision
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
@@ -213,11 +223,22 @@ class TSNE implements Embedder
     }
 
     /**
+     * Return the magnitudes of the gradient at each epoch from the last
+     * embedding.
+     *
+     * @return float[]
+     */
+    public function steps() : array
+    {
+        return $this->steps;
+    }
+
+    /**
      * Embed a high dimensional sample matrix into a lower dimensional one.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     public function embed(Dataset $dataset) : array
     {
@@ -225,6 +246,8 @@ class TSNE implements Embedder
             throw new InvalidArgumentException('This embedder only works with'
                 . ' continuous features.');
         }
+
+        $this->steps = [];
 
         $x = new Matrix($dataset->samples(), false);
 
@@ -261,7 +284,11 @@ class TSNE implements Embedder
 
             $y = $y->add($step)->add($velocity);
 
-            if ($gradient->l2Norm() < $this->minGradient) {
+            $magnitude = $gradient->l2Norm();
+
+            $this->steps[] = $magnitude;
+
+            if ($magnitude < $this->minGradient) {
                 break 1;
             }
         }
@@ -383,7 +410,8 @@ class TSNE implements Embedder
     }
 
     /**
-     * Compute the gradient of the KL Divergence cost functin and return it.
+     * Compute the gradient of the KL Divergence cost function with respect to
+     * the embedding.
      *
      * @param  \Rubix\ML\Other\Structures\Matrix  $p
      * @param  \Rubix\ML\Other\Structures\Matrix  $q
@@ -393,13 +421,13 @@ class TSNE implements Embedder
      */
     protected function computeGradient(Matrix $p, Matrix $q, Matrix $y, Matrix $distances) : Matrix
     {
-        $pqd = $p->subtract($q)->multiply($distances)->asVectors();
+        $pqd = $p->subtract($q)->multiply($distances);
 
         $gradient = [];
 
-        foreach ($y->asVectors() as $i => $row) {
-            $gradient[$i] = $pqd[$i]->asRowMatrix()
-                ->dot($y->subtractVector($row))
+        foreach ($pqd->asVectors() as $i => $row) {
+            $gradient[$i] = $row->asRowMatrix()
+                ->dot($y->subtractVector($y->rowAsVector($i)))
                 ->multiplyScalar($this->c)
                 ->row(0);
         }

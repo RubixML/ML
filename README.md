@@ -1107,7 +1107,11 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 10 | precision | 100 | int | The number of iterations when locating an appropriate sigma. |
 
 ##### Additional Methods:
-This estimator does not have any additional methods.
+
+Return the magnitudes of the gradient at each epoch from the last embedding:
+```php
+public steps() : array
+```
 
 ##### Example:
 ```php
