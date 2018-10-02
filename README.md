@@ -49,6 +49,9 @@ MIT
 		- [Tokenizers](#tokenizers)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
+	- [Manifold Learning](#manifold-learning)
+		- [Embedders](#embedders)
+			- [t-SNE](#t-sne)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -955,8 +958,6 @@ Return the dimensionality of the vector that gets encoded:
 public numPatches() : int
 ```
 
-
-
 ### Word Count Vectorizer
 In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
@@ -1075,6 +1076,45 @@ This tokenizer does not have any parameters.
 use Rubix\ML\Extractors\Tokenizers\Word;
 
 $tokenizer = new Word();
+```
+
+### Manifold Learning
+Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions.
+
+### Embedders
+Embedders are manifold learners that provide the `embed()` method for embedding a dataset.
+
+To embed a dataset return an array of samples:
+```php
+public embed(Dataset $dataset) : array
+```
+
+### t-SNE
+T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Momentum is employed during both stages, however it is halved during the early stage.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
+| 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
+| 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
+| 4 | epochs | 1000 | int | The number of times to iterate over the embedding. |
+| 5 | rate | 1. | float | The learning rate. |
+| 6 | momentum | 0.2 | float | The amount of momentum to carry over into the next update. |
+| 7 | min gradient | 1e-6 | float | The minimum gradient necessary to continue fitting. |
+| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 9 | tolerance | 1e-5 | float | The tolerance of the binary search for appropriate sigma. |
+| 10 | precision | 100 | int | The number of iterations when locating an appropriate sigma. |
+
+##### Additional Methods:
+This estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubi\ML\Manifold\TSNE;
+use Rubix\ML\Kernels\Euclidean;
+
+$embedder = new TSNE(2, 30, 12., 1000, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
 ```
 
 ---

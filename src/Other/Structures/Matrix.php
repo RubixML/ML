@@ -1272,23 +1272,23 @@ class Matrix implements ArrayAccess, IteratorAggregate, Countable
      */
     public function clip(float $min, float $max) : self
     {
-        $b = [[]];
+        $b = [];
 
         foreach ($this->a as $i => $row) {
-            foreach ($row as $j => $value) {
+            foreach ($row as $value) {
                 if ($value > $max) {
-                    $b[$i][$j] = $max;
+                    $b[$i][] = $max;
 
                     continue 1;
                 }
 
                 if ($value < $min) {
-                    $b[$i][$j] = $min;
+                    $b[$i][] = $min;
 
                     continue 1;
                 }
 
-                $b[$i][$j] = $value;
+                $b[$i][] = $value;
             }
         }
 

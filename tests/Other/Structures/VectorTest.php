@@ -255,6 +255,13 @@ class VectorTest extends TestCase
         $this->assertEquals($outcome, $this->c->log()->asArray());
     }
 
+    public function test_clip()
+    {
+        $outcome = [0., 25, 35, 0., 0., 89, 100., 45];
+
+        $this->assertEquals($outcome, $this->a->clip(0., 100)->asArray());
+    }
+
     public function test_negate()
     {
         $outcome = [15, -25, -35, 36, 72, -89, -106, -45];

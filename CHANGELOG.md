@@ -1,4 +1,5 @@
 - Unreleased
+    - Added t-SNE embedder
     - Added Redis persister
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects

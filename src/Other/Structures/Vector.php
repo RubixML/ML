@@ -624,6 +624,37 @@ class Vector implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
+     * Clip the elements in the vector to be between given minimum and maximum
+     * and return a new vector.
+     *
+     * @param  float  $min
+     * @param  float  $max
+     * @return self
+     */
+    public function clip(float $min, float $max) : self
+    {
+        $b = [];
+
+        foreach ($this->a as $value) {
+            if ($value > $max) {
+                $b[] = $max;
+
+                continue 1;
+            }
+
+            if ($value < $min) {
+                $b[] = $min;
+
+                continue 1;
+            }
+
+            $b[] = $value;
+        }
+
+        return new self($b, false);
+    }
+
+    /**
      * Calculate the max norm of the vector.
      *
      * @return float
