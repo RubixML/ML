@@ -76,6 +76,16 @@ class RedisDB implements Persister
     }
 
     /**
+     * Return an associative array of info from the Redis server.
+     *
+     * @return array
+     */
+    public function info() : array
+    {
+        return $this->connector->info();
+    }
+
+    /**
      * Save the persitable object.
      *
      * @param  \Rubix\ML\Persistable  $persistable

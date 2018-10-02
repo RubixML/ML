@@ -2750,7 +2750,11 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 6 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
 
 ##### Additional Methods:
-This persister does not have any additional methods.
+
+Return an associative array of info from the Redis server:
+```php
+public info() : array
+```
 
 ##### Example:
 ```php
