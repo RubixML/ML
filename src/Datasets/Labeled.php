@@ -36,7 +36,7 @@ class Labeled extends DataFrame implements Dataset
      * @param  string  $path
      * @return self
      */
-    public static function restore(string $path) : self
+    public static function load(string $path) : self
     {
         if (!file_exists($path) or !is_readable($path)) {
             throw new RuntimeException('File ' . basename($path) . ' cannot be'

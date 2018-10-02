@@ -30,7 +30,7 @@ class MultiLayerPerceptronTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
         $transformer = new ZScaleStandardizer();
 

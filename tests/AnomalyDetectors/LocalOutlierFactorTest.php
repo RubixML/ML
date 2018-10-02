@@ -23,7 +23,7 @@ class LocalOutlierFactorTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
         $this->testing = new Labeled([
             [6.9, 3.2, 5.7, 2.3], [6.4, 3.1, 5.5, 1.8], [5.5, 2.4, 3.8, 1.1],

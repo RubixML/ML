@@ -288,7 +288,7 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_save_and_restore()
+    public function test_save_and_load()
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.dataset'));
 
@@ -296,7 +296,7 @@ class LabeledTest extends TestCase
 
         $this->assertFileExists(__DIR__ . '/test.dataset');
 
-        $dataset = Labeled::restore(__DIR__ . '/test.dataset');
+        $dataset = Labeled::load(__DIR__ . '/test.dataset');
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);

@@ -16,7 +16,7 @@ class TSNETest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = Labeled::restore(dirname(__DIR__) . '/iris.dataset')
+        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset')
             ->stratifiedSplit(0.2)[0];
 
         $this->embedder = new TSNE(2, 10, 12., 1000, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);

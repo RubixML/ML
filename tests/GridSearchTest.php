@@ -23,7 +23,7 @@ class GridSearchTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(__DIR__ . '/iris.dataset');
+        $this->training = Labeled::load(__DIR__ . '/iris.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 

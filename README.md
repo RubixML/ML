@@ -617,7 +617,7 @@ public save(?string $path = null) : void
 
 Restore the Dataset from a file:
 ```php
-public static restore(string $path) : self
+public static load(string $path) : self
 ```
 
 ##### Example:
@@ -628,7 +628,7 @@ $dataset->save('path/to/dataset');
 // Assign a filename (ex. 1531772454.dataset)
 $dataset->save();
 
-$dataset = Labeled::restore('path/to/dataset');
+$dataset = Labeled::load('path/to/dataset');
 ```
 
 There are two types of Dataset objects in Rubix, *labeled* and *unlabeled*.

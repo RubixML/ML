@@ -20,7 +20,7 @@ class GaussianMixtureTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
+        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
         $this->estimator = new GaussianMixture(2, 1e-3, 100);
     }

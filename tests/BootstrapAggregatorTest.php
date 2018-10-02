@@ -23,7 +23,7 @@ class BootstrapAggregatorTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(__DIR__ . '/mpg.dataset');
+        $this->training = Labeled::load(__DIR__ . '/mpg.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 

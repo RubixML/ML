@@ -21,7 +21,7 @@ class MeanShiftTest extends TestCase
 
     public function setUp()
     {
-        $this->dataset = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
+        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
         $this->estimator = new MeanShift(2.0, new Euclidean(), 1e-4, 300);
     }

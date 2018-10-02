@@ -25,7 +25,7 @@ class SoftmaxClassifierTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(dirname(__DIR__) . '/iris.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 

@@ -26,7 +26,7 @@ class AdalineTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(dirname(__DIR__) . '/mpg.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 

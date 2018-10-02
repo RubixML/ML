@@ -17,7 +17,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param  string  $path
      * @return self
      */
-    public static function restore(string $path);
+    public static function load(string $path);
 
     /**
      * Return the 2-dimensional sample matrix.

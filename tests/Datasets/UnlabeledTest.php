@@ -195,7 +195,7 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_save_and_restore()
+    public function test_save_and_load()
     {
         $this->assertFalse(file_exists(__DIR__ . '/test.dataset'));
 
@@ -203,7 +203,7 @@ class UnlabeledTest extends TestCase
 
         $this->assertFileExists(__DIR__ . '/test.dataset');
 
-        $dataset = Unlabeled::restore(__DIR__ . '/test.dataset');
+        $dataset = Unlabeled::load(__DIR__ . '/test.dataset');
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);

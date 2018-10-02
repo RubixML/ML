@@ -22,7 +22,7 @@ class NaiveBayesTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::restore(dirname(__DIR__) . '/congress.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/congress.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 
