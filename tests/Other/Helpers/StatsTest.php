@@ -44,6 +44,11 @@ class StatsTest extends TestCase
         $this->assertEquals(3.5, Stats::mad($this->values));
     }
 
+    public function test_iqr()
+    {
+        $this->assertEquals(8., Stats::iqr($this->values));
+    }
+
     public function test_skewness()
     {
         $this->assertEquals(-0.31891556974589724, Stats::skewness($this->values));

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\DataFrame;
-use MathPHP\Statistics\Descriptive;
+use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
 
 /**
@@ -90,10 +90,13 @@ class QuartileStandardizer implements Transformer
 
         foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $quartiles = Descriptive::quartiles($dataframe->column($column));
+                $values = $dataframe->column($column);
 
-                $this->medians[$column] = $quartiles['Q2'];
-                $this->iqrs[$column] = $quartiles['IQR'];
+                $median = Stats::median($values);
+                $iqr = Stats::iqr($values);
+
+                $this->medians[$column] = $median;
+                $this->iqrs[$column] = $iqr;
             }
         }
     }

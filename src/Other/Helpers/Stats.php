@@ -128,6 +128,36 @@ class Stats
     }
 
     /**
+     * Compute the interquartile range of a set of values.
+     *
+     * @param  array  $values
+     * @return float
+     */
+    public static function iqr(array $values) : float
+    {
+        $n = count($values);
+
+        if ($n === 0) {
+            throw new InvalidArgumentException('Interquartile range is not'
+                . ' defined for empty set.');
+        }
+
+        $mid = intdiv($n, 2);
+
+        sort($values);
+
+        if ($n % 2 === 0) {
+            $lower = array_slice($values, 0, $mid);
+            $upper = array_slice($values, $mid);
+        } else {
+            $lower = array_slice($values, 0, $mid);
+            $upper = array_slice($values, $mid + 1);
+        }
+
+        return self::median($upper) - self::median($lower);
+    }
+
+    /**
      * Calculate the median absolute deviation of a set of values given a median.
      *
      * @param  array  $values
