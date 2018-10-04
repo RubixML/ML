@@ -6,7 +6,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
@@ -174,7 +174,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $batch) : float
     {
-        $samples = Matrix::build($batch->samples(), false)->transpose();
+        $samples = Matrix::quick($batch->samples())->transpose();
 
         $this->feed($samples);
 
@@ -184,8 +184,8 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function feed(Matrix $input) : Matrix
     {
@@ -199,8 +199,8 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -57,9 +57,9 @@ class CrossEntropy implements CostFunction
     /**
      * Compute the cost.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
-     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $expected
+     * @param  \Rubix\Tensor\Matrix  $activations
+     * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
@@ -71,10 +71,10 @@ class CrossEntropy implements CostFunction
      * Calculate the derivatives of the cost function with respect to the
      * output activation.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $expected
-     * @param  \Rubix\ML\Other\Structures\Matrix  $activations
-     * @param  \Rubix\ML\Other\Structures\Matrix  $delta
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $expected
+     * @param  \Rubix\Tensor\Matrix  $activations
+     * @param  \Rubix\Tensor\Matrix  $delta
+     * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {

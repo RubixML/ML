@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 
 /**
  * Thresholded ReLU
@@ -51,8 +51,8 @@ class ThresholdedReLU implements Rectifier
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $z
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $z
+     * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {
@@ -64,9 +64,9 @@ class ThresholdedReLU implements Rectifier
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $z
-     * @param  \Rubix\ML\Other\Structures\Matrix  $computed
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $z
+     * @param  \Rubix\Tensor\Matrix  $computed
+     * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {

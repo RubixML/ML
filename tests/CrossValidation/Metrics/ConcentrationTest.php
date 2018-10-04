@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation\Metrics;
+namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\Layers;
+namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use PHPUnit\Framework\TestCase;
 

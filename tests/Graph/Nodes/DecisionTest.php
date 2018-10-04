@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Graph\Nodes;
+namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Decision;

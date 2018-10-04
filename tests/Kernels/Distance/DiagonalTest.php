@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Kernels\Distance;
+namespace Rubix\ML\Tests\Kernels\Distance;
 
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Distance;

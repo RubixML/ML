@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Other\Structures\Vector;
+use Rubix\Tensor\Vector;
 
 /**
  * Cosine

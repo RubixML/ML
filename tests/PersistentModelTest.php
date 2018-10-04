@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests;
+namespace Rubix\ML\Tests;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;

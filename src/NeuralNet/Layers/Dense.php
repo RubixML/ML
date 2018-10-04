@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
@@ -53,7 +53,7 @@ class Dense implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $input;
 
@@ -76,8 +76,8 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->initializer = $initializer;
-        $this->weights = new Parameter(Matrix::empty());
-        $this->biases = new Parameter(Matrix::empty());
+        $this->weights = new Parameter(new Matrix());
+        $this->biases = new Parameter(new Matrix());
     }
 
     /**
@@ -113,8 +113,8 @@ class Dense implements Hidden, Parametric
      * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -127,8 +127,8 @@ class Dense implements Hidden, Parametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

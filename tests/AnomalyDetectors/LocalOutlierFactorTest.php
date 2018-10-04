@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\AnomalyDetectors;
+namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;

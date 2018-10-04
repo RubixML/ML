@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\Layers;
+namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Layers\Layer;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Parametric;

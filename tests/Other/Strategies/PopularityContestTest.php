@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Strategies;
+namespace Rubix\ML\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\Categorical;

@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
@@ -37,14 +37,14 @@ class Activation implements Hidden, Nonparametric
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $computed;
 
@@ -85,8 +85,8 @@ class Activation implements Hidden, Nonparametric
      * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -100,8 +100,8 @@ class Activation implements Hidden, Nonparametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

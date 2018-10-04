@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -63,8 +63,8 @@ class Placeholder implements Input
      * Just return the input vector adding a bias since the input layer does not
      * have any paramters.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -81,8 +81,8 @@ class Placeholder implements Input
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

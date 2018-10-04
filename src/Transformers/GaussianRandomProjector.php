@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -33,7 +33,7 @@ class GaussianRandomProjector implements Transformer
     /**
      * The random matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
     */
     protected $r;
 
@@ -96,8 +96,6 @@ class GaussianRandomProjector implements Transformer
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::build($samples)
-            ->dot($this->r)
-            ->asArray();
+        $samples = Matrix::quick($samples)->dot($this->r)->asArray();
     }
 }

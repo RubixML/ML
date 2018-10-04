@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Datasets\Generators;
+namespace Rubix\ML\Tests\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;

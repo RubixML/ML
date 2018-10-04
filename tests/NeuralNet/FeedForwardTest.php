@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;

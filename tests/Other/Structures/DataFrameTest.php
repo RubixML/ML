@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Structures;
+namespace Rubix\ML\Tests\Other\Structures;
 
 use Rubix\ML\Other\Structures\DataFrame;
 use PHPUnit\Framework\TestCase;

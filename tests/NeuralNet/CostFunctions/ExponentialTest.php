@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\CostFunctions;
+namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use PHPUnit\Framework\TestCase;

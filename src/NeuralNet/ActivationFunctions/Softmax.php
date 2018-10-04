@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
@@ -43,8 +43,8 @@ class Softmax extends Sigmoid
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $z
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $z
+     * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
     {

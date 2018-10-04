@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Reports;
+namespace Rubix\ML\Tests\Reports;
 
 use Rubix\ML\Reports\Report;
 use Rubix\ML\Datasets\Labeled;

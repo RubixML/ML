@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Strategies;
+namespace Rubix\ML\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Lottery;
 use Rubix\ML\Other\Strategies\Strategy;

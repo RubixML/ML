@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Structures\DataFrame;
@@ -294,7 +294,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $samples = Matrix::build($dataset->samples(), false)->transpose();
+        $samples = Matrix::quick($dataset->samples())->transpose();
 
         $probabilities = [];
 

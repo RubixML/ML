@@ -3,7 +3,7 @@
 namespace Rubix\ML\Manifold;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Structures\DataFrame;
@@ -299,8 +299,8 @@ class TSNE implements Embedder
     /**
      * Calculate the pairwise distances for each sample.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $samples
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $samples
+     * @return \Rubix\Tensor\Matrix
      */
     protected function pairwiseDistances(Matrix $samples) : Matrix
     {
@@ -319,8 +319,8 @@ class TSNE implements Embedder
      * Calculate the joint likelihood of each sample in the high dimensional
      * space as being nearest neighbor to each other sample.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $distances
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $distances
+     * @return \Rubix\Tensor\Matrix
      */
     protected function highAffinities(Matrix $distances) : Matrix
     {
@@ -395,8 +395,8 @@ class TSNE implements Embedder
      * Calculate the joint likelihood of each sample in the embedded space as
      * being nearest neighbor to each other sample.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $distances
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $distances
+     * @return \Rubix\Tensor\Matrix
      */
     protected function lowAffinities(Matrix $distances) : Matrix
     {
@@ -413,11 +413,11 @@ class TSNE implements Embedder
      * Compute the gradient of the KL Divergence cost function with respect to
      * the embedding.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $p
-     * @param  \Rubix\ML\Other\Structures\Matrix  $q
-     * @param  \Rubix\ML\Other\Structures\Matrix  $y
-     * @param  \Rubix\ML\Other\Structures\Matrix  $distances
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $p
+     * @param  \Rubix\Tensor\Matrix  $q
+     * @param  \Rubix\Tensor\Matrix  $y
+     * @param  \Rubix\Tensor\Matrix  $distances
+     * @return \Rubix\Tensor\Matrix
      */
     protected function computeGradient(Matrix $p, Matrix $q, Matrix $y, Matrix $distances) : Matrix
     {

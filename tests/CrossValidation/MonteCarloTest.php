@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation;
+namespace Rubix\ML\Tests\CrossValidation;
 
 use Rubix\ML\CrossValidation\MonteCarlo;
 use Rubix\ML\CrossValidation\Validator;

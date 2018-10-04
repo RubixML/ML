@@ -8,7 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\FeedForward;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Structures\DataFrame;
 use Rubix\ML\NeuralNet\Layers\Continuous;
@@ -269,7 +269,7 @@ class Adaline implements Estimator, Online, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $samples = Matrix::build($dataset->samples(), false)->transpose();
+        $samples = Matrix::quick($dataset->samples())->transpose();
 
         return $this->network->infer($samples)->row(0);
     }

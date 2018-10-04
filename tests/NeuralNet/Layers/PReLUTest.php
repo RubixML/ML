@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\Layers;
+namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use PHPUnit\Framework\TestCase;
 

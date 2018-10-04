@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Graph\Trees;
+namespace Rubix\ML\Tests\Graph\Trees;
 
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\ITree;

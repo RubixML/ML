@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use PHPUnit\Framework\TestCase;
 
 class ParameterTest extends TestCase

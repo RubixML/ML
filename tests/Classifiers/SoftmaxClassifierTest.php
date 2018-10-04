@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Classifiers;
+namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;

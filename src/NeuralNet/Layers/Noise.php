@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 
@@ -80,8 +80,8 @@ class Noise implements Hidden, Nonparametric
     /**
      * Generate a random noise matrix and add it to the input.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -94,8 +94,8 @@ class Noise implements Hidden, Nonparametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

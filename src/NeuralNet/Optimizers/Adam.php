@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -132,8 +132,8 @@ class Adam implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \Rubix\ML\Other\Structures\Matrix  $gradients
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $gradients
+     * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $parameter, Matrix $gradients) : Matrix
     {

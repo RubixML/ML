@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Extractors;
+namespace Rubix\ML\Tests\Extractors;
 
 use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\ImagePatchDescriptor;

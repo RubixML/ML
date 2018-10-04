@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 

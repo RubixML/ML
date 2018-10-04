@@ -1,8 +1,8 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\Initializers;
+namespace Rubix\ML\Tests\NeuralNet\Initializers;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use PHPUnit\Framework\TestCase;

@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -85,14 +85,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $stdInv;
 
     /**
      * A cache of normalized inputs to the layer.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $xHat;
 
@@ -109,8 +109,8 @@ class BatchNorm implements Hidden, Parametric
         }
 
         $this->epsilon = $epsilon;
-        $this->beta = new Parameter(Matrix::empty());
-        $this->gamma = new Parameter(Matrix::empty());
+        $this->beta = new Parameter(new Matrix());
+        $this->gamma = new Parameter(new Matrix());
         $this->counter = 0;
         $this->width = 0;
     }
@@ -149,8 +149,8 @@ class BatchNorm implements Hidden, Parametric
      * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -203,8 +203,8 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {

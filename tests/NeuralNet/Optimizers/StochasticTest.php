@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet\Optimizers;
+namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;

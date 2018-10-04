@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -49,14 +49,14 @@ class PReLU implements Hidden, Parametric
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized activation matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $computed;
 
@@ -73,7 +73,7 @@ class PReLU implements Hidden, Parametric
         }
 
         $this->initial = $initial;
-        $this->alphas = new Parameter(Matrix::empty());
+        $this->alphas = new Parameter(new Matrix());
         $this->width = 0;
     }
 
@@ -96,7 +96,7 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $a = Matrix::full($this->initial, $fanOut, 1);
+        $a = Matrix::fill($this->initial, $fanOut, 1);
 
         $this->alphas = new Parameter($a);
 
@@ -109,8 +109,8 @@ class PReLU implements Hidden, Parametric
      * Compute the input sum and activation of each neuron in the layer and
      * return an activation matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -124,8 +124,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
@@ -171,8 +171,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $z
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $z
+     * @return \Rubix\Tensor\Matrix
      */
     protected function compute(Matrix $z) : Matrix
     {
@@ -196,9 +196,9 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the derivatives of the activation function.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $z
-     * @param  \Rubix\ML\Other\Structures\Matrix  $computed
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $z
+     * @param  \Rubix\Tensor\Matrix  $computed
+     * @return \Rubix\Tensor\Matrix
      */
     protected function differentiate(Matrix $z, Matrix $computed) : Matrix
     {

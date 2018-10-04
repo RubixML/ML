@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\CrossValidation\Metrics;
+namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Clusterers;
+namespace Rubix\ML\Tests\Clusterers;
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Regressors;
+namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Estimator;

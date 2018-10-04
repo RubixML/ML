@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Extractors\Descriptors;
+namespace Rubix\ML\Tests\Extractors\Descriptors;
 
 use Rubix\ML\Extractors\Descriptors\Descriptor;
 use Rubix\ML\Extractors\Descriptors\TextureHistogram;

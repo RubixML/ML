@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 
 /**
  * Parameter
@@ -20,7 +20,7 @@ class Parameter
     /**
      * The parameter matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix
+     * @var \Rubix\Tensor\Matrix
      */
     protected $w;
 
@@ -33,7 +33,7 @@ class Parameter
     }
 
     /**
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @return \Rubix\Tensor\Matrix
      */
     public function w() : Matrix
     {
@@ -43,7 +43,7 @@ class Parameter
     /**
      * Update the parameter matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $step
+     * @param  \Rubix\Tensor\Matrix  $step
      * @return void
      */
     public function update(Matrix $step) : void

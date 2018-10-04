@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Persisters;
+namespace Rubix\ML\Tests\Persisters;
 
 use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Persister;

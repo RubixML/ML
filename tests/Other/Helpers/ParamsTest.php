@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Helpers;
+namespace Rubix\ML\Tests\Other\Helpers;
 
 use Rubix\ML\Other\Helpers\Params;
 use PHPUnit\Framework\TestCase;

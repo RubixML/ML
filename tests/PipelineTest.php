@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests;
+namespace Rubix\ML\Tests;
 
 use Rubix\ML\Pipeline;
 use Rubix\ML\Persistable;

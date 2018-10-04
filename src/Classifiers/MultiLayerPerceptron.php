@@ -11,7 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Other\Structures\DataFrame;
@@ -409,7 +409,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $samples = Matrix::build($dataset->samples(), false)->transpose();
+        $samples = Matrix::quick($dataset->samples())->transpose();
 
         $probabilities = [];
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Extractors\Tokenizers;
+namespace Rubix\ML\Tests\Extractors\Tokenizers;
 
 use Rubix\ML\Extractors\Tokenizers\Word;
 use Rubix\ML\Extractors\Tokenizers\Tokenizer;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Other\Functions;
+namespace Rubix\ML\Tests\Other\Functions;
 
 use Rubix\ML\Other\Functions\Argmin;
 use PHPUnit\Framework\TestCase;

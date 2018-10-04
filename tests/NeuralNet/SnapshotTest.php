@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;

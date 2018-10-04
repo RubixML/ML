@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Transformers;
+namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\Tests\Manifold;
+namespace Rubix\ML\Tests\Manifold;
 
 use Rubix\ML\Manifold\TSNE;
 use Rubix\ML\Datasets\Labeled;

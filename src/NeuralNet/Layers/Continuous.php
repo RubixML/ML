@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\Other\Structures\Matrix;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -54,14 +54,14 @@ class Continuous implements Output
     /**
      * The memoized input matrix.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $input;
 
     /**
      * The memoized output of the layer.
      *
-     * @var \Rubix\ML\Other\Structures\Matrix|null
+     * @var \Rubix\Tensor\Matrix|null
      */
     protected $z;
 
@@ -79,8 +79,8 @@ class Continuous implements Output
 
         $this->alpha = $alpha;
         $this->initializer = new Xavier2();
-        $this->weights = new Parameter(Matrix::empty());
-        $this->biases = new Parameter(Matrix::empty());
+        $this->weights = new Parameter(new Matrix());
+        $this->biases = new Parameter(new Matrix());
     }
 
     /**
@@ -116,8 +116,8 @@ class Continuous implements Output
      * Compute the input sum and activation of each neuron in the layer and return
      * an activation matrix.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
@@ -132,8 +132,8 @@ class Continuous implements Output
     /**
      * Compute the inferential activations of each neuron in the layer.
      *
-     * @param  \Rubix\ML\Other\Structures\Matrix  $input
-     * @return \Rubix\ML\Other\Structures\Matrix
+     * @param  \Rubix\Tensor\Matrix  $input
+     * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
