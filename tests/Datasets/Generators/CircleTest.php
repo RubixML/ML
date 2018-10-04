@@ -14,7 +14,7 @@ class CircleTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new Circle([0, 0], 1.0, 1.0);
+        $this->generator = new Circle(5., 5., 20.0, 0.1);
     }
 
     public function test_build_generator()

@@ -4,6 +4,7 @@ namespace Rubix\ML\Other\Strategies;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -20,8 +21,6 @@ use RuntimeException;
  */
 class BlurryMean implements Continuous
 {
-    const TWO_PI = 2. * M_PI;
-
     /**
      * The amount of gaussian noise to add to the guess.
      *
@@ -90,19 +89,6 @@ class BlurryMean implements Continuous
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->mean + $this->blur * $this->gaussian() * $this->stddev;
-    }
-
-    /**
-     * Generate a random number from a gaussian distribution between -1 and 1.
-     *
-     * @return float
-     */
-    public function gaussian() : float
-    {
-        $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
-        $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
-
-        return sqrt(-2. * log($r1)) * cos(self::TWO_PI * $r2);
+        return $this->mean + $this->blur * Gaussian::rand() * $this->stddev;
     }
 }

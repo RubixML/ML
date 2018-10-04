@@ -4,9 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Functions\Gaussian;
-use MathPHP\Probability\Distribution\Continuous\Normal;
-use MathPHP\Probability\Distribution\Continuous\Uniform;
+use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 
 /**
@@ -20,56 +18,61 @@ use InvalidArgumentException;
  */
 class HalfMoon implements Generator
 {
-    /**
-     * The x and y coordinates of the center of the half moon.
-     *
-     * @var array
-     */
-    protected $center;
+    const PHI = 1000000000;
 
     /**
-     * The scaling factor of the moon.
+     * The x coordinate of the center of the half moon.
+     *
+     * @var float
+     */
+    protected $x;
+
+    /**
+     * The y coordinate of the center of the half moon.
+     *
+     * @var float
+     */
+    protected $y;
+
+    /**
+     * The scaling factor of the half moon.
      *
      * @var float
      */
     protected $scale;
 
     /**
-     * The uniform probability distribution to sample from.
+     * The rotation on the half moon in degrees.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Uniform
+     * @var float
      */
-    protected $uniform;
+    protected $rotation;
 
     /**
-     * The normal probability distribution to sample from.
+     * The standard deviation of the gaussian noise added to the data.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Normal
+     * @var float
      */
-    protected $gaussian;
+    protected $stddev;
 
     /**
-     * @param  array  $center
+     * @param  float  $x
+     * @param  float  $y
      * @param  float  $scale
-     * @param  float  $rotate
+     * @param  float  $rotation
      * @param  float  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $center = [0, 0], float $scale = 1.0, float $rotate = 90.0,
+    public function __construct(float $x = 0., float $y = 0., float $scale = 1.0, float $rotation = 90.0,
                                 float $noise = 0.1)
     {
-        if (count($center) !== 2) {
-            throw new InvalidArgumentException('This generator only works in 2'
-                . ' dimensions.');
-        }
-
         if ($scale < 0) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . ' than 0.');
         }
 
-        if ($rotate < 0 or $rotate > 360) {
+        if ($rotation < 0 or $rotation > 360) {
             throw new InvalidArgumentException('Rotation must be between 0 and'
                 . ' 360 degrees.');
         }
@@ -79,10 +82,11 @@ class HalfMoon implements Generator
                 . ' 0 and less than or equal to 1.');
         }
 
-        $this->center = $center;
+        $this->x = $x;
+        $this->y = $y;
         $this->scale = $scale;
-        $this->uniform = new Uniform(deg2rad($rotate), deg2rad($rotate + 180));
-        $this->gaussian = new Normal(0, $scale * $noise);
+        $this->rotation = $rotation;
+        $this->stddev = $scale * $noise;
     }
 
     /**
@@ -103,17 +107,21 @@ class HalfMoon implements Generator
      */
     public function generate(int $n = 100) : Dataset
     {
+        $start = (int) round(deg2rad($this->rotation) * self::PHI);
+        $end = (int) round(deg2rad($this->rotation + 180) * self::PHI);
+
         $samples = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $random = $this->uniform->rand();
+            $r = rand($start, $end) / self::PHI;
 
-            $samples[$i][0] = $this->scale * cos($random)
-                + $this->center[0]
-                + $this->gaussian->rand();
-            $samples[$i][1] = $this->scale * sin($random)
-                + $this->center[1]
-                + $this->gaussian->rand();
+            $samples[$i][] = $this->scale * cos($r)
+                + $this->x
+                + Gaussian::rand() * $this->stddev;
+
+            $samples[$i][] = $this->scale * sin($r)
+                + $this->y
+                + Gaussian::rand() * $this->stddev;
         }
 
         return new Unlabeled($samples, false);

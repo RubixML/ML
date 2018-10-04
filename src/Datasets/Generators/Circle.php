@@ -4,9 +4,7 @@ namespace Rubix\ML\Datasets\Generators;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Functions\Gaussian;
-use MathPHP\Probability\Distribution\Continuous\Normal;
-use MathPHP\Probability\Distribution\Continuous\Uniform;
+use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 
 /**
@@ -20,12 +18,22 @@ use InvalidArgumentException;
  */
 class Circle implements Generator
 {
+    const TWO_PI = 2. * M_PI;
+    const PHI = 1000000000;
+
     /**
-     * The x and y coordinates of the center of the circle.
+     * The x coordinate of the center of the circle.
      *
-     * @var array
+     * @var float
      */
-    protected $center;
+    protected $x;
+
+    /**
+     * The y coordinate of the center of the circle.
+     *
+     * @var float
+     */
+    protected $y;
 
     /**
      * The scaling factor of the circle.
@@ -35,33 +43,22 @@ class Circle implements Generator
     protected $scale;
 
     /**
-     * The uniform probability distribution to sample from.
+     * The standard deviation of the generated data points.
      *
-     * @var \MathPHP\Probability\Distribution\Continuous\Uniform
+     * @var float
      */
-    protected $uniform;
+    protected $stddev;
 
     /**
-     * The normal probability distribution to sample from.
-     *
-     * @var \MathPHP\Probability\Distribution\Continuous\Normal
-     */
-    protected $gaussian;
-
-    /**
-     * @param  array  $center
+     * @param  float  $x
+     * @param  float  $y
      * @param  float  $scale
      * @param  float  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $center = [0, 0], float $scale = 1.0, float $noise = 0.1)
+    public function __construct(float $x = 0., float $y = 0., float $scale = 1.0, float $noise = 0.1)
     {
-        if (count($center) !== 2) {
-            throw new InvalidArgumentException('This generator only works in 2'
-                . ' dimensions.');
-        }
-
         if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . ' than 0.');
@@ -72,10 +69,10 @@ class Circle implements Generator
                 . ' 0 and less than or equal to 1.');
         }
 
-        $this->center = $center;
+        $this->x = $x;
+        $this->y = $y;
         $this->scale = $scale;
-        $this->uniform = new Uniform(0, 2. * M_PI);
-        $this->gaussian = new Normal(0, $scale * $noise);
+        $this->stddev = $noise * $scale;
     }
 
     /**
@@ -96,17 +93,20 @@ class Circle implements Generator
      */
     public function generate(int $n = 100) : Dataset
     {
+        $end = (int) round(self::TWO_PI * self::PHI);
+
         $samples = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $random = $this->uniform->rand();
+            $r = rand(0, $end) / self::PHI;
 
-            $samples[$i][0] = $this->scale * cos($random)
-                + $this->center[0]
-                + $this->gaussian->rand();
-            $samples[$i][1] = $this->scale * sin($random)
-                + $this->center[1]
-                + $this->gaussian->rand();
+            $samples[$i][] = $this->scale * cos($r)
+                + $this->x
+                + Gaussian::rand() * $this->stddev;
+
+            $samples[$i][] = $this->scale * sin($r)
+                + $this->y
+                + Gaussian::rand() * $this->stddev;
         }
 
         return new Unlabeled($samples, false);

@@ -14,7 +14,7 @@ class HalfMoonTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new HalfMoon([0, 0], 1.0, 90.0, 0.1);
+        $this->generator = new HalfMoon(5., 5., 10.0, 50.0, 0.1);
     }
 
     public function test_build_generator()
