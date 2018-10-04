@@ -3,7 +3,6 @@
 namespace Rubix\ML\Extractors\Descriptors;
 
 use Rubix\ML\Other\Helpers\Stats;
-use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
 /**
@@ -36,9 +35,9 @@ class TextureHistogram implements Descriptor
 
         list($mean, $variance) = Stats::meanVar($intensities);
 
-        $skewness = RandomVariable::skewness($intensities);
+        $skewness = Stats::skewness($intensities, $mean);
 
-        $kurtosis = RandomVariable::kurtosis($intensities);
+        $kurtosis = Stats::kurtosis($intensities, $mean);
 
         return [$mean, $variance, $skewness, $kurtosis];
     }

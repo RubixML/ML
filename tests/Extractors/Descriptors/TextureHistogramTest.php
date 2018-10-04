@@ -35,7 +35,7 @@ class TextureHistogramTest extends TestCase
         $output = $this->descriptor->describe($this->patch);
 
         $this->assertEquals([
-            49.354166666666664, 267.47873263888897, 0.05187101354494579, -0.7966073290083973,
+            49.354166666666664, 267.47873263888897, 0.05357215242945985, -0.7966073290083973,
         ], $output);
     }
 }

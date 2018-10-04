@@ -6,7 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
-use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 
 /**
@@ -76,13 +75,13 @@ class ResidualBreakdown implements Report
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
             'rms_error' => sqrt($mse),
+            'r_squared' => 1 - ($sse / $sst),
             'error_mean' => $mean,
             'error_variance' => $variance,
-            'error_skewness' => RandomVariable::populationSkewness($errors),
-            'error_kurtosis' => RandomVariable::kurtosis($errors),
+            'error_skewness' => Stats::skewness($errors, $mean),
+            'error_kurtosis' => Stats::kurtosis($errors, $mean),
             'error_min' => min($errors),
             'error_max' => max($errors),
-            'r_squared' => 1 - ($sse / $sst),
             'cardinality' => $testing->numRows(),
         ];
     }

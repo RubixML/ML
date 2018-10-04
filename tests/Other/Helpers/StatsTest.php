@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\Other\Helpers;
 
-use MathPHP\Statistics\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use PHPUnit\Framework\TestCase;
 
@@ -12,9 +11,7 @@ class StatsTest extends TestCase
 
     public function setUp()
     {
-        $this->values = [
-            15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5,
-        ];
+        $this->values = [15, 12.5, 13, 2, 1.5, 6, 9.5, 10, 13, 5];
     }
 
     public function test_mean()
@@ -24,7 +21,7 @@ class StatsTest extends TestCase
 
     public function test_variance()
     {
-        $this->assertEquals(21.1125, Stats::variance($this->values, 8.75));
+        $this->assertEquals(21.1125, Stats::variance($this->values));
     }
 
     public function test_median()
@@ -44,7 +41,22 @@ class StatsTest extends TestCase
 
     public function test_mad()
     {
-        $this->assertEquals(3.5, Stats::mad($this->values, 9.75));
+        $this->assertEquals(3.5, Stats::mad($this->values));
+    }
+
+    public function test_skewness()
+    {
+        $this->assertEquals(-0.31891556974589724, Stats::skewness($this->values));
+    }
+
+    public function test_central_moment()
+    {
+        $this->assertEquals(747.26015625, Stats::centralMoment($this->values, 4));
+    }
+
+    public function test_kurtosis()
+    {
+        $this->assertEquals(-1.3235426808299866, Stats::kurtosis($this->values));
     }
 
     public function test_mean_var()
