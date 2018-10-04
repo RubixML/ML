@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Other\Structures\DataFrame;
+use Rubix\ML\Datasets\DataFrame;
 
 /**
  * Lambda Function
@@ -36,7 +36,7 @@ class LambdaFunction implements Transformer
     /**
      * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @return void
      */
     public function fit(DataFrame $dataframe) : void

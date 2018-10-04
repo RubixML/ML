@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Other\Structures\DataFrame;
+use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
 /**
@@ -25,7 +25,7 @@ class SparseRandomProjector extends GaussianRandomProjector
     /**
      * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @throws \InvalidArgumentException
      * @return void
      */

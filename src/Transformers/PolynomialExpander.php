@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Other\Structures\DataFrame;
+use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
 /**
@@ -45,7 +45,7 @@ class PolynomialExpander implements Transformer
     /**
      * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @throws \InvalidArgumentException
      * @return void
      */

@@ -6,7 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Structures\DataFrame;
+use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
 class Concentration implements Metric

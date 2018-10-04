@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Other\Structures\DataFrame;
+use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -69,7 +69,7 @@ class GaussianRandomProjector implements Transformer
     /**
      * Fit the transformer to the incoming data frame.
      *
-     * @param  \Rubix\ML\Other\Structures\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @throws \InvalidArgumentException
      * @return void
      */

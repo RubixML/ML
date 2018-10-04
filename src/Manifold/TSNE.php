@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Manifold;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 
 /**

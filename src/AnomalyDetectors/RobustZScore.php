@@ -5,8 +5,8 @@ namespace Rubix\ML\AnomalyDetectors;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Structures\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
 

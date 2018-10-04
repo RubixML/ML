@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Other\Structures;
+namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
@@ -35,16 +35,20 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         if ($validate === true) {
             $samples = array_values($samples);
 
-            $numColumns = (isset($samples[0]) and is_array($samples[0]))
-                ? count($samples[0]) : 0;
+            $n = is_array(current($samples)) ? count(current($samples)) : 1;
+            $n = empty($samples) ? 0 : $n;
 
             foreach ($samples as &$sample) {
-                if (count($sample) !== $numColumns) {
+                if (is_array($sample)) {
+                    $sample = array_values($sample);
+                } else {
+                    $sample = [$sample];
+                }
+
+                if (count($sample) !== $n) {
                     throw new InvalidArgumentException('The number of feature'
                         . ' columns must be equal for all samples.');
                 }
-
-                $sample = array_values($sample);
 
                 foreach ($sample as $feature) {
                     if (!is_string($feature) and !is_numeric($feature)) {
