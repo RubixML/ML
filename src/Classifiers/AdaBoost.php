@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Classifiers\ClassificationTree;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -29,20 +30,11 @@ use RuntimeException;
 class AdaBoost implements Estimator, Ensemble, Persistable
 {
     /**
-     * The class name of the base classifier.
+     * The base classifier instance.
      *
-     * @var string
+     * @var \Rubix\ML\Estimator
      */
     protected $base;
-
-    /**
-     * The constructor arguments of the base classifier.
-     *
-     * @var array
-     */
-    protected $params = [
-        //
-    ];
 
     /**
      * The number of estimators to train. Note that the algorithm will
@@ -68,7 +60,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $tolerance;
 
     /**
-     * The unique binary class labels of the trainign set.
+     * The unique binary class labels of the training set.
      *
      * @var array
      */
@@ -77,7 +69,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * The memoized inverse of the classes associative array for optimization.
+     * The reverse of the classes array for fast hash lookups.
      *
      * @var array
      */
@@ -114,25 +106,35 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  string  $base
-     * @param  array  $params
+     * The average cost of a training sample at each epoch.
+     *
+     * @var array
+     */
+    protected $steps = [
+        //
+    ];
+
+    /**
+     * @param  \Rubix\ML\Estimator  $base
      * @param  int  $estimators
      * @param  float  $ratio
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params = [], int $estimators = 100,
-                                float $ratio = 0.1, float $tolerance = 1e-3)
+    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.1,
+                                float $tolerance = 1e-3)
     {
-        $proxy = new $base(...$params);
+        if (is_null($base)) {
+            $base = new ClassificationTree(1);
+        }
 
-        if ($proxy instanceof MetaEstimator) {
+        if ($base instanceof MetaEstimator) {
             throw new InvalidArgumentException('Base class cannot be a meta'
                 . ' estimator.');
         }
 
-        if ($proxy->type() !== self::CLASSIFIER) {
+        if ($base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
                 . ' classifier.');
         }
@@ -153,7 +155,6 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         }
 
         $this->base = $base;
-        $this->params = $params;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->tolerance = $tolerance;
@@ -200,6 +201,16 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     }
 
     /**
+     * Return the average cost at every epoch.
+     *
+     * @return array
+     */
+    public function steps() : array
+    {
+        return $this->steps;
+    }
+
+    /**
      * Train a boosted enemble of binary classifiers assigning an influence value
      * to each one and re-weighting the training data accordingly to reflect how
      * difficult a particular sample is to classify.
@@ -229,12 +240,12 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         $this->classes = [1 => $classes[0], -1 => $classes[1]];
         $this->beta = array_flip($this->classes);
 
-        $this->weights = array_fill(0, count($dataset), 1 / count($dataset));
+        $this->weights = array_fill(0, $n, 1 / $n);
 
-        $this->ensemble = $this->influence = [];
+        $this->ensemble = $this->influence = $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
-            $estimator = new $this->base(...$this->params);
+            $estimator = clone $this->base;
 
             $subset = $dataset->randomWeightedSubsetWithReplacement($k, $this->weights);
 
@@ -263,6 +274,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $this->influence[] = $influence;
             $this->ensemble[] = $estimator;
+            $this->steps[] = $error;
 
             if ($error < $this->tolerance) {
                 break 1;

@@ -1274,15 +1274,14 @@ $estimator = new RobustZScore(1.5, 3.0);
 Classifiers are a type of Estimator that predict discrete outcomes such as class labels. There are two types of Classifiers in Rubix - *Binary* and *Multiclass*. Binary Classifiers can only distinguish between two classes (ex. *Male*/*Female*, *Yes*/*No*, etc.) whereas a Multiclass Classifier is able to handle two or more unique class outcomes.
 
 ### AdaBoost
-Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify.
+Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
 ##### Supervised | Binary | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | None | string | The fully qualified class name of the base *weak* classifier. |
-| 2 | params | [ ] | array | The parameters of the base classifier. |
+| 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
@@ -1299,12 +1298,17 @@ Return the influence scores for each boosted classifier:
 public influence() : array
 ```
 
+Return the training error at each epoch:
+```php
+public steps() : array
+```
+
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(ExtraTreeClassifier::class, [10, 3, 5], 200, 0.1, 1e-2);
+$estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 1e-2);
 ```
 
 ### Classification Tree

@@ -22,7 +22,8 @@ use ReflectionClass;
  * the probability scores returned from each tree in the forest.
  *
  * References:
- * [1] L. Breiman et al. (2005). Extremely Randomized Trees.
+ * [1] L. Breiman. (2001). Random Forests.
+ * [2] L. Breiman et al. (2005). Extremely Randomized Trees.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
