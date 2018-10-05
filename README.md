@@ -1090,7 +1090,7 @@ public embed(Dataset $dataset) : array
 ```
 
 ### t-SNE
-T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Momentum is employed during both stages, however it is halved during the early stage.
+T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1099,8 +1099,8 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
 | 4 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 5 | rate | 1. | float | The learning rate. |
-| 6 | momentum | 0.2 | float | The amount of momentum to carry over into the next update. |
+| 5 | rate | 1. | float | The learning rate that controls the step size. |
+| 6 | decay | 0.2 | float | The amount to decay the momentum by each update. |
 | 7 | min gradient | 1e-6 | float | The minimum gradient necessary to continue fitting. |
 | 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 | 9 | tolerance | 1e-5 | float | The tolerance of the binary search for appropriate sigma. |
@@ -1116,9 +1116,9 @@ public steps() : array
 ##### Example:
 ```php
 use Rubi\ML\Manifold\TSNE;
-use Rubix\ML\Kernels\Euclidean;
+use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(2, 30, 12., 1000, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
+$embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100);
 ```
 
 ---

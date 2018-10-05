@@ -15,8 +15,8 @@ use InvalidArgumentException;
  * T-distributed Stochastic Neighbor Embedding is a two-stage non-linear
  * manifold learning algorithm based on batch Gradient Decent. During the first
  * stage (*early* stage) the samples are exaggerated to encourage distant
- * clusters. Momentum is employed during both stages, however it is halved
- * during the early stage.
+ * clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient,
+ * momentum is employed to help escape bad local minima.
  *
  * References:
  * [1] L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
@@ -44,13 +44,6 @@ class TSNE implements Embedder
      protected $degrees;
 
      /**
-      * The gradient coefficient.
-      *
-      * @var float
-      */
-     protected $c;
-
-     /**
       * The number of effective nearest neighbors to refer to when computing the
       * variance of the gaussian over that sample.
       *
@@ -59,15 +52,16 @@ class TSNE implements Embedder
      protected $perplexity;
 
      /**
-      * The desired entropy of the Gaussian over each sample.
+      * The desired entropy of the Gaussian over each sample i.e the log
+      * perplexity.
       *
       * @var float
       */
      protected $entropy;
 
      /**
-      * The factor to exaggerate the distances between samples during the early
-      * stage of fitting.
+      * The factor to exaggerate the distances between samples by during the
+      * early stage of fitting.
       *
       * @var float
       */
@@ -96,11 +90,11 @@ class TSNE implements Embedder
     protected $rate;
 
     /**
-     * The amount of momentum to carry over into the next update.
+     * The amount to decay the momentum by each update.
      *
      * @var float
      */
-    protected $momentum;
+    protected $decay;
 
     /**
      * The minimum gradient necessary to continue fitting.
@@ -110,28 +104,30 @@ class TSNE implements Embedder
     protected $minGradient;
 
     /**
-     * The distance metric used to measure distances between samples.
+     * The distance metric used to measure distances between samples in both
+     * high and low dimensions.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
 
     /**
-     * The tolerance of the binary search for appropriate sigma.
+     * The tolerance of the binary search for an appropriate variance of the
+     * Gaussian over each sample.
      *
      * @var float
      */
     protected $tolerance;
 
     /**
-     * The number of iterations when locating an appropriate sigma.
+     * The number of iterations when locating an appropriate variance.
      *
      * @var int
      */
     protected $precision;
 
     /**
-     * The magnitudes of the gradient at each epoch fro the last embedding.
+     * The magnitudes of the gradient at each epoch since the last embedding.
      *
      * @var float[]
      */
@@ -145,7 +141,7 @@ class TSNE implements Embedder
      * @param  float  $exaggeration
      * @param  int  $epochs
      * @param  float  $rate
-     * @param  float  $momentum
+     * @param  float  $decay
      * @param  float  $minGradient
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @param  float  $tolerance
@@ -154,7 +150,7 @@ class TSNE implements Embedder
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                int $epochs = 1000, float $rate = 1., float $momentum = 0.2, float $minGradient = 1e-6,
+                int $epochs = 1000, float $rate = 1.0, float $decay = 0.2, float $minGradient = 1e-6,
                 Distance $kernel = null, float $tolerance = 1e-5, int $precision = 100)
     {
         if ($dimensions < 1) {
@@ -182,9 +178,9 @@ class TSNE implements Embedder
                 . ' than 0.');
         }
 
-        if ($momentum < 0. or $momentum > 1.) {
-            throw new InvalidArgumentException('Momentum must be between 0'
-                . ' and 1.');
+        if ($decay < 0. or $decay > 1.) {
+            throw new InvalidArgumentException('Momentum decay must be between'
+                . ' 0 and 1.');
         }
 
         if ($minGradient < 0.) {
@@ -208,14 +204,13 @@ class TSNE implements Embedder
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
-        $this->c = 2. * (1. + $this->degrees) / $this->degrees;
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
         $this->early = (int) min(250, round($epochs / 4));
         $this->rate = $rate;
-        $this->momentum = $momentum;
+        $this->decay = $decay;
         $this->minGradient = $minGradient;
         $this->kernel = $kernel;
         $this->tolerance = $tolerance;
@@ -254,20 +249,16 @@ class TSNE implements Embedder
         $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
             ->multiplyScalar(1e-3);
 
-        $step = Matrix::zeros($dataset->numRows(), $this->dimensions);
+        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
 
         $distances = $this->pairwiseDistances($x);
 
         $p = $this->highAffinities($distances)
             ->multiplyScalar($this->exaggeration);
 
-        $momentum = $this->momentum / 2.;
-
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             if ($epoch === $this->early) {
                 $p = $p->divideScalar($this->exaggeration);
-
-                $momentum *= 2.;
             }
 
             $distances = $this->pairwiseDistances($y);
@@ -276,13 +267,11 @@ class TSNE implements Embedder
 
             $gradient = $this->computeGradient($p, $q, $y, $distances);
 
-            $step = $gradient->multiplyScalar($this->rate);
+            $velocity = $gradient
+                ->multiplyScalar($this->rate)
+                ->add($velocity->multiplyScalar(1. - $this->decay));
 
-            $velocity = $y->subtract($yHat)->multiplyScalar($momentum);
-
-            $yHat = $y;
-
-            $y = $y->add($step)->add($velocity);
+            $y = $y->add($velocity);
 
             $magnitude = $gradient->l2Norm();
 
@@ -423,12 +412,14 @@ class TSNE implements Embedder
     {
         $pqd = $p->subtract($q)->multiply($distances);
 
+        $c = 2. * (1. + $this->degrees) / $this->degrees;
+
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
             $gradient[$i] = $row->asRowMatrix()
                 ->dot($y->subtractVector($y->rowAsVector($i)))
-                ->multiplyScalar($this->c)
+                ->multiplyScalar($c)
                 ->row(0);
         }
 

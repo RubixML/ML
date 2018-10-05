@@ -47,7 +47,7 @@ class Momentum implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $decay = 0.9)
+    public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('The learning rate must be'
@@ -55,7 +55,7 @@ class Momentum implements Optimizer
         }
 
         if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException('Velocity decay must be between'
+            throw new InvalidArgumentException('Momentum decay must be between'
                 . ' 0 and 1.');
         }
 
@@ -83,7 +83,7 @@ class Momentum implements Optimizer
 
         $velocities = $gradients
             ->multiplyScalar($this->rate)
-            ->add($velocities->multiplyScalar($this->decay));
+            ->add($velocities->multiplyScalar(1. - $this->decay));
 
         $this->velocities[$parameter] = $velocities;
 

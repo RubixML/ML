@@ -44,20 +44,6 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
-     * Precomputed 1. - momentum decay.
-     *
-     * @var float
-     */
-    protected $beta1;
-
-    /**
-     * Precomputed 1. - RMS decay.
-     *
-     * @var float
-     */
-    protected $beta2;
-
-    /**
      * The smoothing parameter. i.e. a tiny number that helps provide numerical
      * smoothing and stability.
      *
@@ -120,8 +106,6 @@ class Adam implements Optimizer
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
-        $this->beta1 = 1. - $momentumDecay;
-        $this->beta2 = 1. - $rmsDecay;
         $this->epsilon = $epsilon;
         $this->velocities = new SplObjectStorage();
         $this->cache = new SplObjectStorage();
@@ -152,11 +136,11 @@ class Adam implements Optimizer
 
         $velocities = $velocities
             ->multiplyScalar($this->momentumDecay)
-            ->add($gradients->multiplyScalar($this->beta1));
+            ->add($gradients->multiplyScalar(1. - $this->momentumDecay));
 
         $cache = $cache
             ->multiplyScalar($this->rmsDecay)
-            ->add($gradients->square()->multiplyScalar($this->beta2));
+            ->add($gradients->square()->multiplyScalar(1. - $this->rmsDecay));
 
         $vHat = $velocities
             ->divideScalar(1. - $this->momentumDecay ** $this->t);
