@@ -82,6 +82,7 @@ MIT
 			- [Adaline](#adaline)
 			- [Dummy Regressor](#dummy-regressor)
 			- [Extra Tree Regressor](#extra-tree-regressor)
+			- [Gradient Boost](#gradient-boost)
 			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
@@ -1283,7 +1284,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 |--|--|--|--|--|
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 4 | ratio | 0.1 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 4 | ratio | 0.2 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
@@ -1308,7 +1309,7 @@ public steps() : array
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 1e-2);
+$estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.5, 1e-2);
 ```
 
 ### Classification Tree
@@ -1911,6 +1912,35 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\ExtraTreeRegressor;
 
 $estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
+```
+
+### Gradient Boost
+Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training the base "weak" regressors. Specifically, gradient boosting attempts to improve bias by training subsequent estimators to correct for errors made by the previous learners.
+
+##### Supervised | Ensemble | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | Regression Tree | object | The base *weak* regressor to be boosted. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | rate | 0.1 | float | The learning rate of the ensemble. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 5 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before an early stop is considered. |
+
+##### Additional Methods:
+
+Return the training error at each epoch:
+```php
+public steps() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Regressors\GradientBoost;
+use Rubix\ML\Regressors\RegressionTree;
+
+$estimator = new GradientBoost(new RegressionTree(2, 3, 5), 100, 1.0, 1e-2);
 ```
 
 ### K-d Neighbors Regressor

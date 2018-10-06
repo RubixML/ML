@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Gradient Boost regressor
     - Added t-SNE embedder
     - Added Redis persister
     - Moved Generators to the Datasets directory

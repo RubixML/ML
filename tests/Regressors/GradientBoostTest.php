@@ -1,20 +1,23 @@
 <?php
 
-namespace Rubix\ML\Tests\Classifiers;
+namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\ExtraTreeClassifier;
+use Rubix\ML\Regressors\GradientBoost;
+use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Regressors\KNNRegressor;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class AdaBoostTest extends TestCase
+class GradientBoostTest extends TestCase
 {
+    const TOLERANCE = 3;
+
     protected $estimator;
 
     protected $training;
@@ -23,37 +26,35 @@ class AdaBoostTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new AdaBoost(new ExtraTreeClassifier(1, 3, 4), 100, 0.1, 1e-3);
+        $this->estimator = new GradientBoost(new RegressionTree(2, 3, 4), 100, 0.5, 0.8, 1e-2);
     }
 
-    public function test_build_classifier()
+    public function test_build_regressor()
     {
-        $this->assertInstanceOf(AdaBoost::class, $this->estimator);
+        $this->assertInstanceOf(GradientBoost::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
-        $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
     public function test_estimator_type()
     {
-        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
     public function test_make_prediction()
     {
-        $this->training->randomize();
-
         $this->estimator->train($this->training);
 
         $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
+        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
     }
 
     public function test_train_with_unlabeled()

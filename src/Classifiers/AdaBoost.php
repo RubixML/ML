@@ -46,19 +46,19 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $estimators;
 
     /**
-     * The ratio of samples to train each classifier on.
+     * The ratio of samples to train each weak learner on.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     * The amount of accuracy to tolerate before early stopping.
+     * The amount of error to tolerate before early stopping.
      *
      * @var float
      */
     protected $tolerance;
-
+    
     /**
      * The unique binary class labels of the training set.
      *
@@ -122,7 +122,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.1,
+    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.2,
                                 float $tolerance = 1e-3)
     {
         if (is_null($base)) {
@@ -141,7 +141,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
         if ($estimators < 1) {
             throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 classifier.');
+                . ' 1 estimator.');
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
@@ -150,7 +150,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         }
 
         if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException('Tolerance must be between'
+            throw new InvalidArgumentException('Error tolerance must be between'
                 . ' 0 and 1.');
         }
 
@@ -283,7 +283,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     }
 
     /**
-     * Make a prediction by consulting the ensemble of experts and chosing the class
+     * Make a prediction by consulting the ensemble of experts and choosing the class
      * label closest to the value of the weighted sum of each expert's prediction.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
