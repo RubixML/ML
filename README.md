@@ -1141,12 +1141,13 @@ The return value of `predict()` is an array indexed in the order in which the sa
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Labeled;
 
 ...
 $dataset = new Labeled($samples, $labels);
 
-$estimator = new RandomForest(200, 0.5, 5, 3);
+$estimator = new RandomForest(new ClassificationTree(5, 3, 6), 200, 0.5);
 
 // Take 3 samples out of the dataset to use later
 $testing = $dataset->take(3);
@@ -1354,12 +1355,13 @@ This Meta Estimator does not have any additional methods.
 ```php
 use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 
 $estimator = new CommitteeMachine([
-	new RandomForest(100, 0.3, 30, 3, 4, 1e-3),
+	new RandomForest(new ClassificationTree(30, 3, 4, 1e-3), 100, 0.3),
 	new SoftmaxClassifier(50, new Adam(0.001), 0.1),
 	new KNearestNeighbors(3),
 ], [
@@ -1617,13 +1619,9 @@ $estimator = new NaiveBayes(0.5, true);
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | trees | 100 | int | The number of Decision Trees to train in the ensemble. |
-| 2 | ratio | 0.1 | float | The ratio of random samples to train each Decision Tree with. |
-| 3 | max depth | 10 | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| 4 | min samples | 5 | int | The minimum number of data points needed to split a decision node. |
-| 5 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
-| 6 | tolerance | 1e-3 | float | A small amount of Gini impurity to tolerate when choosing a split. |
-| 7 | base | ClassificationTree::class | string | The base tree class name. |
+| 1 | base | Classification Tree | object | The base tree estimator. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1633,7 +1631,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(400, 0.1, 10, 3, 5, 1e-2, ClassificationTree::class);
+$estimator = new RandomForest(ClassificationTree(10, 3, 5, 1e-2), 400, 0.1);
 ```
 
 ### Softmax Classifier
@@ -2715,10 +2713,11 @@ public delete() : void
 ##### Example:
 ```php
 use Rubix\ML\PersistentModel;
-use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Persisters\Filesystem;
 
-$estimator = new PersistentModel(new RandomForest(100, 0.2, 10, 3), new Filesystem('/random_forest.model'));
+$estimator = new PersistentModel(new LogisticRegression(100, 256, new Adam(0.001)), new Filesystem('/random_forest.model'));
 
 $estimator->save();
 

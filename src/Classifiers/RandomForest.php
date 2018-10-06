@@ -31,17 +31,24 @@ use ReflectionClass;
  */
 class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
 {
-    const AVAILABLE_TREES = [
+    const AVAILABLE_ESTIMATORS = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
+
+    /**
+     * The base estimator.
+     *
+     * @var \Rubix\ML\Estimator
+     */
+    protected $base;
 
     /**
      * The number of trees to train in the ensemble.
      *
      * @var int
      */
-    protected $trees;
+    protected $estimators;
 
     /**
      * The ratio of training samples to train each decision tree on.
@@ -49,42 +56,6 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
      * @var float
      */
     protected $ratio;
-
-    /**
-     * The maximum depth of a branch before the tree is terminated.
-     *
-     * @var int
-     */
-    protected $maxDepth;
-
-    /**
-     * The minimum number of samples that each node must contain in order to
-     * form a consensus to make a prediction.
-     *
-     * @var int
-     */
-    protected $minSamples;
-
-    /**
-     * The maximum number of features to consider when determining a split.
-     *
-     * @var int
-     */
-    protected $maxFeatures;
-
-    /**
-     * A small amount of gini impurity to tolerate when choosing a perfect split.
-     *
-     * @var float
-     */
-    protected $tolerance;
-
-    /**
-     * The class name of the base classification tree.
-     *
-     * @var string
-     */
-    protected $base;
 
     /**
      * The possible class outcomes.
@@ -105,22 +76,26 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     ];
 
     /**
-     * @param  int  $trees
+     * @param  \Rubix\ML\Estimator  $base
+     * @param  int  $estimators
      * @param  float  $ratio
-     * @param  int  $maxDepth
-     * @param  int  $minSamples
-     * @param  float  $tolerance
-     * @param  string  $base
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 100, float $ratio = 0.1, int $maxDepth = 10,
-            int $minSamples = 5, int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-3,
-            string $base = ClassificationTree::class)
+    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
     {
-        if ($trees < 1) {
-            throw new InvalidArgumentException('The number of trees cannot be'
-                . ' less than 1.');
+        if (is_null($base)) {
+            $base = new ClassificationTree();
+        }
+
+        if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
+            throw new InvalidArgumentException('Base estimator is not'
+                . ' compatible with random forest.');
+        }
+
+        if ($estimators < 1) {
+            throw new InvalidArgumentException('The number of estimators in the'
+                . ' ensemble cannot be less than 1.');
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
@@ -128,40 +103,9 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
                 . ' 0.01 and 1.');
         }
 
-        if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have depth less'
-                . ' than 1.');
-        }
-
-        if ($minSamples < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
-        }
-
-        if ($maxFeatures < 1) {
-            throw new InvalidArgumentException('Tree must consider at least 1'
-                . ' feature to determine a split.');
-        }
-
-        if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Gini tolerance must be 0 or'
-                . ' greater.');
-        }
-
-        $reflector = new ReflectionClass($base);
-
-        if (!in_array($reflector->getName(), self::AVAILABLE_TREES)) {
-            throw new InvalidArgumentException('Base classifier not compatible'
-                . ' with this ensemble.');
-        }
-
-        $this->trees = $trees;
-        $this->ratio = $ratio;
-        $this->maxDepth = $maxDepth;
-        $this->minSamples = $minSamples;
-        $this->maxFeatures = $maxFeatures;
-        $this->tolerance = $tolerance;
         $this->base = $base;
+        $this->estimators = $estimators;
+        $this->ratio = $ratio;
     }
 
     /**
@@ -201,15 +145,14 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $n = (int) round($this->ratio * $dataset->numRows());
+        $k = (int) round($this->ratio * $dataset->numRows());
 
         $this->forest = [];
 
-        for ($epoch = 0; $epoch < $this->trees; $epoch++) {
-            $tree = new $this->base($this->maxDepth, $this->minSamples,
-                $this->maxFeatures, $this->tolerance);
+        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+            $tree = clone $this->base;
 
-            $subset = $dataset->randomSubsetWithReplacement($n);
+            $subset = $dataset->randomSubsetWithReplacement($k);
 
             $tree->train($subset);
 
@@ -247,16 +190,20 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $n = count($this->forest);
-
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.));
 
         foreach ($this->forest as $tree) {
-            foreach ($tree->proba($dataset) as $i => $distribution) {
-                foreach ($distribution as $class => $probability) {
-                    $probabilities[$i][$class] += $probability / $n;
+            foreach ($tree->proba($dataset) as $i => $joint) {
+                foreach ($joint as $class => $probability) {
+                    $probabilities[$i][$class] += $probability;
                 }
+            }
+        }
+
+        foreach ($probabilities as &$joint) {
+            foreach ($joint as &$probability) {
+                $probability /= $this->estimators;
             }
         }
 

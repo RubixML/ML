@@ -7,6 +7,7 @@
     - Added overwrite protection to Persistent Model meta estimator
     - Multiclass Breakdown report now breaks down user-defined classes
     - Renamed restore method to load on Datasets and Persisters
+    - Random Forest now accepts a base estimator instance
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

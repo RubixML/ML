@@ -28,7 +28,7 @@ class RandomForestTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new RandomForest(100, 0.3, 10, 5, 4, 1e-3, ExtraTreeClassifier::class);
+        $this->estimator = new RandomForest(new ExtraTreeClassifier(10, 5, 4, 1e-3), 100, 0.3);
     }
 
     public function test_build_classifier()
