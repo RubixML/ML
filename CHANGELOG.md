@@ -1,6 +1,7 @@
 - Unreleased
     - Added Gradient Boost regressor
     - Added t-SNE embedder
+    - AdaBoost now uses SAMME multiclass algorithm
     - Added Redis persister
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects

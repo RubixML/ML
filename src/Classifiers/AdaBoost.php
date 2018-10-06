@@ -9,6 +9,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Classifiers\ClassificationTree;
 use InvalidArgumentException;
 use RuntimeException;
@@ -23,6 +24,7 @@ use RuntimeException;
  * References:
  * [1] Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line
  * Learning and an Application to Boosting.
+ * [2] J. Zhu et al. (2006). Multi-class AdaBoost.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -38,13 +40,18 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $base;
 
     /**
-     * The number of estimators to train. Note that the algorithm will
-     * terminate early if it can train a classifier that exceeds the threshold
-     * hyperparameter.
+     * The number of estimators to train in the ensemble.
      *
      * @var int
      */
     protected $estimators;
+
+    /**
+     * The learning rate i.e the step size.
+     * 
+     * @var float
+     */
+    protected $rate;
 
     /**
      * The ratio of samples to train each weak learner on.
@@ -61,20 +68,11 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $tolerance;
     
     /**
-     * The unique binary class labels of the training set.
+     * The class labels of the training set.
      *
      * @var array
      */
     protected $classes = [
-        //
-    ];
-
-    /**
-     * The reverse of the classes array for fast hashing lookups.
-     *
-     * @var array
-     */
-    protected $beta = [
         //
     ];
 
@@ -118,13 +116,14 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     /**
      * @param  \Rubix\ML\Estimator  $base
      * @param  int  $estimators
+     * @param  float  $rate
      * @param  float  $ratio
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.2,
-                                float $tolerance = 1e-3)
+    public function __construct(Estimator $base = null, int $estimators = 100, float $rate = 1.,
+                                float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
             $base = new ClassificationTree(1);
@@ -140,14 +139,14 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 . ' classifier.');
         }
 
-        if (!$base instanceof Probabilistic) {
-            throw new InvalidArgumentException('Base estimator must be'
-                . ' probabalistic.');
-        }
-
         if ($estimators < 1) {
             throw new InvalidArgumentException('Ensemble must contain at least'
                 . ' 1 estimator.');
+        }
+
+        if ($rate < 0.) {
+            throw new InvalidArgumentException('Learning rate must be greater'
+                . ' than 0.');
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
@@ -162,6 +161,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
         $this->base = $base;
         $this->estimators = $estimators;
+        $this->rate = $rate;
         $this->ratio = $ratio;
         $this->tolerance = $tolerance;
     }
@@ -234,17 +234,11 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
         $n = $dataset->numRows();
 
-        $classes = $dataset->possibleOutcomes();
+        $this->classes = $dataset->possibleOutcomes();
+        
+        $k = count($this->classes);
 
-        if (count($classes) !== 2) {
-            throw new InvalidArgumentException('The number of unique outcomes'
-                . ' must be exactly 2, ' . (string) count($classes) . ' found.');
-        }
-
-        $k = (int) round($this->ratio * $n);
-
-        $this->classes = [1 => $classes[0], -1 => $classes[1]];
-        $this->beta = array_flip($this->classes);
+        $p = (int) round($this->ratio * $n);
 
         $this->weights = array_fill(0, $n, 1 / $n);
 
@@ -253,7 +247,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomWeightedSubsetWithReplacement($k, $this->weights);
+            $subset = $dataset->randomWeightedSubsetWithReplacement($p, $this->weights);
 
             $estimator->train($subset);
 
@@ -267,17 +261,21 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 }
             }
 
+            $total = array_sum($this->weights);
+
+            $error /= $total;
+
             if ($error === 0.) {
                 $error = self::EPSILON;
             }
 
-            $influence = 0.5 * log((1. - $error) / $error);
+            $influence = $this->rate
+                * (log((1. - $error) / $error) + log($k - 1));
 
             foreach ($predictions as $i => $prediction) {
-                $x = $this->beta[$prediction];
-                $y = $this->beta[$dataset->label($i)];
-
-                $this->weights[$i] *= exp(-$influence * $x * $y);
+                if ($prediction !== $dataset->label($i)) {
+                    $this->weights[$i] *= exp($influence);
+                }
             }
 
             $total = array_sum($this->weights);
@@ -310,20 +308,21 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $scores = array_fill(0, $dataset->numRows(), 0.);
+        $scores = array_fill(0, $dataset->numRows(),
+            array_fill_keys($this->classes, 0.));
 
         foreach ($this->ensemble as $i => $estimator) {
-            foreach ($estimator->predict($dataset) as $j => $prediction) {
-                $output = $prediction === $this->classes[1] ? 1 : -1;
+            $influence = $this->influence[$i];
 
-                $scores[$j] += $output * $this->influence[$i];
+            foreach ($estimator->predict($dataset) as $j => $prediction) {
+                $scores[$j][$prediction] += $influence;
             }
         }
 
         $predictions = [];
 
-        foreach ($scores as $score) {
-            $predictions[] = $this->classes[$score > 0 ? 1 : -1];
+        foreach ($scores as $dist) {
+            $predictions[] = Argmax::compute($dist);
         }
 
         return $predictions;

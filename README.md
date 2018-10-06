@@ -1278,15 +1278,16 @@ Classifiers are a type of Estimator that predict discrete outcomes such as class
 ### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Supervised | Binary | Persistable
+##### Supervised | Multiclass | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 4 | ratio | 0.2 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 4 | rate | 1.0 | float | The learning rate i.e step size. |
+| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -1310,7 +1311,7 @@ public steps() : array
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.5, 1e-2);
+$estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 0.5, 1e-2);
 ```
 
 ### Classification Tree
