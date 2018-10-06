@@ -1923,7 +1923,7 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 1 | base | Regression Tree | object | The base *weak* regressor to be boosted. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 0.1 | float | The learning rate of the ensemble. |
-| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 4 | ratio | 0.5 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:

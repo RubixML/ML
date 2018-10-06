@@ -12,7 +12,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;
-use ReflectionClass;
 
 /**
  * Random Forest

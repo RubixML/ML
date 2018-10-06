@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -69,7 +70,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * The reverse of the classes array for fast hash lookups.
+     * The reverse of the classes array for fast hashing lookups.
      *
      * @var array
      */
@@ -130,13 +131,18 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         }
 
         if ($base instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base class cannot be a meta'
+            throw new InvalidArgumentException('Base estimator cannot be a meta'
                 . ' estimator.');
         }
 
         if ($base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
                 . ' classifier.');
+        }
+
+        if (!$base instanceof Probabilistic) {
+            throw new InvalidArgumentException('Base estimator must be'
+                . ' probabalistic.');
         }
 
         if ($estimators < 1) {
@@ -261,15 +267,23 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 }
             }
 
-            $total = array_sum($this->weights);
-            $error = ($error / $total) + self::EPSILON;
+            if ($error === 0.) {
+                $error = self::EPSILON;
+            }
+
             $influence = 0.5 * log((1. - $error) / $error);
 
             foreach ($predictions as $i => $prediction) {
                 $x = $this->beta[$prediction];
                 $y = $this->beta[$dataset->label($i)];
 
-                $this->weights[$i] *= exp(-$influence * $x * $y) / $total;
+                $this->weights[$i] *= exp(-$influence * $x * $y);
+            }
+
+            $total = array_sum($this->weights);
+
+            foreach ($this->weights as &$weight) {
+                $weight /= $total;
             }
 
             $this->influence[] = $influence;

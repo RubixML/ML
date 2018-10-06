@@ -62,6 +62,13 @@ class GradientBoost implements Estimator, Ensemble, Persistable
     protected $ratio;
 
     /**
+     *  The minimum change in the loss to continue training.
+     * 
+     * @var float
+     */
+    protected $minChange;
+
+    /**
      * The amount of mean squared error to tolerate before early
      * stopping.
      *
@@ -97,10 +104,10 @@ class GradientBoost implements Estimator, Ensemble, Persistable
      * @return void
      */
     public function __construct(Estimator $base = null, int $estimators = 100, float $rate = 0.1,
-                                float $ratio = 0.8, float $tolerance = 1e-3)
+                            float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-5)
     {
         if (is_null($base)) {
-            $base = new RegressionTree(1);
+            $base = new RegressionTree(2);
         }
 
         if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
@@ -123,6 +130,11 @@ class GradientBoost implements Estimator, Ensemble, Persistable
                 . ' 0.01 and 1.0.');
         }
 
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException('Minimum change must be greater'
+                . ' than 0.');
+        }
+
         if ($tolerance < 0. or $tolerance > 1.) {
             throw new InvalidArgumentException('Error tolerance must be between'
                 . ' 0 and 1.');
@@ -132,6 +144,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
+        $this->minChange = $minChange;
         $this->tolerance = $tolerance;
     }
 
@@ -185,6 +198,8 @@ class GradientBoost implements Estimator, Ensemble, Persistable
 
         $this->ensemble = $this->steps = [];
 
+        $previous = INF;
+
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
@@ -211,9 +226,15 @@ class GradientBoost implements Estimator, Ensemble, Persistable
             $this->ensemble[] = $estimator;
             $this->steps[] = $error;
 
+            if (abs($previous - $error) < $this->minChange) {
+                break 1;
+            }
+
             if ($error < $this->tolerance) {
                 break 1;
             }
+
+            $previous = $error;
         }
     }
 

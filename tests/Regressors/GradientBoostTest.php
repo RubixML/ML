@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Regressors\KNNRegressor;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -30,7 +29,7 @@ class GradientBoostTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new GradientBoost(new RegressionTree(2, 3, 4), 100, 0.5, 0.8, 1e-2);
+        $this->estimator = new GradientBoost(new RegressionTree(2), 100, 0.1, 0.8, 1e-4, 1e-5);
     }
 
     public function test_build_regressor()
