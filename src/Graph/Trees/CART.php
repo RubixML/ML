@@ -58,7 +58,7 @@ abstract class CART implements Tree
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
@@ -76,7 +76,7 @@ abstract class CART implements Tree
     }
 
     /**
-     * Greedy algorithm to chose the best split point for a given dataset.
+     * Greedy algorithm to choose the best split for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
@@ -103,6 +103,8 @@ abstract class CART implements Tree
     }
 
     /**
+     * Return the root node of the tree.
+     * 
      * @return \Rubix\ML\Graph\Nodes\Comparison|null
      */
     public function root() : ?Comparison

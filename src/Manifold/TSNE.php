@@ -44,16 +44,10 @@ class TSNE implements Embedder
      protected $degrees;
 
      /**
-      * The number of effective nearest neighbors to refer to when computing the
-      * variance of the gaussian over that sample.
-      *
-      * @var int
-      */
-     protected $perplexity;
-
-     /**
       * The desired entropy of the Gaussian over each sample i.e the log
-      * perplexity.
+      * perplexity where perplexity is defined as the number of effective
+      * nearest neighbors to refer to when computing the variance of the
+      * gaussian over that sample.
       *
       * @var float
       */
@@ -204,7 +198,6 @@ class TSNE implements Embedder
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
-        $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;

@@ -9,7 +9,6 @@ use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Classifiers\ClassificationTree;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -32,7 +31,7 @@ use RuntimeException;
 class AdaBoost implements Estimator, Ensemble, Persistable
 {
     /**
-     * The base classifier instance.
+     * The base classifier to be boosted.
      *
      * @var \Rubix\ML\Estimator
      */
@@ -104,7 +103,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * The average cost of a training sample at each epoch.
+     * The average error of a training sample at each epoch.
      *
      * @var array
      */
@@ -125,7 +124,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                                 float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
-            $base = new ClassificationTree(1, 1, 1);
+            $base = new ClassificationTree(1);
         }
 
         if ($base instanceof MetaEstimator) {
@@ -206,7 +205,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     }
 
     /**
-     * Return the average cost at every epoch.
+     * Return the average error at every epoch.
      *
      * @return array
      */
@@ -216,7 +215,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     }
 
     /**
-     * Train a boosted enemble of binary classifiers assigning an influence value
+     * Train a boosted enemble of *weak* classifiers assigning an influence value
      * to each one and re-weighting the training data accordingly to reflect how
      * difficult a particular sample is to classify.
      *
@@ -231,15 +230,13 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                 . ' Labeled training set.');
         }
 
-        $n = $dataset->numRows();
-
         $this->classes = $dataset->possibleOutcomes();
-        
-        $k = count($this->classes);
-
-        $p = (int) round($this->ratio * $n);
 
         $labels = $dataset->labels();
+        
+        $n = $dataset->numRows();
+        $p = (int) round($this->ratio * $n);
+        $k = count($this->classes);
 
         $this->weights = array_fill(0, $n, 1 / $n);
 
@@ -266,10 +263,17 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $error /= $total;
 
-            $influence = log((1. - $error) / ($error ?: self::EPSILON))
-                + log($k - 1);
+            $influence = $this->rate
+                * (log((1. - $error) / ($error ?: self::EPSILON))
+                + log($k - 1));
 
-            $influence *= $this->rate;
+            $this->ensemble[] = $estimator;
+            $this->steps[] = $error;
+            $this->influence[] = $influence;
+
+            if ($error < $this->tolerance or $total < 0.) {
+                break 1;
+            }
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction !== $labels[$i]) {
@@ -281,14 +285,6 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             foreach ($this->weights as &$weight) {
                 $weight /= $total;
-            }
-
-            $this->influence[] = $influence;
-            $this->ensemble[] = $estimator;
-            $this->steps[] = $error;
-
-            if ($error < $this->tolerance or $total <= 0.) {
-                break 1;
             }
         }
     }

@@ -193,8 +193,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
         }
 
         $n = $dataset->numRows();
-
-        $k = (int) round($this->ratio * $n);
+        $p = (int) round($this->ratio * $n);
 
         $this->ensemble = $this->steps = [];
 
@@ -203,7 +202,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomize()->tail($k);
+            $subset = $dataset->randomize()->head($p);
 
             $estimator->train($subset);
 
@@ -212,16 +211,14 @@ class GradientBoost implements Estimator, Ensemble, Persistable
             $error = 0.;
             $yHat = [];
 
-            foreach ($dataset->labels() as $i => $expected) {
-                $prediction = $predictions[$i];
+            foreach ($predictions as $i => $prediction) {
+                $label = $dataset->label($i);
 
-                $error += ($expected - $prediction) ** 2;
-                $yHat[] = $expected - ($this->rate * $prediction);
+                $error += ($label - $prediction) ** 2;
+                $yHat[] = $label - ($this->rate * $prediction);
             }
 
             $error /= $n;
-
-            $dataset = new Labeled($dataset->samples(), $yHat);
 
             $this->ensemble[] = $estimator;
             $this->steps[] = $error;
@@ -233,6 +230,8 @@ class GradientBoost implements Estimator, Ensemble, Persistable
             if ($error < $this->tolerance) {
                 break 1;
             }
+
+            $dataset = new Labeled($dataset->samples(), $yHat);
 
             $previous = $error;
         }
