@@ -27,7 +27,7 @@ class AdaBoostTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new AdaBoost(new ExtraTreeClassifier(1, 3, 4), 100, 1., 0.8, 1e-4);
+        $this->estimator = new AdaBoost(new ExtraTreeClassifier(1, 1, 1), 100, 1., 0.8, 1e-4);
     }
 
     public function test_build_classifier()

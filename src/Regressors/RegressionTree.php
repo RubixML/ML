@@ -29,7 +29,7 @@ class RegressionTree extends CART implements Estimator, Persistable
     /**
      * The maximum number of features to consider when determining a split.
      *
-     * @var int
+     * @var int|null
      */
     protected $maxFeatures;
 
@@ -57,10 +57,10 @@ class RegressionTree extends CART implements Estimator, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5,
-                            int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-4)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
+                                ?int $maxFeatures = null, float $tolerance = 1e-4)
     {
-        if ($maxFeatures < 1) {
+        if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . ' feature to determine a split.');
         }
@@ -143,16 +143,19 @@ class RegressionTree extends CART implements Estimator, Persistable
         $bestSsd = INF;
         $bestIndex = $bestValue = null;
         $bestGroups = [];
+        
+        $maxFeatures = $this->maxFeatures
+            ?? (int) round(sqrt($dataset->numColumns()));
 
         shuffle($this->indices);
 
-        foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
+        foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
             foreach ($dataset as $sample) {
                 $value = $sample[$index];
 
                 $groups = $dataset->partition($index, $value);
 
-                $ssd = $this->calculateSsd($groups);
+                $ssd = $this->ssd($groups);
 
                 if ($ssd < $bestSsd) {
                     $bestSsd = $ssd;
@@ -182,12 +185,12 @@ class RegressionTree extends CART implements Estimator, Persistable
     }
 
     /**
-     * Calculate the sum of squared deviations for each group in a split.
+     * Calculate the mean squared deviations for each group in a split.
      *
      * @param  array  $groups
      * @return float
      */
-    protected function calculateSsd(array $groups) : float
+    protected function ssd(array $groups) : float
     {
         $ssd = 0.;
 

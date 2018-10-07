@@ -48,7 +48,7 @@ class ExtraTreeRegressor extends RegressionTree
 
             $groups = $dataset->partition($index, $value);
 
-            $ssd = $this->calculateSsd($groups);
+            $ssd = $this->ssd($groups);
 
             if ($ssd < $bestSsd) {
                 $bestSsd = $ssd;

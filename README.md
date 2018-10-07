@@ -1287,7 +1287,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | rate | 1.0 | float | The learning rate i.e step size. |
 | 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 6 | tolerance | 1e-8 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -1322,10 +1322,10 @@ A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. Setting this to 1 is equivalent to training a Decision Stump. |
-| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
+| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
+| 3 | max features | Auto | int | The max number of features to consider when determining a best split. |
+| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1399,10 +1399,10 @@ An Extremely Randomized Classification Tree that splits the training set at a ra
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
-| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a split. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
+| 2 | max leaf size | 5 | int | The max number of samples that a leaf node can contain. |
+| 3 | max features | Auto | int | The max number of features to consider when determining a best split. |
+| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1899,9 +1899,9 @@ An Extremely Randomized Regression Tree. Extra Trees differ from standard Regres
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | max features | PHP_INT_MAX | int | The number of features to consider when determining a split. |
-| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
+| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
+| 3 | max features | Auto | int | The number of features to consider when determining a best split. |
+| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2047,10 +2047,10 @@ A Decision Tree learning algorithm that performs greedy splitting by minimizing 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| 2 | max leaf size | 5 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | max features | PHP_INT_MAX | int | The maximum number of features to consider when determining a split point. |
-| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a split. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
+| 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
+| 3 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
+| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2059,7 +2059,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(80, 1, 10, 0.0);
+$estimator = new RegressionTree(80, 1, 10, 0.);
 ```
 
 ### Ridge

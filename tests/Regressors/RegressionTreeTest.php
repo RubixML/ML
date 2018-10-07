@@ -28,7 +28,7 @@ class RegressionTreeTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new RegressionTree(20, 2, 3, 1e-4);
+        $this->estimator = new RegressionTree(20, 2, null);
     }
 
     public function test_build_regressor()

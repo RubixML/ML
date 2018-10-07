@@ -29,7 +29,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     /**
      * The maximum number of features to consider when determining a split.
      *
-     * @var int
+     * @var int|null
      */
     protected $maxFeatures;
 
@@ -61,15 +61,15 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
-     * @param  int  $maxFeatures
+     * @param  int|null  $maxFeatures
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5,
-                            int $maxFeatures = PHP_INT_MAX, float $tolerance = 1e-3)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
+                                ?int $maxFeatures = null, float $tolerance = 1e-3)
     {
-        if ($maxFeatures < 1) {
+        if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . ' feature to determine a split.');
         }
@@ -176,9 +176,12 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
         $bestIndex = $bestValue = null;
         $bestGroups = [];
 
+        $maxFeatures = $this->maxFeatures
+            ?? (int) round(sqrt($dataset->numColumns()));
+
         shuffle($this->indices);
 
-        foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
+        foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
             foreach ($dataset as $sample) {
                 $groups = $dataset->partition($index, $sample[$index]);
 

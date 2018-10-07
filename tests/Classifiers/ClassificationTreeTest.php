@@ -27,7 +27,7 @@ class ClassificationTreeTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new ClassificationTree(100, 3, 4);
+        $this->estimator = new ClassificationTree(30, 3, null);
     }
 
     public function test_build_classifier()

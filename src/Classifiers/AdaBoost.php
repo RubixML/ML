@@ -5,7 +5,6 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -126,7 +125,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
                                 float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
-            $base = new ClassificationTree(1);
+            $base = new ClassificationTree(1, 1, 1);
         }
 
         if ($base instanceof MetaEstimator) {
@@ -240,6 +239,8 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
         $p = (int) round($this->ratio * $n);
 
+        $labels = $dataset->labels();
+
         $this->weights = array_fill(0, $n, 1 / $n);
 
         $this->ensemble = $this->influence = $this->steps = [];
@@ -256,7 +257,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             $error = 0.;
 
             foreach ($predictions as $i => $prediction) {
-                if ($prediction !== $dataset->label($i)) {
+                if ($prediction !== $labels[$i]) {
                     $error += $this->weights[$i];
                 }
             }
@@ -265,15 +266,13 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $error /= $total;
 
-            if ($error === 0.) {
-                $error = self::EPSILON;
-            }
+            $influence = log((1. - $error) / ($error ?: self::EPSILON))
+                + log($k - 1);
 
-            $influence = $this->rate
-                * (log((1. - $error) / $error) + log($k - 1));
+            $influence *= $this->rate;
 
             foreach ($predictions as $i => $prediction) {
-                if ($prediction !== $dataset->label($i)) {
+                if ($prediction !== $labels[$i]) {
                     $this->weights[$i] *= exp($influence);
                 }
             }
@@ -288,7 +287,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             $this->ensemble[] = $estimator;
             $this->steps[] = $error;
 
-            if ($error < $this->tolerance) {
+            if ($error < $this->tolerance or $total <= 0.) {
                 break 1;
             }
         }

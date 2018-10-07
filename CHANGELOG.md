@@ -9,6 +9,7 @@
     - Multiclass Breakdown report now breaks down user-defined classes
     - Renamed restore method to load on Datasets and Persisters
     - Random Forest now accepts a base estimator instance
+    - CARTs now use max features heuristic by default
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer
