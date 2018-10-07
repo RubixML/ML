@@ -163,9 +163,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     }
 
     /**
-     * Greedy algorithm to chose the best split point for a given set of data.
-     * The algorithm will terminate early if it finds a perfect split. i.e. a
-     * gini or sse score of 0.
+     * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
@@ -185,7 +183,7 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
             foreach ($dataset as $sample) {
                 $groups = $dataset->partition($index, $sample[$index]);
 
-                $gini = $this->calculateGiniImpurity($groups);
+                $gini = $this->gini($groups);
 
                 if ($gini < $bestGini) {
                     $bestGini = $gini;
@@ -233,25 +231,25 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
      * @param  array  $groups
      * @return float
      */
-    protected function calculateGiniImpurity(array $groups) : float
+    protected function gini(array $groups) : float
     {
-        $total = array_sum(array_map('count', $groups));
+        $n = array_sum(array_map('count', $groups));
 
         $gini = 0.;
 
         foreach ($groups as $group) {
-            $n = $group->numRows();
+            $k = $group->numRows();
 
-            if ($n === 0) {
+            if ($k < 2) {
                 continue 1;
             }
 
-            $density = $n / $total;
+            $density = $k / $n;
 
             $counts = array_count_values($group->labels());
 
             foreach ($counts as $count) {
-                $gini += (1. - ($count / $n) ** 2) * $density;
+                $gini += $density * (1. - ($count / $n) ** 2);
             }
         }
 

@@ -2,6 +2,15 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+/**
+ * Coordinate
+ *
+ * Decision nodes represent the outcome of a binary comparison search.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Decision extends BinaryNode
 {
     /**

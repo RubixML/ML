@@ -2,6 +2,16 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+/**
+ * Neighborhood
+ *
+ * Neighborhoods represent a group of samples that are close to
+ * each other in distsance but not necessarily the closest.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Neighborhood extends BinaryNode
 {
     /**

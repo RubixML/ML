@@ -2,11 +2,21 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+/**
+ * Comparison
+ *
+ * A decision node that marks a comparison between an input value and the
+ * value of the comparison node.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Comparison extends Split
 {
     /**
-     * The score of the decision. i.e. the amount of gini impurity or sse that
-     * the split introduces.
+     * The score of the decision. i.e. the amount of gini impurity or
+     * variance that the split introduces.
      *
      * @var float
      */
@@ -51,7 +61,7 @@ class Comparison extends Split
     }
 
     /**
-     * Return the  decearse in impurity this decision node provides. A negative
+     * Return the decrease in impurity this decision node introduces. A negative
      * score means that the decision node actually causes its children to become
      * less pure.
      *

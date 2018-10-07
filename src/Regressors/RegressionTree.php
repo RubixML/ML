@@ -10,7 +10,6 @@ use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
-use MathPHP\Statistics\RandomVariable;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -18,7 +17,7 @@ use RuntimeException;
  * Regression Tree
  *
  * A Decision Tree learning algorithm that performs greedy splitting by
- * minimizing the sum of squared errors between decision node splits.
+ * minimizing the variance (*impurity*) among decision node splits.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -131,16 +130,15 @@ class RegressionTree extends CART implements Estimator, Persistable
     }
 
     /**
-     * Greedy algorithm to chose the best split point for a given set of data
-     * as determined by its sum of squared error. The algorithm will terminate
-     * early if it finds a perfect split. i.e. a sse score of 0.
+     * Greedy algorithm to chose the best split for a given dataset as
+     * determined by the variance of the split.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
     {
-        $bestSsd = INF;
+        $bestVariance = INF;
         $bestIndex = $bestValue = null;
         $bestGroups = [];
         
@@ -155,22 +153,22 @@ class RegressionTree extends CART implements Estimator, Persistable
 
                 $groups = $dataset->partition($index, $value);
 
-                $ssd = $this->ssd($groups);
+                $variance = $this->variance($groups);
 
-                if ($ssd < $bestSsd) {
-                    $bestSsd = $ssd;
+                if ($variance < $bestVariance) {
+                    $bestVariance = $variance;
                     $bestIndex = $index;
                     $bestValue = $value;
                     $bestGroups = $groups;
                 }
 
-                if ($ssd < $this->tolerance) {
+                if ($variance < $this->tolerance) {
                     break 2;
                 }
             }
         }
 
-        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestSsd);
+        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestVariance);
     }
 
     /**
@@ -185,23 +183,29 @@ class RegressionTree extends CART implements Estimator, Persistable
     }
 
     /**
-     * Calculate the mean squared deviations for each group in a split.
+     * Calculate the mean squared error for each group in a split.
      *
      * @param  array  $groups
      * @return float
      */
-    protected function ssd(array $groups) : float
+    protected function variance(array $groups) : float
     {
-        $ssd = 0.;
+        $n = array_sum(array_map('count', $groups));
+
+        $variance = 0.;
 
         foreach ($groups as $group) {
-            if ($group->numRows() === 0) {
+            $k = $group->numRows();
+
+            if ($k < 2) {
                 continue 1;
             }
 
-            $ssd += RandomVariable::sumOfSquaresDeviations($group->labels());
+            $density = $k / $n;
+
+            $variance += $density * Stats::variance($group->labels());
         }
 
-        return $ssd;
+        return $variance;
     }
 }

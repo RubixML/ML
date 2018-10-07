@@ -1891,7 +1891,7 @@ $estimator = new DummyRegressor(new BlurryMedian(0.2));
 ```
 
 ### Extra Tree Regressor
-An Extremely Randomized Regression Tree. Extra Trees differ from standard Regression Trees in that they choose a random split drawn from max features. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a weak learner by itself.
+An Extremely Randomized Regression Tree. Extra Trees differ from standard Regression Trees in that they choose a random split drawn from max features. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Gradient Boost](#gradient-boost) or [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a weak learner by itself.
 
 ##### Supervised | Persistable | Nonlinear
 
@@ -2040,7 +2040,7 @@ $estimator = new MLPRegressor([
 ```
 
 ### Regression Tree
-A Decision Tree learning algorithm that performs greedy splitting by minimizing the sum of squared errors between decision node splits.
+A Decision Tree learning algorithm that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
 
 ##### Supervised | Persistable | Nonlinear
 

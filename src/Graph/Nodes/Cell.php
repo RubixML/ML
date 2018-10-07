@@ -2,6 +2,16 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+/**
+ * Cell
+ *
+ * A cell node contains samples that are likely members of the same
+ * group.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Cell extends BinaryNode
 {
     /**

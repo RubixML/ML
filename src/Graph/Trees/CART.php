@@ -76,7 +76,7 @@ abstract class CART implements Tree
     }
 
     /**
-     * Greedy algorithm to chose the best split point for a given set of data.
+     * Greedy algorithm to chose the best split point for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison

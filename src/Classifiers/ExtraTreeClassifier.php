@@ -49,7 +49,7 @@ class ExtraTreeClassifier extends ClassificationTree
 
             $groups = $dataset->partition($index, $value);
 
-            $gini = $this->calculateGiniImpurity($groups);
+            $gini = $this->gini($groups);
 
             if ($gini < $bestGini) {
                 $bestGini = $gini;

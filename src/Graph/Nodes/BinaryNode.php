@@ -4,6 +4,16 @@ namespace Rubix\ML\Graph\Nodes;
 
 use InvalidArgumentException;
 
+/**
+ * Binary Node
+ *
+ * A node of a binary tree i.e a tree whose parents have a maximum of
+ * two immediate children per node.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class BinaryNode implements Node
 {
     /**

@@ -4,6 +4,16 @@ namespace Rubix\ML\Graph\Nodes;
 
 use InvalidArgumentException;
 
+/**
+ * Split
+ *
+ * Split nodes represent the value and index at which a dataset is
+ * split to form left and right subgroups.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Split extends BinaryNode
 {
     /**
