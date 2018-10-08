@@ -29,7 +29,7 @@ class Xavier2 implements Initializer
      * @param  int  $fanOut
      * @return \Rubix\Tensor\Matrix
      */
-    public function initialize(int $fanIn, int $fanOut) : Matrix
+    public function init(int $fanIn, int $fanOut) : Matrix
     {
         $scale = (6 / ($fanIn + $fanOut)) ** 0.25;
 

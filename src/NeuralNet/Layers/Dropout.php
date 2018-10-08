@@ -42,7 +42,7 @@ class Dropout implements Hidden, Nonparametric
     /**
      * The width of the layer.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
@@ -67,19 +67,21 @@ class Dropout implements Hidden, Nonparametric
 
         $this->ratio = $ratio;
         $this->scale = 1. / (1. - $ratio);
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * Return the width of the layer.
+     * 
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
 
     /**
-     * Initialize the layer.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
@@ -124,12 +126,12 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
         if (is_null($this->mask)) {
             throw new RuntimeException('Must perform forward pass before'
@@ -140,8 +142,8 @@ class Dropout implements Hidden, Nonparametric
 
         unset($this->mask);
 
-        return function () use ($prevGradients, $mask) {
-            return $prevGradients()->multiply($mask);
+        return function () use ($prevGradient, $mask) {
+            return $prevGradient()->multiply($mask);
         };
     }
 }

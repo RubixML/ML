@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -21,6 +21,8 @@ use RuntimeException;
  * References:
  * [1] S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network
  * Training by Reducing Internal Covariate Shift.
+ * [2] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
+ * Computing Sample Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -39,48 +41,44 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The width of the layer. i.e. the number of neurons.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
     /**
      * The learnable centering parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $beta;
 
     /**
      * The learnable scaling parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $gamma;
 
     /**
      * The running mean of each input dimension.
      *
-     * @var array
+     * @var array|null
      */
-    protected $means = [
-        //
-    ];
+    protected $means;
 
     /**
      * The running variance of each input dimension.
      *
-     * @var array
+     * @var array|null
      */
-    protected $variances = [
-        //
-    ];
+    protected $variances;
 
     /**
      * The number of training samples that have passed through the layer so far.
      *
-     * @var int
+     * @var int|null
      */
-    protected $counter;
+    protected $n;
 
     /**
      * A cache of inverse standard deviations calculated during the forward pass.
@@ -104,21 +102,19 @@ class BatchNorm implements Hidden, Parametric
     public function __construct(float $epsilon = 1e-8)
     {
         if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0');
+            throw new InvalidArgumentException('Variance smoothing parameter'
+                . 'must be greater than 0');
         }
 
         $this->epsilon = $epsilon;
-        $this->beta = new Parameter(new Matrix());
-        $this->gamma = new Parameter(new Matrix());
-        $this->counter = 0;
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * Return the width of the layer.
+     * 
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
@@ -134,13 +130,14 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $this->beta = new Parameter(Matrix::zeros($fanIn, 1));
-        $this->gamma = new Parameter(Matrix::ones($fanIn, 1));
-
         $this->means = array_fill(0, $fanIn, 0.);
         $this->variances = array_fill(0, $fanIn, 1.);
+        $this->n = 0;
 
         $this->width = $fanOut;
+
+        $this->beta = new Parameter(Matrix::zeros($fanIn, 1));
+        $this->gamma = new Parameter(Matrix::ones($fanIn, 1));
 
         return $fanOut;
     }
@@ -150,20 +147,24 @@ class BatchNorm implements Hidden, Parametric
      * return an activation matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
-        $n = $input->n();
+        if (is_null($this->n) or empty($this->means) or empty($this->variances)
+            or is_null($this->beta) or is_null($this->gamma)) {
+                throw new RuntimeException('Layer has not been initilaized.');
+        }
 
         $beta = $this->beta->w()->column(0);
         $gamma = $this->gamma->w()->column(0);
 
-        $oldWeight = $this->counter;
-        $newWeight = $oldWeight + $n;
+        $n = $input->n();
 
         $oldMeans = $this->means;
         $oldVariances = $this->variances;
+        $oldWeight = $this->n;
 
         $stdInv = $xHat = $out = [[]];
 
@@ -172,13 +173,13 @@ class BatchNorm implements Hidden, Parametric
 
             $this->means[$i] = (($n * $mean)
                 + ($oldWeight * $oldMeans[$i]))
-                / $newWeight;
+                / ($oldWeight + $n);
 
             $this->variances[$i] = ($oldWeight
                 * $oldVariances[$i] + ($n * $variance)
-                + ($oldWeight / ($n * $newWeight))
+                + ($oldWeight / ($n * ($oldWeight + $n)))
                 * ($n * $oldMeans[$i] - $n * $mean) ** 2)
-                / $newWeight;
+                / ($oldWeight + $n);
 
             $stddev = sqrt($variance + $this->epsilon);
 
@@ -195,7 +196,7 @@ class BatchNorm implements Hidden, Parametric
         $this->stdInv = new Matrix($stdInv, false);
         $this->xHat = new Matrix($xHat, false);
 
-        $this->counter += $n;
+        $this->n += $n;
 
         return new Matrix($out, false);
     }
@@ -204,10 +205,16 @@ class BatchNorm implements Hidden, Parametric
      * Compute the inferential activations of each neuron in the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
+        if (is_null($this->n) or empty($this->means) or empty($this->variances)
+            or is_null($this->beta) or is_null($this->gamma)) {
+                throw new RuntimeException('Layer has not been initilaized.');
+        }
+
         $beta = $this->beta->w()->column(0);
         $gamma = $this->gamma->w()->column(0);
 
@@ -215,7 +222,8 @@ class BatchNorm implements Hidden, Parametric
 
         foreach ($input as $i => $row) {
             $mean = $this->means[$i];
-            $stddev = sqrt($this->variances[$i] + $this->epsilon);
+            $variance = $this->variances[$i];
+            $stddev = sqrt($variance + $this->epsilon);
 
             foreach ($row as $j => $value) {
                 $out[$i][$j] = $gamma[$i]
@@ -231,19 +239,24 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
+        if (is_null($this->n) or empty($this->means) or empty($this->variances)
+            or is_null($this->beta) or is_null($this->gamma)) {
+                throw new RuntimeException('Layer has not been initilaized.');
+        }
+
         if (is_null($this->stdInv) or is_null($this->xHat)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradients();
+        $dOut = $prevGradient();
 
         $dBeta = $dOut->sum()->asColumnMatrix();
         $dGamma = $dOut->multiply($this->xHat)->sum()->asColumnMatrix();
@@ -273,12 +286,18 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
-     * Read the parameters and return them in an associative array.
+     * Return the parameters of the layer in an associative array.
      *
+     * @throws \RuntimeException
      * @return array
      */
     public function read() : array
     {
+        if (is_null($this->n) or empty($this->means) or empty($this->variances)
+            or is_null($this->beta) or is_null($this->gamma)) {
+                throw new RuntimeException('Layer has not been initilaized.');
+        }
+
         return [
             'beta' => clone $this->beta,
             'gamma' => clone $this->gamma,

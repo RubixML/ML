@@ -25,7 +25,7 @@ use RuntimeException;
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
- * Computing Sample Variancess.
+ * Computing Sample Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -167,9 +167,11 @@ class GaussianNB implements Estimator, Elastic, Probabilistic, Persistable
 
         $this->classes = $classes;
 
+        $k = count($classes);
+
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->_priors = array_fill_keys($classes, log(1. / count($classes)));
+        $this->_priors = array_fill_keys($classes, log(1. / $k));
 
         $this->means = $this->variances = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), 0.));
@@ -202,36 +204,34 @@ class GaussianNB implements Estimator, Elastic, Probabilistic, Persistable
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            $n = count($stratum);
-
-            $oldWeight = $this->weights[$class];
-            $newWeight = $oldWeight + $n;
-
             $oldMeans = $this->means[$class];
             $oldVariances = $this->variances[$class];
+            $oldWeight = $this->weights[$class];
+
+            $n = $stratum->numRows();
 
             foreach ($stratum->rotate() as $column => $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$class][$column] = (($n * $mean)
                     + ($oldWeight * $oldMeans[$column]))
-                    / $newWeight;
+                    / ($oldWeight + $n);
 
                 $this->variances[$class][$column] = ($oldWeight
                     * $oldVariances[$column] + ($n * $variance)
-                    + ($oldWeight / ($n * $newWeight))
+                    + ($oldWeight / ($n * ($oldWeight + $n)))
                     * ($n * $oldMeans[$column] - $n * $mean) ** 2)
-                    / $newWeight;
+                    / ($oldWeight + $n);
             }
 
-            $this->weights[$class] = $newWeight;
+            $this->weights[$class] += $n;
         }
 
         if ($this->priors === true) {
-            $sigma = array_sum($this->weights);
+            $total = array_sum($this->weights) ?: self::EPSILON;
 
             foreach ($this->weights as $class => $weight) {
-                $this->_priors[$class] = log($weight / $sigma);
+                $this->_priors[$class] = log($weight / $total);
             }
         }
     }

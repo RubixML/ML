@@ -34,7 +34,7 @@ class Noise implements Hidden, Nonparametric
     /**
      * The width of the layer.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
@@ -51,19 +51,19 @@ class Noise implements Hidden, Nonparametric
         }
 
         $this->amount = $amount;
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
 
     /**
-     * Initialize the layer.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
@@ -105,12 +105,12 @@ class Noise implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
-        return $prevGradients;
+        return $prevGradient;
     }
 }

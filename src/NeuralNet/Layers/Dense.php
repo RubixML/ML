@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
@@ -39,14 +39,14 @@ class Dense implements Hidden, Parametric
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $biases;
 
@@ -76,35 +76,33 @@ class Dense implements Hidden, Parametric
 
         $this->neurons = $neurons;
         $this->initializer = $initializer;
-        $this->weights = new Parameter(new Matrix());
-        $this->biases = new Parameter(new Matrix());
     }
 
     /**
-     * @return int
+     * Return the width of the layer.
+     * 
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->neurons;
     }
 
     /**
-     * Initialize the layer by fully connecting each neuron to every input and
-     * generating a random weight for each synapse.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
     public function init(int $fanIn) : int
     {
-        $fanOut = $this->width();
+        $fanOut = $this->neurons;
 
-        $w = $this->initializer->initialize($fanIn, $fanOut);
-
-        $b = Matrix::zeros($fanOut, 1);
+        $w = $this->initializer->init($fanIn, $fanOut);
 
         $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
 
         return $fanOut;
     }
@@ -114,10 +112,15 @@ class Dense implements Hidden, Parametric
      * return an activation matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         $this->input = $input;
 
         return $this->weights->w()->dot($input)
@@ -128,10 +131,15 @@ class Dense implements Hidden, Parametric
      * Compute the inferential activations of each neuron in the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         return $this->weights->w()->dot($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
     }
@@ -139,19 +147,23 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         if (is_null($this->input)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradients();
+        $dOut = $prevGradient();
 
         $dW = $dOut->dot($this->input->transpose());
         $dB = $dOut->sum()->asColumnMatrix();
@@ -169,12 +181,17 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Read the parameters and return them in an associative array.
+     * Return the parameters of the layer in an associative array.
      *
+     * @throws \RuntimeException
      * @return array
      */
     public function read() : array
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         return [
             'weights' => clone $this->weights,
             'biases' => clone $this->biases,

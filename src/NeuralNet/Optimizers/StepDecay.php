@@ -83,10 +83,10 @@ class StepDecay implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \Rubix\Tensor\Matrix  $gradients
+     * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradient) : Matrix
     {
         if ($this->cache->contains($parameter)) {
             $steps = $this->cache[$parameter];
@@ -102,6 +102,6 @@ class StepDecay implements Optimizer
 
         $this->cache[$parameter] = $steps;
 
-        return $gradients->multiplyScalar($rate);
+        return $gradient->multiplyScalar($rate);
     }
 }

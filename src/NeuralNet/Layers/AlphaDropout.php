@@ -54,7 +54,7 @@ class AlphaDropout implements Hidden, Nonparametric
     /**
      * The width of the layer.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
@@ -80,13 +80,14 @@ class AlphaDropout implements Hidden, Nonparametric
         $this->ratio = $ratio;
         $this->a = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
         $this->b = -$this->a * self::ALPHA_P * $ratio;
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * Return the width of the layer.
+     * 
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
@@ -147,24 +148,24 @@ class AlphaDropout implements Hidden, Nonparametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
         if (is_null($this->mask)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradients()->multiply($this->mask);
+        $mask = $this->mask;
 
         unset($this->mask);
 
-        return function () use ($dOut) {
-            return $dOut;
+        return function () use ($prevGradient, $mask) {
+            return $prevGradient()->multiply($mask);
         };
     }
 }

@@ -40,9 +40,9 @@ class Placeholder implements Input
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->inputs;
     }

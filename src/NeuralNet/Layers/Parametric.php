@@ -5,7 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 interface Parametric extends Nonparametric
 {
     /**
-     * Read the parameters and return them in an associative array.
+     * Return the parameters of the layer in an associative array.
      *
      * @return array
      */

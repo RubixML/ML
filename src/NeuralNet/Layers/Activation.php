@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use InvalidArgumentException;
@@ -30,7 +30,7 @@ class Activation implements Hidden, Nonparametric
     /**
      * The width of the layer.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
@@ -55,13 +55,12 @@ class Activation implements Hidden, Nonparametric
     public function __construct(ActivationFunction $activationFunction)
     {
         $this->activationFunction = $activationFunction;
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
@@ -111,26 +110,26 @@ class Activation implements Hidden, Nonparametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
         if (is_null($this->input) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
-        $z = $this->input;
+        $input = $this->input;
         $computed = $this->computed;
 
         unset($this->input, $this->computed);
 
-        return function () use ($z, $computed, $prevGradients) {
-            return $this->activationFunction->differentiate($z, $computed)
-                ->multiply($prevGradients());
+        return function () use ($input, $computed, $prevGradient) {
+            return $this->activationFunction->differentiate($input, $computed)
+                ->multiply($prevGradient());
         };
     }
 }

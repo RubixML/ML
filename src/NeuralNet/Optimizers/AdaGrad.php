@@ -73,10 +73,10 @@ class AdaGrad implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \Rubix\Tensor\Matrix  $gradients
+     * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradient) : Matrix
     {
         if ($this->cache->contains($parameter)) {
             $cache = $this->cache[$parameter];
@@ -86,9 +86,9 @@ class AdaGrad implements Optimizer
             $this->cache->attach($parameter, $cache);
         }
 
-        $cache = $cache->add($gradients->square());
+        $cache = $cache->add($gradient->square());
 
-        $step = $gradients->multiplyScalar($this->rate)
+        $step = $gradient->multiplyScalar($this->rate)
             ->divide($cache->sqrt()->addScalar($this->epsilon));
 
         $this->cache[$parameter] = $cache;

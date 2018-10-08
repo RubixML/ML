@@ -13,7 +13,7 @@ interface Layer
      *
      * @return int
      */
-    public function width() : int;
+    public function width() : ?int;
 
     /**
      * Initialize the layer with the fan in from the previous layer and return

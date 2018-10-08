@@ -116,10 +116,10 @@ class Adam implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \Rubix\Tensor\Matrix  $gradients
+     * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradient) : Matrix
     {
         if ($this->velocities->contains($parameter)) {
             $velocities = $this->velocities[$parameter];
@@ -136,11 +136,11 @@ class Adam implements Optimizer
 
         $velocities = $velocities
             ->multiplyScalar($this->momentumDecay)
-            ->add($gradients->multiplyScalar(1. - $this->momentumDecay));
+            ->add($gradient->multiplyScalar(1. - $this->momentumDecay));
 
         $cache = $cache
             ->multiplyScalar($this->rmsDecay)
-            ->add($gradients->square()->multiplyScalar(1. - $this->rmsDecay));
+            ->add($gradient->square()->multiplyScalar(1. - $this->rmsDecay));
 
         $vHat = $velocities
             ->divideScalar(1. - $this->momentumDecay ** $this->t);

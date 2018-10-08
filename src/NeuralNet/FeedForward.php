@@ -220,11 +220,11 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        list($prevGradients, $loss) = $this->output()
+        list($prevGradient, $loss) = $this->output()
             ->back($labels, $this->costFunction, $this->optimizer);
 
         foreach ($this->backPass as $layer) {
-            $prevGradients = $layer->back($prevGradients, $this->optimizer);
+            $prevGradient = $layer->back($prevGradient, $this->optimizer);
         }
 
         return $loss;

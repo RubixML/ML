@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -57,14 +57,14 @@ class Multiclass implements Output
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $biases;
 
@@ -113,35 +113,33 @@ class Multiclass implements Output
         $this->alpha = $alpha;
         $this->initializer = new Xavier1();
         $this->activationFunction = new Softmax();
-        $this->weights = new Parameter(new Matrix());
-        $this->biases = new Parameter(new Matrix());
     }
 
     /**
-     * @return int
+     * Return the width of the layer.
+     * 
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return count($this->classes);
     }
 
     /**
-     * Initialize the layer by fully connecting each neuron to every input and
-     * generating a random weight for each parameter/synapse in the layer.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
     public function init(int $fanIn) : int
     {
-        $fanOut = $this->width();
+        $fanOut = count($this->classes);
 
-        $w = $this->initializer->initialize($fanIn, $fanOut);
-
-        $b = Matrix::zeros($fanOut, 1);
+        $w = $this->initializer->init($fanIn, $fanOut);
 
         $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
 
         return $fanOut;
     }
@@ -151,10 +149,15 @@ class Multiclass implements Output
      * an activation matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         $this->input = $input;
 
         $this->z = $this->weights->w()->dot($input)
@@ -169,10 +172,15 @@ class Multiclass implements Output
      * Compute the inferential activations of each neuron in the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         $z = $this->weights->w()->dot($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
@@ -190,6 +198,10 @@ class Multiclass implements Output
      */
     public function back(array $labels, CostFunction $costFunction, Optimizer $optimizer) : array
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
@@ -208,8 +220,9 @@ class Multiclass implements Output
         $delta = $costFunction
             ->compute($expected, $this->computed);
 
-        $penalties = $this->weights->w()->sum()->asColumnMatrix()
+        $penalties = $this->weights->w()->sum()
             ->multiplyScalar($this->alpha)
+            ->asColumnMatrix()
             ->repeat(1, $this->computed->n());
 
         $dL = $costFunction
@@ -239,10 +252,17 @@ class Multiclass implements Output
     }
 
     /**
+     * Return the parameters of the layer in an associative array.
+     * 
+     * @throws \RuntimeException
      * @return array
      */
     public function read() : array
     {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
         return [
             'weights' => clone $this->weights,
             'biases' => clone $this->biases,

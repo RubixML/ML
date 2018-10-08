@@ -68,10 +68,10 @@ class Momentum implements Optimizer
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
-     * @param  \Rubix\Tensor\Matrix  $gradients
+     * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradients) : Matrix
+    public function step(Parameter $parameter, Matrix $gradient) : Matrix
     {
         if ($this->velocities->contains($parameter)) {
             $velocities = $this->velocities[$parameter];
@@ -81,7 +81,7 @@ class Momentum implements Optimizer
             $this->velocities->attach($parameter, $velocities);
         }
 
-        $velocities = $gradients
+        $velocities = $gradient
             ->multiplyScalar($this->rate)
             ->add($velocities->multiplyScalar(1. - $this->decay));
 

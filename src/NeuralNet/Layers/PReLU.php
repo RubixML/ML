@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -35,14 +35,14 @@ class PReLU implements Hidden, Parametric
     /**
      * The width of the layer.
      *
-     * @var int
+     * @var int|null
      */
     protected $width;
 
     /**
      * The parameterized leakage coeficients.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter
+     * @var \Rubix\ML\NeuralNet\Parameter|null
      */
     protected $alphas;
 
@@ -73,21 +73,19 @@ class PReLU implements Hidden, Parametric
         }
 
         $this->initial = $initial;
-        $this->alphas = new Parameter(new Matrix());
-        $this->width = 0;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function width() : int
+    public function width() : ?int
     {
         return $this->width;
     }
 
     /**
-     * Initialize the layer by fully connecting each neuron to every input and
-     * generating a random weight for each synapse.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
@@ -116,7 +114,7 @@ class PReLU implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->computed = $this->compute($input);
+        $this->computed = $this->rectify($input);
 
         return $this->computed;
     }
@@ -128,26 +126,30 @@ class PReLU implements Hidden, Parametric
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
-    {
-        return $this->compute($input);
+    {   
+        return $this->rectify($input);
     }
 
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  callable  $prevGradients
+     * @param  callable  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return callable
      */
-    public function back(callable $prevGradients, Optimizer $optimizer) : callable
+    public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
+        if (is_null($this->alphas)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+
         if (is_null($this->input) or is_null($this->computed)) {
-            throw new RuntimeException('Must perform forward pass before'
+            throw new RuntimeException('Must perform a forward pass before'
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradients();
+        $dOut = $prevGradient();
 
         $dIn = $this->input->map(function ($value) {
             return $value > 0. ? 0. : $value;
@@ -172,10 +174,15 @@ class PReLU implements Hidden, Parametric
      * Compute the leaky ReLU activation function and return a matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $z
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
-    protected function compute(Matrix $z) : Matrix
+    protected function rectify(Matrix $z) : Matrix
     {
+        if (is_null($this->alphas)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+
         $alphas = $this->alphas->w()->column(0);
 
         $computed = [[]];
@@ -198,10 +205,15 @@ class PReLU implements Hidden, Parametric
      *
      * @param  \Rubix\Tensor\Matrix  $z
      * @param  \Rubix\Tensor\Matrix  $computed
+     * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
     protected function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
+        if (is_null($this->alphas)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+
         $alphas = $this->alphas->w()->column(0);
 
         $gradients = [[]];
@@ -220,10 +232,15 @@ class PReLU implements Hidden, Parametric
     /**
      * Read the parameters and return them in an associative array.
      *
+     * @throws \RuntimeException
      * @return array
      */
     public function read() : array
     {
+        if (is_null($this->alphas)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+        
         return [
             'alphas' => clone $this->alphas,
         ];
