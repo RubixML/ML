@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -39,7 +39,7 @@ class GaussianNBTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(GaussianNB::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Elastic::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

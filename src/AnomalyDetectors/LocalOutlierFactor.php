@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -31,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistable
+class LocalOutlierFactor implements Estimator, Elastic, Probabilistic, Persistable
 {
     /**
      * The number of nearest neighbors to consider a local region.

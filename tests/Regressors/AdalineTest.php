@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Regressors;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
@@ -36,7 +36,7 @@ class AdalineTest extends TestCase
     public function test_build_regressor()
     {
         $this->assertInstanceOf(Adaline::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Elastic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
@@ -31,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Online, Probabilistic, Persistable
+class LogisticRegression implements Estimator, Elastic, Probabilistic, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate

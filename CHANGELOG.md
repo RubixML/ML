@@ -73,7 +73,7 @@
     - Committee Machine is now a Meta Estimator Ensemble
     - Added Bootstrap Aggregator Meta Estimator Ensemble
     - Added Gaussian Naive Bayes
-    - Naive Bayes classifiers are now Online Estimators
+    - Naive Bayes classifiers are now Elastic Estimators
     - Added tolerance to Robust Z Score detector
     - Added Concentration clustering metric (Calinski Harabasz)
 

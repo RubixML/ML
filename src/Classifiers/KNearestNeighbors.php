@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -27,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
+class KNearestNeighbors implements Estimator, Elastic, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.

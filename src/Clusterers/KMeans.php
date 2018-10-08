@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\Online;
+use Rubix\ML\Elastic;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Online, Persistable
+class KMeans implements Estimator, Elastic, Persistable
 {
     /**
      * The target number of clusters.

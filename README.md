@@ -118,7 +118,7 @@ MIT
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
 	- [Estimator Interfaces](#estimator-interfaces)
-		- [Online](#online)
+		- [Elastic](#online)
 		- [Probabilistic](#probabilistic)
 		- [Persistable](#persistable)
 	- [Neural Network](#neural-network)
@@ -1124,7 +1124,7 @@ $embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
+Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Elastic](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
 
 To train an Estimator pass it a training Dataset:
 ```php
@@ -1220,7 +1220,7 @@ $estimator = new IsolationTree(1000, 0.65);
 ### Local Outlier Factor
 The Local Outlier Factor (LOF) algorithm considers the local region of a sample, set by the k parameter, when determining an outlier. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
 
-##### Unsupervised | Probabilistic | Online | Persistable | Nonlinear
+##### Unsupervised | Probabilistic | Elastic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1417,7 +1417,7 @@ $estimator = new ExtraTreeClassifier(50, 3, 4);
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function (*PDF*) over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1475,7 +1475,7 @@ $estimator = new KDNeighbors(3, 10, new Euclidean());
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time. The advantage KNN has over [KD Neighbors](#k-d-neighbors)  is that it is more precise and capable of online learning.
 
-##### Supervised | Multiclass | Probabilistic | Online | Persistable | Nonlinear
+##### Supervised | Multiclass | Probabilistic | Elastic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1497,7 +1497,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ### Logistic Regression
 A type of linear classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes. Logistic Regression measures the relationship between the class label and one or more independent variables by estimating probabilities.
 
-##### Supervised | Binary | Online | Probabilistic | Persistable | Linear
+##### Supervised | Binary | Elastic | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1533,7 +1533,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new Exponent
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1585,7 +1585,7 @@ $estimator = new MultiLayerPerceptron([
 ### Naive Bayes
 Probability-based classifier that uses probabilistic inference to derive the predicted class. The posterior probabilities are calculated using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part relates to the fact that it assumes that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1638,7 +1638,7 @@ $estimator = new RandomForest(ClassificationTree(10, 3, 5, 1e-2), 400, 0.1);
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer [neural network](#neural-network) with a Softmax output layer.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
+##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1771,7 +1771,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters set by the parameter K.
 
-##### Unsupervised | Online | Persistable | Linear
+##### Unsupervised | Elastic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1836,7 +1836,7 @@ Regression analysis is used to predict the outcome of an event where the value i
 ### Adaline
 Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear).
 
-##### Supervised | Online | Persistable | Linear
+##### Supervised | Elastic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1968,7 +1968,7 @@ $estimator = new KDNRegressor(5, 20, new Euclidean());
 ### KNN Regressor
 A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems. The advantage of KNN Regressor over [KDN Regressor](#k-d-neighbors-regressor) is that it is more precise and capable of online learning.
 
-##### Supervised | Online | Persistable | Nonlinear
+##### Supervised | Elastic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2800,11 +2800,11 @@ $persister = new RedisDB('127.0.0.1', 6379, 1, 'sentiment', 'password', 1.5);
 ---
 ### Estimator Interfaces
 
-### Online
+### Elastic
 
-Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
+Certain [Estimators](#estimators) that implement the *Elastic* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
 
-You can partially train an Online Estimator with:
+You can partially train an Elastic Estimator with:
 ```php
 public partial(Dataset $dataset) : void
 ```
