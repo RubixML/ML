@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Elastic;
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
@@ -38,7 +38,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Estimator, Elastic, Probabilistic, Persistable
+class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persistable
 {
     /**
      * The user-specified hidden layers of the network.

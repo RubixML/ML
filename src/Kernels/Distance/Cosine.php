@@ -23,7 +23,7 @@ use Rubix\Tensor\Vector;
 class Cosine implements Distance
 {
     /**
-     * Compute the distance between two coordinates.
+     * Compute the distance between two vectors.
      *
      * @param  array  $a
      * @param  array  $b
@@ -31,8 +31,8 @@ class Cosine implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $a = new Vector($a);
-        $b = new Vector($b);
+        $a = Vector::quick($a);
+        $b = Vector::quick($b);
 
         return 1. - ($a->dot($b) / ($a->l2Norm() * $b->l2Norm()));
     }

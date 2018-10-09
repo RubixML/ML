@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Elastic;
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -31,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Estimator, Elastic, Probabilistic, Persistable
+class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
     const TWO_PI = 2. * M_PI;
 

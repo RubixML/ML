@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 
@@ -117,7 +118,9 @@ class Pipeline implements MetaEstimator, Persistable
     public function fit(Dataset $dataset) : void
     {
         foreach ($this->transformers as $transformer) {
-            $transformer->fit($dataset);
+            if ($transformer instanceof Stateful) {
+                $transformer->fit($dataset);
+            }
 
             $dataset->apply($transformer);
         }

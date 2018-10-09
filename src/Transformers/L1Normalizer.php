@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
 /**
@@ -15,34 +14,8 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L1Normalizer implements Transformer, Online
+class L1Normalizer implements Transformer
 {
-    /**
-     * Fit the transformer to the incoming data frame.
-     *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function fit(DataFrame $dataframe) : void
-    {
-        $this->update($dataframe);
-    }
-
-    /**
-     * Update the fitting of the transformer.
-     *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
-     * @return void
-     */
-    public function update(DataFrame $dataframe) : void
-    {
-        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
-            throw new InvalidArgumentException('This transformer only works on'
-                . ' continuous features.');
-        }
-    }
-
     /**
      * Apply the transformation to the sample matrix.
      *

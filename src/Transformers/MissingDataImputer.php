@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\BlurryMean;
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MissingDataImputer implements Transformer
+class MissingDataImputer implements Transformer, Stateful
 {
     /**
      * The placeholder of a missing value.
@@ -79,23 +80,23 @@ class MissingDataImputer implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->imputers = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CATEGORICAL) {
                 $imputer = clone $this->categorical;
             } else {
                 $imputer = clone $this->continuous;
             }
 
-            $values = array_filter($dataframe->column($column), function ($value) {
+            $values = array_filter($dataset->column($column), function ($value) {
                 return $value !== $this->placeholder;
             });
 

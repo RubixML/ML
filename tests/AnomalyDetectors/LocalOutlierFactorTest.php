@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
-use Rubix\ML\Elastic;
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -37,7 +37,7 @@ class LocalOutlierFactorTest extends TestCase
     {
         $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
-        $this->assertInstanceOf(Elastic::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

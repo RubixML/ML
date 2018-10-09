@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Online;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use PHPUnit\Framework\TestCase;
@@ -29,13 +28,10 @@ class NumericStringConverterTest extends TestCase
     {
         $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Online::class, $this->transformer);
     }
 
-    public function test_transform_fitted()
+    public function test_transform()
     {
-        $this->transformer->fit($this->dataset);
-
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([

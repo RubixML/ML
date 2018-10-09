@@ -16,7 +16,7 @@ namespace Rubix\ML\Kernels\Distance;
 class Diagonal implements Distance
 {
     /**
-     * Compute the distance between two coordinates.
+     * Compute the distance between two vectors.
      *
      * @param  array  $a
      * @param  array  $b

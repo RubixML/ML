@@ -19,14 +19,20 @@ use InvalidArgumentException;
 class Minkowski implements Distance
 {
     /**
+     * This parameter controls the *roundedness* of the metric. There are
+     * special cases when lambda = 1 then it is equivalent to manhattan
+     * distance, when lambda = 2 it is equivalent to euclidean distance.
+     * 
      * @var float
      */
     protected $lambda;
 
     /**
+     * The inverse of the lambda parameter.
+     * 
      * @var float
      */
-    protected $exponent;
+    protected $inverse;
 
     /**
      * @param  float  $lambda
@@ -35,17 +41,17 @@ class Minkowski implements Distance
      */
     public function __construct(float $lambda = 3.)
     {
-        if ($lambda <= 0.) {
-            throw new InvalidArgumentException('Lambda must be greater than'
-                . ' 0.');
+        if ($lambda < 1.) {
+            throw new InvalidArgumentException('Lambda cannot be less'
+                . ' than 1.');
         }
 
         $this->lambda = $lambda;
-        $this->exponent = 1. / $this->lambda;
+        $this->inverse = 1. / $lambda;
     }
 
     /**
-     * Compute the distance given two coordinate vectors.
+     * Compute the distance given two vectors.
      *
      * @param  array  $a
      * @param  array  $b
@@ -59,6 +65,6 @@ class Minkowski implements Distance
             $distance += abs($coordinate - $b[$i]) ** $this->lambda;
         }
 
-        return $distance ** $this->exponent;
+        return $distance ** $this->inverse;
     }
 }

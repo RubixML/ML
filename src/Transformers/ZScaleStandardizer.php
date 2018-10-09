@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
@@ -20,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Transformer, Online
+class ZScaleStandardizer implements Transformer, Elastic
 {
     /**
      * Should we center the data?
@@ -97,18 +98,18 @@ class ZScaleStandardizer implements Transformer, Online
     }
 
     /**
-     * Fit the transformer to the data.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->means = $this->variances = $this->stddevs = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataframe->column($column);
+                $values = $dataset->column($column);
 
                 list($mean, $variance) = Stats::meanVar($values);
 
@@ -118,28 +119,28 @@ class ZScaleStandardizer implements Transformer, Online
             }
         }
 
-        $this->n = $dataframe->numRows();
+        $this->n = $dataset->numRows();
     }
 
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function update(DataFrame $dataframe) : void
+    public function update(Dataset $dataset) : void
     {
         if (is_null($this->means) or is_null($this->variances)) {
-            $this->fit($dataframe);
+            $this->fit($dataset);
             return;
         }
 
-        $n = $dataframe->numRows();
+        $n = $dataset->numRows();
 
         foreach ($this->means as $column => $oldMean) {
             $oldVariance = $this->variances[$column];
 
-            $values = $dataframe->column($column);
+            $values = $dataset->column($column);
 
             list($mean, $variance) = Stats::meanVar($values);
 

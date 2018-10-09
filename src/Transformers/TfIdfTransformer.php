@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -20,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TfIdfTransformer implements Transformer, Online
+class TfIdfTransformer implements Transformer, Elastic
 {
     /**
      * The times a word / feature appeared in a document.
@@ -64,41 +65,41 @@ class TfIdfTransformer implements Transformer, Online
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This transformer only works on'
                 . ' continuous features.');
         }
 
-        $this->counts = array_fill(0, $dataframe->numColumns(), 0);
+        $this->counts = array_fill(0, $dataset->numColumns(), 0);
         $this->n = 0;
 
         $this->idfs = [];
 
-        $this->update($dataframe);
+        $this->update($dataset);
     }
 
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function update(DataFrame $dataframe) : void
+    public function update(Dataset $dataset) : void
     {
         if (is_null($this->counts)) {
-            $this->fit($dataframe);
+            $this->fit($dataset);
             return;
         }
 
-        foreach ($dataframe as $sample) {
+        foreach ($dataset as $sample) {
             foreach ($sample as $column => $feature) {
                 if ($feature > 0) {
                     $this->counts[$column]++;
@@ -106,7 +107,7 @@ class TfIdfTransformer implements Transformer, Online
             }
         }
 
-        $this->n += $dataframe->numRows();
+        $this->n += $dataset->numRows();
 
         foreach ($this->counts as $column => $count) {
             $idf = log($this->n / ($count ?: self::EPSILON), 10);

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use RuntimeException;
 
@@ -15,7 +16,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Online
+class MaxAbsoluteScaler implements Transformer, Elastic
 {
     /**
      * The maximum absolute values for each fitted feature column.
@@ -35,39 +36,39 @@ class MaxAbsoluteScaler implements Transformer, Online
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->maxabs = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
                 $this->maxabs[$column] = -INF;
             }
         }
 
-        $this->update($dataframe);
+        $this->update($dataset);
     }
 
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function update(DataFrame $dataframe) : void
+    public function update(Dataset $dataset) : void
     {
         if (is_null($this->maxabs)) {
-            $this->fit($dataframe);
+            $this->fit($dataset);
             return;
         }
 
         foreach ($this->maxabs as $column => $oldMax) {
-             $values = $dataframe->column($column);
+             $values = $dataset->column($column);
 
              $max = max(array_map('abs', $values));
 

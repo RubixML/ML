@@ -38,10 +38,8 @@ class LambdaFunctionTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform_fitted()
+    public function test_transform()
     {
-        $this->transformer->fit($this->dataset);
-
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([

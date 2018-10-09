@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
@@ -18,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustStandardizer implements Transformer
+class RobustStandardizer implements Transformer, Stateful
 {
     /**
      * Should we center the data?
@@ -72,18 +73,18 @@ class RobustStandardizer implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->medians = $this->mads = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataframe->column($column);
+                $values = $dataset->column($column);
                 
                 list($median, $mad) = Stats::medMad($values);
 

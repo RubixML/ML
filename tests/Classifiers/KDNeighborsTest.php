@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Elastic;
+use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;

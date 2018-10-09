@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 use RuntimeException;
@@ -21,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianRandomProjector implements Transformer
+class GaussianRandomProjector implements Transformer, Stateful
 {
     /**
      * The target number of dimensions.
@@ -67,20 +68,19 @@ class GaussianRandomProjector implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
-     * @throws \InvalidArgumentException
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
 
-        $this->r = Matrix::gaussian($dataframe->numColumns(), $this->dimensions);
+        $this->r = Matrix::gaussian($dataset->numColumns(), $this->dimensions);
     }
 
     /**

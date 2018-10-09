@@ -5,7 +5,7 @@ namespace Rubix\ML\Kernels\Distance;
 interface Distance
 {
     /**
-     * Compute the distance between given two coordinates.
+     * Compute the distance between two vectors.
      *
      * @param  array  $a
      * @param  array  $b

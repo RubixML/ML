@@ -4,7 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
-interface Elastic extends Estimator
+interface Online extends Estimator
 {
     /**
      * Perform a partial train.

@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Online;
+use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -30,10 +30,10 @@ class MinMaxNormalizerTest extends TestCase
     {
         $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
-        $this->assertInstanceOf(Online::class, $this->transformer);
+        $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_transform_fitted()
+    public function test_transform()
     {
         $this->transformer->fit($this->dataset);
 

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use RuntimeException;
 
@@ -17,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneHotEncoder implements Transformer
+class OneHotEncoder implements Transformer, Stateful
 {
     /**
      * The set of unique possible categories of the training set.
@@ -27,22 +28,22 @@ class OneHotEncoder implements Transformer
     protected $categories;
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->categories = [];
 
         $position = 0;
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CATEGORICAL) {
                 $categories = [];
 
-                foreach ($dataframe as $sample) {
+                foreach ($dataset as $sample) {
                     $category = $sample[$column];
 
                     if (!isset($categories[$category])) {

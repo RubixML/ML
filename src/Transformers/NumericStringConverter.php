@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\DataFrame;
-
 /**
  * Numeric String Converter
  *
@@ -15,30 +13,8 @@ use Rubix\ML\Datasets\DataFrame;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NumericStringConverter implements Transformer, Online
+class NumericStringConverter implements Transformer
 {
-    /**
-     * Fit the transformer to the incoming data frame.
-     *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
-     * @return void
-     */
-    public function fit(DataFrame $dataframe) : void
-    {
-        //
-    }
-
-    /**
-     * Update the fitting of the transformer.
-     *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
-     * @return void
-     */
-    public function update(DataFrame $dataframe) : void
-    {
-        //
-    }
-
     /**
      * Apply the transformation to the samples in the data frame.
      *

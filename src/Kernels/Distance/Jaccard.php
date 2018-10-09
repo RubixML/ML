@@ -16,7 +16,7 @@ namespace Rubix\ML\Kernels\Distance;
 class Jaccard implements Distance
 {
     /**
-     * Compute the distance between two coordinate vectors.
+     * Compute the distance between two vectors.
      *
      * @param  array  $a
      * @param  array  $b

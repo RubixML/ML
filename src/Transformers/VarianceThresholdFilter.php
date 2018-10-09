@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
@@ -18,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer
+class VarianceThresholdFilter implements Transformer, Stateful
 {
     /**
      * The minimum variance a feature column must have in order to be selected.
@@ -58,18 +59,18 @@ class VarianceThresholdFilter implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->selected = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataframe->column($column);
+                $values = $dataset->column($column);
                 
                 list($mean, $variance) = Stats::meanVar($values);
 

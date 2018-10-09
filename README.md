@@ -119,7 +119,7 @@ MIT
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
 	- [Estimator Interfaces](#estimator-interfaces)
-		- [Elastic](#online)
+		- [Online](#online)
 		- [Probabilistic](#probabilistic)
 		- [Persistable](#persistable)
 	- [Neural Network](#neural-network)
@@ -1125,7 +1125,7 @@ $embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Elastic](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
+Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
 
 To train an Estimator pass it a training Dataset:
 ```php
@@ -2259,7 +2259,7 @@ int(7894)
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only* | Online
+##### Continuous *Only* | Stateless
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2277,7 +2277,7 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only* | Online
+##### Continuous *Only* | Stateless
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2295,7 +2295,7 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix as an argument and should return the transformed sample matrix.
 
-##### Categorical | Continuous | Online
+##### Categorical | Continuous | Stateless
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2320,7 +2320,7 @@ $transformer = new LambdaFunction(function ($samples) {
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-##### Continuous | Online
+##### Continuous | Elastic
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2341,7 +2341,7 @@ $transformer = new MaxAbsoluteScaler();
 ### Min Max Normalizer
 The Min Max Normalization scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-##### Continuous | Online
+##### Continuous | Elastic
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2394,7 +2394,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ### Numeric String Converter
 This handy Transformer will convert all numeric strings into their floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
-##### Categorical | Online
+##### Categorical | Stateless
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2430,7 +2430,7 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
 
-##### Continuous *Only* | Online
+##### Continuous *Only* | Stateless
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2542,7 +2542,7 @@ int(663)
 ### TF-IDF Transformer
 Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
-##### Continuous *Only*
+##### Continuous *Only* | Elastic
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2590,7 +2590,7 @@ $transformer = new VarianceThresholdFilter(50);
 ### Z Scale Standardizer
 A way of centering and scaling a sample matrix by computing the Z Score for each continuous feature. Z Scores have a mean of 0 and *unit* variance.
 
-##### Continuous | Online
+##### Continuous | Elastic
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2843,11 +2843,11 @@ $persister = new RedisDB('127.0.0.1', 6379, 1, 'sentiment', 'password', 1.5);
 ---
 ### Estimator Interfaces
 
-### Elastic
+### Online
 
-Certain [Estimators](#estimators) that implement the *Elastic* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
+Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
 
-You can partially train an Elastic Estimator with:
+You can partially train an Online estimator with:
 ```php
 public partial(Dataset $dataset) : void
 ```

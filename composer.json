@@ -12,7 +12,9 @@
     "authors": [
         {
             "name": "Andrew DalPino",
-            "email": "me@andrewdalpino.com"
+            "email": "me@andrewdalpino.com",
+            "homepage": "https://andrewdalpino.com",
+            "role": "Engineer"
         }
     ],
     "require": {

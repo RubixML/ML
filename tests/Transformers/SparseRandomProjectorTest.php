@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\SparseRandomProjector;
 use PHPUnit\Framework\TestCase;
@@ -29,9 +30,10 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->assertInstanceOf(SparseRandomProjector::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_transform_fitted()
+    public function test_transform()
     {
         $this->transformer->fit($this->dataset);
 

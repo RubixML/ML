@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
@@ -23,20 +24,20 @@ class SparseRandomProjector extends GaussianRandomProjector
     const ROOT_3 = 1.73205080757;
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
 
-        $columns = $dataframe->numColumns();
+        $columns = $dataset->numColumns();
 
         $n = count(static::DISTRIBUTION) - 1;
 

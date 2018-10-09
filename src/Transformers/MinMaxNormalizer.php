@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
@@ -17,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer, Online
+class MinMaxNormalizer implements Transformer, Elastic
 {
     /**
      * The minimum value of the transformed features.
@@ -99,42 +100,42 @@ class MinMaxNormalizer implements Transformer, Online
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function fit(DataFrame $dataframe) : void
+    public function fit(Dataset $dataset) : void
     {
         $this->minimums = $this->maximums
             = $this->scales = $this->mins = [];
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
                 $this->minimums[$column] = INF;
                 $this->maximums[$column] = -INF;
             }
         }
 
-        $this->update($dataframe);
+        $this->update($dataset);
     }
 
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function update(DataFrame $dataframe) : void
+    public function update(Dataset $dataset) : void
     {
         if (is_null($this->minimums) or is_null($this->maximums)) {
-            $this->fit($dataframe);
+            $this->fit($dataset);
             return;
         }
 
-        foreach ($dataframe->types() as $column => $type) {
+        foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataframe->column($column);
+                $values = $dataset->column($column);
 
                 list($min, $max) = Stats::range($values);
 
