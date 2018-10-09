@@ -3,6 +3,7 @@
     - Added t-SNE embedder
     - AdaBoost now uses SAMME multiclass algorithm
     - Added Redis persister
+    - Added Max Absolute Scaler
     - Renamed Online to Elastic estimators
     - Added Online interface for transformers
     - Z Scale Standardizer is now Online

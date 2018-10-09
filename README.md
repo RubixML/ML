@@ -97,6 +97,7 @@ MIT
 				- [L1 Normalizer](#l1-normalizer)
 				- [L2 Normalizer](#l2-normalizer)
 				- [Lambda Function](#lambda-function)
+				- [Max Absolute Scaler](#max-absolute-scaler)
 				- [Min Max Normalizer](#min-max-normalizer)
 				- [Missing Data Imputer](#missing-data-imputer)
 				- [Numeric String Converter](#numeric-string-converter)
@@ -2314,6 +2315,27 @@ $transformer = new LambdaFunction(function ($samples) {
 		return [array_sum($sample)];
 	}, $samples);
 });
+```
+
+### Max Absolute Scaler
+Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
+
+##### Continuous | Online
+
+##### Parameters:
+This transformer does not have any parameters.
+
+##### Additional Methods:
+Return the maximum absolute values for each feature column:
+```php
+public maxabs() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\MaxAbsoluteScaler;
+
+$transformer = new MaxAbsoluteScaler();
 ```
 
 ### Min Max Normalizer

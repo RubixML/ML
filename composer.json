@@ -5,7 +5,9 @@
     "homepage": "https://github.com/RubixML/RubixML",
     "license": "MIT",
     "keywords": [
-        "machine", "learning", "data", "science", "mining", "predictive", "modeling", "classification", "regression", "clustering", "anomaly", "detection", "neural", "network"
+        "machine-learning", "data-science", "data-mining", "predictive-modeling", "classification",
+        "regression", "clustering", "anomaly-detection", "neural-network", "manifold-learning",
+        "dimensionality-reduction", "artificial-intelligence", "ai", "cross-validation", "feature-extraction"
     ],
     "authors": [
         {
