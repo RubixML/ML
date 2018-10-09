@@ -129,6 +129,7 @@ class MinMaxNormalizer implements Transformer, Online
     {
         if (is_null($this->minimums) or is_null($this->maximums)) {
             $this->fit($dataframe);
+            return;
         }
 
         foreach ($dataframe->types() as $column => $type) {

@@ -228,32 +228,33 @@ class LogisticRegression implements Estimator, Elastic, Probabilistic, Persistab
             . ' continuous features.');
         }
 
-        $n = $dataset->numRows();
-
         if (is_null($this->network)) {
             $this->train($dataset);
-        } else {
-            $previous = INF;
+            return;
+        }
+        
+        $n = $dataset->numRows();
 
-            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-                $batches = $dataset->randomize()->batch($this->batchSize);
+        $previous = INF;
 
-                $cost = 0.;
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
-                foreach ($batches as $batch) {
-                    $cost += $this->network->roundtrip($batch);
-                }
+            $cost = 0.;
 
-                $cost /= $n;
-
-                $this->steps[] = $cost;
-
-                if (abs($previous - $cost) < $this->minChange) {
-                    break 1;
-                }
-
-                $previous = $cost;
+            foreach ($batches as $batch) {
+                $cost += $this->network->roundtrip($batch);
             }
+
+            $cost /= $n;
+
+            $this->steps[] = $cost;
+
+            if (abs($previous - $cost) < $this->minChange) {
+                break 1;
+            }
+
+            $previous = $cost;
         }
     }
 

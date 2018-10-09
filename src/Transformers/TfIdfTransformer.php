@@ -20,19 +20,43 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TfIdfTransformer implements Transformer
+class TfIdfTransformer implements Transformer, Online
 {
     /**
-     * The inverse document frequency values for each feature.
+     * The times a word / feature appeared in a document.
+     *
+     * @var array|null
+     */
+    protected $counts;
+
+    /**
+     * The inverse document frequency values for each feature column.
      *
      * @var array|null
      */
     protected $idfs;
 
     /**
+     * The number of documents (samples) that have been fitted so far.
+     * 
+     * @var int
+     */
+    protected $n;
+
+    /**
+     * Return the document counts for each word (feature column).
+     *
+     * @return array|null
+     */
+    public function counts() : ?array
+    {
+        return $this->counts;
+    }
+
+    /**
      * Return the inverse document frequencies calculated during fitting.
      *
-     * @return array
+     * @return array|null
      */
     public function idfs() : ?array
     {
@@ -53,25 +77,46 @@ class TfIdfTransformer implements Transformer
                 . ' continuous features.');
         }
 
-        list($m, $n) = $dataframe->shape();
+        $this->counts = array_fill(0, $dataframe->numColumns(), 0);
+        $this->n = 0;
 
-        $this->idfs = array_fill(0, $n, 0.);
+        $this->idfs = [];
+
+        $this->update($dataframe);
+    }
+
+    /**
+     * Update the fitting of the transformer.
+     *
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @return void
+     */
+    public function update(DataFrame $dataframe) : void
+    {
+        if (is_null($this->counts)) {
+            $this->fit($dataframe);
+            return;
+        }
 
         foreach ($dataframe as $sample) {
             foreach ($sample as $column => $feature) {
                 if ($feature > 0) {
-                    $this->idfs[$column]++;
+                    $this->counts[$column]++;
                 }
             }
         }
 
-        foreach ($this->idfs as &$idf) {
-            $idf = log(($idf !== 0. ? $m / $idf : 1.), 10);
+        $this->n += $dataframe->numRows();
+
+        foreach ($this->counts as $column => $count) {
+            $idf = log($this->n / ($count ?: self::EPSILON), 10);
+
+            $this->idfs[$column] = $idf;
         }
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Apply the transformation to the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException

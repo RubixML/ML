@@ -252,10 +252,12 @@ class MLPRegressor implements Estimator, Elastic, Persistable
     }
 
     /**
-    * @param  \Rubix\ML\Datasets\Dataset  $dataset
-    * @throws \InvalidArgumentException
-    * @return void
-    */
+     * Train the estimator with a dataset.
+     * 
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return void
+     */
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
@@ -295,64 +297,65 @@ class MLPRegressor implements Estimator, Elastic, Persistable
             . ' continuous features.');
         }
 
-        $n = $dataset->numRows();
-
         if (is_null($this->network)) {
             $this->train($dataset);
-        } else {
-            list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
+            return;
+        }
 
-            list($min, $max) = $this->metric->range();
+        $n = $dataset->numRows();
 
-            $bestScore = $min;
-            $bestSnapshot = null;
-            $previous = INF;
+        list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
 
-            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-                $batches = $training->randomize()->batch($this->batchSize);
+        list($min, $max) = $this->metric->range();
 
-                $cost = 0.;
+        $bestScore = $min;
+        $bestSnapshot = null;
+        $previous = INF;
 
-                foreach ($batches as $batch) {
-                    $cost += $this->network->roundtrip($batch);
-                }
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $batches = $training->randomize()->batch($this->batchSize);
 
-                $cost /= $n;
+            $cost = 0.;
 
-                $score = $this->metric->score($this, $testing);
-
-                $this->steps[] = $cost;
-                $this->scores[] = $score;
-
-                if ($score > $bestScore) {
-                    $bestScore = $score;
-                    $bestSnapshot = Snapshot::take($this->network);
-                }
-
-                if ($score === $max) {
-                    break 1;
-                }
-
-                if (abs($previous - $cost) < $this->minChange) {
-                    break 1;
-                }
-
-                if ($epoch >= ($this->window - 1)) {
-                    $window = array_slice($this->scores, -$this->window);
-
-                    $worst = $window;
-                    rsort($worst);
-
-                    if ($window === $worst) {
-                        break 1;
-                    }
-                }
+            foreach ($batches as $batch) {
+                $cost += $this->network->roundtrip($batch);
             }
 
-            if (end($this->scores) < $bestScore) {
-                if (isset($bestSnapshot)) {
-                    $this->network->restore($bestSnapshot);
+            $cost /= $n;
+
+            $score = $this->metric->score($this, $testing);
+
+            $this->steps[] = $cost;
+            $this->scores[] = $score;
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestSnapshot = Snapshot::take($this->network);
+            }
+
+            if ($score === $max) {
+                break 1;
+            }
+
+            if (abs($previous - $cost) < $this->minChange) {
+                break 1;
+            }
+
+            if ($epoch >= ($this->window - 1)) {
+                $window = array_slice($this->scores, -$this->window);
+
+                $worst = $window;
+                rsort($worst);
+
+                if ($window === $worst) {
+                    break 1;
                 }
+            }
+        }
+
+        if (end($this->scores) < $bestScore) {
+            if (isset($bestSnapshot)) {
+                $this->network->restore($bestSnapshot);
             }
         }
     }

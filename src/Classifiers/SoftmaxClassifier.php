@@ -228,32 +228,33 @@ class SoftmaxClassifier implements Estimator, Elastic, Probabilistic, Persistabl
             . ' continuous features.');
         }
 
-        $n = $dataset->numRows();
-
         if (is_null($this->network)) {
             $this->train($dataset);
-        } else {
-            $previous = INF;
+            return;
+        }
 
-            for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
-                $batches = $dataset->randomize()->batch($this->batchSize);
+        $n = $dataset->numRows();
 
-                $cost = 0.;
+        $previous = INF;
 
-                foreach ($batches as $batch) {
-                    $cost += $this->network->roundtrip($batch);
-                }
+        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
-                $cost /= $n;
+            $cost = 0.;
 
-                $this->steps[] = $cost;
-
-                if (abs($previous - $cost) < $this->minChange) {
-                    break 1;
-                }
-
-                $previous = $cost;
+            foreach ($batches as $batch) {
+                $cost += $this->network->roundtrip($batch);
             }
+
+            $cost /= $n;
+
+            $this->steps[] = $cost;
+
+            if (abs($previous - $cost) < $this->minChange) {
+                break 1;
+            }
+
+            $previous = $cost;
         }
     }
 

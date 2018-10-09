@@ -2526,7 +2526,15 @@ Term Frequency - Inverse Document Frequency is a measure of how important a word
 This transformer does not have any parameters.
 
 ##### Additional Methods:
-This transformer does not have any additional methods.
+Return the document counts for each word (feature column):
+```php
+public counts() : ?array
+```
+
+Return the inverse document frequencies calculated during fitting:
+```php
+public idfs() : ?array
+```
 
 ##### Example:
 ```php

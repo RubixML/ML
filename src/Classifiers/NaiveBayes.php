@@ -188,6 +188,7 @@ class NaiveBayes implements Estimator, Elastic, Probabilistic, Persistable
 
         if (empty($this->weights) or empty($this->counts)) {
             $this->train($dataset);
+            return;
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {

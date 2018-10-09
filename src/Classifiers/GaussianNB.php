@@ -201,6 +201,7 @@ class GaussianNB implements Estimator, Elastic, Probabilistic, Persistable
 
         if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
             $this->train($dataset);
+            return;
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {

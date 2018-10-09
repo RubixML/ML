@@ -11,6 +11,10 @@ use RuntimeException;
  *
  * A way of centering and scaling a sample matrix by computing the Z Score for
  * each feature.
+ * 
+ * References:
+ * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
+ * Computing Sample Variances.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -143,14 +147,14 @@ class ZScaleStandardizer implements Transformer, Online
                 + ($this->n * $oldMean))
                 / ($this->n + $n);
 
-            $temp = ($this->n
+            $varNew = ($this->n
                 * $oldVariance + ($n * $variance)
                 + ($this->n / ($n * ($this->n + $n)))
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($this->n + $n);
 
-            $this->variances[$column] = $temp;
-            $this->stddevs[$column] = sqrt($temp ?: self::EPSILON);
+            $this->variances[$column] = $varNew;
+            $this->stddevs[$column] = sqrt($varNew ?: self::EPSILON);
         }
 
         $this->n += $n;

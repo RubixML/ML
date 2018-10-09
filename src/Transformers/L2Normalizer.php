@@ -44,7 +44,7 @@ class L2Normalizer implements Transformer, Online
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Apply the transformation to the sample matrix.
      *
      * @param  array  $samples
      * @return void

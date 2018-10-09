@@ -44,20 +44,20 @@ class KNearestNeighbors implements Estimator, Elastic, Probabilistic, Persistabl
     protected $kernel;
 
     /**
-     * The training samples that make up the neighborhood of the problem space.
-     *
-     * @var array
-     */
-    protected $samples = [
-        //
-    ];
-
-    /**
      * The possible class outcomes.
      *
      * @var array
      */
     protected $classes = [
+        //
+    ];
+
+    /**
+     * The training samples that make up the neighborhood of the problem space.
+     *
+     * @var array
+     */
+    protected $samples = [
         //
     ];
 
@@ -132,7 +132,7 @@ class KNearestNeighbors implements Estimator, Elastic, Probabilistic, Persistabl
                 . ' continuous features.');
         }
 
-        $this->classes = array_merge($this->classes, $dataset->possibleOutcomes());
+        $this->classes = array_unique(array_merge($this->classes, $dataset->possibleOutcomes()));
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
     }
@@ -170,7 +170,7 @@ class KNearestNeighbors implements Estimator, Elastic, Probabilistic, Persistabl
                 . ' continuous features.');
         }
 
-        if (empty($this->samples) or empty($this->labels)) {
+        if (empty($this->classes)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 

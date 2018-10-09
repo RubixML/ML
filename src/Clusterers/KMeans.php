@@ -148,6 +148,7 @@ class KMeans implements Estimator, Elastic, Persistable
 
         if (empty($this->centroids)) {
             $this->train($dataset);
+            return;
         }
 
         $labels = array_fill(0, $dataset->numRows(), -1);
