@@ -16,7 +16,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PolynomialExpander implements Transformer
+class PolynomialExpander implements Transformer, Online
 {
     /**
      * The degree of the polynomials to generate. Higher order polynomials are
@@ -43,7 +43,7 @@ class PolynomialExpander implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the data.
      *
      * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @throws \InvalidArgumentException
@@ -51,9 +51,20 @@ class PolynomialExpander implements Transformer
      */
     public function fit(DataFrame $dataframe) : void
     {
+        $this->update($dataframe);
+    }
+
+    /**
+     * Update the fitting of the transformer.
+     *
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @return void
+     */
+    public function update(DataFrame $dataframe) : void
+    {
         if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with continuous features.');
+            throw new InvalidArgumentException('This transformer only works on'
+                . ' continuous features.');
         }
     }
 

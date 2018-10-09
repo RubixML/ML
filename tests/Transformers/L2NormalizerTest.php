@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Online;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\L2Normalizer;
 use PHPUnit\Framework\TestCase;
@@ -28,6 +29,7 @@ class L2NormalizerTest extends TestCase
     {
         $this->assertInstanceOf(L2Normalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Online::class, $this->transformer);
     }
 
     public function test_transform_fitted()

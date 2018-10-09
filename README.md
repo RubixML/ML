@@ -2258,7 +2258,7 @@ int(7894)
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only*
+##### Continuous *Only* | Online
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2276,7 +2276,7 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only*
+##### Continuous *Only* | Online
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2294,7 +2294,7 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix as an argument and should return the transformed sample matrix.
 
-##### Categorical or Continuous
+##### Categorical | Continuous | Online
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2348,7 +2348,7 @@ $transformer = new MinMaxNormalizer(-5, 5);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given guessing [Strategy](#guessing-strategies).
 
-##### Categorical or Continuous
+##### Categorical | Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2372,7 +2372,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ### Numeric String Converter
 This handy Transformer will convert all numeric strings into their floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
-##### Categorical
+##### Categorical | Online
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2408,7 +2408,7 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
 
-##### Continuous *Only*
+##### Continuous *Only* | Online
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

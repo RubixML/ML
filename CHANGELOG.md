@@ -6,6 +6,7 @@
     - Renamed Online to Elastic estimators
     - Added Online interface for transformers
     - Z Scale Standardizer is now Online
+    - Min Max Normalizer is now Online
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator

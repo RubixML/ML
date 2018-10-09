@@ -17,7 +17,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer
+class MinMaxNormalizer implements Transformer, Online
 {
     /**
      * The minimum value of the transformed features.

@@ -15,7 +15,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class L1Normalizer implements Transformer
+class L1Normalizer implements Transformer, Online
 {
     /**
      * Fit the transformer to the incoming data frame.
@@ -25,6 +25,17 @@ class L1Normalizer implements Transformer
      * @return void
      */
     public function fit(DataFrame $dataframe) : void
+    {
+        $this->update($dataframe);
+    }
+
+    /**
+     * Update the fitting of the transformer.
+     *
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @return void
+     */
+    public function update(DataFrame $dataframe) : void
     {
         if (in_array(DataFrame::CATEGORICAL, $dataframe->types())) {
             throw new InvalidArgumentException('This transformer only works on'
@@ -41,14 +52,10 @@ class L1Normalizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $norm = 0.;
+            $norm = array_sum(array_map('abs', $sample)) ?: self::EPSILON;
 
             foreach ($sample as &$feature) {
-                $norm += abs($feature);
-            }
-
-            foreach ($sample as &$feature) {
-                $feature = $norm !== 0. ? $feature / $norm : 1.;
+                $feature /= $norm;
             }
         }
     }

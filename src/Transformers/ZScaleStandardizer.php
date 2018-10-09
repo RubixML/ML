@@ -16,7 +16,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Transformer
+class ZScaleStandardizer implements Transformer, Online
 {
     /**
      * Should we center the data?

@@ -69,7 +69,9 @@ class VarianceThresholdFilter implements Transformer
 
         foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                list($mean, $variance) = Stats::meanVar($dataframe->column($column));
+                $values = $dataframe->column($column);
+                
+                list($mean, $variance) = Stats::meanVar($values);
 
                 if ($variance > $this->threshold) {
                     $this->selected[$column] = true;

@@ -15,7 +15,7 @@ use Rubix\ML\Datasets\DataFrame;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NumericStringConverter implements Transformer
+class NumericStringConverter implements Transformer, Online
 {
     /**
      * Fit the transformer to the incoming data frame.
@@ -24,6 +24,17 @@ class NumericStringConverter implements Transformer
      * @return void
      */
     public function fit(DataFrame $dataframe) : void
+    {
+        //
+    }
+
+    /**
+     * Update the fitting of the transformer.
+     *
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @return void
+     */
+    public function update(DataFrame $dataframe) : void
     {
         //
     }
