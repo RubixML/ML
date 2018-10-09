@@ -2317,21 +2317,32 @@ $transformer = new LambdaFunction(function ($samples) {
 ```
 
 ### Min Max Normalizer
-Often used as an alternative to [Standard Scaling](#z-scale-standardizer), the Min Max Normalization scales the input features to a range of between 0 and 1 by dividing the feature value over the maximum value for that feature column.
+The Min Max Normalization scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-##### Continuous
+##### Continuous | Online
 
 ##### Parameters:
-This transformer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | min | 0. | float | The minimum value of the transformed features. |
+| 2 | max | 1. | float | The maximum value of the transformed features. |
 
 ##### Additional Methods:
-This transformer does not have any additional methods.
+Return the minimum values for each fitted feature column:
+```php
+public minimums() : ?array
+```
+
+Return the maximum values for each fitted feature column:
+```php
+public maximums() : ?array
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Transformers\MinMaxNormalizer;
 
-$transformer = new MinMaxNormalizer();
+$transformer = new MinMaxNormalizer(-5, 5);
 ```
 
 ### Missing Data Imputer

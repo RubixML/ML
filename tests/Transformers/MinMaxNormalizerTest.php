@@ -22,7 +22,7 @@ class MinMaxNormalizerTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new MinMaxNormalizer();
+        $this->transformer = new MinMaxNormalizer(0., 1.);
     }
 
     public function test_build_transformer()
@@ -38,9 +38,9 @@ class MinMaxNormalizerTest extends TestCase
         $this->dataset->apply($this->transformer);
 
         $this->assertEquals([
-            [0.0, 0.0, 0.0, 0.0],
-            [0.3939393938996021, 0.06040268456173145, 0.13705583755649461, 0.015151515151132538],
-            [1.0, 1.0, 1.0, 1.0],
+            [0.009998979695949393, 0.0066888878879329755, 0.015151124739106908, 0.010075502499744926],
+            [0.40393837363534335, 0.06709157245169137, 0.15220696230255867, 0.025227017651260078],
+            [1.0099989796959494, 1.006688887887933, 1.0151511247391067, 1.010075502499745],
         ], $this->dataset->samples());
     }
 
