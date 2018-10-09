@@ -26,21 +26,28 @@ class ZScaleStandardizer implements Transformer
     protected $center;
 
     /**
-     * Should we scale the data?
-     *
-     * @var bool
-     */
-    protected $scale;
-
-    /**
-     * The computed means of the fitted data indexed by column.
+     * The means of each feature column from the fitted data.
      *
      * @var array|null
      */
     protected $means;
 
     /**
-     * The computed standard deviations of the fitted data indexed by column.
+     * The variances of each feature column from the fitted data.
+     *
+     * @var array|null
+     */
+    protected $variances;
+
+    /**
+     *  The number of samples that this tranformer has fitted.
+     * 
+     * @var int|null
+     */
+    protected $n;
+
+    /**
+     * The precomputed standard deviations.
      *
      * @var array|null
      */
@@ -48,13 +55,11 @@ class ZScaleStandardizer implements Transformer
 
     /**
      * @param  bool  $center
-     * @param  bool  $scale
      * @return void
      */
-    public function __construct(bool $center = true, bool $scale = true)
+    public function __construct(bool $center = true)
     {
         $this->center = $center;
-        $this->scale = $scale;
     }
 
     /**
@@ -68,6 +73,16 @@ class ZScaleStandardizer implements Transformer
     }
 
     /**
+     * Return the variances calculated by fitting the training set.
+     *
+     * @return array|null
+     */
+    public function variances() : ?array
+    {
+        return $this->variances;
+    }
+
+    /**
      * Return the standard deviations calculated during fitting.
      *
      * @return array|null
@@ -78,27 +93,71 @@ class ZScaleStandardizer implements Transformer
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the data.
      *
      * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @return void
      */
     public function fit(DataFrame $dataframe) : void
     {
-        $this->means = $this->stddevs = [];
+        $this->means = $this->variances = $this->stddevs = [];
 
         foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                list($mean, $variance) = Stats::meanVar($dataframe->column($column));
+                $values = $dataframe->column($column);
+
+                list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$column] = $mean;
-                $this->stddevs[$column] = sqrt($variance);
+                $this->variances[$column] = $variance;
+                $this->stddevs[$column] = sqrt($variance ?: self::EPSILON);
             }
         }
+
+        $this->n = $dataframe->numRows();
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Update the fitting of the transformer.
+     *
+     * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
+     * @return void
+     */
+    public function update(DataFrame $dataframe) : void
+    {
+        if (is_null($this->means) or is_null($this->variances)) {
+            $this->fit($dataframe);
+            return;
+        }
+
+        $n = $dataframe->numRows();
+
+        foreach ($this->means as $column => $oldMean) {
+            $oldVariance = $this->variances[$column];
+
+            $values = $dataframe->column($column);
+
+            list($mean, $variance) = Stats::meanVar($values);
+
+            $this->means[$column] = (($n * $mean)
+                + ($this->n * $oldMean))
+                / ($this->n + $n);
+
+            $temp = ($this->n
+                * $oldVariance + ($n * $variance)
+                + ($this->n / ($n * ($this->n + $n)))
+                * ($n * $oldMean - $n * $mean) ** 2)
+                / ($this->n + $n);
+
+            $this->variances[$column] = $temp;
+            $this->stddevs[$column] = sqrt($temp ?: self::EPSILON);
+        }
+
+        $this->n += $n;
+    }
+
+    /**
+     * Apply the transformation to the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -111,20 +170,14 @@ class ZScaleStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($this->means as $column => $mean) {
+            foreach ($this->stddevs as $column => $stddev) {
                 $feature = $sample[$column];
 
                 if ($this->center === true) {
-                    $feature -= $mean;
+                    $feature -= $this->means[$column];
                 }
 
-                if ($this->scale === true) {
-                    $stddev = $this->stddevs[$column];
-
-                    $feature = $stddev !== 0. ? $feature / $stddev : 1.;
-                }
-
-                $sample[$column] = $feature;
+                $sample[$column] = $feature / $stddev;
             }
         }
     }

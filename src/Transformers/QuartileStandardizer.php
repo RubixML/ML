@@ -27,13 +27,6 @@ class QuartileStandardizer implements Transformer
     protected $center;
 
     /**
-     * Should we scale the data?
-     *
-     * @var bool
-     */
-    protected $scale;
-
-    /**
      * The computed medians of the fitted data indexed by column.
      *
      * @var array|null
@@ -49,13 +42,11 @@ class QuartileStandardizer implements Transformer
 
     /**
      * @param  bool  $center
-     * @param  bool  $scale
      * @return void
      */
-    public function __construct(bool $center = true, bool $scale = true)
+    public function __construct(bool $center = true)
     {
         $this->center = $center;
-        $this->scale = $scale;
     }
 
     /**
@@ -96,7 +87,7 @@ class QuartileStandardizer implements Transformer
                 $iqr = Stats::iqr($values);
 
                 $this->medians[$column] = $median;
-                $this->iqrs[$column] = $iqr;
+                $this->iqrs[$column] = $iqr ?: self::EPSILON;
             }
         }
     }
@@ -115,20 +106,14 @@ class QuartileStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($this->medians as $column => $median) {
+            foreach ($this->iqrs as $column => $iqr) {
                 $feature = $sample[$column];
 
                 if ($this->center === true) {
-                    $feature -= $median;
+                    $feature -= $this->medians[$column];
                 }
 
-                if ($this->scale === true) {
-                    $iqr = $this->iqrs[$column];
-
-                    $feature = $iqr !== 0. ? $feature / $iqr : 1.;
-                }
-
-                $sample[$column] = $feature;
+                $sample[$column] = $feature / $iqr;
             }
         }
     }

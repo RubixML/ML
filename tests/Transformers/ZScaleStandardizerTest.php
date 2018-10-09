@@ -22,7 +22,7 @@ class ZScaleStandardizerTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new ZScaleStandardizer();
+        $this->transformer = new ZScaleStandardizer(true);
     }
 
     public function test_build_transformer()

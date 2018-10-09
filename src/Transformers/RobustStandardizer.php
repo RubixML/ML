@@ -28,13 +28,6 @@ class RobustStandardizer implements Transformer
     protected $center;
 
     /**
-     * Should we scale the data?
-     *
-     * @var bool
-     */
-    protected $scale;
-
-    /**
      * The computed medians of the fitted data indexed by column.
      *
      * @var array|null
@@ -51,13 +44,11 @@ class RobustStandardizer implements Transformer
 
     /**
      * @param  bool  $center
-     * @param  bool  $scale
      * @return void
      */
-    public function __construct(bool $center = true, bool $scale = true)
+    public function __construct(bool $center = true)
     {
         $this->center = $center;
-        $this->scale = $scale;
     }
 
     /**
@@ -92,16 +83,18 @@ class RobustStandardizer implements Transformer
 
         foreach ($dataframe->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
-                list($median, $mad) = Stats::medMad($dataframe->column($column));
+                $values = $dataframe->column($column);
+                
+                list($median, $mad) = Stats::medMad($values);
 
                 $this->medians[$column] = $median;
-                $this->mads[$column] = $mad;
+                $this->mads[$column] = $mad ?: self::EPSILON;
             }
         }
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Apply the transformation to the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -114,20 +107,14 @@ class RobustStandardizer implements Transformer
         }
 
         foreach ($samples as &$sample) {
-            foreach ($this->medians as $column => $median) {
+            foreach ($this->mads as $column => $mad) {
                 $feature = $sample[$column];
 
                 if ($this->center === true) {
-                    $feature -= $median;
+                    $feature -= $this->medians[$column];
                 }
 
-                if ($this->scale === true) {
-                    $mad = $this->mads[$column];
-
-                    $feature = $mad !== 0. ? $feature / $mad : 1.;
-                }
-
-                $sample[$column] = $feature;
+                $sample[$column] = $feature / $mad;
             }
         }
     }

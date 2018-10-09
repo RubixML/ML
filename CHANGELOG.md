@@ -3,6 +3,9 @@
     - Added t-SNE embedder
     - AdaBoost now uses SAMME multiclass algorithm
     - Added Redis persister
+    - Renamed Online to Elastic estimators
+    - Added Online interface for transformers
+    - Z Scale Standardizer is now Online
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator

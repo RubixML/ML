@@ -6,8 +6,10 @@ use Rubix\ML\Datasets\DataFrame;
 
 interface Transformer
 {
+    const EPSILON = 1e-8;
+    
     /**
-     * Fit the transformer to the incoming data frame.
+     * Fit the transformer to the data.
      *
      * @param  \Rubix\ML\Datasets\DataFrame  $dataframe
      * @return void
@@ -15,7 +17,7 @@ interface Transformer
     public function fit(DataFrame $dataframe) : void;
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Apply the transformation to the sample matrix.
      *
      * @param  array  $samples
      * @return void

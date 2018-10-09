@@ -2424,7 +2424,6 @@ This standardizer centers the sample matrix around the median and scales each fe
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample matrix? |
-| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 
@@ -2442,7 +2441,7 @@ public iqrs() : array
 ```php
 use Rubix\ML\Transformers\QuartileStandardizer;
 
-$transformer = new QuartileStandardizer();
+$transformer = new QuartileStandardizer(true);
 ```
 
 ### Robust Standardizer
@@ -2454,7 +2453,6 @@ This transformer standardizes continuous features by centering around the median
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample matrix? |
-| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 
@@ -2472,7 +2470,7 @@ public mads() : array
 ```php
 use Rubix\ML\Transformers\RobustStandardizer;
 
-$transformer = new RobustStandardizer();
+$transformer = new RobustStandardizer(true);
 ```
 
 ### Sparse Random Projector
@@ -2551,19 +2549,23 @@ $transformer = new VarianceThresholdFilter(50);
 ### Z Scale Standardizer
 A way of centering and scaling a sample matrix by computing the Z Score for each continuous feature. Z Scores have a mean of 0 and *unit* variance.
 
-##### Continuous
+##### Continuous | Online
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample matrix? |
-| 2 | scale | true | bool | Should we scale the sample matrix? |
 
 ##### Additional Methods:
 
 Return the means calculated by fitting the training set:
 ```php
 public means() : array
+```
+
+Return the variances calculated during fitting:
+```php
+public variances() : array
 ```
 
 Return the standard deviations calculated during fitting:
@@ -2575,7 +2577,7 @@ public stddevs() : array
 ```php
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
-$transformer = new ZScaleStandardizer();
+$transformer = new ZScaleStandardizer(true);
 ```
 
 ---
