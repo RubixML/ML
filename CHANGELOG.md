@@ -4,7 +4,7 @@
     - AdaBoost now uses SAMME multiclass algorithm
     - Added Redis persister
     - Added Max Absolute Scaler
-    - Pipeline is now Online
+    - Pipeline is now Online and has elastic option
     - Added Elastic interface for transformers
     - Z Scale Standardizer is now Elastic
     - Min Max Normalizer is now Elastic

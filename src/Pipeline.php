@@ -43,12 +43,20 @@ class Pipeline implements MetaEstimator, Online, Persistable
     ];
 
     /**
+     * Should we update elastic transformers during partial train?
+     * 
+     * @var bool
+     */
+    protected $elastic;
+
+    /**
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  array  $transformers
+     * @param  bool  $elastic
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $estimator, array $transformers = [])
+    public function __construct(Estimator $estimator, array $transformers = [], bool $elastic = true)
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
@@ -61,6 +69,7 @@ class Pipeline implements MetaEstimator, Online, Persistable
         }
 
         $this->estimator = $estimator;
+        $this->elastic = $elastic;
     }
 
     /**
@@ -105,7 +114,9 @@ class Pipeline implements MetaEstimator, Online, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        $this->update($dataset);
+        if ($this->elastic === true) {
+            $this->update($dataset);
+        }
 
         if ($this->estimator instanceof Online) {
             $this->estimator->partial($dataset);

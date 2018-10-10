@@ -2128,6 +2128,7 @@ Pipeline is responsible for transforming the input sample matrix of a Dataset in
 |--|--|--|--|--|
 | 1 | estimator | None | object | An instance of a base estimator to receive transformed datasets. |
 | 2 | transformers | [ ] | array | The transformer middleware to be applied to datasets. |
+| 3 | elastic | true | bool | Should we update elastic transformers during partial train? |
 
 ##### Additional Methods:
 
@@ -2154,12 +2155,14 @@ use Rubix\ML\NeuralNet\Optimizer\RMSProp;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\SparseRandomProjector;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $estimator = new Pipeline(new SoftmaxClassifier(100, new RMSProp(0.01), 1e-2), [
 	new MissingDataImputer(),
 	new OneHotEncoder(),
 	new SparseRandomProjector(30),
-]);
+	new ZScaleStandardizer(true),
+], true);
 
 $estimator->train($dataset); // Transformers are fitted ...
 
