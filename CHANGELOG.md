@@ -4,11 +4,11 @@
     - AdaBoost now uses SAMME multiclass algorithm
     - Added Redis persister
     - Added Max Absolute Scaler
-    - Renamed Online to Elastic estimators
-    - Added Online interface for transformers
-    - Z Scale Standardizer is now Online
-    - Min Max Normalizer is now Online
-    - TF-IDF Transformer is now Online
+    - Pipeline is now Online
+    - Added Elastic interface for transformers
+    - Z Scale Standardizer is now Elastic
+    - Min Max Normalizer is now Elastic
+    - TF-IDF Transformer is now Elastic
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator

@@ -3,6 +3,7 @@
 namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Transformers\Elastic;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
@@ -22,7 +23,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements MetaEstimator, Persistable
+class Pipeline implements MetaEstimator, Online, Persistable
 {
     /**
      * The wrapped estimator instance.
@@ -97,6 +98,21 @@ class Pipeline implements MetaEstimator, Persistable
     }
 
     /**
+     * Perform a partial train.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return void
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        $this->update($dataset);
+
+        if ($this->estimator instanceof Online) {
+            $this->estimator->partial($dataset);
+        }
+    }
+
+    /**
      * Preprocess the dataset and return predictions from the estimator.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -120,6 +136,23 @@ class Pipeline implements MetaEstimator, Persistable
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
                 $transformer->fit($dataset);
+            }
+
+            $dataset->apply($transformer);
+        }
+    }
+
+    /**
+     * Update the fitting of the transformer middleware.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return void
+     */
+    public function update(Dataset $dataset) : void
+    {
+        foreach ($this->transformers as $transformer) {
+            if ($transformer instanceof Elastic) {
+                $transformer->update($dataset);
             }
 
             $dataset->apply($transformer);

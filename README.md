@@ -2121,7 +2121,7 @@ Often, additional processing of input data is required to deliver correct predic
 ### Pipeline
 Pipeline is responsible for transforming the input sample matrix of a Dataset in such a way that can be processed by the base Estimator. Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `predict()`.
 
-##### Classifiers, Regressors, Clusterers, Anomaly Detectors
+##### Meta Estimator | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2134,6 +2134,11 @@ Pipeline is responsible for transforming the input sample matrix of a Dataset in
 Fit the transformer middleware to a dataset:
 ```php
 public fit(Dataset $dataset) : void
+```
+
+Update the fitting of the transformer middleware:
+```php
+public update(Dataset $dataset) : void
 ```
 
 Apply the transformer middleware over a dataset:
@@ -2156,9 +2161,11 @@ $estimator = new Pipeline(new SoftmaxClassifier(100, new RMSProp(0.01), 1e-2), [
 	new SparseRandomProjector(30),
 ]);
 
-$estimator->train($dataset); // Datasets are fit and ...
+$estimator->train($dataset); // Transformers are fitted ...
 
-$estimator->predict($samples); // transformed automatically.
+$estimator->partial($dataset); // Elastic transformers are updated ...
+
+$estimator->predict($samples); // and then transformed automatically.
 ```
 
 Transformer *middleware* will process in the order given when the Pipeline was built and cannot be reordered without instantiating a new one. Since transformers run sequentially, the order in which they run *matters*. For example, a transformer near the end of the stack may depend on a previous transformer to convert all categorical features into continuous ones before it can run.
@@ -2628,7 +2635,7 @@ Ensemble Meta Estimators train and orchestrate a number of base Estimators in or
 ### Bootstrap Aggregator
 Bootstrap Aggregating (or *bagging*) is a model averaging technique designed to improve the stability and performance of a user-specified base Estimator by training a number of them on a unique bootstrapped training set. Bootstrap Aggregator then collects all of their predictions and makes a final prediction based on the results.
 
-##### Classifiers, Regressors, Anomaly Detectors
+##### Meta Estimator | Ensemble | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2661,6 +2668,8 @@ Model selection is the task of selecting a version of a model with a hyperparame
 Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
 
 You can chose which parameters to search manually or you can generate parameters  to be used with Grid Search using the [Params](#params) helper.
+
+##### Meta Estimator | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2731,6 +2740,8 @@ Model persistence is the practice of saving a trained model to disk so that it c
 
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()`, `load()`, and `delete()` that allow the estimator to be stored and retrieved.
+
+##### Meta Estimator
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
