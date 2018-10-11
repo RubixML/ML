@@ -9,6 +9,13 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 interface Validator
 {
     /**
+     * Return the validation scores computed at last test time.
+     * 
+     * @return array|null
+     */
+    public function scores() : ?array;
+
+    /**
     * Test the estimator with the supplied dataset and return a score.
     *
     * @param  \Rubix\ML\Estimator  $estimator

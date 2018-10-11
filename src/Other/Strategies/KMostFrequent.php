@@ -14,7 +14,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMostFrequent implements Categorical
+class KMostFrequent extends Lottery
 {
     /**
      * The number of most frequent categories to guess from.
@@ -22,15 +22,6 @@ class KMostFrequent implements Categorical
      * @var int
      */
     protected $k;
-
-    /**
-     * The categories to consider when making a guess.
-     *
-     * @var array
-     */
-    protected $categories = [
-        //
-    ];
 
     /**
      * @param  int  $k
@@ -48,7 +39,7 @@ class KMostFrequent implements Categorical
     }
 
     /**
-     *  Fit the guessing strategy to a set of values.
+     * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
      * @throws \InvalidArgumentException;
@@ -57,29 +48,16 @@ class KMostFrequent implements Categorical
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
         $categories = array_count_values($values);
 
         arsort($categories);
 
-        $this->categories = array_slice($categories, 0, $this->k, true);
-    }
+        $categories = array_slice($categories, 0, $this->k, true);
 
-    /**
-     * Make a categorical guess.
-     *
-     * @throws \RuntimeException
-     * @return string
-     */
-    public function guess() : string
-    {
-        if (empty($this->categories)) {
-            throw new RuntimeException('Strategy has not been fitted.');
-        }
-
-        return (string) array_rand($this->categories);
+        $this->categories = array_keys($categories);
     }
 }

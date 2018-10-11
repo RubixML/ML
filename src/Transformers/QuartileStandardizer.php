@@ -94,7 +94,7 @@ class QuartileStandardizer implements Transformer, Stateful
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException

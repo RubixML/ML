@@ -67,14 +67,14 @@ class BlurryMean implements Continuous
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
         list($mean, $variance) = Stats::meanVar($values);
 
         $this->mean = $mean;
-        $this->stddev = sqrt($variance);
+        $this->stddev = sqrt($variance ?: self::EPSILON);
     }
 
     /**

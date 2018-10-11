@@ -71,6 +71,7 @@ class GaussianRandomProjector implements Transformer, Stateful
      * Fit the transformer to the dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function fit(Dataset $dataset) : void
@@ -84,7 +85,7 @@ class GaussianRandomProjector implements Transformer, Stateful
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException

@@ -16,7 +16,7 @@ namespace Rubix\ML\Transformers;
 class NumericStringConverter implements Transformer
 {
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @return void

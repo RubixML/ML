@@ -41,8 +41,8 @@ class PopularityContest implements Categorical
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
         $this->n = count($values);
@@ -61,16 +61,18 @@ class PopularityContest implements Categorical
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
+        $class = current($this->popularity);
+
         $random = rand(0, $this->n);
 
         foreach ($this->popularity as $class => $count) {
             $random -= $count;
 
             if ($random <= 0) {
-                return $class;
+                break 1;
             }
         }
 
-        return (string) array_rand($this->popularity);
+        return (string) $class;
     }
 }

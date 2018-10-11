@@ -5,7 +5,7 @@ namespace Rubix\ML\Other\Strategies;
 interface Continuous extends Strategy
 {
     /**
-     * Make a continuous guess.
+     * Make a guess.
      *
      * @return float
      */

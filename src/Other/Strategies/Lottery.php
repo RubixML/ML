@@ -26,13 +26,6 @@ class Lottery implements Categorical
     ];
 
     /**
-     * The number of categories in the lottery.
-     *
-     * @var int
-     */
-    protected $n;
-
-    /**
      * Fit the guessing strategy to a set of values.
      *
      * @param  array  $values
@@ -42,18 +35,17 @@ class Lottery implements Categorical
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
         $categories = array_values(array_unique($values));
 
         $this->categories = $categories;
-        $this->n = count($categories);
     }
 
     /**
-     * Make a categorical guess.
+     * Make a guess.
      *
      * @throws \RuntimeException
      * @return string
@@ -64,6 +56,6 @@ class Lottery implements Categorical
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->categories[rand(0, $this->n - 1)];
+        return $this->categories[rand(0, count($this->categories) - 1)];
     }
 }

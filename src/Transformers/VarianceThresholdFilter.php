@@ -11,9 +11,9 @@ use RuntimeException;
 /**
  * Variance Threshold Filter
  *
- * A type of feature selector that removes all columns that have a lower
- * variance than the threshold. Variance is computed as the population variance
- * of all the values in the feature column.
+ * A type of feature selector that selects feature columns that have a greater
+ * variance than the user-specified threshold. As an extreme example, if a
+ * feature column has a variance of 0 then that feature will all be valued equally.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,7 +22,8 @@ use RuntimeException;
 class VarianceThresholdFilter implements Transformer, Stateful
 {
     /**
-     * The minimum variance a feature column must have in order to be selected.
+     * Feature columns with a variance greater than this threshold will be
+     * selected.
      *
      * @var float
      */
@@ -51,11 +52,13 @@ class VarianceThresholdFilter implements Transformer, Stateful
     }
 
     /**
+     * Return the column indexes that have been selected during fitting.
+     * 
      * @return array
      */
     public function selected() : array
     {
-        return array_keys($this->selected ?? []);
+        return array_keys($this->selected ?: []);
     }
 
     /**
@@ -71,20 +74,18 @@ class VarianceThresholdFilter implements Transformer, Stateful
         foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
                 $values = $dataset->column($column);
-                
-                list($mean, $variance) = Stats::meanVar($values);
 
-                if ($variance > $this->threshold) {
-                    $this->selected[$column] = true;
+                if (Stats::variance($values) <= $this->threshold) {
+                    continue 1;
                 }
-            } else {
-                $this->selected[$column] = true;
             }
+
+            $this->selected[$column] = true;
         }
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -97,7 +98,7 @@ class VarianceThresholdFilter implements Transformer, Stateful
         }
 
         foreach ($samples as &$sample) {
-            $sample = array_values(array_intersect_key($sample, $this->selected));
+            $sample = array_intersect_key($sample, $this->selected);
         }
     }
 }

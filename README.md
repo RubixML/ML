@@ -2276,7 +2276,7 @@ public update(Dataset $dataset) : void
 ### Dense Random Projector
 The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project a sample matrix onto a target dimensionality.
 
-##### Continuous *Only*
+##### Continuous *Only* | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2309,7 +2309,7 @@ int(11841)
 ### Gaussian Random Projector
 A Random Projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project a feature vector onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques and offers similar performance. This version uses a random matrix sampled from a Gaussian distribution.
 
-##### Continuous *Only*
+##### Continuous *Only* | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2342,7 +2342,7 @@ int(7894)
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only* | Stateless
+##### Continuous *Only*
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2360,7 +2360,7 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only* | Stateless
+##### Continuous *Only*
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2378,7 +2378,7 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix as an argument and should return the transformed sample matrix.
 
-##### Categorical | Continuous | Stateless
+##### Categorical | Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2403,7 +2403,7 @@ $transformer = new LambdaFunction(function ($samples) {
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-##### Continuous | Elastic
+##### Continuous | Stateful | Elastic
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2424,7 +2424,7 @@ $transformer = new MaxAbsoluteScaler();
 ### Min Max Normalizer
 The Min Max Normalization scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-##### Continuous | Elastic
+##### Continuous | Stateful | Elastic
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2453,7 +2453,7 @@ $transformer = new MinMaxNormalizer(-5, 5);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given guessing [Strategy](#guessing-strategies).
 
-##### Categorical | Continuous
+##### Categorical | Continuous | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2477,7 +2477,7 @@ $transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityCo
 ### Numeric String Converter
 This handy Transformer will convert all numeric strings into their floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
 
-##### Categorical | Stateless
+##### Categorical
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2495,7 +2495,7 @@ $transformer = new NumericStringConverter();
 ### One Hot Encoder
 The One Hot Encoder takes a column of categorical features and produces a n-d one-hot (numerical) representation where n is equal to the number of unique categories in that column. A 0 indicates that a category is not present in the sample whereas a 1 indicates that a category is present.
 
-##### Categorical
+##### Categorical | Stateful
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2513,7 +2513,7 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
 
-##### Continuous *Only* | Stateless
+##### Continuous *Only*
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2534,7 +2534,7 @@ $transformer = new PolynomialExpander(3);
 
 This standardizer centers the sample matrix around the median and scales each feature according to the interquartile range (*IQR*) for each column. The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
 
-##### Continuous
+##### Continuous | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2563,7 +2563,7 @@ $transformer = new QuartileStandardizer(true);
 ### Robust Standardizer
 This transformer standardizes continuous features by centering around the median and scaling by the median absolute deviation (MAD), a value referred to as robust Z Score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
 
-##### Continuous
+##### Continuous | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2592,7 +2592,7 @@ $transformer = new RobustStandardizer(true);
 ### Sparse Random Projector
 The Sparse Random Projector uses a random matrix sampled from a sparse uniform distribution (mostly 0s) to project a sample matrix onto a target dimensionality.
 
-##### Continuous *Only*
+##### Continuous *Only* | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2625,7 +2625,7 @@ int(663)
 ### TF-IDF Transformer
 Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
-##### Continuous *Only* | Elastic
+##### Continuous *Only* | Stateful | Elastic
 
 ##### Parameters:
 This transformer does not have any parameters.
@@ -2647,14 +2647,14 @@ $transformer = new TfIdfTransformer();
 ```
 
 ### Variance Threshold Filter
-A type of feature selector that removes all columns that have a lower variance than the threshold. Variance is computed as the population variance of all the values in the feature column.
+A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold. As an extreme example, if a feature column has a variance of 0 then that feature will all be valued equally.
 
-##### Continuous
+##### Continuous | Categorical | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | threshold | 0.0 | float | The threshold at which feature columns will be dropped from the dataset. |
+| 1 | threshold | 0. | float | Feature columns with a variance greater than this threshold will be selected. |
 
 ##### Additional Methods:
 
@@ -2673,7 +2673,7 @@ $transformer = new VarianceThresholdFilter(50);
 ### Z Scale Standardizer
 A way of centering and scaling a sample matrix by computing the Z Score for each continuous feature. Z Scores have a mean of 0 and *unit* variance.
 
-##### Continuous | Elastic
+##### Continuous | Stateful | Elastic
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3692,6 +3692,11 @@ Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled
 
 ```php
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
+```
+
+Return the validation scores computed at last test time:
+```php
+public scores() : ?array
 ```
 
 ##### Example:

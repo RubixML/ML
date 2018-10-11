@@ -35,6 +35,13 @@ class HoldOut implements Validator
     protected $stratify;
 
     /**
+     * The validation score of the last test.
+     * 
+     * @var array|null
+     */
+    protected $scores;
+
+    /**
      * @param  float  $ratio
      * @param  bool  $stratify
      * @throws \InvalidArgumentException
@@ -49,6 +56,16 @@ class HoldOut implements Validator
 
         $this->ratio = $ratio;
         $this->stratify = $stratify;
+    }
+
+    /**
+     * Return the validation scores computed at last test time.
+     * 
+     * @return array|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
     }
 
     /**
@@ -70,6 +87,8 @@ class HoldOut implements Validator
         $estimator->train($training);
 
         $score = $metric->score($estimator, $testing);
+
+        $this->scores = [$score];
 
         return $score;
     }

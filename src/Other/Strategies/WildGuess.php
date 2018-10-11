@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Strategies;
 
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -64,12 +65,11 @@ class WildGuess implements Continuous
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
-        $this->min = min($values);
-        $this->max = max($values);
+        list($this->min, $this->max) = Stats::range($values);
     }
 
     /**

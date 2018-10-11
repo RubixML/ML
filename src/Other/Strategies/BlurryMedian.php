@@ -65,11 +65,14 @@ class BlurryMedian implements Continuous
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy needs to be fit with'
-                . ' at least one value.');
+            throw new InvalidArgumentException('Strategy must be fit with'
+                . ' at least 1 value.');
         }
 
-        list($this->median, $this->mad) = Stats::medMad($values);
+        list($median, $mad) = Stats::medMad($values);
+
+        $this->median = $median;
+        $this->mad = $mad ?: self::EPSILON;
     }
 
     /**

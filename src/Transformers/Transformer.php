@@ -9,7 +9,7 @@ interface Transformer
     const EPSILON = 1e-8;
 
     /**
-     * Apply the transformation to the sample matrix.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @return void

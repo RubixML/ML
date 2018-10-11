@@ -79,7 +79,7 @@ class MaxAbsoluteScaler implements Transformer, Elastic
     }
 
     /**
-     * Apply the transformation to the sample matrix.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException

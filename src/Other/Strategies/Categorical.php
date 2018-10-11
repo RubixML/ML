@@ -5,7 +5,7 @@ namespace Rubix\ML\Other\Strategies;
 interface Categorical extends Strategy
 {
     /**
-     * Make a categorical guess.
+     * Make a guess.
      *
      * @return string
      */

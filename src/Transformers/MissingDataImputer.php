@@ -46,11 +46,11 @@ class MissingDataImputer implements Transformer, Stateful
     protected $categorical;
 
     /**
-     * The fitted data imputers.
+     * The guessing strategy per feature column.
      *
      * @var array|null
      */
-    protected $imputers;
+    protected $strategies;
 
     /**
      * @param  mixed  $placeholder
@@ -87,27 +87,29 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->imputers = [];
+        $this->strategies = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CATEGORICAL) {
-                $imputer = clone $this->categorical;
-            } else {
-                $imputer = clone $this->continuous;
-            }
+            $values = $dataset->column($column);
 
-            $values = array_filter($dataset->column($column), function ($value) {
+            $values = array_filter($values, function ($value) {
                 return $value !== $this->placeholder;
             });
 
-            $imputer->fit($values);
+            if ($type === DataFrame::CATEGORICAL) {
+                $strategy = clone $this->categorical;
+            } else {
+                $strategy = clone $this->continuous;
+            }
 
-            $this->imputers[$column] = $imputer;
+            $strategy->fit($values);
+
+            $this->strategies[$column] = $strategy;
         }
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -115,14 +117,14 @@ class MissingDataImputer implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->imputers)) {
+        if (is_null($this->strategies)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as $row => &$sample) {
             foreach ($sample as $column => &$feature) {
                 if ($feature === $this->placeholder) {
-                    $strategy = $this->imputers[$column];
+                    $strategy = $this->strategies[$column];
 
                     $feature = $strategy->guess();
                 }

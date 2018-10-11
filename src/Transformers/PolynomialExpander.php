@@ -42,14 +42,14 @@ class PolynomialExpander implements Transformer
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @return void
      */
     public function transform(array &$samples) : void
     {
-        $columns = count(reset($samples));
+        $columns = count(current($samples));
 
         foreach ($samples as &$sample) {
             $vector = [];

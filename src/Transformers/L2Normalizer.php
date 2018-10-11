@@ -17,7 +17,7 @@ use InvalidArgumentException;
 class L2Normalizer implements Transformer
 {
     /**
-     * Apply the transformation to the sample matrix.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @return void

@@ -43,6 +43,13 @@ class MonteCarlo implements Validator
     protected $stratify;
 
     /**
+     * The validation score of each simulation since the last test.
+     * 
+     * @var array|null
+     */
+    protected $scores;
+
+    /**
      * @param  int  $simulations
      * @param  float  $ratio
      * @param  bool  $stratify
@@ -64,6 +71,16 @@ class MonteCarlo implements Validator
         $this->simulations = $simulations;
         $this->ratio = $ratio;
         $this->stratify = $stratify;
+    }
+
+    /**
+     * Return the validation scores computed at last test time.
+     * 
+     * @return array|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
     }
 
     /**
@@ -91,6 +108,8 @@ class MonteCarlo implements Validator
 
             $scores[] = $metric->score($estimator, $testing);
         }
+
+        $this->scores = $scores;
 
         return Stats::mean($scores);
     }

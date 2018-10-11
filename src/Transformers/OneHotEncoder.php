@@ -57,7 +57,7 @@ class OneHotEncoder implements Transformer, Stateful
     }
 
     /**
-     * Apply the transformation to the samples in the data frame.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -73,17 +73,15 @@ class OneHotEncoder implements Transformer, Stateful
             $vector = [];
 
             foreach ($this->categories as $column => $categories) {
-                $temp = array_fill_keys($categories, 0);
+                $features = array_fill_keys($categories, 0);
 
                 $category = $sample[$column];
 
                 if (isset($categories[$category])) {
-                    $position = $categories[$category];
-
-                    $temp[$position] = 1;
+                    $features[$categories[$category]] = 1;
                 }
 
-                $vector = array_merge($vector, $temp);
+                $vector = array_merge($vector, $features);
 
                 unset($sample[$column]);
             }

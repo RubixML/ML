@@ -42,6 +42,13 @@ class KFold implements Validator
     protected $stratify;
 
     /**
+     * The validation score of each fold since the last test.
+     * 
+     * @var array|null
+     */
+    protected $scores;
+
+    /**
      * @param  int  $k
      * @param  bool  $stratify
      * @throws \InvalidArgumentException
@@ -56,6 +63,16 @@ class KFold implements Validator
 
         $this->k = $k;
         $this->stratify = $stratify;
+    }
+
+    /**
+     * Return the validation scores computed at last test time.
+     * 
+     * @return array|null
+     */
+    public function scores() : ?array
+    {
+        return $this->scores;
     }
 
     /**
@@ -80,11 +97,11 @@ class KFold implements Validator
             $training = new Labeled();
             $testing = null;
 
-            for ($j = 0; $j < $this->k; $j++) {
+            foreach ($folds as $j => $fold) {
                 if ($i === $j) {
-                    $testing = clone $folds[$j];
+                    $testing = clone $fold;
                 } else {
-                    $training = $training->merge($folds[$j]);
+                    $training = $training->merge($fold);
                 }
             }
 
@@ -92,6 +109,8 @@ class KFold implements Validator
 
             $scores[] = $metric->score($estimator, $testing);
         }
+
+        $this->scores = $scores;
 
         return Stats::mean($scores);
     }
