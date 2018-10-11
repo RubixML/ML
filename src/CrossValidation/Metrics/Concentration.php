@@ -9,6 +9,20 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
 
+/**
+ * Concentration
+ *
+ * An unsupervised metric that measures the ratio between the within-cluster
+ * dispersion and the between-cluster dispersion (also called *Calinski-Harabaz*
+ * score).
+ * 
+ * References:
+ * [1] T. Calinski et al. (1974). A dendrite method for cluster analysis.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Concentration implements Metric
 {
     /**

@@ -14,6 +14,10 @@ use InvalidArgumentException;
  * cluster that are also members of the same class. A cluster is said to be
  * *homogenous* when the entire cluster is comprised of a single class of
  * samples.
+ * 
+ * References:
+ * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based
+ * external cluster evaluation measure.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

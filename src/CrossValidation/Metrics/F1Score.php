@@ -10,8 +10,7 @@ use InvalidArgumentException;
 /**
  * F1 Score
  *
- * The F1 Score is the harmanic balance between *precision* and *recall*. A
- * score of 1 indicates perfect precision and recall.
+ * A weighted average of precision and recall with equal relative contribution.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

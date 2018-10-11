@@ -12,7 +12,7 @@ use InvalidArgumentException;
  * Median Absolute Error
  *
  * Median Absolute Error (MAE) is a robust measure of the error that ignores
- * highly erroneous predections.
+ * highly erroneous predictions.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

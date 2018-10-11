@@ -118,10 +118,6 @@ MIT
 				- [Redis DB](#redis-db)
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
-	- [Estimator Interfaces](#estimator-interfaces)
-		- [Online](#online)
-		- [Probabilistic](#probabilistic)
-		- [Persistable](#persistable)
 	- [Neural Network](#neural-network)
 		- [Activation Functions](#activation-functions)
 			- [ELU](#elu)
@@ -187,10 +183,19 @@ MIT
 			- [Leave P Out](#leave-p-out)
 			- [Monte Carlo](#monte-carlo)
 		- [Metrics](#validation-metrics)
-			- [Anomaly Detection](#anomaly-detection)
-			- [Classification](#classification)
-			- [Clustering](#clustering)
-			- [Regression](#regression)
+			- [Accuracy](#accuracy)
+			- [Completeness](#completeness)
+			- [Concentration](#concentration)
+			- [F1 Score](#f1-score)
+			- [Homogeneity](#homogeneity)
+			- [Informedness](#informedness)
+			- [MCC](#mcc)
+			- [Mean Absolute Error](#mean-absolute-error)
+			- [Mean Squared Error](#mean-squared-error)
+			- [Median Absolute Error](#median-absolute-error)
+			- [RMS Error](#rms-error)
+			- [R Squared](#r-squared)
+			- [V Measure](#v-measure)
 	- [Reports](#reports)
 		- [Aggregate Report](#aggregate-report)
 		- [Confusion Matrix](#confusion-matrix)
@@ -228,8 +233,9 @@ Machine learning is the process by which a computer program is able to progressi
 - **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and works by finding patterns within the training samples to learn new insights.
 	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating tissues in PET scan images.
 	- **Anomaly Detection** is the flagging of samples that do not conform to an expected pattern that is learned during training. Anomalous samples can often indicate adversarial activity, bad data, or exceptional performance.
+	- **Manifold Learning** is a method of producing a low dimensional (2 - 3) representation of a high dimensional (> 3) feature space such that the data can easily be visualized.
 
-When first starting out, it sometimes helps to make the distinction between *traditional* programming and machine learning. In traditional programming, you are given an input and output specification and it is your job to write the logic that maps inputs to the desired outputs. With machine learning, it is the algorithm that writes the function that does the input/output mapping and instead it is your job to design the model such that, when you feed it data, it can learn the mapping. For this reason, you can think of machine learning as "programming with data."
+When first starting out, it sometimes helps to make the distinction between *traditional* programming and machine learning. In traditional programming, you are given an input and output specification and it is your job to write the logic that maps inputs to the desired outputs. With machine learning, it is the algorithm that writes the function that does the input/output mapping. It is your job to design the model such that, when you feed it data, it can learn the appropriate mapping. For this reason, you can think of machine learning as *programming with data*.
 
 ### Obtaining Data
 Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the dimensionality of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The idea is to engineer enough of the right features for the model to be able to recognize patterns in the data.
@@ -245,7 +251,7 @@ Here are a few libraries that we recommend that will help you get started extrac
 - [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
 
 #### The Dataset Object
-Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) extend the PHP array structure with methods that properly handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of Datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions. Dataset objects have a mutability policy of *generally* immutable except for performance reasons such as applying a [Transformer](#transformers).
+Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) properly handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions (*inference*). Dataset objects have a mutability policy of *generally* immutable except for performance reasons such as applying a [Transformer](#transformers).
 
 For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) about their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled Dataset](#labeled) from this data like so:
 
@@ -355,9 +361,11 @@ float(0.945)
 ```
 
 ### Visualization
-Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what Rubix has to offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate your predictions.
+Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what Rubix has to offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate the insights you obtain.
 
 If you are looking for a place to start, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
+
+If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite spreadsheet or plotting software.
 
 ### Next Steps
 After you've gone through this basic introduction to machine learning in Rubix, we highly recommend reading over the [API Reference](#api-reference) to get an idea of what the library can do. The API Reference is the place you'll go to get detailed information and examples about the classes that make up the library. If you have a question or need help, feel free to post on our Github page.
@@ -366,12 +374,12 @@ After you've gone through this basic introduction to machine learning in Rubix, 
 ### API Reference
 
 ### Datasets
-Data is what powers machine learning programs so naturally we treat it as a first-class citizen. Rubix provides a number of classes that help you wrangle and even generate data.
+Data is what powers machine learning programs so naturally we treat it as a first-class citizen. Rubix provides a number of classes that help you move, manipulate, and even generate data.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to handle data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way.
 
-There are two *types* of data that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently in Rubix.
+There are two *types* of data that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently.
 
 ##### Example:
 ```php
@@ -384,7 +392,7 @@ $samples = [
 $dataset = new Unlabeled($samples);
 ```
 
-The Dataset interface has a robust API designed to make handling datasets fast and easy. Below you'll find a description of the various methods available.
+The Dataset interface has a robust API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available.
 
 #### Selecting
 
@@ -754,7 +762,7 @@ Unlabeled datasets can be used to train *unsupervised* Estimators and for feedin
 
 
 ##### Additional Methods:
-This Dataset does not have any additional methods.
+This dataset does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1094,6 +1102,8 @@ public embed(Dataset $dataset) : array
 ### t-SNE
 T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
+##### Unsupervised
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -1125,9 +1135,9 @@ $embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100
 
 ---
 ### Estimators
-Estimators are the core of the Rubix library and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
+Estimators are the core of Rubix and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators can be supervised or unsupervised depending on the task and can employ methods on top of the basic Estimator API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
 
-To train an Estimator pass it a training Dataset:
+To train an Estimator pass it a training dataset:
 ```php
 public train(Dataset $training) : void
 ```
@@ -1156,7 +1166,7 @@ $testing = $dataset->take(3);
 // Train the estimator with the labeled dataset
 $estimator->train($dataset);
 
-// Make some predictions on the holdout set
+// Make some predictions on the "holdout" set
 $result = $estimator->predict($testing);
 
 var_dump($result);
@@ -1171,10 +1181,65 @@ array(3) {
 }
 ```
 
+### Online
+
+Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
+
+You can partially train an Online estimator with:
+```php
+public partial(Dataset $dataset) : void
+```
+
+##### Example:
+```php
+...
+$datasets = $dataset->fold(3);
+
+$estimator->partial($dataset[0]);
+
+$estimator->partial($dataset[1]);
+
+$estimator->partial($dataset[2]);
+```
+
+It is *important* to note that an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
+
+---
+### Probabilistic
+
+Some [Estimators](#estimators) may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular outcome.
+
+Calculate probability estimates:
+```php
+public proba(Dataset $dataset) : array
+```
+
+##### Example:
+```php
+...
+$probabilities = $estimator->proba($dataset->head(2));  
+
+var_dump($probabilities);
+```
+
+##### Output:
+```sh
+array(2) {
+	[0] => array(2) {
+		['married'] => 0.975,
+		['divorced'] => 0.025,
+	}
+	[1] => array(2) {
+		['married'] => 0.200,
+		['divorced'] => 0.800,
+	}
+}
+```
+
 ---
 ### Anomaly Detectors
 
-[Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, sciences, and many other areas. The output of a Detector is either *0* for a normal sample or *1* for a detected anomaly.
+[Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, the sciences, and many other areas. The output of a Detector is a binary encoding (either *0* for a normal sample or *1* for a detected anomaly).
 
 ### Isolation Forest
 An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
@@ -1287,7 +1352,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | rate | 1.0 | float | The learning rate i.e step size. |
-| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
 | 6 | tolerance | 1e-8 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
@@ -1316,7 +1381,7 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 0.5, 1e-2
 ```
 
 ### Classification Tree
-A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily search for the best splits in a training set.
+A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily construct a decision tree for classification. It is multi modal in the sense that it can handle both categorical and continuous data at the same time.
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -1351,7 +1416,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 
 ##### Additional Methods:
-This Meta Estimator does not have any additional methods.
+This estimator does not have any additional methods.
 
 ##### Example:
 ```php
@@ -1418,7 +1483,7 @@ $estimator = new ExtraTreeClassifier(50, 3, 4);
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function (*PDF*) over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
 
-##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1476,7 +1541,7 @@ $estimator = new KDNeighbors(3, 10, new Euclidean());
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time. The advantage KNN has over [KD Neighbors](#k-d-neighbors)  is that it is more precise and capable of online learning.
 
-##### Supervised | Multiclass | Probabilistic | Elastic | Persistable | Nonlinear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1498,7 +1563,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ### Logistic Regression
 A type of linear classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes. Logistic Regression measures the relationship between the class label and one or more independent variables by estimating probabilities.
 
-##### Supervised | Binary | Elastic | Probabilistic | Persistable | Linear
+##### Supervised | Binary | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1534,7 +1599,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new Exponent
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
 
-##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1586,7 +1651,7 @@ $estimator = new MultiLayerPerceptron([
 ### Naive Bayes
 Probability-based classifier that uses probabilistic inference to derive the predicted class. The posterior probabilities are calculated using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part relates to the fact that it assumes that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world.
 
-##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Nonlinear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1639,7 +1704,7 @@ $estimator = new RandomForest(ClassificationTree(10, 3, 5, 1e-2), 400, 0.1);
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer [neural network](#neural-network) with a Softmax output layer.
 
-##### Supervised | Multiclass | Elastic | Probabilistic | Persistable | Linear
+##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1772,7 +1837,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters set by the parameter K.
 
-##### Unsupervised | Elastic | Persistable | Linear
+##### Unsupervised | Online | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1837,7 +1902,7 @@ Regression analysis is used to predict the outcome of an event where the value i
 ### Adaline
 Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear).
 
-##### Supervised | Elastic | Persistable | Linear
+##### Supervised | Online | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1969,7 +2034,7 @@ $estimator = new KDNRegressor(5, 20, new Euclidean());
 ### KNN Regressor
 A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems. The advantage of KNN Regressor over [KDN Regressor](#k-d-neighbors-regressor) is that it is more precise and capable of online learning.
 
-##### Supervised | Elastic | Persistable | Nonlinear
+##### Supervised | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1991,7 +2056,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ### MLP Regressor
 A [Neural Network](#neural-network) with a linear output layer suitable for regression problems. The MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
-##### Supervised | Persistable | Nonlinear
+##### Supervised | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2176,12 +2241,6 @@ Transformer *middleware* will process in the order given when the Pipeline was b
 ### Transformers
 Transformers take sample matrices and transform them in various ways. A common transformation is scaling and centering the values using one of the Standardizers ([Z Scale](#z-scale-standardizer), [Robust](#robust-standardizer), [Quartile](#quartile-standardizer)). Transformers can be used with the [Pipeline](#pipeline) meta-estimator or they can be used on their own.
 
-The fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a transformer like *training* an estimator. Not all transformers need to be fit to the dataset. When in doubt, call `fit()` anyways.
-
-```php
-public fit(Dataset $dataset) : void
-```
-
 The transformer directly modifies a sample matrix via the `transform()` method.
 
 ```php
@@ -2198,6 +2257,20 @@ use Rubix\ML\Transformers\MinMaxNormalizer;
 $transformer = new MinMaxNormalizer();
 
 $dataset->apply($transformer);
+```
+
+### Stateful
+For stateful transformers, the fit method will allow the transformer to compute any necessary information from the training set in order to carry out its transformations. You can think of *fitting* a transformer like *training* an estimator.
+
+```php
+public fit(Dataset $dataset) : void
+```
+
+### Elastic
+Some transformers are able to adapt as new data comes in. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer after it has already been fitted.
+
+```php
+public update(Dataset $dataset) : void
 ```
 
 ### Dense Random Projector
@@ -2852,64 +2925,6 @@ public info() : array
 use Rubix\ML\Persisters\RedisDB;
 
 $persister = new RedisDB('127.0.0.1', 6379, 1, 'sentiment', 'password', 1.5);
-```
-
----
-### Estimator Interfaces
-
-### Online
-
-Certain [Estimators](#estimators) that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to grow as new data is acquired.
-
-You can partially train an Online estimator with:
-```php
-public partial(Dataset $dataset) : void
-```
-
-##### Example:
-```php
-...
-$datasets = $dataset->fold(3);
-
-$estimator->partial($dataset[0]);
-
-$estimator->partial($dataset[1]);
-
-$estimator->partial($dataset[2]);
-```
-
-It is *important* to note that an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
-
----
-### Probabilistic
-
-Some [Estimators](#estimators) may implement the *Probabilistic* interface, in which case, they will have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the Estimator is certain about a particular outcome.
-
-Calculate probability estimates:
-```php
-public proba(Dataset $dataset) : array
-```
-
-##### Example:
-```php
-...
-$probabilities = $estimator->proba($dataset->head(2));  
-
-var_dump($probabilities);
-```
-
-##### Output:
-```sh
-array(2) {
-	[0] => array(2) {
-		['married'] => 0.975,
-		['divorced'] => 0.025,
-	}
-	[1] => array(2) {
-		['married'] => 0.200,
-		['divorced'] => 0.800,
-	}
-}
 ```
 
 ---
@@ -3764,14 +3779,14 @@ $validator = new MonteCarlo(30, 0.1);
 
 ### Validation Metrics
 
-Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels. The output of the Metric's `score()` method is a scalar score. You can output a [tuple](#what-is-a-tuple) of minimum and maximum scores with the `range()` method.
+Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels.
 
-To compute a validation score on an Estimator with a Labeled Dataset:
+To compute a validation score, pass in a trained estimator and a testing set:
 ```php
-public score(Estimator $estimator, Labeled $testing) : float
+public score(Estimator $estimator, Dataset $testing) : float
 ```
 
-To output the range of values the metric can take on:
+To output the range of values the metric can take on in a 2-tuple:
 ```php
 public range() : array
 ```
@@ -3800,49 +3815,161 @@ array(2) {
 float(-0.99846070553066)
 ```
 
-There are different metrics for the different types of Estimators listed below.
+### Accuracy
+Accuracy is a quick classification and detection metric defined as the number of true positives over all samples in the testing set.
 
-### Anomaly Detection
-| Metric | Range |  Description |
-|--|--|--|
-| Accuracy | (0, 1) | A quick metric that computes the accuracy of the detector. |
-| F1 Score | (0, 1) | A metric that takes the precision and recall  into consideration. |
-
-### Classification
-| Metric | Range |  Description |
-|--|--|--|
-| Accuracy | (0, 1) | A quick metric that computes the accuracy of the classifier. |
-| F1 Score | (0, 1) | A metric that takes the precision and recall of into consideration. |
-| Informedness | (0, 1) | Measures the probability of making an informed prediction by looking at the sensitivity and specificity of each class outcome. |
-| MCC | (-1, 1) | Matthews Correlation Coefficient is a coefficient between the observed and predicted binary classifications. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction, and −1 indicates total disagreement between prediction and label. |
-
-
-### Clustering
-| Metric | Range | Description |
-|--|--|--|
-| Completeness | (0, 1) | A measure of the class outcomes that are predicted to be in the same cluster. |
-| Concentration | (-INF, INF) | A score that measures the ratio between the within-cluster dispersion and the between-cluster dispersion (also called *Calinski Harabaz* score).
-| Homogeneity | (0, 1) | A measure of the cluster assignments that are known to be in the same class. |
-| V Measure | (0, 1) | The harmonic mean between Homogeneity and Completeness. |
+##### Classification | Detection
 
 ##### Example:
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 
 $metric = new Accuracy();
+```
+
+### Completeness
+A ground-truth (requiring labels) clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
+
+##### Clustering
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\Completeness;
+
+$metric = new Completeness();
+```
+
+### Concentration
+An unsupervised metric that measures the ratio between the within-cluster dispersion and the between-cluster dispersion (also called *Calinski-Harabaz* score).
+
+##### Clustering
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\Concentration;
+
+$metric = new Concentration();
+```
+
+### F1 Score
+A weighted average of precision and recall with equal relative contribution.
+
+##### Classification | Detection
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\F1Score;
+
+$metric = new F1Score();
+```
+
+### Homogeneity
+A ground-truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogenous* when the entire cluster is comprised of a single class of samples.
+
+##### Clustering
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 
 $metric = new Homogeneity();
 ```
 
-### Regression
-| Metric | Range | Description |
-|--|--|--|
-| Mean Absolute Error | (-INF, 0) | The average absolute difference between the actual and predicted values. |
-| Median Absolute Error | (-INF, 0) | The median absolute difference between the actual and predicted values. |
-| Mean Squared Error | (-INF, 0) | The average magnitude or squared difference between the actual and predicted values. |
-| RMS Error | (-INF, 0) | The root mean squared difference between the actual and predicted values. |
-| R-Squared | (-INF, 1) | The R-Squared value, or sometimes called coefficient of determination is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). |
+### Informedness
+Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
+
+##### Classification
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\Informedness;
+
+$metric = new Informedness();
+```
+
+### MCC
+Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
+
+##### Classification
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\MCC;
+
+$metric = new MCC();
+```
+
+### Mean Absolute Error
+A metric that measures the average amount that a prediction is off by given some ground truth (labels).
+
+##### Regression
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
+
+$metric = new MeanAbsoluteError();
+```
+
+### Mean Squared Error
+A regression metric that punishes bad predictions the worse they get by averaging the *squared* error  over the testing set.
+
+##### Regression
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
+
+$metric = new MeanSquaredError();
+```
+
+### Median Absolute Error
+Median Absolute Error (MAE) is a robust measure of the error that ignores highly erroneous predictions.
+
+##### Regression
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
+
+$metric = new MedianAbsoluteError();
+```
+
+### RMS Error
+Root Mean Squared Error or average L2 loss is a metric that is used to measure the residuals of a regression problem.
+
+##### Regression
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\RMSError;
+
+$metric = new RMSError();
+```
+
+### R Squared
+The *coefficient of determination* or R Squared is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
+
+##### Regression
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+
+$metric = new RSquared();
+```
+
+### V Measure
+V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
+
+##### Clustering
+
+##### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
+
+$metric = new VMeasure();
+```
 
 ---
 ### Reports
@@ -4405,7 +4532,7 @@ Not currently. As far as we know, PHP does not have any Basic Linear Algebra Sub
 Not currently, and doing so is not trivial either due to PHP's architecture, however we do plan to add CPU multithreading to some Estimators in the future. We do not intend to support for GPU processing as (outside neural nets) that would not be much of a benefit for the types of problems that Rubix aims to solve.
 
 ### Do you plan to support reinforcement learning?
-No. Rubix is for *supervised* and *unsupervised* learning only.
+No. Rubix is designed for *supervised* and *unsupervised* learning only.
 
 ---
 ## Testing

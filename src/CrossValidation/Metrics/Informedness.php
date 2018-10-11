@@ -12,7 +12,7 @@ use InvalidArgumentException;
  *
  * Informedness is a measure of the probability that an estimator will make an
  * informed decision. The index was suggested by W.J. Youden as a way of
- * summarising the performance of a diagnostic test. Its value ranges from 0
+ * summarizing the performance of a diagnostic test. Its value ranges from 0
  * through 1 and has a zero value when the test gives the same proportion of
  * positive results for groups with and without the disease, i.e the test is
  * useless.

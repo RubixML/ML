@@ -10,8 +10,12 @@ use InvalidArgumentException;
 /**
  * V Measure
  *
- * V Measure is the hamonic balance between homogeneity and completness and is
- * used as a measure to determine the quality of a clustering.
+ * V Measure is the harmonic balance between homogeneity and completeness
+ * and is used as a measure to determine the quality of a clustering.
+ * 
+ * References:
+ * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based
+ * external cluster evaluation measure.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
