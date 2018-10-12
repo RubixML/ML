@@ -240,21 +240,21 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
-            $cost = 0.;
+            $loss = 0.;
 
             foreach ($batches as $batch) {
-                $cost += $this->network->roundtrip($batch);
+                $loss += $this->network->roundtrip($batch);
             }
 
-            $cost /= $n;
+            $loss /= $n;
 
-            $this->steps[] = $cost;
+            $this->steps[] = $loss;
 
-            if (abs($previous - $cost) < $this->minChange) {
+            if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $cost;
+            $previous = $loss;
         }
     }
 

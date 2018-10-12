@@ -176,10 +176,12 @@ class Adaline implements Estimator, Online, Persistable
     }
 
     /**
-    * @param  \Rubix\ML\Datasets\Dataset  $dataset
-    * @throws \InvalidArgumentException
-    * @return void
-    */
+     * Train the estimator with a dataset.
+     * 
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return void
+     */
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
@@ -202,7 +204,7 @@ class Adaline implements Estimator, Online, Persistable
 
     /**
      * Perform mini-batch gradient descent with given optimizer over the training
-     * set and update the input weights accordingly.
+     * set and update the model.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -232,21 +234,21 @@ class Adaline implements Estimator, Online, Persistable
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
-            $cost = 0.;
+            $loss = 0.;
 
             foreach ($batches as $batch) {
-                $cost += $this->network->roundtrip($batch);
+                $loss += $this->network->roundtrip($batch);
             }
 
-            $cost /= $n;
+            $loss /= $n;
 
-            $this->steps[] = $cost;
+            $this->steps[] = $loss;
 
-            if (abs($previous - $cost) < $this->minChange) {
+            if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $cost;
+            $previous = $loss;
         }
     }
 

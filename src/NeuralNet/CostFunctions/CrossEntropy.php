@@ -22,29 +22,6 @@ use InvalidArgumentException;
 class CrossEntropy implements CostFunction
 {
     /**
-     * The derivative smoothing parameter i.e a small value to add to the
-     * denominator of the derivative calculation for numerical stability.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
-     * @param  float  $epsilon
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function __construct(float $epsilon = 1e-20)
-    {
-        if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0.');
-        }
-
-        $this->epsilon = $epsilon;
-    }
-
-    /**
      * Return a tuple of the min and max output value for this function.
      *
      * @return float[]
@@ -55,7 +32,7 @@ class CrossEntropy implements CostFunction
     }
 
     /**
-     * Compute the cost.
+     * Compute the loss matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -63,13 +40,14 @@ class CrossEntropy implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return $activations->negate()->multiply($expected)
+        return $activations->negate()
+            ->multiply($expected)
             ->add($activations->exp()->addScalar(1.)->log());
     }
 
     /**
-     * Calculate the derivatives of the cost function with respect to the
-     * output activation.
+     * Calculate the gradient of the cost function with respect to the
+     * activation.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -78,11 +56,10 @@ class CrossEntropy implements CostFunction
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        $ones = Matrix::ones(...$activations->shape());
-
-        $denominator = $ones->subtract($activations)
+        $denominator = Matrix::ones(...$activations->shape())
+            ->subtract($activations)
             ->multiply($activations)
-            ->addScalar($this->epsilon);
+            ->clip(self::EPSILON, INF);
 
         return $activations->subtract($expected)
             ->divide($denominator);

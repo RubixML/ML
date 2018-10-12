@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 
 interface CostFunction
 {
+    const EPSILON = 1e-8;
+    
     /**
      * Return a tuple of the min and max output value for this function.
      *
@@ -14,7 +16,7 @@ interface CostFunction
     public function range() : array;
 
     /**
-     * Compute the cost.
+     * Compute the loss matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -23,8 +25,8 @@ interface CostFunction
     public function compute(Matrix $expected, Matrix $activations) : Matrix;
 
     /**
-     * Calculate the derivatives of the cost function with respect to the
-     * output activation.
+     * Calculate the gradient of the cost function with respect to the
+     * activation.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations

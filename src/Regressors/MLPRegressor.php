@@ -315,17 +315,17 @@ class MLPRegressor implements Estimator, Online, Persistable
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             $batches = $training->randomize()->batch($this->batchSize);
 
-            $cost = 0.;
+            $loss = 0.;
 
             foreach ($batches as $batch) {
-                $cost += $this->network->roundtrip($batch);
+                $loss += $this->network->roundtrip($batch);
             }
 
-            $cost /= $n;
+            $loss /= $n;
 
             $score = $this->metric->score($this, $testing);
 
-            $this->steps[] = $cost;
+            $this->steps[] = $loss;
             $this->scores[] = $score;
 
             if ($score > $bestScore) {
@@ -337,7 +337,7 @@ class MLPRegressor implements Estimator, Online, Persistable
                 break 1;
             }
 
-            if (abs($previous - $cost) < $this->minChange) {
+            if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 

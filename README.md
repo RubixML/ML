@@ -3117,9 +3117,7 @@ In neural networks, the cost function is a function that the network wants to mi
 Cross Entropy, or log loss, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
 
 ##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | epsilon | 1e-20 | float | The smoothing parameter i.e a small value to add to the loss for numerical stability. |
+This cost function does not have any parameters.
 
 ##### Example:
 ```php
@@ -3175,9 +3173,7 @@ $costFunction = new LeastSquares();
 Relative Entropy or *Kullback-Leibler divergence* is a measure of how the expectation and activation of the network diverge.
 
 ##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | epsilon | 1e-20 | float | The smoothing parameter i.e a small value to add to the loss for numerical stability. |
+This cost function does not have any parameters.
 
 ##### Example:
 ```php

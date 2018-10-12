@@ -213,15 +213,15 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                 }
             }
 
-            $distance = $this->interClusterDistance($dataset, $memberships);
+            $loss = $this->interClusterDistance($dataset, $memberships);
 
-            $this->steps[] = $distance;
+            $this->steps[] = $loss;
 
-            if (abs($distance - $previous) < $this->minChange) {
+            if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $distance;
+            $previous = $loss;
         }
     }
 
@@ -299,7 +299,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     }
 
     /**
-     * Return the inter-cluster distance.
+     * Calculate the inter-cluster distance.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return float

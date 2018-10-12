@@ -251,27 +251,27 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $predictions = $estimator->predict($dataset);
 
-            $error = 0.;
+            $loss = 0.;
 
             foreach ($predictions as $i => $prediction) {
                 if ($prediction !== $labels[$i]) {
-                    $error += $this->weights[$i];
+                    $loss += $this->weights[$i];
                 }
             }
 
             $total = array_sum($this->weights);
 
-            $error /= $total;
+            $loss /= $total;
 
             $influence = $this->rate
-                * (log((1. - $error) / ($error ?: self::EPSILON))
+                * (log((1. - $loss) / ($loss ?: self::EPSILON))
                 + log($k - 1));
 
             $this->ensemble[] = $estimator;
-            $this->steps[] = $error;
+            $this->steps[] = $loss;
             $this->influence[] = $influence;
 
-            if ($error < $this->tolerance or $total < 0.) {
+            if ($loss < $this->tolerance or $total < 0.) {
                 break 1;
             }
 

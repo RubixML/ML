@@ -24,11 +24,11 @@ class LeastSquaresTest extends TestCase
         $this->activation = new Matrix([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
         $this->delta = new Matrix([
-            [2.0402000000000062],
-            [2.],
-            [89.78],
-            [3.6450000000000076],
-            [0.125],
+            [4.0804000000000125],
+            [4.],
+            [179.56],
+            [7.290000000000015],
+            [0.25],
         ]);
 
         $this->costFunction = new LeastSquares();

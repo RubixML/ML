@@ -18,29 +18,6 @@ use InvalidArgumentException;
 class RelativeEntropy implements CostFunction
 {
     /**
-     * The derivative smoothing parameter i.e a small value to add to the
-     * denominator of the derivative calculation for numerical stability.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
-     * @param  float  $epsilon
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function __construct(float $epsilon = 1e-20)
-    {
-        if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0.');
-        }
-
-        $this->epsilon = $epsilon;
-    }
-
-    /**
      * Return a tuple of the min and max output value for this function.
      *
      * @return float[]
@@ -51,7 +28,7 @@ class RelativeEntropy implements CostFunction
     }
 
     /**
-     * Compute the cost.
+     * Compute the loss matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -59,15 +36,16 @@ class RelativeEntropy implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        $expected = $expected->clip($this->epsilon, 1.);
-        $activations = $activations->clip($this->epsilon, 1.);
+        $expected = $expected->clip(self::EPSILON, 1.);
+        $activations = $activations->clip(self::EPSILON, 1.);
 
-        return $expected->multiply($expected->divide($activations)->log());
+        return $expected->divide($activations)->log()
+            ->multiply($expected);
     }
 
     /**
-     * Calculate the derivatives of the cost function with respect to the
-     * output activation.
+     * Calculate the gradient of the cost function with respect to the
+     * activation.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -76,8 +54,8 @@ class RelativeEntropy implements CostFunction
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        $expected = $expected->clip($this->epsilon, 1.);
-        $activations = $activations->clip($this->epsilon, 1.);
+        $expected = $expected->clip(self::EPSILON, 1.);
+        $activations = $activations->clip(self::EPSILON, 1.);
 
         return $activations->subtract($expected)
             ->divide($activations);

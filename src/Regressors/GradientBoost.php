@@ -208,32 +208,32 @@ class GradientBoost implements Estimator, Ensemble, Persistable
 
             $predictions = $estimator->predict($dataset);
 
-            $error = 0.;
+            $loss = 0.;
             $yHat = [];
 
             foreach ($predictions as $i => $prediction) {
                 $label = $dataset->label($i);
 
-                $error += ($label - $prediction) ** 2;
+                $loss += ($label - $prediction) ** 2;
                 $yHat[] = $label - ($this->rate * $prediction);
             }
 
-            $error /= $n;
+            $loss /= $n;
 
             $this->ensemble[] = $estimator;
-            $this->steps[] = $error;
+            $this->steps[] = $loss;
 
-            if (abs($previous - $error) < $this->minChange) {
+            if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
-            if ($error < $this->tolerance) {
+            if ($loss < $this->tolerance) {
                 break 1;
             }
 
-            $dataset = new Labeled($dataset->samples(), $yHat);
+            $dataset = new Labeled($dataset->samples(), $yHat, false);
 
-            $previous = $error;
+            $previous = $loss;
         }
     }
 

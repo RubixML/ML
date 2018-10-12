@@ -61,7 +61,7 @@ class HuberLoss implements CostFunction
     }
 
     /**
-     * Compute the cost.
+     * Compute the loss matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations
@@ -76,8 +76,8 @@ class HuberLoss implements CostFunction
     }
 
     /**
-     * Calculate the derivatives of the cost function with respect to the
-     * output activation.
+     * Calculate the gradient of the cost function with respect to the
+     * activation.
      *
      * @param  \Rubix\Tensor\Matrix  $expected
      * @param  \Rubix\Tensor\Matrix  $activations

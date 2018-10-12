@@ -25,10 +25,10 @@ class RelativeEntropyTest extends TestCase
 
         $this->delta = new Matrix([
             [0.010050335852491413],
-            [-4.444226394744681E-19],
-            [-4.569502691594218E-19],
+            [-1.6811242831518263E-7],
+            [-1.8064005800013633E-7],
             [0.22314355128920965],
-            [-4.2139678854452766E-19],
+            [-1.4508657738524219E-7],
         ]);
 
         $this->costFunction = new RelativeEntropy();
@@ -57,10 +57,10 @@ class RelativeEntropyTest extends TestCase
 
         $outcome = [
             [-0.01010101010101011],
-            [1.0],
-            [1.0],
+            [0.9999999500000001],
+            [0.9999999857142856],
             [-0.24999999999999994],
-            [1.0],
+            [0.9999994999999999],
         ];
 
         $this->assertEquals($outcome, $derivative);
