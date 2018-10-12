@@ -17,8 +17,10 @@ use RuntimeException;
 /**
  * K-d Neighbors Regressor
  *
- * A fast implementation of K Nearest Neighbors regression using a K-d tree. The
- * advantage of K-d Neighbors over KNN is speed and added variance to the
+ * A fast approximating implementation of KNN Regressor using a K-d tree. The KDN
+ * Regressor works by locating the neighborhood of a sample via binary search and
+ * then does a brute force search only on the samples in the neighborhood. The
+ * main advantage of K-d Neighbors over KNN is speed and added variance to the
  * predictions (if that is desired).
  *
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for

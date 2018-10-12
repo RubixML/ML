@@ -1196,11 +1196,11 @@ public partial(Dataset $dataset) : void
 ...
 $datasets = $dataset->fold(3);
 
-$estimator->partial($dataset[0]);
+$estimator->partial($datasets[0]);
 
-$estimator->partial($dataset[1]);
+$estimator->partial($datasets[1]);
 
-$estimator->partial($dataset[2]);
+$estimator->partial($datasets[2]);
 ```
 
 It is *important* to note that an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
@@ -1354,7 +1354,7 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | rate | 1.0 | float | The learning rate i.e step size. |
 | 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
-| 6 | tolerance | 1e-8 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -1445,7 +1445,7 @@ A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | strategy | PopularityContest | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| 1 | strategy | Popularity Contest | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1459,7 +1459,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree Classifier
-An Extremely Randomized Classification Tree that splits the training set at a random point chosen among the maximum features. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the "weak" classifier or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+n Extremely Randomized Classification Tree, Extra Trees differ from standard [Classification Trees](#classification-tree) in that they choose a random split drawn from a set max features, rather than the *best* split. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -1578,7 +1578,7 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 
 ##### Additional Methods:
 
-Return the average cost of a sample at each epoch of training:
+Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1605,7 +1605,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
+| 1 | hidden | None | array | An array composing the hidden layers of the neural network. |
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
@@ -1618,7 +1618,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 
 ##### Additional Methods:
 
-Return the average cost of a sample at each epoch of training:
+Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1637,15 +1637,23 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\NeuralNet\Layers\Dropout;
+use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultiLayerPerceptron([
-	new Dense(30, new ELU()),
-	new Dense(30, new ELU()),
-	new Dense(30, new ELU()),
+	new Dense(30),
+	new Activation(new ELU()),
+	new Dropout(0.3),
+	new Dense(20),
+	new Activation(new ELU()),
+	new Dropout(0.2),
+	new Dense(10),
+	new Activation(new ELU()),
+	new Dropout(0.1),
 ], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, PHP_INT_MAX);
 ```
 
@@ -1680,7 +1688,7 @@ $estimator = new NaiveBayes(0.5, true);
 ```
 
 ### Random Forest
-[Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap*) of the training data. A prediction is made based on the probability scores returned from each tree in the forest weighted equally.
+[Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap*) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
 
 ##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
 
@@ -1719,7 +1727,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 
 ##### Additional Methods:
 
-Return the average cost of a sample at each epoch of training:
+Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1740,10 +1748,10 @@ $estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new Cros
 
 ---
 ### Clusterers
-Clustering is a common technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Clusterers take unlabeled data points and assign them a label (cluster). The return value of each prediction is the cluster number each sample was assigned to.
+Clustering is a common technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Clusterers take unlabeled data points and assign them a label (cluster). The return value of each prediction is the cluster number each sample was assigned to (ex. 1, 2, ..., c).
 
 ### DBSCAN
-Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors) as well.
+Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors).
 
 ##### Unsupervised | Persistable | Nonlinear
 
@@ -1765,7 +1773,7 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
 ### Fuzzy C Means
-Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both K Means and Gaussian Mixture Models in that they require a priori knowledge of the number (parameter *c*) of clusters.
+Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both [K Means](#k-means) and [Gaussian Mixture](#gaussian-mixture) models in that they require a priori knowledge of the number (parameter *c*) of clusters.
 
 ##### Unsupervised | Probabilistic | Persistable
 
@@ -1780,7 +1788,7 @@ Distance-based clusterer that allows samples to belong to multiple clusters if t
 
 ##### Additional Methods:
 
-Return the *c* computed centroids of the training data:
+Return the *c* computed centroids of the training set:
 ```php
 public centroids() : array
 ```
@@ -1836,7 +1844,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ```
 
 ### K Means
-A fast centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters set by the parameter K.
+A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters (parameter *k*).
 
 ##### Unsupervised | Online | Persistable | Linear
 
@@ -1849,7 +1857,7 @@ A fast centroid-based hard clustering algorithm capable of clustering linearly s
 
 ##### Additional Methods:
 
-Return the *c* computed centroids of the training data:
+Return the *k* computed centroids of the training set:
 ```php
 public centroids() : array
 ```
@@ -1878,7 +1886,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 
 ##### Additional Methods:
 
-Return the *c* computed centroids of the training data:
+Return the centroids computed from the training set:
 ```php
 public centroids() : array
 ```
@@ -1898,10 +1906,10 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 
 ---
 ### Regressors
-Regression analysis is used to predict the outcome of an event where the value is continuous.
+Regression analysis is used to predict the outcome of an event where the value is continuous. Continuous valued estimators have many use cases including weather forecasting, stock prediction, and estimating life expectancy. 
 
 ### Adaline
-Adaptive Linear Neuron is a type of single layer [neural network](#neural-network) with a [linear output layer](#linear).
+Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively online using Gradient Descent.
 
 ##### Supervised | Online | Persistable | Linear
 
@@ -1917,7 +1925,7 @@ Adaptive Linear Neuron is a type of single layer [neural network](#neural-networ
 
 ##### Additional Methods:
 
-Return the average cost of a sample at each epoch of training:
+Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -1931,9 +1939,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new LeastSquares(), 1e-4);
+$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new HuberLoss(2.5), 1e-4);
 ```
 
 ### Dummy Regressor
@@ -1958,7 +1966,7 @@ $estimator = new DummyRegressor(new BlurryMedian(0.2));
 ```
 
 ### Extra Tree Regressor
-An Extremely Randomized Regression Tree. Extra Trees differ from standard Regression Trees in that they choose a random split drawn from max features. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Gradient Boost](#gradient-boost) or [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a weak learner by itself.
+An Extremely Randomized Regression Tree, Extra Trees differ from standard Regression Trees in that they choose a random split drawn from a set max features, rather than the *best* split. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Gradient Boost](#gradient-boost) or [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a *weak learner* by itself.
 
 ##### Supervised | Persistable | Nonlinear
 
@@ -1981,7 +1989,7 @@ $estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
 ```
 
 ### Gradient Boost
-Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training the base "weak" regressors. Specifically, gradient boosting attempts to improve bias by training subsequent estimators to correct for errors made by the previous learners.
+Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training a base *weak* regressor. Specifically, gradient boosting attempts to improve bias by training subsequent estimators to correct for errors made by the previous learners.
 
 ##### Supervised | Ensemble | Persistable
 
@@ -1991,8 +1999,8 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | 1 | base | Regression Tree | object | The base *weak* regressor to be boosted. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 0.1 | float | The learning rate of the ensemble. |
-| 4 | ratio | 0.5 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 5 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before an early stop is considered. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 5 | tolerance | 1e-5 | float | The amount of mean squared error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -2010,7 +2018,7 @@ $estimator = new GradientBoost(new RegressionTree(2, 3, 5), 100, 1.0, 1e-2);
 ```
 
 ### K-d Neighbors Regressor
-A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples in the neighborhood. The advantage of K-d Neighbors over KNN is speed and added variance to the predictions (if that is desired).
+A fast approximating implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples in the neighborhood. The main advantage of K-d Neighbors over KNN is speed and added variance to the predictions (if that is desired).
 
 ##### Supervised  | Persistable | Nonlinear
 
@@ -2055,20 +2063,20 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ```
 
 ### MLP Regressor
-A [Neural Network](#neural-network) with a linear output layer suitable for regression problems. The MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
+A multi layer [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
 ##### Supervised | Online | Persistable | Nonlinear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | hidden | [ ] | array | An array of hidden layers of the neural network. |
+| 1 | hidden | None | array | An array composing the hidden layers of the neural network. |
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
-| 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 7 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
 | 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 | 10 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
@@ -2076,7 +2084,7 @@ A [Neural Network](#neural-network) with a linear output layer suitable for regr
 
 ##### Additional Methods:
 
-Return the average cost of a sample at each epoch of training:
+Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
 ```
@@ -2095,19 +2103,23 @@ public network() : Network|null
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
-use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 
 $estimator = new MLPRegressor([
-	new Dense(50, new SELU()),
-	new Dense(50, new SELU()),
-	new Dense(50, new SELU()),
-], 50, new RMSProp(0.001), 1e-2, new LeastSquares(), 1e-5, new MeanSquaredError(), 0.1, 3, 100);
+	new Dense(50),
+	new Activation(new LeakyReLU(0.1)),
+	new Dense(50),
+	new Activation(new LeakyReLU(0.1)),
+	new Dense(50),
+	new Activation(new LeakyReLU(0.1)),
+], 256, new RMSProp(0.001), 1e-2, new LeastSquares(), 1e-5, new RSquared(), 0.1, 3, 100);
 ```
 
 ### Regression Tree
-A Decision Tree learning algorithm that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
+A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
 
 ##### Supervised | Persistable | Nonlinear
 
@@ -2126,18 +2138,18 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(80, 1, 10, 0.);
+$estimator = new RegressionTree(80, 1, null, 0.);
 ```
 
 ### Ridge
-L2 penalized least squares linear regression. Can be used for simple regression problems that can be fit to a straight line.
+L2 penalized least squares linear regression. Can be used for simple regression problems that can be modeled using a straight line.
 
 ##### Supervised | Persistable | Linear
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The L2 regularization parameter. |
+| 1 | alpha | 1.0 | float | The L2 regularization penalty. |
 
 ##### Additional Methods:
 
@@ -2160,25 +2172,26 @@ $estimator = new Ridge(2.0);
 
 ---
 ### Meta-Estimators
-Meta-Estimators allow you to progressively enhance your models by adding additional functionality such as [data preprocessing](#data-preprocessing) and [persistence](#model-persistence) or by orchestrating an [Ensemble](#ensemble) of base Estimators. Each Meta-Estimator wraps a base Estimator and you can even wrap certain Meta-Estimators with other Meta-Estimators. Some examples of Meta-Estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Bootstrap Aggregator](#bootstrap-aggregator).
+Meta-estimators enhance base Estimators by adding additional functionality such as [data preprocessing](#data-preprocessing), [persistence](#model-persistence), or [model averaging](#ensemble). Meta-estimators take on the type of the base estimator they wrap and allow methods on the base estimator to be called from the parent. Some examples of Meta-estimators in Rubix are [Pipeline](#pipeline), [Grid Search](#grid-search), and [Bootstrap Aggregator](#bootstrap-aggregator).
 
 ##### Example:
 ```php
 use Rubix\ML\Pipeline;
-use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\ClassificationTree;
-use Rubix\ML\CrossValidation\Metrics\MCC;
-use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Transformers\NumericStringConverter;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\VarianceThresholdFilter;
 
 ...
-$params = [[10, 30, 50], [1, 3, 5], [2, 3, 4];
+$estimator = new Pipeline(new ClassificationTree(50, 3, 5), [
+	new NumericStringConverter(),
+	new MissingDataImputer(),
+	new VarianceThresholdFilter(5.),
+]);
 
-$estimator = new Pipeline(new GridSearch(ClassificationTree::class, $params, new MCC(), new KFold(10)));
+$estimator->train($training); // Train a classification tree with data preprocessing 
 
-$estimator->train($dataset); // Train a classification tree with preprocessing and grid search
-
-$estimator->complexity(); // Call complexity() method on Decision Tree from Pipeline
+$estimator->predict($unknown); // Proprocess the unknown samples before prediction
 ```
 
 ### Data Preprocessing
@@ -2717,10 +2730,9 @@ Bootstrap Aggregating (or *bagging*) is a model averaging technique designed to 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | None | string | The fully qualified class name of the base Estimator. |
-| 2 | params | [ ] | array | The parameters of the base estimator. |
-| 3 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
-| 4 | ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
+| 1 | base | None | object | The base estimator to be used in the ensemble. |
+| 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
+| 3 | ratio | 0.5 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
 This Meta Estimator does not have any additional methods.
@@ -2731,11 +2743,11 @@ use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
 ...
-$estimator = new BootstrapAggregator(RegressionTree::class, [10, 5, 3], 100, 0.2);
+$estimator = new BootstrapAggregator(new RegressionTree(10, 5, 3), 100, 0.2);
 
-$estimator->traing($training); // Trains 100 regression trees
+$estimator->traing($training); // Trains 100 regression trees in an ensemble
 
-$estimator->predict($testing); // Aggregates their predictions
+$estimator->predict($testing); // Aggregates and averages their predictions
 ```
 
 ### Model Selection
@@ -2752,7 +2764,7 @@ You can chose which parameters to search manually or you can generate parameters
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | None | string | The fully qualified class name of the base Estimator. |
-| 2 | grid | [ ] | array | A grid of parameters containing [n-tuples](#what-is-a-tuple) where each tuple represents a possible parameter for a given constructor location by ordinal. |
+| 2 | grid | None | array | A grid of parameters containing [n-tuples](#what-is-a-tuple) where each tuple represents a possible parameter for a given constructor location by ordinal. |
 | 3 | metric | None | object | The validation metric used to score each set of parameters. |
 | 4 | validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
 
@@ -2789,7 +2801,7 @@ use Rubix\ML\CrossValidation\KFold;
 
 ...
 $params = [
-	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], // Tuples containing possible params at that constructor position
+	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], // Array of tuples containing possible params at that constructor position
 ];
 
 $estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
@@ -2804,7 +2816,7 @@ var_dump($estimator->best()); // Return the best score and hyper-parmeters
 array(2) {
   ["score"]=> float(1)
   ["params"]=> array(2) {
-      ["k"]=> int(1)
+      ["k"]=> int(3)
       ["kernel"]=> object(Rubix\ML\Kernels\Distance\Euclidean)#47807 (0) {
     }
   }
@@ -2823,7 +2835,7 @@ It is possible to persist a model by wrapping the estimator instance in a Persis
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | estimator | None | object | An instance of a base estimator to be persisted. |
+| 1 | base | None | object | An instance of a base estimator to be persisted. |
 | 2 | persister | None | object | The persister used to store the model data. |
 
 ##### Additional Methods:
@@ -2849,33 +2861,35 @@ use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Persisters\Filesystem;
 
-$estimator = new PersistentModel(new LogisticRegression(100, 256, new Adam(0.001)), new Filesystem('/random_forest.model'));
+$persister = new Filesystem('/random_forest.model');
+
+$estimator = new PersistentModel(new LogisticRegression(100, 256, new Adam(0.001)), $persister);
 
 $estimator->save();
 
-$estimator = PersistentModel::load(new Filesystem('/random_forest.model'));
+$estimator = PersistentModel::load($persister);
 ```
 
 ### Persisters
 Persisters are responsible for persisting a *persistable* object and are used by the [Persistable Model](#persistable-model) meta-estimator to save, restore, and delete models.
 
-To store a persistable object:
+To store a persistable estimator:
 ```php
 public save(Persistable $persistable) : void
 ```
 
-To restore a persistable object from storage:
+To restore a persistable estimator from storage:
 ```php
 public load() : Persistable
 ```
 
-To delete a persistable object from storage:
+To remove a persistable estimator from storage:
 ```php
 public delete() : void
 ```
 
 ### Filesystem
-Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister serializes models to a file at a user-specified path.
+Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister saves models to a file at a user-specified path.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2907,7 +2921,7 @@ Redis is a high performance in-memory key value store that can be used to persis
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | key | None | string | The key of the object in storage. |
+| 1 | key | None | string | The key of the object in the database. |
 | 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
 | 3 | port | 6379 | int | The port of the Redis server. |
 | 4 | db | 0 | int | The database number. |
@@ -2925,7 +2939,7 @@ public info() : array
 ```php
 use Rubix\ML\Persisters\RedisDB;
 
-$persister = new RedisDB('127.0.0.1', 6379, 1, 'sentiment', 'password', 1.5);
+$persister = new RedisDB('sentiment.model', '127.0.0.1', 6379, 1, 'password', 1.5);
 ```
 
 ---
@@ -2937,12 +2951,14 @@ The [Multi Layer Perceptron](#multi-layer-perceptron) and [MLP Regressor](#mlp-r
 In addition to the multi layer networks, there are single layer networks that are designed to handle less complex problems with linear solutions. For example, both [Logistic Regression](#logistic-regression) and [Adaline](#adaline) are implemented as single layer networks under the hood. Single layer networks use a single output layer with no hidden layers.
 
 ### Activation Functions
-The input to a node in the network is sometimes passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a biologically inspired neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
+The input to a node in the network is sometimes passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a *biologically inspired* neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
 
 Activation Functions can be broken down into three classes - Sigmoidal (or *S* shaped) such as [Hyperbolic Tangent](#hyperbolic-tangent), Rectifiers such as [ELU](#elu), and Radial Basis Functions (*RBFs*) such as [Gaussian](#gaussian).
 
 ### ELU
 Exponential Linear Units are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
+
+##### Rectifier
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2959,6 +2975,8 @@ $activationFunction = new ELU(5.0);
 ### Gaussian
 The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
 
+##### Radial
+
 ##### Parameters:
 This Activation Function does not have any parameters.
 
@@ -2972,6 +2990,8 @@ $activationFunction = new Gaussian();
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
+##### Sigmoidal
+
 ##### Parameters:
 This Activation Function does not have any parameters.
 
@@ -2984,6 +3004,8 @@ $activationFunction = new HyperbolicTangent();
 
 ### ISRU
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
+
+##### Sigmoidal
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3000,6 +3022,8 @@ $activationFunction = new ISRU(2.0);
 ### Leaky ReLU
 Leaky Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
 
+##### Rectifier
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -3015,6 +3039,8 @@ $activationFunction = new LeakyReLU(0.3);
 ### ReLU
 Rectified Linear Units output only the positive part of its inputs and are analogous to a half-wave rectifiers in electrical engineering.
 
+##### Retifier
+
 ##### Parameters:
 This Activation Function does not have any parameters.
 
@@ -3027,6 +3053,8 @@ $activationFunction = new ReLU();
 
 ### SELU
 Scaled Exponential Linear Unit is a self-normalizing activation function based on [ELU](#elu).
+
+##### Rectifier
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3057,6 +3085,8 @@ $activationFunction = new Sigmoid();
 ### Softmax
 The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1, and all activations add up to 1.
 
+##### Sigmoidal
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -3072,8 +3102,10 @@ $activationFunction = new Softmax(1e-10);
 ### Soft Plus
 A smooth approximation of the ReLU function whose output is constrained to be positive.
 
+##### Rectifier
+
 ##### Parameters:
-This Activation Function does not have any parameters.
+This activation function does not have any parameters.
 
 ##### Example:
 ```php
@@ -3085,8 +3117,10 @@ $activationFunction = new SoftPlus();
 ### Softsign
 A function that squashes the output of a neuron to + or - 1 from 0. In other words, the output is between -1 and 1.
 
+##### Sigmoidal
+
 ##### Parameters:
-This Activation Function does not have any parameters.
+This activation function does not have any parameters.
 
 ##### Example:
 ```php
@@ -3097,6 +3131,8 @@ $activationFunction = new Softsign();
 
 ### Thresholded ReLU
 Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
+
+##### Rectifier
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3190,7 +3226,7 @@ Initializers are responsible for setting the initial weight parameters of a neur
 The He initializer was designed for hidden layers that feed into rectified linear layers such [ReLU](#relu), [Leaky ReLU](#leaky-relu), [ELU](#elu), and [SELU](#selu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
 
 ##### Parameters:
-This Initializer does not have any parameters.
+This initializer does not have any parameters.
 
 ##### Example:
 ```php
@@ -3203,7 +3239,7 @@ $initializer = new He();
 Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
 
 ##### Parameters:
-This Initializer does not have any parameters.
+This initializer does not have any parameters.
 
 ##### Example:
 ```php
@@ -3231,7 +3267,7 @@ $initializer = new Normal(0.1);
 The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
 
 ##### Parameters:
-This Initializer does not have any parameters.
+This initializer does not have any parameters.
 
 ##### Example:
 ```php
@@ -3244,7 +3280,7 @@ $initializer = new Xavier1();
 The Xavier 2 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to (6 / (fanIn + fanOut)) ** 0.25. This initializer is best suited for layers that feed into an activation layer that outputs values between -1 and 1 such as [Hyperbolic Tangent](#hyperbolic-tangent) and [Softsign](#softsign).
 
 ##### Parameters:
-This Initializer does not have any parameters.
+This initializer does not have any parameters.
 
 ##### Example:
 ```php
@@ -3272,13 +3308,15 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $network = new FeedForward(new Placeholder(784), [
-	new Dense(300),
+	new Dense(100),
+    new Activation(new ELU()),
+    new Dropout(0.5),
+    new Dense(50),
     new Activation(new ELU()),
     new Dropout(0.3),
-    new Dense(200),
-    new Activation(new ELU()),
-    new Dropout(0.3),
-    new Dense(100),
+    new Dense(30),
+	new Activation(new ELU()),
+	new Dense(10),
     new Activation(new ELU()),
 ], new Multiclass(['dog', 'cat', 'frog', 'car'], 1e-4), new CrossEntropy(), new Adam(0.001));
 ```
@@ -3593,7 +3631,7 @@ Distance functions are a type of Kernel that measures the distance between two c
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3606,7 +3644,7 @@ $kernel = new Canberra();
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3619,7 +3657,7 @@ $kernel = new Cosine();
 The Diagonal (sometimes called Chebyshev) distance is a measure that constrains movement to horizontal, vertical, and diagonal from a point. An example that uses Diagonal movement is a chess board.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3632,7 +3670,7 @@ $kernel = new Diagonal();
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3645,7 +3683,7 @@ $kernel = new Euclidean();
 The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3658,7 +3696,7 @@ $kernel = new Hamming();
 The generalized Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3671,7 +3709,7 @@ $kernel = new Jaccard();
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
 ##### Parameters:
-This Kernel does not have any parameters.
+This distance metric does not have any parameters.
 
 ##### Example:
 ```php
@@ -3728,7 +3766,6 @@ var_dump($score);
 ```sh
 float(0.869)
 ```
-Below describes the various Cross Validators available in Rubix.
 
 ### Hold Out
 Hold Out is the simplest form of cross validation available in Rubix. It uses a *hold out* set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.

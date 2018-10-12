@@ -22,9 +22,9 @@ use RuntimeException;
 /**
  * Adaline
  *
- * Adaptive Linear Neuron is a type of single layer neural network with a
- * linear output layer. The Adaline converges to the least squares error
- * which is the same error function as linear regression.
+ * Adaptive Linear Neuron or (*Adaline*) is a type of single layer neural network
+ * with a linear output neuron. Training is equivalent to solving Ridge regression
+ * iteratively online using Gradient Descent.
  *
  * References:
  * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical

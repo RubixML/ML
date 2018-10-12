@@ -27,7 +27,7 @@ class BootstrapAggregatorTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new BootstrapAggregator(RegressionTree::class, [10, 3, 2], 10, 0.8);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(5, 1, 2), 30, 0.5);
     }
 
     public function test_build_meta_estimator()

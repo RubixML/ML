@@ -24,27 +24,11 @@ use RuntimeException;
 class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
 {
     /**
-     * The class name of the base estimator.
+     * The base estimator instance.
      *
-     * @var string
+     * @var \Rubix\ML\Estimator
      */
     protected $base;
-
-    /**
-     * The type of the base estimator.
-     *
-     * @var int
-     */
-    protected $type;
-
-    /**
-     * The constructor arguments of the base estimator.
-     *
-     * @var array
-     */
-    protected $params = [
-        //
-    ];
 
     /**
      * The number of estimators to train.
@@ -70,30 +54,22 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  string  $base
-     * @param  array  $params
+     * @param  \Rubix\ML\Estimator  $base
      * @param  int  $estimators
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $params, int $estimators = 10, float $ratio = 0.5)
+    public function __construct(Estimator $base, int $estimators = 10, float $ratio = 0.5)
     {
-        $proxy = new $base(...$params);
-
-        if (!$proxy instanceof Estimator) {
-            throw new InvalidArgumentException('Base class must be an'
+        if ($base instanceof MetaEstimator) {
+            throw new InvalidArgumentException('Base estimator cannot be a meta'
                 . ' estimator.');
         }
 
-        if ($proxy instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base class cannot be a meta'
-                . ' estimator.');
-        }
-
-        if ($proxy->type() !== self::CLASSIFIER and $proxy->type() !== self::REGRESSOR
-            and $proxy->type() !== self::DETECTOR) {
-                throw new InvalidArgumentException('This ensemble only supports'
+        if ($base->type() !== self::CLASSIFIER and $base->type() !== self::REGRESSOR
+            and $base->type() !== self::DETECTOR) {
+                throw new InvalidArgumentException('This meta estimator only supports'
                     . ' classifiers, regressors, and anomaly detectors.');
             }
 
@@ -108,8 +84,6 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
         }
 
         $this->base = $base;
-        $this->type = $proxy->type();
-        $this->params = $params;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
     }
@@ -121,7 +95,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
      */
     public function type() : int
     {
-        return $this->type;
+        return $this->base->type();
     }
 
     /**
@@ -149,7 +123,7 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
         $this->ensemble = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
-            $estimator = new $this->base(...$this->params);
+            $estimator = clone $this->base;
 
             $subset = $dataset->randomSubsetWithReplacement($n);
 
@@ -180,12 +154,14 @@ class BootstrapAggregator implements MetaEstimator, Ensemble, Persistable
             }
         }
 
+        $type = $this->type();
+
         $predictions = [];
 
         foreach ($aggregate as $outcomes) {
-            if ($this->type === self::CLASSIFIER) {
+            if ($type === self::CLASSIFIER) {
                 $predictions[] = Argmax::compute(array_count_values($outcomes));
-            } else if ($this->type === self::DETECTOR) {
+            } else if ($type === self::DETECTOR) {
                 $predictions[] = Stats::mean($outcomes) > 0.5 ? 1 : 0;
             } else {
                 $predictions[] = Stats::mean($outcomes);

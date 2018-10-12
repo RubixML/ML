@@ -28,7 +28,7 @@ class PersistentModel implements MetaEstimator
      *
      * @var \Rubix\ML\Persistable
      */
-    protected $model;
+    protected $base;
 
     /**
      * The persister responsible to saveing and restoring the estimator.
@@ -38,7 +38,7 @@ class PersistentModel implements MetaEstimator
     protected $persister;
 
     /**
-     * Factory method to restore the model from a pickled object file at path.
+     * Factory method to restore the model from a persister.
      *
      * @param  \Rubix\ML\Persisters\Persister  $persister
      * @return self
@@ -49,13 +49,13 @@ class PersistentModel implements MetaEstimator
     }
 
     /**
-     * @param  \Rubix\ML\Persistable  $model
+     * @param  \Rubix\ML\Persistable  $base
      * @param  \Rubix\ML\Persisters\Persister  $persister
      * @return void
      */
-    public function __construct(Persistable $model, Persister $persister)
+    public function __construct(Persistable $base, Persister $persister)
     {
-        $this->model = $model;
+        $this->base = $base;;
         $this->persister = $persister;
     }
 
@@ -66,7 +66,7 @@ class PersistentModel implements MetaEstimator
      */
     public function type() : int
     {
-        return $this->model->type();
+        return $this->base->type();
     }
 
     /**
@@ -76,7 +76,7 @@ class PersistentModel implements MetaEstimator
      */
     public function estimator() : Persistable
     {
-        return $this->model;
+        return $this->base;
     }
 
     /**
@@ -87,7 +87,7 @@ class PersistentModel implements MetaEstimator
      */
     public function train(Dataset $dataset) : void
     {
-        $this->model->train($dataset);
+        $this->base->train($dataset);
     }
 
     /**
@@ -98,7 +98,7 @@ class PersistentModel implements MetaEstimator
      */
     public function predict(Dataset $dataset) : array
     {
-        return $this->model->predict($dataset);
+        return $this->base->predict($dataset);
     }
 
     /**
@@ -108,7 +108,7 @@ class PersistentModel implements MetaEstimator
      */
     public function save() : void
     {
-        $this->persister->save($this->model);
+        $this->persister->save($this->base);
     }
 
     /**
@@ -130,6 +130,6 @@ class PersistentModel implements MetaEstimator
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->model->$name(...$arguments);
+        return $this->base->$name(...$arguments);
     }
 }
