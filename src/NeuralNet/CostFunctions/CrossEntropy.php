@@ -47,7 +47,7 @@ class CrossEntropy implements CostFunction
     /**
      * Return a tuple of the min and max output value for this function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {

@@ -9,6 +9,7 @@
     - Z Scale Standardizer is now Elastic
     - Min Max Normalizer is now Elastic
     - TF-IDF Transformer is now Elastic
+    - Added Huber Loss cost function
     - Moved Generators to the Datasets directory
     - Added Persister interface for Persistable objects
     - Added overwrite protection to Persistent Model meta estimator
