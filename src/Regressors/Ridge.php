@@ -3,13 +3,12 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Estimator;
+use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
-use MathPHP\LinearAlgebra\Vector;
-use MathPHP\LinearAlgebra\Matrix;
-use MathPHP\LinearAlgebra\DiagonalMatrix;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -34,20 +33,18 @@ class Ridge implements Estimator, Persistable
     protected $alpha;
 
     /**
-     * The computed y intercept.
+     * The y intercept.
      *
      * @var float|null
      */
-    protected $intercept;
+    protected $bias;
 
     /**
-     * The computed coefficients of the training data.
+     * The computed coefficients of the regression line.
      *
-     * @var array
+     * @var \Rubix\Tensor\Vector|null
      */
-    protected $coefficients = [
-        //
-    ];
+    protected $weights;
 
     /**
      * @param  float  $alpha
@@ -75,19 +72,23 @@ class Ridge implements Estimator, Persistable
     }
 
     /**
-     * @return float|null
+     * Return the weights of the model.
+     * 
+     * @return array|null
      */
-    public function intercept() : ?float
+    public function weights() : ?array
     {
-        return $this->intercept;
+        return isset($this->weights) ? $this->weights->asArray() : null;
     }
 
     /**
-     * @return array
+     * Return the bias parameter of the regression line.
+     * 
+     * @return float|null
      */
-    public function coefficients() : array
+    public function bias() : ?float
     {
-        return $this->coefficients;
+        return $this->bias;
     }
 
     /**
@@ -110,11 +111,19 @@ class Ridge implements Estimator, Persistable
                 . ' continuous features.');
         }
 
-        $coefficients = $this->computeCoefficients($dataset->samples(),
-            $dataset->labels());
+        $samples = $dataset->samples();
 
-        $this->intercept = array_shift($coefficients);
-        $this->coefficients = $coefficients;
+        foreach ($samples as &$sample) {
+            array_unshift($sample, 1.);
+        }
+
+        $x = new Matrix($samples);
+        $y = new Vector($dataset->labels());
+
+        $coefficients = $this->computeCoefficients($x, $y)->column(0);
+
+        $this->bias = array_shift($coefficients);
+        $this->weights = Vector::quick($coefficients);
     }
 
     /**
@@ -132,20 +141,16 @@ class Ridge implements Estimator, Persistable
                 . ' continuous features.');
         }
 
-        if (is_null($this->intercept) or empty($this->coefficients)) {
+        if (is_null($this->weights) or is_null($this->bias)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        $samples = Matrix::quick($dataset->samples());
+
         $predictions = [];
 
-        foreach ($dataset as $sample) {
-            $outcome = $this->intercept;
-
-            foreach ($this->coefficients as $column => $coefficient) {
-                $outcome += $coefficient * $sample[$column];
-            }
-
-            $predictions[] = $outcome;
+        foreach ($samples->asVectors() as $x) {
+            $predictions[] = $this->weights->dot($x) + $this->bias;
         }
 
         return $predictions;
@@ -155,26 +160,19 @@ class Ridge implements Estimator, Persistable
      * Compute the coefficients of the training data like ordinary least squares,
      * however add a regularization term to the equation.
      *
-     * @param  array  $samples
-     * @param  array  $labels
-     * @return array
+     * @param  \Rubix\Tensor\Matrix  $x
+     * @param  \Rubix\Tensor\Vector  $y
+     * @return \Rubix\Tensor\Matrix
      */
-    protected function computeCoefficients(array $samples, array $labels) : array
+    protected function computeCoefficients(Matrix $x, Vector $y) : Matrix
     {
-        foreach ($samples as &$sample) {
-            array_unshift($sample, 1.);
-        }
+        $diag = array_merge([0.], array_fill(0, $x->n() - 1, $this->alpha));
 
-        $x = new Matrix($samples);
-        $y = new Vector($labels);
-
-        $penalty = new DiagonalMatrix(array_merge([0.0], array_fill(0,
-            $x->getN() - 1, $this->alpha)));
+        $penalty = Matrix::diagonal($diag);
 
         $xT = $x->transpose();
 
-        return $xT->multiply($x)->add($penalty)->inverse()
-            ->multiply($xT->multiply($y))
-            ->getColumn(0);
+        return $xT->dot($x)->add($penalty)->inverse()
+            ->dot($xT->dot($y));
     }
 }

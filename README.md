@@ -2153,14 +2153,15 @@ L2 penalized least squares linear regression. Can be used for simple regression 
 
 ##### Additional Methods:
 
-Return the y intercept of the computed regression line:
+Return the weights of the model:
 ```php
-public intercept() : float|null
+public weights() : array|null
 ```
 
-Return the computed coefficients of the regression line:
+
+Return the bias parameter of the regression line:
 ```php
-public coefficients() : array
+public bias() : float|null
 ```
 
 ##### Example:
