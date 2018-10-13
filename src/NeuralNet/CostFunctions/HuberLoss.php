@@ -89,8 +89,8 @@ class HuberLoss implements CostFunction
         $alpha = $activations->subtract($expected);
 
         return $alpha->square()
-            ->addScalar($this->beta)
-            ->powScalar(-0.5)
+            ->add($this->beta)
+            ->pow(-0.5)
             ->multiply($alpha);
     }
 }

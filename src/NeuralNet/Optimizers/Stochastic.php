@@ -48,6 +48,6 @@ class Stochastic implements Optimizer
      */
     public function step(Parameter $parameter, Matrix $gradient) : Matrix
     {
-        return $gradient->multiplyScalar($this->rate);
+        return $gradient->multiply($this->rate);
     }
 }

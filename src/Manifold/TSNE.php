@@ -240,18 +240,18 @@ class TSNE implements Embedder
         $x = new Matrix($dataset->samples(), false);
 
         $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
-            ->multiplyScalar(1e-3);
+            ->multiply(1e-3);
 
         $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
 
         $distances = $this->pairwiseDistances($x);
 
         $p = $this->highAffinities($distances)
-            ->multiplyScalar($this->exaggeration);
+            ->multiply($this->exaggeration);
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             if ($epoch === $this->early) {
-                $p = $p->divideScalar($this->exaggeration);
+                $p = $p->divide($this->exaggeration);
             }
 
             $distances = $this->pairwiseDistances($y);
@@ -261,8 +261,8 @@ class TSNE implements Embedder
             $gradient = $this->computeGradient($p, $q, $y, $distances);
 
             $velocity = $gradient
-                ->multiplyScalar($this->rate)
-                ->add($velocity->multiplyScalar(1. - $this->decay));
+                ->multiply($this->rate)
+                ->add($velocity->multiply(1. - $this->decay));
 
             $y = $y->add($velocity);
 
@@ -370,7 +370,7 @@ class TSNE implements Embedder
 
         $pHat = $p->add($p->transpose());
 
-        return $pHat->divideVector($pHat->sum()->clip(self::EPSILON, INF));
+        return $pHat->divide($pHat->sum()->clip(self::EPSILON, INF));
     }
 
     /**
@@ -382,13 +382,13 @@ class TSNE implements Embedder
      */
     protected function lowAffinities(Matrix $distances) : Matrix
     {
-        $q = $distances->divideScalar($this->degrees)->addScalar(1.)
+        $q = $distances->divide($this->degrees)->add(1.)
             ->pow((1. + $this->degrees) / -2.);
 
         $qSigma = $q->sum()->clip(self::EPSILON, INF)
-            ->multiplyScalar(2.);
+            ->multiply(2.);
 
-        return $q->divideVector($qSigma);
+        return $q->divide($qSigma);
     }
 
     /**
@@ -411,8 +411,8 @@ class TSNE implements Embedder
 
         foreach ($pqd->asVectors() as $i => $row) {
             $gradient[$i] = $row->asRowMatrix()
-                ->dot($y->subtractVector($y->rowAsVector($i)))
-                ->multiplyScalar($c)
+                ->dot($y->subtract($y->rowAsVector($i)))
+                ->multiply($c)
                 ->row(0);
         }
 

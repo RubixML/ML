@@ -135,22 +135,22 @@ class Adam implements Optimizer
         $this->t++;
 
         $velocities = $velocities
-            ->multiplyScalar($this->momentumDecay)
-            ->add($gradient->multiplyScalar(1. - $this->momentumDecay));
+            ->multiply($this->momentumDecay)
+            ->add($gradient->multiply(1. - $this->momentumDecay));
 
         $cache = $cache
-            ->multiplyScalar($this->rmsDecay)
-            ->add($gradient->square()->multiplyScalar(1. - $this->rmsDecay));
+            ->multiply($this->rmsDecay)
+            ->add($gradient->square()->multiply(1. - $this->rmsDecay));
 
         $vHat = $velocities
-            ->divideScalar(1. - $this->momentumDecay ** $this->t);
+            ->divide(1. - $this->momentumDecay ** $this->t);
 
         $rHat = $cache
-            ->divideScalar(1. - $this->rmsDecay ** $this->t);
+            ->divide(1. - $this->rmsDecay ** $this->t);
 
         $step = $vHat
-            ->multiplyScalar($this->rate)
-            ->divide($rHat->sqrt()->addScalar($this->epsilon));
+            ->multiply($this->rate)
+            ->divide($rHat->sqrt()->add($this->epsilon));
 
         $this->velocities[$parameter] = $velocities;
         $this->cache[$parameter] = $cache;

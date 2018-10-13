@@ -175,14 +175,14 @@ class Continuous implements Output
             ->compute($expected, $this->z);
 
         $penalties = $this->weights->w()->sum()
-            ->multiplyScalar($this->alpha)
+            ->multiply($this->alpha)
             ->asColumnMatrix()
             ->repeat(1, $this->z->n());
 
         $dL = $costFunction
             ->differentiate($expected, $this->z, $delta)
             ->add($penalties)
-            ->divideScalar($this->z->n());
+            ->divide($this->z->n());
 
         $dW = $dL->dot($this->input->transpose());
         $dB = $dL->sum()->asColumnMatrix();

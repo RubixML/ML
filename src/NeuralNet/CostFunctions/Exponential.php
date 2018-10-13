@@ -61,8 +61,8 @@ class Exponential implements CostFunction
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
         return $activations->subtract($expected)->square()
-            ->multiplyScalar((1. / $this->tau))->exp()
-            ->multiplyScalar($this->tau);
+            ->multiply((1. / $this->tau))->exp()
+            ->multiply($this->tau);
     }
 
     /**
@@ -78,6 +78,6 @@ class Exponential implements CostFunction
     {
         return $activations->subtract($expected)
             ->multiply($delta)
-            ->multiplyScalar(2. / $this->tau);
+            ->multiply(2. / $this->tau);
     }
 }

@@ -99,11 +99,11 @@ class RMSProp implements Optimizer
         }
 
         $cache = $cache
-            ->multiplyScalar($this->decay)
-            ->add($gradient->square()->multiplyScalar(1. - $this->decay));
+            ->multiply($this->decay)
+            ->add($gradient->square()->multiply(1. - $this->decay));
 
-        $step = $gradient->multiplyScalar($this->rate)
-            ->divide($cache->sqrt()->addScalar($this->epsilon));
+        $step = $gradient->multiply($this->rate)
+            ->divide($cache->sqrt()->add($this->epsilon));
 
         $this->cache[$parameter] = $cache;
 

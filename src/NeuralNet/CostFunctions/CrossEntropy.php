@@ -42,7 +42,7 @@ class CrossEntropy implements CostFunction
     {
         return $activations->negate()
             ->multiply($expected)
-            ->add($activations->exp()->addScalar(1.)->log());
+            ->add($activations->exp()->add(1.)->log());
     }
 
     /**

@@ -86,7 +86,7 @@ class Noise implements Hidden, Nonparametric
     public function forward(Matrix $input) : Matrix
     {
         $noise = Matrix::gaussian(...$input->shape())
-            ->multiplyScalar($this->amount);
+            ->multiply($this->amount);
 
         return $input->add($noise);
     }

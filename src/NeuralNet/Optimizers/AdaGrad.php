@@ -88,8 +88,8 @@ class AdaGrad implements Optimizer
 
         $cache = $cache->add($gradient->square());
 
-        $step = $gradient->multiplyScalar($this->rate)
-            ->divide($cache->sqrt()->addScalar($this->epsilon));
+        $step = $gradient->multiply($this->rate)
+            ->divide($cache->sqrt()->add($this->epsilon));
 
         $this->cache[$parameter] = $cache;
 

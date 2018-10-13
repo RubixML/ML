@@ -49,6 +49,6 @@ class Normal implements Initializer
     public function init(int $fanIn, int $fanOut) : Matrix
     {
         return Matrix::gaussian($fanOut, $fanIn)
-            ->multiplyScalar($this->stddev);
+            ->multiply($this->stddev);
     }
 }

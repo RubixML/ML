@@ -34,6 +34,6 @@ class Xavier2 implements Initializer
         $scale = (6 / ($fanIn + $fanOut)) ** 0.25;
 
         return Matrix::uniform($fanOut, $fanIn)
-            ->multiplyScalar($scale);
+            ->multiply($scale);
     }
 }

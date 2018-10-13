@@ -278,10 +278,10 @@ class BatchNorm implements Hidden, Parametric
 
             $dXHatSigma = $dXHat->transpose()->sum();
 
-            return $dXHat->multiplyScalar($m)
-                ->subtractVector($dXHatSigma)
-                ->subtract($xHat->multiplyVector($xHatSigma))
-                ->multiply($stdInv->divideScalar($m));
+            return $dXHat->multiply($m)
+                ->subtract($dXHatSigma)
+                ->subtract($xHat->multiply($xHatSigma))
+                ->multiply($stdInv->divide($m));
         };
     }
 

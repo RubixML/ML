@@ -102,6 +102,6 @@ class StepDecay implements Optimizer
 
         $this->cache[$parameter] = $steps;
 
-        return $gradient->multiplyScalar($rate);
+        return $gradient->multiply($rate);
     }
 }

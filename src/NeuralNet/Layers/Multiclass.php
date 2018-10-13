@@ -221,14 +221,14 @@ class Multiclass implements Output
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()
-            ->multiplyScalar($this->alpha)
+            ->multiply($this->alpha)
             ->asColumnMatrix()
             ->repeat(1, $this->computed->n());
 
         $dL = $costFunction
             ->differentiate($expected, $this->computed, $delta)
             ->add($penalties)
-            ->divideScalar($this->computed->n());
+            ->divide($this->computed->n());
 
         $dA = $this->activationFunction
             ->differentiate($this->z, $this->computed)

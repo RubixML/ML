@@ -122,7 +122,7 @@ class Ridge implements Estimator, Persistable
 
         $coefficients = $this->computeCoefficients($x, $y)->column(0);
 
-        $this->bias = array_shift($coefficients);
+        $this->bias = (float) array_shift($coefficients);
         $this->weights = Vector::quick($coefficients);
     }
 

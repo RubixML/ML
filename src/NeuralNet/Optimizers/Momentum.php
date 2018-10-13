@@ -82,8 +82,8 @@ class Momentum implements Optimizer
         }
 
         $velocities = $gradient
-            ->multiplyScalar($this->rate)
-            ->add($velocities->multiplyScalar(1. - $this->decay));
+            ->multiply($this->rate)
+            ->add($velocities->multiply(1. - $this->decay));
 
         $this->velocities[$parameter] = $velocities;
 
