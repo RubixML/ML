@@ -161,7 +161,7 @@ class Binary implements Output
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input)
+        $this->z = $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
         $this->computed = $this->activationFunction->compute($this->z);
@@ -182,7 +182,7 @@ class Binary implements Output
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        $z = $this->weights->w()->dot($input)
+        $z = $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
         return $this->activationFunction->compute($z);
@@ -233,7 +233,7 @@ class Binary implements Output
             ->differentiate($this->z, $this->computed)
             ->multiply($dL);
 
-        $dW = $dA->dot($this->input->transpose());
+        $dW = $dA->matmul($this->input->transpose());
         $dB = $dA->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
@@ -246,7 +246,7 @@ class Binary implements Output
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($w, $dA) {
-            $w->transpose()->dot($dA);
+            $w->transpose()->matmul($dA);
         }, $cost];
     }
 

@@ -411,7 +411,7 @@ class TSNE implements Embedder
 
         foreach ($pqd->asVectors() as $i => $row) {
             $gradient[$i] = $row->asRowMatrix()
-                ->dot($y->subtract($y->rowAsVector($i)))
+                ->matmul($y->subtract($y->rowAsVector($i)))
                 ->multiply($c)
                 ->row(0);
         }

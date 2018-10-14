@@ -123,7 +123,7 @@ class Dense implements Hidden, Parametric
 
         $this->input = $input;
 
-        return $this->weights->w()->dot($input)
+        return $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
     }
 
@@ -140,7 +140,7 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return $this->weights->w()->dot($input)
+        return $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
     }
 
@@ -165,7 +165,7 @@ class Dense implements Hidden, Parametric
 
         $dOut = $prevGradient();
 
-        $dW = $dOut->dot($this->input->transpose());
+        $dW = $dOut->matmul($this->input->transpose());
         $dB = $dOut->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
@@ -176,7 +176,7 @@ class Dense implements Hidden, Parametric
         unset($this->input);
 
         return function () use ($w, $dOut) {
-            return $w->transpose()->dot($dOut);
+            return $w->transpose()->matmul($dOut);
         };
     }
 

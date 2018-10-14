@@ -126,7 +126,7 @@ class Continuous implements Output
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input)
+        $this->z = $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
         return $this->z;
@@ -145,7 +145,7 @@ class Continuous implements Output
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return $this->weights->w()->dot($input)
+        return $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
     }
 
@@ -184,7 +184,7 @@ class Continuous implements Output
             ->add($penalties)
             ->divide($this->z->n());
 
-        $dW = $dL->dot($this->input->transpose());
+        $dW = $dL->matmul($this->input->transpose());
         $dB = $dL->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
@@ -197,7 +197,7 @@ class Continuous implements Output
         unset($this->input, $this->z);
 
         return [function () use ($w, $dL) {
-            return $w->transpose()->dot($dL);
+            return $w->transpose()->matmul($dL);
         }, $cost];
     }
 

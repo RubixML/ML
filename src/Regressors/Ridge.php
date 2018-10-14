@@ -172,7 +172,7 @@ class Ridge implements Estimator, Persistable
 
         $xT = $x->transpose();
 
-        return $xT->dot($x)->add($penalty)->inverse()
-            ->dot($xT->dot($y));
+        return $xT->matmul($x)->add($penalty)->inverse()
+            ->matmul($xT->dot($y));
     }
 }

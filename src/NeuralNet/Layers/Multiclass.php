@@ -160,7 +160,7 @@ class Multiclass implements Output
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->dot($input)
+        $this->z = $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
         $this->computed = $this->activationFunction->compute($this->z);
@@ -181,7 +181,7 @@ class Multiclass implements Output
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        $z = $this->weights->w()->dot($input)
+        $z = $this->weights->w()->matmul($input)
             ->add($this->biases->w()->repeat(1, $input->n()));
 
         return $this->activationFunction->compute($z);
@@ -234,7 +234,7 @@ class Multiclass implements Output
             ->differentiate($this->z, $this->computed)
             ->multiply($dL);
 
-        $dW = $dA->dot($this->input->transpose());
+        $dW = $dA->matmul($this->input->transpose());
         $dB = $dA->sum()->asColumnMatrix();
 
         $w = $this->weights->w();
@@ -247,7 +247,7 @@ class Multiclass implements Output
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($w, $dA) {
-            return $w->transpose()->dot($dA);
+            return $w->transpose()->matmul($dA);
         }, $cost];
     }
 
