@@ -66,7 +66,28 @@ class IntervalDiscretizer implements Transformer, Stateful
     }
 
     /**
-     * Fit the transformer to the incoming data frame.
+     * Return the possible categories of each feature column.
+     * 
+     * @return array
+     */
+    public function categories() : array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * Return the intervals of each continuous feature column
+     * calculated during fitting.
+     * 
+     * @return array|null
+     */
+    public function intervals() : ?array
+    {
+        return $this->intervals;
+    }
+
+    /**
+     * Fit the transformer to the dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -93,7 +114,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     }
 
     /**
-     * Apply the transformation to the sample matrix.
+     * Transform the sample matrix.
      *
      * @param  array  $samples
      * @throws \RuntimeException
@@ -109,8 +130,10 @@ class IntervalDiscretizer implements Transformer, Stateful
             foreach ($this->intervals as $column => $interval) {
                 $category = end($this->categories);
 
+                $value = $sample[$column];
+
                 foreach ($interval as $i => $edge) {
-                    if ($sample[$column] < $edge) {
+                    if ($value < $edge) {
                         $category = $this->categories[$i];
 
                         break 1;

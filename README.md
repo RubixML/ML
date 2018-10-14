@@ -2407,6 +2407,11 @@ Return the possible categories of each feature column:
 public categories() : array
 ```
 
+Return the intervals of each continuous feature column calculated during fitting:
+```php
+public intervals() : array
+```
+
 ##### Example:
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
