@@ -104,6 +104,6 @@ class Blob implements Generator
             ->multiply($this->stddev)
             ->asArray();
 
-        return new Unlabeled($samples, false);
+        return Unlabeled::quick($samples);
     }
 }

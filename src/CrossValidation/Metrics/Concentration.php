@@ -65,7 +65,7 @@ class Concentration implements Metric
 
         $predictions = $estimator->predict($testing);
 
-        $labeled = new Labeled($testing->samples(), $predictions);
+        $labeled = Labeled::quick($testing->samples(), $predictions);
 
         $globals = array_map(function ($values) {
             return Stats::mean($values);

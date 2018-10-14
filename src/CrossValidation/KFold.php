@@ -94,7 +94,7 @@ class KFold implements Validator
         $scores = [];
 
         for ($i = 0; $i < $this->k; $i++) {
-            $training = new Labeled();
+            $training = Labeled::quick();
             $testing = null;
 
             foreach ($folds as $j => $fold) {

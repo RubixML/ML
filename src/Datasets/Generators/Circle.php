@@ -100,6 +100,6 @@ class Circle implements Generator
             ->add($this->center)
             ->asArray();
 
-        return new Unlabeled($samples, false);
+        return Unlabeled::quick($samples);
     }
 }

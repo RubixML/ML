@@ -124,7 +124,7 @@ class Agglomerate implements Generator
      */
     public function generate(int $n = 100) : Dataset
     {
-        $dataset = new Labeled();
+        $dataset = Labeled::quick();
 
         foreach ($this->generators as $label => $generator) {
             $p = (int) round($this->weights[$label] * $n);
@@ -133,7 +133,7 @@ class Agglomerate implements Generator
 
             $labels = array_fill(0, $p, $label);
 
-            $dataset = $dataset->merge(new Labeled($samples, $labels, false));
+            $dataset = $dataset->merge(Labeled::quick($samples, $labels));
         }
 
         return $dataset;

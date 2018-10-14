@@ -657,6 +657,16 @@ In addition to the basic Dataset interface, the Labeled class can sort and *stra
 | 3 | validate | true | bool | Should we validate the input? |
 
 ##### Additional Methods:
+Build a new labeled dataset with validation:
+```php
+public static build(array $samples = [], array $labels = []) : self
+```
+
+Build a new labeled dataset foregoing validation:
+```php
+public static quick(array $samples = [], array $labels = []) : self
+```
+
 Return a 1-dimensional array of labels:
 ```php
 public labels() : array
@@ -706,7 +716,15 @@ public stratifiedFold($k = 10) : array
 use Rubix\ML\Datasets\Labeled;
 
 ...
-$dataset = new Labeled($samples, $labels);
+$dataset = Labeled::build($samples, $labels);  // Build a new dataset with validation
+
+// or ...
+
+$dataset = Labeled::quick($samples, $labels);  // Build a new dataset without validation
+
+// or ...
+
+$dataset = new Labeled($samples, $labels, true);  // Use the full constructor
 
 // Return all the labels in the dataset
 $labels = $dataset->labels();
@@ -758,18 +776,35 @@ Unlabeled datasets can be used to train *unsupervised* Estimators and for feedin
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of feature values. |
-| 3 | validate | true | bool | Should we validate the input? |
+| 1 | samples | None | array | A 2-dimensional feature matrix consisting of rows of samples and columns of values. |
+| 2 | validate | true | bool | Should we validate the input? |
 
 
 ##### Additional Methods:
-This dataset does not have any additional methods.
+Build a new unlabeled dataset with validation:
+```php
+public static build(array $samples = [], array $labels = []) : self
+```
+
+Build a new unlabeled dataset foregoing validation:
+```php
+public static quick(array $samples = [], array $labels = []) : self
+```
 
 ##### Example:
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-$dataset = new Unlabeled($samples);
+...
+$dataset = Unlabeled::build($samples);  // Build a new dataset with validation
+
+// or ...
+
+$dataset = Unlabeled::quick($samples);  // Build a new dataset without validation
+
+// or ...
+
+$dataset = new Unlabeled($samples, true);  // Use the full constructor
 ```
 
 ### Generators

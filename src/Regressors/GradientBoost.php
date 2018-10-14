@@ -231,7 +231,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
                 break 1;
             }
 
-            $dataset = new Labeled($dataset->samples(), $yHat, false);
+            $dataset = Labeled::quick($dataset->samples(), $yHat);
 
             $previous = $loss;
         }
