@@ -94,6 +94,7 @@ MIT
 			- [Transformers](#transformers)
 				- [Dense Random Projector](#dense-random-projector)
 				- [Gaussian Random Projector](#gaussian-random-projector)
+				- [Interval Discretizer](#interval-discretizer)
 				- [L1 Normalizer](#l1-normalizer)
 				- [L2 Normalizer](#l2-normalizer)
 				- [Lambda Function](#lambda-function)
@@ -2387,6 +2388,30 @@ var_dump($dimensions);
 ##### Output:
 ```sh
 int(7894)
+```
+
+### Interval Discretizer
+This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
+
+##### Continuous | Stateful
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | bins | 5 | int | The number of bins (discrete features) per continuous feature column. |
+
+##### Additional Methods:
+
+Return the possible categories of each feature column:
+```php
+public categories() : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\IntervalDiscretizer;
+
+$transformer = new IntervalDiscretizer(10);
 ```
 
 ### L1 Normalizer

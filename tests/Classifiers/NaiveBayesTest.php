@@ -9,6 +9,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -22,7 +23,13 @@ class NaiveBayesTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/congress.dataset');
+        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+
+        $transformer = new IntervalDiscretizer(5);
+
+        $transformer->fit($this->training);
+
+        $this->training->apply($transformer);
 
         $this->testing = $this->training->randomize()->head(3);
 

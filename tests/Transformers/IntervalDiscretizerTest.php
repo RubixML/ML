@@ -5,11 +5,11 @@ namespace Rubix\ML\Tests\Transformers;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Transformers\VarianceThresholdFilter;
+use Rubix\ML\Transformers\IntervalDiscretizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class VarianceThresholdFilterTest extends TestCase
+class IntervalDiscretizerTest extends TestCase
 {
     protected $transformer;
 
@@ -17,27 +17,35 @@ class VarianceThresholdFilterTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new Blob([0., 0., 0.], [1., 5., 0.001]);
+        $this->generator = new Blob([0., 4., 0., -1.5], [1., 5., 0.01, 10.]);
 
-        $this->transformer = new VarianceThresholdFilter(0.1);
+        $this->transformer = new IntervalDiscretizer(5);
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(VarianceThresholdFilter::class, $this->transformer);
+        $this->assertInstanceOf(IntervalDiscretizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
     public function test_fit_transform()
     {
-        $dataset = $this->generator->generate(30);
+        $train = $this->generator->generate(30);
+        $test = $this->generator->generate(1);
 
-        $this->transformer->fit($dataset);
+        $outcomes = ['a', 'b', 'c', 'd', 'e'];
 
-        $dataset->apply($this->transformer);
+        $this->transformer->fit($train);
 
-        $this->assertEquals(2, $dataset->numColumns());
+        $test->apply($this->transformer);
+
+        $sample = $test->row(0);
+
+        $this->assertContains($sample[0], $outcomes);
+        $this->assertContains($sample[1], $outcomes);
+        $this->assertContains($sample[2], $outcomes);
+        $this->assertContains($sample[3], $outcomes);
     }
 
     public function test_transform_unfitted()

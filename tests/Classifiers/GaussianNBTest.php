@@ -9,7 +9,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
@@ -24,12 +23,6 @@ class GaussianNBTest extends TestCase
     public function setUp()
     {
         $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
-
-        $transformer = new ZScaleStandardizer();
-
-        $transformer->fit($this->training);
-
-        $this->training->apply($transformer);
 
         $this->testing = $this->training->randomize()->head(3);
 
