@@ -38,7 +38,7 @@ class GaussianRandomProjectorTest extends TestCase
         $this->assertEquals(663, GaussianRandomProjector::minDimensions(1000000, 0.5));
     }
 
-    public function test_transform()
+    public function test_fit_transform()
     {
         $this->transformer->fit($this->dataset);
 

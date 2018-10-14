@@ -112,13 +112,12 @@ class Ridge implements Estimator, Persistable
         }
 
         $samples = $dataset->samples();
+        $labels = $dataset->labels();
 
-        foreach ($samples as &$sample) {
-            array_unshift($sample, 1.);
-        }
+        $biases = Matrix::ones($dataset->numRows(), 1);
 
-        $x = new Matrix($samples);
-        $y = new Vector($dataset->labels());
+        $x = Matrix::build($samples)->augmentLeft($biases);
+        $y = Vector::build($labels);
 
         $coefficients = $this->computeCoefficients($x, $y)->column(0);
 
@@ -145,15 +144,10 @@ class Ridge implements Estimator, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $samples = Matrix::quick($dataset->samples());
-
-        $predictions = [];
-
-        foreach ($samples->asVectors() as $x) {
-            $predictions[] = $this->weights->dot($x) + $this->bias;
-        }
-
-        return $predictions;
+        return Matrix::build($dataset->samples())
+            ->dot($this->weights)
+            ->add($this->bias)
+            ->column(0);
     }
 
     /**
@@ -166,9 +160,9 @@ class Ridge implements Estimator, Persistable
      */
     protected function computeCoefficients(Matrix $x, Vector $y) : Matrix
     {
-        $diag = array_merge([0.], array_fill(0, $x->n() - 1, $this->alpha));
+        $alphas = array_fill(0, $x->n() - 1, $this->alpha);
 
-        $penalty = Matrix::diagonal($diag);
+        $penalty = Matrix::diagonal(array_merge([0.], $alphas));
 
         $xT = $x->transpose();
 

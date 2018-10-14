@@ -14,7 +14,7 @@ class HalfMoonTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new HalfMoon(5., 5., 10.0, 50.0, 0.1);
+        $this->generator = new HalfMoon(5., 5., 10., 45., 0.1);
     }
 
     public function test_build_generator()
@@ -25,11 +25,11 @@ class HalfMoonTest extends TestCase
 
     public function test_generate_dataset()
     {
-        $dataset = $this->generator->generate(10);
+        $dataset = $this->generator->generate(30);
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);
 
-        $this->assertCount(10, $dataset);
+        $this->assertCount(30, $dataset);
     }
 }

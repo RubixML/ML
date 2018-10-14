@@ -23,11 +23,35 @@ class Labeled extends DataFrame implements Dataset
     /**
      * The observed outcomes for each sample in the dataset.
      *
-     * @var array
+     * @var (int|float|string)[]
      */
     protected $labels = [
         //
     ];
+
+    /**
+     * Build a new labeled dataset with validation.
+     * 
+     * @param  array  $samples
+     * @param  array  $labels
+     * @return self
+     */
+    public static function build(array $samples = [], array $labels = []) : self
+    {
+        return new self($samples, $labels, true);
+    }
+
+    /**
+     * Build a new labeled dataset foregoing validation.
+     * 
+     * @param  array[]  $samples
+     * @param  (int|float|string)[]  $labels
+     * @return self
+     */
+    public static function quick(array $samples = [], array $labels = []) : self
+    {
+        return new self($samples, $labels, false);
+    }
 
     /**
      * Restore a labeled dataset from a serialized object file.
@@ -88,9 +112,9 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Return all of the labels.
+     * Return the labels.
      *
-     * @return array
+     * @return (int|float|string)[]
      */
     public function labels() : array
     {
@@ -102,7 +126,7 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param  int  $index
      * @throws \InvalidArgumentException
-     * @return mixed
+     * @return (int|float|string)
      */
     public function label(int $index)
     {
@@ -144,8 +168,10 @@ class Labeled extends DataFrame implements Dataset
      */
     public function head(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, 0, $n),
-            array_slice($this->labels, 0, $n), false);
+        $samples = array_slice($this->samples, 0, $n);
+        $labels = array_slice($this->labels, 0, $n);
+
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -156,8 +182,10 @@ class Labeled extends DataFrame implements Dataset
      */
     public function tail(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, -$n),
-            array_slice($this->labels, -$n), false);
+        $samples = array_slice($this->samples, -$n);
+        $labels = array_slice($this->labels, -$n);
+
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -211,7 +239,7 @@ class Labeled extends DataFrame implements Dataset
         $samples = array_merge($this->samples, $dataset->samples());
         $labels = array_merge($this->labels, $dataset->labels());
 
-        return new self($samples, $labels, false);
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -224,12 +252,14 @@ class Labeled extends DataFrame implements Dataset
      */
     public function splice(int $offset, int $n) : self
     {
-        return new self(array_splice($this->samples, $offset, $n),
-            array_splice($this->labels, $offset, $n), false);
+        $samples = array_splice($this->samples, $offset, $n);
+        $labels = array_splice($this->labels, $offset, $n);
+
+        return self::quick($samples, $labels);
     }
 
     /**
-     * Randomize the dataset.
+     * Randomize the dataset in place and return self for chaining.
      *
      * @return self
      */
@@ -262,7 +292,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($samples, $labels);
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -282,7 +312,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($samples, $labels);
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -321,7 +351,7 @@ class Labeled extends DataFrame implements Dataset
      * n datasets consisting of samples with the same label where n is equal to
      * the number of unique labels.
      *
-     * @return array
+     * @return self[]
      */
     public function stratify() : array
     {
@@ -330,7 +360,7 @@ class Labeled extends DataFrame implements Dataset
         foreach ($this->_stratify() as $label => $stratum) {
             $labels = array_fill(0, count($stratum), $label);
 
-            $strata[$label] = new self($stratum, $labels, false);
+            $strata[$label] = self::quick($stratum, $labels);
         }
 
         return $strata;
@@ -341,7 +371,7 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param  float  $ratio
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function split(float $ratio = 0.5) : array
     {
@@ -352,12 +382,17 @@ class Labeled extends DataFrame implements Dataset
 
         $n = (int) ($ratio * $this->numRows());
 
-        $left = new self(array_slice($this->samples, 0, $n),
-            array_slice($this->labels, 0, $n), false);
-        $right = new self(array_slice($this->samples, $n),
-            array_slice($this->labels, $n), false);
+        $left = [
+            array_slice($this->samples, 0, $n),
+            array_slice($this->labels, 0, $n),
+        ];
 
-        return [$left, $right];
+        $right = [
+            array_slice($this->samples, $n),
+            array_slice($this->labels, $n),
+        ];
+
+        return [self::quick(...$left), self::quick(...$right)];
     }
 
     /**
@@ -365,7 +400,7 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param  float  $ratio
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
@@ -379,14 +414,18 @@ class Labeled extends DataFrame implements Dataset
         foreach ($this->_stratify() as $label => $stratum) {
             $n = (int) ($ratio * count($stratum));
 
-            $left[0] = array_merge($left[0], array_splice($stratum, 0, $n));
-            $left[1] = array_merge($left[1], array_fill(0, $n, $label));
+            $left = [
+                array_merge($left[0], array_splice($stratum, 0, $n)),
+                array_merge($left[1], array_fill(0, $n, $label)),
+            ];
 
-            $right[0] = array_merge($right[0], $stratum);
-            $right[1] = array_merge($right[1], array_fill(0, count($stratum), $label));
+            $right = [
+                array_merge($right[0], $stratum),
+                array_merge($right[1], array_fill(0, count($stratum), $label)),
+            ];
         }
 
-        return [new self(...$left), new self(...$right)];
+        return [self::quick(...$left), self::quick(...$right)];
     }
 
     /**
@@ -411,8 +450,8 @@ class Labeled extends DataFrame implements Dataset
         $folds = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $folds[] = new self(array_splice($samples, 0, $n),
-                array_splice($labels, 0, $n), false);
+            $folds[] = self::quick(array_splice($samples, 0, $n),
+                array_splice($labels, 0, $n));
         }
 
         return $folds;
@@ -444,7 +483,7 @@ class Labeled extends DataFrame implements Dataset
                 $labels = array_merge($labels, array_fill(0, $n, $label));
             }
 
-            $folds[] = new self($samples, $labels, false);
+            $folds[] = self::quick($samples, $labels);
         }
 
         return $folds;
@@ -466,7 +505,7 @@ class Labeled extends DataFrame implements Dataset
         $batches = [];
 
         foreach ($sChunks as $i => $samples) {
-            $batches[] = new self($samples, $lChunks[$i], false);
+            $batches[] = self::quick($samples, $lChunks[$i]);
         }
 
         return $batches;
@@ -511,7 +550,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        return [new self(...$left), new self(...$right)];
+        return [self::quick(...$left), self::quick(...$right)];
     }
 
     /**
@@ -539,14 +578,14 @@ class Labeled extends DataFrame implements Dataset
             $labels[] = $this->labels[$index];
         }
 
-        return new self($samples, $labels, false);
+        return self::quick($samples, $labels);
     }
 
     /**
      * Generate a random weighted subset with replacement.
      *
      * @param  int  $n
-     * @param  array  $weights
+     * @param  (int|float)[]  $weights
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -577,7 +616,7 @@ class Labeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($samples, $labels, false);
+        return self::quick($samples, $labels);
     }
 
     /**
@@ -609,7 +648,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Stratifying subroutine groups samples by label.
      *
-     * @return array
+     * @return array[]
      */
     protected function _stratify() : array
     {

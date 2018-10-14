@@ -34,7 +34,7 @@ class OneHotEncoderTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_fit_transform()
     {
         $this->transformer->fit($this->dataset);
 

@@ -49,30 +49,32 @@ class Agglomerate implements Generator
      */
     public function __construct(array $generators = [], ?array $weights = null)
     {
-        $n = count($generators);
+        $k = count($generators);
 
-        if ($n === 0) {
+        if ($k === 0) {
             throw new InvalidArgumentException('Must provide at least one'
                 . ' generator to agglomerate.');
         }
 
-        $dimensions = current($generators)->dimensions();
+        $d = current($generators)->dimensions();
 
         foreach ($generators as $label => $generator) {
             if (!$generator instanceof Generator) {
-                throw new InvalidArgumentException('Non generator object found.');
+                throw new InvalidArgumentException('Cannot add a non generator'
+                    . ' to the agglomerate, ' . gettype($generator)
+                    . ' found.');
             }
 
-            if ($generator->dimensions() !== $dimensions) {
-                throw new InvalidArgumentException('Generators must each be'
-                    . ' the same dimension.');
+            if ($generator->dimensions() !== $d) {
+                throw new InvalidArgumentException('Generators must have the'
+                    . ' same dimensionality.');
             }
         }
 
         if (is_array($weights)) {
-            if (count($weights) !== $n) {
+            if (count($weights) !== $k) {
                 throw new InvalidArgumentException('The number of weights must'
-                    . ' the number of generators.');
+                    . ' equal the number of supplied generators.');
             }
 
             $total = array_sum($weights);
@@ -82,16 +84,16 @@ class Agglomerate implements Generator
                     . ' agglomerate cannot be 0.');
             }
 
-            $weights = array_map(function ($value) use ($total) {
-                return $value / $total;
-            }, $weights);
+            foreach ($weights as &$weight) {
+                $weight /= $total;
+            }
         } else {
-            $weights = array_fill(0, $n, 1. / $n);
+            $weights = array_fill(0, $k, 1. / $k);
         }
 
         $this->generators = $generators;
         $this->weights = array_combine(array_keys($generators), $weights);
-        $this->dimensions = $dimensions;
+        $this->dimensions = $d;
     }
 
     /**
@@ -125,11 +127,11 @@ class Agglomerate implements Generator
         $dataset = new Labeled();
 
         foreach ($this->generators as $label => $generator) {
-            $k = (int) round($this->weights[$label] * $n);
+            $p = (int) round($this->weights[$label] * $n);
 
-            $samples = $generator->generate($k)->samples();
+            $samples = $generator->generate($p)->samples();
 
-            $labels = array_fill(0, $k, $label);
+            $labels = array_fill(0, $p, $label);
 
             $dataset = $dataset->merge(new Labeled($samples, $labels, false));
         }

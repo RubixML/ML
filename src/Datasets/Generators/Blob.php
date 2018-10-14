@@ -2,9 +2,10 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
+use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 
 /**
@@ -22,16 +23,16 @@ use InvalidArgumentException;
 class Blob implements Generator
 {
     /**
-     * The coordinates of the center of the blob.
+     * The center vector of the blob.
      *
-     * @var array
+     * @var \Rubix\Tensor\Vector
      */
     protected $center;
 
     /**
      * The standard deviations of each dimension of the blob.
      *
-     * @var array
+     * @var \Rubix\Tensor\Vector
      */
     protected $stddev;
 
@@ -76,8 +77,8 @@ class Blob implements Generator
             }
         }
 
-        $this->center = $center;
-        $this->stddev = $stddev;
+        $this->center = Vector::quick($center);
+        $this->stddev = Vector::quick($stddev);
     }
 
     /**
@@ -87,7 +88,7 @@ class Blob implements Generator
      */
     public function dimensions() : int
     {
-        return count($this->center);
+        return $this->center->n();
     }
 
     /**
@@ -98,14 +99,10 @@ class Blob implements Generator
      */
     public function generate(int $n = 100) : Dataset
     {
-        $samples = [];
-
-        for ($i = 0; $i < $n; $i++) {
-            foreach ($this->center as $j => $mean) {
-                $samples[$i][$j] = $mean + Gaussian::rand()
-                    * $this->stddev[$j];
-            }
-        }
+        $samples = Matrix::gaussian($n, $this->dimensions())
+            ->add($this->center)
+            ->multiply($this->stddev)
+            ->asArray();
 
         return new Unlabeled($samples, false);
     }

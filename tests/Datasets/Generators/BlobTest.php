@@ -25,11 +25,11 @@ class BlobTest extends TestCase
 
     public function test_generate_dataset()
     {
-        $dataset = $this->generator->generate(10);
+        $dataset = $this->generator->generate(30);
 
         $this->assertInstanceOf(Unlabeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);
 
-        $this->assertCount(10, $dataset);
+        $this->assertCount(30, $dataset);
     }
 }

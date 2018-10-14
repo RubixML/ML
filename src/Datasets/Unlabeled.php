@@ -18,6 +18,28 @@ use RuntimeException;
 class Unlabeled extends DataFrame implements Dataset
 {
     /**
+     * Build a new unlabeled dataset with validation.
+     * 
+     * @param  array  $samples
+     * @return self
+     */
+    public static function build(array $samples = []) : self
+    {
+        return new self($samples, true);
+    }
+
+    /**
+     * Build a new unlabeled dataset foregoing validation.
+     * 
+     * @param  array[]  $samples
+     * @return self
+     */
+    public static function quick(array $samples = []) : self
+    {
+        return new self($samples, false);
+    }
+
+    /**
      * Restore an unlabeled dataset from a serialized object file.
      *
      * @param  string  $path
@@ -58,7 +80,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function head(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, 0, $n), false);
+        return self::quick(array_slice($this->samples, 0, $n));
     }
 
     /**
@@ -69,7 +91,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function tail(int $n = 10) : self
     {
-        return new self(array_slice($this->samples, -$n), false);
+        return self::quick(array_slice($this->samples, -$n));
     }
 
     /**
@@ -102,7 +124,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function merge(Dataset $dataset) : Dataset
     {
-        return new self(array_merge($this->samples, $dataset->samples()), false);
+        return self::quick(array_merge($this->samples, $dataset->samples()));
     }
 
     /**
@@ -115,11 +137,11 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function splice(int $offset, int $n) : self
     {
-        return new self(array_splice($this->samples, $offset, $n), false);
+        return self::quick(array_splice($this->samples, $offset, $n));
     }
 
     /**
-     * Randomize the dataset.
+     * Randomize the dataset in place and return self for chaining.
      *
      * @return self
      */
@@ -147,7 +169,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($samples);
+        return self::quick($samples);
     }
 
     /**
@@ -180,10 +202,10 @@ class Unlabeled extends DataFrame implements Dataset
             . ' between 0 and 1.');
         }
 
-        $n = (int) ($ratio * $this->numRows());
+        $p = (int) ($ratio * $this->numRows());
 
-        $left = new self(array_slice($this->samples, 0, $n), false);
-        $right = new self(array_slice($this->samples, $n), false);
+        $left = self::quick(array_slice($this->samples, 0, $p));
+        $right = self::quick(array_slice($this->samples, $p));
 
         return [$left, $right];
     }
@@ -209,7 +231,7 @@ class Unlabeled extends DataFrame implements Dataset
         $folds = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $folds[] = new self(array_splice($samples, 0, $n), false);
+            $folds[] = self::quick(array_splice($samples, 0, $n));
         }
 
         return $folds;
@@ -230,7 +252,7 @@ class Unlabeled extends DataFrame implements Dataset
         $samples = $this->samples;
 
         foreach (array_chunk($this->samples, $n) as $batch) {
-            $batches[] = new self($batch, false);
+            $batches[] = self::quick($batch);
         }
 
         return $batches;
@@ -248,7 +270,7 @@ class Unlabeled extends DataFrame implements Dataset
      * @param  int  $index
      * @param  mixed  $value
      * @throws \InvalidArgumentException
-     * @return array
+     * @return self[]
      */
     public function partition(int $index, $value) : array
     {
@@ -277,7 +299,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return [new self($left, false), new self($right, false)];
+        return [self::quick($left), self::quick($right)];
     }
 
     /**
@@ -302,7 +324,7 @@ class Unlabeled extends DataFrame implements Dataset
             $subset[] = $this->samples[rand(0, $max)];
         }
 
-        return new self($subset, false);
+        return self::quick($subset);
     }
 
     /**
@@ -338,7 +360,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return new self($subset, false);
+        return self::quick($subset);
     }
 
     /**

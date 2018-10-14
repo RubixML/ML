@@ -33,7 +33,7 @@ class MaxAbsoluteScalerTest extends TestCase
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_fit_transform()
     {
         $this->transformer->fit($this->dataset);
 

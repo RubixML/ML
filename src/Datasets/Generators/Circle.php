@@ -2,9 +2,10 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
+use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 
 /**
@@ -19,21 +20,13 @@ use InvalidArgumentException;
 class Circle implements Generator
 {
     const TWO_PI = 2. * M_PI;
-    const PHI = 1000000000;
 
     /**
-     * The x coordinate of the center of the circle.
+     * The center vector of the circle.
      *
-     * @var float
+     * @var \Rubix\Tensor\Vector
      */
-    protected $x;
-
-    /**
-     * The y coordinate of the center of the circle.
-     *
-     * @var float
-     */
-    protected $y;
+    protected $center;
 
     /**
      * The scaling factor of the circle.
@@ -43,11 +36,11 @@ class Circle implements Generator
     protected $scale;
 
     /**
-     * The standard deviation of the generated data points.
+     * The amount of gaussian noise to add to the points as a percentage.
      *
      * @var float
      */
-    protected $stddev;
+    protected $noise;
 
     /**
      * @param  float  $x
@@ -64,15 +57,14 @@ class Circle implements Generator
                 . ' than 0.');
         }
 
-        if ($noise <= 0.or $noise > 1.) {
-            throw new InvalidArgumentException('Noise factor must be great than'
-                . ' 0 and less than or equal to 1.');
+        if ($noise < 0. or $noise > 1.) {
+            throw new InvalidArgumentException('Noise factor must be between'
+                . ' 0 and 1.');
         }
 
-        $this->x = $x;
-        $this->y = $y;
+        $this->center = Vector::quick([$x, $y]);
         $this->scale = $scale;
-        $this->stddev = $noise * $scale;
+        $this->noise = $noise;
     }
 
     /**
@@ -92,22 +84,21 @@ class Circle implements Generator
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n = 100) : Dataset
-    {
-        $end = (int) round(self::TWO_PI * self::PHI);
+    { 
+        $r = Vector::rand($n)->multiply(self::TWO_PI);
 
-        $samples = [];
+        $noise = Matrix::gaussian($n, 2)
+            ->multiply($this->noise);
 
-        for ($i = 0; $i < $n; $i++) {
-            $r = rand(0, $end) / self::PHI;
+        $x = $r->cos()->asRowMatrix();
+        $y = $r->sin()->asRowMatrix();
 
-            $samples[$i][] = $this->scale * cos($r)
-                + $this->x
-                + Gaussian::rand() * $this->stddev;
-
-            $samples[$i][] = $this->scale * sin($r)
-                + $this->y
-                + Gaussian::rand() * $this->stddev;
-        }
+        $samples = $x->augmentBelow($y)
+            ->transpose()
+            ->add($noise)
+            ->multiply($this->scale)
+            ->add($this->center)
+            ->asArray();
 
         return new Unlabeled($samples, false);
     }

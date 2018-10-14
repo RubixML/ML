@@ -2,9 +2,10 @@
 
 namespace Rubix\ML\Datasets\Generators;
 
+use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 
 /**
@@ -18,21 +19,12 @@ use InvalidArgumentException;
  */
 class HalfMoon implements Generator
 {
-    const PHI = 1000000000;
-
     /**
-     * The x coordinate of the center of the half moon.
+     * The center vector of the circle.
      *
-     * @var float
+     * @var \Rubix\Tensor\Vector
      */
-    protected $x;
-
-    /**
-     * The y coordinate of the center of the half moon.
-     *
-     * @var float
-     */
-    protected $y;
+    protected $center;
 
     /**
      * The scaling factor of the half moon.
@@ -49,11 +41,11 @@ class HalfMoon implements Generator
     protected $rotation;
 
     /**
-     * The standard deviation of the gaussian noise added to the data.
+     * The amount of gaussian noise to add to the points as a percentage.
      *
      * @var float
      */
-    protected $stddev;
+    protected $noise;
 
     /**
      * @param  float  $x
@@ -82,11 +74,10 @@ class HalfMoon implements Generator
                 . ' 0 and less than or equal to 1.');
         }
 
-        $this->x = $x;
-        $this->y = $y;
+        $this->center = Vector::quick([$x, $y]);
         $this->scale = $scale;
         $this->rotation = $rotation;
-        $this->stddev = $scale * $noise;
+        $this->noise = $noise;
     }
 
     /**
@@ -107,22 +98,22 @@ class HalfMoon implements Generator
      */
     public function generate(int $n = 100) : Dataset
     {
-        $start = (int) round(deg2rad($this->rotation) * self::PHI);
-        $end = (int) round(deg2rad($this->rotation + 180) * self::PHI);
+        $r = Vector::rand($n)->multiply(180)
+            ->add($this->rotation)
+            ->radians();
 
-        $samples = [];
+        $noise = Matrix::gaussian($n, 2)
+            ->multiply($this->noise);
 
-        for ($i = 0; $i < $n; $i++) {
-            $r = rand($start, $end) / self::PHI;
+        $x = $r->cos()->asRowMatrix();
+        $y = $r->sin()->asRowMatrix();
 
-            $samples[$i][] = $this->scale * cos($r)
-                + $this->x
-                + Gaussian::rand() * $this->stddev;
-
-            $samples[$i][] = $this->scale * sin($r)
-                + $this->y
-                + Gaussian::rand() * $this->stddev;
-        }
+        $samples = $x->augmentBelow($y)
+            ->transpose()
+            ->add($noise)
+            ->multiply($this->scale)
+            ->add($this->center)
+            ->asArray();
 
         return new Unlabeled($samples, false);
     }

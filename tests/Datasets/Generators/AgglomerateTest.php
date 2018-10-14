@@ -29,12 +29,12 @@ class AgglomerateTest extends TestCase
 
     public function test_generate_dataset()
     {
-        $dataset = $this->generator->generate(20);
+        $dataset = $this->generator->generate(30);
 
         $this->assertInstanceOf(Labeled::class, $dataset);
         $this->assertInstanceOf(Dataset::class, $dataset);
 
-        $this->assertCount(20, $dataset);
+        $this->assertCount(30, $dataset);
         $this->assertEquals(['one', 'two'], $dataset->possibleOutcomes());
     }
 }
