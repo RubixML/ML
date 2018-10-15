@@ -31,21 +31,23 @@ class VarianceThresholdFilterTest extends TestCase
 
     public function test_fit_transform()
     {
-        $dataset = $this->generator->generate(30);
+        $this->transformer->fit($this->generator->generate(30));
 
-        $this->transformer->fit($dataset);
+        $sample = $this->generator->generate(1)
+            ->apply($this->transformer)
+            ->row(0);
 
-        $dataset->apply($this->transformer);
-
-        $this->assertEquals(2, $dataset->numColumns());
+        $this->assertCount(2, $sample);
+        
+        $this->assertEquals(0., $sample[0], '', 3.);
+        $this->assertEquals(0., $sample[1], '', 15.);
     }
 
     public function test_transform_unfitted()
     {
-        $dataset = $this->generator->generate(1);
-
         $this->expectException(RuntimeException::class);
 
-        $dataset->apply($this->transformer);
+        $this->generator->generate(1)
+            ->apply($this->transformer);
     }
 }

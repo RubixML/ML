@@ -83,9 +83,9 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * Apply a tranformation to the sample matrix.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
+     * @return self
      */
-    public function apply(Transformer $transformer) : void;
+    public function apply(Transformer $transformer);
 
     /**
      * Save the dataset to a serialized object file.

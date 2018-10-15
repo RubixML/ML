@@ -31,16 +31,15 @@ class IntervalDiscretizerTest extends TestCase
 
     public function test_fit_transform()
     {
-        $train = $this->generator->generate(30);
-        $test = $this->generator->generate(1);
-
         $outcomes = ['a', 'b', 'c', 'd', 'e'];
 
-        $this->transformer->fit($train);
+        $this->transformer->fit($this->generator->generate(30));
 
-        $test->apply($this->transformer);
+        $sample = $this->generator->generate(1)
+            ->apply($this->transformer)
+            ->row(0);
 
-        $sample = $test->row(0);
+        $this->assertCount(4, $sample);
 
         $this->assertContains($sample[0], $outcomes);
         $this->assertContains($sample[1], $outcomes);
@@ -50,10 +49,9 @@ class IntervalDiscretizerTest extends TestCase
 
     public function test_transform_unfitted()
     {
-        $dataset = $this->generator->generate(1);
-
         $this->expectException(RuntimeException::class);
 
-        $dataset->apply($this->transformer);
+        $this->generator->generate(1)
+            ->apply($this->transformer);
     }
 }

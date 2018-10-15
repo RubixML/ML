@@ -170,8 +170,8 @@ class MinMaxNormalizer implements Transformer, Elastic
 
         foreach ($samples as &$sample) {
             foreach ($this->scales as $column => $scale) {
-                $sample[$column] = ($this->mins[$column] + $sample[$column])
-                    * $scale;
+                $sample[$column] *= $scale;
+                $sample[$column] += $this->mins[$column];
             }
         }
     }

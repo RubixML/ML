@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Elastic;
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TfIdfTransformer;
 use PHPUnit\Framework\TestCase;
@@ -30,6 +31,7 @@ class TfIdfTransformerTest extends TestCase
     {
         $this->assertInstanceOf(TfIdfTransformer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 

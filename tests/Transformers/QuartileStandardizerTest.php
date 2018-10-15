@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\QuartileStandardizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -13,17 +13,13 @@ class QuartileStandardizerTest extends TestCase
 {
     protected $transformer;
 
-    protected $dataset;
+    protected $generator;
 
     public function setUp()
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 20, 30, 10],
-            [100, 300, 200, 400],
-        ]);
+        $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
 
-        $this->transformer = new QuartileStandardizer();
+        $this->transformer = new QuartileStandardizer(true);
     }
 
     public function test_build_transformer()
@@ -33,23 +29,26 @@ class QuartileStandardizerTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_update_transform()
     {
-        $this->transformer->fit($this->dataset);
+        $this->transformer->fit($this->generator->generate(30));
 
-        $this->dataset->apply($this->transformer);
+        $sample = $this->generator->generate(1)
+            ->apply($this->transformer)
+            ->row(0);
 
-        $this->assertEquals([
-            [-0.3939393938996021, -0.06040268456173145, -0.13705583755649461, -0.015151515151132538],
-            [0.0, 0.0, 0.0, 0.0],
-            [0.6060606059993878, 0.9395973154047115, 0.862944162392744, 0.9848484848236149],
-        ], $this->dataset->samples());
+        $this->assertCount(3, $sample);
+        
+        $this->assertEquals(0., $sample[0], '', 3.5);
+        $this->assertEquals(0., $sample[1], '', 3.5);
+        $this->assertEquals(0., $sample[2], '', 3.5);
     }
 
     public function test_transform_unfitted()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->apply($this->transformer);
+        $this->generator->generate(1)
+            ->apply($this->transformer);
     }
 }

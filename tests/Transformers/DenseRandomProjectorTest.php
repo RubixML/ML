@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\DenseRandomProjector;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -13,17 +13,13 @@ class DenseRandomProjectorTest extends TestCase
 {
     protected $transformer;
 
-    protected $dataset;
+    protected $generator;
 
     public function setUp()
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 20, 30, 10],
-            [100, 300, 200, 400],
-        ]);
+        $this->generator = new Blob(array_fill(0, 10, 0.), 3.);
 
-        $this->transformer = new DenseRandomProjector(2);
+        $this->transformer = new DenseRandomProjector(3);
     }
 
     public function test_build_transformer()
@@ -35,17 +31,22 @@ class DenseRandomProjectorTest extends TestCase
 
     public function test_fit_transform()
     {
-        $this->transformer->fit($this->dataset);
+        $this->assertCount(10, $this->generator->generate(1)->row(0));
 
-        $this->dataset->apply($this->transformer);
+        $this->transformer->fit($this->generator->generate(30));
 
-        $this->assertEquals(2, $this->dataset->numColumns());
+        $sample = $this->generator->generate(1)
+            ->apply($this->transformer)
+            ->row(0);
+
+        $this->assertCount(3, $sample);
     }
 
     public function test_transform_unfitted()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->apply($this->transformer);
+        $this->generator->generate(1)
+            ->apply($this->transformer);
     }
 }

@@ -2,26 +2,23 @@
 
 namespace Rubix\ML\Tests\Transformers;
 
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Elastic;
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class MinMaxNormalizerTest extends TestCase
 {
-    protected $dataset;
-
     protected $transformer;
+
+    protected $generator;
 
     public function setUp()
     {
-        $this->dataset = new Unlabeled([
-            [1, 2, 3, 4],
-            [40, 20, 30, 10],
-            [100, 300, 200, 400],
-        ]);
+        $this->generator = new Blob([0., 3000., -6.], [1., 30., 0.001]);
 
         $this->transformer = new MinMaxNormalizer(0., 1.);
     }
@@ -30,26 +27,32 @@ class MinMaxNormalizerTest extends TestCase
     {
         $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
         $this->assertInstanceOf(Elastic::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_fit_update_transform()
     {
-        $this->transformer->fit($this->dataset);
+        $this->transformer->fit($this->generator->generate(30));
 
-        $this->dataset->apply($this->transformer);
+        $this->transformer->update($this->generator->generate(30));
 
-        $this->assertEquals([
-            [0.009998979695949393, 0.0066888878879329755, 0.015151124739106908, 0.010075502499744926],
-            [0.40393837363534335, 0.06709157245169137, 0.15220696230255867, 0.025227017651260078],
-            [1.0099989796959494, 1.006688887887933, 1.0151511247391067, 1.010075502499745],
-        ], $this->dataset->samples());
+        $sample = $this->generator->generate(1)
+            ->apply($this->transformer)
+            ->row(0);
+
+        $this->assertCount(3, $sample);
+        
+        $this->assertEquals(0.5, $sample[0], '', 0.5);
+        $this->assertEquals(0.5, $sample[1], '', 0.5);
+        $this->assertEquals(0.5, $sample[2], '', 0.5);
     }
 
     public function test_transform_unfitted()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->apply($this->transformer);
+        $this->generator->generate(1)
+            ->apply($this->transformer);
     }
 }

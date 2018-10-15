@@ -177,14 +177,16 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Apply a transformation to the dataframe.
+     * Apply a transformation to the dataframe and return this for chaining.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return void
+     * @return self
      */
-    public function apply(Transformer $transformer) : void
+    public function apply(Transformer $transformer) : self
     {
         $transformer->transform($this->samples);
+
+        return $this;
     }
 
     /**
