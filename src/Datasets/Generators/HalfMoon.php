@@ -56,20 +56,20 @@ class HalfMoon implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0., float $y = 0., float $scale = 1.0, float $rotation = 90.0,
+    public function __construct(float $x = 0., float $y = 0., float $scale = 1., float $rotation = 90.0,
                                 float $noise = 0.1)
     {
-        if ($scale < 0) {
+        if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . ' than 0.');
         }
 
-        if ($rotation < 0 or $rotation > 360) {
+        if ($rotation < 0. or $rotation > 360.) {
             throw new InvalidArgumentException('Rotation must be between 0 and'
                 . ' 360 degrees.');
         }
 
-        if ($noise <= 0.or $noise > 1.) {
+        if ($noise <= 0. or $noise > 1.) {
             throw new InvalidArgumentException('Noise factor must be great than'
                 . ' 0 and less than or equal to 1.');
         }
@@ -108,8 +108,8 @@ class HalfMoon implements Generator
         $samples = Matrix::fromVectors([$r->cos(), $r->sin()])
             ->transpose()
             ->add($noise)
-            ->multiply($this->scale)
             ->add($this->center)
+            ->multiply($this->scale)
             ->asArray();
 
         return Unlabeled::quick($samples);

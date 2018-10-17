@@ -6,33 +6,39 @@ use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
-use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\CommitteeMachine;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class CommitteeMachineTest extends TestCase
 {
+    const TRAIN_SIZE = 150;
+    const TEST_SIZE = 5;
+    const MIN_PROB = 0.33;
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
-
-        $this->testing = $this->training->randomize()->head(3);
+        $this->generator = new Agglomerate([
+            'inner' => new Circle(0., 0., 1., 0.01),
+            'middle' => new Circle(0., 0., 5., 0.05),
+            'outer' => new Circle(0., 0., 10., 0.1),
+        ]);
 
         $this->estimator = new CommitteeMachine([
-            new ClassificationTree(10, 3, 4),
-            new KDNeighbors(5, 20, new Euclidean()),
+            new ClassificationTree(10, 3, 2),
+            new KNearestNeighbors(3, new Euclidean()),
             new GaussianNB(),
         ]);
     }
@@ -51,27 +57,32 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict_proba()
     {
-        $this->estimator->train($this->training);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
 
-        $probabilities = $this->estimator->proba($this->testing);
+        foreach ($this->estimator->proba($testing) as $i => $prob) {
+            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
+        }
+    }
 
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
+    public function test_train_with_unlabeled()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

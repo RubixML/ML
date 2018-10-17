@@ -43,9 +43,9 @@ class MinMaxNormalizerTest extends TestCase
 
         $this->assertCount(3, $sample);
         
-        $this->assertEquals(0.5, $sample[0], '', 0.5);
-        $this->assertEquals(0.5, $sample[1], '', 0.5);
-        $this->assertEquals(0.5, $sample[2], '', 0.5);
+        $this->assertEquals(0.5, $sample[0], '', 1);
+        $this->assertEquals(0.5, $sample[1], '', 1);
+        $this->assertEquals(0.5, $sample[2], '', 1);
     }
 
     public function test_transform_unfitted()

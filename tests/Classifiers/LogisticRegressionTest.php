@@ -6,9 +6,10 @@ use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -18,19 +19,22 @@ use RuntimeException;
 
 class LogisticRegressionTest extends TestCase
 {
+    const TRAIN_SIZE = 200;
+    const TEST_SIZE = 5;
+    const MIN_PROB = 0.5;
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            'male' => new Blob([69.2, 195.7, 40.], 3.),
+            'female' => new Blob([63.7, 168.5, 38.1], 3.),
+        ]);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new LogisticRegression(100, 1, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-4);
+        $this->estimator = new LogisticRegression(300, 10, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-4);
     }
 
     public function test_build_classifier()
@@ -47,55 +51,43 @@ class LogisticRegressionTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_partial_predict_proba()
     {
-        $this->training->randomize();
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $this->estimator->train($this->training);
+        $transformer = new ZScaleStandardizer();
 
-        $predictions = $this->estimator->predict($this->testing);
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
 
-        $probabilities = $this->estimator->proba($this->testing);
-
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
-    }
-
-    public function test_partial_train()
-    {
-        $folds = $this->training->stratifiedFold(3);
+        $folds = $dataset->fold(3);
 
         $this->estimator->train($folds[0]);
-
         $this->estimator->partial($folds[1]);
-
         $this->estimator->partial($folds[2]);
 
-        $predictions = $this->estimator->predict($this->testing);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        foreach ($this->estimator->proba($testing) as $i => $prob) {
+            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

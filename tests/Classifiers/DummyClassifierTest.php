@@ -4,26 +4,31 @@ namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class DummyClassifierTest extends TestCase
 {
+    const TRAIN_SIZE = 100;
+    const TEST_SIZE = 5;
+
     protected $estimator;
 
-    protected $training;
-
-    protected $testing;
+    protected $generator;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
-
-        $this->testing = $this->training->randomize()->head(3);
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ], [0.7, 0.1, 0.2]);
 
         $this->estimator = new DummyClassifier(new PopularityContest());
     }
@@ -40,23 +45,14 @@ class DummyClassifierTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
-        $this->estimator->train($this->training);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $this->assertContains($predictions[0], $this->training->possibleOutcomes());
-        $this->assertContains($predictions[1], $this->training->possibleOutcomes());
-        $this->assertContains($predictions[2], $this->training->possibleOutcomes());
-    }
-
-    public function test_train_with_unlabeled()
-    {
-        $dataset = new Unlabeled([['bad']]);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train($dataset);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertContains($prediction, $testing->possibleOutcomes());
+        }
     }
 }

@@ -93,8 +93,8 @@ class Circle implements Generator
         $samples = Matrix::fromVectors([$r->cos(), $r->sin()])
             ->transpose()
             ->add($noise)
-            ->multiply($this->scale)
             ->add($this->center)
+            ->multiply($this->scale)
             ->asArray();
 
         return Unlabeled::quick($samples);

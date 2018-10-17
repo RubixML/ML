@@ -6,17 +6,19 @@ use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class GaussianNBTest extends TestCase
 {
+    const TRAIN_SIZE = 100;
     const TEST_SIZE = 5;
+    const MIN_PROB = 0.33;
     
     protected $generator;
 
@@ -25,9 +27,9 @@ class GaussianNBTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'a' => new Blob([5, 2, -5], 0.8),
-            'b' => new Blob([0, 1, 0], 1.),
-            'c' => new Blob([-5, -2, 5], 1.2),
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
         $this->estimator = new GaussianNB(null);
@@ -51,16 +53,16 @@ class GaussianNBTest extends TestCase
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(20));
-        $this->estimator->partial($this->generator->generate(20));
-        $this->estimator->partial($this->generator->generate(20));
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE / 3));
+        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
+        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
 
         foreach ($this->estimator->predict($testing) as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction);
         }
 
         foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThanOrEqual(0.5, $prob[$testing->label($i)]);
+            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
         }
     }
 
@@ -69,5 +71,12 @@ class GaussianNBTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

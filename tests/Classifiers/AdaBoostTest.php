@@ -5,29 +5,33 @@ namespace Rubix\ML\Tests\Classifiers;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\AdaBoost;
-use Rubix\ML\Classifiers\ExtraTreeClassifier;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class AdaBoostTest extends TestCase
 {
+    const TRAIN_SIZE = 200;
+    const TEST_SIZE = 5;
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ]);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new AdaBoost(new ExtraTreeClassifier(1, 1, 1), 100, 1., 0.8, 1e-4);
+        $this->estimator = new AdaBoost(new ClassificationTree(3), 100, 1., 0.8, 1e-4);
     }
 
     public function test_build_classifier()
@@ -43,32 +47,28 @@ class AdaBoostTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
-        $this->training->randomize();
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $this->estimator->train($this->training);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
-
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

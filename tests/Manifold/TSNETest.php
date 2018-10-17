@@ -35,7 +35,6 @@ class TSNETest extends TestCase
 
         $this->assertCount(20, $embedding);
 
-        // file_put_contents('embedding.json', json_encode($embedding, JSON_PRETTY_PRINT));
-        // file_put_contents('steps.json', json_encode($steps, JSON_PRETTY_PRINT));
+        // file_put_contents('test.json', json_encode($steps, JSON_PRETTY_PRINT));
     }
 }

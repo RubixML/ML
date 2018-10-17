@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Dummy Classifier

@@ -6,7 +6,6 @@ use Rubix\ML\Online;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -14,10 +13,13 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use RuntimeException;
 
 class NaiveBayesTest extends TestCase
 {
+    const TRAIN_SIZE = 100;
     const TEST_SIZE = 5;
+    const MIN_PROB = 0.33;
 
     protected $generator;
 
@@ -26,9 +28,9 @@ class NaiveBayesTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'a' => new Blob([5, 2, -5], 0.8),
-            'b' => new Blob([0, 1, 0], 1.),
-            'c' => new Blob([-5, -2, 5], 1.2),
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
         $this->estimator = new NaiveBayes(1., null);
@@ -50,9 +52,9 @@ class NaiveBayesTest extends TestCase
 
     public function test_train_partial_predict_proba()
     {
-        $dataset = $this->generator->generate(60 + self::TEST_SIZE);
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $transformer = new IntervalDiscretizer(5);
+        $transformer = new IntervalDiscretizer(6);
 
         $transformer->fit($dataset);
         $dataset->apply($transformer);
@@ -70,7 +72,7 @@ class NaiveBayesTest extends TestCase
         }
 
         foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThanOrEqual(0.5, $prob[$testing->label($i)]);
+            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
         }
     }
 
@@ -79,5 +81,12 @@ class NaiveBayesTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->estimator->train(Unlabeled::quick());
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

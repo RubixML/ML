@@ -39,9 +39,9 @@ class RobustStandardizerTest extends TestCase
 
         $this->assertCount(3, $sample);
         
-        $this->assertEquals(0., $sample[0], '', 3.5);
-        $this->assertEquals(0., $sample[1], '', 3.5);
-        $this->assertEquals(0., $sample[2], '', 3.5);
+        $this->assertEquals(0., $sample[0], '', 6);
+        $this->assertEquals(0., $sample[1], '', 6);
+        $this->assertEquals(0., $sample[2], '', 6);
     }
 
     public function test_transform_unfitted()
