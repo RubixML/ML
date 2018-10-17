@@ -29,7 +29,7 @@ interface Estimator
     public function train(Dataset $dataset) : void;
 
     /**
-     * Make a prediction from a dataset.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array

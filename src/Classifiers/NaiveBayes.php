@@ -40,38 +40,33 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     protected $alpha;
 
     /**
-     * Should we fit the empirical prior probabilities of each class? If not,
-     * then a prior of 1 / possible class outcomes is assumed.
+     * The class prior probabilities.
      *
-     * @var bool
+     * @var array|null
      */
     protected $priors;
 
     /**
-     * The weight of each class as a proportion of the entire training set.
-     *
-     * @var array
+     * Should we compute the prior probabilities from the training set?
+     * 
+     * @var bool
      */
-    protected $weights = [
-        //
-    ];
+    protected $fitPriors;
 
     /**
-     * The prior negative log probabilities of each label.
+     * The weight of each class as a proportion of the entire training set.
      *
      * @var array|null
      */
-    protected $_priors;
+    protected $weights;
 
     /**
      * The count of each feature from the training set used for online
      * probability calculation.
      *
-     * @var array
+     * @var array|null
      */
-    protected $counts = [
-        //
-    ];
+    protected $counts;
 
     /**
      * The precomputed negative log probabilities of each feature conditioned on
@@ -92,19 +87,45 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
 
     /**
      * @param  float  $alpha
-     * @param  bool  $priors
+     * @param  array|null  $priors
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1.0, bool $priors = true)
+    public function __construct(float $alpha = 1.0, ?array $priors = null)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('Smoothing parameter cannot be'
-                . ' less than 0.');
+            throw new InvalidArgumentException("Alpha cannot be less"
+                . " than 0, $alpha given.");
         }
 
+        if (is_array($priors)) {
+            $total = 0;
+            
+            foreach ($priors as $class => $probability) {
+                if (!is_string($class)) {
+                    throw new InvalidArgumentException('Class label must be a'
+                        . ' string, ' . gettype($class) . ' found.');
+                }
+
+                if (!is_int($probability) and !is_float($probability)) {
+                    throw new InvalidArgumentException('Probability must be'
+                        . ' an integer or float, ' . gettype($probability)
+                        . ' found.');
+                }
+
+                $total += $probability;
+            }
+
+            if ($total != 1 and $total != 0) {
+                foreach ($priors as &$probability) {
+                    $probability /= $total;
+                }
+            }
+        }
+        
         $this->alpha = $alpha;
         $this->priors = $priors;
+        $this->fitPriors = is_null($priors);
     }
 
     /**
@@ -118,14 +139,23 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the class prior log probabilities based on their weight over all
-     * training samples.
+     * Return the class prior probabilities.
      *
-     * @return array|null
+     * @return array
      */
-    public function priors() : ?array
+    public function priors() : array
     {
-        return $this->_priors;
+        $priors = [];
+
+        if (is_array($this->priors)) {
+            $max = LogSumExp::compute($this->priors);
+
+            foreach ($this->priors as $class => $probability) {
+                $priors[$class] = exp($probability - $max);
+            }
+        }
+
+        return $priors;
     }
 
     /**
@@ -140,7 +170,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
-     * Compute the probabilities of each feature in the training set.
+     * Train the estimator with a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -156,10 +186,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         $classes = $dataset->possibleOutcomes();
 
         $this->classes = $classes;
-
         $this->weights = array_fill_keys($classes, 0);
-
-        $this->_priors = array_fill_keys($classes, log(1. / count($classes)));
 
         $this->counts = $this->probs = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), []));
@@ -168,7 +195,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
-     * Compute the rolling counts and probabilities.
+     * Compute the rolling counts and conditional probabilities.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -186,7 +213,7 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
                 . ' categorical features.');
         }
 
-        if (empty($this->weights) or empty($this->counts)) {
+        if (is_null($this->weights) or is_null($this->counts) or is_null($this->probs)) {
             $this->train($dataset);
             return;
         }
@@ -205,35 +232,36 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
                     }
                 }
 
-                $sigma = array_sum($columnCounts)
-                    + (count($columnCounts) * $this->alpha);
+                $total = (array_sum($columnCounts)
+                    + (count($columnCounts) * $this->alpha))
+                    ?: self::EPSILON;
 
                 $probs = [];
 
                 foreach ($columnCounts as $category => $count) {
-                    $probs[$category] = log(($count + $this->alpha) / $sigma);
+                    $probs[$category] = log(($count + $this->alpha) / $total);
                 }
 
                 $this->counts[$class][$column] = $columnCounts;
                 $this->probs[$class][$column] = $probs;
             }
 
-            $this->weights[$class] += count($stratum);
+            $this->weights[$class] += $stratum->numRows();
         }
 
-        if ($this->priors === true) {
-            $sigma = array_sum($this->weights)
-                + (count($this->weights) * $this->alpha);
+        if ($this->fitPriors === true) {
+            $total = (array_sum($this->weights)
+                + (count($this->weights) * $this->alpha))
+                ?: self::EPSILON;
 
             foreach ($this->weights as $class => $weight) {
-                $this->_priors[$class] = log(($weight + $this->alpha) / $sigma);
+                $this->priors[$class] = log(($weight + $this->alpha) / $total);
             }
         }
     }
 
     /**
-    * Calculate the likelihood of the sample being a member of a class and
-    * chose the class with the highest likelihood score as the prediction.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -263,6 +291,8 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
+     * Estimate probabilities for each possible outcome.
+     * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -305,9 +335,8 @@ class NaiveBayes implements Estimator, Online, Probabilistic, Persistable
         $likelihood = [];
 
         foreach ($this->classes as $class) {
+            $score = $this->priors[$class] ?? self::LOG_EPSILON;
             $probs = $this->probs[$class];
-
-            $score = $this->_priors[$class];
 
             foreach ($sample as $column => $feature) {
                 $score += $probs[$column][$feature] ?? self::LOG_EPSILON;

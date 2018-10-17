@@ -49,23 +49,17 @@ class GaussianNBTest extends TestCase
 
     public function test_train_partial_predict_proba()
     {
-        $this->estimator->train($this->generator->generate(20));
-
-        $this->estimator->partial($this->generator->generate(20));
-
-        $this->estimator->partial($this->generator->generate(20));
-
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($testing);
+        $this->estimator->train($this->generator->generate(20));
+        $this->estimator->partial($this->generator->generate(20));
+        $this->estimator->partial($this->generator->generate(20));
 
-        foreach ($predictions as $i => $prediction) {
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction);
         }
 
-        $probabilities = $this->estimator->proba($testing);
-
-        foreach ($probabilities as $i => $prob) {
+        foreach ($this->estimator->proba($testing) as $i => $prob) {
             $this->assertGreaterThanOrEqual(0.5, $prob[$testing->label($i)]);
         }
     }

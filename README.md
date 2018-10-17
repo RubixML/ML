@@ -1381,7 +1381,7 @@ Classifiers are a type of Estimator that predict discrete outcomes such as class
 ### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Supervised | Multiclass | Persistable
+##### Supervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1420,7 +1420,7 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 0.5, 1e-2
 ### Classification Tree
 A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily construct a decision tree for classification. It is multi modal in the sense that it can handle both categorical and continuous data at the same time.
 
-##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+##### Supervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1476,7 +1476,7 @@ $estimator = new CommitteeMachine([
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
-##### Supervised | Multiclass | Persistable
+##### Supervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1497,7 +1497,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ### Extra Tree Classifier
 n Extremely Randomized Classification Tree, Extra Trees differ from standard [Classification Trees](#classification-tree) in that they choose a random split drawn from a set max features, rather than the *best* split. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
-##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+##### Supervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1520,13 +1520,12 @@ $estimator = new ExtraTreeClassifier(50, 3, 4);
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) classifier that uses a probability density function (*PDF*) over continuous features. The distribution of values is assumed to be Gaussian therefore your data might need to be transformed beforehand if it is not normally distributed.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | priors | true | bool | Should we compute the empirical prior probabilities of the class outcomes? |
-| 2 | epsilon | 1e-8 | float | A small amount of smoothing to apply to the variance of each Gaussian for numerical stability. |
+| 1 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
 ##### Additional Methods:
 
@@ -1537,25 +1536,28 @@ public priors() : array
 
 Return the running mean of each feature column for each class:
 ```php
-public means() : array
+public means() : ?array
 ```
 
 Return the running variance of each feature column for each class:
 ```php
-public variances() : array
+public variances() : ?array
 ```
 
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\GaussianNB;
 
-$estimator = new GaussianNB(true, 1e-2);
+$estimator = new GaussianNB([
+	'benign' => 0.8,
+	'malignant' => 0.2,
+]);
 ```
 
 ### K-d Neighbors
 A fast [K Nearest Neighbors](#k-nearest-neighbors) approximating Estimator that uses a K-d tree to divide the training set into neighborhoods whose max size are constrained by the *neighborhood* hyperparameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then searches  only the points in the neighborhood for the nearest k to make a prediction. Since there may be points in other neighborhoods that may be closer, the nearest neighbor search is said to be *approximation*. The main advantage K-d Neighbors has over regular KNN is that it is much faster.
 
-##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+##### Supervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1578,7 +1580,7 @@ $estimator = new KDNeighbors(3, 10, new Euclidean());
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a majority vote to classify the unknown sample. K Nearest Neighbors is considered a *lazy* learning Estimator because it does the majority of its computation at prediction time. The advantage KNN has over [KD Neighbors](#k-d-neighbors)  is that it is more precise and capable of online learning.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1600,7 +1602,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ### Logistic Regression
 A type of linear classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes. Logistic Regression measures the relationship between the class label and one or more independent variables by estimating probabilities.
 
-##### Supervised | Binary | Online | Probabilistic | Persistable | Linear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1636,7 +1638,7 @@ $estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new Exponent
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1696,7 +1698,7 @@ $estimator = new MultiLayerPerceptron([
 ### Naive Bayes
 Probability-based classifier that uses probabilistic inference to derive the predicted class. The posterior probabilities are calculated using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part relates to the fact that it assumes that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Nonlinear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1706,12 +1708,12 @@ Probability-based classifier that uses probabilistic inference to derive the pre
 
 ##### Additional Methods:
 
-Returns the class prior log probabilities based on their weight over all training samples:
+Return the class prior probabilities:
 ```php
 public priors() : array
 ```
 
-Return the log probabilities of each feature given each class label:
+Return the negative log probabilities of each feature given each class label:
 ```php
 public probabilities() : array
 ```
@@ -1720,13 +1722,16 @@ public probabilities() : array
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 
-$estimator = new NaiveBayes(0.5, true);
+$estimator = new NaiveBayes(2.5, [
+	'spam' => 0.3,
+	'not spam' => 0.7,
+]);
 ```
 
 ### Random Forest
 [Ensemble](#ensemble) classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap*) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
 
-##### Supervised | Multiclass | Probabilistic | Persistable | Nonlinear
+##### Supervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1749,7 +1754,7 @@ $estimator = new RandomForest(ClassificationTree(10, 3, 5, 1e-2), 400, 0.1);
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer [neural network](#neural-network) with a Softmax output layer.
 
-##### Supervised | Multiclass | Online | Probabilistic | Persistable | Linear
+##### Supervised | Online | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1789,7 +1794,7 @@ Clustering is a common technique in machine learning that focuses on grouping sa
 ### DBSCAN
 Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors).
 
-##### Unsupervised | Persistable | Nonlinear
+##### Unsupervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1882,7 +1887,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters (parameter *k*).
 
-##### Unsupervised | Online | Persistable | Linear
+##### Unsupervised | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1909,7 +1914,7 @@ $estimator = new KMeans(3, new Euclidean());
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (centroids) of a training set given by a radius constraint.
 
-##### Unsupervised | Persistable | Linear
+##### Unsupervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1947,7 +1952,7 @@ Regression analysis is used to predict the outcome of an event where the value i
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively online using Gradient Descent.
 
-##### Supervised | Online | Persistable | Linear
+##### Supervised | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2004,7 +2009,7 @@ $estimator = new DummyRegressor(new BlurryMedian(0.2));
 ### Extra Tree Regressor
 An Extremely Randomized Regression Tree, Extra Trees differ from standard Regression Trees in that they choose a random split drawn from a set max features, rather than the *best* split. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Gradient Boost](#gradient-boost) or [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a *weak learner* by itself.
 
-##### Supervised | Persistable | Nonlinear
+##### Supervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2056,7 +2061,7 @@ $estimator = new GradientBoost(new RegressionTree(2, 3, 5), 100, 1.0, 1e-2);
 ### K-d Neighbors Regressor
 A fast approximating implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples in the neighborhood. The main advantage of K-d Neighbors over KNN is speed and added variance to the predictions (if that is desired).
 
-##### Supervised  | Persistable | Nonlinear
+##### Supervised  | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2079,7 +2084,7 @@ $estimator = new KDNRegressor(5, 20, new Euclidean());
 ### KNN Regressor
 A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems. The advantage of KNN Regressor over [KDN Regressor](#k-d-neighbors-regressor) is that it is more precise and capable of online learning.
 
-##### Supervised | Online | Persistable | Nonlinear
+##### Supervised | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2101,7 +2106,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ### MLP Regressor
 A multi layer [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
-##### Supervised | Online | Persistable | Nonlinear
+##### Supervised | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2157,7 +2162,7 @@ $estimator = new MLPRegressor([
 ### Regression Tree
 A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
 
-##### Supervised | Persistable | Nonlinear
+##### Supervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2180,7 +2185,7 @@ $estimator = new RegressionTree(80, 1, null, 0.);
 ### Ridge
 L2 penalized least squares linear regression. Can be used for simple regression problems that can be modeled using a straight line.
 
-##### Supervised | Persistable | Linear
+##### Supervised | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

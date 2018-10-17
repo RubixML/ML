@@ -35,6 +35,8 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
 {
     const TWO_PI = 2. * M_PI;
 
+    const LOG_EPSILON = -8;
+
     /**
      * The class prior probabilities.
      *
@@ -347,7 +349,7 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $likelihood = [];
 
         foreach ($this->classes as $class) {
-            $score = $this->priors[$class] ?? self::EPSILON;
+            $score = $this->priors[$class] ?? self::LOG_EPSILON;
             $means = $this->means[$class];
             $variances = $this->variances[$class];
 
