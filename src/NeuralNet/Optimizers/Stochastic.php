@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
 /**
@@ -32,8 +32,8 @@ class Stochastic implements Optimizer
     public function __construct(float $rate = 0.001)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
-                . ' greater than 0.');
+            throw new InvalidArgumentException("The learning rate must be"
+                . " greater than 0, $rate given.");
         }
 
         $this->rate = $rate;
@@ -42,11 +42,11 @@ class Stochastic implements Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : Matrix
     {
         return $gradient->multiply($this->rate);
     }

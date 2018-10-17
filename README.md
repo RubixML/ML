@@ -3583,13 +3583,12 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
-| 3 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 
-$optimizer = new AdaGrad(0.025, 1e-5);
+$optimizer = new AdaGrad(0.125);
 ```
 
 ### Adam
@@ -3601,13 +3600,12 @@ Short for *Adaptive Momentum Estimation*, the Adam Optimizer uses both Momentum 
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | momentum | 0.9 | float | The decay rate of the Momentum property. |
 | 3 | rms | 0.999 | float | The decay rate of the RMS property. |
-| 4 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$optimizer = new Adam(0.0001, 0.9, 0.999, 1e-8);
+$optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
 ### Momentum
@@ -3634,13 +3632,12 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | decay | 0.9 | float | The RMS decay rate. |
-| 3 | epsilon | 1e-8 | float | The smoothing constant used for numerical stability. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
-$optimizer = new RMSProp(0.01, 0.9, 1e-10);
+$optimizer = new RMSProp(0.01, 0.9);
 ```
 
 ### Step Decay
@@ -3649,24 +3646,24 @@ A learning rate decay stochastic optimizer that reduces the learning rate by a f
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
 | 2 | k | 10 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
-| 3 | decay | 1e-5 | float | The decay factor to decrease the learning rate by every k steps. |
+| 3 | decay | 1e-4 | float | The decay factor to decrease the learning rate by every k steps. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Optimizers\StepDecay;
 
-$optimizer = new StepDecay(0.001, 15, 1e-5);
+$optimizer = new StepDecay(0.1, 50, 1e-3);
 ```
 
 ### Stochastic
-A constant learning rate Optimizer.
+A constant learning rate optimizer based on the original Stochastic Gradient Descent paper.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
+| 1 | rate | 0.001 | float | The learning rate. i.e. the step size. |
 
 ##### Example:
 ```php

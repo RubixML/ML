@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -50,8 +50,8 @@ class Momentum implements Optimizer
     public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
-                . ' greater than 0.');
+            throw new InvalidArgumentException("The learning rate must be"
+                . " greater than 0, $rate given.");
         }
 
         if ($decay < 0. or $decay > 1.) {
@@ -67,25 +67,23 @@ class Momentum implements Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->velocities->contains($parameter)) {
-            $velocities = $this->velocities[$parameter];
+        if ($this->velocities->contains($param)) {
+            $velocities = $this->velocities[$param];
         } else {
-            $velocities = Matrix::zeros(...$parameter->w()->shape());
+            $velocities = Matrix::zeros(...$param->w()->shape());
 
-            $this->velocities->attach($parameter, $velocities);
+            $this->velocities->attach($param, $velocities);
         }
 
-        $velocities = $gradient
+        $this->velocities[$param] = $velocities = $gradient
             ->multiply($this->rate)
             ->add($velocities->multiply(1. - $this->decay));
-
-        $this->velocities[$parameter] = $velocities;
 
         return $velocities;
     }

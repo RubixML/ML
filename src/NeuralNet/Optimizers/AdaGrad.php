@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -32,14 +32,6 @@ class AdaGrad implements Optimizer
     protected $rate;
 
     /**
-     * The smoothing parameter. i.e. a tiny number that helps provide numerical
-     * smoothing and stability.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
      * The memoized sum of squared gradient matrices for each parameter.
      *
      * @var \SplObjectStorage
@@ -48,50 +40,41 @@ class AdaGrad implements Optimizer
 
     /**
      * @param  float  $rate
-     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.01, float $epsilon = 1e-8)
+    public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
-                . ' greater than 0.');
-        }
-
-        if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0.');
+            throw new InvalidArgumentException("The learning rate must be"
+                . " greater than 0, $rate given.");
         }
 
         $this->rate = $rate;
-        $this->epsilon = $epsilon;
         $this->cache = new SplObjectStorage();
     }
 
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->cache->contains($parameter)) {
-            $cache = $this->cache[$parameter];
+        if ($this->cache->contains($param)) {
+            $cache = $this->cache[$param];
         } else {
-            $cache = Matrix::zeros(...$parameter->w()->shape());
+            $cache = Matrix::zeros(...$param->w()->shape());
 
-            $this->cache->attach($parameter, $cache);
+            $this->cache->attach($param, $cache);
         }
 
-        $cache = $cache->add($gradient->square());
+        $this->cache[$param] = $cache = $cache->add($gradient->square());
 
         $step = $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->add($this->epsilon));
-
-        $this->cache[$parameter] = $cache;
+            ->divide($cache->sqrt()->clip(self::EPSILON, INF));
 
         return $step;
     }

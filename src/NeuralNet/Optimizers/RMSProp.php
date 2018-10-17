@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -38,14 +38,6 @@ class RMSProp implements Optimizer
     protected $decay;
 
     /**
-     * The smoothing parameter. i.e. a tiny number that helps provide numerical
-     * smoothing and stability.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
      * The rolling sum of squared gradient matrices.
      *
      * @var \SplObjectStorage
@@ -58,11 +50,11 @@ class RMSProp implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $decay = 0.9, float $epsilon = 1e-8)
+    public function __construct(float $rate = 0.001, float $decay = 0.9)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
-                . ' greater than 0.');
+            throw new InvalidArgumentException("The learning rate must be"
+                . " greater than 0, $rate given.");
         }
 
         if ($decay < 0. or $decay > 1.) {
@@ -70,43 +62,33 @@ class RMSProp implements Optimizer
                 . ' and 1.');
         }
 
-        if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0.');
-        }
-
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->epsilon = $epsilon;
         $this->cache = new SplObjectStorage();
     }
 
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->cache->contains($parameter)) {
-            $cache = $this->cache[$parameter];
+        if ($this->cache->contains($param)) {
+            $cache = $this->cache[$param];
         } else {
-            $cache = Matrix::zeros(...$parameter->w()->shape());
+            $cache = Matrix::zeros(...$param->w()->shape());
 
-            $this->cache->attach($parameter, $cache);
+            $this->cache->attach($param, $cache);
         }
 
-        $cache = $cache
+        $this->cache[$param] = $cache = $cache
             ->multiply($this->decay)
             ->add($gradient->square()->multiply(1. - $this->decay));
 
-        $step = $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->add($this->epsilon));
-
-        $this->cache[$parameter] = $cache;
-
-        return $step;
+        return $gradient->multiply($this->rate)
+            ->divide($cache->sqrt()->clip(self::EPSILON, INF));
     }
 }

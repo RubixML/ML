@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 use SplObjectStorage;
 
@@ -44,14 +44,6 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
-     * The smoothing parameter. i.e. a tiny number that helps provide numerical
-     * smoothing and stability.
-     *
-     * @var float
-     */
-    protected $epsilon;
-
-    /**
      * The memoized velocity matrices.
      *
      * @var \SplObjectStorage
@@ -76,16 +68,14 @@ class Adam implements Optimizer
      * @param  float  $rate
      * @param  float  $momentumDecay
      * @param  float  $rmsDecay
-     * @param  float  $epsilon
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9,
-                                float $rmsDecay = 0.999, float $epsilon = 1e-8)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
-                . ' greater than 0.');
+            throw new InvalidArgumentException("The learning rate must be"
+                . " greater than 0, $rate given.");
         }
 
         if ($momentumDecay < 0. or $momentumDecay > 1.) {
@@ -98,15 +88,9 @@ class Adam implements Optimizer
                 . ' 0 and 1.');
         }
 
-        if ($epsilon <= 0.) {
-            throw new InvalidArgumentException('Epsilon must be greater than'
-                . ' 0.');
-        }
-
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
-        $this->epsilon = $epsilon;
         $this->velocities = new SplObjectStorage();
         $this->cache = new SplObjectStorage();
         $this->t = 0;
@@ -115,46 +99,39 @@ class Adam implements Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $parameter
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @param  \Rubix\Tensor\Matrix  $gradient
      * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $parameter, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->velocities->contains($parameter)) {
-            $velocities = $this->velocities[$parameter];
-            $cache = $this->cache[$parameter];
+        if ($this->velocities->contains($param)) {
+            $velocities = $this->velocities[$param];
+            $cache = $this->cache[$param];
         } else {
-            $velocities = Matrix::zeros(...$parameter->w()->shape());
-            $cache = Matrix::zeros(...$parameter->w()->shape());
+            $velocities = Matrix::zeros(...$param->w()->shape());
+            $cache = Matrix::zeros(...$param->w()->shape());
 
-            $this->velocities->attach($parameter, $velocities);
-            $this->cache->attach($parameter, $cache);
+            $this->velocities->attach($param, $velocities);
+            $this->cache->attach($param, $cache);
         }
 
         $this->t++;
 
-        $velocities = $velocities
+        $this->velocities[$param] = $velocities = $velocities
             ->multiply($this->momentumDecay)
             ->add($gradient->multiply(1. - $this->momentumDecay));
 
-        $cache = $cache
+        $this->cache[$param] = $cache = $cache
             ->multiply($this->rmsDecay)
             ->add($gradient->square()->multiply(1. - $this->rmsDecay));
 
-        $vHat = $velocities
-            ->divide(1. - $this->momentumDecay ** $this->t);
+        $vHat = $velocities->divide(1. - $this->momentumDecay ** $this->t);
 
-        $rHat = $cache
-            ->divide(1. - $this->rmsDecay ** $this->t);
+        $rHat = $cache->divide(1. - $this->rmsDecay ** $this->t);
 
-        $step = $vHat
-            ->multiply($this->rate)
-            ->divide($rHat->sqrt()->add($this->epsilon));
+        return $vHat->multiply($this->rate)
+            ->divide($rHat->sqrt()->clip(self::EPSILON, INF));
 
-        $this->velocities[$parameter] = $velocities;
-        $this->cache[$parameter] = $cache;
-
-        return $step;
     }
 }
