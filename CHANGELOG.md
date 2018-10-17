@@ -19,6 +19,7 @@
     - CARTs now use max features heuristic by default
     - Added build/quick factory methods to Datasets
     - Added Interval Discretizer transformer
+    - Gaussian Naive Bayes now accepts class prior probabilities
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

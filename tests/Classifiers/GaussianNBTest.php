@@ -9,24 +9,28 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 class GaussianNBTest extends TestCase
 {
+    const TEST_SIZE = 5;
+    
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            'a' => new Blob([5, 2, -5], 0.8),
+            'b' => new Blob([0, 1, 0], 1.),
+            'c' => new Blob([-5, -2, 5], 1.2),
+        ]);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new GaussianNB(true, 1e-8);
+        $this->estimator = new GaussianNB(null);
     }
 
     public function test_build_classifier()
@@ -43,50 +47,33 @@ class GaussianNBTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_partial_predict_proba()
     {
-        $this->estimator->train($this->training);
+        $this->estimator->train($this->generator->generate(20));
 
-        $predictions = $this->estimator->predict($this->testing);
+        $this->estimator->partial($this->generator->generate(20));
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
+        $this->estimator->partial($this->generator->generate(20));
 
-        $probabilities = $this->estimator->proba($this->testing);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
-    }
+        $predictions = $this->estimator->predict($testing);
 
-    public function test_partial_train()
-    {
-        $folds = $this->training->stratifiedFold(2);
+        foreach ($predictions as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
 
-        $this->estimator->train($folds[0]);
+        $probabilities = $this->estimator->proba($testing);
 
-        $this->estimator->partial($folds[1]);
-
-        $predictions = $this->estimator->predict($this->testing);
-
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
-
-        $probabilities = $this->estimator->proba($this->testing);
-
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[0][$this->testing->label(0)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[1][$this->testing->label(1)]);
-        $this->assertGreaterThanOrEqual(0.5, $probabilities[2][$this->testing->label(2)]);
+        foreach ($probabilities as $i => $prob) {
+            $this->assertGreaterThanOrEqual(0.5, $prob[$testing->label($i)]);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 }

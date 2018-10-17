@@ -36,36 +36,25 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     const TWO_PI = 2. * M_PI;
 
     /**
-     * Should we fit the empirical prior probabilities of each class? If not,
-     * then a prior of 1 / possible class outcomes is assumed.
+     * The class prior probabilities.
      *
-     * @var bool
+     * @var array|null
      */
     protected $priors;
 
     /**
-     * A small amount of smoothing to apply to the variance of each gaussian for
-     * numerical stability.
-     *
-     * @var float
+     * Should we compute the prior probabilities from the training set?
+     * 
+     * @var bool
      */
-    protected $epsilon;
+    protected $fitPriors;
 
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array
-     */
-    protected $weights = [
-        //
-    ];
-
-    /**
-     * The precomputed prior log probabilities of each label given by their weight.
-     *
      * @var array|null
      */
-    protected $_priors;
+    protected $weights;
 
     /**
      * The precomputed means of each feature column of the training set.
@@ -91,20 +80,39 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  bool  $priors
-     * @param  float  $epsilon
+     * @param  array|null  $priors
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(bool $priors = true, float $epsilon = 1e-8)
+    public function __construct(?array $priors = null)
     {
-        if ($epsilon < 0.) {
-            throw new InvalidArgumentException('Smoothing parameter cannot be'
-                . ' less than 0.');
+        if (is_array($priors)) {
+            $total = 0;
+            
+            foreach ($priors as $class => $probability) {
+                if (!is_string($class)) {
+                    throw new InvalidArgumentException('Class label must be a'
+                        . ' string, ' . gettype($class) . ' found.');
+                }
+
+                if (!is_int($probability) and !is_float($probability)) {
+                    throw new InvalidArgumentException('Probability must be'
+                        . ' an integer or float, ' . gettype($probability)
+                        . ' found.');
+                }
+
+                $total += $probability;
+            }
+
+            if ($total != 1 and $total != 0) {
+                foreach ($priors as &$probability) {
+                    $probability /= $total;
+                }
+            }
         }
 
         $this->priors = $priors;
-        $this->epsilon = $epsilon;
+        $this->fitPriors = is_null($priors);
     }
 
     /**
@@ -118,14 +126,23 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the class prior log probabilities based on their weight over all
-     * training samples.
+     * Return the class prior probabilities.
      *
-     * @return array|null
+     * @return array
      */
-    public function priors() : ?array
+    public function priors() : array
     {
-        return $this->_priors;
+        $priors = [];
+
+        if (is_array($this->priors)) {
+            $max = LogSumExp::compute($this->priors);
+
+            foreach ($this->priors as $class => $probability) {
+                $priors[$class] = exp($probability - $max);
+            }
+        }
+
+        return $priors;
     }
 
     /**
@@ -166,17 +183,31 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $classes = $dataset->possibleOutcomes();
 
         $this->classes = $classes;
-
-        $k = count($classes);
-
         $this->weights = array_fill_keys($classes, 0);
-
-        $this->_priors = array_fill_keys($classes, log(1. / $k));
 
         $this->means = $this->variances = array_fill_keys($classes,
             array_fill(0, $dataset->numColumns(), 0.));
 
-        $this->partial($dataset);
+        foreach ($dataset->stratify() as $class => $stratum) {
+            foreach ($stratum->rotate() as $column => $values) {
+                list($mean, $variance) = Stats::meanVar($values);
+
+                $this->means[$class][$column] = $mean;
+                $this->variances[$class][$column] = $variance ?: self::EPSILON;
+            }
+
+            $this->weights[$class] += $stratum->numRows();
+        }
+
+        if ($this->fitPriors === true) {
+            $this->priors = [];
+
+            $total = array_sum($this->weights) ?: self::EPSILON;
+
+            foreach ($this->weights as $class => $weight) {
+                $this->priors[$class] = log($weight / $total);
+            }
+        }
     }
 
     /**
@@ -199,15 +230,15 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
                 . ' continuous features.');
         }
 
-        if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
+        if (is_null($this->weights) or is_null($this->means) or is_null($this->variances)) {
             $this->train($dataset);
             return;
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {
+            $oldWeight = $this->weights[$class];
             $oldMeans = $this->means[$class];
             $oldVariances = $this->variances[$class];
-            $oldWeight = $this->weights[$class];
 
             $n = $stratum->numRows();
 
@@ -218,21 +249,23 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
                     + ($oldWeight * $oldMeans[$column]))
                     / ($oldWeight + $n);
 
-                $this->variances[$class][$column] = ($oldWeight
+                $vHat = ($oldWeight
                     * $oldVariances[$column] + ($n * $variance)
                     + ($oldWeight / ($n * ($oldWeight + $n)))
                     * ($n * $oldMeans[$column] - $n * $mean) ** 2)
                     / ($oldWeight + $n);
+
+                $this->variances[$class][$column] = $vHat ?: self::EPSILON;
             }
 
             $this->weights[$class] += $n;
         }
 
-        if ($this->priors === true) {
+        if ($this->fitPriors === true) {
             $total = array_sum($this->weights) ?: self::EPSILON;
 
             foreach ($this->weights as $class => $weight) {
-                $this->_priors[$class] = log($weight / $total);
+                $this->priors[$class] = log($weight / $total);
             }
         }
     }
@@ -314,14 +347,13 @@ class GaussianNB implements Estimator, Online, Probabilistic, Persistable
         $likelihood = [];
 
         foreach ($this->classes as $class) {
+            $score = $this->priors[$class] ?? self::EPSILON;
             $means = $this->means[$class];
             $variances = $this->variances[$class];
 
-            $score = $this->_priors[$class];
-
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
-                $variance = $variances[$column] + $this->epsilon;
+                $variance = $variances[$column];
 
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;

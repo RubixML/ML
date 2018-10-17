@@ -90,7 +90,8 @@ class Circle implements Generator
         $noise = Matrix::gaussian($n, 2)
             ->multiply($this->noise);
 
-        $samples = Matrix::concatenate([$r->cos(), $r->sin()])
+        $samples = Matrix::fromVectors([$r->cos(), $r->sin()])
+            ->transpose()
             ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)

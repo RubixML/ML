@@ -111,9 +111,9 @@ class Stats
     {
         $n = is_null($n) ? count($values) : $n;
 
-        if ($n < 2) {
-            throw new InvalidArgumentException('Variance is undefined for less'
-                . ' than 2 values.');
+        if (empty($values)) {
+            throw new InvalidArgumentException('Variance is undefined for an'
+                . ' empty set.');
         }
 
         $mean = is_null($mean) ? self::mean($values) : $mean;
