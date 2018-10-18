@@ -75,13 +75,13 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator  $base
+     * @param  \Rubix\ML\Estimator|null  $base
      * @param  int  $estimators
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
     {
         if (is_null($base)) {
             $base = new ClassificationTree();
@@ -200,9 +200,11 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
             }
         }
 
+        $k = count($this->forest);
+
         foreach ($probabilities as &$joint) {
             foreach ($joint as &$probability) {
-                $probability /= $this->estimators;
+                $probability /= $k;
             }
         }
 

@@ -32,7 +32,7 @@ class ITree implements Tree
     /**
      * The maximum depth of a branch before it is forced to terminate.
      *
-     * @var int
+     * @var int|null
      */
     protected $maxDepth;
 
@@ -52,21 +52,21 @@ class ITree implements Tree
     protected $c;
 
     /**
-     * @param  int  $maxDepth
+     * @param  int|null  $maxDepth
      * @param  int  $maxLeafSize
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 5)
+    public function __construct(?int $maxDepth = null, int $maxLeafSize = 5)
     {
-        if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have depth less'
-                . ' than 1.');
+        if (isset($maxDepth) and $maxDepth < 1) {
+            throw new InvalidArgumentException("A tree cannot have a depth"
+                . " less than 1, $maxDepth given.");
         }
 
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to create a leaf.');
+            throw new InvalidArgumentException("At least one sample is required"
+                . " to create a leaf, $maxLeafSize given.");
         }
 
         $this->maxDepth = $maxDepth;
@@ -92,7 +92,13 @@ class ITree implements Tree
      */
     public function grow(Dataset $dataset) : void
     {
-        $this->c = $this->calculateCFactor($dataset->numRows());
+        $n = $dataset->numRows();
+
+        if (is_null($this->maxDepth)) {
+            $this->maxDepth = (int) ceil(log($n, 2));
+        }
+
+        $this->c = $this->c($n);
 
         $this->root = $this->findRandomSplit($dataset, 1);
 
@@ -208,9 +214,7 @@ class ITree implements Tree
     {
         $n = $dataset->numRows();
 
-        $c = $this->calculateCFactor($n);
-
-        $score = 2. ** -(($depth + $c) / $this->c);
+        $score = 2. ** -((($depth - 1) + $this->c($n)) / $this->c);
 
         return new Cell($n, $score);
     }
@@ -221,13 +225,13 @@ class ITree implements Tree
      * @param  int  $n
      * @return float
      */
-    protected function calculateCFactor(int $n) : float
+    protected function c(int $n) : float
     {
         if ($n <= 1) {
-            return 0.;
+            return 1.;
         }
 
-        return 2. * (log($n - 1) + M_EULER) - (2. * ($n - 1) / $n);
+        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 
     /**

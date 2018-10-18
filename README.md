@@ -1281,14 +1281,14 @@ array(2) {
 ### Isolation Forest
 An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Unsupervised | Probabilistic | Persistable | Nonlinear
+##### Unsupervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | trees | 100 | int | The number of Isolation Trees to train in the ensemble. |
-| 2 | ratio | 0.1 | float | The ratio of random samples to train each Isolation Tree with. |
-| 3 | threshold | 0.5 | float | The threshold isolation score. i.e. the probability that a sample is an outlier. |
+| 1 | base | Isolation Tree | The base estimator instance. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1297,18 +1297,19 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\AnomalyDetection\IsolationForest;
 
-$estimator = new IsolationForest(500, 0.1, 0.7);
+$estimator = new IsolationForest(300, 0.2, 0.05);
 ```
 ### Isolation Tree
-Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own nodes. *Note* that this Estimator is considered a *weak* learner and is typically used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
+Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own cell nodes. *Note* that this Estimator is considered a *weak* learner and is typically used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
 
-##### Unsupervised | Probabilistic | Persistable | Nonlinear
+##### Unsupervised | Probabilistic | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
-| 2 | threshold | 0.5 | float | The minimum isolation score. i.e. the probability that a sample is an outlier. |
+| 1 | max depth | Auto | int | The maximum depth of a branch that is allowed. |
+| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
+| 3 | contamination | 0.1 | float | The amount of contamination (outliers) that is presumed to be in the training set as a percentage. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1317,13 +1318,13 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\AnomalyDetection\IsolationTree;
 
-$estimator = new IsolationTree(1000, 0.65);
+$estimator = new IsolationTree(100, 5, 0.1);
 ```
 
 ### Local Outlier Factor
 The Local Outlier Factor (LOF) algorithm considers the local region of a sample, set by the k parameter, when determining an outlier. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
 
-##### Unsupervised | Probabilistic | Elastic | Persistable | Nonlinear
+##### Unsupervised | Probabilistic | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1503,7 +1504,7 @@ n Extremely Randomized Classification Tree, Extra Trees differ from standard [Cl
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
-| 2 | max leaf size | 5 | int | The max number of samples that a leaf node can contain. |
+| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 

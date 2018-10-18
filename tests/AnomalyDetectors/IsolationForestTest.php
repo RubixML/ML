@@ -5,29 +5,32 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Datasets\Generators\Circle;
+use Rubix\ML\AnomalyDetectors\IsolationTree;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class IsolationForestTest extends TestCase
 {
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 5;
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            0 => new Blob([0., 0.], 1.),
+            1 => new Circle(0., 0., 6., 0.1),
+        ], [0.8, 0.2]);
 
-        $this->testing = new Labeled([
-            [6.9, 3.2, 5.7, 2.3], [6.4, 3.1, 5.5, 1.8], [5.5, 2.4, 3.8, 1.1],
-            [6.8, 3.2, 5.9, 2.3], [5.7, 3.8, 1.7, 0.3], [5.4, 3.9, 1.7, 0.4],
-        ], [1, 1, 0, 1, 0, 0]);
-
-        $this->estimator = new IsolationForest(500, 0.7, 0.5);
+        $this->estimator = new IsolationForest(new IsolationTree(null, 5, 0.07), 100, 0.8);
     }
 
     public function test_build_detector()
@@ -43,33 +46,29 @@ class IsolationForestTest extends TestCase
         $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict_proba()
     {
-        $this->estimator->train($this->training);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $this->assertEquals($this->testing->label(0), $predictions[0]);
-        $this->assertEquals($this->testing->label(1), $predictions[1]);
-        $this->assertEquals($this->testing->label(2), $predictions[2]);
-        $this->assertEquals($this->testing->label(3), $predictions[3]);
-        $this->assertEquals($this->testing->label(4), $predictions[4]);
-        $this->assertEquals($this->testing->label(5), $predictions[5]);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
 
-        $probabilties = $this->estimator->proba($this->testing);
-
-        $this->assertGreaterThan(0.50, $probabilties[0]);
-        $this->assertGreaterThan(0.50, $probabilties[1]);
-        $this->assertLessThanOrEqual(0.50, $probabilties[2]);
-        $this->assertGreaterThan(0.50, $probabilties[3]);
-        $this->assertLessThanOrEqual(0.50, $probabilties[4]);
-        $this->assertLessThanOrEqual(0.50, $probabilties[5]);
+        foreach ($this->estimator->proba($testing) as $i => $probability) {
+            if ($testing->label($i) === 1) {
+                $this->assertGreaterThan(0.5, $probability);
+            } else {
+                $this->assertLessThanOrEqual(0.5, $probability);
+            }
+        }
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

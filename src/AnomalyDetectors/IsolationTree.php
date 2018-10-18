@@ -30,30 +30,30 @@ use RuntimeException;
 class IsolationTree extends ITree implements Estimator, Probabilistic, Persistable
 {
     /**
-     * The threshold isolation score betweeen 0 and 1 where 0 is not likely to
-     * be an outlier and 1 is very likely to be an outlier.
+     * The amount of contamination (outliers) that is presumed to be in
+     * the training set as a percentage.
      *
      * @var float
      */
-    protected $threshold;
+    protected $contamination;
 
     /**
      * @param  int  $maxDepth
-     * @param  int  $minSamples
-     * @param  float  $threshold
+     * @param  int  $maxLeafSize
+     * @param  float  $contamination
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $minSamples = 5, float $threshold = 0.5)
+    public function __construct(?int $maxDepth = null, int $maxLeafSize = 3, float $contamination = 0.1)
     {
-        if ($threshold < 0. or $threshold > 1.) {
-            throw new InvalidArgumentException('Threshold isolation score must'
-                . ' be between 0 and 1.');
+        parent::__construct($maxDepth, $maxLeafSize);
+
+        if ($contamination < 0. or $contamination > 0.5) {
+            throw new InvalidArgumentException('The contamination factor must'
+                . ' be between 0 and 0.5.');
         }
 
-        $this->threshold = $threshold;
-
-        parent::__construct($maxDepth, $minSamples);
+        $this->contamination = $contamination;
     }
 
     /**
@@ -91,9 +91,8 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
 
         $predictions = [];
 
-        foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->score()
-                > $this->threshold ? 1 : 0;
+        foreach ($this->proba($dataset) as $probability) {
+            $predictions[] = $probability > 0.5 ? 1 : 0;
         }
 
         return $predictions;
@@ -115,7 +114,9 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)->score();
+            $score = $this->search($sample)->score();
+
+            $probabilities[] = $score - $this->contamination;
         }
 
         return $probabilities;

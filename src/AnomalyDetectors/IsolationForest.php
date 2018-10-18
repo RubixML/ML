@@ -8,7 +8,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -29,30 +28,33 @@ use RuntimeException;
  */
 class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
 {
+    const AVAILABLE_ESTIMATORS = [
+        IsolationTree::class,
+    ];
+
     /**
-     * The number of trees to train in the ensemble.
+     * The base isolation tree to be used in the ensemble.
+     * 
+     * @var \Rubix\ML\Estimator
+     */
+    protected $base;
+
+    /**
+     * The number of estimators to train in the ensemble.
      *
      * @var int
      */
-    protected $trees;
+    protected $estimators;
 
     /**
-     * The ratio of training samples to train each isolation tree on.
+     * The ratio of training samples to train each estimator on.
      *
      * @var float
      */
     protected $ratio;
 
     /**
-     * The threshold isolation score. Score is a value between 0 and 1 where
-     * greater than 0.5 signifies outlier territory.
-     *
-     * @var float
-     */
-    protected $threshold;
-
-    /**
-     * The isolation trees that make up the forest.
+     * The trees that make up the forest.
      *
      * @var array
      */
@@ -61,32 +63,36 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
     ];
 
     /**
-     * @param  int  $trees
+     * @param  \Rubix\ML\Estimator|null  $base
+     * @param  int  $estimators
      * @param  float  $ratio
-     * @param  float  $threshold
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $trees = 300, float $ratio = 0.1, float $threshold = 0.5)
+    public function __construct(?Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
     {
-        if ($trees < 1) {
-            throw new InvalidArgumentException('The number of trees cannot be'
-                . ' less than 1.');
+        if (is_null($base)) {
+            $base = new IsolationTree();
+        }
+
+        if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
+            throw new InvalidArgumentException('Base estimator is not'
+                . ' compatible with this ensemble.');
+        }
+
+        if ($estimators < 1) {
+            throw new InvalidArgumentException("The number of estimators in the"
+                . " ensemble cannot be less than 1, $estimators given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Sample ratio must be a float'
-                . ' value between 0.01 and 1.0.');
+            throw new InvalidArgumentException("Sample ratio must be between"
+                . " 0.01 and 1, $ratio given.");
         }
 
-        if ($threshold < 0. or $threshold > 1.) {
-            throw new InvalidArgumentException('Threshold isolation score must'
-                . ' be between 0 and 1.');
-        }
-
-        $this->trees = $trees;
+        $this->base = $base;
+        $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->threshold = $threshold;
     }
 
     /**
@@ -119,16 +125,14 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $n = (int) round($this->ratio * $dataset->numRows());
-
-        $maxDepth = (int) ceil(log($n, 2));
+        $p = (int) round($this->ratio * $dataset->numRows());
 
         $this->forest = [];
 
-        for ($epoch = 0; $epoch < $this->trees; $epoch++) {
-            $tree = new IsolationTree($maxDepth, 1, $this->threshold);
+        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+            $tree = clone $this->base;
 
-            $subset = $dataset->randomize()->head($n);
+            $subset = $dataset->randomize()->head($p);
 
             $tree->train($subset);
 
@@ -147,14 +151,14 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($this->proba($dataset) as $probability) {
-            $predictions[] = $probability > $this->threshold ? 1 : 0;
+            $predictions[] = $probability > 0.5 ? 1 : 0;
         }
 
         return $predictions;
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Output a probability of being an anomaly.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
@@ -166,18 +170,18 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $n = count($this->forest);
+        $k = count($this->forest);
 
-        $probabilities = [];
+        $probabilities = array_fill(0, $dataset->numRows(), 0.);
 
-        foreach ($dataset as $sample) {
-            $score = 0.;
-
-            foreach ($this->forest as $tree) {
-                $score += $tree->search($sample)->score();
+        foreach ($this->forest as $tree) {
+            foreach ($tree->proba($dataset) as $i => $proba) {
+                $probabilities[$i] += $proba;
             }
+        }
 
-            $probabilities[] = $score / $n;
+        foreach ($probabilities as &$proba) {
+            $proba /= $k;
         }
 
         return $probabilities;
