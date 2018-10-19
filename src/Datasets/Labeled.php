@@ -76,6 +76,21 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Build a dataset from an iterator.
+     * 
+     * @param  iterable  $samples
+     * @param  iterable  $labels
+     * @return self
+     */
+    public static function fromIterator(iterable $samples, iterable $labels) : self
+    {
+        $samples = is_array($samples) ? $samples : iterator_to_array($samples);
+        $labels = is_array($labels) ? $labels : iterator_to_array($labels);
+
+        return self::build($samples, $labels);
+    }
+
+    /**
      * @param  array  $samples
      * @param  array  $labels
      * @param  bool  $validate

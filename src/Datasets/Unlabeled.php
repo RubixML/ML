@@ -63,6 +63,19 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
+     * Build a dataset from an iterator.
+     * 
+     * @param  iterable  $samples
+     * @return self
+     */
+    public static function fromIterator(iterable $samples) : self
+    {
+        $samples = is_array($samples) ? $samples : iterator_to_array($samples);
+
+        return self::build($samples);
+    }
+
+    /**
      * @param  array  $samples
      * @param  bool  $validate
      * @return void

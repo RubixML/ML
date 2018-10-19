@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use ArrayIterator;
 
 class LabeledTest extends TestCase
 {
@@ -78,6 +79,19 @@ class LabeledTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new Labeled([['nice', (object) ['bad'], 13]], ['not monster'], true);
+    }
+
+    public function test_from_iterator()
+    {
+        $samples = new ArrayIterator($this->samples);
+        $labels = new ArrayIterator($this->labels);
+
+        $dataset = Labeled::fromIterator($samples, $labels);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+
+        $this->assertEquals($this->samples, $dataset->samples());
+        $this->assertEquals($this->labels, $dataset->labels());
     }
 
     public function test_get_labels()

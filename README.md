@@ -668,6 +668,11 @@ Build a new labeled dataset foregoing validation:
 public static quick(array $samples = [], array $labels = []) : self
 ```
 
+Build a dataset with a pair of iterators:
+```php
+public static fromIterator(iterable $samples, iterable $labels) : self
+```
+
 Return a 1-dimensional array of labels:
 ```php
 public labels() : array
@@ -784,12 +789,17 @@ Unlabeled datasets can be used to train *unsupervised* Estimators and for feedin
 ##### Additional Methods:
 Build a new unlabeled dataset with validation:
 ```php
-public static build(array $samples = [], array $labels = []) : self
+public static build(array $samples = []) : self
 ```
 
 Build a new unlabeled dataset foregoing validation:
 ```php
-public static quick(array $samples = [], array $labels = []) : self
+public static quick(array $samples = []) : self
+```
+
+Build a dataset with an iterator:
+```php
+public static fromIterator(iterable $samples) : self
 ```
 
 ##### Example:

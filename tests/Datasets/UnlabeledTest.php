@@ -7,6 +7,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use ArrayIterator;
 
 class UnlabeledTest extends TestCase
 {
@@ -71,6 +72,17 @@ class UnlabeledTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         new Unlabeled([['nice', (object) ['bad'], 13]], true);
+    }
+
+    public function test_from_iterator()
+    {
+        $samples = new ArrayIterator($this->samples);
+
+        $dataset = Unlabeled::fromIterator($samples);
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+
+        $this->assertEquals($this->samples, $dataset->samples());
     }
 
     public function test_get_column_types()
