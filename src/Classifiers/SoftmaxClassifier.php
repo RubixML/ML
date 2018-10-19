@@ -10,6 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -34,14 +35,6 @@ use RuntimeException;
 class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
 {
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
-     *
-     * @var int
-     */
-    protected $epochs;
-
-    /**
      * The number of training samples to consider per iteration of gradient descent.
      *
      * @var int
@@ -63,12 +56,12 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     protected $alpha;
 
     /**
-     * The function that computes the cost of an erroneous activation during
-     * training.
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var int
      */
-    protected $costFunction;
+    protected $epochs;
 
     /**
      * The minimum change in the weights necessary to continue training.
@@ -76,6 +69,14 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
      * @var float
      */
     protected $minChange;
+
+    /**
+     * The function that computes the cost of an erroneous activation during
+     * training.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFn;
 
     /**
      * The unique class labels.
@@ -103,23 +104,18 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  int  $epochs
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFunction
+     * @param  int  $epochs
      * @param  float  $minChange
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFn
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $epochs = 100, int $batchSize = 50, ?Optimizer $optimizer = null,
-                    float $alpha = 1e-4, ?CostFunction $costFunction = null, float $minChange = 1e-4)
+    public function __construct(int $batchSize = 50, ?Optimizer $optimizer = null, float $alpha = 1e-4,
+                            int $epochs = 1000, float $minChange = 1e-4, ?CostFunction $costFn = null)
     {
-        if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
-                . " least 1 epoch, $epochs given.");
-        }
-
         if ($batchSize < 1) {
             throw new InvalidArgumentException("Cannot have less than 1 sample"
                 . " per batch, $batchSize given.");
@@ -128,6 +124,11 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
         if ($alpha < 0.) {
             throw new InvalidArgumentException("L2 regularization penalty must"
                 . " be non-negative, $alpha given.");
+        }
+
+        if ($epochs < 1) {
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
@@ -139,16 +140,16 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
             $optimizer = new Adam();
         }
 
-        if (is_null($costFunction)) {
-            $costFunction = new CrossEntropy();
+        if (is_null($costFn)) {
+            $costFn = new CrossEntropy();
         }
 
-        $this->epochs = $epochs;
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
-        $this->costFunction = $costFunction;
+        $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->costFn = $costFn;
     }
 
     /**
@@ -199,7 +200,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
             new Placeholder($dataset->numColumns()),
             [],
             new Multiclass($this->classes, $this->alpha),
-            $this->costFunction,
+            $this->costFn,
             $this->optimizer
         );
 
@@ -235,7 +236,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
 
         $n = $dataset->numRows();
 
-        $previous = INF;
+        $previous = $bestLoss = INF;
+        $bestSnapshot = null;
 
         for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -250,11 +252,22 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
 
             $this->steps[] = $loss;
 
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+                $bestSnapshot = Snapshot::take($this->network);
+            }
+
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
             $previous = $loss;
+        }
+
+        if (end($this->steps) > $bestLoss) {
+            if (isset($bestSnapshot)) {
+                $this->network->restore($bestSnapshot);
+            }
         }
     }
 

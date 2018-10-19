@@ -69,12 +69,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
     protected $alpha;
 
     /**
-     * The function that computes the cost of an erroneous activation during
-     * training.
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set before the algorithm terminates.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var int
      */
-    protected $costFunction;
+    protected $epochs;
 
     /**
      * The minimum change in the cost function necessary to continue training.
@@ -84,11 +84,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
     protected $minChange;
 
     /**
-     * The Validation metric used to validate the performance of the model.
+     * The function that computes the cost of an erroneous activation during
+     * training.
      *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
-    protected $metric;
+    protected $costFn;
 
     /**
      * The holdout of training samples to use for validation. i.e. the holdout
@@ -99,20 +100,19 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
     protected $holdout;
 
     /**
+     * The Validation metric used to validate the performance of the model.
+     *
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
+    protected $metric;
+
+    /**
      * The training window to consider during early stop checking i.e. the last
      * n epochs.
      *
      * @var int
      */
     protected $window;
-
-    /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set before the algorithm terminates.
-     *
-     * @var int
-     */
-    protected $epochs;
 
     /**
      * The unique class labels.
@@ -153,18 +153,19 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
-     * @param  float  $minChange
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
-     * @param  float $holdout
-     * @param  int  $window
      * @param  int  $epochs
+     * @param  float  $minChange
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFn
+     * @param  float $holdout
+     * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
+     * @param  int  $window
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 100, ?Optimizer $optimizer = null,
-            float $alpha = 1e-4, ?CostFunction $costFunction = null, float $minChange = 1e-4,
-            ?Metric $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
+                            float $alpha = 1e-4, int $epochs = PHP_INT_MAX, float $minChange = 1e-4,
+                            ?CostFunction $costFn = null, float $holdout = 0.1, ?Metric $metric = null,
+                            int $window = 3)
     {
         if ($batchSize < 1) {
             throw new InvalidArgumentException("Cannot have less than 1 sample"
@@ -174,6 +175,11 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
         if ($alpha < 0.) {
             throw new InvalidArgumentException("L2 regularization penalty must"
                 . " be non-negative, $alpha given.");
+        }
+
+        if ($epochs < 1) {
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
@@ -191,17 +197,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
                 . " progress monitoring must be at least 2, $window given.");
         }
 
-        if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
-                . " least 1 epoch, $epochs given.");
-        }
-
         if (is_null($optimizer)) {
             $optimizer = new Adam();
         }
 
-        if (is_null($costFunction)) {
-            $costFunction = new CrossEntropy();
+        if (is_null($costFn)) {
+            $costFn = new CrossEntropy();
         }
 
         if (is_null($metric)) {
@@ -212,12 +213,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer;
         $this->alpha = $alpha;
-        $this->costFunction = $costFunction;
-        $this->minChange = $minChange;
-        $this->metric = $metric;
-        $this->holdout = $holdout;
-        $this->window = $window;
         $this->epochs = $epochs;
+        $this->minChange = $minChange;
+        $this->costFn = $costFn;
+        $this->holdout = $holdout;
+        $this->metric = $metric;
+        $this->window = $window;
     }
 
     /**
@@ -278,7 +279,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
             new Placeholder($dataset->numColumns()),
             $this->hidden,
             new Multiclass($this->classes, $this->alpha),
-            $this->costFunction,
+            $this->costFn,
             $this->optimizer
         );
 

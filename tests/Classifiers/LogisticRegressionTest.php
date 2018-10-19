@@ -34,7 +34,7 @@ class LogisticRegressionTest extends TestCase
             'female' => new Blob([63.7, 168.5, 38.1], 3.),
         ]);
 
-        $this->estimator = new LogisticRegression(300, 10, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-4);
+        $this->estimator = new LogisticRegression(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
     }
 
     public function test_build_classifier()

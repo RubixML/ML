@@ -1608,12 +1608,12 @@ A type of linear classifier that uses the logistic (sigmoid) function to disting
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 50 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
+| 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
+| 4 | epochs | 1000 | int | The maximum number of training epochs to execute. |
+| 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
 ##### Additional Methods:
 
@@ -1631,9 +1631,9 @@ public network() : Network|null
 ```php
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\CostFunctions\Exponential;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new LogisticRegression(200, 10, new Adam(0.001), 1e-4, new Exponential(), 1e-4);
+$estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new CrossEntropy());
 ```
 
 ### Multi Layer Perceptron
@@ -1648,12 +1648,12 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
+| 5 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
-| 7 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 7 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 10 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 9 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
 ##### Additional Methods:
 
@@ -1693,7 +1693,7 @@ $estimator = new MultiLayerPerceptron([
 	new Dense(10),
 	new Activation(new ELU()),
 	new Dropout(0.1),
-], 100, new Adam(0.001), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.1, 3, PHP_INT_MAX);
+], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
 ### Naive Bayes
@@ -1760,12 +1760,12 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 50 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
+| 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
+| 4 | epochs | 1000 | int | The maximum number of training epochs to execute. |
+| 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
 ##### Additional Methods:
 
@@ -1958,12 +1958,12 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network]
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | epochs | 100 | int | The maximum number of training epochs to execute. |
-| 2 | batch size | 50 | int | The number of training samples to process at a time. |
-| 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
-| 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
-| 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
+| 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
+| 4 | epochs | 100 | int | The maximum number of training epochs to execute. |
+| 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 
 ##### Additional Methods:
 
@@ -1983,7 +1983,7 @@ use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$estimator = new Adaline(300, 10, new Adam(0.001), 1e-6, new HuberLoss(2.5), 1e-4);
+$estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5));
 ```
 
 ### Dummy Regressor
@@ -2116,12 +2116,12 @@ A multi layer [Neural Network](#neural-network) with a continuous output layer s
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
+| 5 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
-| 7 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
+| 7 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
-| 10 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 9 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
+| 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
 
 ##### Additional Methods:
@@ -2157,7 +2157,7 @@ $estimator = new MLPRegressor([
 	new Activation(new LeakyReLU(0.1)),
 	new Dense(50),
 	new Activation(new LeakyReLU(0.1)),
-], 256, new RMSProp(0.001), 1e-2, new LeastSquares(), 1e-5, new RSquared(), 0.1, 3, 100);
+], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
 ```
 
 ### Regression Tree
@@ -2935,7 +2935,7 @@ use Rubix\ML\Persisters\Filesystem;
 
 $persister = new Filesystem('/random_forest.model');
 
-$estimator = new PersistentModel(new LogisticRegression(100, 256, new Adam(0.001)), $persister);
+$estimator = new PersistentModel(new LogisticRegression(256, new Adam(0.001)), $persister);
 
 $estimator->save();
 

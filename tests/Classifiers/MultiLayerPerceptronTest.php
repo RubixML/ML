@@ -44,7 +44,7 @@ class MultiLayerPerceptronTest extends TestCase
             new Activation(new ReLU()),
             new Dense(5),
             new Activation(new ReLU()),
-        ], 10, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-3, new MCC(), 0.10, 3, 100);
+        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
     }
 
     public function test_build_classifier()

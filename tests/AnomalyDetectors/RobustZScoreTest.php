@@ -28,7 +28,7 @@ class RobustZScoreTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.8, 0.2]);
 
-        $this->estimator = new RobustZScore(1.1, 2.0);
+        $this->estimator = new RobustZScore(1.05, 1.5);
     }
 
     public function test_build_detector()

@@ -35,7 +35,7 @@ class SoftmaxClassifierTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new SoftmaxClassifier(300, 10, new Adam(0.01), 1e-4, new CrossEntropy(), 1e-4);
+        $this->estimator = new SoftmaxClassifier(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
     }
 
     public function test_build_classifier()

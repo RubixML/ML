@@ -30,7 +30,7 @@ class AdalineTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(3);
 
-        $this->estimator = new Adaline(100, 1, new Adam(0.01), 1e-4, new HuberLoss(1.), 1e-3);
+        $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, new HuberLoss(1.));
     }
 
     public function test_build_regressor()
