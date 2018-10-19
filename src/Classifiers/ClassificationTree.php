@@ -69,20 +69,20 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
                                 ?int $maxFeatures = null, float $tolerance = 1e-3)
     {
+        parent::__construct($maxDepth, $maxLeafSize);
+        
         if (isset($maxFeatures) and $maxFeatures < 1) {
-            throw new InvalidArgumentException('Tree must consider at least 1'
-                . ' feature to determine a split.');
+            throw new InvalidArgumentException("Tree must consider at least 1"
+                . " feature to determine a split, $maxFeatures given.");
         }
 
         if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Impurity tolerance must be 0 or'
-                . ' greater.');
+            throw new InvalidArgumentException("Impurity tolerance must be 0"
+                . " or greater, $tolerance given.");
         }
 
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
-
-        parent::__construct($maxDepth, $maxLeafSize);
     }
 
     /**
@@ -106,8 +106,8 @@ class ClassificationTree extends CART implements Estimator, Probabilistic, Persi
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->classes = $dataset->possibleOutcomes();

@@ -95,7 +95,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator  $base
+     * @param  \Rubix\ML\Estimator|null  $base
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
@@ -103,7 +103,7 @@ class GradientBoost implements Estimator, Ensemble, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $base = null, int $estimators = 100, float $rate = 0.1,
+    public function __construct(?Estimator $base = null, int $estimators = 100, float $rate = 0.1,
                             float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-5)
     {
         if (is_null($base)) {
@@ -116,28 +116,28 @@ class GradientBoost implements Estimator, Ensemble, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 estimator.');
+            throw new InvalidArgumentException("Ensemble must contain at least"
+                . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
-            throw new InvalidArgumentException('Learning rate must be greater'
-                . ' than 0.');
+            throw new InvalidArgumentException("Learning rate must be greater"
+                . " than 0, $rate given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Sample ratio must be between'
-                . ' 0.01 and 1.0.');
+            throw new InvalidArgumentException("Sample ratio must be between"
+                . " 0.01 and 1, $ratio given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change must be greater'
-                . ' than 0.');
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
         if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException('Error tolerance must be between'
-                . ' 0 and 1.');
+            throw new InvalidArgumentException("Validation error tolerance must"
+                . " be between 0 and 1, $tolerance given.");
         }
 
         $this->base = $base;
@@ -188,8 +188,8 @@ class GradientBoost implements Estimator, Ensemble, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $n = $dataset->numRows();

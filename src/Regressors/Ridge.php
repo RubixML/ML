@@ -54,8 +54,8 @@ class Ridge implements Estimator, Persistable
     public function __construct(float $alpha = 1.)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization parameter'
-                . ' must be be non-negative.');
+            throw new InvalidArgumentException("L2 regularization penalty must"
+                . " be non-negative, $alpha given.");
         }
 
         $this->alpha = $alpha;
@@ -102,8 +102,8 @@ class Ridge implements Estimator, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

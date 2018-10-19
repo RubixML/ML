@@ -105,34 +105,34 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     /**
      * @param  int  $epochs
      * @param  int  $batchSize
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFunction
      * @param  float  $minChange
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $epochs = 100, int $batchSize = 50, Optimizer $optimizer = null,
-                    float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4)
+    public function __construct(int $epochs = 100, int $batchSize = 50, ?Optimizer $optimizer = null,
+                    float $alpha = 1e-4, ?CostFunction $costFunction = null, float $minChange = 1e-4)
     {
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
         }
 
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Cannot have less than 1 sample'
-                . ' per batch.');
+            throw new InvalidArgumentException("Cannot have less than 1 sample"
+                . " per batch, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization term must'
-                . ' be non-negative.');
+            throw new InvalidArgumentException("L2 regularization penalty must"
+                . " be non-negative, $alpha given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . ' than 0.');
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
         if (is_null($optimizer)) {
@@ -189,8 +189,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->classes = $dataset->possibleOutcomes();
@@ -219,8 +219,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     public function partial(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

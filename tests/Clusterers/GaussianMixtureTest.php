@@ -22,7 +22,7 @@ class GaussianMixtureTest extends TestCase
     {
         $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
-        $this->estimator = new GaussianMixture(2, 1e-3, 100);
+        $this->estimator = new GaussianMixture(2, 100, 1e-3);
     }
 
     public function test_build_clusterer()

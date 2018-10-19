@@ -46,22 +46,18 @@ class RobustZScore implements Estimator, Persistable
     protected $threshold;
 
     /**
-     * The median of each training feature column.
+     * The median of each feature column in the training set.
      *
-     * @var array
+     * @var array|null
      */
-    protected $medians = [
-        //
-    ];
+    protected $medians;
 
     /**
-     * The median absolute deviation of each training feature column.
+     * The median absolute deviation of each feature column.
      *
-     * @var array
+     * @var array|null
      */
-    protected $mads = [
-        //
-    ];
+    protected $mads;
 
     /**
      * @param  float  $tolerance
@@ -72,13 +68,13 @@ class RobustZScore implements Estimator, Persistable
     public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
     {
         if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Z score tolerance must be'
-                . ' 0 or greater.');
+            throw new InvalidArgumentException("Score tolerance must be"
+                . " 0 or greater, $tolerance given.");
         }
 
         if ($threshold < 0.) {
-            throw new InvalidArgumentException('Z score threshold must be'
-                . ' 0 or greater.');
+            throw new InvalidArgumentException("Score threshold must be"
+                . " 0 or greater, $threshold given.");
         }
 
         $this->tolerance = $tolerance;
@@ -98,9 +94,9 @@ class RobustZScore implements Estimator, Persistable
     /**
      * Return the array of computed feature column medians.
      *
-     * @return array
+     * @return array|null
      */
-    public function medians() : array
+    public function medians() : ?array
     {
         return $this->medians;
     }
@@ -108,9 +104,9 @@ class RobustZScore implements Estimator, Persistable
     /**
      * Return the array of computed feature column median absolute deviations.
      *
-     * @return array
+     * @return array|null
      */
-    public function mads() : array
+    public function mads() : ?array
     {
         return $this->mads;
     }

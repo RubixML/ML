@@ -85,27 +85,27 @@ class MeanShift implements Estimator, Persistable
     /**
      * @param  float  $radius
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  float  $minChange
      * @param  int  $epochs
+     * @param  float  $minChange
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius, Distance $kernel = null, float $minChange = 1e-4,
-                                int $epochs = 100)
+    public function __construct(float $radius, ?Distance $kernel = null, int $epochs = 100,
+                                float $minChange = 1e-4)
     {
         if ($radius <= 0.) {
-            throw new InvalidArgumentException('Radius must be greater than'
-                . ' 0');
-        }
-
-        if ($minChange < 0.) {
-            throw new InvalidArgumentException('Threshold cannot be set to less'
-                . ' than 0.');
+            throw new InvalidArgumentException("Cluster radius must be"
+                . " greater than 0, $radius given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
+        }
+
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
         if (is_null($kernel)) {
@@ -115,8 +115,8 @@ class MeanShift implements Estimator, Persistable
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
         $this->kernel = $kernel;
-        $this->minChange = $minChange;
         $this->epochs = $epochs;
+        $this->minChange = $minChange;
     }
 
     /**

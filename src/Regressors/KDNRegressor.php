@@ -49,20 +49,21 @@ class KDNRegressor extends KDTree implements Estimator, Persistable
     /**
      * @param  int  $k
      * @param  int  $neighborhood
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, int $neighborhood = 10, Distance $kernel = null)
+    public function __construct(int $k = 3, int $neighborhood = 10, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . ' to make a prediction.');
+            throw new InvalidArgumentException("At least 1 neighbor is required"
+                . " to make a prediction, $k given.");
         }
 
         if ($k > $neighborhood) {
-            throw new InvalidArgumentException('K cannot be larger than'
-                . ' neighborhood.');
+            throw new InvalidArgumentException("K cannot be larger than the"
+                . " size of the neighborhood, $k given but $neighborhood"
+                . " allowed.");
         }
 
         if (is_null($kernel)) {
@@ -93,8 +94,8 @@ class KDNRegressor extends KDTree implements Estimator, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

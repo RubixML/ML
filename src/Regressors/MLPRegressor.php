@@ -144,7 +144,7 @@ class MLPRegressor implements Estimator, Online, Persistable
      * @param  int  $batchSize
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
      * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFunction
      * @param  float  $minChange
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
      * @param  float $holdout
@@ -153,38 +153,38 @@ class MLPRegressor implements Estimator, Online, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $hidden, int $batchSize = 100, Optimizer $optimizer = null,
-            float $alpha = 1e-4, CostFunction $costFunction = null, float $minChange = 1e-4,
-            Metric $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
+    public function __construct(array $hidden, int $batchSize = 100, ?Optimizer $optimizer = null,
+            float $alpha = 1e-4, ?CostFunction $costFunction = null, float $minChange = 1e-4,
+            ?Metric $metric = null, float $holdout = 0.1, int $window = 3, int $epochs = PHP_INT_MAX)
     {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException('Cannot have less than 1 sample'
-                . ' per batch.');
+            throw new InvalidArgumentException("Cannot have less than 1 sample"
+                . " per batch, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('Regularization parameter must'
-                . ' be non-negative.');
+            throw new InvalidArgumentException("L2 regularization penalty must"
+                . " be non-negative, $alpha given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . ' than 0.');
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
-        if ($holdout < 0.01 or $holdout > 1.) {
-            throw new InvalidArgumentException('Holdout ratio must be'
-                . ' between 0.01 and 1.');
+        if ($holdout < 0.01 or $holdout > 0.5) {
+            throw new InvalidArgumentException("Holdout ratio must be"
+                . " between 0.01 and 0.5, $holdout given.");
         }
 
-        if ($window < 1) {
-            throw new InvalidArgumentException('Stopping criteria window must'
-                . ' be at least 2 epochs.');
+        if ($window < 2) {
+            throw new InvalidArgumentException("The window of epochs used for"
+                . " progress monitoring must be at least 2, $window given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
         }
 
         if (is_null($optimizer)) {
@@ -261,8 +261,8 @@ class MLPRegressor implements Estimator, Online, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->network = new FeedForward(
@@ -288,8 +288,8 @@ class MLPRegressor implements Estimator, Online, Persistable
     public function partial(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

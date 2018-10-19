@@ -44,7 +44,7 @@ class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
     protected $kernel;
 
     /**
-     * The possible class outcomes.
+     * The unique class outcomes.
      *
      * @var array
      */
@@ -72,15 +72,15 @@ class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 5, Distance $kernel = null)
+    public function __construct(int $k = 5, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . ' to make a prediction.');
+            throw new InvalidArgumentException("At least 1 neighbor is required"
+                . " to make a prediction, $k given.");
         }
 
         if (is_null($kernel)) {
@@ -123,8 +123,8 @@ class KNearestNeighbors implements Estimator, Online, Probabilistic, Persistable
     public function partial(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

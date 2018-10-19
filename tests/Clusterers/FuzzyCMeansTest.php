@@ -23,7 +23,7 @@ class FuzzyCMeansTest extends TestCase
     {
         $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
-        $this->estimator = new FuzzyCMeans(2, 1.5, new Euclidean(), 1e-4, 100);
+        $this->estimator = new FuzzyCMeans(2, 1.5, new Euclidean(), 100, 1e-4);
     }
 
     public function test_build_clusterer()

@@ -61,15 +61,15 @@ class KNNRegressor implements Estimator, Online, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, Distance $kernel = null)
+    public function __construct(int $k = 3, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . ' to make a prediction.');
+            throw new InvalidArgumentException("At least 1 neighbor is required"
+                . " to make a prediction, $k given.");
         }
 
         if (is_null($kernel)) {
@@ -98,8 +98,8 @@ class KNNRegressor implements Estimator, Online, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->samples = $this->labels = [];
@@ -118,8 +118,8 @@ class KNNRegressor implements Estimator, Online, Persistable
     public function partial(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {

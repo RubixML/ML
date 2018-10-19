@@ -61,21 +61,21 @@ class KMeans implements Estimator, Online, Persistable
 
     /**
      * @param  int  $k
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @param  int  $epochs
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, Distance $kernel = null, int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, ?Distance $kernel = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Must target at least one'
-                . ' cluster.');
+            throw new InvalidArgumentException("Must target at least one"
+                . " cluster, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
         }
 
         if (is_null($kernel)) {
@@ -168,7 +168,7 @@ class KMeans implements Estimator, Online, Persistable
                     $changed = true;
                 }
 
-                $size = $sizes[$label] + self::EPSILON;
+                $size = $sizes[$label] ?: self::EPSILON;
 
                 foreach ($this->centroids[$label] as $column => &$mean) {
                     $mean = ($mean * ($size - 1) + $sample[$column]) / $size;

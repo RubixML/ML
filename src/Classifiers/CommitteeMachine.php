@@ -32,18 +32,14 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
      *
      * @var array
      */
-    protected $experts = [
-        //
-    ];
+    protected $experts;
 
     /**
      * The influence values of each expert in the committee.
      *
      * @var array
      */
-    protected $influence = [
-        //
-    ];
+    protected $influence;
 
     /**
      * The unique class labels.
@@ -66,30 +62,31 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
 
         if ($n < 1) {
             throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 estimator.');
+                . ' 1 estimator, 0 given.');
         }
 
         foreach ($experts as $expert) {
             if ($expert instanceof MetaEstimator) {
                 throw new InvalidArgumentException('Base estimator cannot be a'
-                    . ' meta estimator.');
+                    . ' meta estimator, ' . gettype($expert) . ' given.');
             }
 
             if ($expert->type() !== self::CLASSIFIER) {
                 throw new InvalidArgumentException('Base estimator must be a'
-                    . ' classifier, ' . gettype($expert) . ' found.');
+                    . ' classifier, ' . gettype($expert) . ' given.');
             }
 
             if (!$expert instanceof Probabilistic) {
-                throw new InvalidArgumentException('Base classifier must'
+                throw new InvalidArgumentException('Base estimator must'
                     . ' implement the probabilistic interface.');
             }
         }
 
         if (is_array($influence)) {
             if (count($influence) !== $n) {
-                throw new InvalidArgumentException('The number of influence'
-                    . ' values must be equal to the number of experts.');
+                throw new InvalidArgumentException("The number of influence"
+                    . " values must equal the number of experts, $n needed"
+                    . " but " . count($influence) . "given.");
             }
 
             $total = array_sum($influence);
@@ -149,8 +146,8 @@ class CommitteeMachine implements Estimator, Ensemble, Probabilistic, Persistabl
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->classes = $dataset->possibleOutcomes();

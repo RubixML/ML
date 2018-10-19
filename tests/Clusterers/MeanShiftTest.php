@@ -23,7 +23,7 @@ class MeanShiftTest extends TestCase
     {
         $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
 
-        $this->estimator = new MeanShift(2.0, new Euclidean(), 1e-4, 300);
+        $this->estimator = new MeanShift(2.0, new Euclidean(), 300, 1e-4);
     }
 
     public function test_build_clusterer()

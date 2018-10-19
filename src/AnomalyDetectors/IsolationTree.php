@@ -49,8 +49,8 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
         parent::__construct($maxDepth, $maxLeafSize);
 
         if ($contamination < 0. or $contamination > 0.5) {
-            throw new InvalidArgumentException('The contamination factor must'
-                . ' be between 0 and 0.5.');
+            throw new InvalidArgumentException("The contamination factor must"
+                . " be between 0 and 0.5, $contamination given.");
         }
 
         $this->contamination = $contamination;
@@ -115,8 +115,10 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
 
         foreach ($dataset as $sample) {
             $score = $this->search($sample)->score();
+            
+            $score -= $this->contamination;
 
-            $probabilities[] = $score - $this->contamination;
+            $probabilities[] = $score;
         }
 
         return $probabilities;

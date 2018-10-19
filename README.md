@@ -1360,12 +1360,12 @@ A quick *global* anomaly detector, Robust Z Score uses a modified Z score to det
 
 Return the median of each feature column in the training set:
 ```php
-public medians() : array
+public medians() : ?array
 ```
 
 Return the median absolute deviation (MAD) of each feature column in the training set:
 ```php
-public mads() : array
+public mads() : ?array
 ```
 
 ##### Example:
@@ -1800,7 +1800,7 @@ Density-Based Spatial Clustering of Applications with Noise is a clustering algo
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
+| 1 | radius | None | float | The maximum radius between two points for them to be considered in the same cluster. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
 

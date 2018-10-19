@@ -32,10 +32,10 @@ class DummyClassifier implements Estimator, Persistable
     protected $strategy;
 
     /**
-     * @param  \Rubix\ML\Other\Strategies\Categorical  $strategy
+     * @param  \Rubix\ML\Other\Strategies\Categorical|null  $strategy
      * @return void
      */
-    public function __construct(Categorical $strategy = null)
+    public function __construct(?Categorical $strategy = null)
     {
         if (is_null($strategy)) {
             $strategy = new PopularityContest();
@@ -64,8 +64,8 @@ class DummyClassifier implements Estimator, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->strategy->fit($dataset->labels());

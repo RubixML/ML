@@ -89,17 +89,17 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
 
         if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
             throw new InvalidArgumentException('Base estimator is not'
-                . ' compatible with random forest.');
+                . ' compatible with this ensemble.');
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('The number of estimators in the'
-                . ' ensemble cannot be less than 1.');
+            throw new InvalidArgumentException("The number of estimators in the"
+                . " ensemble cannot be less than 1, $estimators given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Sample ratio must be between'
-                . ' 0.01 and 1.');
+            throw new InvalidArgumentException("Sample ratio must be between"
+                . " 0.01 and 1, $ratio given.");
         }
 
         $this->base = $base;
@@ -138,8 +138,8 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->classes = $dataset->possibleOutcomes();

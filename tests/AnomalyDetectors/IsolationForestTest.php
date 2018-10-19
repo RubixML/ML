@@ -27,10 +27,10 @@ class IsolationForestTest extends TestCase
     {
         $this->generator = new Agglomerate([
             0 => new Blob([0., 0.], 1.),
-            1 => new Circle(0., 0., 6., 0.1),
+            1 => new Circle(0., 0., 8., 0.1),
         ], [0.8, 0.2]);
 
-        $this->estimator = new IsolationForest(new IsolationTree(null, 5, 0.07), 100, 0.8);
+        $this->estimator = new IsolationForest(new IsolationTree(null, 5, 0.08), 100, 0.8);
     }
 
     public function test_build_detector()

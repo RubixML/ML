@@ -54,19 +54,20 @@ class DBSCAN implements Estimator, Persistable
     /**
      * @param  float  $radius
      * @param  int  $minDensity
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius = 0.5, int $minDensity = 5, Distance $kernel = null)
+    public function __construct(float $radius, int $minDensity = 5, ?Distance $kernel = null)
     {
-        if ($radius < 0.) {
-            throw new InvalidArgumentException('Radius cannot be less than 0.');
+        if ($radius <= 0.) {
+            throw new InvalidArgumentException("Cluster radius must be"
+                . " greater than 0, $radius given.");
         }
 
         if ($minDensity < 0) {
-            throw new InvalidArgumentException('Minimum density must be a'
-                . ' number greater than 0.');
+            throw new InvalidArgumentException("Minimum density must be"
+                . " greater than 0, $minDensity given.");
         }
 
         if (is_null($kernel)) {

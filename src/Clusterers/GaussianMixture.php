@@ -42,18 +42,18 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
     protected $k;
 
     /**
-     * The minimum change in the components necessary to continue training.
-     *
-     * @var float
-     */
-    protected $minChange;
-
-    /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
      */
     protected $epochs;
+
+    /**
+     * The minimum change in the components necessary to continue training.
+     *
+     * @var float
+     */
+    protected $minChange;
 
     /**
      * The precomputed prior log probabilities of each cluster given by weight.
@@ -93,31 +93,31 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
 
     /**
      * @param  int  $k
-     * @param  float  $minChange
      * @param  int  $epochs
+     * @param  float  $minChange
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, float $minChange = 1e-3, int $epochs = 100)
+    public function __construct(int $k, int $epochs = 100, float $minChange = 1e-3)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Must target at least one'
-                . ' cluster.');
-        }
-
-        if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . ' than 0.');
+            throw new InvalidArgumentException("Must target at least one"
+                . " cluster, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
+        }
+
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
         $this->k = $k;
-        $this->minChange = $minChange;
         $this->epochs = $epochs;
+        $this->minChange = $minChange;
     }
 
     /**
@@ -207,7 +207,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                 $variances = $this->variances[$cluster];
 
                 foreach ($means as $column => &$mean) {
-                    $a = $b = $total = self::EPSILON;
+                    $a = $b = $total = 0.;
 
                     foreach ($dataset as $i => $sample) {
                         $prob = $memberships[$i][$cluster];
@@ -216,7 +216,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
                         $total += $prob;
                     }
 
-                    $mean = $a / $total;
+                    $mean = $a / ($total ?: self::EPSILON);
 
                     foreach ($dataset as $i => $sample) {
                         $prob = $memberships[$i][$cluster];
@@ -310,7 +310,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
-                $variance = $variances[$column] + self::EPSILON;
+                $variance = $variances[$column] ?: self::EPSILON;
 
                 $pdf = 1. / sqrt(self::TWO_PI * $variance);
                 $pdf *= exp(-(($feature - $mean) ** 2 / (2. * $variance)));
@@ -321,7 +321,7 @@ class GaussianMixture implements Estimator, Probabilistic, Persistable
             $likelihood[$cluster] = $score;
         }
 
-        $total = array_sum($likelihood);
+        $total = array_sum($likelihood) ?: self::EPSILON;
 
         foreach ($likelihood as &$probability) {
             $probability /= $total;

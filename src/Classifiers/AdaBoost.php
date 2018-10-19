@@ -59,7 +59,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     protected $ratio;
 
     /**
-     * The amount of error to tolerate before early stopping.
+     * The amount of validation error to tolerate before early stopping.
      *
      * @var float
      */
@@ -112,7 +112,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator  $base
+     * @param  \Rubix\ML\Estimator|null  $base
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
@@ -120,7 +120,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $base = null, int $estimators = 100, float $rate = 1.,
+    public function __construct(?Estimator $base = null, int $estimators = 100, float $rate = 1.,
                                 float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
@@ -128,33 +128,33 @@ class AdaBoost implements Estimator, Ensemble, Persistable
         }
 
         if ($base instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base estimator cannot be a meta'
-                . ' estimator.');
+            throw new InvalidArgumentException('Base estimator cannot be a'
+                . ' meta estimator, ' . gettype($base). ' given.');
         }
 
         if ($base->type() !== self::CLASSIFIER) {
-            throw new InvalidArgumentException('Base estimator must be a'
-                . ' classifier.');
+            throw new InvalidArgumentException("Base estimator must be a"
+                . " classifier, {$base->type()} given.");
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 estimator.');
+            throw new InvalidArgumentException("Ensemble must contain at least"
+                . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
-            throw new InvalidArgumentException('Learning rate must be greater'
-                . ' than 0.');
+            throw new InvalidArgumentException("Learning rate must be greater"
+                . " than 0, $rate given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Sample ratio must be between'
-                . ' 0.01 and 1.0.');
+            throw new InvalidArgumentException("Sample ratio must be between"
+                . " 0.01 and 1, $ratio given.");
         }
 
         if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException('Error tolerance must be between'
-                . ' 0 and 1.');
+            throw new InvalidArgumentException("Validation error tolerance must"
+                . " be between 0 and 1, $tolerance given.");
         }
 
         $this->base = $base;
@@ -226,8 +226,8 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This Estimator requires a'
-                . ' Labeled training set.');
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
         $this->classes = $dataset->possibleOutcomes();

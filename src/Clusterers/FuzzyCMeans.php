@@ -93,33 +93,33 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     /**
      * @param  int  $c
      * @param  float  $fuzz
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  float  $minChange
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @param  int  $epochs
+     * @param  float  $minChange
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2.0, Distance $kernel = null,
-                                float $minChange = 1e-4, int $epochs = PHP_INT_MAX)
+    public function __construct(int $c, float $fuzz = 2., ?Distance $kernel = null,
+                                int $epochs = PHP_INT_MAX, float $minChange = 1e-4)
     {
         if ($c < 1) {
-            throw new InvalidArgumentException('Must target at least one'
-                . ' cluster.');
+            throw new InvalidArgumentException("Must target at least one"
+                . " cluster, $c given.");
         }
 
         if ($fuzz <= 1.) {
-            throw new InvalidArgumentException('Fuzz factor must be greater'
-                . ' than 1.');
-        }
-
-        if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . ' than 0.');
+            throw new InvalidArgumentException("Fuzz factor must be greater"
+                . " than 1, $fuzz given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . ' least 1 epoch.');
+            throw new InvalidArgumentException("Estimator must train for at"
+                . " least 1 epoch, $epochs given.");
+        }
+
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException("Minimum change cannot be less"
+                . " than 0, $minChange given.");
         }
 
         if (is_null($kernel)) {
@@ -130,8 +130,8 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
         $this->fuzz = $fuzz;
         $this->lambda = 2. / ($fuzz - 1.);
         $this->kernel = $kernel;
-        $this->minChange = $minChange;
         $this->epochs = $epochs;
+        $this->minChange = $minChange;
     }
 
     /**
@@ -147,9 +147,9 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array|null
+     * @return array
      */
-    public function centroids() : ?array
+    public function centroids() : array
     {
         return $this->centroids;
     }
@@ -200,7 +200,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 foreach ($rotated as $column => $values) {
-                    $sigma = $total = self::EPSILON;
+                    $sigma = $total = 0.;
 
                     foreach ($memberships as $i => $probabilities) {
                         $weight = $probabilities[$cluster] ** $this->fuzz;
@@ -209,7 +209,7 @@ class FuzzyCMeans implements Estimator, Probabilistic, Persistable
                         $total += $weight;
                     }
 
-                    $centroid[$column] = $sigma / $total;
+                    $centroid[$column] = $sigma / ($total ?: self::EPSILON);
                 }
             }
 
