@@ -236,6 +236,8 @@ class LocalOutlierFactor implements Estimator, Online, Probabilistic, Persistabl
 
         sort($distances);
 
-        return $distances[$this->neighbors - 1] ?? end($distances);
+        $radius = $distances[$this->neighbors - 1] ?? end($distances);
+
+        return $radius ?: 0.;
     }
 }

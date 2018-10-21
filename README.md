@@ -104,6 +104,7 @@ MIT
 				- [Numeric String Converter](#numeric-string-converter)
 				- [One Hot Encoder](#one-hot-encoder)
 			    - [Polynomial Expander](#polynomial-expander)
+				- [Principal Component Analysis](#principal-component-analysis)
 			    - [Quartile Standardizer](#quartile-standardizer)
 			    - [Robust Standardizer](#robust-standardizer)
 			    - [Sparse Random Projector](#sparse-random-projector)
@@ -2624,6 +2625,29 @@ This transformer does not have any additional methods.
 use Rubix\ML\Transformers\PolynomialExpander;
 
 $transformer = new PolynomialExpander(3);
+```
+
+### Principal Component Analysis
+Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that would retain as much of the information within the data as possible.
+
+##### Continuous *Only*
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | None | int | The target number of dimensions to project onto. |
+
+##### Additional Methods:
+Return the fraction of fitted data's variance that is preserved through the transformation:
+```php
+public explainedVar() : int|float|null
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\PrincipalComponentAnalysis;
+
+$transformer = new PrincipalComponentAnalysis(15);
 ```
 
 ### Quartile Standardizer

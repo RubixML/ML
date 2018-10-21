@@ -156,7 +156,7 @@ class WordCountVectorizer implements Extractor
         }
 
         $this->vocabulary = array_combine(array_keys($frequencies),
-            range(0, count($frequencies) - 1));
+            range(0, count($frequencies) - 1)) ?: [];
     }
 
     /**
@@ -196,7 +196,7 @@ class WordCountVectorizer implements Extractor
         $vector = array_fill(0, count($this->vocabulary), 0);
 
         if ($this->normalize === true) {
-            $sample = preg_replace('/\s+/', ' ', strtolower($sample));
+            $sample = preg_replace('/\s+/', ' ', strtolower($sample)) ?? '';
         }
 
         foreach ($this->tokenizer->tokenize($sample) as $token) {
