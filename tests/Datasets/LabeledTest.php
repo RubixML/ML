@@ -331,4 +331,17 @@ class LabeledTest extends TestCase
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
         $this->assertEquals('not monster', $merged->label(6));
     }
+
+    public function test_zip()
+    {
+        $outcome = [
+            ['nice', 'furry', 'friendly', 'not monster'],
+            ['mean', 'furry', 'loner', 'monster'],
+            ['nice', 'rough', 'friendly', 'not monster'],
+            ['mean', 'rough', 'friendly', 'monster'],
+            ['nice', 'rough', 'friendly', 'not monster'],
+        ];
+
+        $this->assertEquals($outcome, $this->dataset->head(5)->zip());
+    }
 }

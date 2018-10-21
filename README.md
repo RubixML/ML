@@ -718,6 +718,11 @@ Fold the Dataset **k** - 1 times to form **k** equal size stratified Datasets
 public stratifiedFold($k = 10) : array
 ```
 
+Zip the samples and labels together and return them in an array:
+```php
+public zip() : array
+```
+
 ##### Example:
 ```php
 use Rubix\ML\Datasets\Labeled;
