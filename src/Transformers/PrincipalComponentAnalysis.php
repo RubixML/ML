@@ -51,9 +51,23 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
     /**
      * The amount of variance that is preserved by the transformation.
      * 
-     * @var int|float|null
+     * @var float|null
      */
     protected $explainedVar;
+
+    /**
+     * The amount of variance lost by discarding the noise components.
+     * 
+     * @var float|null
+     */
+    protected $noiseVar;
+
+    /**
+     * The percentage of information lost due to the transformation.
+     * 
+     * @var float|null
+     */
+    protected $lossiness;
 
     /**
      * The centers (means) of the input feature columns.
@@ -78,14 +92,34 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
     }
 
     /**
-     * Return the fraction of explained variance that has been preserved by
-     * the transformation.
+     * Return the amount of variance that has been preserved by the
+     * transformation.
      * 
-     * @return int|float|null
+     * @return float|null
      */
-    public function explainedVar()
+    public function explainedVar() : ?float
     {
         return $this->explainedVar;
+    }
+
+    /**
+     * Return the amount of variance lost by discarding the noise components.
+     * 
+     * @return float|null
+     */
+    public function noiseVar() : ?float
+    {
+        return $this->noiseVar;
+    }
+
+    /**
+     * Return the percentage of information lost due to the transformation.
+     * 
+     * @return float|null
+     */
+    public function lossiness() : ?float
+    {
+        return $this->lossiness;
     }
 
     /**
@@ -104,9 +138,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
 
         $xT = Matrix::build($dataset->samples())->transpose();
 
-        list($eigenvalues, $eigenvectors) = $xT->covariance()->eig();
+        list($eigenvalues, $eigenvectors) = $xT->covariance()->eig(true);
 
-        $total = array_sum($eigenvalues);
+        $totalVar = array_sum($eigenvalues);
 
         $eigenvectors = $eigenvectors->asArray();
         
@@ -115,16 +149,19 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
         $eigenvalues = array_slice($eigenvalues, 0, $this->dimensions);
         $eigenvectors = array_slice($eigenvectors, 0, $this->dimensions);
 
-        $eigenvectors = Matrix::quick($eigenvectors)
-            ->transpose();
+        $eigenvectors = Matrix::quick($eigenvectors)->transpose();
+
+        $explainedVar = (float) array_sum($eigenvalues);
+        $noiseVar = $totalVar - $explainedVar;
+
+        $this->explainedVar = $explainedVar;
+        $this->noiseVar = $noiseVar;
+        $this->lossiness = $noiseVar / ($totalVar ?: self::EPSILON);
+
+        $this->means = $xT->mean()->transpose();
 
         $this->eigenvalues = $eigenvalues;
         $this->eigenvectors = $eigenvectors;
-
-        $this->explainedVar = array_sum($eigenvalues)
-            / ($total ?: self::EPSILON);
-
-        $this->means = $xT->mean()->transpose();
     }
 
     /**

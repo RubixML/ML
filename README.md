@@ -2635,7 +2635,7 @@ $transformer = new PolynomialExpander(3);
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that would retain as much of the information within the data as possible.
 
-##### Continuous *Only*
+##### Continuous *Only* | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2643,9 +2643,19 @@ Principal Component Analysis or *PCA* is a dimensionality reduction technique th
 | 1 | dimensions | None | int | The target number of dimensions to project onto. |
 
 ##### Additional Methods:
-Return the fraction of fitted data's variance that is preserved through the transformation:
+Return the amount of variance that has been preserved by the transformation:
 ```php
-public explainedVar() : int|float|null
+public explainedVar() : ?float
+```
+
+Return the amount of variance lost by discarding the noise components:
+```php
+public noiseVar() : ?float
+```
+
+Return the percentage of information lost due to the transformation:
+```php
+public lossiness() : ?float
 ```
 
 ##### Example:
