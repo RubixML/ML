@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -25,7 +24,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNNRegressor implements Estimator, Online, Persistable
+class KNNRegressor implements Online, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.

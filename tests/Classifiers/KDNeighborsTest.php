@@ -18,7 +18,7 @@ use RuntimeException;
 
 class KDNeighborsTest extends TestCase
 {
-    const TRAIN_SIZE = 250;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 3;
     const MIN_PROB = 0.33;
 

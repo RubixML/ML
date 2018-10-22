@@ -445,6 +445,27 @@ Return the number of columns in the Dataset:
 public numColumns() : int
 ```
 
+Return the integer encoded column types for each feature column:
+```php
+public types() : array
+```
+
+Return the integer encoded column type given a column index:
+```php
+public columnType(int $index) : int
+```
+
+Return the range for each feature column:
+```php
+public ranges() : array
+```
+
+Return the range of a feature column. The range for a continuous column is defined as the minimum and maximum values, and for catagorical columns the range is defined as every unique category.
+```php
+public columnRange(int $index) : array
+```
+
+
 #### Splitting, Folding, and Batching
 
 Remove **n** rows from the Dataset and return them in a new Dataset:
@@ -1424,7 +1445,7 @@ public weights() : array
 
 Return the influence scores for each boosted classifier:
 ```php
-public influence() : array
+public influences() : array
 ```
 
 Return the training error at each epoch:
@@ -1472,11 +1493,14 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | experts | None | array | An array of classifiers instances that will comprise the committee. |
-| 2 | influence | None | array | The influence values of each expert in the committee. |
+| 2 | influences | None | array | The influence values of each expert in the committee. |
 
 
 ##### Additional Methods:
-This estimator does not have any additional methods.
+Return the normalized influence scores for each estimator in the committee:
+```php
+public influences() : array
+```
 
 ##### Example:
 ```php

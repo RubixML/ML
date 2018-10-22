@@ -73,6 +73,23 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function columnType(int $index) : int;
 
     /**
+     * Return the ranges of each feature column.
+     * 
+     * @return array[]
+     */
+    public function ranges() : array;
+
+    /**
+     * Return the range of a feature column. The range for a continuous column
+     * is defined as the minimum and maximum values, and for catagorical
+     * columns the range is defined as every unique category.
+     * 
+     * @param  int  $index
+     * @return (int|float|string)[]
+     */
+    public function columnRange(int $index) : array;
+
+    /**
      * Return the number of feature columns in the datasets.
      *
      * @return int

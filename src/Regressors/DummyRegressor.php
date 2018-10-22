@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -22,7 +21,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DummyRegressor implements Estimator, Learner, Persistable
+class DummyRegressor implements Learner, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.

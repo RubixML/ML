@@ -3,7 +3,6 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -28,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FuzzyCMeans implements Estimator, Learner, Probabilistic, Persistable
+class FuzzyCMeans implements Learner, Probabilistic, Persistable
 {
     /**
      * The target number of clusters.
@@ -236,8 +235,8 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Persistable
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -35,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Estimator, Online, Persistable
+class Adaline implements Online, Persistable
 {
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate

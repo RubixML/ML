@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -32,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LogisticRegression implements Estimator, Online, Probabilistic, Persistable
+class LogisticRegression implements Online, Probabilistic, Persistable
 {
     /**
      * The number of training samples to consider per iteration of gradient descent.
@@ -282,8 +281,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Persistabl
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;

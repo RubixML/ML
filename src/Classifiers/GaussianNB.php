@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -31,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianNB implements Estimator, Online, Probabilistic, Persistable
+class GaussianNB implements Online, Probabilistic, Persistable
 {
     const TWO_PI = 2. * M_PI;
 

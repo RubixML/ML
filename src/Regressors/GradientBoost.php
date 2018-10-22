@@ -4,7 +4,6 @@ namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
@@ -29,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Estimator, Learner, Ensemble, Persistable
+class GradientBoost implements Learner, Ensemble, Persistable
 {
     const AVAILABLE_ESTIMATORS = [
         RegressionTree::class,
@@ -157,16 +156,6 @@ class GradientBoost implements Estimator, Learner, Ensemble, Persistable
     public function type() : int
     {
         return self::REGRESSOR;
-    }
-
-    /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->ensemble;
     }
 
     /**

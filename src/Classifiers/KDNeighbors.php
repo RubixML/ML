@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -35,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors extends KDTree implements Estimator, Learner, Probabilistic, Persistable
+class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -132,8 +131,8 @@ class KDNeighbors extends KDTree implements Estimator, Learner, Probabilistic, P
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;

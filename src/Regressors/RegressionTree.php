@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -24,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegressionTree extends CART implements Estimator, Learner, Persistable
+class RegressionTree extends CART implements Learner, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.

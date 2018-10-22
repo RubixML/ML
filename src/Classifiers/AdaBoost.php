@@ -4,7 +4,6 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
@@ -29,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Estimator, Learner, Ensemble, Persistable
+class AdaBoost implements Learner, Ensemble, Persistable
 {
     /**
      * The base classifier to be boosted.
@@ -99,7 +98,7 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
      *
      * @var array
      */
-    protected $influence = [
+    protected $influences = [
         //
     ];
 
@@ -176,16 +175,6 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
     }
 
     /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->ensemble;
-    }
-
-    /**
      * Return the weights associated with each training sample.
      *
      * @return array
@@ -200,9 +189,9 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
      *
      * @return array
      */
-    public function influence() : array
+    public function influences() : array
     {
-        return $this->influence;
+        return $this->influences;
     }
 
     /**
@@ -241,7 +230,7 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
 
         $this->weights = array_fill(0, $n, 1 / $n);
 
-        $this->ensemble = $this->influence = $this->steps = [];
+        $this->ensemble = $this->influences = $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = clone $this->base;
@@ -270,7 +259,7 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
 
             $this->ensemble[] = $estimator;
             $this->steps[] = $loss;
-            $this->influence[] = $influence;
+            $this->influences[] = $influence;
 
             if ($loss < $this->tolerance or $total < 0.) {
                 break 1;
@@ -308,7 +297,7 @@ class AdaBoost implements Estimator, Learner, Ensemble, Persistable
             array_fill_keys($this->classes, 0.));
 
         foreach ($this->ensemble as $i => $estimator) {
-            $influence = $this->influence[$i];
+            $influence = $this->influences[$i];
 
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $scores[$j][$prediction] += $influence;

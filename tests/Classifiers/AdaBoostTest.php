@@ -17,7 +17,7 @@ use RuntimeException;
 
 class AdaBoostTest extends TestCase
 {
-    const TRAIN_SIZE = 200;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
 
     protected $generator;

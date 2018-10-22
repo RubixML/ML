@@ -4,7 +4,6 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Learner, Ensemble, Probabilistic, Persistable
+class IsolationForest implements Learner, Ensemble, Probabilistic, Persistable
 {
     const AVAILABLE_ESTIMATORS = [
         IsolationTree::class,
@@ -107,16 +106,6 @@ class IsolationForest implements Estimator, Learner, Ensemble, Probabilistic, Pe
     }
 
     /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->forest;
-    }
-
-    /**
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
@@ -151,8 +140,8 @@ class IsolationForest implements Estimator, Learner, Ensemble, Probabilistic, Pe
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probability) {
-            $predictions[] = $probability > 0.5 ? 1 : 0;
+        foreach ($this->proba($dataset) as $proba) {
+            $predictions[] = $proba > 0.5 ? 1 : 0;
         }
 
         return $predictions;

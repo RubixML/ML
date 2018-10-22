@@ -4,7 +4,6 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -29,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Estimator, Learner, Ensemble, Probabilistic, Persistable
+class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
 {
     const AVAILABLE_ESTIMATORS = [
         ClassificationTree::class,
@@ -116,16 +115,6 @@ class RandomForest implements Estimator, Learner, Ensemble, Probabilistic, Persi
     public function type() : int
     {
         return self::CLASSIFIER;
-    }
-
-    /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->forest;
     }
 
     /**

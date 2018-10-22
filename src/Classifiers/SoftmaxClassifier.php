@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -23,19 +22,20 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Multinomial Classifier
+ * Softmax Classifier
  *
  * A generalization of logistic regression for multiple class outcomes using a
- * single layer neural network.
+ * single layer neural network with a softmax output layer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
+class SoftmaxClassifier implements Online, Probabilistic, Persistable
 {
     /**
-     * The number of training samples to consider per iteration of gradient descent.
+     * The number of training samples to consider per iteration of gradient
+     * descent.
      *
      * @var int
      */
@@ -282,8 +282,8 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Persistable
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;

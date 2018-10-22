@@ -38,9 +38,9 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
     /**
      * The influence values of each expert in the committee.
      *
-     * @var array
+     * @var (int|float)[]
      */
-    protected $influence;
+    protected $influences;
 
     /**
      * The unique class labels.
@@ -53,11 +53,11 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
 
     /**
      * @param  array  $experts
-     * @param  array|null  $influence
+     * @param  array|null  $influences
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $experts, ?array $influence = null)
+    public function __construct(array $experts, ?array $influences = null)
     {
         $n = count($experts);
 
@@ -67,6 +67,11 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
         }
 
         foreach ($experts as $expert) {
+            if (!$expert instanceof Learner) {
+                throw new InvalidArgumentException('Base estimator must'
+                    . ' implement the learner interface.');
+            }
+
             if ($expert instanceof MetaEstimator) {
                 throw new InvalidArgumentException('Base estimator cannot be a'
                     . ' meta estimator, ' . gettype($expert) . ' given.');
@@ -83,29 +88,29 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
             }
         }
 
-        if (is_array($influence)) {
-            if (count($influence) !== $n) {
+        if (is_array($influences)) {
+            if (count($influences) !== $n) {
                 throw new InvalidArgumentException("The number of influence"
                     . " values must equal the number of experts, $n needed"
-                    . " but " . count($influence) . "given.");
+                    . " but " . count($influences) . "given.");
             }
 
-            $total = array_sum($influence);
+            $total = array_sum($influences);
 
             if ($total == 0) {
                 throw new InvalidArgumentException('Total influence for the'
                     . ' committee cannot be 0.');
             }
 
-            $influence = array_map(function ($value) use ($total) {
-                return $value / $total;
-            }, $influence);
+            foreach ($influences as &$influence) {
+                $influence /= $total;
+            }
         } else {
-            $influence = array_fill(0, $n, 1 / $n);
+            $influences = array_fill(0, $n, 1 / $n);
         }
 
         $this->experts = $experts;
-        $this->influence = $influence;
+        $this->influences = $influences;
     }
 
     /**
@@ -119,23 +124,13 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
     }
 
     /**
-     * Return the ensemble of eclassifiers.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->experts;
-    }
-
-    /**
      * Return the normalized influence values for each expert in the committee.
      *
      * @return array
      */
-    public function influence() : array
+    public function influences() : array
     {
-        return $this->influence;
+        return $this->influences;
     }
 
     /**
@@ -168,8 +163,8 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;
@@ -191,12 +186,11 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
             array_fill_keys($this->classes, 0.));
 
         foreach ($this->experts as $i => $expert) {
-            $influence = $this->influence[$i];
+            $influence = $this->influences[$i];
 
             foreach ($expert->proba($dataset) as $j => $joint) {
-                foreach ($joint as $class => $probability) {
-                    $probabilities[$j][$class] += $influence
-                        * $probability;
+                foreach ($joint as $class => $proba) {
+                    $probabilities[$j][$class] += $influence * $proba;
                 }
             }
         }

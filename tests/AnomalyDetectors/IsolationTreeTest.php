@@ -17,7 +17,7 @@ use RuntimeException;
 class IsolationTreeTest extends TestCase
 {
     const TRAIN_SIZE = 200;
-    const TEST_SIZE = 5;
+    const TEST_SIZE = 10;
 
     protected $generator;
 
@@ -26,9 +26,9 @@ class IsolationTreeTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0., 0.], 1.),
+            0 => new Blob([0., 0.], 0.5),
             1 => new Circle(0., 0., 8., 0.1),
-        ], [0.8, 0.2]);
+        ], [0.9, 0.1]);
 
         $this->estimator = new IsolationTree(50, 1, 0.1);
     }

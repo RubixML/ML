@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -31,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNRegressor extends KDTree implements Estimator, Learner, Persistable
+class KDNRegressor extends KDTree implements Learner, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.

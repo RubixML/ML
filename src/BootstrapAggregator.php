@@ -99,16 +99,6 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
     }
 
     /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->ensemble;
-    }
-
-    /**
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
