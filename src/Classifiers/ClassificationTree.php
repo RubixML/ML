@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -24,7 +25,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Estimator, Probabilistic, Persistable
+class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The maximum number of features to consider when determining a split.

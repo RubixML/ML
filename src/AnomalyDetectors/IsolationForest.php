@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -26,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
+class IsolationForest implements Estimator, Learner, Ensemble, Probabilistic, Persistable
 {
     const AVAILABLE_ESTIMATORS = [
         IsolationTree::class,
@@ -35,7 +36,7 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
     /**
      * The base isolation tree to be used in the ensemble.
      * 
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -63,13 +64,13 @@ class IsolationForest implements Estimator, Ensemble, Probabilistic, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator|null  $base
+     * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
     {
         if (is_null($base)) {
             $base = new IsolationTree();

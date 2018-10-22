@@ -21,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements MetaEstimator
+class PersistentModel implements MetaEstimator, Learner
 {
     /**
      * The underlying persistable estimator instance.

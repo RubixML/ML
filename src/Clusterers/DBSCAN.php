@@ -3,7 +3,6 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -25,7 +24,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DBSCAN implements Estimator, Persistable
+class DBSCAN implements Estimator
 {
     const NOISE = -1;
 
@@ -87,19 +86,6 @@ class DBSCAN implements Estimator, Persistable
     public function type() : int
     {
         return self::CLUSTERER;
-    }
-
-    /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function train(Dataset $dataset) : void
-    {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
     }
 
     /**

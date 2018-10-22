@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -46,6 +47,7 @@ class CommitteeMachineTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

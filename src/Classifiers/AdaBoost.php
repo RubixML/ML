@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -28,12 +29,12 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Estimator, Ensemble, Persistable
+class AdaBoost implements Estimator, Learner, Ensemble, Persistable
 {
     /**
      * The base classifier to be boosted.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -112,7 +113,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator|null  $base
+     * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
@@ -120,7 +121,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Estimator $base = null, int $estimators = 100, float $rate = 1.,
+    public function __construct(?Learner $base = null, int $estimators = 100, float $rate = 1.,
                                 float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {

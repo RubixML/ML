@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -51,6 +52,7 @@ class MultiLayerPerceptronTest extends TestCase
     {
         $this->assertInstanceOf(MultiLayerPerceptron::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

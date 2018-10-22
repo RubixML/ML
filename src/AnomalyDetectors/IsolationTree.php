@@ -1,6 +1,7 @@
 <?php
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationTree extends ITree implements Estimator, Probabilistic, Persistable
+class IsolationTree extends ITree implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The amount of contamination (outliers) that is presumed to be in

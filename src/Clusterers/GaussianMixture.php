@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -29,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Estimator, Probabilistic, Persistable
+class GaussianMixture implements Estimator, Learner, Probabilistic, Persistable
 {
     const TWO_PI = 2. * M_PI;
 

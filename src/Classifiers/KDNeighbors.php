@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -34,7 +35,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors extends KDTree implements Estimator, Probabilistic, Persistable
+class KDNeighbors extends KDTree implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.

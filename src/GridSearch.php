@@ -27,7 +27,7 @@ use ReflectionClass;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements MetaEstimator, Persistable
+class GridSearch implements MetaEstimator, Learner, Persistable
 {
     /**
      * The class name of the base estimator.
@@ -123,9 +123,9 @@ class GridSearch implements MetaEstimator, Persistable
 
         $proxy = $reflector->newInstanceWithoutConstructor();
 
-        if (!$proxy instanceof Estimator) {
-            throw new InvalidArgumentException('Base class must be an'
-                . ' estimator.');
+        if (!$proxy instanceof Learner) {
+            throw new InvalidArgumentException('Base class must be an instance'
+                . ' of a learner.');
         }
 
         if ($proxy instanceof MetaEstimator) {

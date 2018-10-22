@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -35,6 +36,7 @@ class IsolationTreeTest extends TestCase
     public function test_build_detector()
     {
         $this->assertInstanceOf(IsolationTree::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

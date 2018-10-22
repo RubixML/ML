@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -26,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Persistable
+class RobustZScore implements Estimator, Learner, Persistable
 {
     const LAMBDA = 0.6745;
 

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -22,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DummyClassifier implements Estimator, Persistable
+class DummyClassifier implements Estimator, Learner, Persistable
 {
     /**
      * The guessing strategy that the dummy employs.

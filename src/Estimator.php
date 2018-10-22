@@ -21,14 +21,6 @@ interface Estimator
     public function type() : int;
 
     /**
-     * Train the estimator with a dataset.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
-     */
-    public function train(Dataset $dataset) : void;
-
-    /**
      * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

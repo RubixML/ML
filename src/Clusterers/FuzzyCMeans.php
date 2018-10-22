@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FuzzyCMeans implements Estimator, Probabilistic, Persistable
+class FuzzyCMeans implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The target number of clusters.
