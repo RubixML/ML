@@ -6,6 +6,7 @@ use Rubix\ML\Estimator;
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
+use Rubix\Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
@@ -119,7 +120,7 @@ class Ridge implements Estimator, Persistable
         $x = Matrix::build($samples)->augmentLeft($biases);
         $y = Vector::build($labels);
 
-        $coefficients = $this->computeCoefficients($x, $y)->column(0);
+        $coefficients = $this->computeCoefficients($x, $y)->asArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->weights = Vector::quick($coefficients);
@@ -147,7 +148,7 @@ class Ridge implements Estimator, Persistable
         return Matrix::build($dataset->samples())
             ->dot($this->weights)
             ->add($this->bias)
-            ->column(0);
+            ->asArray();
     }
 
     /**
@@ -156,9 +157,9 @@ class Ridge implements Estimator, Persistable
      *
      * @param  \Rubix\Tensor\Matrix  $x
      * @param  \Rubix\Tensor\Vector  $y
-     * @return \Rubix\Tensor\Matrix
+     * @return \Rubix\Tensor\ColumnVector
      */
-    protected function computeCoefficients(Matrix $x, Vector $y) : Matrix
+    protected function computeCoefficients(Matrix $x, Vector $y) : ColumnVector
     {
         $alphas = array_fill(0, $x->n() - 1, $this->alpha);
 
@@ -167,6 +168,6 @@ class Ridge implements Estimator, Persistable
         $xT = $x->transpose();
 
         return $xT->matmul($x)->add($penalty)->inverse()
-            ->matmul($xT->dot($y));
+            ->dot($xT->dot($y));
     }
 }

@@ -43,7 +43,6 @@ MIT
 			- [Half Moon](#half-moon)
 	- [Feature Extraction](#feature-extraction)
 		- [Extractors](#extractors)
-			- [Image Patch Descriptor](#image-patch-descriptor)
 	    	- [Word Count Vectorizer](#word-count-vectorizer)
 			- [Raw Pixel Encoder](#raw-pixel-encoder)
 		- [Tokenizers](#tokenizers)
@@ -1002,38 +1001,18 @@ $dataset = new Unlabeled($samples);
 $dataset = new Labeled($samples, $labels);
 ```
 
-### Image Patch Descriptor
-This image extractor encodes various user-defined features called descriptors using subsamples of the original image called *patches*.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | descriptors | None | array | The descriptor middleware. Each descriptor encodes a set of features from a patch of the image. |
-| 2 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| 3 | patch size | [4, 4] | array | The width and height of the patch area. |
-| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
-
-
-##### Additional Methods:
-
-Return the dimensionality of the vector that gets encoded:
-```php
-public numPatches() : int
-```
-
 ### Word Count Vectorizer
-In machine learning, word *counts* are often used to represent natural language as numerical vectors. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
+In machine learning, word *counts* are often used to represent natural language as numerical vectors called *documents*. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appeared in a given sample.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each word vector. |
-| 2 | stop words | [ ] | array | An array of stop words i.e. words to filter out of the original text. |
+| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
+| 2 | stop words | None | array | An array of stop words i.e. words to filter out of the original text. |
 | 3 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
-| 4 | tokenizer | Word | object | The object responsible for turning samples of text into individual tokens. |
+| 4 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
 
 ##### Additional Methods:
-
 Return the fitted vocabulary i.e. the words that will be vectorized:
 ```php
 public vocabulary() : array
@@ -1046,12 +1025,12 @@ public size() : int
 
 ##### Example:
 ```php
-use Rubix\ML\Extractors\ImagePatchDescriptor;
-use Rubix\ML\Extractors\Descriptors\TextureHistogram;
+use Rubix\ML\Extractors\WordCountVectorizer;
+use Rubix\ML\Extractors\Tokenizers\Word;
 
-$extractor = new ImagePatchDescriptor([
-	new TextureHistorgram(),
-], [32, 32], [4, 4], 'gd');
+$stopwords = ['i', 'me', 'myself', 'we', 'our', ...];
+
+$extractor = new WordCountVectorizer(5000, $stopwords, true, new Word());
 ```
 
 ### Raw Pixel Encoder
@@ -1061,7 +1040,7 @@ The Raw Pixel Encoder takes an array of images (as [PHP Resources](http://php.ne
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| 2 | rgb | true | bool | True to use RGB color channel data and False to use Greyscale. |
+| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
 | 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 ##### Additional Methods:
@@ -1129,7 +1108,7 @@ $tokenizer = new Whitespace(',');
 ```
 
 ### Word Tokenizer
-Tokens are matched via regular expression designed to pick out words from a block of text.
+The Word tokenizer uses regular expressions to pluck words from a sample of text.
 
 ##### Parameters:
 This tokenizer does not have any parameters.
