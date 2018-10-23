@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
@@ -28,12 +28,12 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Estimator, Ensemble, Persistable
+class AdaBoost implements Learner, Ensemble, Persistable
 {
     /**
      * The base classifier to be boosted.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -98,7 +98,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      *
      * @var array
      */
-    protected $influence = [
+    protected $influences = [
         //
     ];
 
@@ -112,7 +112,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator|null  $base
+     * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
@@ -120,7 +120,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Estimator $base = null, int $estimators = 100, float $rate = 1.,
+    public function __construct(?Learner $base = null, int $estimators = 100, float $rate = 1.,
                                 float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
@@ -175,16 +175,6 @@ class AdaBoost implements Estimator, Ensemble, Persistable
     }
 
     /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->ensemble;
-    }
-
-    /**
      * Return the weights associated with each training sample.
      *
      * @return array
@@ -199,9 +189,9 @@ class AdaBoost implements Estimator, Ensemble, Persistable
      *
      * @return array
      */
-    public function influence() : array
+    public function influences() : array
     {
-        return $this->influence;
+        return $this->influences;
     }
 
     /**
@@ -240,7 +230,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
         $this->weights = array_fill(0, $n, 1 / $n);
 
-        $this->ensemble = $this->influence = $this->steps = [];
+        $this->ensemble = $this->influences = $this->steps = [];
 
         for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
             $estimator = clone $this->base;
@@ -269,7 +259,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
 
             $this->ensemble[] = $estimator;
             $this->steps[] = $loss;
-            $this->influence[] = $influence;
+            $this->influences[] = $influence;
 
             if ($loss < $this->tolerance or $total < 0.) {
                 break 1;
@@ -307,7 +297,7 @@ class AdaBoost implements Estimator, Ensemble, Persistable
             array_fill_keys($this->classes, 0.));
 
         foreach ($this->ensemble as $i => $estimator) {
-            $influence = $this->influence[$i];
+            $influence = $this->influences[$i];
 
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $scores[$j][$prediction] += $influence;

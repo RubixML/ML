@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Clusterers;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -27,7 +26,6 @@ class DBSCANTest extends TestCase
     public function test_build_clusterer()
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
@@ -36,10 +34,8 @@ class DBSCANTest extends TestCase
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_predict()
     {
-        $this->estimator->train($this->dataset);
-
         $results = $this->estimator->predict($this->dataset);
 
         $clusters = array_count_values($results);

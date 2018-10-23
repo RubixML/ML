@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -36,7 +35,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MLPRegressor implements Estimator, Online, Persistable
+class MLPRegressor implements Online, Persistable
 {
     /**
      * The user-specified hidden layers of the network.

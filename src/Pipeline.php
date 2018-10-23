@@ -28,7 +28,7 @@ class Pipeline implements MetaEstimator, Online, Persistable
     /**
      * The wrapped estimator instance.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $estimator;
 
@@ -50,13 +50,13 @@ class Pipeline implements MetaEstimator, Online, Persistable
     protected $elastic;
 
     /**
-     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Learner  $estimator
      * @param  array  $transformers
      * @param  bool  $elastic
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $estimator, array $transformers = [], bool $elastic = true)
+    public function __construct(Learner $estimator, array $transformers = [], bool $elastic = true)
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {

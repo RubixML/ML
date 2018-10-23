@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\CrossValidation;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\Learner;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
@@ -71,12 +71,12 @@ class HoldOut implements Validator
     /**
      * Test the estimator with the supplied dataset and return a score.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
+     * @param  \Rubix\ML\Learner  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @return float
      */
-    public function test(Estimator $estimator, Labeled $dataset, Metric $metric) : float
+    public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
         if ($this->stratify === true) {
             list($testing, $training) = $dataset->stratifiedSplit($this->ratio);

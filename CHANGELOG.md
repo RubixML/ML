@@ -23,6 +23,7 @@
     - GaussianNB and Naive Bayes now accept class prior probabilities
     - Single layer neural net estimators now use snapshotting
     - Removed Image Patch Descriptor
+    - Added Learner interface for trainable estimators
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

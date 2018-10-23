@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
@@ -26,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Estimator, Persistable
+class MeanShift implements Learner, Persistable
 {
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum

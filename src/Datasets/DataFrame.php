@@ -108,10 +108,15 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * Return the feature column at the given index.
      *
      * @param  int  $index
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function column(int $index) : array
     {
+        if (!isset($this->samples[0][$index])) {
+            throw new InvalidArgumentException('Column does not exist.');
+        }
+
         return array_column($this->samples, $index);
     }
 
@@ -138,7 +143,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return array_map(function ($feature) {
-            return is_string($feature) ? self::CATEGORICAL : self::CONTINUOUS;
+            return is_string($feature)
+                ? self::CATEGORICAL
+                : self::CONTINUOUS;
         }, $this->samples[0]);
     }
 
@@ -146,13 +153,59 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * Get the datatype for a feature column given a column index.
      *
      * @param  int  $index
+     * @throws \InvalidArgumentException
      * @return int
      */
     public function columnType(int $index) : int
     {
+        if (!isset($this->samples[0][$index])) {
+            throw new InvalidArgumentException('Column does not exist.');
+        }
+
         return is_string($this->samples[0][$index])
             ? self::CATEGORICAL
             : self::CONTINUOUS;
+    }
+
+    /**
+     * Return the ranges of each feature column.
+     * 
+     * @return array[]
+     */
+    public function ranges() : array
+    {
+        $ranges = [];
+
+        foreach ($this->rotate() as $column => $values) {
+            if ($this->columnType((int) $column) === self::CONTINUOUS) {
+                $ranges[] = [min($values), max($values)];
+            } else {
+                $ranges[] = array_values(array_unique($values));
+            }
+        }
+
+        return $ranges;
+    }
+
+    /**
+     * Return the range of a feature column. The range for a continuous column
+     * is defined as the minimum and maximum values, and for catagorical
+     * columns the range is defined as every unique category.
+     * 
+     * @param  int  $index
+     * @return (int|float|string)[]
+     */
+    public function columnRange(int $index) : array
+    {
+        $values = $this->column($index);
+
+        if ($this->columnType($index) === self::CONTINUOUS) {
+            $range = [min($values), max($values)];
+        } else {
+            $range = array_values(array_unique($values));
+        }
+
+        return $range;
     }
 
     /**
@@ -206,11 +259,11 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             $rotated = [];
 
             for ($i = 0; $i < $n; $i++) {
-                $rotated[$i] = array_column($this->samples, $i);
+                $rotated[] = array_column($this->samples, $i);
             }
         }
 
-        return new self($rotated);
+        return new self($rotated, false);
     }
 
     /**

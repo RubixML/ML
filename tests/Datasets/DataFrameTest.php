@@ -28,7 +28,7 @@ class DataFrameTest extends TestCase
         $this->dataframe = new DataFrame($this->samples, true);
     }
 
-    public function test_build_structure()
+    public function test_build_dataframe()
     {
         $this->assertInstanceOf(DataFrame::class, $this->dataframe);
     }
@@ -56,7 +56,7 @@ class DataFrameTest extends TestCase
         $this->assertEquals($outcome, $this->dataframe->column(2));
     }
 
-    public function test_get_column_indices()
+    public function test_axes()
     {
         $this->assertEquals(array_keys($this->samples[0]),
             $this->dataframe->axes());
@@ -65,5 +65,35 @@ class DataFrameTest extends TestCase
     public function test_get_num_columns()
     {
         $this->assertEquals(3, $this->dataframe->numColumns());
+    }
+
+    public function test_column_types()
+    {
+        $outcome = [DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL];
+
+        $this->assertEquals($outcome, $this->dataframe->types());
+    }
+
+    public function test_column_type()
+    {
+        $this->assertEquals(DataFrame::CATEGORICAL, $this->dataframe->columnType(2));
+    }
+
+    public function test_column_ranges()
+    {
+        $outcome = [
+            ['nice', 'mean'],
+            ['furry', 'rough'],
+            ['friendly', 'loner'],
+        ];
+
+        $this->assertEquals($outcome, $this->dataframe->ranges());
+    }
+
+    public function test_column_range()
+    {
+        $outcome = ['friendly', 'loner'];
+
+        $this->assertEquals($outcome, $this->dataframe->columnRange(2));
     }
 }

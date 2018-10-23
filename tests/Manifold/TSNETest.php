@@ -5,19 +5,26 @@ namespace Rubix\ML\Tests\Manifold;
 use Rubix\ML\Manifold\TSNE;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Manifold\Embedder;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
 class TSNETest extends TestCase
 {
+    const TRAIN_SIZE = 30;
+
     protected $embedder;
 
-    protected $dataset;
+    protected $generator;
 
     public function setUp()
     {
-        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset')
-            ->stratifiedSplit(0.2)[0];
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ]);
 
         $this->embedder = new TSNE(2, 10, 12., 1000, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
     }
@@ -30,11 +37,12 @@ class TSNETest extends TestCase
 
     public function test_embed()
     {
-        $embedding = $this->embedder->embed($this->dataset);
-        $steps = $this->embedder->steps();
+        $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
-        $this->assertCount(20, $embedding);
+        $embedding = $this->embedder->embed($dataset);
 
-        // file_put_contents('test.json', json_encode($steps, JSON_PRETTY_PRINT));
+        $this->assertCount(self::TRAIN_SIZE, $embedding);
+
+        // file_put_contents('test.json', json_encode($embedding, JSON_PRETTY_PRINT));
     }
 }

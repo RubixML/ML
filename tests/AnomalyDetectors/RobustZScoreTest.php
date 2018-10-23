@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
@@ -14,8 +15,8 @@ use RuntimeException;
 
 class RobustZScoreTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
+    const TRAIN_SIZE = 200;
+    const TEST_SIZE = 10;
 
     protected $generator;
 
@@ -24,16 +25,17 @@ class RobustZScoreTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0., 0.], 0.1),
+            0 => new Blob([0., 0.], 0.5),
             1 => new Circle(0., 0., 8., 0.1),
-        ], [0.8, 0.2]);
+        ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(1.25, 1.5);
+        $this->estimator = new RobustZScore(1.5, 1.6);
     }
 
     public function test_build_detector()
     {
         $this->assertInstanceOf(RobustZScore::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

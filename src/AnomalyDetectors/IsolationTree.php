@@ -1,7 +1,8 @@
 <?php
+
 namespace Rubix\ML\AnomalyDetectors;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationTree extends ITree implements Estimator, Probabilistic, Persistable
+class IsolationTree extends ITree implements Learner, Probabilistic, Persistable
 {
     /**
      * The amount of contamination (outliers) that is presumed to be in
@@ -91,8 +92,8 @@ class IsolationTree extends ITree implements Estimator, Probabilistic, Persistab
 
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probability) {
-            $predictions[] = $probability > 0.5 ? 1 : 0;
+        foreach ($this->proba($dataset) as $proba) {
+            $predictions[] = $proba > 0.5 ? 1 : 0;
         }
 
         return $predictions;

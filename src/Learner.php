@@ -4,13 +4,13 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 
-interface Online extends Learner
+interface Learner extends Estimator
 {
     /**
-     * Perform a partial train on the learner.
+     * Train the learner with a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function partial(Dataset $dataset) : void;
+    public function train(Dataset $dataset) : void;
 }

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Estimator;
+use Rubix\ML\Learner;
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
@@ -23,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Ridge implements Estimator, Persistable
+class Ridge implements Learner, Persistable
 {
     /**
      * The regularization parameter that controls the penalty to the size of the

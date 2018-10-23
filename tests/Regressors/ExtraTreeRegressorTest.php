@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Regressors;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
@@ -35,6 +36,7 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

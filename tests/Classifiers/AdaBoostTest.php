@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -16,7 +17,7 @@ use RuntimeException;
 
 class AdaBoostTest extends TestCase
 {
-    const TRAIN_SIZE = 200;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
 
     protected $generator;
@@ -37,6 +38,7 @@ class AdaBoostTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

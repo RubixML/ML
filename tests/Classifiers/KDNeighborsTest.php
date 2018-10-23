@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -17,7 +18,7 @@ use RuntimeException;
 
 class KDNeighborsTest extends TestCase
 {
-    const TRAIN_SIZE = 250;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 3;
     const MIN_PROB = 0.33;
 
@@ -39,6 +40,7 @@ class KDNeighborsTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(KDNeighbors::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

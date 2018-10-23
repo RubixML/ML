@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -38,7 +37,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persistable
+class MultiLayerPerceptron implements Online, Probabilistic, Persistable
 {
     /**
      * The user-specified hidden layers of the network.
@@ -383,8 +382,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Persista
     {
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
+        foreach ($this->proba($dataset) as $joint) {
+            $predictions[] = Argmax::compute($joint);
         }
 
         return $predictions;

@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
-use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -28,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
+class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
 {
     const AVAILABLE_ESTIMATORS = [
         ClassificationTree::class,
@@ -38,7 +38,7 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     /**
      * The base estimator.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -75,13 +75,13 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Estimator|null  $base
+     * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Estimator $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
     {
         if (is_null($base)) {
             $base = new ClassificationTree();
@@ -115,16 +115,6 @@ class RandomForest implements Estimator, Ensemble, Probabilistic, Persistable
     public function type() : int
     {
         return self::CLASSIFIER;
-    }
-
-    /**
-     * Return the ensemble of estimators.
-     *
-     * @return array
-     */
-    public function estimators() : array
-    {
-        return $this->forest;
     }
 
     /**
