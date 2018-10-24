@@ -17,9 +17,9 @@ class SoftsignTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [0.5], [-0.3333333333333333], [0.0], [0.9523809523809523],
             [-0.9090909090909091],
         ]);

@@ -19,9 +19,9 @@ class GaussianTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [0.36787944117144233], [0.7788007830714049], [1.0],
             [1.9151695967140057E-174], [3.720075976020836E-44],
         ]);

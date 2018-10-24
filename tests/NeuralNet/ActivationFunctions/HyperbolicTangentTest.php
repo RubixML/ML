@@ -17,9 +17,9 @@ class HyperbolicTangentTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [0.7615941559557649], [-0.46211715726000974], [0.0], [1.0],
             [-0.9999999958776927],
         ]);

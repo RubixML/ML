@@ -35,9 +35,7 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return tanh($value);
-        });
+        return $z->map('tanh');
     }
 
     /**

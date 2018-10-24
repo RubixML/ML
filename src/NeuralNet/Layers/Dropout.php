@@ -104,10 +104,9 @@ class Dropout implements Hidden, Nonparametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $this->mask = Matrix::rand(...$input->shape())
-            ->map(function ($value) {
-                return $value > $this->ratio ? 1. : 0.;
-            });
+        $this->mask = Matrix::rand(...$input->shape())->map(function ($value) {
+            return $value > $this->ratio ? 1. : 0.;
+        });
 
         return $this->mask->multiply($input);
     }

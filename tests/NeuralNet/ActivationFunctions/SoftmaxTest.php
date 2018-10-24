@@ -17,14 +17,14 @@ class SoftmaxTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [5.6027963875928395E-9], [1.2501528552426345E-9], [2.0611536040650294E-9],
             [0.9999999910858036], [9.357622885424485E-14],
         ]);
 
-        $this->activationFunction = new Softmax(1e-10);
+        $this->activationFunction = new Softmax();
     }
 
     public function test_build_activation_function()

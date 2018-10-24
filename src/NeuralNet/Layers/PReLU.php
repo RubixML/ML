@@ -197,7 +197,7 @@ class PReLU implements Hidden, Parametric
             }
         }
 
-        return new Matrix($computed, false);
+        return Matrix::quick($computed);
     }
 
     /**
@@ -226,7 +226,7 @@ class PReLU implements Hidden, Parametric
             }
         }
 
-        return new Matrix($gradients, false);
+        return Matrix::quick($gradients);
     }
 
     /**

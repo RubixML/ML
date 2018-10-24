@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
 use PHPUnit\Framework\TestCase;
 
@@ -12,11 +12,7 @@ class PlaceholderTest extends TestCase
 {
     protected $fanIn;
 
-    protected $fanOut;
-
     protected $input;
-
-    protected $output;
 
     protected $layer;
 
@@ -24,21 +20,13 @@ class PlaceholderTest extends TestCase
     {
         $this->fanIn = 0;
 
-        $this->fanOut = 3;
-
-        $this->input = new Matrix([
+        $this->input = Matrix::quick([
             [1., 2.5,],
             [0.1, 0.],
             [0.002, -6.],
-        ], false);
+        ]);
 
-        $this->output = [
-            [1., 2.5,],
-            [0.1, 0.],
-            [0.002, -6.],
-        ];
-
-        $this->layer = new Placeholder($this->fanOut);
+        $this->layer = new Placeholder(3);
     }
 
     public function test_build_layer()
@@ -48,19 +36,29 @@ class PlaceholderTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    public function test_forward()
+    public function test_width()
+    {
+        $this->assertEquals(3, $this->layer->width());
+    }
+
+    public function test_forward_infer()
     {
         $out = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals($this->output, $out->asArray());
-    }
+        $output = [
+            [1., 2.5,],
+            [0.1, 0.],
+            [0.002, -6.],
+        ];
 
-    public function test_infer()
-    {
+        $this->assertInstanceOf(Matrix::class, $out);
+        $this->assertEquals([3, 2], $out->shape());
+        $this->assertEquals($output, $out->asArray());
+
         $out = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals($this->output, $out->asArray());
+        $this->assertEquals([3, 2], $out->shape());
+        $this->assertEquals($output, $out->asArray());
     }
 }

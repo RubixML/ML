@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Parameter;
 use PHPUnit\Framework\TestCase;
 
 class ParameterTest extends TestCase
@@ -12,7 +12,7 @@ class ParameterTest extends TestCase
 
     public function setUp()
     {
-        $this->parameter = new Parameter(new Matrix([[5]]));
+        $this->parameter = new Parameter(Matrix::quick([[5]]));
     }
 
     public function test_build_parameter()
@@ -30,7 +30,7 @@ class ParameterTest extends TestCase
     {
         $this->assertEquals(5, $this->parameter->w()[0][0]);
 
-        $this->parameter->update(new Matrix([[-1]]));
+        $this->parameter->update(Matrix::quick([[-1]]));
 
         $this->assertEquals(6, $this->parameter->w()[0][0]);
     }

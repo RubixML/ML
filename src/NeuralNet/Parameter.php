@@ -18,13 +18,14 @@ use Rubix\Tensor\Matrix;
 class Parameter
 {
     /**
-     * The parameter matrix.
+     * The parameter Matrix.
      *
      * @var \Rubix\Tensor\Matrix
      */
     protected $w;
 
     /**
+     * @param  \Rubix\Tensor\Matrix  $w
      * @return void
      */
     public function __construct(Matrix $w)
@@ -41,7 +42,7 @@ class Parameter
     }
 
     /**
-     * Update the parameter matrix.
+     * Update the parameter Matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $step
      * @return void

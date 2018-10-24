@@ -19,9 +19,9 @@ class ISRUTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [0.7071067811865475], [-0.4472135954999579], [0.0],
             [0.9987523388778445], [-0.9950371902099892],
         ]);

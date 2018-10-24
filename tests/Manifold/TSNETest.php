@@ -26,7 +26,7 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->embedder = new TSNE(2, 10, 12., 1000, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
+        $this->embedder = new TSNE(2, 10, 12., 500, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
     }
 
     public function test_build_embedder()

@@ -210,11 +210,11 @@ class Binary implements Output
 
         $expected = [];
 
-        foreach ($labels as $j => $label) {
-            $expected[$j] = $this->classes[$label];
+        foreach ($labels as $label) {
+            $expected[] = $this->classes[$label];
         }
 
-        $expected = new Matrix([$expected], false);
+        $expected = Matrix::quick([$expected]);
 
         $delta = $costFunction
             ->compute($expected, $this->computed);
@@ -246,7 +246,7 @@ class Binary implements Output
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($w, $dA) {
-            $w->transpose()->matmul($dA);
+            return $w->transpose()->matmul($dA);
         }, $cost];
     }
 

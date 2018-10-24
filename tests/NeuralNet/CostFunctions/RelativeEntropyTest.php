@@ -19,11 +19,11 @@ class RelativeEntropyTest extends TestCase
 
     public function setUp()
     {
-        $this->expected = new Matrix([[1.], [0.], [0.], [1.], [0.]]);
+        $this->expected = Matrix::quick([[1.], [0.], [0.], [1.], [0.]]);
 
-        $this->activation = new Matrix([[0.99], [0.2], [0.7], [0.80], [0.02]]);
+        $this->activation = Matrix::quick([[0.99], [0.2], [0.7], [0.80], [0.02]]);
 
-        $this->delta = new Matrix([
+        $this->delta = Matrix::quick([
             [0.010050335852491413],
             [-1.6811242831518263E-7],
             [-1.8064005800013633E-7],

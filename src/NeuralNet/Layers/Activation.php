@@ -128,7 +128,8 @@ class Activation implements Hidden, Nonparametric
         unset($this->input, $this->computed);
 
         return function () use ($input, $computed, $prevGradient) {
-            return $this->activationFunction->differentiate($input, $computed)
+            return $this->activationFunction
+                ->differentiate($input, $computed)
                 ->multiply($prevGradient());
         };
     }

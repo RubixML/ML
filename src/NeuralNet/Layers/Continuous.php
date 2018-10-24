@@ -169,7 +169,7 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $expected = new Matrix([$labels], false);
+        $expected = Matrix::quick([$labels]);
 
         $delta = $costFunction
             ->compute($expected, $this->z);

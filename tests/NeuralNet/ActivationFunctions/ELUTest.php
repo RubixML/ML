@@ -21,9 +21,9 @@ class ELUTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [1.0], [-0.3934693402873666], [0.0], [20.0], [-0.9999546000702375],
         ]);
 

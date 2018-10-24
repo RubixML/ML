@@ -237,7 +237,7 @@ class TSNE implements Embedder
 
         $this->steps = [];
 
-        $x = new Matrix($dataset->samples(), false);
+        $x = Matrix::quick($dataset->samples());
 
         $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
             ->multiply(1e-3);
@@ -294,7 +294,7 @@ class TSNE implements Embedder
             }
         }
 
-        return new Matrix($distances, false);
+        return Matrix::quick($distances);
     }
 
     /**
@@ -366,7 +366,7 @@ class TSNE implements Embedder
             }
         }
 
-        $p = new Matrix($p, false);
+        $p = Matrix::quick($p);
 
         $pHat = $p->add($p->transpose());
 
@@ -410,12 +410,13 @@ class TSNE implements Embedder
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
-            $gradient[$i] = $row->asRowMatrix()
-                ->matmul($y->subtract($y->rowAsVector($i)))
+            $yHat = $y->rowAsVector($i);
+            
+            $gradient[$i] = $row->matmul($y->subtract($yHat))
                 ->multiply($c)
                 ->row(0);
         }
 
-        return new Matrix($gradient, false);
+        return Matrix::quick($gradient);
     }
 }

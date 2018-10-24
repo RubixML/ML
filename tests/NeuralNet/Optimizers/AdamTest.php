@@ -18,13 +18,13 @@ class AdamTest extends TestCase
 
     public function setUp()
     {
-        $this->parameter = new Parameter(new Matrix([
+        $this->parameter = new Parameter(Matrix::quick([
             [0.1, 0.6, -0.4],
             [0.5, 0.6, -0.4],
             [0.1, 0.1, -0.7],
         ]));
 
-        $this->gradients = new Matrix([
+        $this->gradients = Matrix::quick([
             [0.01, 0.05, -0.02],
             [-0.01, 0.02, 0.03],
             [0.04, -0.01, -0.5],

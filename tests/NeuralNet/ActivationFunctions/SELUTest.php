@@ -20,9 +20,9 @@ class SELUTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [1.0507009873554805], [-0.6917581878028713], [0.0],
             [21.014019747109607], [-1.7580195232607867],
         ]);

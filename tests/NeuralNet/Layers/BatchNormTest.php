@@ -2,44 +2,47 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
 class BatchNormTest extends TestCase
 {
     protected $fanIn;
 
-    protected $fanOut;
-
     protected $input;
 
-    protected $output;
+    protected $prevGrad;
+
+    protected $optimizer;
 
     protected $layer;
 
     public function setUp()
     {
-        $this->fanIn = 5;
+        $this->fanIn = 3;
 
-        $this->fanOut = 5;
+        $this->input = Matrix::quick([
+            [1., 2.5, -0.1],
+            [0.1, 0., 3.],
+            [0.002, -6., -0.5],
+        ]);
 
-        $this->input = new Matrix([
-            [1., 2.5, -4.],
-            [0.1, 0., 2.2],
-            [0.002, -6., 1.2],
-        ], false);
+        $this->prevGrad = function () {
+            return Matrix::quick([
+                [0.25, 0.7, 0.1],
+                [0.50, 0.2, 0.01],
+                [0.25, 0.1, 0.89],
+            ]);
+        };
 
-        $this->output = [
-            [0.4171398827949467, 0.9534625892455924, -1.370602472040539],
-            [-0.6274558051381585, -0.7215741759088822, 1.3490299810470407],
-            [0.5058265681932177, -1.3900754274119194, 0.8842488592187014],
-        ];
+        $this->optimizer = new Stochastic();
 
-        $this->layer = new BatchNorm(0.1);
+        $this->layer = new BatchNorm();
 
         $this->layer->init($this->fanIn);
     }
@@ -54,19 +57,49 @@ class BatchNormTest extends TestCase
 
     public function test_width()
     {
-        $this->assertEquals($this->fanOut, $this->layer->width());
+        $this->assertEquals($this->fanIn, $this->layer->width());
     }
 
-    public function test_forward_infer()
+    public function test_forward_back_infer()
     {
-        $out = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals($this->output, $out->asArray());
+        $output = [
+            [-0.12512224941797084, 1.2825030565342015, -1.1573808071162308],
+            [-0.6708631792558644, -0.7427413770332784, 1.4136045562891426],
+            [0.7974157342978961, -1.4101900024437888, 0.6127742681458925],
+        ];
 
-        $out = $this->layer->infer($this->input);
+        $this->assertInstanceOf(Matrix::class, $forward);
+        $this->assertEquals([3, 3], $forward->shape());
+        $this->assertEquals($output, $forward->asArray());
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals($this->output, $out->asArray());
+        $back = $this->layer->back($this->prevGrad, $this->optimizer);
+
+        $this->assertInternalType('callable', $back);
+
+        $back = $back();
+
+        $dYdX = [
+            [-0.0849052805222375, 0.4108673492513107, -0.2796836491513708],
+            [0.21773431346266278, 0.012460969795807176, -0.4380486992723796],
+            [-0.07399439144834394, -0.009086169905025584, 0.17130353331384188],
+        ];
+
+        $this->assertInstanceOf(Matrix::class, $back);
+        $this->assertEquals([3, 3], $back->shape());
+        $this->assertEquals($dYdX, $back->asArray());
+
+        $output = [
+            [-0.12607831595417437, 1.2804902385302876, -1.1575619225761133],
+            [-0.6718883801743488, -0.7438003494787433, 1.413558729653092],
+            [0.7956943312039362, -1.4105786650534555, 0.6111643338495193],
+        ];
+
+        $infer = $this->layer->infer($this->input);
+
+        $this->assertInstanceOf(Matrix::class, $infer);
+        $this->assertEquals([3, 3], $infer->shape());
+        $this->assertEquals($output, $infer->asArray());
     }
 }

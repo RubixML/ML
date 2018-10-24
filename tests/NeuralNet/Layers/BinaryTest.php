@@ -2,20 +2,26 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
 class BinaryTest extends TestCase
 {
     protected $fanIn;
 
-    protected $fanOut;
-
     protected $input;
+
+    protected $labels;
+
+    protected $costFn;
+
+    protected $optimizer;
 
     protected $layer;
 
@@ -23,13 +29,17 @@ class BinaryTest extends TestCase
     {
         $this->fanIn = 3;
 
-        $this->fanOut = 1;
+        $this->input = Matrix::quick([
+            [1., 2.5, -0.1],
+            [0.1, 0., 3.],
+            [0.002, -6., -0.5],
+        ]);
 
-        $this->input = new Matrix([
-            [1., 2.5, -4.],
-            [0.1, 0., 2.2],
-            [0.002, -6., 1.2],
-        ], false);
+        $this->labels = ['hot', 'cold', 'hot'];
+
+        $this->costFn = new CrossEntropy();
+
+        $this->optimizer = new Stochastic();
 
         $this->layer = new Binary(['hot', 'cold']);
 
@@ -46,22 +56,29 @@ class BinaryTest extends TestCase
 
     public function test_width()
     {
-        $this->assertEquals($this->fanOut, $this->layer->width());
+        $this->assertEquals(1, $this->layer->width());
     }
 
-    public function test_forward()
+    public function test_forward_back_infer()
     {
-        $out = $this->layer->forward($this->input);
+        $forward = $this->layer->forward($this->input);
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals([1, 3], $out->shape());
-    }
+        $this->assertInstanceOf(Matrix::class, $forward);
+        $this->assertEquals([1, 3], $forward->shape());
 
-    public function test_infer()
-    {
-        $out = $this->layer->infer($this->input);
+        list($back, $loss) = $this->layer->back($this->labels, $this->costFn, $this->optimizer);
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals([1, 3], $out->shape());
+        $this->assertInternalType('callable', $back);
+        $this->assertInternalType('float', $loss);
+
+        $back = $back();
+
+        $this->assertInstanceOf(Matrix::class, $back);
+        $this->assertEquals([3, 3], $back->shape());
+
+        $infer = $this->layer->infer($this->input);
+
+        $this->assertInstanceOf(Matrix::class, $infer);
+        $this->assertEquals([1, 3], $infer->shape());
     }
 }

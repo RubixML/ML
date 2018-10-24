@@ -215,7 +215,7 @@ class Multiclass implements Output
             }
         }
 
-        $expected = new Matrix($expected, false);
+        $expected = Matrix::quick($expected);
 
         $delta = $costFunction
             ->compute($expected, $this->computed);

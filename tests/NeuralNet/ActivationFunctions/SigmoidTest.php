@@ -17,9 +17,9 @@ class SigmoidTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [0.7310585786300049], [0.3775406687981454], [0.5], [0.9999999979388463],
             [4.5397868702434395E-5],
         ]);

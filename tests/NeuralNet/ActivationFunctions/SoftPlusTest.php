@@ -18,9 +18,9 @@ class SoftPlusTest extends TestCase
 
     public function setUp()
     {
-        $this->input = new Matrix([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
+        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
 
-        $this->activations = new Matrix([
+        $this->activations = Matrix::quick([
             [1.3132616875182228], [0.4740769841801067], [0.6931471805599453],
             [20.000000002061153], [4.5398899216870535E-5],
         ]);

@@ -19,11 +19,11 @@ class LeastSquaresTest extends TestCase
 
     public function setUp()
     {
-        $this->expected = new Matrix([[36.], [22.], [18.], [41.5], [38.]]);
+        $this->expected = Matrix::quick([[36.], [22.], [18.], [41.5], [38.]]);
 
-        $this->activation = new Matrix([[33.98], [20.], [4.6], [44.2], [38.5]]);
+        $this->activation = Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
-        $this->delta = new Matrix([
+        $this->delta = Matrix::quick([
             [4.0804000000000125],
             [4.],
             [179.56],
