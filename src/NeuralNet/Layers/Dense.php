@@ -124,7 +124,7 @@ class Dense implements Hidden, Parametric
         $this->input = $input;
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
     }
 
     /**
@@ -141,7 +141,7 @@ class Dense implements Hidden, Parametric
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
     }
 
     /**

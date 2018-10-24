@@ -162,7 +162,7 @@ class Binary implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -183,7 +183,7 @@ class Binary implements Output
         }
 
         $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
 
         return $this->activationFunction->compute($z);
     }
@@ -220,9 +220,7 @@ class Binary implements Output
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()
-            ->multiply($this->alpha)
-            ->asColumnMatrix()
-            ->repeat(1, $this->computed->n());
+            ->multiply($this->alpha);
 
         $dL = $costFunction
             ->differentiate($expected, $this->computed, $delta)

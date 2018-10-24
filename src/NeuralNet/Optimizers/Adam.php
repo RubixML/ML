@@ -116,8 +116,6 @@ class Adam implements Optimizer
             $this->cache->attach($param, $cache);
         }
 
-        $this->t++;
-
         $this->velocities[$param] = $velocities = $velocities
             ->multiply($this->momentumDecay)
             ->add($gradient->multiply(1. - $this->momentumDecay));
@@ -125,6 +123,8 @@ class Adam implements Optimizer
         $this->cache[$param] = $cache = $cache
             ->multiply($this->rmsDecay)
             ->add($gradient->square()->multiply(1. - $this->rmsDecay));
+
+        $this->t++;
 
         $vHat = $velocities->divide(1. - $this->momentumDecay ** $this->t);
 

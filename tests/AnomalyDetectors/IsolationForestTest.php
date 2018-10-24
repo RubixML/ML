@@ -31,7 +31,7 @@ class IsolationForestTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new IsolationForest(new IsolationTree(null, 1, 0.08), 300, 0.8);
+        $this->estimator = new IsolationForest(new IsolationTree(null, 1, 0.08), 300, 0.2);
     }
 
     public function test_build_detector()

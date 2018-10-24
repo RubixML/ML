@@ -127,7 +127,7 @@ class Continuous implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
 
         return $this->z;
     }
@@ -146,7 +146,7 @@ class Continuous implements Output
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
     }
 
     /**
@@ -175,9 +175,7 @@ class Continuous implements Output
             ->compute($expected, $this->z);
 
         $penalties = $this->weights->w()->sum()
-            ->multiply($this->alpha)
-            ->asColumnMatrix()
-            ->repeat(1, $this->z->n());
+            ->multiply($this->alpha);
 
         $dL = $costFunction
             ->differentiate($expected, $this->z, $delta)

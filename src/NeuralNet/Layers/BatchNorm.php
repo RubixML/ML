@@ -258,14 +258,14 @@ class BatchNorm implements Hidden, Parametric
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
-        $gamma = $this->gamma->w();
+        $gamma = $this->gamma->w()->columnAsVector(0);
 
         unset($this->stdInv, $this->xHat);
 
         return function () use ($dOut, $gamma, $stdInv, $xHat) {
             list($m, $n) = $dOut->shape();
 
-            $dXHat = $dOut->multiply($gamma->repeat(1, $n));
+            $dXHat = $dOut->multiply($gamma);
 
             $xHatSigma = $dXHat->multiply($xHat)->transpose()->sum();
 

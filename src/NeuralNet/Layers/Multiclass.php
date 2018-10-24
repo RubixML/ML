@@ -161,7 +161,7 @@ class Multiclass implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
 
         $this->computed = $this->activationFunction->compute($this->z);
 
@@ -182,7 +182,7 @@ class Multiclass implements Output
         }
 
         $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->repeat(1, $input->n()));
+            ->add($this->biases->w()->columnAsVector(0));
 
         return $this->activationFunction->compute($z);
     }
@@ -207,11 +207,11 @@ class Multiclass implements Output
                 . ' backpropagating.');
         }
 
-        $expected = [[]];
+        $expected = [];
 
         foreach ($this->classes as $i => $class) {
-            foreach ($labels as $j => $label) {
-                $expected[$i][$j] = $class === $label ? 1. : 0.;
+            foreach ($labels as $label) {
+                $expected[$i][] = $class === $label ? 1. : 0.;
             }
         }
 
@@ -221,9 +221,7 @@ class Multiclass implements Output
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()
-            ->multiply($this->alpha)
-            ->asColumnMatrix()
-            ->repeat(1, $this->computed->n());
+            ->multiply($this->alpha);
 
         $dL = $costFunction
             ->differentiate($expected, $this->computed, $delta)

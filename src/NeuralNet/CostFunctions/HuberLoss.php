@@ -69,10 +69,9 @@ class HuberLoss implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return $expected->subtract($activations)
-            ->map(function($z) {
-                return $this->beta * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
-            });
+        return $expected->subtract($activations)->map(function($z) {
+            return $this->beta * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
+        });
     }
 
     /**

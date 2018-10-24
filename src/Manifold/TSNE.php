@@ -412,7 +412,7 @@ class TSNE implements Embedder
         foreach ($pqd->asVectors() as $i => $row) {
             $yHat = $y->rowAsVector($i);
             
-            $gradient[$i] = $row->matmul($y->subtract($yHat))
+            $gradient[] = $row->matmul($y->subtract($yHat))
                 ->multiply($c)
                 ->row(0);
         }
