@@ -900,10 +900,12 @@ object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
 ### Agglomerate
 An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
 
+##### Labeled
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | generators | [ ] | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
+| 1 | generators | None | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
 | 2 | weights | 1 / n | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
 
 ##### Additional Methods:
@@ -922,12 +924,14 @@ $generator = new Agglomerate([
 	new HalfMoon([-3, 5], 1.5, 90.0, 0.1),
 	new Circle([2, -4], 2.0, 0.05),
 ], [
-	5, 6, 3, // Weights
+	5, 6, 3, // Arbitrary weights
 ]);
 ```
 
 ### Blob
 A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
+
+##### Unlabeled
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -947,6 +951,8 @@ $generator = new Blob([-1.2, -5.0, 2.6, 0.8], 0.25);
 
 ### Circle
 Create a circle made of sample data points in 2 dimensions.
+
+##### Unlabeled
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -969,6 +975,8 @@ $generator = new Circle(0.0, 0.0, 100, 0.1);
 ### Half Moon
 Generate a dataset consisting of 2-d samples that form a half moon shape.
 
+##### Unlabeled
+
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -990,6 +998,8 @@ $generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
 
 ### Swiss Roll
 Generate a 3-dimensional swiss roll dataset with continuous valued labels. The labels are the inputs to the swiss roll transformation and are suitable for non-linear regression problems.
+
+##### Labeled
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

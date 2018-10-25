@@ -156,7 +156,7 @@ class RobustZScore implements Learner, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $n = $dataset->numColumns();
+        $p = $dataset->numColumns();
 
         $predictions = [];
 
@@ -169,16 +169,18 @@ class RobustZScore implements Learner, Persistable
 
                 $z = (self::LAMBDA * ($feature - $median)) / $mad;
 
-                if ($z > $this->threshold) {
+                $zHat = abs($z);
+
+                if ($zHat > $this->threshold) {
                     $predictions[] = 1;
 
                     continue 2;
                 }
 
-                $score += $z;
+                $score += $zHat;
             }
 
-            $score /= $n;
+            $score /= $p;
 
             $predictions[] = $score > $this->tolerance ? 1 : 0;
         }

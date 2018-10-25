@@ -6,25 +6,32 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class MeanShiftTest extends TestCase
 {
+    const TEST_SIZE = 300;
     const TOLERANCE = 3;
+
+    protected $generator;
 
     protected $estimator;
 
-    protected $dataset;
-
     public function setUp()
     {
-        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ]);
 
-        $this->estimator = new MeanShift(2.0, new Euclidean(), 300, 1e-4);
+        $this->estimator = new MeanShift(10.0, new Euclidean(), 100, 1e-4);
     }
 
     public function test_build_clusterer()
@@ -40,22 +47,25 @@ class MeanShiftTest extends TestCase
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
-        $this->estimator->train($this->dataset);
+        $dataset = $this->generator->generate(self::TEST_SIZE);
 
-        $results = $this->estimator->predict($this->dataset);
+        $this->estimator->train($dataset);
 
-        $clusters = array_count_values($results);
+        $predictions = $this->estimator->predict($dataset);
 
-        $this->assertEquals(50, $clusters[0], '', self::TOLERANCE);
-        $this->assertEquals(50, $clusters[1], '', self::TOLERANCE);
+        $clusters = array_count_values($predictions);
+
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[0], '', self::TOLERANCE);
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[1], '', self::TOLERANCE);
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[2], '', self::TOLERANCE);
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->dataset);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

@@ -99,7 +99,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2., ?Distance $kernel = null,
+    public function __construct(int $c, float $fuzz = 2.0, ?Distance $kernel = null,
                                 int $epochs = PHP_INT_MAX, float $minChange = 1e-4)
     {
         if ($c < 1) {
