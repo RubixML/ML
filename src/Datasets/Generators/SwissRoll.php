@@ -40,6 +40,13 @@ class SwissRoll implements Generator
     protected $scale;
 
     /**
+     * The depth of the swiss roll i.e the scale of the y dimension.
+     * 
+     * @var float
+     */
+    protected $depth;
+
+    /**
      * The standard deviation of the gaussian noise.
      *
      * @var float
@@ -51,16 +58,22 @@ class SwissRoll implements Generator
      * @param  float  $y
      * @param  float  $z
      * @param  float  $scale
+     * @param  float  $depth
      * @param  float  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $x = 0., float $y = 0., float $z = 0., float $scale = 1.,
-                                float $noise = 0.3)
+                                float $depth = 21., float $noise = 0.3)
     {
         if ($scale < 0.) {
             throw new InvalidArgumentException("Scaling factor must be greater"
                 . " than 0, $scale given.");
+        }
+
+        if ($depth < 0) {
+            throw new InvalidArgumentException("Depth cannot be less than 0"
+                . " $depth given.");
         }
 
         if ($noise < 0.) {
@@ -70,6 +83,7 @@ class SwissRoll implements Generator
 
         $this->center = Vector::quick([$x, $y, $z]);
         $this->scale = $scale;
+        $this->depth = $depth;
         $this->noise = $noise;
     }
 
@@ -95,7 +109,7 @@ class SwissRoll implements Generator
             ->multiply(1.5 * M_PI);
 
         $x = $t->multiply($t->cos());
-        $y = Vector::rand($n)->multiply(21);
+        $y = Vector::rand($n)->multiply($this->depth);
         $z = $t->multiply($t->sin());
 
         $noise = Matrix::gaussian($n, 3)

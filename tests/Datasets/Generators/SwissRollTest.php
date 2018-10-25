@@ -14,7 +14,7 @@ class SwissRollTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new SwissRoll(0., 0., 0., 1., 0.3);
+        $this->generator = new SwissRoll(0., 0., 0., 1., 12., 0.3);
     }
 
     public function test_build_generator()
