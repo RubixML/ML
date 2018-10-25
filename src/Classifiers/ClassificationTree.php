@@ -8,7 +8,8 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Best;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
@@ -17,7 +18,7 @@ use RuntimeException;
 /**
  * Classification Tree
  *
- * A Decision Tree-based classifier that minimizes gini impurity to greedily
+ * A Leaf Tree-based classifier that minimizes gini impurity to greedily
  * search for the best splits in a training set.
  *
  * @category    Machine Learning
@@ -96,7 +97,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     }
 
     /**
-     * Train the decision tree by learning the most optimal splits in the
+     * Train the Leaf tree by learning the most optimal splits in the
      * training set.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -134,7 +135,11 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->outcome();
+            $node = $this->search($sample);
+
+            $predictions[] = $node instanceof Best
+                ? $node->outcome()
+                : null;
         }
 
         return $predictions;
@@ -156,7 +161,11 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            $probabilities[] = $this->search($sample)->meta('probabilities');
+            $node = $this->search($sample);
+
+            $probabilities[] = $node instanceof Best
+                ? $node->probabilities()
+                : null;
         }
 
         return $probabilities;
@@ -181,15 +190,17 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
 
         foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
             foreach ($dataset as $sample) {
-                $groups = $dataset->partition($index, $sample[$index]);
+                $value = $sample[$index];
+
+                $groups = $dataset->partition($index, $value);
 
                 $gini = $this->gini($groups);
 
                 if ($gini < $bestGini) {
-                    $bestGini = $gini;
+                    $bestValue = $value;
                     $bestIndex = $index;
-                    $bestValue = $sample[$index];
                     $bestGroups = $groups;
+                    $bestGini = $gini;
                 }
 
                 if ($gini < $this->tolerance) {
@@ -198,7 +209,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             }
         }
 
-        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestGini);
+        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
     }
 
     /**
@@ -206,9 +217,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * probability.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    protected function terminate(Labeled $dataset) : Decision
+    protected function terminate(Labeled $dataset) : BinaryNode
     {
         $probabilities = array_fill_keys($this->classes, 0.);
 
@@ -219,10 +230,10 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         }
 
         $prediction = Argmax::compute($probabilities);
+    
+        $gini = $this->gini([$dataset]);
 
-        return new Decision($prediction, [
-            'probabilities' => $probabilities,
-        ]);
+        return new Best($prediction, $probabilities, $gini, $n);
     }
 
     /**

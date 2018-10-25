@@ -2,61 +2,19 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-/**
- * Coordinate
- *
- * Decision nodes represent the outcome of a binary comparison search.
- *
- * @category    Machine Learning
- * @package     Rubix/ML
- * @author      Andrew DalPino
- */
-class Decision extends BinaryNode
+interface Decision extends Node
 {
     /**
-     * The predicted outcome.
-     *
-     * @var mixed
+     * Return the impurity score of the node.
+     * 
+     * @return float
      */
-    protected $outcome;
-    
-    /**
-     * The prediction meta data.
-     *
-     * @var array
-     */
-    protected $meta = [
-        //
-    ];
+    public function impurity() : float;
 
     /**
-     * @param  mixed  $outcome
-     * @param  array  $meta
-     * @return void
+     * Return the number of samples from the training set this node represents.
+     * 
+     * @return int
      */
-    public function __construct($outcome, array $meta = [])
-    {
-        $this->outcome = $outcome;
-        $this->meta = $meta;
-    }
-
-    /**
-     * Return the predicted outcome.
-     *
-     * @return mixed
-     */
-    public function outcome()
-    {
-        return $this->outcome;
-    }
-
-    /**
-     * Return a meta value.
-     *
-     * @return mixed
-     */
-    public function meta(string $property)
-    {
-        return $this->meta[$property] ?? null;
-    }
+    public function n() : int;
 }

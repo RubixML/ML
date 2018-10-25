@@ -12,7 +12,7 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood extends BinaryNode
+class Neighborhood extends BinaryNode implements Leaf
 {
     /**
      * The samples that make up the neighborhood.

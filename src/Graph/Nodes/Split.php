@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 /**
@@ -17,48 +18,70 @@ use InvalidArgumentException;
 class Split extends BinaryNode
 {
     /**
-     * The index of the feature column.
+     * The value that the node splits on.
+     *
+     * @var int|float|string
+     */
+    protected $value;
+
+    /**
+     * The feature column (index) of the split value.
      *
      * @var int
      */
     protected $index;
 
     /**
-     * The split value.
-     *
-     * @var mixed
-     */
-    protected $value;
-
-    /**
      * The left and right splits of the training data.
      *
      * @var array
      */
-    protected $groups = [
-        //
-    ];
+    protected $groups;
 
     /**
-     * @param  int  $index
      * @param  mixed  $value
+     * @param  int  $index
      * @param  array  $groups
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $index, $value, array $groups)
+    public function __construct($value, int $index, array $groups)
     {
+        if (!is_string($value) and !is_numeric($value)) {
+            throw new InvalidArgumentException('Split value must be a string'
+                . ' or numeric type, ' . gettype($value) . ' found.');
+        }
+
         if (count($groups) !== 2) {
             throw new InvalidArgumentException('The number of sample groups'
                 . ' must be exactly 2.');
         }
 
-        $this->index = $index;
+        foreach ($groups as $group) {
+            if (!$group instanceof Dataset) {
+                throw new InvalidArgumentException('Sample groups must be'
+                    . ' dataset objects, ' . gettype($group) . ' found.');
+            }
+        }
+
         $this->value = $value;
+        $this->index = $index;
         $this->groups = $groups;
     }
 
     /**
+     * Return the split value.
+     * 
+     * @return int|float|string
+     */
+    public function value()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Return the feature column (index) of the split value.
+     * 
      * @return int
      */
     public function index() : int
@@ -67,14 +90,8 @@ class Split extends BinaryNode
     }
 
     /**
-     * @return mixed
-     */
-    public function value()
-    {
-        return $this->value;
-    }
-
-    /**
+     * Return the left and right splits of the training data.
+     * 
      * @return array
      */
     public function groups() : array
@@ -83,7 +100,7 @@ class Split extends BinaryNode
     }
 
     /**
-     * Remove the left and right splits of training data.
+     * Remove the left and right splits of the training data.
      *
      * @return void
      */

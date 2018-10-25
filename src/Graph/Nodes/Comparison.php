@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use InvalidArgumentException;
+
 /**
  * Comparison
  *
@@ -12,15 +14,14 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Comparison extends Split
+class Comparison extends Split implements Decision
 {
     /**
-     * The score of the decision. i.e. the amount of gini impurity or
-     * variance that the split introduces.
+     * The amount of impurity that the split introduces.
      *
      * @var float
      */
-    protected $score;
+    protected $impurity;
 
     /**
      * The number of training samples this node is responsible for.
@@ -30,29 +31,39 @@ class Comparison extends Split
     protected $n;
 
     /**
-     * @param  int  $index
      * @param  mixed  $value
+     * @param  int  $index
      * @param  array  $groups
-     * @param  float  $score
+     * @param  float  $impurity
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $index, $value, array $groups, float $score)
+    public function __construct($value, int $index, array $groups, float $impurity)
     {
-        $this->score = $score;
-        $this->n = (int) array_sum(array_map('count', $groups));
+        parent::__construct($value, $index, $groups);
 
-        parent::__construct($index, $value, $groups);
+        if ($impurity < 0.) {
+            throw new InvalidArgumentException('Impurity cannot be less than'
+                . ' 0.');
+        }
+
+        $this->impurity = $impurity;
+        $this->n = (int) array_sum(array_map('count', $groups));
     }
 
     /**
+     * Return the impurity score of the node.
+     * 
      * @return float
      */
-    public function score() : float
+    public function impurity() : float
     {
-        return $this->score;
+        return $this->impurity;
     }
 
     /**
+     * Return the number of samples from the training set this node represents.
+     * 
      * @return int
      */
     public function n() : int
@@ -62,25 +73,25 @@ class Comparison extends Split
 
     /**
      * Return the decrease in impurity this decision node introduces. A negative
-     * score means that the decision node actually causes its children to become
+     * impurity means that the decision node actually causes its children to become
      * less pure.
      *
      * @return float
      */
     public function impurityDecrease() : float
     {
-        $decrease = $this->score;
+        $decrease = $this->impurity;
 
         if (isset($this->left)) {
-            if ($this->left instanceof Comparison) {
-                $decrease -= $this->left->score()
+            if ($this->left instanceof Decision) {
+                $decrease -= $this->left->impurity()
                     * ($this->left->n() / $this->n);
             }
         }
 
         if (isset($this->right)) {
-            if ($this->right instanceof Comparison) {
-                $decrease -= $this->right->score()
+            if ($this->right instanceof Decision) {
+                $decrease -= $this->right->impurity()
                     * ($this->right->n() / $this->n);
             }
         }

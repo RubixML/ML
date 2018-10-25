@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
@@ -88,9 +88,9 @@ abstract class CART implements Tree
      * prediction.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    abstract protected function terminate(Labeled $dataset) : Decision;
+    abstract protected function terminate(Labeled $dataset) : BinaryNode;
 
     /**
      * The complexity of the decision tree i.e. the number of splits.
@@ -184,12 +184,12 @@ abstract class CART implements Tree
     }
 
     /**
-     * Search the tree for a terminal node.
+     * Search the tree for a leaf node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
-    public function search(array $sample) : Decision
+    public function search(array $sample) : ?BinaryNode
     {
         $current = $this->root;
 
@@ -210,12 +210,12 @@ abstract class CART implements Tree
                 }
             }
 
-            if ($current instanceof Decision) {
+            if ($current instanceof Leaf) {
                 return $current;
             }
         }
 
-        return new Decision(null);
+        return null;
     }
 
     /**
@@ -262,7 +262,7 @@ abstract class CART implements Tree
      */
     public function traverse(BinaryNode $current) : array
     {
-        if ($current instanceof Decision) {
+        if ($current instanceof Leaf) {
             return [$current];
         }
 

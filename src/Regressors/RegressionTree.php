@@ -7,8 +7,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
+use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 use RuntimeException;
@@ -16,8 +17,8 @@ use RuntimeException;
 /**
  * Regression Tree
  *
- * A Decision Tree learning algorithm that performs greedy splitting by
- * minimizing the variance (*impurity*) among decision node splits.
+ * A Leaf Tree learning algorithm that performs greedy splitting by
+ * minimizing the variance (*impurity*) among Leaf node splits.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -123,7 +124,11 @@ class RegressionTree extends CART implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = $this->search($sample)->outcome();
+            $node = $this->search($sample);
+
+            $predictions[] = $node instanceof Average
+                ? $node->outcome()
+                : null;
         }
 
         return $predictions;
@@ -156,10 +161,10 @@ class RegressionTree extends CART implements Learner, Persistable
                 $variance = $this->variance($groups);
 
                 if ($variance < $bestVariance) {
-                    $bestVariance = $variance;
-                    $bestIndex = $index;
                     $bestValue = $value;
+                    $bestIndex = $index;
                     $bestGroups = $groups;
+                    $bestVariance = $variance;
                 }
 
                 if ($variance < $this->tolerance) {
@@ -168,18 +173,20 @@ class RegressionTree extends CART implements Learner, Persistable
             }
         }
 
-        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestVariance);
+        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestVariance);
     }
 
     /**
      * Terminate the branch with the most likely outcome.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    protected function terminate(Labeled $dataset) : Decision
+    protected function terminate(Labeled $dataset) : BinaryNode
     {
-        return new Decision(Stats::mean($dataset->labels()));
+        list($mean, $variance) = Stats::meanVar($dataset->labels());
+
+        return new Average($mean, $variance, $dataset->numRows());
     }
 
     /**

@@ -72,9 +72,9 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
     /**
      * The centers (means) of the input feature columns.
      * 
-     * @var array|null
+     * @var \Rubix\Tensor\Vector|null
      */
-    protected $means;
+    protected $mean;
 
     /**
      * @param  int  $dimensions
@@ -158,7 +158,7 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
         $this->noiseVar = $noiseVar;
         $this->lossiness = $noiseVar / ($totalVar ?: self::EPSILON);
 
-        $this->means = $xT->mean()->transpose();
+        $this->mean = $xT->mean()->transpose();
 
         $this->eigenvalues = $eigenvalues;
         $this->eigenvectors = $eigenvectors;
@@ -173,12 +173,12 @@ class PrincipalComponentAnalysis implements Transformer, Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->means) or is_null($this->eigenvectors)) {
+        if (is_null($this->mean) or is_null($this->eigenvectors)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         $samples = Matrix::build($samples)
-            ->subtract($this->means)
+            ->subtract($this->mean)
             ->matmul($this->eigenvectors)
             ->asArray();
     }

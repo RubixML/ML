@@ -54,10 +54,10 @@ class ExtraTreeRegressor extends RegressionTree
             $variance = $this->variance($groups);
 
             if ($variance < $bestVariance) {
-                $bestVariance = $variance;
-                $bestIndex = $index;
                 $bestValue = $value;
+                $bestIndex = $index;
                 $bestGroups = $groups;
+                $bestVariance = $variance;
             }
 
             if ($variance <= $this->tolerance) {
@@ -65,6 +65,6 @@ class ExtraTreeRegressor extends RegressionTree
             }
         }
 
-        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestVariance);
+        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestVariance);
     }
 }

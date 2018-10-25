@@ -120,8 +120,8 @@ class BinaryNode implements Node
      *
      * @return bool
      */
-    public function isLeaf() : bool
+    public function leaf() : bool
     {
-        return is_null($this->left) and is_null($this->right);
+        return !isset($this->left) and !isset($this->right);
     }
 }

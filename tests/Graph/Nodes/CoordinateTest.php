@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
@@ -12,13 +13,13 @@ class CoordinateTest extends TestCase
 {
     protected $node;
 
-    protected $params;
+    protected $groups;
 
     public function setUp()
     {
-        $this->params = [1, 1000, [[[0, 2], [0, 3]], []]];
+        $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
 
-        $this->node = new Coordinate(...$this->params);
+        $this->node = new Coordinate(5, 1, $this->groups);
     }
 
     public function test_build_node()

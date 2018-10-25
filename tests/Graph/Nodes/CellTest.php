@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Cell;
 use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +25,7 @@ class CellTest extends TestCase
     {
         $this->assertInstanceOf(Cell::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Leaf::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

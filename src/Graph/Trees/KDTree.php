@@ -165,7 +165,7 @@ class KDTree implements Tree
 
         $groups = $dataset->partition($index, $value);
 
-        return new Coordinate($index, $value, $groups);
+        return new Coordinate($value, $index, $groups);
     }
 
     /**

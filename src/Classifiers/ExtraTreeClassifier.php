@@ -52,10 +52,10 @@ class ExtraTreeClassifier extends ClassificationTree
             $gini = $this->gini($groups);
 
             if ($gini < $bestGini) {
-                $bestGini = $gini;
+                $bestValue = $value;
                 $bestIndex = $index;
-                $bestValue = $sample[$index];
                 $bestGroups = $groups;
+                $bestGini = $gini;
             }
 
             if ($gini <= $this->tolerance) {
@@ -63,6 +63,6 @@ class ExtraTreeClassifier extends ClassificationTree
             }
         }
 
-        return new Comparison($bestIndex, $bestValue, $bestGroups, $bestGini);
+        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
     }
 }

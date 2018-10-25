@@ -63,12 +63,10 @@ class ITree implements Tree
             throw new InvalidArgumentException("A tree cannot have a depth"
                 . " less than 1, $maxDepth given.");
         }
-
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException("At least one sample is required"
                 . " to create a leaf, $maxLeafSize given.");
         }
-
         $this->maxDepth = $maxDepth;
         $this->maxLeafSize = $maxLeafSize;
     }
@@ -124,6 +122,7 @@ class ITree implements Tree
         if ($depth >= $this->maxDepth) {
             $current->attachLeft($this->terminate($left, $depth));
             $current->attachRight($this->terminate($right, $depth));
+
             return;
         }
 
@@ -200,7 +199,7 @@ class ITree implements Tree
 
         $groups = $dataset->partition($index, $value);
 
-        return new Isolator($index, $value, $groups);
+        return new Isolator($value, $index, $groups);
     }
 
     /**
@@ -230,7 +229,7 @@ class ITree implements Tree
         if ($n <= 1) {
             return 1.;
         }
-
+        
         return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 

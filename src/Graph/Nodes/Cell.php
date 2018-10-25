@@ -12,10 +12,10 @@ namespace Rubix\ML\Graph\Nodes;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cell extends BinaryNode
+class Cell extends BinaryNode implements Leaf
 {
     /**
-     * The number of training points in this cell.
+     * The number of training points located in this cell.
      *
      * @var int
      */
@@ -39,7 +39,7 @@ class Cell extends BinaryNode
     }
 
     /**
-     * Return the inumber of training points in this cell.
+     * Return the number of training points located in this cell.
      *
      * @return int
      */

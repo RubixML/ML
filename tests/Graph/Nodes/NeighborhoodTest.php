@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ class NeighborhoodTest extends TestCase
     {
         $this->assertInstanceOf(Neighborhood::class, $this->node);
         $this->assertInstanceOf(BinaryNode::class, $this->node);
+        $this->assertInstanceOf(Leaf::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 

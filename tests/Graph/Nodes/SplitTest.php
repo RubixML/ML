@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Split;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
@@ -11,13 +12,13 @@ class SplitTest extends TestCase
 {
     protected $node;
 
-    protected $params;
+    protected $groups;
 
     public function setUp()
     {
-        $this->params = [1, 1000, [[[0, 2], [0, 3]], []]];
+        $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
 
-        $this->node = new Split(...$this->params);
+        $this->node = new Split(45.5, 3, $this->groups);
     }
 
     public function test_build_node()
@@ -29,16 +30,16 @@ class SplitTest extends TestCase
 
     public function test_get_index()
     {
-        $this->assertEquals($this->params[0], $this->node->index());
+        $this->assertEquals(3, $this->node->index());
     }
 
     public function test_get_value()
     {
-        $this->assertEquals($this->params[1], $this->node->value());
+        $this->assertEquals(45.5, $this->node->value());
     }
 
     public function test_get_groups()
     {
-        $this->assertEquals($this->params[2], $this->node->groups());
+        $this->assertEquals($this->groups, $this->node->groups());
     }
 }
