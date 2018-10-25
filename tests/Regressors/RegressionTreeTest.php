@@ -5,31 +5,29 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class RegressionTreeTest extends TestCase
 {
+    const TRAIN_SIZE = 250;
+    const TEST_SIZE = 5;
     const TOLERANCE = 3;
-    
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
+        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new RegressionTree(20, 2, null);
+        $this->estimator = new RegressionTree(30, 2, null);
     }
 
     public function test_build_regressor()
@@ -46,30 +44,28 @@ class RegressionTreeTest extends TestCase
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
-        $this->estimator->train($this->training);
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $predictions = $this->estimator->predict($this->testing);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

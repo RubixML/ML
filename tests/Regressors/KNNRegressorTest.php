@@ -6,31 +6,30 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class KNNRegressorTest extends TestCase
 {
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 5;
     const TOLERANCE = 3;
-    
+
+    protected $generator;
+
     protected $estimator;
-
-    protected $training;
-
-    protected $testing;
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
+        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new KNNRegressor(3, new Minkowski(3.0));
+        $this->estimator = new KNNRegressor(3, new Minkowski(3.));
     }
 
     public function test_build_regressor()
@@ -46,46 +45,40 @@ class KNNRegressorTest extends TestCase
     {
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
-
-    public function test_make_prediction()
+    
+    public function test_train_partial_predict_proba()
     {
-        $this->estimator->train($this->training);
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
+        $transformer = new ZScaleStandardizer();
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', 3);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', 3);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', 3);
-    }
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
 
-    public function test_partial_train()
-    {
-        $folds = $this->training->randomize()->fold(2);
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $folds = $dataset->fold(3);
 
         $this->estimator->train($folds[0]);
-
         $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
 
-        $predictions = $this->estimator->predict($this->testing);
-
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

@@ -6,14 +6,15 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
+use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -21,24 +22,24 @@ use RuntimeException;
 
 class MLPRegressorTest extends TestCase
 {
-    const TOLERANCE = 3.5;
+    const TRAIN_SIZE = 400;
+    const TEST_SIZE = 5;
+    const TOLERANCE = 3;
+
+    protected $generator;
 
     protected $estimator;
 
-    protected $training;
-
-    protected $testing;
-
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
-
-        $this->testing = $this->training->randomize()->head(3);
+        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
         $this->estimator = new MLPRegressor([
-            new Dense(20),
-            new Activation(new ElU()),
-        ], 1, new Adam(0.01), 1e-3, 100, 1e-3, new LeastSquares(), 0.1, new MeanSquaredError(), 3);
+            new Dense(10),
+            new Activation(new LeakyReLU()),
+            new Dense(10),
+            new Activation(new LeakyReLU()),
+        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new LeastSquares(), 0.1, new MeanSquaredError(), 3);
     }
 
     public function test_build_regressor()
@@ -55,30 +56,39 @@ class MLPRegressorTest extends TestCase
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_partial_predict_proba()
     {
-        $this->estimator->train($this->training);
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($this->testing);
+        $transformer = new ZScaleStandardizer();
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
+
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $folds = $dataset->fold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
+        }
     }
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick());
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }
