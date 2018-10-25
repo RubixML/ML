@@ -41,6 +41,7 @@ MIT
 			- [Blob](#blob)
 			- [Circle](#circle)
 			- [Half Moon](#half-moon)
+			- [Swiss Roll](#swiss-roll)
 	- [Feature Extraction](#feature-extraction)
 		- [Extractors](#extractors)
 	    	- [Word Count Vectorizer](#word-count-vectorizer)
@@ -931,7 +932,7 @@ A normally distributed n-dimensional blob of samples centered at a given mean ve
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | [ ] | array | The coordinates of the center of the blob i.e. a centroid vector. |
+| 1 | center | [0.0, 0.0] | array | The coordinates of the center of the blob i.e. a centroid vector. |
 | 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the SD for each feature column. |
 
 ##### Additional Methods:
@@ -941,7 +942,7 @@ This generator does not have any additional methods.
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
-$generator = new Blob([1.2, 5.0, 2.6, 0.8], 0.25);
+$generator = new Blob([-1.2, -5.0, 2.6, 0.8], 0.25);
 ```
 
 ### Circle
@@ -950,9 +951,10 @@ Create a circle made of sample data points in 2 dimensions.
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
-| 2 | scale | 1.0 | float | The scaling factor of the circle. |
-| 3 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
+| 1 | x | 0.0 | float | The x coordinate of the center of the circle. |
+| 2 | y | 0.0 | float | The y coordinate of the center of the circle. |
+| 3 | scale | 1.0 | float | The scaling factor of the circle. |
+| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
 
 ##### Additional Methods:
 This generator does not have any additional methods.
@@ -961,7 +963,7 @@ This generator does not have any additional methods.
 ```php
 use Rubix\ML\Datasets\Generators\Circle;
 
-$generator = new Circle([0.0, 0.0], 100, 0.1);
+$generator = new Circle(0.0, 0.0, 100, 0.1);
 ```
 
 ### Half Moon
@@ -970,10 +972,11 @@ Generate a dataset consisting of 2-d samples that form a half moon shape.
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | [ ] | array | The x and y coordinates of the center of the circle. |
-| 2 | scale | 1.0 | float | The scaling factor of the circle. |
-| 3 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
-| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
+| 1 | x | 0.0 | float | The x coordinate of the center of the half moon. |
+| 2 | y | 0.0 | float | The y coordinate of the center of the half moon. |
+| 3 | scale | 1.0 | float | The scaling factor of the half moon. |
+| 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
+| 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
 
 ##### Additional Methods:
 This generator does not have any additional methods.
@@ -982,7 +985,29 @@ This generator does not have any additional methods.
 ```php
 use Rubix\ML\Datasets\Generators\HalfMoon;
 
-$generator = new HalfMoon([0.0, 0.0], 100, 180.0, 0.2);
+$generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
+```
+
+### Swiss Roll
+Generate a 3-dimensional swiss roll dataset with continuous valued labels. The labels are the inputs to the swiss roll transformation and are suitable for non-linear regression problems.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | x | 0.0 | float | The x coordinate of the center of the swiss roll. |
+| 2 | y | 0.0 | float | The y coordinate of the center of the swiss roll. |
+| 3 | z | 0.0 | float | The z coordinate of the center of the swiss roll. |
+| 4 | scale | 1.0 | float | The scaling factor of the swiss roll. |
+| 5 | noise | 0.3 | float | The standard deviation of the gaussian noise. |
+
+##### Additional Methods:
+This generator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Datasets\Generators\SwissRoll;
+
+$generator = new SwissRoll(5.5, 1.5, -2.0, 10, 0.2);
 ```
 
 ---

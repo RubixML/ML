@@ -66,22 +66,24 @@ class Agglomerate implements Generator
             }
 
             if ($generator->dimensions() !== $d) {
-                throw new InvalidArgumentException('Generators must have the'
-                    . ' same dimensionality.');
+                throw new InvalidArgumentException("Generators must have the"
+                    . " same dimensionality, $d needed but found"
+                    . " {$generator->dimensions()}.");
             }
         }
 
         if (is_array($weights)) {
             if (count($weights) !== $k) {
-                throw new InvalidArgumentException('The number of weights must'
-                    . ' equal the number of supplied generators.');
+                throw new InvalidArgumentException("The number of weights must"
+                    . " equal the number of generators, $k needed but found"
+                    . count($weights) . ".");
             }
 
             $total = array_sum($weights);
 
             if ($total === 0.) {
                 throw new InvalidArgumentException('Total weight for the'
-                    . ' agglomerate cannot be 0.');
+                    . ' agglomerate cannot be equal to 0.');
             }
 
             foreach ($weights as &$weight) {

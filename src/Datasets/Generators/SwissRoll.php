@@ -5,38 +5,42 @@ namespace Rubix\ML\Datasets\Generators;
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
- * Circle
+ * Swiss Roll
  *
- * Create a circle made of sample data points in 2 dimensions.
+ * Generate a 3-dimensional swiss roll dataset with continuous valued labels.
+ * The labels are the inputs to the swiss roll transformation and are suitable
+ * for non-linear regression problems.
+ * 
+ * References:
+ * [1] S. Marsland. (2009). Machine Learning: An Algorithmic Perspective,
+ * Chapter 10.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Circle implements Generator
+class SwissRoll implements Generator
 {
-    const TWO_PI = 2. * M_PI;
-
     /**
-     * The center vector of the circle.
+     * The center vector of the swiss roll.
      *
      * @var \Rubix\Tensor\Vector
      */
     protected $center;
 
     /**
-     * The scaling factor of the circle.
+     * The scaling factor of the swiss roll.
      *
      * @var float
      */
     protected $scale;
 
     /**
-     * The amount of gaussian noise to add to the points as a percentage.
+     * The standard deviation of the gaussian noise.
      *
      * @var float
      */
@@ -45,24 +49,26 @@ class Circle implements Generator
     /**
      * @param  float  $x
      * @param  float  $y
+     * @param  float  $z
      * @param  float  $scale
      * @param  float  $noise
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0., float $y = 0., float $scale = 1.0, float $noise = 0.1)
+    public function __construct(float $x = 0., float $y = 0., float $z = 0., float $scale = 1.,
+                                float $noise = 0.3)
     {
         if ($scale < 0.) {
             throw new InvalidArgumentException("Scaling factor must be greater"
                 . " than 0, $scale given.");
         }
 
-        if ($noise < 0. or $noise > 1.) {
-            throw new InvalidArgumentException("Noise factor must be between 0"
-                . " and less 1, $noise given.");
+        if ($noise < 0.) {
+            throw new InvalidArgumentException("Noise factor cannot be less than"
+                . " 0, $noise given.");
         }
 
-        $this->center = Vector::quick([$x, $y]);
+        $this->center = Vector::quick([$x, $y, $z]);
         $this->scale = $scale;
         $this->noise = $noise;
     }
@@ -74,7 +80,7 @@ class Circle implements Generator
      */
     public function dimensions() : int
     {
-        return 2;
+        return 3;
     }
 
     /**
@@ -84,19 +90,25 @@ class Circle implements Generator
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n = 100) : Dataset
-    { 
-        $r = Vector::rand($n)->multiply(self::TWO_PI);
+    {
+        $t = Vector::rand($n)->multiply(2)->add(1)
+            ->multiply(1.5 * M_PI);
 
-        $noise = Matrix::gaussian($n, 2)
+        $x = $t->multiply($t->cos());
+        $y = Vector::rand($n)->multiply(21);
+        $z = $t->multiply($t->sin());
+
+        $noise = Matrix::gaussian($n, 3)
             ->multiply($this->noise);
-
-        $samples = Matrix::fromVectors([$r->cos(), $r->sin()])
+            
+        $samples = Matrix::fromVectors([$x, $y, $z])
             ->transpose()
             ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
             ->asArray();
 
-        return Unlabeled::quick($samples);
+        return Labeled::quick($samples, $t->asArray());
     }
+
 }
