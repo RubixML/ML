@@ -6,25 +6,32 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class KMeansTest extends TestCase
 {
+    const TEST_SIZE = 300;
     const TOLERANCE = 3;
+
+    protected $generator;
 
     protected $estimator;
 
-    protected $dataset;
-
     public function setUp()
     {
-        $this->dataset = Labeled::load(dirname(__DIR__) . '/iris.dataset');
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ]);
 
-        $this->estimator = new KMeans(2, new Euclidean(), 300);
+        $this->estimator = new KMeans(3, new Euclidean(), 1000);
     }
 
     public function test_build_clusterer()
@@ -41,22 +48,29 @@ class KMeansTest extends TestCase
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
-        $this->estimator->train($this->dataset);
+        $dataset = $this->generator->generate(self::TEST_SIZE);
 
-        $results = $this->estimator->predict($this->dataset);
+        $folds = $dataset->stratifiedFold(3);
 
-        $clusters = array_count_values($results);
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
 
-        $this->assertEquals(50, $clusters[0], '', self::TOLERANCE);
-        $this->assertEquals(50, $clusters[1], '', self::TOLERANCE);
+        $predictions = $this->estimator->predict($dataset);
+
+        $clusters = array_count_values($predictions);
+
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[0], '', self::TOLERANCE);
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[1], '', self::TOLERANCE);
+        $this->assertEquals(self::TEST_SIZE / 3, $clusters[2], '', self::TOLERANCE);
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->dataset);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

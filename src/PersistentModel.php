@@ -45,7 +45,9 @@ class PersistentModel implements MetaEstimator, Learner
      */
     public static function load(Persister $persister) : self
     {
-        return new self($persister->load(), $persister);
+        $model = $persister->load();
+        
+        return new self($model, $persister);
     }
 
     /**

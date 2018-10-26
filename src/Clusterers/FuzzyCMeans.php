@@ -180,15 +180,47 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
             throw new InvalidArgumentException('This estimator only works with'
                 . ' continuous features.');
         }
+        
+        $n = $dataset->numRows();
 
-        if ($dataset->numRows() < $this->c) {
+        if ($n < $this->c) {
             throw new RuntimeException('The number of samples cannot be less'
-                . ' than the parameter C.');
+                . ' than the number of target clusters.');
         }
 
-        $this->centroids = $dataset->randomize()->tail($this->c)->samples();
+        $weights = array_fill(0, $n, 1. / $n);
 
-        $this->steps = $memberships = [];
+        $this->centroids = $this->steps = $memberships = [];
+
+        for ($i = 0; $i < $this->c; $i++) {
+            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
+
+            $this->centroids[] = $subset->row(0);
+
+            if ($i === $this->c) {
+                break 1;
+            }
+
+            foreach ($dataset as $j => $sample) {
+                $closest = INF;
+
+                foreach ($this->centroids as $centroid) {
+                    $distance = $this->kernel->compute($sample, $centroid);
+
+                    if ($distance < $closest) {
+                        $closest = $distance;
+                    }
+                }
+
+                $weights[$j] = $closest ** 2;
+            }
+
+            $total = array_sum($weights) ?: self::EPSILON;
+
+            foreach ($weights as &$weight) {
+                $weight /= $total;
+            }
+        }
 
         $rotated = $dataset->rotate();
         $previous = INF;

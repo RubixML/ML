@@ -25,6 +25,7 @@
     - Single layer neural net estimators now use snapshotting
     - Removed Image Patch Descriptor
     - Added Learner interface for trainable estimators
+    - Added smart cluster initialization to K Means and Fuzzy C Means
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

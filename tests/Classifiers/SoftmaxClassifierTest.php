@@ -65,7 +65,7 @@ class SoftmaxClassifierTest extends TestCase
 
         $testing = $dataset->randomize()->take(self::TEST_SIZE);
 
-        $folds = $dataset->fold(3);
+        $folds = $dataset->stratifiedFold(3);
 
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
