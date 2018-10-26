@@ -41,6 +41,13 @@ class Multiclass implements Output
     protected $alpha;
 
     /**
+     * The function that computes the loss of bad activations.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
      * The weight initializer.
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
@@ -92,10 +99,11 @@ class Multiclass implements Output
     /**
      * @param  array  $classes
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $classes, float $alpha = 1e-4)
+    public function __construct(array $classes, float $alpha = 1e-4, ?CostFunction $costFunction = null)
     {
         $classes = array_values(array_unique($classes));
 
@@ -109,8 +117,13 @@ class Multiclass implements Output
                 . ' must be be non-negative.');
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new CrossEntropy();
+        }
+
         $this->classes = $classes;
         $this->alpha = $alpha;
+        $this->costFunction = $costFunction;
         $this->initializer = new Xavier1();
         $this->activationFunction = new Softmax();
     }
@@ -191,12 +204,11 @@ class Multiclass implements Output
      * Calculate the gradients for each output neuron and update.
      *
      * @param  array  $labels
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return array
      */
-    public function back(array $labels, CostFunction $costFunction, Optimizer $optimizer) : array
+    public function back(array $labels, Optimizer $optimizer) : array
     {
         if (is_null($this->weights) or is_null($this->biases)) {
             throw new RuntimeException('Layer has not been initialized');
@@ -217,13 +229,13 @@ class Multiclass implements Output
 
         $expected = Matrix::quick($expected);
 
-        $delta = $costFunction
+        $delta = $this->costFunction
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
-        $dL = $costFunction
+        $dL = $this->costFunction
             ->differentiate($expected, $this->computed, $delta)
             ->add($penalties)
             ->divide($this->computed->n());
@@ -240,13 +252,13 @@ class Multiclass implements Output
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        $cost = $delta->sum()->mean();
+        $loss = $delta->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
 
         return [function () use ($w, $dA) {
             return $w->transpose()->matmul($dA);
-        }, $cost];
+        }, $loss];
     }
 
     /**

@@ -192,8 +192,7 @@ class Adaline implements Online, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             [],
-            new Continuous($this->alpha),
-            $this->costFn,
+            new Continuous($this->alpha, $this->costFn),
             $this->optimizer
         );
 

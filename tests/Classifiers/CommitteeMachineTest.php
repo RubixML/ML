@@ -21,7 +21,7 @@ use RuntimeException;
 
 class CommitteeMachineTest extends TestCase
 {
-    const TRAIN_SIZE = 150;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
     const MIN_PROB = 0.33;
 

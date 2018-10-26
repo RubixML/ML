@@ -36,13 +36,6 @@ class FeedForward implements Network
     ];
 
     /**
-     * The function that computes the loss of bad activations.
-     *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
-     */
-    protected $costFunction;
-
-    /**
      * The gradient descent optimizer used to train the network.
      *
      * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
@@ -62,12 +55,10 @@ class FeedForward implements Network
      * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
      * @param  array  $hidden
      * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @return void
      */
-    public function __construct(Input $input, array $hidden, Output $output,
-                                CostFunction $costFunction, Optimizer $optimizer)
+    public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
         $this->layers[] = $input;
 
@@ -84,7 +75,6 @@ class FeedForward implements Network
 
         $this->initialize();
 
-        $this->costFunction = $costFunction;
         $this->optimizer = $optimizer;
         $this->backPass = array_reverse($this->hidden());
     }
@@ -220,11 +210,11 @@ class FeedForward implements Network
      */
     public function backpropagate(array $labels) : float
     {
-        list($prevGradient, $loss) = $this->output()
-            ->back($labels, $this->costFunction, $this->optimizer);
+        list($gradient, $loss) = $this->output()
+            ->back($labels, $this->optimizer);
 
         foreach ($this->backPass as $layer) {
-            $prevGradient = $layer->back($prevGradient, $this->optimizer);
+            $gradient = $layer->back($gradient, $this->optimizer);
         }
 
         return $loss;

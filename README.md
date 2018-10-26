@@ -3628,12 +3628,14 @@ This Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of dis
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Binary;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$layer = new Binary(['yes', 'no'], 1e-3);
+$layer = new Binary(['yes', 'no'], 1e-3, new CrossEntropy());
 ```
 
 ### Continuous
@@ -3643,12 +3645,14 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 2 | cost fn | Least Squares | object | The function that penalizes the activities of bad predictions. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Continuous;
+use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$layer = new Continuous(1e-5);
+$layer = new Continuous(1e-5, new HuberLoss(3.0));
 ```
 
 ### Multiclass
@@ -3659,12 +3663,14 @@ The Multiclass output layer gives a joint probability estimate of a multiclass c
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
+| 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
 
 ##### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 
-$layer = new Multiclass(['yes', 'no', 'maybe'], 1e-4);
+$layer = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new RelativeEntropy());
 ```
 
 ---

@@ -86,7 +86,7 @@ class IsolationForest implements Learner, Ensemble, Probabilistic, Persistable
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Sample ratio must be between"
+            throw new InvalidArgumentException("Subsample ratio must be between"
                 . " 0.01 and 1, $ratio given.");
         }
 

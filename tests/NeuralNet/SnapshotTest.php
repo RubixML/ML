@@ -24,7 +24,7 @@ class SnapshotTest extends TestCase
         $this->network = new FeedForward(new Placeholder(1), [
             new Dense(5),
             new Activation(new ELU()),
-        ], new Binary(['yes', 'no']), new LeastSquares(), new Stochastic());
+        ], new Binary(['yes', 'no'], 1e-4, new LeastSquares()), new Stochastic());
 
         $this->snapshot = Snapshot::take($this->network);
     }

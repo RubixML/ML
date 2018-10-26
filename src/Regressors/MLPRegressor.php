@@ -268,8 +268,7 @@ class MLPRegressor implements Online, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             $this->hidden,
-            new Continuous($this->alpha),
-            $this->costFn,
+            new Continuous($this->alpha, $this->costFn),
             $this->optimizer
         );
 

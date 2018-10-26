@@ -198,8 +198,7 @@ class LogisticRegression implements Online, Probabilistic, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             [],
-            new Binary($this->classes, $this->alpha),
-            $this->costFn,
+            new Binary($this->classes, $this->alpha, $this->costFn),
             $this->optimizer
         );
 

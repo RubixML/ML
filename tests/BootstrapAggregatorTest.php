@@ -3,31 +3,31 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Ensemble;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class BootstrapAggregatorTest extends TestCase
 {
-    const TOLERANCE = 3.5;
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 5;
+    const TOLERANCE = 3;
+
+    protected $generator;
 
     protected $estimator;
 
-    protected $training;
-
-    protected $testing;
-
     public function setUp()
     {
-        $this->training = Labeled::load(__DIR__ . '/mpg.dataset');
+        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->testing = $this->training->randomize()->head(3);
-
-        $this->estimator = new BootstrapAggregator(new RegressionTree(5, 1, 2), 30, 0.5);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(5), 50, 0.2);
     }
 
     public function test_build_meta_estimator()
@@ -36,23 +36,30 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_make_prediction()
+    public function test_estimator_type()
     {
-        $this->estimator->train($this->training);
+        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+    }
 
-        $predictions = $this->estimator->predict($this->testing);
 
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
+    public function test_train_predict()
+    {
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
+        }
     }
 
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict($this->testing);
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

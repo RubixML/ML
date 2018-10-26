@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Output;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
@@ -53,10 +53,9 @@ class FeedForwardTest extends TestCase
             new Activation(new ReLU()),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe']);
+        $this->output = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new LeastSquares());
 
-        $this->network = new FeedForward($this->input, $this->hidden, $this->output,
-            new LeastSquares(), new Adam(0.001));
+        $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
 
     public function test_build_network()

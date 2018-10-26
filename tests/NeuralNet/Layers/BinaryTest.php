@@ -19,8 +19,6 @@ class BinaryTest extends TestCase
 
     protected $labels;
 
-    protected $costFn;
-
     protected $optimizer;
 
     protected $layer;
@@ -37,11 +35,9 @@ class BinaryTest extends TestCase
 
         $this->labels = ['hot', 'cold', 'hot'];
 
-        $this->costFn = new CrossEntropy();
-
         $this->optimizer = new Stochastic();
 
-        $this->layer = new Binary(['hot', 'cold']);
+        $this->layer = new Binary(['hot', 'cold'], 1e-4, new CrossEntropy());
 
         $this->layer->init($this->fanIn);
     }
@@ -66,7 +62,7 @@ class BinaryTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals([1, 3], $forward->shape());
 
-        list($back, $loss) = $this->layer->back($this->labels, $this->costFn, $this->optimizer);
+        list($back, $loss) = $this->layer->back($this->labels, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
         $this->assertInternalType('float', $loss);

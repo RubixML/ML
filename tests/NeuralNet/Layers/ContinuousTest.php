@@ -19,8 +19,6 @@ class ContinuousTest extends TestCase
 
     protected $labels;
 
-    protected $costFn;
-
     protected $optimizer;
 
     protected $layer;
@@ -37,11 +35,9 @@ class ContinuousTest extends TestCase
 
         $this->labels = [90, 260, 180];
 
-        $this->costFn = new LeastSquares();
-
         $this->optimizer = new Stochastic();
 
-        $this->layer = new Continuous();
+        $this->layer = new Continuous(1e-4, new LeastSquares());
 
         $this->layer->init($this->fanIn);
     }
@@ -66,7 +62,7 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals([1, 3], $forward->shape());
 
-        list($back, $loss) = $this->layer->back($this->labels, $this->costFn, $this->optimizer);
+        list($back, $loss) = $this->layer->back($this->labels, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
         $this->assertInternalType('float', $loss);

@@ -199,8 +199,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             [],
-            new Multiclass($this->classes, $this->alpha),
-            $this->costFn,
+            new Multiclass($this->classes, $this->alpha, $this->costFn),
             $this->optimizer
         );
 

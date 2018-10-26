@@ -277,8 +277,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Persistable
         $this->network = new FeedForward(
             new Placeholder($dataset->numColumns()),
             $this->hidden,
-            new Multiclass($this->classes, $this->alpha),
-            $this->costFn,
+            new Multiclass($this->classes, $this->alpha, $this->costFn),
             $this->optimizer
         );
 

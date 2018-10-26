@@ -31,6 +31,13 @@ class Continuous implements Output
     protected $alpha;
 
     /**
+     * The function that computes the loss of bad activations.
+     *
+     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     */
+    protected $costFunction;
+
+    /**
      * The weight initializer.
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
@@ -67,17 +74,23 @@ class Continuous implements Output
 
     /**
      * @param  float  $alpha
+     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $alpha = 1e-4)
+    public function __construct(float $alpha = 1e-4, ?CostFunction $costFunction = null)
     {
         if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization parameter'
                 . ' must be be non-negative.');
         }
 
+        if (is_null($costFunction)) {
+            $costFunction = new LeastSquares();
+        }
+
         $this->alpha = $alpha;
+        $this->costFunction = $costFunction;
         $this->initializer = new Xavier2();
     }
 
@@ -153,12 +166,11 @@ class Continuous implements Output
      * Calculate the gradients for each output neuron and update.
      *
      * @param  array  $labels
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
      * @return array
      */
-    public function back(array $labels, CostFunction $costFunction, Optimizer $optimizer) : array
+    public function back(array $labels, Optimizer $optimizer) : array
     {
         if (is_null($this->weights) or is_null($this->biases)) {
             throw new RuntimeException('Layer has not been initialized');
@@ -171,13 +183,13 @@ class Continuous implements Output
 
         $expected = Matrix::quick([$labels]);
 
-        $delta = $costFunction
+        $delta = $this->costFunction
             ->compute($expected, $this->z);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
-        $dL = $costFunction
+        $dL = $this->costFunction
             ->differentiate($expected, $this->z, $delta)
             ->add($penalties)
             ->divide($this->z->n());
@@ -190,13 +202,13 @@ class Continuous implements Output
         $this->weights->update($optimizer->step($this->weights, $dW));
         $this->biases->update($optimizer->step($this->biases, $dB));
 
-        $cost = $delta->sum()->mean();
+        $loss = $delta->sum()->mean();
 
         unset($this->input, $this->z);
 
         return [function () use ($w, $dL) {
             return $w->transpose()->matmul($dL);
-        }, $cost];
+        }, $loss];
     }
 
     /**

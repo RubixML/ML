@@ -34,7 +34,7 @@ class PipelineTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new Pipeline(new NaiveBayes(1.), [
+        $this->estimator = new Pipeline(new NaiveBayes(1.0), [
             new IntervalDiscretizer(6),
         ]);
     }
