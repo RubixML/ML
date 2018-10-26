@@ -22,6 +22,8 @@ use RuntimeException;
  *
  * References:
  * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
+ * [2] A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective
+ * seeding initialization.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

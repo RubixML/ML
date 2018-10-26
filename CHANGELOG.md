@@ -26,6 +26,7 @@
     - Removed Image Patch Descriptor
     - Added Learner interface for trainable estimators
     - Added smart cluster initialization to K Means and Fuzzy C Means
+    - Circle and Half Moon generators now generate Labeled datasets
 
 - 0.0.5-alpha
     - Added Gaussian Mixture clusterer

@@ -5,7 +5,7 @@ namespace Rubix\ML\Datasets\Generators;
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -50,7 +50,7 @@ class Circle implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0., float $y = 0., float $scale = 1.0, float $noise = 0.1)
+    public function __construct(float $x = 0.0, float $y = 0.0, float $scale = 1.0, float $noise = 0.1)
     {
         if ($scale < 0.) {
             throw new InvalidArgumentException("Scaling factor must be greater"
@@ -87,16 +87,21 @@ class Circle implements Generator
     { 
         $r = Vector::rand($n)->multiply(self::TWO_PI);
 
+        $x = $r->cos();
+        $y = $r->sin();
+
         $noise = Matrix::gaussian($n, 2)
             ->multiply($this->noise);
 
-        $samples = Matrix::fromVectors([$r->cos(), $r->sin()])
+        $samples = Matrix::stack([$x, $y])
             ->transpose()
             ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
             ->asArray();
 
-        return Unlabeled::quick($samples);
+        $labels = $r->degrees()->asArray();
+
+        return Labeled::quick($samples, $labels);
     }
 }

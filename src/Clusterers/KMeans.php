@@ -21,6 +21,7 @@ use RuntimeException;
  * References:
  * [1] T. Kanungo et al. (2002). An Efficient K-Means Clustering Algorithm:
  * Analysis and Implementation.
+ * [2] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -63,7 +63,7 @@ class SwissRoll implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0., float $y = 0., float $z = 0., float $scale = 1.,
+    public function __construct(float $x = 0.0, float $y = 0.0, float $z = 0.0, float $scale = 1.,
                                 float $depth = 21., float $noise = 0.3)
     {
         if ($scale < 0.) {
@@ -115,14 +115,16 @@ class SwissRoll implements Generator
         $noise = Matrix::gaussian($n, 3)
             ->multiply($this->noise);
             
-        $samples = Matrix::fromVectors([$x, $y, $z])
+        $samples = Matrix::stack([$x, $y, $z])
             ->transpose()
             ->add($noise)
             ->multiply($this->scale)
             ->add($this->center)
             ->asArray();
 
-        return Labeled::quick($samples, $t->asArray());
+        $labels = $t->asArray();
+
+        return Labeled::quick($samples, $labels);
     }
 
 }

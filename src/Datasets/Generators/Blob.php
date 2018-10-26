@@ -42,7 +42,7 @@ class Blob implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $center = [0., 0.], $stddev = 1.)
+    public function __construct(array $center = [0.0, 0.0], $stddev = 1.)
     {
         $d = count($center);
 
