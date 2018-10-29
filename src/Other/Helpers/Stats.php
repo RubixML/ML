@@ -128,6 +128,37 @@ class Stats
     }
 
     /**
+     * Calculate the pth percentile of a given set of values.
+     * 
+     * @param  array  $values
+     * @param  float  $p
+     * @throws \InvalidArgumentException
+     * @return float
+     */
+    public static function percentile(array $values, float $p) : float
+    {
+        if (empty($values)) {
+            throw new InvalidArgumentException('Percentile is not defined for'
+                . ' an empty set.');
+        }
+
+        $n = count($values);
+
+        sort($values);
+
+        $x = ($p / 100) * ($n - 1) + 1;
+
+        $xHat = (int) $x;
+
+        $remainder = $x - $xHat;
+
+        $a = $values[$xHat - 1];
+        $b = $values[$xHat];
+
+        return $a + $remainder * ($b - $a);
+    }
+
+    /**
      * Compute the interquartile range of a set of values.
      *
      * @param  array  $values

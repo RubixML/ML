@@ -1380,17 +1380,16 @@ $estimator = new IsolationTree(100, 5, 0.1);
 ```
 
 ### Local Outlier Factor
-The Local Outlier Factor (LOF) algorithm considers the local region of a sample, set by the k parameter, when determining an outlier. A density estimate for each neighbor is computed by measuring the radius of the cluster centroid that the point and its neighbors form. The LOF is the ratio of the sample over the median radius of the local region.
+Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
-##### Unsupervised | Learner | Online | Probabilistic | Persistable
+##### Unsupervised | Learner | Online | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | k | 10 | int | The k nearest neighbors that form a local region. |
-| 2 | neighbors | 20 | int | The number of neighbors considered when computing the radius of a centroid. |
-| 3 | threshold | 0.5 | float | The minimum density score. i.e. the probability that a sample is an outlier. |
-| 4 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
+| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1400,7 +1399,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new LocalOutlierFactor(10, 20, 0.2, new Minkowski(3.5));
+$estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 ```
 
 ### Robust Z Score

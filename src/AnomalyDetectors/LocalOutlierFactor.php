@@ -4,7 +4,6 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
@@ -16,11 +15,9 @@ use RuntimeException;
 /**
  * Local Outlier Factor
  *
- * The Local Outlier Factor (LOF) algorithm only considers the local region of
- * a sample, set by the k parameter. A density estimate for each neighbor is
- * computed by measuring the radius of the cluster centroid that the point and
- * its neighbors form. The LOF is the ratio of the sample over the median radius
- * of the local region.
+ * Local Outlier Factor (LOF) measures the local deviation of density of a given sample
+ * with respect to its k nearest neighbors. As such, LOF only considers the local region
+ * of a sample thus enabling it to detect anomalies within individual clusters of data.
  *
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
@@ -30,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Online, Probabilistic, Persistable
+class LocalOutlierFactor implements Online, Persistable
 {
     /**
      * The number of nearest neighbors to consider a local region.
@@ -40,20 +37,12 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
     protected $k;
 
     /**
-     * The number of nearest neighbors sampled to estimate the density of a
-     * centroid.
-     *
-     * @var int
-     */
-    protected $neighbors;
-
-    /**
-     * The threshold outlier facter. Factor is a value between 0 and 1 where
-     * greater than 0.5 signifies outlier territory.
-     *
+     * The percentage of outliers that are assumed to be present in the
+     * training set.
+     * 
      * @var float
      */
-    protected $threshold;
+    protected $contamination;
 
     /**
      * The distance kernel to use when computing the distances between two
@@ -64,33 +53,57 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
     protected $kernel;
 
     /**
-     * The memoized coordinate vectors of the training data.
-     *
-     * @var array
+     * The training samples.
+     * 
+     * @var array[]
      */
     protected $samples = [
         //
     ];
 
     /**
+     * The precomputed k distances between each training sample and its kth
+     * nearest neighbor.
+     *
+     * @var float[]
+     */
+    protected $kdistances = [
+        //
+    ];
+ 
+    /**
+     * The precomputed local reachability densities of the training set.
+     * 
+     * @var float[]
+     */
+    protected $lrds = [
+        //
+    ];
+
+    /**
+     * The local outlier factor offset used by the decision function.
+     * 
+     * @var float|null
+     */
+    protected $offset;
+
+    /**
      * @param  int  $k
-     * @param  int  $neighbors
-     * @param  float  $threshold
+     * @param  float  $contamination
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 10, int $neighbors = 20, float $threshold = 0.5,
-                                Distance $kernel = null)
+    public function __construct(int $k = 20, float $contamination = 0.1, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . ' to form a local region.');
+            throw new InvalidArgumentException("At least 1 neighbor is required"
+                . " to form a local region, $k given.");
         }
 
-        if ($neighbors < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . ' to estimate the density of a centroid.');
+        if ($contamination < 0.) {
+            throw new InvalidArgumentException("Contamination cannot be less"
+                . " than 0, $contamination given.");
         }
 
         if (is_null($kernel)) {
@@ -98,8 +111,7 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
         }
 
         $this->k = $k;
-        $this->neighbors = $neighbors;
-        $this->threshold = $threshold;
+        $this->contamination = $contamination;
         $this->kernel = $kernel;
     }
 
@@ -120,14 +132,13 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $this->samples = [];
+        $this->samples = $this->kdistances = $this->lrds = [];
 
         $this->partial($dataset);
     }
 
     /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
+     * Perform a partial train on the learner.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -141,91 +152,113 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
         }
 
         $this->samples = array_merge($this->samples, $dataset->samples());
+
+        $distances = [];
+
+        foreach ($this->samples as $sample) {
+            $distances[] = $d = $this->localRegion($sample);
+
+            $this->kdistances[] = end($d);
+        }
+
+        foreach ($distances as $row) {
+            $this->lrds[] = $this->localReachabilityDensity($row);
+        }
+
+        $lofs = [];
+
+        foreach ($this->samples as $sample) {
+            $lofs[] = $this->localOutlierFactor($sample);
+        }
+
+        $shift = Stats::percentile($lofs, 100 * $this->contamination);
+        
+        $this->offset = 1.5 + $shift;
     }
 
     /**
+     * Make predictions from a dataset.
+     * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (is_null($this->offset)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $proba) {
-            $predictions[] = $proba > $this->threshold ? 1 : 0;
+        foreach ($dataset as $sample) {
+            $lof = $this->localOutlierFactor($sample);
+
+            $predictions[] = $lof > $this->offset ? 1 : 0;
         }
 
         return $predictions;
     }
 
     /**
-     * Return a probability estimate based on the density of the sample over the
-     * median density of the local region.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
+     * Calculate the local outlier factor of a given sample.
+     * 
+     * @param  array  $sample
      * @throws \RuntimeException
-     * @return array
+     * @return float
      */
-    public function proba(Dataset $dataset) : array
+    protected function localOutlierFactor(array $sample) : float
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
+        if (empty($this->lrds)) {
+            throw new RuntimeException('Local reachability distances have'
+                . ' not been computed, must train estimator first.');
         }
 
-        if (empty($this->samples)) {
-            throw new RuntimeException('Estimator has not been trained.');
+        $distances = $this->localRegion($sample);
+
+        $lrd = $this->localReachabilityDensity($distances);
+
+        $lrds = array_intersect_key($this->lrds, $distances);
+
+        $ratios = [];
+
+        foreach ($lrds as $lHat) {
+            $ratios[] = $lHat / $lrd;
         }
 
-        $probablities = [];
+        return Stats::mean($ratios);
+    }
 
-        foreach ($dataset as $sample) {
-            $radius = $this->calculateRadius($sample);
-
-            $neighborhood = $this->findLocalRegion($sample);
-
-            $radii = [];
-
-            foreach ($neighborhood as $neighbor) {
-                $radii[] = $this->calculateRadius($neighbor);
-            }
-
-            $median = Stats::median($radii);
-
-            $probablities[] = 2. ** -($median / $radius);
+    /**
+     * Calculate the local reachability density of a sample given its
+     * distances to its k nearest neighbors.
+     *
+     * @param  array  $distances
+     * @throws \RuntimeException
+     * @return float
+     */
+    protected function localReachabilityDensity(array $distances) : float
+    {
+        if (empty($this->kdistances)) {
+            throw new RuntimeException('K distances have not been computed,'
+                . ' must train estimator first.');
         }
 
-        return $probablities;
+        $kdistances = array_intersect_key($this->kdistances, $distances);
+
+        $mean = Stats::mean(array_map('max', $distances, $kdistances));
+
+        return 1. / ($mean ?: self::EPSILON);
     }
 
     /**
      * Find the K nearest neighbors to the given sample vector.
      *
      * @param  array  $sample
+     * @throws \RuntimeException
      * @return array
      */
-    protected function findLocalRegion(array $sample) : array
-    {
-        $distances = [];
-
-        foreach ($this->samples as $i => $neighbor) {
-            $distances[$i] = $this->kernel->compute($sample, $neighbor);
-        }
-
-        asort($distances);
-
-        return array_intersect_key($this->samples,
-            array_slice($distances, 0, $this->k, true));
-    }
-
-    /**
-     * Calculate the radius of a cluster centroid.
-     *
-     * @param  array  $sample
-     * @return float
-     */
-    protected function calculateRadius(array $sample) : float
+    protected function localRegion(array $sample) : array
     {
         $distances = [];
 
@@ -233,10 +266,8 @@ class LocalOutlierFactor implements Online, Probabilistic, Persistable
             $distances[] = $this->kernel->compute($sample, $neighbor);
         }
 
-        sort($distances);
+        asort($distances);
 
-        $radius = $distances[$this->neighbors - 1] ?? end($distances);
-
-        return $radius ?: 0.;
+        return array_slice($distances, 0, $this->k, true);
     }
 }
