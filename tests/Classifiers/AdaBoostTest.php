@@ -30,9 +30,9 @@ class AdaBoostTest extends TestCase
             'red' => new Blob([255, 0, 0], 3.),
             'green' => new Blob([0, 128, 0], 1.),
             'blue' => new Blob([0, 0, 255], 2.),
-        ]);
+        ], [3, 4, 3]);
 
-        $this->estimator = new AdaBoost(new ClassificationTree(3), 150, 1., 0.8, 1e-4);
+        $this->estimator = new AdaBoost(new ClassificationTree(2), 150, 1., 0.8, 1e-4);
     }
 
     public function test_build_classifier()

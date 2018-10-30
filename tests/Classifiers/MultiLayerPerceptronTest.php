@@ -38,7 +38,7 @@ class MultiLayerPerceptronTest extends TestCase
             'inner' => new Circle(0., 0., 1., 0.01),
             'middle' => new Circle(0., 0., 5., 0.05),
             'outer' => new Circle(0., 0., 10., 0.1),
-        ]);
+        ], [3, 3, 4]);
 
         $this->estimator = new MultiLayerPerceptron([
             new Dense(10),

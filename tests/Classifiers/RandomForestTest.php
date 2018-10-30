@@ -32,7 +32,7 @@ class RandomForestTest extends TestCase
             'red' => new Blob([255, 0, 0], 3.),
             'green' => new Blob([0, 128, 0], 1.),
             'blue' => new Blob([0, 0, 255], 2.),
-        ]);
+        ], [3, 4, 3]);
 
         $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
     }

@@ -10,8 +10,8 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
@@ -31,9 +31,9 @@ class LogisticRegressionTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'male' => new Blob([69.2, 195.7, 40.], 3.),
-            'female' => new Blob([63.7, 168.5, 38.1], 3.),
-        ]);
+            'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
+            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
+        ], [0.45, 0.55]);
 
         $this->estimator = new LogisticRegression(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
     }
