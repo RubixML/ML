@@ -55,7 +55,6 @@ MIT
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
-			- [Isolation Tree](#isolation-tree)
 			- [Local Outlier Factor](#local-outlier-factor)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
@@ -1337,16 +1336,16 @@ array(2) {
 [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection) is the process of identifying samples that do not conform to an expected pattern. They can be used in fraud prevention, intrusion detection, the sciences, and many other areas. The output of a Detector is a binary encoding (either *0* for a normal sample or *1* for a detected anomaly).
 
 ### Isolation Forest
-An [Ensemble](#ensemble) Anomaly Detector comprised of [Isolation Trees](#isolation-tree) each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
+An [Ensemble](#ensemble) Anomaly Detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Unsupervised | Learner | Probabilistic | Persistable
+##### Unsupervised | Learner | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | Isolation Tree | The base estimator instance. |
-| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
+| 1 | estimators | 300 | int | The number of estimators to train in the ensemble. |
+| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1355,28 +1354,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\AnomalyDetection\IsolationForest;
 
-$estimator = new IsolationForest(300, 0.2, 0.05);
-```
-### Isolation Tree
-Isolation Trees separate anomalous samples from dense clusters using an extremely randomized splitting process that isolates outliers into their own cell nodes. *Note* that this Estimator is considered a *weak* learner and is typically used within the context of an ensemble (such as [Isolation Forest](#isolation-forest)).
-
-##### Unsupervised | Learner | Probabilistic | Persistable
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | max depth | Auto | int | The maximum depth of a branch that is allowed. |
-| 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | contamination | 0.1 | float | The amount of contamination (outliers) that is presumed to be in the training set as a percentage. |
-
-##### Additional Methods:
-This estimator does not have any additional methods.
-
-##### Example:
-```php
-use Rubix\ML\AnomalyDetection\IsolationTree;
-
-$estimator = new IsolationTree(100, 5, 0.1);
+$estimator = new IsolationForest(300, 0.01, 0.2);
 ```
 
 ### Local Outlier Factor

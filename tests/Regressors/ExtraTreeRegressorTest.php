@@ -18,7 +18,7 @@ class ExtraTreeRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 250;
     const TEST_SIZE = 5;
-    const TOLERANCE = 4;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -28,7 +28,7 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new ExtraTreeRegressor(30, 2, 3, 1e-4);
+        $this->estimator = new ExtraTreeRegressor(100, 2, null);
     }
 
     public function test_build_regressor()

@@ -32,7 +32,7 @@ class ITree implements Tree
     /**
      * The maximum depth of a branch before it is forced to terminate.
      *
-     * @var int|null
+     * @var int
      */
     protected $maxDepth;
 
@@ -44,29 +44,23 @@ class ITree implements Tree
     protected $maxLeafSize;
 
     /**
-     * The C factor estimates the average length of the path of a search for
-     * this tree.
-     *
-     * @var float|null
-     */
-    protected $c;
-
-    /**
-     * @param  int|null  $maxDepth
+     * @param  int  $maxDepth
      * @param  int  $maxLeafSize
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?int $maxDepth = null, int $maxLeafSize = 5)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
     {
-        if (isset($maxDepth) and $maxDepth < 1) {
+        if ($maxDepth < 1) {
             throw new InvalidArgumentException("A tree cannot have a depth"
                 . " less than 1, $maxDepth given.");
         }
+
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException("At least one sample is required"
                 . " to create a leaf, $maxLeafSize given.");
         }
+
         $this->maxDepth = $maxDepth;
         $this->maxLeafSize = $maxLeafSize;
     }
@@ -90,14 +84,6 @@ class ITree implements Tree
      */
     public function grow(Dataset $dataset) : void
     {
-        $n = $dataset->numRows();
-
-        if (is_null($this->maxDepth)) {
-            $this->maxDepth = (int) ceil(log($n, 2));
-        }
-
-        $this->c = $this->c($n);
-
         $this->root = $this->findRandomSplit($dataset, 1);
 
         $this->split($this->root, 1);
@@ -151,9 +137,9 @@ class ITree implements Tree
      * Search the tree for a terminal node.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Cell
+     * @return \Rubix\ML\Graph\Nodes\Cell|null
      */
-    public function search(array $sample) : Cell
+    public function search(array $sample) : ?Cell
     {
         $current = $this->root;
 
@@ -179,7 +165,7 @@ class ITree implements Tree
             }
         }
 
-        return new Cell(0, 0.);
+        return null;
     }
 
     /**
@@ -213,9 +199,9 @@ class ITree implements Tree
     {
         $n = $dataset->numRows();
 
-        $score = 2. ** -((($depth - 1) + $this->c($n)) / $this->c);
+        $depth += $this->c($n) - 1.;
 
-        return new Cell($n, $score);
+        return new Cell($depth, $n);
     }
 
     /**

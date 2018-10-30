@@ -210,7 +210,7 @@ class KMeans implements Online, Persistable
      * @throws \RuntimeException
      * @return array
      */
-    public function initializeCentroids(Dataset $dataset) : array
+    protected function initializeCentroids(Dataset $dataset) : array
     {
         $n = $dataset->numRows();
 

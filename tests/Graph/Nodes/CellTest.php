@@ -12,13 +12,9 @@ class CellTest extends TestCase
 {
     protected $node;
 
-    protected $params;
-
     public function setUp()
     {
-        $this->params = [12, 0.9];
-
-        $this->node = new Cell(...$this->params);
+        $this->node = new Cell(12.9, 3);
     }
 
     public function test_build_node()
@@ -29,13 +25,13 @@ class CellTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_get_n()
+    public function test_get_depth()
     {
-        $this->assertEquals($this->params[0], $this->node->n());
+        $this->assertEquals(12.9, $this->node->depth());
     }
 
-    public function test_get_score()
+    public function test_get_n()
     {
-        $this->assertEquals($this->params[1], $this->node->score());
+        $this->assertEquals(3, $this->node->n());
     }
 }

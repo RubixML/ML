@@ -33,7 +33,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new ClassificationTree(50, 1, 3);
+        $this->estimator = new ClassificationTree(50, 3, null);
     }
 
     public function test_build_classifier()

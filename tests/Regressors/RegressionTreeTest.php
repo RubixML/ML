@@ -17,7 +17,7 @@ class RegressionTreeTest extends TestCase
 {
     const TRAIN_SIZE = 250;
     const TEST_SIZE = 5;
-    const TOLERANCE = 3;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -27,7 +27,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new RegressionTree(30, 2, null);
+        $this->estimator = new RegressionTree(100, 3, null);
     }
 
     public function test_build_regressor()

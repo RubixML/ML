@@ -29,6 +29,8 @@ use RuntimeException;
  */
 class LocalOutlierFactor implements Online, Persistable
 {
+    const THRESHOLD = 1.5;
+
     /**
      * The number of nearest neighbors to consider a local region.
      *
@@ -155,14 +157,14 @@ class LocalOutlierFactor implements Online, Persistable
 
         $distances = [];
 
-        foreach ($this->samples as $sample) {
+        foreach ($this->samples as $i => $sample) {
             $distances[] = $d = $this->localRegion($sample);
 
-            $this->kdistances[] = end($d);
+            $this->kdistances[$i] = end($d);
         }
 
-        foreach ($distances as $row) {
-            $this->lrds[] = $this->localReachabilityDensity($row);
+        foreach ($distances as $i => $row) {
+            $this->lrds[$i] = $this->localReachabilityDensity($row);
         }
 
         $lofs = [];
@@ -171,9 +173,9 @@ class LocalOutlierFactor implements Online, Persistable
             $lofs[] = $this->localOutlierFactor($sample);
         }
 
-        $shift = Stats::percentile($lofs, 100 * $this->contamination);
+        $shift = Stats::percentile($lofs, 100. * $this->contamination);
         
-        $this->offset = 1.5 + $shift;
+        $this->offset = self::THRESHOLD + $shift;
     }
 
     /**
@@ -246,7 +248,9 @@ class LocalOutlierFactor implements Online, Persistable
 
         $kdistances = array_intersect_key($this->kdistances, $distances);
 
-        $mean = Stats::mean(array_map('max', $distances, $kdistances));
+        $rds = array_map('max', $distances, $kdistances);
+
+        $mean = Stats::mean($rds);
 
         return 1. / ($mean ?: self::EPSILON);
     }

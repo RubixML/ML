@@ -17,7 +17,7 @@ class BootstrapAggregatorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 3;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -27,7 +27,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(5), 50, 0.2);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 50, 0.2);
     }
 
     public function test_build_meta_estimator()

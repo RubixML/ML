@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -31,14 +30,13 @@ class IsolationForestTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new IsolationForest(new IsolationTree(null, 5, 0.1), 200, 0.8);
+        $this->estimator = new IsolationForest(300, 0.1, 0.2);
     }
 
     public function test_build_detector()
     {
         $this->assertInstanceOf(IsolationForest::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
@@ -56,14 +54,6 @@ class IsolationForestTest extends TestCase
 
         foreach ($this->estimator->predict($testing) as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction);
-        }
-
-        foreach ($this->estimator->proba($testing) as $i => $probability) {
-            if ($testing->label($i) === 1) {
-                $this->assertGreaterThan(0.5, $probability);
-            } else {
-                $this->assertLessThanOrEqual(0.5, $probability);
-            }
         }
     }
 

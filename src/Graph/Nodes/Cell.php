@@ -15,6 +15,13 @@ namespace Rubix\ML\Graph\Nodes;
 class Cell extends BinaryNode implements Leaf
 {
     /**
+     * The estimated depth of this node.
+     *
+     * @var float
+     */
+    protected $depth;
+
+    /**
      * The number of training points located in this cell.
      *
      * @var int
@@ -22,20 +29,24 @@ class Cell extends BinaryNode implements Leaf
     protected $n;
 
     /**
-     * The isolation score.
-     *
-     * @var float
-     */
-    protected $score;
-
-    /**
-     * @param  float  $score
+     * @param  float  $depth
+     * @param  int  $n
      * @return void
      */
-    public function __construct(int $n, float $score)
+    public function __construct(float $depth, int $n)
     {
+        $this->depth = $depth;
         $this->n = $n;
-        $this->score = $score;
+    }
+
+    /**
+     * Return the estimated depth of this node.
+     *
+     * @return float
+     */
+    public function depth() : float
+    {
+        return $this->depth;
     }
 
     /**
@@ -46,15 +57,5 @@ class Cell extends BinaryNode implements Leaf
     public function n() : int
     {
         return $this->n;
-    }
-
-    /**
-     * Return the isloation score.
-     *
-     * @return float
-     */
-    public function score() : float
-    {
-        return $this->score;
     }
 }
