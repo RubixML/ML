@@ -191,8 +191,8 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
         list($means, $variances) = $this->initializeComponents($dataset);
 
-        $this->means = $previous = $means;
-        $this->variances = $variances;
+        $this->means = $prevMeans = $means;
+        $this->variances = $prevVariances = $variances;
 
         $this->steps = $memberships = [];
 
@@ -232,7 +232,7 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
                 $this->variances[$cluster] = $variances;
             }
 
-            $shift = $this->gaussianShift($previous);
+            $shift = $this->gaussianShift($prevMeans, $prevVariances);
 
             $this->steps[] = $shift;
 
@@ -240,7 +240,8 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
                 break 1;
             }
 
-            $previous = $this->means;
+            $prevMeans = $this->means;
+            $prevVariances = $this->variances;
         }
     }
 
@@ -290,11 +291,11 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
     }
 
     /**
-     * Initialize the gaussian components.
+     * Initialize the gaussian components using K Means.
      * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     protected function initializeComponents(Dataset $dataset) : array
     {
@@ -321,8 +322,8 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
     }
 
     /**
-     * Calculate the joint log likelihood of a sample being a member of each of
-     * the gaussians.
+     * Calculate the normalized joint likelihood of a sample being a member
+     * of each of the gaussian components.
      *
      * @param  array  $sample
      * @return array
@@ -360,20 +361,27 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
     }
 
     /**
-     * Calculate the magnitude (l1) of gaussian shift from the previous epoch.
+     * Calculate the magnitude (l2) of gaussian shift from the previous epoch.
      *
-     * @param  array  $previous
+     * @param  array  $prevMeans
+     * @param  array  $prevVariances
      * @return float
      */
-    protected function gaussianShift(array $previous) : float
+    protected function gaussianShift(array $prevMeans, array $prevVariances) : float
     {
         $shift = 0.;
 
         foreach ($this->means as $cluster => $means) {
-            $prevCluster = $previous[$cluster];
+            $variances = $this->variances[$cluster];
+
+            $prevMean = $prevMeans[$cluster];
+            $prevVariance = $prevVariances[$cluster];
 
             foreach ($means as $column => $mean) {
-                $shift += abs($prevCluster[$column] - $mean);
+                $variance = $variances[$column];
+
+                $shift += ($prevMean[$column] - $mean) ** 2;
+                $shift += ($prevVariance[$column] - $variance) ** 2;
             }
         }
 

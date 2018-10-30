@@ -108,6 +108,8 @@ class KMeans implements Online, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -125,10 +127,7 @@ class KMeans implements Online, Persistable
     }
 
     /**
-     * Pick K random samples and assign them as centroids. Compute the coordinates
-     * of the centroids by clustering the points based on each sample's distance
-     * from one of the k centroids, then recompute the centroid coordinate as the
-     * mean of the new cluster.
+     * Perform a partial train on the learner.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException

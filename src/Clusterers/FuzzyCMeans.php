@@ -349,7 +349,8 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
     }
 
     /**
-     * Calculate the inter-cluster distance.
+     * Calculate the inter-cluster distance between each training sample and
+     * each cluster centroid.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return float

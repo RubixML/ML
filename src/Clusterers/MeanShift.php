@@ -194,7 +194,7 @@ class MeanShift implements Learner, Persistable
                 }
             }
 
-            $shift = $this->calculateCentroidShift($previous);
+            $shift = $this->centroidShift($previous);
 
             $this->steps[] = $shift;
 
@@ -265,7 +265,7 @@ class MeanShift implements Learner, Persistable
      * @param  array  $previous
      * @return float
      */
-    protected function calculateCentroidShift(array $previous) : float
+    protected function centroidShift(array $previous) : float
     {
         $shift = 0.;
 

@@ -16,7 +16,7 @@ use InvalidArgumentException;
  */
 class Stats
 {
-    const EPSILON = 1e-10;
+    const EPSILON = 1e-8;
 
     /**
      * Compute the population mean of a set of values.
@@ -262,11 +262,7 @@ class Stats
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
 
-        if ($denominator === 0.) {
-            $denominator = self::EPSILON;
-        }
-
-        return $numerator / $denominator;
+        return $numerator / ($denominator ?: self::EPSILON);
     }
 
     /**
@@ -292,11 +288,7 @@ class Stats
         $numerator = self::centralMoment($values, 4, $mean, $n);
         $denominator = self::centralMoment($values, 2, $mean, $n) ** 2;
 
-        if ($denominator === 0.) {
-            $denominator = self::EPSILON;
-        }
-
-        return ($numerator / $denominator) - 3.;
+        return $numerator / ($denominator ?: self::EPSILON) - 3.;
     }
 
     /**
