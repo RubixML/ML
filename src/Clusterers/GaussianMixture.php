@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
@@ -24,6 +25,8 @@ use RuntimeException;
  * References:
  * [1] A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via
  * the EM Algorithm.
+ * [2] J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm
+ * for Gaussian Mixture Models.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -56,7 +59,7 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
     protected $minChange;
 
     /**
-     * The precomputed prior log probabilities of each cluster given by weight.
+     * The precomputed prior probabilities of each cluster given by weight.
      *
      * @var array
      */
@@ -184,17 +187,12 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
         $n = $dataset->numRows();
 
-        if ($n < $this->k) {
-            throw new RuntimeException('The number of samples cannot be less'
-                . ' than the number of components.');
-        }
-
         $this->priors = array_fill(0, $this->k, 1. / $this->k);
 
-        $this->means = $previous = $dataset->randomize()->tail($this->k)->samples();
+        list($means, $variances) = $this->initializeComponents($dataset);
 
-        $this->variances = array_fill(0, $this->k, array_fill(0,
-            $dataset->numColumns(), 1.));
+        $this->means = $previous = $means;
+        $this->variances = $variances;
 
         $this->steps = $memberships = [];
 
@@ -203,10 +201,13 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
                 $memberships[$i] = $this->jointLikelihood($sample);
             }
 
-            foreach ($this->means as $cluster => &$means) {
+            foreach ($this->priors as $cluster => &$prior) {
+                $prior = array_sum(array_column($memberships, $cluster)) / $n;
+
+                $means = $this->means[$cluster];
                 $variances = $this->variances[$cluster];
 
-                foreach ($means as $column => &$mean) {
+                foreach ($means as $column => $mean) {
                     $a = $b = $total = 0.;
 
                     foreach ($dataset as $i => $sample) {
@@ -216,7 +217,7 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
                         $total += $prob;
                     }
 
-                    $mean = $a / ($total ?: self::EPSILON);
+                    $means[$column] = $a / ($total ?: self::EPSILON);
 
                     foreach ($dataset as $i => $sample) {
                         $prob = $memberships[$i][$cluster];
@@ -224,17 +225,14 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
                         $b += $prob * ($sample[$column] - $mean) ** 2;
                     }
 
-                    $variances[$column] = $b / $total;
+                    $variances[$column] = $b / ($total ?: self::EPSILON);
                 }
 
+                $this->means[$cluster] = $means;
                 $this->variances[$cluster] = $variances;
             }
 
-            foreach ($this->priors as $cluster => &$prior) {
-                $prior = array_sum(array_column($memberships, $cluster)) / $n;
-            }
-
-            $shift = $this->calculateGaussianShift($previous);
+            $shift = $this->gaussianShift($previous);
 
             $this->steps[] = $shift;
 
@@ -284,11 +282,42 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
         $probabilities = [];
 
-        foreach ($dataset as $i => $sample) {
-            $probabilities[$i] = $this->jointLikelihood($sample);
+        foreach ($dataset as $sample) {
+            $probabilities[] = $this->jointLikelihood($sample);
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Initialize the gaussian components.
+     * 
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @return array
+     */
+    protected function initializeComponents(Dataset $dataset) : array
+    {
+        $clusterer = new KMeans($this->k);
+
+        $clusterer->train($dataset);
+
+        $labels = $clusterer->predict($dataset);
+
+        $bootstrap = Labeled::quick($dataset->samples(), $labels);
+
+        $means = $variances = [];
+
+        foreach ($bootstrap->stratify() as $cluster => $stratum) {
+            foreach ($stratum->rotate() as $column => $values) {
+                list($mean, $variance) = Stats::meanVar($values);
+
+                $means[$cluster][] = $mean;
+                $variances[$cluster][] = $variance;
+            }
+        }
+
+        return [$means, $variances];
     }
 
     /**
@@ -310,7 +339,7 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
-                $variance = $variances[$column] ?: self::EPSILON;
+                $variance = $variances[$column];
 
                 $pdf = 1. / sqrt(self::TWO_PI * $variance);
                 $pdf *= exp(-(($feature - $mean) ** 2 / (2. * $variance)));
@@ -336,7 +365,7 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
      * @param  array  $previous
      * @return float
      */
-    protected function calculateGaussianShift(array $previous) : float
+    protected function gaussianShift(array $previous) : float
     {
         $shift = 0.;
 

@@ -119,46 +119,7 @@ class KMeans implements Online, Persistable
                 . ' continuous features.');
         }
 
-        $n = $dataset->numRows();
-
-        if ($n < $this->k) {
-            throw new RuntimeException('The number of samples cannot be less'
-                . ' than the parameter K.');
-        }
-
-        $weights = array_fill(0, $n, 1. / $n);
-
-        $this->centroids = [];
-
-        for ($i = 0; $i < $this->k; $i++) {
-            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
-
-            $this->centroids[] = $subset->row(0);
-
-            if ($i === $this->k) {
-                break 1;
-            }
-
-            foreach ($dataset as $j => $sample) {
-                $closest = INF;
-
-                foreach ($this->centroids as $centroid) {
-                    $distance = $this->kernel->compute($sample, $centroid);
-
-                    if ($distance < $closest) {
-                        $closest = $distance;
-                    }
-                }
-
-                $weights[$j] = $closest ** 2;
-            }
-
-            $total = array_sum($weights) ?: self::EPSILON;
-
-            foreach ($weights as &$weight) {
-                $weight /= $total;
-            }
-        }
+        $this->centroids = $this->initializeCentroids($dataset);
 
         $this->partial($dataset);
     }
@@ -241,6 +202,59 @@ class KMeans implements Online, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Initialize the cluster centroids using the k-means++ method.
+     * 
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function initializeCentroids(Dataset $dataset) : array
+    {
+        $n = $dataset->numRows();
+
+        if ($n < $this->k) {
+            throw new RuntimeException('The number of samples cannot be less'
+                . ' than the number of target clusters.');
+        }
+
+        $weights = array_fill(0, $n, 1. / $n);
+
+        $centroids = [];
+
+        for ($i = 0; $i < $this->k; $i++) {
+            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
+
+            $centroids[] = $subset->row(0);
+
+            if ($i === $this->k) {
+                break 1;
+            }
+
+            foreach ($dataset as $j => $sample) {
+                $closest = INF;
+
+                foreach ($centroids as $centroid) {
+                    $distance = $this->kernel->compute($sample, $centroid);
+
+                    if ($distance < $closest) {
+                        $closest = $distance;
+                    }
+                }
+
+                $weights[$j] = $closest ** 2;
+            }
+
+            $total = array_sum($weights) ?: self::EPSILON;
+
+            foreach ($weights as &$weight) {
+                $weight /= $total;
+            }
+        }
+
+        return $centroids;
     }
 
     /**
