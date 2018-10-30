@@ -18,12 +18,13 @@ class InformednessTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
@@ -34,8 +35,6 @@ class InformednessTest extends TestCase
         ]);
 
         $this->metric = new Informedness();
-
-        $this->outcome = 0.16666666670277763;
     }
 
     public function test_build_metric()
@@ -53,7 +52,7 @@ class InformednessTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
+        $this->assertEquals(0.16666666670277763, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

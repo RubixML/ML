@@ -16,11 +16,9 @@ class ConcentrationTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Unlabeled([
+        $this->testing = Unlabeled::quick([
             [10, 40], [100, 150], [90, 150], [20, 30], [110, 140],
         ]);
 
@@ -33,8 +31,6 @@ class ConcentrationTest extends TestCase
         ]);
 
         $this->metric = new Concentration();
-
-        $this->outcome = 193.36363636363635;
     }
 
     public function test_build_metric()
@@ -52,7 +48,7 @@ class ConcentrationTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score);
+        $this->assertEquals(193.36363636363635, $score);
     }
 
     public function test_within_range()

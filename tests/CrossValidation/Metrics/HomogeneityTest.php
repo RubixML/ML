@@ -16,12 +16,13 @@ class HomogeneityTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KMeans::class);
 
@@ -32,8 +33,6 @@ class HomogeneityTest extends TestCase
         ]);
 
         $this->metric = new Homogeneity();
-
-        $this->outcome = 0.5833333333513888;
     }
 
     public function test_build_metric()
@@ -51,7 +50,7 @@ class HomogeneityTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score);
+        $this->assertEquals(0.5833333333513888, $score);
     }
 
     public function test_within_range()

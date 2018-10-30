@@ -56,8 +56,8 @@ class KDTree implements Tree
     public function __construct(int $maxLeafSize = 10)
     {
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to make a decision.');
+            throw new InvalidArgumentException("At least one sample is required"
+                . " to form a neighborhood, $maxLeafSize given.");
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -82,9 +82,9 @@ class KDTree implements Tree
     {
         $this->dimensionality = $dataset->numColumns();
 
-        $this->root = $this->findBestSplit($dataset, 0);
+        $this->root = $this->findBestSplit($dataset, 1);
 
-        $this->split($this->root, 0);
+        $this->split($this->root, 1);
     }
 
     /**
@@ -108,7 +108,7 @@ class KDTree implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachLeft($this->terminate($left));
+            $current->attachLeft(new Neighborhood($left));
         }
 
         if ($right->numRows() > $this->maxLeafSize) {
@@ -118,7 +118,7 @@ class KDTree implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachRight($this->terminate($right));
+            $current->attachRight(new Neighborhood($right));
         }
     }
 
@@ -127,9 +127,9 @@ class KDTree implements Tree
      * labels.
      *
      * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood
+     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
      */
-    public function search(array $sample) : Neighborhood
+    public function search(array $sample) : ?Neighborhood
     {
         $current = $this->root;
 
@@ -147,11 +147,11 @@ class KDTree implements Tree
             }
         }
 
-        return new Neighborhood([], []);
+        return null;
     }
 
     /**
-     * Randomized algorithm to find a split point in the data.
+     * Find the best split of a given subset of the training data.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  int  $depth
@@ -166,17 +166,6 @@ class KDTree implements Tree
         $groups = $dataset->partition($index, $value);
 
         return new Coordinate($value, $index, $groups);
-    }
-
-    /**
-     * Terminate the branch.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood
-     */
-    protected function terminate(Labeled $dataset) : Neighborhood
-    {
-        return new Neighborhood($dataset->samples(), $dataset->labels());
     }
 
     /**

@@ -9,9 +9,8 @@ use InvalidArgumentException;
 /**
  * Outlier Ratio
  *
- * Outlier Ratio is the proportion of outliers to inliers in an Anomaly
- * Detection problem. It can be used to gauge the amount of contamination that
- * the Detector is predicting.
+ * Outlier Ratio is the ratio of outliers to inliers in an Anomaly Detection problem.
+ * It can be used to gauge the amount of contamination that a detector is predicting.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -34,9 +33,11 @@ class OutlierRatio implements Report
                 . ' detectors.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n < 1) {
             throw new InvalidArgumentException('Testing set must contain at'
-                . ' least one sample.');
+                . ' least one sample to predict.');
         }
 
         $counts = array_count_values($estimator->predict($testing));
@@ -44,13 +45,17 @@ class OutlierRatio implements Report
         $outliers = $counts[1] ?? 0;
         $inliers = $counts[0] ?? 0;
 
-        $ratio = ($outliers + self::EPSILON) / ($inliers + self::EPSILON);
+        $ratio = $outliers / ($inliers ?: self::EPSILON);
+
+        $proportion = $outliers / $n;
 
         return [
+            'ratio' => $ratio,
+            'proportion' => $proportion,
+            'percentage' => 100. * $proportion,
             'outliers' => $outliers,
             'inliers' => $inliers,
-            'ratio' => $ratio,
-            'cardinality' => $testing->numRows(),
+            'cardinality' => $n,
         ];
     }
 }

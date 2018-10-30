@@ -16,12 +16,13 @@ class ConfusionMatrixTest extends TestCase
 
     protected $estimator;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
@@ -32,17 +33,6 @@ class ConfusionMatrixTest extends TestCase
         ]);
 
         $this->report = new ConfusionMatrix(['wolf', 'lamb']);
-
-        $this->outcome = [
-            'wolf' => [
-                'wolf' => 2,
-                'lamb' => 1,
-            ],
-            'lamb' => [
-                'wolf' => 1,
-                'lamb' => 1,
-            ],
-        ];
     }
 
     public function test_build_report()
@@ -53,8 +43,19 @@ class ConfusionMatrixTest extends TestCase
 
     public function test_generate_report()
     {
+        $outcome = [
+            'wolf' => [
+                'wolf' => 2,
+                'lamb' => 1,
+            ],
+            'lamb' => [
+                'wolf' => 1,
+                'lamb' => 1,
+            ],
+        ];
+
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $result);
+        $this->assertEquals($outcome, $result);
     }
 }

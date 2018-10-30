@@ -59,7 +59,7 @@ class Informedness implements Metric
 
         $n = $testing->numRows();
 
-        if ($n === 0) {
+        if ($n < 1) {
             return 0.;
         }
 
@@ -96,9 +96,8 @@ class Informedness implements Metric
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += ($tp + self::EPSILON) / ($tp + $fn + self::EPSILON)
-                + ($tn + self::EPSILON) / ($tn + $fp + self::EPSILON)
-                - 1.;
+            $score += $tp / (($tp + $fn) ?: self::EPSILON)
+                + $tn / (($tn + $fp) ?: self::EPSILON) - 1.;
         }
 
         return $score / $k;

@@ -11,10 +11,10 @@ use InvalidArgumentException;
 /**
  * Residual Breakdown
  *
- * Residual Breakdown is a Report that measures the differences between the predicted
+ * Residual Breakdown is a report that measures the differences between the predicted
  * and actual values of a regression problem in detail. The statistics provided
  * in the report cover the first (mean), second (variance), third (skewness),
- * and fourth order (kurtosis) moments of the distribution of residuals produced
+ * and fourth (kurtosis) order moments of the distribution of residuals produced
  * by a testing set.
  *
  * @category    Machine Learning

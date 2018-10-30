@@ -4,8 +4,8 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\KMeans;
-use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 
 class VMeasureTest extends TestCase
@@ -16,12 +16,13 @@ class VMeasureTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KMeans::class);
 
@@ -32,8 +33,6 @@ class VMeasureTest extends TestCase
         ]);
 
         $this->metric = new VMeasure();
-
-        $this->outcome = 0.5833333333513888;
     }
 
     public function test_build_metric()
@@ -51,7 +50,7 @@ class VMeasureTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score);
+        $this->assertEquals(0.5833333333513888, $score);
     }
 
     public function test_within_range()

@@ -54,7 +54,7 @@ class VMeasure implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 0) {
             return 0.;
         }
 
@@ -86,13 +86,13 @@ class VMeasure implements Metric
         $homogeneity = $completeness = 0.;
 
         foreach ($table[0] as $distribution) {
-            $homogeneity += (max($distribution) + self::EPSILON)
-                / (array_sum($distribution) + self::EPSILON);
+            $homogeneity += max($distribution)
+                / (array_sum($distribution) ?: self::EPSILON);
         }
 
         foreach ($table[1] as $distribution) {
-            $completeness += (max($distribution) + self::EPSILON)
-                / (array_sum($distribution) + self::EPSILON);
+            $completeness += max($distribution)
+                / (array_sum($distribution) ?: self::EPSILON);
         }
 
         $homogeneity /= count($clusters);

@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use InvalidArgumentException;
+
 /**
  * Cell
  *
@@ -22,21 +24,18 @@ class Cell extends BinaryNode implements Leaf
     protected $depth;
 
     /**
-     * The number of training points located in this cell.
-     *
-     * @var int
-     */
-    protected $n;
-
-    /**
      * @param  float  $depth
-     * @param  int  $n
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $depth, int $n)
+    public function __construct(float $depth)
     {
+        if ($depth < 0.) {
+            throw new InvalidArgumentException("Depth cannot be less"
+                . " than 0, $depth given.");
+        }
+
         $this->depth = $depth;
-        $this->n = $n;
     }
 
     /**
@@ -47,15 +46,5 @@ class Cell extends BinaryNode implements Leaf
     public function depth() : float
     {
         return $this->depth;
-    }
-
-    /**
-     * Return the number of training points located in this cell.
-     *
-     * @return int
-     */
-    public function n() : int
-    {
-        return $this->n;
     }
 }

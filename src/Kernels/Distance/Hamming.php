@@ -35,6 +35,6 @@ class Hamming implements Distance
             }
         }
 
-        return $dimensions !== 0 ? $distance / $dimensions : 1.;
+        return $distance / ($dimensions ?: self::EPSILON);
     }
 }

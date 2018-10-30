@@ -55,7 +55,7 @@ class Homogeneity implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 1) {
             return 0.;
         }
 
@@ -78,8 +78,8 @@ class Homogeneity implements Metric
         $score = 0.;
 
         foreach ($table as $distribution) {
-            $score += (max($distribution) + self::EPSILON)
-                / (array_sum($distribution) + self::EPSILON);
+            $score += max($distribution)
+                / (array_sum($distribution) ?: self::EPSILON);
         }
 
         return $score / count($table);

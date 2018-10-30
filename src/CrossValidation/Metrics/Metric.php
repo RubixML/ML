@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Metric
 {
-    const EPSILON = 1e-10;
+    const EPSILON = 1e-8;
 
     /**
      * Return a tuple of the min and max output value for this metric.

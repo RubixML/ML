@@ -76,8 +76,8 @@ class Completeness implements Metric
         $score = 0.;
 
         foreach ($table as $distribution) {
-            $score += (max($distribution) + self::EPSILON)
-                / (array_sum($distribution) + self::EPSILON);
+            $score += max($distribution)
+                / (array_sum($distribution) ?: self::EPSILON);
         }
 
         return $score / count($table);

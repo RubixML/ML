@@ -48,7 +48,7 @@ class F1Score implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 1) {
             return 0.;
         }
 
@@ -56,7 +56,7 @@ class F1Score implements Metric
 
         $labels = $testing->labels();
 
-        $classes = array_unique(array_merge($predictions, $labels));;
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $k = count($classes);
 
@@ -78,8 +78,7 @@ class F1Score implements Metric
             $fp = $falsePositives[$class];
             $fn = $falseNegatives[$class];
 
-            $score += ((2 * $tp) + self::EPSILON)
-                / ((2 * $tp) + $fp + $fn + self::EPSILON);
+            $score += (2 * $tp) / ((2 * $tp + $fp + $fn) ?: self::EPSILON);
         }
 
         return $score / $k;

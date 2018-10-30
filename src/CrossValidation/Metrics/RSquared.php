@@ -51,7 +51,7 @@ class RSquared implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 0) {
             return 0.;
         }
 
@@ -64,6 +64,6 @@ class RSquared implements Metric
             $sst += ($testing->label($i) - $mean) ** 2;
         }
 
-        return 1. - (($ssr + self::EPSILON) / ($sst + self::EPSILON));
+        return 1. - ($ssr / ($sst ?: self::EPSILON));
     }
 }

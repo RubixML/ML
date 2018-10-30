@@ -51,7 +51,7 @@ class MeanSquaredError implements Metric
 
         $n = $testing->numRows();
 
-        if ($n === 0) {
+        if ($n < 0) {
             return 0.;
         }
 

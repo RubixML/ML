@@ -16,12 +16,13 @@ class MulticlassBreakdownTest extends TestCase
 
     protected $estimator;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
@@ -32,56 +33,6 @@ class MulticlassBreakdownTest extends TestCase
         ]);
 
         $this->report = new MulticlassBreakdown();
-
-        $this->outcome = [
-            'overall' => [
-                'accuracy' => 0.6,
-                'precision' => 0.5833333351388889,
-                'recall' => 0.5833333351388889,
-                'specificity' => 0.5833333351388889,
-                'miss_rate' => 0.41666666486111115,
-                'fall_out' => 0.41666666486111115,
-                'f1_score' => 0.5833333351388889,
-                'informedness' => 0.1666666702777777,
-                'mcc' => 0.1666666666435185,
-            ],
-            'label' => [
-                'wolf' => [
-                    'accuracy' => 0.6,
-                    'precision' => 0.6666666677777777,
-                    'recall' => 0.6666666677777777,
-                    'specificity' => 0.5000000025,
-                    'miss_rate' => 0.3333333322222223,
-                    'fall_out' => 0.4999999975,
-                    'f1_score' => 0.6666666677777777,
-                    'informedness' => 0.1666666702777777,
-                    'mcc' => 0.1666666666435185,
-                    'cardinality' => 3,
-                    'density' => 0.6,
-                    'true_positives' => 2,
-                    'true_negatives' => 1,
-                    'false_positives' => 1,
-                    'false_negatives' => 1,
-                ],
-                'lamb' => [
-                    'accuracy' => 0.6,
-                    'precision' => 0.5000000025,
-                    'recall' => 0.5000000025,
-                    'specificity' => 0.6666666677777777,
-                    'miss_rate' => 0.4999999975,
-                    'fall_out' => 0.3333333322222223,
-                    'f1_score' => 0.5000000025,
-                    'informedness' => 0.1666666702777777,
-                    'mcc' => 0.1666666666435185,
-                    'cardinality' => 2,
-                    'density' => 0.4,
-                    'true_positives' => 1,
-                    'true_negatives' => 2,
-                    'false_positives' => 1,
-                    'false_negatives' => 1,
-                ],
-            ],
-        ];
     }
 
     public function test_build_report()
@@ -92,8 +43,58 @@ class MulticlassBreakdownTest extends TestCase
 
     public function test_generate_report()
     {
+        $outcome = [
+            'overall' => [
+                'accuracy' => 0.6,
+                'precision' => 0.5833333333333333,
+                'recall' => 0.5833333333333333,
+                'specificity' => 0.5833333333333333,
+                'miss_rate' => 0.4166666666666667,
+                'fall_out' => 0.4166666666666667,
+                'f1_score' => 0.5833333333333333,
+                'informedness' => 0.16666666666666652,
+                'mcc' => 0.16666666666666666,
+            ],
+            'label' => [
+                'wolf' => [
+                    'accuracy' => 0.6,
+                    'precision' => 0.6666666666666666,
+                    'recall' => 0.6666666666666666,
+                    'specificity' => 0.5,
+                    'miss_rate' => 0.33333333333333337,
+                    'fall_out' => 0.5,
+                    'f1_score' => 0.6666666666666666,
+                    'informedness' => 0.16666666666666652,
+                    'mcc' => 0.16666666666666666,
+                    'cardinality' => 3,
+                    'density' => 0.6,
+                    'true_positives' => 2,
+                    'true_negatives' => 1,
+                    'false_positives' => 1,
+                    'false_negatives' => 1,
+                ],
+                'lamb' => [
+                    'accuracy' => 0.6,
+                    'precision' => 0.5,
+                    'recall' => 0.5,
+                    'specificity' => 0.6666666666666666,
+                    'miss_rate' => 0.5,
+                    'fall_out' => 0.33333333333333337,
+                    'f1_score' => 0.5,
+                    'informedness' => 0.16666666666666652,
+                    'mcc' => 0.16666666666666666,
+                    'cardinality' => 2,
+                    'density' => 0.4,
+                    'true_positives' => 1,
+                    'true_negatives' => 2,
+                    'false_positives' => 1,
+                    'false_negatives' => 1,
+                ],
+            ],
+        ];
+
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $result);
+        $this->assertEquals($outcome, $result);
     }
 }

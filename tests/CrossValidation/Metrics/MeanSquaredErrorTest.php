@@ -18,11 +18,13 @@ class MeanSquaredErrorTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []], [10, 10, 6, 14, 8]);
+        $samples = [[], [], [], [], []];
+
+        $labels = [10, 10, 6, 14, 8];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(Ridge::class);
 
@@ -33,8 +35,6 @@ class MeanSquaredErrorTest extends TestCase
         ]);
 
         $this->metric = new MeanSquaredError();
-
-        $this->outcome = -7.8;
     }
 
     public function test_build_metric()
@@ -52,7 +52,7 @@ class MeanSquaredErrorTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
+        $this->assertEquals(-7.8, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

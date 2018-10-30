@@ -18,12 +18,13 @@ class F1ScoreTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
@@ -34,8 +35,6 @@ class F1ScoreTest extends TestCase
         ]);
 
         $this->metric = new F1Score();
-
-        $this->outcome = 0.5833333333423611;
     }
 
     public function test_build_metric()
@@ -53,7 +52,7 @@ class F1ScoreTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score, '', self::TOLERANCE);
+        $this->assertEquals(0.5833333333423611, $score, '', self::TOLERANCE);
     }
 
     public function test_within_range()

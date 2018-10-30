@@ -197,11 +197,9 @@ class ITree implements Tree
      */
     protected function terminate(Dataset $dataset, int $depth) : Cell
     {
-        $n = $dataset->numRows();
+        $depth += $this->c($dataset->numRows()) - 1.;
 
-        $depth += $this->c($n) - 1.;
-
-        return new Cell($depth, $n);
+        return new Cell($depth);
     }
 
     /**

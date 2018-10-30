@@ -4365,7 +4365,7 @@ var_dump($result);
 ```
 
 ### Outlier Ratio
-Outlier Ratio is the proportion of outliers to inliers in an [Anomaly Detection](#anomaly-detectors) problem. It can be used to gauge the amount of contamination that the Detector is predicting.
+Outlier Ratio is the ratio of outliers to inliers in an Anomaly Detection problem. It can be used to gauge the amount of contamination that a detector is predicting.
 
 ##### Anomaly Detection
 
@@ -4387,9 +4387,11 @@ var_dump($result);
 ##### Output:
 ```sh
   array(4) {
-    ["outliers"]=> int(13)
+    ["ratio"]=> float(0.042345)
+	["proportion"]=> float(0.040625)
+	["percentage"]=> float(4.0625)
+	["outliers"]=> int(13)
     ["inliers"]=> int(307)
-    ["ratio"]=> float(0.042345276871585)
     ["cardinality"]=> int(320)
   }
 ```

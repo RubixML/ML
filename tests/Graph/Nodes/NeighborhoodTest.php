@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\BinaryNode;
@@ -16,9 +17,9 @@ class NeighborhoodTest extends TestCase
 
     public function setUp()
     {
-        $this->params = [[[2, 5], [7, 9]], ['yes', 'no']];
+        $dataset = Labeled::quick([[7], [3]], ['cat', 'dog']);
 
-        $this->node = new Neighborhood(...$this->params);
+        $this->node = new Neighborhood($dataset);
     }
 
     public function test_build_node()
@@ -31,11 +32,11 @@ class NeighborhoodTest extends TestCase
 
     public function test_get_samples()
     {
-        $this->assertEquals($this->params[0], $this->node->samples());
+        $this->assertEquals([[7], [3]], $this->node->samples());
     }
 
     public function test_get_labels()
     {
-        $this->assertEquals($this->params[1], $this->node->labels());
+        $this->assertEquals(['cat', 'dog'], $this->node->labels());
     }
 }

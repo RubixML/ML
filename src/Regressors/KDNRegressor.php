@@ -144,10 +144,14 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     {
         $neighborhood = $this->search($sample);
 
+        if (is_null($neighborhood)) {
+            return [];
+        }
+
         $distances = [];
 
-        foreach ($neighborhood->samples() as $i => $neighbor) {
-            $distances[$i] = $this->kernel->compute($sample, $neighbor);
+        foreach ($neighborhood->samples() as $neighbor) {
+            $distances[] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);

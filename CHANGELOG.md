@@ -1,4 +1,6 @@
 - Unreleased
+
+- 0.0.6-alpha
     - Added Gradient Boost regressor
     - Added t-SNE embedder
     - AdaBoost now uses SAMME multiclass algorithm

@@ -153,7 +153,7 @@ class GridSearch implements MetaEstimator, Learner, Persistable
         }
 
         if (is_null($validator)) {
-            $validator = new KFold(10);
+            $validator = new KFold();
         }
 
         $this->base = $base;
@@ -279,22 +279,22 @@ class GridSearch implements MetaEstimator, Learner, Persistable
      */
     protected function combineGrid(array $params) : array
     {
-        $temp = [[]];
+        $combinations = [[]];
 
         foreach ($params as $i => $options) {
             $append = [];
 
-            foreach ($temp as $product) {
+            foreach ($combinations as $product) {
                 foreach ($options as $option) {
                     $product[$i] = $option;
                     $append[] = $product;
                 }
             }
 
-            $temp = $append;
+            $combinations = $append;
         }
 
-        return $temp;
+        return $combinations;
     }
 
     /**

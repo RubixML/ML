@@ -16,6 +16,9 @@ use RuntimeException;
  * training a number of them on a unique bootstrapped training set. Bootstrap
  * Aggregator then collects all of their predictions and makes a final
  * prediction based on the results.
+ * 
+ * References:
+ * [1] L. Breiman. (1996). Bagging Predictors.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

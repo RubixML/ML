@@ -50,7 +50,7 @@ class MedianAbsoluteError implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 1) {
             return 0.;
         }
 

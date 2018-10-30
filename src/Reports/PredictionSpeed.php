@@ -28,25 +28,31 @@ class PredictionSpeed implements Report
      */
     public function generate(Estimator $estimator, Dataset $testing) : array
     {
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n < 1) {
             throw new InvalidArgumentException('Testing set must contain at'
-                . ' least one sample.');
+                . ' least one sample to predict.');
         }
 
         $start = microtime(true);
 
         $estimator->predict($testing);
 
-        $total = microtime(true) - $start;
+        $end = microtime(true);
 
-        $pps = ($testing->numRows() + self::EPSILON) / ($total + self::EPSILON);
+        $runtime = $end - $start;
+
+        $pps = $n / ($runtime  ?: self::EPSILON);
+
+        $average = $runtime / $n;
 
         return [
             'pps' => $pps,
             'ppm' => 60. * $pps,
-            'average_seconds' => $total / ($testing->numRows() + self::EPSILON),
-            'total_seconds' => $total,
-            'cardinality' => $testing->numRows(),
+            'total_seconds' => $runtime,
+            'average_seconds' => $average,
+            'cardinality' => $n,
         ];
     }
 }

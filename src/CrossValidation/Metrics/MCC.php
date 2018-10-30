@@ -60,7 +60,7 @@ class MCC implements Metric
                 . ' testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        if ($testing->numRows() < 1) {
             return 0.;
         }
 
@@ -98,8 +98,7 @@ class MCC implements Metric
             $fn = $falseNegatives[$class];
 
             $score += ($tp * $tn - $fp * $fn)
-                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-                + self::EPSILON);
+                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
         }
 
         return $score / $k;

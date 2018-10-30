@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Rubix\ML\Datasets\Labeled;
+
 /**
  * Neighborhood
  *
@@ -29,26 +31,19 @@ class Neighborhood extends BinaryNode implements Leaf
     protected $labels;
 
     /**
-     * The number of training samples this node is responsible for.
-     *
-     * @var int
-     */
-    protected $n;
-
-    /**
-     * @param  array  $samples
-     * @param  array  $labels
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function __construct(array $samples, array $labels)
+    public function __construct(Labeled $dataset)
     {
-        $this->samples = $samples;
-        $this->labels = $labels;
-        $this->n = count($samples);
+        $this->samples = $dataset->samples();
+        $this->labels = $dataset->labels();
     }
 
     /**
-     * @return mixed
+     * Return the samples in the neighborhood.
+     * 
+     * @return array[]
      */
     public function samples()
     {
@@ -56,7 +51,9 @@ class Neighborhood extends BinaryNode implements Leaf
     }
 
     /**
-     * @return mixed
+     * Return the labels cooresponding to the samples in the neighborhood.
+     * 
+     * @return (int|float|string)[]
      */
     public function labels()
     {
@@ -64,10 +61,12 @@ class Neighborhood extends BinaryNode implements Leaf
     }
 
     /**
+     * Return the number of samples that this neighborhood holds.
+     * 
      * @return int
      */
     public function n() : int
     {
-        return $this->n;
+        return count($this->samples);
     }
 }

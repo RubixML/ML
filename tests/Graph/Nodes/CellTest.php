@@ -14,7 +14,7 @@ class CellTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new Cell(12.9, 3);
+        $this->node = new Cell(12.9);
     }
 
     public function test_build_node()
@@ -28,10 +28,5 @@ class CellTest extends TestCase
     public function test_get_depth()
     {
         $this->assertEquals(12.9, $this->node->depth());
-    }
-
-    public function test_get_n()
-    {
-        $this->assertEquals(3, $this->node->n());
     }
 }

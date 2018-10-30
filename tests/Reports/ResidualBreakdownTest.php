@@ -20,8 +20,11 @@ class ResidualBreakdownTest extends TestCase
 
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
-            [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
+        $samples = [[], [], [], [], [], [], [], [], [], []];
+
+        $labels = [11, 12, 14, 40, 55, 12, 16, 10, 2, 7];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(Ridge::class);
 
@@ -32,8 +35,17 @@ class ResidualBreakdownTest extends TestCase
         ]);
 
         $this->report = new ResidualBreakdown();
+    }
 
-        $this->outcome = [
+    public function test_build_report()
+    {
+        $this->assertInstanceOf(ResidualBreakdown::class, $this->report);
+        $this->assertInstanceOf(Report::class, $this->report);
+    }
+
+    public function test_generate_report()
+    {
+        $outcome = [
             'mean_absolute_error' => 0.8,
             'median_absolute_error' => 1,
             'mean_squared_error' => 1,
@@ -47,18 +59,9 @@ class ResidualBreakdownTest extends TestCase
             'r_squared' => 0.9958930551562692,
             'cardinality' => 10,
         ];
-    }
 
-    public function test_build_report()
-    {
-        $this->assertInstanceOf(ResidualBreakdown::class, $this->report);
-        $this->assertInstanceOf(Report::class, $this->report);
-    }
-
-    public function test_generate_report()
-    {
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $result);
+        $this->assertEquals($outcome, $result);
     }
 }

@@ -16,12 +16,13 @@ class OutlierRatioTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], [], [], [], [], [], []],
-            [11, 12, 14, 40, 55, 12, 16, 10, 2, 7]);
+        $samples = [[], [], [], [], [], [], [], [], [], []];
+
+        $labels = [0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(RobustZScore::class);
 
@@ -32,13 +33,6 @@ class OutlierRatioTest extends TestCase
         ]);
 
         $this->report = new OutlierRatio();
-
-        $this->outcome = [
-            'outliers' => 1,
-            'inliers' => 9,
-            'ratio' => 0.11111111209876541,
-            'cardinality' => 10,
-        ];
     }
 
     public function test_build_report()
@@ -49,8 +43,17 @@ class OutlierRatioTest extends TestCase
 
     public function test_generate_report()
     {
+        $outcome = [
+            'ratio' => 0.1111111111111111,
+            'proportion' => 0.1,
+            'percentage' => 10.0,
+            'outliers' => 1,
+            'inliers' => 9,
+            'cardinality' => 10,
+        ];
+
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $result);
+        $this->assertEquals($outcome, $result);
     }
 }

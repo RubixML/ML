@@ -17,7 +17,7 @@ class KDNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 4;
+    const TOLERANCE = 10;
 
     protected $generator;
 

@@ -27,7 +27,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 50, 0.2);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(4), 100, 0.2);
     }
 
     public function test_build_meta_estimator()

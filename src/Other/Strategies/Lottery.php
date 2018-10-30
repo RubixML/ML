@@ -56,6 +56,8 @@ class Lottery implements Categorical
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->categories[rand(0, count($this->categories) - 1)];
+        $index = rand(0, count($this->categories) - 1);
+
+        return $this->categories[$index];
     }
 }

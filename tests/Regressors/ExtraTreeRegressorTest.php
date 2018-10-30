@@ -18,7 +18,7 @@ class ExtraTreeRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 250;
     const TEST_SIZE = 5;
-    const TOLERANCE = 5;
+    const TOLERANCE = 10;
 
     protected $generator;
 

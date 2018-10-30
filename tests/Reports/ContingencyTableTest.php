@@ -20,8 +20,11 @@ class ContingencyTableTest extends TestCase
 
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KMeans::class);
 
@@ -32,17 +35,6 @@ class ContingencyTableTest extends TestCase
         ]);
 
         $this->report = new ContingencyTable();
-
-        $this->outcome = [
-            1 => [
-                'wolf' => 1,
-                'lamb' => 1,
-            ],
-            2 => [
-                'wolf' => 2,
-                'lamb' => 1,
-            ],
-        ];
     }
 
     public function test_build_report()
@@ -53,8 +45,19 @@ class ContingencyTableTest extends TestCase
 
     public function test_generate_report()
     {
+        $outcome = [
+            1 => [
+                'wolf' => 1,
+                'lamb' => 1,
+            ],
+            2 => [
+                'wolf' => 2,
+                'lamb' => 1,
+            ],
+        ];
+
         $result = $this->report->generate($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $result);
+        $this->assertEquals($outcome, $result);
     }
 }

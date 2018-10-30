@@ -31,6 +31,6 @@ class Jaccard implements Distance
             $maxs += max($coordinate, $b[$i]);
         }
 
-        return 1. - ($mins / $maxs);
+        return 1. - ($mins / ($maxs ?: self::EPSILON));
     }
 }

@@ -16,12 +16,13 @@ class AccuracyTest extends TestCase
 
     protected $testing;
 
-    protected $outcome;
-
     public function setUp()
     {
-        $this->testing = new Labeled([[], [], [], [], []],
-            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf']);
+        $samples = [[], [], [], [], []];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
+        $this->testing = Labeled::quick($samples, $labels);
 
         $this->estimator = $this->createMock(KNearestNeighbors::class);
 
@@ -32,8 +33,6 @@ class AccuracyTest extends TestCase
         ]);
 
         $this->metric = new Accuracy();
-
-        $this->outcome = 0.6;
     }
 
     public function test_build_metric()
@@ -51,7 +50,7 @@ class AccuracyTest extends TestCase
     {
         $score = $this->metric->score($this->estimator, $this->testing);
 
-        $this->assertEquals($this->outcome, $score);
+        $this->assertEquals(0.6, $score);
     }
 
     public function test_within_range()
