@@ -61,6 +61,13 @@ class GridSearch implements MetaEstimator, Learner, Persistable
     protected $validator;
 
     /**
+     * Should we retrain the best estimator using the whole dataset?
+     * 
+     * @var bool
+     */
+    protected $retrain;
+
+    /**
      * The argument names for the base estimator's constructor.
      *
      * @var array
@@ -114,10 +121,12 @@ class GridSearch implements MetaEstimator, Learner, Persistable
      * @param  array  $grid
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @param  \Rubix\ML\CrossValidation\Validator|null  $validator
+     * @param  bool  $retrain
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $grid, Metric $metric, Validator $validator = null)
+    public function __construct(string $base, array $grid, Metric $metric, Validator $validator = null,
+                                bool $retrain = true)
     {
         $reflector = new ReflectionClass($base);
 
@@ -161,6 +170,7 @@ class GridSearch implements MetaEstimator, Learner, Persistable
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator;
+        $this->retrain = $retrain;
         $this->estimator = $proxy;
     }
 
@@ -254,6 +264,10 @@ class GridSearch implements MetaEstimator, Learner, Persistable
             'score' => $bestScore,
             'params' => array_combine($this->args, $bestParams),
         ];
+
+        if ($this->retrain === true) {
+            $bestEstimator->train($dataset);
+        }
 
         $this->estimator = $bestEstimator;
     }

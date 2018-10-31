@@ -2910,6 +2910,7 @@ You can chose which parameters to search manually or you can generate parameters
 | 2 | grid | None | array | A grid of parameters containing [n-tuples](#what-is-a-tuple) where each tuple represents a possible parameter for a given constructor location by ordinal. |
 | 3 | metric | None | object | The validation metric used to score each set of parameters. |
 | 4 | validator | None | object | An instance of a Validator object (HoldOut, KFold, etc.) that will be used to test each parameter combination. |
+| 5 | retrain | true | bool | Should we retrain the best estimator using the whole dataset? |
 
 ##### Additional Methods:
 
@@ -2947,7 +2948,7 @@ $params = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], // Array of tuples containing possible params at that constructor position
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10));
+$estimator = new GridSearch(KNearestNeightbors::class, $params, new Accuracy(), new KFold(10), true);
 
 $estimator->train($dataset); // Train one estimator per parameter combination
 

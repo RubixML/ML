@@ -1,4 +1,5 @@
 - Unreleased
+    - Grid Search: Added option to retrain best model on full dataset
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor
