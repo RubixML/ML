@@ -3036,9 +3036,9 @@ To store a persistable estimator:
 public save(Persistable $persistable) : void
 ```
 
-To restore a persistable estimator from storage:
+Load a model from storage given the value of the reverse order in which they were saved in where *0* is the last model saved:
 ```php
-public load() : Persistable
+public load(int $ordinal = 0) : Persistable
 ```
 
 ### Filesystem
@@ -3061,7 +3061,7 @@ public flush() : void
 ```php
 use Rubix\ML\Persisters\Filesystem;
 
-$persister = new Filesystem('/path/to/example.model', 2);
+$persister = new Filesystem('/path/to/example.model', 3);
 ```
 
 ### Redis DB
@@ -3071,14 +3071,14 @@ Redis is a high performance in-memory key value store that can be used to persis
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | key | None | string | The key of the object in the database. |
-| 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
-| 3 | port | 6379 | int | The port of the Redis server. |
-| 4 | db | 0 | int | The database number. |
-| 5 | password | null | string | The password to access the database. |
-| 6 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
+| 2 | history | 1 | int | The number of backups to keep. |
+| 3 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
+| 4 | port | 6379 | int | The port of the Redis server. |
+| 5 | db | 0 | int | The database number. |
+| 6 | password | null | string | The password to access the database. |
+| 7 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
 
 ##### Additional Methods:
-
 Return an associative array of info from the Redis server:
 ```php
 public info() : array
@@ -3088,7 +3088,7 @@ public info() : array
 ```php
 use Rubix\ML\Persisters\RedisDB;
 
-$persister = new RedisDB('sentiment.model', '127.0.0.1', 6379, 1, 'password', 1.5);
+$persister = new RedisDB('sentiment.model', 10, '127.0.0.1', 6379, 2, 'password', 1.5);
 ```
 
 ---

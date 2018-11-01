@@ -3,6 +3,7 @@
     - Estimators with explicit loss functions are now Verbose
     - Grid Search: Added option to retrain best model on full dataset
     - Filesystem Persister now keeps backups of latest models
+    - Added loading backup models to Persister API
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

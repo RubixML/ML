@@ -28,6 +28,13 @@ class RedisDB implements Persister
     protected $key;
 
     /**
+     * The number of backups to keep.
+     *
+     * @var int
+     */
+    protected $history;
+
+    /**
      * The connector to the Redis database.
      *
      * @var \Redis
@@ -36,20 +43,27 @@ class RedisDB implements Persister
 
     /**
      * @param  string  $key
+     * @param  int  $history
      * @param  string  $host
      * @param  int  $port
      * @param  int  $db
      * @param  string  $password
      * @param  float  $timeout
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function __construct(string $key, string $host = '127.0.0.1', int $port = 6379,
+    public function __construct(string $key, int $history = 1, string $host = '127.0.0.1', int $port = 6379,
                                 int $db = 0, string $password = null, float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
                 . ' php.ini file.');
+        }
+
+        if ($history < 0) {
+            throw new InvalidArgumentException("The number of backups to keep"
+                . " cannot be less than 0, $history given.");
         }
 
         $connector = new Redis();
@@ -71,6 +85,7 @@ class RedisDB implements Persister
         };
 
         $this->key = $key;
+        $this->history = $history;
         $this->connector = $connector;
     }
 
@@ -95,23 +110,45 @@ class RedisDB implements Persister
     {
         $data = serialize($persistable);
 
-        $success = $this->connector->set($this->key, $data);
+        $success = $length = $this->connector->rPush($this->key, $data);
 
         if (!$success) {
             throw new RuntimeException('There was an error saving the'
                 . ' model to the database.');
         };
+
+        $diff = $length - $this->history;
+
+        if ($diff > 0) {
+            for ($i = 0; $i < $diff; $i++) {
+                $this->connector->lPop($this->key);
+            }
+        }
     }
 
     /**
-     * Restore the persistable object.
-     *
+     * Load the last saved model or load from backup by order of most recent.
+     * 
+     * @param  int  $ordinal
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function load() : Persistable
+    public function load(int $ordinal = 0) : Persistable
     {
-        $data = $this->connector->get($this->key) ?: '';
+        if ($ordinal < 0) {
+            throw new InvalidArgumentException("Ordinal cannot be less"
+                . " than 0, $ordinal given.");
+        }
+
+        if ($ordinal > $this->history) {
+            throw new InvalidArgumentException("The maximum number of"
+                . " backups is $this->history, $ordinal given.");
+        }
+
+        $index = -($ordinal + 1);
+
+        $data = $this->connector->lGet($this->key, $index) ?: '';
 
         if (empty($data)) {
             throw new RuntimeException('Model does not exist in database.');

@@ -103,20 +103,53 @@ class Filesystem implements Persister
     }
 
     /**
-     * Restore the persistable object.
-     *
-     * @throws \RuntimeException
+     * Load the last saved model or load from backup by order of most recent.
+     * 
+     * @param  int  $ordinal
      * @return \Rubix\ML\Persistable
      */
-    public function load() : Persistable
+    public function load(int $ordinal = 0) : Persistable
     {
-        if (!is_file($this->path)) {
-            throw new RuntimeException('File ' . basename($this->path)
-                . ' does not exist or is a folder, check the path'
-                . ' and permissions.');
+        if ($ordinal < 0) {
+            throw new InvalidArgumentException("Ordinal cannot be less"
+                . " than 0, $ordinal given.");
         }
 
-        $data = file_get_contents($this->path) ?: '';
+        if ($ordinal > $this->history) {
+            throw new InvalidArgumentException("The maximum number of"
+                . " backups is $this->history, $ordinal given.");
+        }
+
+        if ($ordinal === 0) {
+            if (!is_file($this->path)) {
+                throw new RuntimeException('File ' . basename($this->path)
+                    . ' does not exist or is a folder, check the path'
+                    . ' and permissions.');
+            }
+            
+            $path = $this->path;
+        } else {
+            $backups = [];
+
+            foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
+                $backups[$filename] = filemtime($filename);
+            }
+
+            arsort($backups);
+
+            $backups = array_keys($backups);
+
+            $index = $ordinal - 1;
+
+            if (!isset($backups[$index])) {
+                throw new InvalidArgumentException("Could not load model"
+                    . " from storage.");
+            }
+
+            $path = $backups[$index];
+        }
+
+        $data = file_get_contents($path) ?: '';
 
         $persistable = unserialize($data);
 
