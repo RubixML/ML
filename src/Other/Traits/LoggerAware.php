@@ -9,7 +9,7 @@ trait LoggerAware
     /**
      * The PSR-3 logger instance.
      * 
-     * @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface|null
      */
     protected $logger;
 

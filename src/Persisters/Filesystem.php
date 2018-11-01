@@ -19,75 +19,77 @@ use RuntimeException;
  */
 class Filesystem implements Persister
 {
+    const BACKUP_EXT = '.backup';
+
     /**
-     * The path to the file on the filesystem.
+     * The path to the model file on the filesystem.
      *
      * @var string
      */
     protected $path;
 
     /**
-     * Should we overwrite an already existing file?
+     * The number of backups to keep.
      *
-     * @var bool
+     * @var int
      */
-    protected $overwrite;
+    protected $history;
 
     /**
      * @param  string  $path
-     * @param  bool  $overwrite
+     * @param  int  $history
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $path, bool $overwrite = true)
+    public function __construct(string $path, int $history = 1)
     {
         if (!is_writable(dirname($path))) {
             throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable. Check path and permissions.');
+                . ' writable, check path and permissions.');
+        }
+
+        if ($history < 0) {
+            throw new InvalidArgumentException("The number of backups to keep"
+                . " cannot be less than 0, $history given.");
         }
 
         $this->path = $path;
-        $this->overwrite = $overwrite;
+        $this->history = $history;
     }
 
     /**
-     * Return the size of the file on the filesystem in bytes.
-     *
-     * @return int|null
-     */
-    public function size() : ?int
-    {
-        return filesize($this->path) ?: null;
-    }
-
-    /**
-     * Return an associative array of file info or false if file does not exist.
-     *
-     * @return array|null
-     */
-    public function info() : ?array
-    {
-        $info = stat($this->path);
-
-        if ($info === false) {
-            return null;
-        }
-
-        return array_slice($info, 13);
-    }
-
-    /**
-     * Save the persitable object.
+     * Save the persitable model.
      *
      * @param  \Rubix\ML\Persistable  $persistable
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void
+     * @return void 
      */
     public function save(Persistable $persistable) : void
     {
-        if ($this->overwrite === false and file_exists($this->path)) {
-            throw new RuntimeException('Cannot overwrite existing file.');
+        if ($this->history > 0 and is_file($this->path)) {
+            $filename = $this->path . '.' . (string) time() . self::BACKUP_EXT;
+
+            $success = rename($this->path, $filename);
+
+            if (!$success) {
+                throw new RuntimeException('Failed to save backup, check path'
+                 . ' and permissions.');
+            }
+
+            $backups = [];
+
+            foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
+                $backups[$filename] = filemtime($filename);
+            }
+
+            arsort($backups);
+
+            $old = array_slice(array_keys($backups), $this->history);
+
+            foreach ($old as $filename) {
+                unlink($filename);
+            }
         }
 
         $data = serialize($persistable);
@@ -95,8 +97,8 @@ class Filesystem implements Persister
         $success = file_put_contents($this->path, $data, LOCK_EX);
 
         if (!$success) {
-            throw new RuntimeException('Failed to serialize object to'
-                . ' filesystem.');
+            throw new RuntimeException('Failed to save model to the'
+                . ' filesystem, check path and permissions.');
         }
     }
 
@@ -108,9 +110,10 @@ class Filesystem implements Persister
      */
     public function load() : Persistable
     {
-        if (!file_exists($this->path)) {
+        if (!is_file($this->path)) {
             throw new RuntimeException('File ' . basename($this->path)
-                . ' does not exist. Check the path.');
+                . ' does not exist or is a folder, check the path'
+                . ' and permissions.');
         }
 
         $data = file_get_contents($this->path) ?: '';
@@ -118,19 +121,21 @@ class Filesystem implements Persister
         $persistable = unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Object cannot be reconstituted.');
+            throw new RuntimeException('Model could not be reconstituted.');
         }
 
         return $persistable;
     }
 
     /**
-     * Remove the file from the filesystem.
-     *
+     * Delete all backups from storage.
+     * 
      * @return void
      */
-    public function delete() : void
+    public function flush() : void
     {
-        unlink($this->path);
+        foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
+            unlink($filename);
+        }
     }
 }

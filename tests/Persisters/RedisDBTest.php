@@ -27,14 +27,12 @@ class RedisDBTest extends TestCase
         $this->assertInstanceOf(Persister::class, $this->persister);
     }
 
-    // public function test_save_load_and_delete()
+    // public function test_save_and_load()
     // {
     //     $this->persister->save($this->persistable);
     //
     //     $model = $this->persister->load();
     //
     //     $this->assertInstanceOf(Persistable::class, $model);
-    //
-    //     $this->persister->delete();
     // }
 }

@@ -114,16 +114,6 @@ class PersistentModel implements MetaEstimator, Learner
     }
 
     /**
-     * Delete the model from persistence.
-     *
-     * @return void
-     */
-    public function delete() : void
-    {
-        $this->persister->delete();
-    }
-
-    /**
      * Allow methods to be called on the model from the wrapper.
      *
      * @param  string  $name

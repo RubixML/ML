@@ -41,7 +41,6 @@ class RedisDB implements Persister
      * @param  int  $db
      * @param  string  $password
      * @param  float  $timeout
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
@@ -49,24 +48,24 @@ class RedisDB implements Persister
                                 int $db = 0, string $password = null, float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {
-            throw new RuntimeException('Redis extension is not loaded. Check'
+            throw new RuntimeException('Redis extension is not loaded, check'
                 . ' php.ini file.');
         }
 
         $connector = new Redis();
 
-        if ($connector->connect($host, $port, $timeout) === false) {
+        if (!$connector->connect($host, $port, $timeout)) {
             throw new RuntimeException('Could not connect to Redis server'
                 . ' at host ' . $host . ' on port ' . (string) $port . '.');
         };
 
         if (isset($password)) {
-            if ($connector->auth($password) === false) {
-                throw new InvalidArgumentException('Password is invalid.');
+            if (!$connector->auth($password)) {
+                throw new RuntimeException('Password is invalid.');
             }
         }
 
-        if ($connector->select($db) === false) {
+        if (!$connector->select($db)) {
             throw new RuntimeException('Could not select database number'
                 . (string) $db . '.');
         };
@@ -96,8 +95,11 @@ class RedisDB implements Persister
     {
         $data = serialize($persistable);
 
-        if ($this->connector->set($this->key, $data) === false) {
-            throw new RuntimeException('There was an error saving the object.');
+        $success = $this->connector->set($this->key, $data);
+
+        if (!$success) {
+            throw new RuntimeException('There was an error saving the'
+                . ' model to the database.');
         };
     }
 
@@ -112,25 +114,15 @@ class RedisDB implements Persister
         $data = $this->connector->get($this->key) ?: '';
 
         if (empty($data)) {
-            throw new RuntimeException('Object does not exist in database.');
+            throw new RuntimeException('Model does not exist in database.');
         }
 
         $persistable = unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Object cannot be reconstituted.');
+            throw new RuntimeException('Model could not be reconstituted.');
         }
 
         return $persistable;
-    }
-
-    /**
-     * Remove the key from the database.
-     *
-     * @return void
-     */
-    public function delete() : void
-    {
-        $this->connector->delete($this->key);
     }
 }

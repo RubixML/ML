@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 interface Persister
 {
     /**
-     * Save the persitable object.
+     * Save the persitable model.
      *
      * @param  \Rubix\ML\Persistable  $persistable
      * @return void
@@ -15,16 +15,9 @@ interface Persister
     public function save(Persistable $persistable) : void;
 
     /**
-     * Restore the persistable object.
+     * Restore the persistable model.
      *
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable;
-
-    /**
-     * Delete the object from persistence.
-     *
-     * @return void;
-     */
-    public function delete() : void;
 }

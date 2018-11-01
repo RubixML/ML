@@ -14,11 +14,15 @@ class FilesystemTest extends TestCase
 
     protected $persister;
 
+    protected $path;
+
     public function setUp()
     {
+        $this->path = __DIR__ . '/test.model';
+
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem(__DIR__ . '/test.model', true);
+        $this->persister = new Filesystem($this->path, 0);
     }
 
     public function test_build_persister()
@@ -29,18 +33,19 @@ class FilesystemTest extends TestCase
 
     public function test_save_load_and_delete()
     {
-        $this->assertFalse(file_exists(__DIR__ . '/test.model'));
+        $this->assertFalse(file_exists($this->path));
 
         $this->persister->save($this->persistable);
 
-        $this->assertFileExists(__DIR__ . '/test.model');
+        $this->assertFileExists($this->path);
 
         $model = $this->persister->load();
 
+        $this->assertInstanceOf(DummyClassifier::class, $model);
         $this->assertInstanceOf(Persistable::class, $model);
 
-        $this->persister->delete();
+        unlink($this->path);
 
-        $this->assertFalse(file_exists(__DIR__ . '/test.model'));
+        $this->assertFalse(file_exists($this->path));
     }
 }

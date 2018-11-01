@@ -2991,7 +2991,7 @@ array(2) {
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Most estimators in Rubix are persistable, but some are not allowed due to their poor storage complexity.
 
 ### Persistent Model
-It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()`, `load()`, and `delete()` that allow the estimator to be stored and retrieved.
+It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()` and `load()` that allow the estimator to be stored and retrieved.
 
 ##### Meta Estimator
 
@@ -3012,11 +3012,6 @@ Returns an instantiated model from a persister:
 public static load(Persister $persister) : self
 ```
 
-To remove the model from storage:
-```php
-public delete() : void
-```
-
 ##### Example:
 ```php
 use Rubix\ML\PersistentModel;
@@ -3034,7 +3029,7 @@ $estimator = PersistentModel::load($persister);
 ```
 
 ### Persisters
-Persisters are responsible for persisting a *persistable* object and are used by the [Persistable Model](#persistable-model) meta-estimator to save, restore, and delete models.
+Persisters are responsible for persisting a *persistable* object and are used by the [Persistable Model](#persistable-model) meta-estimator to save and restore models.
 
 To store a persistable estimator:
 ```php
@@ -3046,36 +3041,27 @@ To restore a persistable estimator from storage:
 public load() : Persistable
 ```
 
-To remove a persistable estimator from storage:
-```php
-public delete() : void
-```
-
 ### Filesystem
-Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister saves models to a file at a user-specified path.
+Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister saves models to a file at a user-specified path and automatically keeps backups of the latest versions of your models.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | path | None | string | The path to the file on the filesystem. |
-| 2 | overwrite | true | bool | Should we overwrite an already existing file? |
+| 2 | history | 1 | int | The number of backups to keep. |
 
 ##### Additional Methods:
-Return the size of the file on disk:
+Delete all backups from storage:
 ```php
-public size() : int
+public flush() : void
 ```
 
-Return an associative array of info about the file:
-```php
-public info() : array
-```
 
 ##### Example:
 ```php
 use Rubix\ML\Persisters\Filesystem;
 
-$persister = new Filesystem('/path/to/example.model', true);
+$persister = new Filesystem('/path/to/example.model', 2);
 ```
 
 ### Redis DB
