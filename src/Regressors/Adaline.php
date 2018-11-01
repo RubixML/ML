@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -10,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
@@ -34,8 +36,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adaline implements Online, Persistable
+class Adaline implements Online, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The maximum number of training epochs. i.e. the number of times to iterate
      * over the entire training set.
@@ -226,12 +230,14 @@ class Adaline implements Online, Persistable
             return;
         }
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $n = $dataset->numRows();
         
         $previous = $bestLoss = INF;
         $bestSnapshot = null;
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
             $loss = 0.;
@@ -248,6 +254,9 @@ class Adaline implements Online, Persistable
                 $bestLoss = $loss;
                 $bestSnapshot = Snapshot::take($this->network);
             }
+            
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, loss: $loss");
 
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
@@ -259,8 +268,13 @@ class Adaline implements Online, Persistable
         if (end($this->steps) > $bestLoss) {
             if (isset($bestSnapshot)) {
                 $this->network->restore($bestSnapshot);
+
+                !isset($this->logger) ?: $this->logger->info('Network restored'
+                    . ' from previous snapshot');
             }
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**

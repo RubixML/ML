@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\Learner;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
@@ -9,6 +10,7 @@ use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,8 +30,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Learner, Ensemble, Persistable
+class AdaBoost implements Learner, Ensemble, Verbose, Persistable
 {
+    use LoggerAware;
+    
     /**
      * The base classifier to be boosted.
      *
@@ -220,6 +224,8 @@ class AdaBoost implements Learner, Ensemble, Persistable
                 . ' labeled training set.');
         }
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $this->classes = $dataset->possibleOutcomes();
 
         $labels = $dataset->labels();
@@ -232,7 +238,7 @@ class AdaBoost implements Learner, Ensemble, Persistable
 
         $this->ensemble = $this->influences = $this->steps = [];
 
-        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
             $subset = $dataset->randomWeightedSubsetWithReplacement($p, $this->weights);
@@ -261,6 +267,9 @@ class AdaBoost implements Learner, Ensemble, Persistable
             $this->steps[] = $loss;
             $this->influences[] = $influence;
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, loss: $loss");
+
             if ($loss < $this->tolerance or $total < 0.) {
                 break 1;
             }
@@ -277,6 +286,8 @@ class AdaBoost implements Learner, Ensemble, Persistable
                 $weight /= $total;
             }
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**

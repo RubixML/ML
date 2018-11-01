@@ -1436,7 +1436,7 @@ Classifiers are a type of Estimator that predict discrete outcomes such as class
 ### AdaBoost
 Short for Adaptive Boosting, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Supervised | Learner | Persistable
+##### Supervised | Learner | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1874,7 +1874,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ### Fuzzy C Means
 Distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter. Fuzzy C Means is similar to both [K Means](#k-means) and [Gaussian Mixture](#gaussian-mixture) models in that they require a priori knowledge of the number (parameter *c*) of clusters.
 
-##### Unsupervised | Learner | Probabilistic | Persistable
+##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1908,7 +1908,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### Gaussian Mixture
 A Gaussian Mixture model is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow not just the centers (*means*) to be learned but the radii (*variances*) as well.
 
-##### Unsupervised | Learner | Probabilistic | Persistable
+##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1972,7 +1972,7 @@ $estimator = new KMeans(3, new Euclidean());
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (centroids) of a training set given by a radius constraint.
 
-##### Unsupervised | Learner | Persistable
+##### Unsupervised | Learner | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2010,7 +2010,7 @@ Regression analysis is used to predict the outcome of an event where the value i
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively online using Gradient Descent.
 
-##### Supervised | Learner | Online | Persistable
+##### Supervised | Learner | Online | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2090,7 +2090,7 @@ $estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
 ### Gradient Boost
 Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training a base *weak* regressor. Specifically, gradient boosting attempts to improve bias by training subsequent estimators to correct for errors made by the previous learners.
 
-##### Supervised | Learner | Ensemble | Persistable
+##### Supervised | Learner | Ensemble | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2164,7 +2164,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0));
 ### MLP Regressor
 A multi layer [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. The MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress declined during training.
 
-##### Supervised | Learner | Online | Persistable
+##### Supervised | Learner | Online | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

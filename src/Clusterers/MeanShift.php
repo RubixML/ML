@@ -3,10 +3,12 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -26,8 +28,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Learner, Persistable
+class MeanShift implements Learner, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum
      * distance between two points to be considered neighbors.
@@ -161,11 +165,13 @@ class MeanShift implements Learner, Persistable
                 . ' continuous features.');
         }
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $this->centroids = $previous = $dataset->samples();
 
         $this->steps = [];
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($this->centroids as $i => &$centroid) {
                 foreach ($dataset as $sample) {
                     $distance = $this->kernel->compute($sample, $centroid);
@@ -198,6 +204,9 @@ class MeanShift implements Learner, Persistable
 
             $this->steps[] = $shift;
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, shift: $shift");
+
             if ($shift < $this->minChange) {
                 break 1;
             }
@@ -206,6 +215,8 @@ class MeanShift implements Learner, Persistable
         }
 
         $this->centroids = array_values($this->centroids);
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**

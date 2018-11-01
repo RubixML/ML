@@ -3,6 +3,7 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -10,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -32,8 +34,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Learner, Probabilistic, Persistable
+class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 {
+    use LoggerAware;
+    
     const TWO_PI = 2. * M_PI;
 
     /**
@@ -191,12 +195,14 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
         list($means, $variances) = $this->initializeComponents($dataset);
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $this->means = $prevMeans = $means;
         $this->variances = $prevVariances = $variances;
 
         $this->steps = $memberships = [];
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($dataset as $i => $sample) {
                 $memberships[$i] = $this->jointLikelihood($sample);
             }
@@ -236,6 +242,9 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
 
             $this->steps[] = $shift;
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            . " completed, shift: $shift");
+
             if ($shift < $this->minChange) {
                 break 1;
             }
@@ -243,6 +252,8 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
             $prevMeans = $this->means;
             $prevVariances = $this->variances;
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**
@@ -300,6 +311,9 @@ class GaussianMixture implements Learner, Probabilistic, Persistable
     protected function initializeComponents(Dataset $dataset) : array
     {
         $clusterer = new KMeans($this->k);
+
+        !isset($this->logger) ?: $this->logger->info("Initializing $this->k"
+            . " gaussian components");
 
         $clusterer->train($dataset);
 

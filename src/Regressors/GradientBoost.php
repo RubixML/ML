@@ -3,11 +3,13 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,8 +30,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Learner, Ensemble, Persistable
+class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 {
+    use LoggerAware;
+
     const AVAILABLE_ESTIMATORS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
@@ -182,6 +186,8 @@ class GradientBoost implements Learner, Ensemble, Persistable
                 . ' labeled training set.');
         }
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $n = $dataset->numRows();
         $p = (int) round($this->ratio * $n);
 
@@ -189,7 +195,7 @@ class GradientBoost implements Learner, Ensemble, Persistable
 
         $previous = INF;
 
-        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
             $subset = $dataset->randomize()->head($p);
@@ -213,6 +219,9 @@ class GradientBoost implements Learner, Ensemble, Persistable
             $this->ensemble[] = $estimator;
             $this->steps[] = $loss;
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, loss: $loss");
+
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
@@ -225,6 +234,8 @@ class GradientBoost implements Learner, Ensemble, Persistable
 
             $previous = $loss;
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**

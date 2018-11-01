@@ -3,11 +3,13 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -29,8 +31,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class FuzzyCMeans implements Learner, Probabilistic, Persistable
+class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 {
+    use LoggerAware;
+    
     /**
      * The target number of clusters.
      *
@@ -185,12 +189,14 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
 
         $this->centroids = $this->initializeCentroids($dataset);
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $this->steps = $memberships = [];
 
         $rotated = $dataset->rotate();
         $previous = INF;
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($dataset as $i => $sample) {
                 $memberships[$i] = $this->calculateMembership($sample);
             }
@@ -214,12 +220,17 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
 
             $this->steps[] = $loss;
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, loss: $loss");
+
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
             $previous = $loss;
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**
@@ -282,6 +293,9 @@ class FuzzyCMeans implements Learner, Probabilistic, Persistable
             throw new RuntimeException('The number of samples cannot be less'
                 . ' than the number of target clusters.');
         }
+
+        !isset($this->logger) ?: $this->logger->info("Initializing $this->k"
+            . " cluster centroids");
 
         $weights = array_fill(0, $n, 1. / $n);
 
