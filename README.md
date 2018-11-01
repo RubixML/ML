@@ -1330,6 +1330,25 @@ array(2) {
 }
 ```
 
+### Verbose
+Estimators that implement the Verbose interface are capable of logging to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog) or [Analog](https://github.com/jbroadway/analog) in real time.
+
+To set the logger pass in any PSR-3 compatible logger instance:
+```php
+public setLogger(LoggerInterface $logger) : void
+```
+
+##### Example:
+```php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$logger = new Logger('CreditModel');
+$logger->pushHandler(new StreamHandler('php://stdout'));
+
+$estimator->setLogger($logger);
+```
+
 ---
 ### Anomaly Detectors
 
@@ -1641,7 +1660,7 @@ $estimator = new KNearestNeighbors(3, new Euclidean());
 ### Logistic Regression
 A type of linear classifier that uses the logistic (sigmoid) function to distinguish between two possible outcomes. Logistic Regression measures the relationship between the class label and one or more independent variables by estimating probabilities.
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1677,7 +1696,7 @@ $estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new Cr
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [Hidden Layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems. MLP also features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1793,7 +1812,7 @@ $estimator = new RandomForest(ClassificationTree(10, 3, 5, 1e-2), 400, 0.1);
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer [neural network](#neural-network) with a Softmax output layer.
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

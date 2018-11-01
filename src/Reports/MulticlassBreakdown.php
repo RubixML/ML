@@ -49,8 +49,7 @@ class MulticlassBreakdown implements Report
     }
 
     /**
-     * Prepare the classification report. This involves calculating a number of
-     * useful metrics on a per outcome basis.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing

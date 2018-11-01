@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -13,6 +14,7 @@ use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Hidden;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder;
@@ -37,8 +39,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Online, Probabilistic, Persistable
+class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The user-specified hidden layers of the network.
      *
@@ -310,6 +314,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Persistable
             return;
         }
 
+        !isset($this->logger) ?: $this->logger->info('Training started');
+
         $n = $dataset->numRows();
 
         list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
@@ -341,6 +347,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Persistable
                 $bestSnapshot = Snapshot::take($this->network);
             }
 
+            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+                . " completed, loss: $loss, score: $score");
+
             if ($score === $max) {
                 break 1;
             }
@@ -366,8 +375,13 @@ class MultiLayerPerceptron implements Online, Probabilistic, Persistable
         if (end($this->scores) < $bestScore) {
             if (isset($bestSnapshot)) {
                 $this->network->restore($bestSnapshot);
+
+                !isset($this->logger) ?: $this->logger->info('Network restored'
+                    . ' from previous snapshot');
             }
         }
+
+        !isset($this->logger) ?: $this->logger->info("Training complete");
     }
 
     /**

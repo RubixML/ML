@@ -24,7 +24,7 @@ use InvalidArgumentException;
 class ResidualBreakdown implements Report
 {
     /**
-     * Generate a residual analysis of a regression.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing
@@ -43,46 +43,52 @@ class ResidualBreakdown implements Report
                 . ' Labeled testing set.');
         }
 
-        if ($testing->numRows() === 0) {
+        $n = $testing->numRows();
+
+        if ($n < 1) {
             throw new InvalidArgumentException('Testing set must contain at'
                 . ' least one sample.');
         }
+
+        $predictions = $estimator->predict($testing);
+
+        $muHat = Stats::mean($testing->labels());
 
         $errors = $l1 = $l2 = [];
 
         $sse = $sst = 0.;
 
-        $predictions = $estimator->predict($testing);
-
-        $mean = Stats::mean($testing->labels());
-
         foreach ($predictions as $i => $prediction) {
-            $errors[] = $error = $testing->label($i) - $prediction;
+            $expected = $testing->label($i);
+
+            $errors[] = $error = $expected - $prediction;
 
             $l1[] = abs($error);
-            $l2[] = $error ** 2;
+            $l2[] = $t = $error ** 2;
 
-            $sse += end($l2);
-            $sst += ($testing->label($i) - $mean) ** 2;
+            $sse += $t;
+            $sst += ($expected - $muHat) ** 2;
         }
 
         list($mean, $variance) = Stats::meanVar($errors);
 
         $mse = Stats::mean($l2);
 
+        $r2 = 1. - ($sse / ($sst ?: self::EPSILON));
+
         return [
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
             'rms_error' => sqrt($mse),
-            'r_squared' => 1 - ($sse / $sst),
+            'r_squared' => $r2,
             'error_mean' => $mean,
             'error_variance' => $variance,
             'error_skewness' => Stats::skewness($errors, $mean),
             'error_kurtosis' => Stats::kurtosis($errors, $mean),
             'error_min' => min($errors),
             'error_max' => max($errors),
-            'cardinality' => $testing->numRows(),
+            'cardinality' => $n,
         ];
     }
 }

@@ -56,7 +56,7 @@ class AggregateReport implements Report
     }
 
     /**
-     * Generate an aggregated report consisting of 1 or more individual reports.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing

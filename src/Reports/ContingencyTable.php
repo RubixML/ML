@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class ContingencyTable implements Report
 {
     /**
-     * Generate a contingency table for the clustering given a ground truth.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing

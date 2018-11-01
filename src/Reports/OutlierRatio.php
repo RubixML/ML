@@ -19,7 +19,7 @@ use InvalidArgumentException;
 class OutlierRatio implements Report
 {
     /**
-     * Generate a confusion matrix.
+     * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\Datasets\Dataset  $testing
