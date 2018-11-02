@@ -3009,7 +3009,7 @@ public save() : void
 
 Returns an instantiated model from a persister:
 ```php
-public static load(Persister $persister) : self
+public static load(Persister $persister, int $version = 0) : self
 ```
 
 ##### Example:
@@ -3036,9 +3036,9 @@ To store a persistable estimator:
 public save(Persistable $persistable) : void
 ```
 
-Load a model from storage given the value of the reverse order in which they were saved in where *0* is the last model saved:
+Load a model from storage given a version number where *0* is the last model saved:
 ```php
-public load(int $ordinal = 0) : Persistable
+public load(int $version = 0) : Persistable
 ```
 
 ### Filesystem

@@ -38,14 +38,16 @@ class PersistentModel implements MetaEstimator, Learner
     protected $persister;
 
     /**
-     * Factory method to restore the model from a persister.
+     * Factory method to restore a specific version of the model from a
+     * persister.
      *
      * @param  \Rubix\ML\Persisters\Persister  $persister
+     * @param  int  $version
      * @return self
      */
-    public static function load(Persister $persister) : self
+    public static function load(Persister $persister, int $version = 0) : self
     {
-        $model = $persister->load();
+        $model = $persister->load($version);
         
         return new self($model, $persister);
     }

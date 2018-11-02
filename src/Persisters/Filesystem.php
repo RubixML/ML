@@ -103,24 +103,26 @@ class Filesystem implements Persister
     }
 
     /**
-     * Load the last saved model or load from backup by order of most recent.
+     * Load a model given a version number where 0 is the last model saved.
      * 
-     * @param  int  $ordinal
+     * @param  int  $version
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function load(int $ordinal = 0) : Persistable
+    public function load(int $version = 0) : Persistable
     {
-        if ($ordinal < 0) {
-            throw new InvalidArgumentException("Ordinal cannot be less"
-                . " than 0, $ordinal given.");
+        if ($version < 0) {
+            throw new InvalidArgumentException("Version cannot be less"
+                . " than 0, $version given.");
         }
 
-        if ($ordinal > $this->history) {
+        if ($version > $this->history) {
             throw new InvalidArgumentException("The maximum number of"
-                . " backups is $this->history, $ordinal given.");
+                . " backups is $this->history, $version given.");
         }
 
-        if ($ordinal === 0) {
+        if ($version === 0) {
             if (!is_file($this->path)) {
                 throw new RuntimeException('File ' . basename($this->path)
                     . ' does not exist or is a folder, check the path'
@@ -139,7 +141,7 @@ class Filesystem implements Persister
 
             $backups = array_keys($backups);
 
-            $index = $ordinal - 1;
+            $index = $version - 1;
 
             if (!isset($backups[$index])) {
                 throw new InvalidArgumentException("Could not load model"

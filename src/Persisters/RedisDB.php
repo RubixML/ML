@@ -21,7 +21,7 @@ use Redis;
 class RedisDB implements Persister
 {
     /**
-     * The key of the object in storage.
+     * The key of the model in storage.
      *
      * @var string
      */
@@ -117,36 +117,34 @@ class RedisDB implements Persister
                 . ' model to the database.');
         };
 
-        $diff = $length - $this->history;
+        $diff = $length - ($this->history + 1);
 
         if ($diff > 0) {
-            for ($i = 0; $i < $diff; $i++) {
-                $this->connector->lPop($this->key);
-            }
+            $this->connector->lTrim($this->key, $diff, -1);
         }
     }
 
     /**
-     * Load the last saved model or load from backup by order of most recent.
+     * Load a model given a version number where 0 is the last model saved.
      * 
-     * @param  int  $ordinal
+     * @param  int  $version
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function load(int $ordinal = 0) : Persistable
+    public function load(int $version = 0) : Persistable
     {
-        if ($ordinal < 0) {
-            throw new InvalidArgumentException("Ordinal cannot be less"
-                . " than 0, $ordinal given.");
+        if ($version < 0) {
+            throw new InvalidArgumentException("Version cannot be less"
+                . " than 0, $version given.");
         }
 
-        if ($ordinal > $this->history) {
+        if ($version > $this->history) {
             throw new InvalidArgumentException("The maximum number of"
-                . " backups is $this->history, $ordinal given.");
+                . " backups is $this->history, $version given.");
         }
 
-        $index = -($ordinal + 1);
+        $index = -($version + 1);
 
         $data = $this->connector->lGet($this->key, $index) ?: '';
 
