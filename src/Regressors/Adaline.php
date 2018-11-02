@@ -9,7 +9,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
-use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -234,8 +233,7 @@ class Adaline implements Online, Verbose, Persistable
 
         $n = $dataset->numRows();
         
-        $previous = $bestLoss = INF;
-        $bestSnapshot = null;
+        $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -249,29 +247,15 @@ class Adaline implements Online, Verbose, Persistable
             $loss /= $n;
 
             $this->steps[] = $loss;
-
-            if ($loss < $bestLoss) {
-                $bestLoss = $loss;
-                $bestSnapshot = Snapshot::take($this->network);
-            }
             
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " completed, loss: $loss");
+                . " complete, loss: $loss");
 
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
 
             $previous = $loss;
-        }
-
-        if (end($this->steps) > $bestLoss) {
-            if (isset($bestSnapshot)) {
-                $this->network->restore($bestSnapshot);
-
-                if ($this->logger) $this->logger->info('Network restored'
-                    . ' from previous snapshot');
-            }
         }
 
         if ($this->logger) $this->logger->info("Training complete");

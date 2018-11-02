@@ -268,7 +268,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             $this->influences[] = $influence;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " completed, loss: $loss");
+                . " complete, loss: $loss");
 
             if ($loss < $this->tolerance or $total < 0.) {
                 break 1;

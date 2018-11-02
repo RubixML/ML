@@ -53,18 +53,19 @@ class RawPixelEncoder implements Extractor
     public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
         if (count($size) !== 2) {
-            throw new InvalidArgumentException('Image size must contain both'
-                . ' width and height.');
+            throw new InvalidArgumentException('Size must contain width and'
+                . ' height but ' . count($size) . ' dimensions given.');
         }
 
         if (!is_int($size[0]) and !is_int($size[1])) {
-            throw new InvalidArgumentException('Image width and height must be'
-                . ' integers.');
+            throw new InvalidArgumentException('Width and height must be'
+                . ' integers, ' .  gettype($size[0])  . ' and '
+                . gettype($size[1]) . ' given.');
         }
 
         if ($size[0] < 1 or $size[1] < 1) {
-            throw new InvalidArgumentException('Image width and height must be'
-                . ' greater than 1 pixel.');
+            throw new InvalidArgumentException("Width and height must be"
+                . " greater than 1 pixel, $size[0] and $size[1] given.");
         }
 
         $this->size = $size;
@@ -111,9 +112,11 @@ class RawPixelEncoder implements Extractor
                     $image = $image->greyscale();
                 }
 
-                $image = $image->fit(...$this->size)->getCore();
+                $image = $image->fit(...$this->size);
 
-                $vectors[] = $this->vectorize($image);
+                $vectors[] = $this->vectorize($image->getCore());
+
+                $image->destroy();
             }
         }
 

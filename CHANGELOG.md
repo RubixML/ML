@@ -34,7 +34,6 @@
     - Added build/quick factory methods to Datasets
     - Added Interval Discretizer transformer
     - GaussianNB and Naive Bayes now accept class prior probabilities
-    - Single layer neural net estimators now use snapshotting
     - Removed Image Patch Descriptor
     - Added Learner interface for trainable estimators
     - Added smart cluster initialization to K Means and Fuzzy C Means

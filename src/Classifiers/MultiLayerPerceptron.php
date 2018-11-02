@@ -348,7 +348,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             }
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " completed, loss: $loss, score: $score");
+                . " complete, score: $score, loss: $loss");
 
             if ($score === $max) {
                 break 1;

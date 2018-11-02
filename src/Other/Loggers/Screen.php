@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Loggers;
 
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
@@ -14,8 +13,10 @@ use Psr\Log\LogLevel;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Screen implements LoggerInterface
+class Screen implements Logger
 {
+    const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    
     /**
      * The channel name that appears on each line.
      * 
@@ -161,7 +162,7 @@ class Screen implements LoggerInterface
         $prefix = '';
 
         if ($this->timestamps) {
-            $prefix .= '[' . date('Y-m-d H:i:s') . '] ';
+            $prefix .= '[' . date(self::TIMESTAMP_FORMAT) . '] ';
         }
 
         $prefix .=  $this->channel . '.' . strtoupper((string) $level) . ': ';

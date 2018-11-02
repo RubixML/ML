@@ -339,7 +339,7 @@ class MLPRegressor implements Online, Verbose, Persistable
             }
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " completed, loss: $loss");
+                . " complete, score: $score, loss: $loss");
 
             if ($score === $max) {
                 break 1;
