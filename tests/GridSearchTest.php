@@ -7,7 +7,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
-use Rubix\ML\Other\Loggers\Screen;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;

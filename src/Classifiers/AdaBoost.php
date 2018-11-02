@@ -224,7 +224,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $this->classes = $dataset->possibleOutcomes();
 
@@ -267,7 +267,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             $this->steps[] = $loss;
             $this->influences[] = $influence;
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " completed, loss: $loss");
 
             if ($loss < $this->tolerance or $total < 0.) {
@@ -287,7 +287,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             }
         }
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**

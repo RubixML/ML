@@ -186,7 +186,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $n = $dataset->numRows();
         $p = (int) round($this->ratio * $n);
@@ -219,7 +219,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
             $this->ensemble[] = $estimator;
             $this->steps[] = $loss;
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " completed, loss: $loss");
 
             if (abs($previous - $loss) < $this->minChange) {
@@ -235,7 +235,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
             $previous = $loss;
         }
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**

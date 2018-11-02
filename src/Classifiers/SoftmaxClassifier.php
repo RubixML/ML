@@ -237,7 +237,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
             return;
         }
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $n = $dataset->numRows();
 
@@ -262,7 +262,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
                 $bestSnapshot = Snapshot::take($this->network);
             }
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
             . " completed, loss: $loss");
 
             if (abs($previous - $loss) < $this->minChange) {
@@ -276,12 +276,12 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
             if (isset($bestSnapshot)) {
                 $this->network->restore($bestSnapshot);
 
-                !isset($this->logger) ?: $this->logger->info('Network restored'
+                if ($this->logger) $this->logger->info('Network restored'
                 . ' from previous snapshot');
             }
         }
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**

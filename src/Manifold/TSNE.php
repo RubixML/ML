@@ -2,9 +2,11 @@
 
 namespace Rubix\ML\Manifold;
 
+use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -27,8 +29,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder
+class TSNE implements Embedder, Verbose
 {
+    use LoggerAware;
+
     /**
      * The number of dimensions of the embedding.
      *
@@ -235,23 +239,33 @@ class TSNE implements Embedder
                 . ' continuous features.');
         }
 
-        $this->steps = [];
+        $n = $dataset->numRows();
 
-        $x = Matrix::quick($dataset->samples());
+        $x = Matrix::build($dataset->samples());
 
-        $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
-            ->multiply(1e-3);
-
-        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
+        if ($this->logger) $this->logger->info('Computing high dimensional'
+            . ' affinities.');
 
         $distances = $this->pairwiseDistances($x);
 
         $p = $this->highAffinities($distances)
             ->multiply($this->exaggeration);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        if ($this->logger) $this->logger->info('Embedding started');
+
+        $y = $yHat = Matrix::gaussian($n, $this->dimensions)
+            ->multiply(1e-3);
+
+        $velocity = Matrix::zeros($n, $this->dimensions);
+
+        $this->steps = [];
+
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             if ($epoch === $this->early) {
                 $p = $p->divide($this->exaggeration);
+
+                if ($this->logger) $this->logger->info("Early exaggeration"
+                    . " stage completed");
             }
 
             $distances = $this->pairwiseDistances($y);
@@ -270,10 +284,15 @@ class TSNE implements Embedder
 
             $this->steps[] = $magnitude;
 
+            if ($this->logger) $this->logger->info("Epoch $epoch"
+                . " completed, gradient: $magnitude");
+
             if ($magnitude < $this->minGradient) {
                 break 1;
             }
         }
+
+        if ($this->logger) $this->logger->info("Embedding complete");
 
         return $y->asArray();
     }

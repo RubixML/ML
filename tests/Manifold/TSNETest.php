@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Manifold;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\Manifold\TSNE;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Manifold\Embedder;
@@ -32,6 +33,7 @@ class TSNETest extends TestCase
     public function test_build_embedder()
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
+        $this->assertInstanceOf(Verbose::class, $this->embedder);
         $this->assertInstanceOf(Embedder::class, $this->embedder);
     }
 

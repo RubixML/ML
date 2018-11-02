@@ -191,14 +191,17 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         $n = $dataset->numRows();
 
-        $this->priors = array_fill(0, $this->k, 1. / $this->k);
+        if ($this->logger) $this->logger->info("Initializing $this->k"
+            . " gaussian components");
 
         list($means, $variances) = $this->initializeComponents($dataset);
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $this->means = $prevMeans = $means;
         $this->variances = $prevVariances = $variances;
+
+        $this->priors = array_fill(0, $this->k, 1. / $this->k);
 
         $this->steps = $memberships = [];
 
@@ -242,7 +245,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
             $this->steps[] = $shift;
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
             . " completed, shift: $shift");
 
             if ($shift < $this->minChange) {
@@ -253,7 +256,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $prevVariances = $this->variances;
         }
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**
@@ -311,9 +314,6 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     protected function initializeComponents(Dataset $dataset) : array
     {
         $clusterer = new KMeans($this->k);
-
-        !isset($this->logger) ?: $this->logger->info("Initializing $this->k"
-            . " gaussian components");
 
         $clusterer->train($dataset);
 

@@ -6,6 +6,7 @@
     - Added loading backup models to Persister API
     - Added PSR-3 compatible screen logger
     - Grid Search is now Verbose
+    - t-SNE embedder is now Verbose
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

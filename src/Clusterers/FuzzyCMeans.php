@@ -187,9 +187,12 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 . ' continuous features.');
         }
 
+        if ($this->logger) $this->logger->info("Initializing $this->c"
+            . " cluster centroids");
+
         $this->centroids = $this->initializeCentroids($dataset);
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $this->steps = $memberships = [];
 
@@ -220,7 +223,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
             $this->steps[] = $loss;
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " completed, loss: $loss");
 
             if (abs($previous - $loss) < $this->minChange) {
@@ -230,7 +233,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             $previous = $loss;
         }
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**
@@ -293,9 +296,6 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             throw new RuntimeException('The number of samples cannot be less'
                 . ' than the number of target clusters.');
         }
-
-        !isset($this->logger) ?: $this->logger->info("Initializing $this->k"
-            . " cluster centroids");
 
         $weights = array_fill(0, $n, 1. / $n);
 

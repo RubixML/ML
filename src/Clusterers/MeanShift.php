@@ -165,7 +165,7 @@ class MeanShift implements Learner, Verbose, Persistable
                 . ' continuous features.');
         }
 
-        !isset($this->logger) ?: $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Training started');
 
         $this->centroids = $previous = $dataset->samples();
 
@@ -204,7 +204,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
             $this->steps[] = $shift;
 
-            !isset($this->logger) ?: $this->logger->info("Epoch $epoch"
+            if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " completed, shift: $shift");
 
             if ($shift < $this->minChange) {
@@ -216,7 +216,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
         $this->centroids = array_values($this->centroids);
 
-        !isset($this->logger) ?: $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info("Training complete");
     }
 
     /**

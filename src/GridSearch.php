@@ -242,7 +242,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
                 . ' Labeled training set.');
         }
 
-        !isset($this->logger) ?: $this->logger->info('Search started');
+        if ($this->logger) $this->logger->info('Search started');
 
         $this->params = $this->scores = $this->best = [];
 
@@ -276,7 +276,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
             $this->params[] = $args;
             $this->scores[] = $score;
 
-            !isset($this->logger) ?: $this->logger->info("Test score: $score");
+            if ($this->logger) $this->logger->info("Test score: $score");
         }
 
         $this->best = [
@@ -285,7 +285,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
         ];
 
         if ($this->retrain === true) {
-            !isset($this->logger) ?: $this->logger->info("Retraining best"
+            if ($this->logger) $this->logger->info("Retraining best"
                 . " estimator on the full dataset");
 
             $bestEstimator->train($dataset);
@@ -293,7 +293,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
 
         $this->estimator = $bestEstimator;
 
-        !isset($this->logger) ?: $this->logger->info("Search complete");
+        if ($this->logger) $this->logger->info("Search complete");
     }
 
     /**

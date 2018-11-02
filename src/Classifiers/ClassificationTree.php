@@ -183,8 +183,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         $bestIndex = $bestValue = null;
         $bestGroups = [];
 
-        $maxFeatures = $this->maxFeatures
-            ?? (int) round(sqrt($dataset->numColumns()));
+        $k = $dataset->numColumns();
+
+        $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
         shuffle($this->indices);
 
