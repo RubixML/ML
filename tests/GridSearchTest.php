@@ -2,10 +2,12 @@
 
 namespace Rubix\ML\Tests;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
+use Rubix\ML\Other\Loggers\Screen;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -45,6 +47,7 @@ class GridSearchTest extends TestCase
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

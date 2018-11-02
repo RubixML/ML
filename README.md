@@ -216,6 +216,8 @@ MIT
 			- [Wild Guess](#wild-guess)
 		- [Helpers](#helpers)
 			- [Params](#params)
+		- [Loggers](#loggers)
+			- [Screen](#screen)
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
     - [What is a Tuple?](#what-is-a-tuple)
@@ -1331,11 +1333,18 @@ array(2) {
 ```
 
 ### Verbose
-Estimators that implement the Verbose interface are capable of logging to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog) or [Analog](https://github.com/jbroadway/analog) in real time.
+Estimators that implement the Verbose interface are capable of logging to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the [Screen Logger](#screen) in real time.
 
 To set the logger pass in any PSR-3 compatible logger instance:
 ```php
 public setLogger(LoggerInterface $logger) : void
+```
+
+##### Example:
+```php
+use Rubix\ML\Other\Loggers\Screen;
+
+$estimator->setLogger(new Screen('sentiment'));
 ```
 
 ##### Example:
@@ -4623,7 +4632,6 @@ $strategy = new WildGuess(5);
 
 ### Helpers
 
-
 ### Params
 Generate distributions of values to use in conjunction with [Grid Search](#grid-search) or other forms of model selection and/or cross validation.
 
@@ -4716,6 +4724,25 @@ array(3) {
   [2]=> object(Rubix\ML\Kernels\Distance\Diagonal)#15 (0) {
   }
 }
+```
+
+### Loggers
+All loggers implement the standard PSR-3 interface.
+
+### Screen
+A logger that outputs to the php standard output.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | channel | 'default' | string | The channel name that appears on each line. |
+| 2 | timestamps | true | bool | Should we show timestamps? |
+
+##### Example:
+```php
+use Rubix\ML\Other\Loggers\Screen;
+
+$logger = new Screen('credit', true);
 ```
 
 ---

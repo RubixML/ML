@@ -120,7 +120,9 @@ class RedisDB implements Persister
         $diff = $length - ($this->history + 1);
 
         if ($diff > 0) {
-            $this->connector->lTrim($this->key, $diff, -1);
+            for ($i = 0; $i < $diff; $i++) {
+                $this->connector->lPop($this->key);
+            }
         }
     }
 

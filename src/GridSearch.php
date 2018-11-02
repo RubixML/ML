@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\KFold;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
@@ -27,8 +28,10 @@ use ReflectionClass;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements MetaEstimator, Learner, Persistable
+class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The class name of the base estimator.
      *
@@ -239,6 +242,8 @@ class GridSearch implements MetaEstimator, Learner, Persistable
                 . ' Labeled training set.');
         }
 
+        !isset($this->logger) ?: $this->logger->info('Search started');
+
         $this->params = $this->scores = $this->best = [];
 
         $bestScore = -INF;
@@ -248,6 +253,18 @@ class GridSearch implements MetaEstimator, Learner, Persistable
         foreach ($this->combineGrid($this->grid) as $params) {
             $estimator = new $this->base(...$params);
 
+            $args = $this->extractArgs($params);
+
+            if (isset($this->logger)) {
+                $str = '';
+
+                foreach ($args as $arg => $param) {
+                    $str .= $arg . '=' . (string) $param . ' ';
+                }
+
+                $this->logger->info('Testing parameters: ' . trim($str));
+            }
+
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
             if ($score > $bestScore) {
@@ -256,8 +273,10 @@ class GridSearch implements MetaEstimator, Learner, Persistable
                 $bestEstimator = $estimator;
             }
 
-            $this->params[] = array_combine($this->args, $params);
+            $this->params[] = $args;
             $this->scores[] = $score;
+
+            !isset($this->logger) ?: $this->logger->info("Test score: $score");
         }
 
         $this->best = [
@@ -266,10 +285,15 @@ class GridSearch implements MetaEstimator, Learner, Persistable
         ];
 
         if ($this->retrain === true) {
+            !isset($this->logger) ?: $this->logger->info("Retraining best"
+                . " estimator on the full dataset");
+
             $bestEstimator->train($dataset);
         }
 
         $this->estimator = $bestEstimator;
+
+        !isset($this->logger) ?: $this->logger->info("Search complete");
     }
 
     /**
@@ -309,6 +333,31 @@ class GridSearch implements MetaEstimator, Learner, Persistable
         }
 
         return $combinations;
+    }
+
+    /**
+     * Extract the arguments from the model constructor for display.
+     * 
+     * @param  array  $params
+     * @return array
+     */
+    public function extractArgs(array $params) : array
+    {
+        foreach ($params as &$param) {
+            if (is_object($param)) {
+                $param = get_class($param);
+            }
+
+            if (is_array($param)) {
+                foreach ($param as &$subParam) {
+                    if (is_object($subParam)) {
+                        $subParam = get_class($subParam);
+                    }
+                }
+            }
+        }
+
+        return array_combine($this->args, $params) ?: [];
     }
 
     /**
