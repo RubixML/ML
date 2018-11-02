@@ -7,6 +7,7 @@
     - Added PSR-3 compatible screen logger
     - Grid Search is now Verbose
     - t-SNE embedder is now Verbose
+    - Fixed Naive Bayes reset category counts during partial train
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor
