@@ -97,6 +97,7 @@ MIT
 				- [L1 Normalizer](#l1-normalizer)
 				- [L2 Normalizer](#l2-normalizer)
 				- [Lambda Function](#lambda-function)
+				- [Linear Discriminant Analysis](#linear-discriminant-analysis)
 				- [Max Absolute Scaler](#max-absolute-scaler)
 				- [Min Max Normalizer](#min-max-normalizer)
 				- [Missing Data Imputer](#missing-data-imputer)
@@ -2552,6 +2553,39 @@ $transformer = new LambdaFunction(function ($samples) {
 });
 ```
 
+### Linear Discriminant Analysis
+A supervised dimensionality reduction technique that projects a dataset onto the most discriminative features based on class labels. In other words, LDA finds a linear combination of features that characterizes or separates two or more classes.
+
+##### Supervised | Continuous *Only* | Stateful
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | None | int | The target number of dimensions to project onto. |
+
+##### Additional Methods:
+Return the amount of variance that has been preserved by the transformation:
+```php
+public explainedVar() : ?float
+```
+
+Return the amount of variance lost by discarding the noise components:
+```php
+public noiseVar() : ?float
+```
+
+Return the percentage of information lost due to the transformation:
+```php
+public lossiness() : ?float
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
+
+$transformer = new LinearDiscriminantAnalysis(20);
+```
+
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
@@ -2685,7 +2719,7 @@ $transformer = new PolynomialExpander(3);
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that would retain as much of the information within the data as possible.
 
-##### Continuous *Only* | Stateful
+##### Unsupervised | Continuous *Only* | Stateful
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

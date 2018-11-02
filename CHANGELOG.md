@@ -1,4 +1,5 @@
 - Unreleased
+    - Added Linear Discriminant Analysis (LDA) transformer
     - Added Verbose interface for logging
     - Estimators with explicit loss functions are now Verbose
     - Grid Search: Added option to retrain best model on full dataset

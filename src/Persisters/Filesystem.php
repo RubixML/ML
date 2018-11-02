@@ -19,7 +19,7 @@ use RuntimeException;
  */
 class Filesystem implements Persister
 {
-    const BACKUP_EXT = '.backup';
+    const BACKUP_EXT = '.old';
 
     /**
      * The path to the model file on the filesystem.
@@ -83,12 +83,14 @@ class Filesystem implements Persister
                 $backups[$filename] = filemtime($filename);
             }
 
-            arsort($backups);
+            if (count($backups) > $this->history) {
+                arsort($backups);
 
-            $old = array_slice(array_keys($backups), $this->history);
+                $old = array_slice(array_keys($backups), $this->history);
 
-            foreach ($old as $filename) {
-                unlink($filename);
+                foreach ($old as $filename) {
+                    unlink($filename);
+                }
             }
         }
 

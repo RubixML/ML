@@ -121,7 +121,12 @@ class RedisDB implements Persister
 
         if ($diff > 0) {
             for ($i = 0; $i < $diff; $i++) {
-                $this->connector->lPop($this->key);
+                $success = $this->connector->lPop($this->key);
+
+                if (!$success) {
+                    throw new RuntimeException('There was an error'
+                        . ' deleting a backup from the database.');
+                };
             }
         }
     }
