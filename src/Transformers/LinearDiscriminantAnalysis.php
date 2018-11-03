@@ -136,7 +136,7 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
                 . ' with continuous features.');
         }
 
-        $d = $dataset->numColumns();
+        list($n, $d) = $dataset->shape();
 
         $sW = Matrix::zeros($d, $d);
 
@@ -144,13 +144,16 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
             $sW = Matrix::build($stratum->samples())
                 ->transpose()
                 ->covariance()
-                ->multiply($stratum->numRows())
+                ->multiply($stratum->numRows() / $n)
                 ->add($sW);
         }
 
-        $sB = $sW->covariance()->subtract($sW);
+        $sB = Matrix::quick($dataset->samples())
+            ->transpose()
+            ->covariance()
+            ->subtract($sW);
 
-        list($eigenvalues, $eigenvectors) = $sW->inverse()->multiply($sB)->eig(true);
+        list($eigenvalues, $eigenvectors) = $sB->eig(true);
 
         $totalVar = array_sum($eigenvalues);
 
