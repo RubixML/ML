@@ -1,6 +1,7 @@
 - Unreleased
-    - Added Linear Discriminant Analysis (LDA) transformer
     - Added Verbose interface for logging
+    - Added Linear Discriminant Analysis (LDA) transformer
+    - Added Cyclic neural net Optimizer
     - Estimators with explicit loss functions are now Verbose
     - Grid Search: Added option to retrain best model on full dataset
     - Filesystem Persister now keeps backups of latest models

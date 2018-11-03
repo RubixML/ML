@@ -10,9 +10,9 @@ use SplObjectStorage;
 /**
  * Momentum
  *
- * Momentum adds velocity to each step until exhausted. It does so by
- * accumulating momentum from past updates and adding a factor to the current
- * step.
+ * Momentum adds velocity to each step until exhausted. It does so by accumulating
+ * momentum from past updates and adding a factor of the previous velocity to the
+ * current step.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

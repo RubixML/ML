@@ -4,11 +4,11 @@ namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use PHPUnit\Framework\TestCase;
 
-class StochasticTest extends TestCase
+class CyclicalTest extends TestCase
 {
     protected $optimizer;
 
@@ -30,12 +30,12 @@ class StochasticTest extends TestCase
             [0.04, -0.01, -0.5],
         ]);
 
-        $this->optimizer = new Stochastic(0.001);
+        $this->optimizer = new Cyclical(0.001, 0.006, 2000);
     }
 
     public function test_build_optimizer()
     {
-        $this->assertInstanceOf(Stochastic::class, $this->optimizer);
+        $this->assertInstanceOf(Cyclical::class, $this->optimizer);
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 

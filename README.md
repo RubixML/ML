@@ -164,6 +164,7 @@ MIT
 		- [Optimizers](#optimizers)
 			- [AdaGrad](#adagrad)
 			- [Adam](#adam)
+			- [Cyclical](#cyclical)
 			- [Momentum](#momentum)
 			- [RMS Prop](#rms-prop)
 			- [Step Decay](#step-decay)
@@ -3735,8 +3736,26 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 $optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
+### Cyclical
+The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the uppoer bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus acheiving higher accuracy.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | lower | 0.001 | float | The lower bound on the learning rate. |
+| 2 | upper | 0.006 | float | The upper bound on the learning rate. |
+| 3 | steps | 100 | int | The number of steps in every half cycle. |
+| 4 | decay | 0.99994 | float | The exponential decay factor to decrease the learning rate by every step. |
+
+##### Example:
+```php
+use Rubix\ML\NeuralNet\Optimizers\Cyclical;
+
+$optimizer = new StepDecay(0.001, 0.005, 1000);
+```
+
 ### Momentum
-Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor to the current step.
+Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor of the previous velocity to the current step.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3768,14 +3787,14 @@ $optimizer = new RMSProp(0.01, 0.9);
 ```
 
 ### Step Decay
-A learning rate decay stochastic optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
+A learning rate decay optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
-| 2 | k | 10 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
-| 3 | decay | 1e-4 | float | The decay factor to decrease the learning rate by every k steps. |
+| 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
+| 3 | decay | 1e-3 | float | The decay factor to decrease the learning rate by every floor. |
 
 ##### Example:
 ```php
