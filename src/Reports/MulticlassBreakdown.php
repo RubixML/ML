@@ -114,25 +114,34 @@ class MulticlassBreakdown implements Report
             $fp = $falsePositives[$label];
             $fn = $falseNegatives[$label];
 
-            $table[$label]['accuracy'] = ($tp + $tn) / ($tp + $tn + $fp + $fn);
-            $table[$label]['precision'] = $tp / (($tp + $fp) ?: self::EPSILON);
-            $table[$label]['recall'] = $tp / (($tp + $fn) ?: self::EPSILON);
-            $table[$label]['specificity'] = $tn / (($tn + $fp) ?: self::EPSILON);
-            $table[$label]['miss_rate'] = 1. - $table[$label]['recall'];
-            $table[$label]['fall_out'] = 1. - $table[$label]['specificity'];
-            $table[$label]['f1_score'] = 2.
-                * (($table[$label]['precision'] * $table[$label]['recall']))
-                / ($table[$label]['precision'] + $table[$label]['recall']);
-            $table[$label]['informedness'] = $table[$label]['recall']
-                + $table[$label]['specificity'] - 1;
-            $table[$label]['mcc'] = ($tp * $tn - $fp * $fn)
-                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
+            $accuracy = ($tp + $tn) / ($tp + $tn + $fp + $fn);
+            $precision = $tp / (($tp + $fp) ?: self::EPSILON);
+            $recall = $tp / (($tp + $fn) ?: self::EPSILON);
+            $specificity = $tn / (($tn + $fp) ?: self::EPSILON);
+            $cardinality = $tp + $fn;
+
+            $f1 = 2. * (($precision * $recall))
+                / (($precision + $recall) ?: self::EPSILON);
+
+            $mcc = ($tp * $tn - $fp * $fn)
+                / sqrt((($tp + $fp) * ($tp + $fn)
+                * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
+
+            $table[$label]['accuracy'] = $accuracy;
+            $table[$label]['precision'] = $precision;
+            $table[$label]['recall'] = $recall;
+            $table[$label]['specificity'] = $specificity;
+            $table[$label]['miss_rate'] = 1. - $recall;
+            $table[$label]['fall_out'] = 1. - $specificity;
+            $table[$label]['f1_score'] = $f1;
+            $table[$label]['informedness'] = $recall + $specificity - 1;
+            $table[$label]['mcc'] = $mcc;
             $table[$label]['true_positives'] = $tp;
             $table[$label]['true_negatives'] = $tn;
             $table[$label]['false_positives'] = $fp;
             $table[$label]['false_negatives'] = $fn;
-            $table[$label]['cardinality'] = $tp + $fn;
-            $table[$label]['density'] = $table[$label]['cardinality'] / $n;
+            $table[$label]['cardinality'] = $cardinality;
+            $table[$label]['density'] = $cardinality / $n;
         }
 
         $overall = array_fill_keys([
