@@ -51,20 +51,22 @@ class Agglomerate implements Generator
     {
         $k = count($generators);
 
-        if ($k === 0) {
+        if ($k < 1) {
             throw new InvalidArgumentException('Must provide at least one'
                 . ' generator to agglomerate.');
         }
 
-        $d = current($generators)->dimensions();
-
-        foreach ($generators as $label => $generator) {
+        foreach ($generators as $generator) {
             if (!$generator instanceof Generator) {
                 throw new InvalidArgumentException('Cannot add a non generator'
                     . ' to the agglomerate, ' . gettype($generator)
                     . ' found.');
             }
+        }
 
+        $d = reset($generators)->dimensions(); 
+
+        foreach ($generators as $generator) {
             if ($generator->dimensions() !== $d) {
                 throw new InvalidArgumentException("Generators must have the"
                     . " same dimensionality, $d needed but found"
@@ -75,15 +77,22 @@ class Agglomerate implements Generator
         if (is_array($weights)) {
             if (count($weights) !== $k) {
                 throw new InvalidArgumentException("The number of weights must"
-                    . " equal the number of generators, $k needed but found"
+                    . " equal the number of generators, $k needed but found "
                     . count($weights) . ".");
+            }
+
+            foreach ($weights as $weight) {
+                if ($weight < 0) {
+                    throw new InvalidArgumentException("Weights must all be"
+                        . " positive, $weight found.");
+                }
             }
 
             $total = array_sum($weights);
 
-            if ($total === 0.) {
+            if ($total == 0) {
                 throw new InvalidArgumentException('Total weight for the'
-                    . ' agglomerate cannot be equal to 0.');
+                    . ' agglomerate cannot be 0.');
             }
 
             foreach ($weights as &$weight) {
@@ -130,6 +139,10 @@ class Agglomerate implements Generator
 
         foreach ($this->generators as $label => $generator) {
             $p = (int) round($this->weights[$label] * $n);
+
+            if ($p < 1) {
+                continue 1;
+            }
 
             $samples = $generator->generate($p)->samples();
 
