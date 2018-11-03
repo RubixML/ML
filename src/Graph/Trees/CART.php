@@ -79,18 +79,20 @@ abstract class CART implements Tree
      * Greedy algorithm to choose the best split for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    abstract protected function findBestSplit(Labeled $dataset) : Comparison;
+    abstract protected function findBestSplit(Labeled $dataset, int $depth) : Comparison;
 
     /**
      * Terminate the branch by selecting the most likely outcome as the
      * prediction.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    abstract protected function terminate(Labeled $dataset) : BinaryNode;
+    abstract protected function terminate(Labeled $dataset, int $depth) : BinaryNode;
 
     /**
      * The complexity of the decision tree i.e. the number of splits.
@@ -121,7 +123,7 @@ abstract class CART implements Tree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->root = $this->findBestSplit($dataset);
+        $this->root = $this->findBestSplit($dataset, 0);
 
         $this->splits = 1;
 
@@ -145,7 +147,7 @@ abstract class CART implements Tree
         $current->cleanup();
 
         if ($left->empty() or $right->empty()) {
-            $node = $this->terminate($left->merge($right));
+            $node = $this->terminate($left->merge($right), $depth);
 
             $current->attachLeft($node);
             $current->attachRight($node);
@@ -153,13 +155,13 @@ abstract class CART implements Tree
         }
 
         if ($depth >= $this->maxDepth) {
-            $current->attachLeft($this->terminate($left));
-            $current->attachRight($this->terminate($right));
+            $current->attachLeft($this->terminate($left, $depth));
+            $current->attachRight($this->terminate($right, $depth));
             return;
         }
 
         if ($left->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($left);
+            $node = $this->findBestSplit($left, $depth);
 
             $current->attachLeft($node);
 
@@ -167,11 +169,11 @@ abstract class CART implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachLeft($this->terminate($left));
+            $current->attachLeft($this->terminate($left, $depth));
         }
 
         if ($right->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($right);
+            $node = $this->findBestSplit($right, $depth);
 
             $current->attachRight($node);
 
@@ -179,7 +181,7 @@ abstract class CART implements Tree
 
             $this->split($node, $depth + 1);
         } else {
-            $current->attachRight($this->terminate($right));
+            $current->attachRight($this->terminate($right, $depth));
         }
     }
 

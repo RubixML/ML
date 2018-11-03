@@ -29,9 +29,10 @@ class ExtraTreeRegressor extends RegressionTree
      * impurity among a random selection of $maxFeatures features.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestVariance = INF;
         $bestIndex = $bestValue = null;
@@ -64,6 +65,9 @@ class ExtraTreeRegressor extends RegressionTree
                 break 1;
             }
         }
+
+        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+            . " value=$bestValue impurity=$bestVariance depth=$depth");
 
         return new Comparison($bestValue, $bestIndex, $bestGroups, $bestVariance);
     }

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -12,6 +13,7 @@ use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -25,8 +27,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Learner, Probabilistic, Persistable
+class ClassificationTree extends CART implements Learner, Probabilistic, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The maximum number of features to consider when determining a split.
      *
@@ -114,7 +118,11 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         $this->classes = $dataset->possibleOutcomes();
         $this->indices = $dataset->axes();
 
+        if ($this->logger) $this->logger->info('Training started');
+
         $this->grow($dataset);
+
+        if ($this->logger) $this->logger->info('Training completed');
 
         $this->indices = [];
     }
@@ -175,9 +183,10 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestGini = INF;
         $bestIndex = $bestValue = null;
@@ -210,6 +219,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             }
         }
 
+        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+            . " value=$bestValue impurity=$bestGini depth=$depth");
+
         return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
     }
 
@@ -218,9 +230,10 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * probability.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    protected function terminate(Labeled $dataset) : BinaryNode
+    protected function terminate(Labeled $dataset, int $depth) : BinaryNode
     {
         $probabilities = array_fill_keys($this->classes, 0.);
 
@@ -233,6 +246,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         $prediction = Argmax::compute($probabilities);
     
         $gini = $this->gini([$dataset]);
+
+        if ($this->logger) $this->logger->info("Leaf node: outcome=$prediction,"
+            . " impurity=$gini depth=$depth");
 
         return new Best($prediction, $probabilities, $gini, $n);
     }

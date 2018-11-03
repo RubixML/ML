@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Rubix\ML\Verbose;
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;

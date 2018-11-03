@@ -1485,7 +1485,7 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(10, 3, 5), 200, 0.1, 0.5, 1e-2
 ### Classification Tree
 A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/wiki/Gini_coefficient) to greedily construct a decision tree for classification. It is multi modal in the sense that it can handle both categorical and continuous data at the same time.
 
-##### Supervised | Learner | Probabilistic | Persistable
+##### Supervised | Learner | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -1565,7 +1565,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ### Extra Tree Classifier
 n Extremely Randomized Classification Tree, Extra Trees differ from standard [Classification Trees](#classification-tree) in that they choose a random split drawn from a set max features, rather than the *best* split. Extra Trees work great in Ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
-##### Supervised | Learner | Probabilistic | Persistable
+##### Supervised | Learner | Probabilistic | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2077,7 +2077,7 @@ $estimator = new DummyRegressor(new BlurryMedian(0.2));
 ### Extra Tree Regressor
 An Extremely Randomized Regression Tree, Extra Trees differ from standard Regression Trees in that they choose a random split drawn from a set max features, rather than the *best* split. When max features is set to 1 this amounts to building a totally random tree. Extra Tree can be used in an Ensemble, such as [Gradient Boost](#gradient-boost) or [Bootstrap Aggregator](#bootstrap-aggregator), or by itself, however, it is generally considered a *weak learner* by itself.
 
-##### Supervised | Learner | Persistable
+##### Supervised | Learner | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2230,7 +2230,7 @@ $estimator = new MLPRegressor([
 ### Regression Tree
 A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
 
-##### Supervised | Learner | Persistable
+##### Supervised | Learner | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

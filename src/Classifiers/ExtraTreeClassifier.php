@@ -30,9 +30,10 @@ class ExtraTreeClassifier extends ClassificationTree
      * impurity among a random selection of $maxFeatures features.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestGini = INF;
         $bestIndex = $bestValue = null;
@@ -62,6 +63,9 @@ class ExtraTreeClassifier extends ClassificationTree
                 break 1;
             }
         }
+
+        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+            . " value=$bestValue impurity=$bestGini depth=$depth");
 
         return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
     }

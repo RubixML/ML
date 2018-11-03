@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -42,6 +43,7 @@ class ExtraTreeClassifierTest extends TestCase
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }

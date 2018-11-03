@@ -151,11 +151,17 @@ class Params
      * Return the short class name from a fully qualified class name
      * (fqcn).
      * 
-     * @param  object  $object
+     * @param  mixed  $object
+     * @throws \InvalidArgumentException
      * @return string
      */
-    public static function shortName(object $object) : string
+    public static function shortName($object) : string
     {
+        if (!is_object($object)) {
+            throw new InvalidArgumentException('Must provide an object'
+                . gettype($object) . ' given.');
+        }
+
         $class = get_class($object);
 
         return substr(strrchr($class, '\\') ?: '', 1);
