@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Other\Helpers;
 
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Classifiers\DummyClassifier;
 use PHPUnit\Framework\TestCase;
 
 class ParamsTest extends TestCase

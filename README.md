@@ -2310,7 +2310,7 @@ Often, additional processing of input data is required to deliver correct predic
 ### Pipeline
 Pipeline is responsible for transforming the input sample matrix of a Dataset in such a way that can be processed by the base Estimator. Pipeline accepts a base Estimator and a list of Transformers to apply to the input data before it is fed to the learning algorithm. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `predict()`.
 
-##### Meta Estimator | Online | Persistable
+##### Meta Estimator | Online | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -2963,7 +2963,7 @@ Grid Search is an algorithm that optimizes hyperparameter selection. From the us
 
 You can chose which parameters to search manually or you can generate parameters  to be used with Grid Search using the [Params](#params) helper.
 
-##### Meta Estimator | Persistable
+##### Meta Estimator | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
@@ -3036,7 +3036,7 @@ Model persistence is the practice of saving a trained model to disk so that it c
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()` and `load()` that allow the estimator to be stored and retrieved.
 
-##### Meta Estimator
+##### Meta Estimator | Verbose
 
 ##### Parameters:
 | # | Param | Default | Type | Description |

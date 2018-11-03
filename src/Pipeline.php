@@ -4,8 +4,10 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Transformers\Elastic;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 
 /**
@@ -23,8 +25,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements MetaEstimator, Online, Persistable
+class Pipeline implements MetaEstimator, Online, Verbose, Persistable
 {
+    use LoggerAware;
+
     /**
      * The wrapped estimator instance.
      *
@@ -83,7 +87,7 @@ class Pipeline implements MetaEstimator, Online, Persistable
     }
 
     /**
-     * Return the underlying model instance.
+     * Return the base estimator instance.
      *
      * @return \Rubix\ML\Estimator
      */
@@ -148,6 +152,9 @@ class Pipeline implements MetaEstimator, Online, Persistable
     {
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
+                if ($this->logger) $this->logger->info('Fitting '
+                    . Params::shortName($transformer));
+
                 $transformer->fit($dataset);
             }
 
@@ -165,6 +172,9 @@ class Pipeline implements MetaEstimator, Online, Persistable
     {
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Elastic) {
+                if ($this->logger) $this->logger->info('Updating '
+                    . Params::shortName($transformer));
+
                 $transformer->update($dataset);
             }
 
@@ -180,6 +190,9 @@ class Pipeline implements MetaEstimator, Online, Persistable
      */
     public function preprocess(Dataset $dataset) : void
     {
+        if ($this->logger) $this->logger->info('Preprocessing '
+            . $dataset->numRows() . ' samples');
+
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);
         }

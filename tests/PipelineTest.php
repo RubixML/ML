@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Online;
+use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -44,6 +45,7 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
         $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

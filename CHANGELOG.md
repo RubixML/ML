@@ -9,6 +9,7 @@
     - Grid Search is now Verbose
     - t-SNE embedder is now Verbose
     - Fixed Naive Bayes reset category counts during partial train
+    - Pipeline and Persistent Model are now Verbose
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

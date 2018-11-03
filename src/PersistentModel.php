@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -21,8 +22,10 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements MetaEstimator, Learner
+class PersistentModel implements MetaEstimator, Verbose, Learner
 {
+    use LoggerAware;
+
     /**
      * The underlying persistable estimator instance.
      *
@@ -59,7 +62,7 @@ class PersistentModel implements MetaEstimator, Learner
      */
     public function __construct(Persistable $base, Persister $persister)
     {
-        $this->base = $base;;
+        $this->base = $base;
         $this->persister = $persister;
     }
 
@@ -74,11 +77,11 @@ class PersistentModel implements MetaEstimator, Learner
     }
 
     /**
-     * Return the instance of the base estimator.
+     * Return the base estimator instance.
      *
-     * @return \Rubix\ML\Persistable
+     * @return \Rubix\ML\Estimator
      */
-    public function estimator() : Persistable
+    public function estimator() : Estimator
     {
         return $this->base;
     }
@@ -113,6 +116,8 @@ class PersistentModel implements MetaEstimator, Learner
     public function save() : void
     {
         $this->persister->save($this->base);
+
+        if ($this->logger) $this->logger->info('Model saved');
     }
 
     /**

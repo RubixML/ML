@@ -102,6 +102,16 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
     }
 
     /**
+     * Return the base estimator instance.
+     *
+     * @return \Rubix\ML\Estimator
+     */
+    public function estimator() : Estimator
+    {
+        return $this->base;
+    }
+
+    /**
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *

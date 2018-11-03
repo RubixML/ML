@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests;
 
+use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
@@ -31,6 +32,7 @@ class PersistentModelTest extends TestCase
     {
         $this->assertInstanceOf(PersistentModel::class, $this->model);
         $this->assertInstanceOf(MetaEstimator::class, $this->model);
+        $this->assertInstanceOf(Verbose::class, $this->model);
         $this->assertInstanceOf(Estimator::class, $this->model);
     }
 }

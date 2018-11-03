@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
@@ -145,13 +146,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
                 . ' estimator.');
         }
 
-        $constructor = $reflector->getConstructor();
-
-        if ($constructor instanceof ReflectionMethod) {
-            $args = array_column($constructor->getParameters(), 'name');
-        } else {
-            $args = [];
-        }
+        $args = Params::args($base);
 
         if (count($grid) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
@@ -160,12 +155,12 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
 
         foreach ($grid as &$options) {
             if (!is_array($options)) {
-                $options = (array) $options;
+                $options = [$options];
             }
         }
 
         if (is_null($validator)) {
-            $validator = new KFold();
+            $validator = new KFold(5);
         }
 
         $this->base = $base;
@@ -218,7 +213,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Return the best estimator instance.
+     * Return the base estimator instance.
      *
      * @return \Rubix\ML\Estimator
      */
@@ -253,17 +248,10 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
         foreach ($this->combineGrid($this->grid) as $params) {
             $estimator = new $this->base(...$params);
 
-            $args = $this->extractArgs($params);
+            $constructor = $this->makeConstructor($params);
 
-            if (isset($this->logger)) {
-                $str = '';
-
-                foreach ($args as $arg => $param) {
-                    $str .= $arg . '=' . (string) $param . ' ';
-                }
-
-                $this->logger->info('Testing parameters: ' . trim($str));
-            }
+            if ($this->logger) $this->logger->info('Testing parameters: '
+                . $this->stringifyConstructor($constructor));
 
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
@@ -273,7 +261,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
                 $bestEstimator = $estimator;
             }
 
-            $this->params[] = $args;
+            $this->params[] = $constructor;
             $this->scores[] = $score;
 
             if ($this->logger) $this->logger->info("Test score: $score");
@@ -336,28 +324,47 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Extract the arguments from the model constructor for display.
+     * Add the arguments from the model constructor to the given
+     * parameters as keys in an associative array.
      * 
      * @param  array  $params
      * @return array
      */
-    public function extractArgs(array $params) : array
+    protected function makeConstructor(array $params) : array
     {
         foreach ($params as &$param) {
             if (is_object($param)) {
-                $param = get_class($param);
+                $param = Params::shortName($param);
             }
 
             if (is_array($param)) {
                 foreach ($param as &$subParam) {
                     if (is_object($subParam)) {
-                        $subParam = get_class($subParam);
+                        $subParam = Params::shortName($subParam);
                     }
                 }
             }
         }
 
         return array_combine($this->args, $params) ?: [];
+    }
+
+    /**
+     * Return a string representation of the constructor arguments from
+     * an associative array.
+     * 
+     * @param  array  $constructor
+     * @return string
+     */
+    protected function stringifyConstructor(array $constructor) : string
+    {
+        $str = '';
+
+        foreach ($constructor as $arg => $param) {
+            $str .= $arg . '=' . (string) $param . ' ';
+        }
+
+        return trim($str);
     }
 
     /**

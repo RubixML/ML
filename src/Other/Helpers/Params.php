@@ -3,6 +3,8 @@
 namespace Rubix\ML\Other\Helpers;
 
 use InvalidArgumentException;
+use ReflectionMethod;
+use ReflectionClass;
 
 /**
  * Params
@@ -116,5 +118,46 @@ class Params
         $interval = ($end - $start) / ($n - 1);
 
         return range($start, $end, $interval);
+    }
+
+    /**
+     * Extract the arguments from the model constructor for display.
+     * 
+     * @param  mixed  $object
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public static function args($object) : array
+    {
+        if (!is_object($object) and !is_string($object)) {
+            throw new InvalidArgumentException('Must provide an object'
+                . ' or class name, ' . gettype($object) . ' given.');
+        }
+
+        $reflector = new ReflectionClass($object);
+
+        $constructor = $reflector->getConstructor();
+
+        if ($constructor instanceof ReflectionMethod) {
+            $args = array_column($constructor->getParameters(), 'name');
+        } else {
+            $args = [];
+        }
+
+        return $args;
+    }
+
+    /**
+     * Return the short class name from a fully qualified class name
+     * (fqcn).
+     * 
+     * @param  object  $object
+     * @return string
+     */
+    public static function shortName(object $object) : string
+    {
+        $class = get_class($object);
+
+        return substr(strrchr($class, '\\') ?: '', 1);
     }
 }
