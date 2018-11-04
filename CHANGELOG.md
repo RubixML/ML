@@ -2,6 +2,7 @@
     - Added Verbose interface for logging
     - Added Linear Discriminant Analysis (LDA) transformer
     - Manifold learners are now considered Estimators
+    - Transformers can now transform labels
     - Added Cyclic neural net Optimizer
     - Added k-d neighbors search with pruning
     - Estimators with explicit loss functions are now Verbose

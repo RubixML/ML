@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -83,6 +84,19 @@ class Unlabeled extends DataFrame implements Dataset
     public function __construct(array $samples = [], bool $validate = true)
     {
         parent::__construct($samples, $validate);
+    }
+
+    /**
+     * Apply a transformation to the dataset and return for chaining.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return self
+     */
+    public function apply(Transformer $transformer) : self
+    {
+        $transformer->transform($this->samples);
+
+        return $this;
     }
 
     /**

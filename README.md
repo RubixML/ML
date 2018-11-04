@@ -2522,7 +2522,7 @@ $transformer = new L2Normalizer();
 ```
 
 ### Lambda Function
-Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix as an argument and should return the transformed sample matrix.
+Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [tuple](#what-is-a-tuple).
 
 ##### Categorical | Continuous
 
@@ -2539,10 +2539,12 @@ This transformer does not have any additional methods.
 use Rubix\ML\Transformers\LambdaFunction;
 
 // Instantiate a lambda function that will sum up all the features for each sample
-$transformer = new LambdaFunction(function ($samples) {
-	return array_map(function ($sample) {
+$transformer = new LambdaFunction(function ($samples, $labels) {
+	$samples = array_map(function ($sample) {
 		return [array_sum($sample)];
 	}, $samples);
+
+	return [$samples, $labels]; // Return a tuple of transformed samples/labels
 });
 ```
 

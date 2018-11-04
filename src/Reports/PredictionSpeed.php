@@ -20,6 +20,28 @@ use InvalidArgumentException;
 class PredictionSpeed implements Report
 {
     /**
+     * The maximum number of samples to use to generate the report.
+     * 
+     * @var int
+     */
+    protected $maxSamples;
+
+    /**
+     * @param  int  $maxSamples
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function __construct(int $maxSamples = 200)
+    {
+        if ($maxSamples < 1) {
+            throw new InvalidArgumentException("At least 1 samples is"
+                . " needed to generate the report, $maxSamples given.");
+        }
+
+        $this->maxSamples = $maxSamples;
+    }
+
+    /**
      * Generate the report.
      *
      * @param  \Rubix\ML\Estimator  $estimator
@@ -35,9 +57,11 @@ class PredictionSpeed implements Report
                 . ' least one sample to predict.');
         }
 
+        $subset = $testing->randomize()->head($this->maxSamples);
+
         $start = microtime(true);
 
-        $estimator->predict($testing);
+        $estimator->predict($subset);
 
         $end = microtime(true);
 

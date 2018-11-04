@@ -162,13 +162,14 @@ class ZScaleStandardizer implements Transformer, Elastic
     }
 
     /**
-     * Transform the sample matrix.
+     * Transform the dataset in place.
      *
      * @param  array  $samples
+     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples) : void
+    public function transform(array &$samples, ?array &$labels = null) : void
     {
         if (is_null($this->means) or is_null($this->stddevs)) {
             throw new RuntimeException('Transformer has not been fitted.');

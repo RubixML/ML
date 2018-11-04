@@ -16,12 +16,13 @@ namespace Rubix\ML\Transformers;
 class NumericStringConverter implements Transformer
 {
     /**
-     * Transform the sample matrix.
+     * Transform the dataset in place.
      *
      * @param  array  $samples
+     * @param  array|null  $labels
      * @return void
      */
-    public function transform(array &$samples) : void
+    public function transform(array &$samples, ?array &$labels = null) : void
     {
         foreach ($samples as &$sample) {
             foreach ($sample as &$feature) {
@@ -29,6 +30,16 @@ class NumericStringConverter implements Transformer
                     $feature = (int) $feature == $feature
                         ? (int) $feature
                         : (float) $feature;
+                }
+            }
+        }
+
+        if ($labels) {
+            foreach ($labels as &$label) {
+                if (is_string($label) and is_numeric($label)) {
+                    $label = (int) $label == $label
+                        ? (int) $label
+                        : (float) $label;
                 }
             }
         }

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -227,19 +226,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function size() : int
     {
         return $this->numRows() * $this->numColumns();
-    }
-
-    /**
-     * Apply a transformation to the dataframe and return this for chaining.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        $transformer->transform($this->samples);
-
-        return $this;
     }
 
     /**

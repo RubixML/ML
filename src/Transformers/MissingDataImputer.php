@@ -109,13 +109,13 @@ class MissingDataImputer implements Transformer, Stateful
     }
 
     /**
-     * Transform the sample matrix.
+     * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @throws \RuntimeException
+     * @param  array|null  $labels
      * @return void
      */
-    public function transform(array &$samples) : void
+    public function transform(array &$samples, ?array &$labels = null) : void
     {
         if (is_null($this->strategies)) {
             throw new RuntimeException('Transformer has not been fitted.');

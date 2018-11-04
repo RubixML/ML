@@ -21,14 +21,14 @@ class LambdaFunctionTest extends TestCase
             [100, 300, 200, 400],
         ]);
 
-        $this->transformer = new LambdaFunction(function ($samples) {
+        $this->transformer = new LambdaFunction(function ($samples, $labels) {
             $sigmas = [];
 
             foreach ($samples as $sample) {
                 $sigmas[] = [array_sum($sample)];
             }
 
-            return $sigmas;
+            return [$sigmas, $labels];
         });
     }
 
