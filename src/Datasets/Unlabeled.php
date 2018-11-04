@@ -177,7 +177,7 @@ class Unlabeled extends DataFrame implements Dataset
         $samples = [];
 
         foreach ($this->samples as $i => $sample) {
-            if ($fn($sample[$index]) === true) {
+            if ($fn($sample[$index])) {
                 $samples[] = $sample;
             }
         }

@@ -59,10 +59,10 @@ class Neighborhood extends BinaryNode implements Leaf
             $max[] = max($values);
         }
 
-        $this->samples = $dataset->samples();
-        $this->labels = $dataset->labels();
         $this->min = $min;
         $this->max = $max;
+        $this->samples = $dataset->samples();
+        $this->labels = $dataset->labels();
     }
 
     /**

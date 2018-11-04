@@ -125,7 +125,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare() === true) {
+        if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 

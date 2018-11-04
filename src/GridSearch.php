@@ -272,7 +272,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
             'params' => array_combine($this->args, $bestParams),
         ];
 
-        if ($this->retrain === true) {
+        if ($this->retrain) {
             if ($this->logger) $this->logger->info("Retraining best"
                 . " estimator on the full dataset");
 

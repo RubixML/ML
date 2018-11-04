@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Trees;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\BinaryNode;
@@ -62,7 +61,7 @@ class KDTree implements Tree
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxLeafSize = 10, ?Distance $kernel = null)
+    public function __construct(int $maxLeafSize = 20, ?Distance $kernel = null)
     {
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException("At least one sample is required"
@@ -89,10 +88,10 @@ class KDTree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function grow(Dataset $dataset) : void
+    public function grow(Labeled $dataset) : void
     {
         $this->dimensionality = $dataset->numColumns();
 
@@ -174,40 +173,52 @@ class KDTree implements Tree
         while ($current) {
             if (!$visited->contains($current)) {
                 $visited->attach($current);
-            } 
 
-            if ($current instanceof Neighborhood) {
-                foreach ($current->box() as $edge) {
-                    $distance = $this->kernel->compute($sample, $edge);
+                if ($current instanceof Neighborhood) {
+                    foreach ($current->box() as $edge) {
+                        $distance = $this->kernel->compute($sample, $edge);
 
-                    if ($distance < $distances[0]) {
-                        foreach ($current->samples() as $neighbor) {
-                            $distances[] = $this->kernel->compute($sample, $neighbor);
+                        if ($distance < $distances[$k - 1]) {
+                            foreach ($current->samples() as $neighbor) {
+                                $distances[] = $this->kernel->compute($sample, $neighbor);
+                            }
+
+                            $labels = array_merge($labels, $current->labels());
+
+                            array_multisort($distances, $labels);
+
+                            break 1;
                         }
-
-                        $labels = array_merge($labels, $current->labels());
-
-                        array_multisort($distances, $labels);
-
-                        break 1;
-                    }
-                }
-            }
-
-            if ($current instanceof Coordinate) {
-                if ($current->left() !== null) {
-                    if (!$visited->contains($current->left())) {
-                        $current = $current->left();
-
-                        continue 1;
                     }
                 }
 
-                if ($current->right() !== null) {
-                    if (!$visited->contains($current->right())) {
-                        $current = $current->right();
-
-                        continue 1;
+                if ($current instanceof Coordinate) {
+                    $child = $current->left();
+    
+                    if ($child instanceof Coordinate) {
+                        foreach ($child->box() as $edge) {
+                            $distance = $this->kernel->compute($sample, $edge);
+    
+                            if ($distance < $distances[$k - 1]) {
+                                $current = $child;
+    
+                                continue 2;
+                            }
+                        }
+                    }
+    
+                    $child = $current->right();
+    
+                    if ($child instanceof Coordinate) {
+                        foreach ($child->box() as $edge) {
+                            $distance = $this->kernel->compute($sample, $edge);
+    
+                            if ($distance < $distances[$k - 1]) {
+                                $current = $child;
+    
+                                continue 2;
+                            }
+                        }
                     }
                 }
             }
@@ -229,7 +240,7 @@ class KDTree implements Tree
     {
         $current = $this->root;
 
-        while (isset($current)) {
+        while ($current) {
             if ($current instanceof Coordinate) {
                 if ($sample[$current->index()] < $current->value()) {
                     $current = $current->left();
@@ -249,19 +260,17 @@ class KDTree implements Tree
     /**
      * Find the best split of a given subset of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Coordinate
      */
-    protected function findBestSplit(Dataset $dataset, int $depth) : Coordinate
+    protected function findBestSplit(Labeled $dataset, int $depth) : Coordinate
     {
         $index = $depth % $this->dimensionality;
 
         $value = Stats::median($dataset->column($index));
 
-        $groups = $dataset->partition($index, $value);
-
-        return new Coordinate($value, $index, $groups);
+        return new Coordinate($value, $index, $dataset);
     }
 
     /**

@@ -104,7 +104,7 @@ class Labeled extends DataFrame implements Dataset
              . ' must be equal.');
         }
 
-        if ($validate === true) {
+        if ($validate) {
             $labels = array_values($labels);
 
             foreach ($labels as &$label) {
@@ -301,7 +301,7 @@ class Labeled extends DataFrame implements Dataset
         $samples = $labels = [];
 
         foreach ($this->samples as $i => $sample) {
-            if ($fn($sample[$index]) === true) {
+            if ($fn($sample[$index])) {
                 $samples[] = $sample;
                 $labels[] = $this->labels[$i];
             }
@@ -321,7 +321,7 @@ class Labeled extends DataFrame implements Dataset
         $samples = $labels = [];
 
         foreach ($this->labels as $i => $label) {
-            if ($fn($label) === true) {
+            if ($fn($label)) {
                 $samples[] = $this->samples[$i];
                 $labels[] = $label;
             }

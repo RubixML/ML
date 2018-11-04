@@ -120,7 +120,7 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if ($this->elastic === true) {
+        if ($this->elastic) {
             $this->update($dataset);
         }
 

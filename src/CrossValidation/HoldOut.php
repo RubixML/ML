@@ -78,7 +78,7 @@ class HoldOut implements Validator
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($this->stratify === true) {
+        if ($this->stratify) {
             list($testing, $training) = $dataset->stratifiedSplit($this->ratio);
         } else {
             list($testing, $training) = $dataset->randomize()->split($this->ratio);

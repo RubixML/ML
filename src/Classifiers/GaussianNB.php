@@ -204,7 +204,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
             $this->weights[$class] += $stratum->numRows();
         }
 
-        if ($this->fitPriors === true) {
+        if ($this->fitPriors) {
             $this->priors = [];
 
             $total = array_sum($this->weights) ?: self::EPSILON;
@@ -266,7 +266,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
             $this->weights[$class] += $n;
         }
 
-        if ($this->fitPriors === true) {
+        if ($this->fitPriors) {
             $total = array_sum($this->weights) ?: self::EPSILON;
 
             foreach ($this->weights as $class => $weight) {

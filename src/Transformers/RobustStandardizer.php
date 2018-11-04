@@ -111,7 +111,7 @@ class RobustStandardizer implements Transformer, Stateful
             foreach ($this->mads as $column => $mad) {
                 $feature = $sample[$column];
 
-                if ($this->center === true) {
+                if ($this->center) {
                     $feature -= $this->medians[$column];
                 }
 

@@ -178,7 +178,7 @@ class ZScaleStandardizer implements Transformer, Elastic
             foreach ($this->stddevs as $column => $stddev) {
                 $feature = $sample[$column];
 
-                if ($this->center === true) {
+                if ($this->center) {
                     $feature -= $this->means[$column];
                 }
 

@@ -169,7 +169,7 @@ class KMeans implements Online, Persistable
                 }
             }
 
-            if ($changed === false) {
+            if (!$changed) {
                 break 1;
             }
         }

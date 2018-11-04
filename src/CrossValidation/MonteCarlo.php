@@ -98,7 +98,7 @@ class MonteCarlo implements Validator
         for ($epoch = 0; $epoch < $this->simulations; $epoch++) {
             $dataset->randomize();
 
-            if ($this->stratify === true) {
+            if ($this->stratify) {
                 list($testing, $training) = $dataset->stratifiedSplit($this->ratio);
             } else {
                 list($testing, $training) = $dataset->split($this->ratio);

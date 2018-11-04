@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Split;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
@@ -13,13 +13,9 @@ class CoordinateTest extends TestCase
 {
     protected $node;
 
-    protected $groups;
-
     public function setUp()
     {
-        $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
-
-        $this->node = new Coordinate(5, 1, $this->groups);
+        $this->node = new Coordinate(5, 1, Labeled::quick([[5., 2.]], ['yes']));
     }
 
     public function test_build_node()

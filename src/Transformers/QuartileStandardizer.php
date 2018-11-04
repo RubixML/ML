@@ -110,7 +110,7 @@ class QuartileStandardizer implements Transformer, Stateful
             foreach ($this->iqrs as $column => $iqr) {
                 $feature = $sample[$column];
 
-                if ($this->center === true) {
+                if ($this->center) {
                     $feature -= $this->medians[$column];
                 }
 

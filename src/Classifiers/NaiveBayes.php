@@ -250,7 +250,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
             $this->weights[$class] += $stratum->numRows();
         }
 
-        if ($this->fitPriors === true) {
+        if ($this->fitPriors) {
             $total = (array_sum($this->weights)
                 + (count($this->weights) * $this->alpha))
                 ?: self::EPSILON;

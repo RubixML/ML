@@ -32,7 +32,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function __construct(array $samples = [], bool $validate = true)
     {
-        if ($validate === true) {
+        if ($validate) {
             $samples = array_values($samples);
 
             $n = is_array(current($samples)) ? count(current($samples)) : 1;

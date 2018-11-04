@@ -85,7 +85,7 @@ class WordCountVectorizer implements Extractor
             }
         }
 
-        if ($normalize === true) {
+        if ($normalize) {
             $stopWords = array_map(function ($word) {
                 return strtolower(trim($word));
             }, $stopWords);
@@ -134,7 +134,7 @@ class WordCountVectorizer implements Extractor
         $this->vocabulary = $frequencies = [];
 
         foreach ($samples as $sample) {
-            if ($this->normalize === true) {
+            if ($this->normalize) {
                 $sample = preg_replace('/\s+/', ' ', strtolower($sample));
             }
 
@@ -195,7 +195,7 @@ class WordCountVectorizer implements Extractor
     {
         $vector = array_fill(0, count($this->vocabulary), 0);
 
-        if ($this->normalize === true) {
+        if ($this->normalize) {
             $sample = preg_replace('/\s+/', ' ', strtolower($sample)) ?? '';
         }
 
