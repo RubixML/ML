@@ -14,7 +14,7 @@ use Rubix\ML\Datasets\Labeled;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood extends BinaryNode implements Leaf
+class Neighborhood extends BinaryNode implements Spatial, Leaf
 {
     /**
      * The samples that make up the neighborhood.
@@ -66,7 +66,7 @@ class Neighborhood extends BinaryNode implements Leaf
     }
 
     /**
-     * Return the bounding box around this neighborhood.
+     * Return the bounding box around this node.
      * 
      * @return array[]
      */

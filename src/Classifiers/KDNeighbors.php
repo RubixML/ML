@@ -147,11 +147,11 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
             array_fill_keys($this->classes, 0.));
 
         foreach ($dataset as $i => $sample) {
-            $neighbors = $this->neighbors($sample, $this->k);
+            list($labels, $distances) = $this->neighbors($sample, $this->k);
 
-            $n = count($neighbors);
+            $n = count($labels);
 
-            foreach (array_count_values($neighbors) as $class => $count) {
+            foreach (array_count_values($labels) as $class => $count) {
                 $probabilities[$i][$class] = $count / $n;
             }
         }

@@ -115,7 +115,9 @@ class KDNRegressor extends KDTree implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = Stats::mean($this->neighbors($sample, $this->k));
+            list($labels, $distances) = $this->neighbors($sample, $this->k);
+
+            $predictions[] = Stats::mean($labels);
         }
 
         return $predictions;

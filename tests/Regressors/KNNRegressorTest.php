@@ -29,7 +29,7 @@ class KNNRegressorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new KNNRegressor(3, new Minkowski(3.));
+        $this->estimator = new KNNRegressor(3, new Minkowski(3.0));
     }
 
     public function test_build_regressor()

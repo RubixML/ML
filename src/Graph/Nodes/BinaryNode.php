@@ -48,6 +48,21 @@ class BinaryNode implements Node
     }
 
     /**
+     * Return the children of this node in an array.
+     * 
+     * @return array
+     */
+    public function children() : array
+    {
+        $children = [];
+
+        if ($this->left) $children[] = $this->left;
+        if ($this->right) $children[] = $this->right;
+
+        return $children;
+    }
+
+    /**
      * Return the left child node.
      *
      * @return self|null
@@ -75,8 +90,8 @@ class BinaryNode implements Node
      */
     public function height() : int
     {
-        return 1 + max(isset($this->left) ? $this->left->height() : 0,
-            isset($this->right) ? $this->right->height() : 0);
+        return 1 + max($this->left ? $this->left->height() : 0,
+            $this->right ? $this->right->height() : 0);
     }
 
     /**
@@ -86,8 +101,8 @@ class BinaryNode implements Node
      */
     public function balance() : int
     {
-        return (isset($this->left) ? $this->left->height() : 0)
-            - (isset($this->right) ? $this->right->height() : 0);
+        return ($this->left ? $this->left->height() : 0)
+            - ($this->right ? $this->right->height() : 0);
     }
 
     /**
@@ -134,7 +149,7 @@ class BinaryNode implements Node
      */
     public function detachLeft() : void
     {
-        if (isset($this->left)) {
+        if ($this->left) {
             $this->left->setParent(null);
 
             $this->left = null;
@@ -148,7 +163,7 @@ class BinaryNode implements Node
      */
     public function detachRight() : void
     {
-        if (isset($this->right)) {
+        if ($this->right) {
             $this->right->setParent(null);
 
             $this->right = null;
@@ -162,6 +177,6 @@ class BinaryNode implements Node
      */
     public function leaf() : bool
     {
-        return !isset($this->left) and !isset($this->right);
+        return !$this->left and !$this->right;
     }
 }

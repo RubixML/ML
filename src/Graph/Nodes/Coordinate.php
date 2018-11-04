@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Labeled;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Coordinate extends Split
+class Coordinate extends Split implements Spatial
 {
     /**
      * The multivariate minimum of the bounding box around the samples
@@ -55,7 +55,7 @@ class Coordinate extends Split
     }
 
     /**
-     * Return the bounding box around this neighborhood.
+     * Return the bounding box around this node.
      * 
      * @return array[]
      */

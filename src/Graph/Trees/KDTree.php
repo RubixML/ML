@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Coordinate;
@@ -136,12 +137,13 @@ class KDTree implements Tree
     }
 
     /**
-     * Run a k nearest neighbors search of every neighborhood.
+     * Run a k nearest neighbors search of every neighborhood and return
+     * the labels and distances in a tuple.
      * 
      * @param  array  $sample
      * @param  int  $k
      * @throws \InvalidArgumentException
-     * @return array
+     * @return array[]
      */
     public function neighbors(array $sample, int $k = 1) : array
     {
@@ -167,6 +169,7 @@ class KDTree implements Tree
         array_multisort($distances, $labels);
         
         $visited = new SplObjectStorage();
+        $visited->attach($neighborhood);
 
         $current = $neighborhood->parent();
 
@@ -175,50 +178,30 @@ class KDTree implements Tree
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    foreach ($current->box() as $edge) {
-                        $distance = $this->kernel->compute($sample, $edge);
-
-                        if ($distance < $distances[$k - 1]) {
-                            foreach ($current->samples() as $neighbor) {
-                                $distances[] = $this->kernel->compute($sample, $neighbor);
-                            }
-
-                            $labels = array_merge($labels, $current->labels());
-
-                            array_multisort($distances, $labels);
-
-                            break 1;
-                        }
+                    foreach ($current->samples() as $neighbor) {
+                        $distances[] = $this->kernel->compute($sample, $neighbor);
                     }
+
+                    $labels = array_merge($labels, $current->labels());
+
+                    array_multisort($distances, $labels);
                 }
 
-                if ($current instanceof Coordinate) {
-                    $child = $current->left();
-    
-                    if ($child instanceof Coordinate) {
-                        foreach ($child->box() as $edge) {
-                            $distance = $this->kernel->compute($sample, $edge);
-    
-                            if ($distance < $distances[$k - 1]) {
-                                $current = $child;
-    
-                                continue 2;
+                foreach ($current->children() as $child) {
+                    if (!$visited->contains($child)) {
+                        if ($child instanceof Spatial) {
+                            foreach ($child->box() as $edge) {
+                                $distance = $this->kernel->compute($sample, $edge);
+        
+                                if ($distance < $distances[$k - 1]) {
+                                    $current = $child;
+        
+                                    continue 2;
+                                }
                             }
                         }
-                    }
-    
-                    $child = $current->right();
-    
-                    if ($child instanceof Coordinate) {
-                        foreach ($child->box() as $edge) {
-                            $distance = $this->kernel->compute($sample, $edge);
-    
-                            if ($distance < $distances[$k - 1]) {
-                                $current = $child;
-    
-                                continue 2;
-                            }
-                        }
+
+                        $visited->attach($child);
                     }
                 }
             }
@@ -226,7 +209,10 @@ class KDTree implements Tree
             $current = $current->parent();
         }
 
-        return array_slice($labels, 0, $k);
+        $labels = array_slice($labels, 0, $k);
+        $distances = array_slice($distances, 0, $k);
+
+        return [$labels, $distances];
     }
 
     /**
@@ -247,6 +233,8 @@ class KDTree implements Tree
                 } else {
                     $current = $current->right();
                 }
+
+                continue 1;
             }
 
             if ($current instanceof Neighborhood) {
