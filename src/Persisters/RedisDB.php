@@ -53,7 +53,7 @@ class RedisDB implements Persister
      * @throws \RuntimeException
      * @return void
      */
-    public function __construct(string $key, int $history = 1, string $host = '127.0.0.1', int $port = 6379,
+    public function __construct(string $key, int $history = 2, string $host = '127.0.0.1', int $port = 6379,
                                 int $db = 0, string $password = null, float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {

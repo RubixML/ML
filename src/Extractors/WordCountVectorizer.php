@@ -80,7 +80,7 @@ class WordCountVectorizer implements Extractor
 
         foreach ($stopWords as $word) {
             if (!is_string($word)) {
-                throw new InvalidArgumentException('Stop word must be a string,'
+                throw new InvalidArgumentException('Stop word must be a string, '
                     . gettype($word) . ' found.');
             }
         }

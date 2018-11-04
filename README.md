@@ -49,9 +49,6 @@ MIT
 		- [Tokenizers](#tokenizers)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
-	- [Manifold Learning](#manifold-learning)
-		- [Embedders](#embedders)
-			- [t-SNE](#t-sne)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -77,6 +74,8 @@ MIT
 			- [Gaussian Mixture](#gaussian-mixture)
 			- [K Means](#k-means)
 			- [Mean Shift](#mean-shift)
+		- [Embedders](#embedders)
+			- [t-SNE](#t-sne)
 		- [Regressors](#regressors)
 			- [Adaline](#adaline)
 			- [Dummy Regressor](#dummy-regressor)
@@ -239,7 +238,7 @@ Machine learning is the process by which a computer program is able to progressi
 - **Unsupervised** learning, by contrast, uses an *unlabeled* dataset and works by finding patterns within the training samples to learn new insights.
 	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating tissues in PET scan images.
 	- **Anomaly Detection** is the flagging of samples that do not conform to an expected pattern that is learned during training. Anomalous samples can often indicate adversarial activity, bad data, or exceptional performance.
-	- **Manifold Learning** is a method of producing a low dimensional (2 - 3) representation of a high dimensional (> 3) feature space such that the data can easily be visualized.
+	- **Manifold Learning** is a method of producing a low dimensional (1 - 3) representation of a high dimensional (> 3) feature space such that the data can easily be visualized.
 
 When first starting out, it sometimes helps to make the distinction between *traditional* programming and machine learning. In traditional programming, you are given an input and output specification and it is your job to write the logic that maps inputs to the desired outputs. With machine learning, it is the algorithm that writes the function that does the input/output mapping. It is your job to design the model such that, when you feed it data, it can learn the appropriate mapping. For this reason, you can think of machine learning as *programming with data*.
 
@@ -1180,51 +1179,6 @@ use Rubix\ML\Extractors\Tokenizers\Word;
 $tokenizer = new Word();
 ```
 
-### Manifold Learning
-Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions.
-
-### Embedders
-Embedders are manifold learners that provide the `embed()` method for embedding a dataset.
-
-To embed a dataset return an array of samples:
-```php
-public embed(Dataset $dataset) : array
-```
-
-### t-SNE
-T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
-
-##### Unsupervised | Verbose
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
-| 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
-| 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
-| 4 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 5 | rate | 1. | float | The learning rate that controls the step size. |
-| 6 | decay | 0.2 | float | The amount to decay the momentum by each update. |
-| 7 | min gradient | 1e-6 | float | The minimum gradient necessary to continue fitting. |
-| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
-| 9 | tolerance | 1e-5 | float | The tolerance of the binary search for appropriate sigma. |
-| 10 | precision | 100 | int | The number of iterations when locating an appropriate sigma. |
-
-##### Additional Methods:
-
-Return the magnitudes of the gradient at each epoch from the last embedding:
-```php
-public steps() : array
-```
-
-##### Example:
-```php
-use Rubi\ML\Manifold\TSNE;
-use Rubix\ML\Kernels\Manhattan;
-
-$embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100);
-```
-
 ---
 ### Estimators
 Estimators are the core of Rubix and consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators that can be trained on data are called *Learners* and they can be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). They can even be wrapped by a Meta-Estimator to provide additional functionality such as data [preprocessing](#pipeline) and [hyperparameter optimization](#grid-search).
@@ -2012,6 +1966,44 @@ use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
 $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
+```
+
+---
+### Embedders
+Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions. Embedders are manifold learners that provide the `predict()` API for embedding a dataset. The predictions of an Embedder are the low dimensional embeddings as n-dimensional arrays where n is the dimensionality of the embedding.
+
+### t-SNE
+T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
+
+##### Unsupervised | Verbose
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
+| 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
+| 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
+| 4 | epochs | 1000 | int | The number of times to iterate over the embedding. |
+| 5 | rate | 1. | float | The learning rate that controls the step size. |
+| 6 | decay | 0.2 | float | The amount to decay the momentum by each update. |
+| 7 | min gradient | 1e-6 | float | The minimum gradient necessary to continue fitting. |
+| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 9 | tolerance | 1e-5 | float | The tolerance of the binary search for appropriate sigma. |
+| 10 | precision | 100 | int | The number of iterations when locating an appropriate sigma. |
+
+##### Additional Methods:
+
+Return the magnitudes of the gradient at each epoch from the last embedding:
+```php
+public steps() : array
+```
+
+##### Example:
+```php
+use Rubi\ML\Manifold\TSNE;
+use Rubix\ML\Kernels\Manhattan;
+
+$embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100);
 ```
 
 ---
@@ -3092,14 +3084,13 @@ Filesystems are local or remote storage drives that are organized by files and f
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | path | None | string | The path to the file on the filesystem. |
-| 2 | history | 1 | int | The number of backups to keep. |
+| 2 | history | 2 | int | The number of backups to keep. |
 
 ##### Additional Methods:
-Delete all backups from storage:
+Delete all backups from the filesystem:
 ```php
 public flush() : void
 ```
-
 
 ##### Example:
 ```php
@@ -3115,7 +3106,7 @@ Redis is a high performance in-memory key value store that can be used to persis
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | key | None | string | The key of the object in the database. |
-| 2 | history | 1 | int | The number of backups to keep. |
+| 2 | history | 2 | int | The number of backups to keep. |
 | 3 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
 | 4 | port | 6379 | int | The port of the Redis server. |
 | 5 | db | 0 | int | The database number. |
@@ -3132,7 +3123,7 @@ public info() : array
 ```php
 use Rubix\ML\Persisters\RedisDB;
 
-$persister = new RedisDB('sentiment.model', 10, '127.0.0.1', 6379, 2, 'password', 1.5);
+$persister = new RedisDB('model:sentiment', 25, '127.0.0.1', 6379, 2, 'secret', 1.5);
 ```
 
 ---

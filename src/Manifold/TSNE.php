@@ -3,6 +3,7 @@
 namespace Rubix\ML\Manifold;
 
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
@@ -29,7 +30,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Embedder, Verbose
+class TSNE implements Estimator, Verbose
 {
     use LoggerAware;
 
@@ -215,6 +216,16 @@ class TSNE implements Embedder, Verbose
     }
 
     /**
+     * Return the integer encoded type of estimator this is.
+     *
+     * @return int
+     */
+    public function type() : int
+    {
+        return self::EMBEDDER;
+    }
+
+    /**
      * Return the magnitudes of the gradient at each epoch from the last
      * embedding.
      *
@@ -232,7 +243,7 @@ class TSNE implements Embedder, Verbose
      * @throws \InvalidArgumentException
      * @return array[]
      */
-    public function embed(Dataset $dataset) : array
+    public function predict(Dataset $dataset) : array
     {
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This embedder only works with'
@@ -361,7 +372,7 @@ class TSNE implements Embedder, Verbose
 
                 $diff = $entropy - $this->entropy;
 
-                if (abs($diff) <= $this->tolerance) {
+                if (abs($diff) < $this->tolerance) {
                     break 1;
                 }
 

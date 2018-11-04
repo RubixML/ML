@@ -10,6 +10,7 @@ interface Estimator
     const REGRESSOR = 2;
     const CLUSTERER = 3;
     const DETECTOR = 4;
+    const EMBEDDER = 5;
 
     const EPSILON = 1e-8;
 

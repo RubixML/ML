@@ -41,7 +41,7 @@ class Filesystem implements Persister
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $path, int $history = 1)
+    public function __construct(string $path, int $history = 2)
     {
         if (!is_writable(dirname($path))) {
             throw new InvalidArgumentException('Folder does not exist or is not'
