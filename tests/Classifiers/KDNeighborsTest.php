@@ -34,7 +34,7 @@ class KDNeighborsTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new KDNeighbors(3, 25, new Euclidean());
+        $this->estimator = new KDNeighbors(3, 10, new Euclidean());
     }
 
     public function test_build_classifier()

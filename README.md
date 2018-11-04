@@ -1624,7 +1624,7 @@ $estimator = new GaussianNB([
 ```
 
 ### K-d Neighbors
-A fast [K Nearest Neighbors](#k-nearest-neighbors) approximating Estimator that uses a K-d tree to divide the training set into neighborhoods whose max size are constrained by the *neighborhood* hyperparameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then searches  only the points in the neighborhood for the nearest k to make a prediction. Since there may be points in other neighborhoods that may be closer, the nearest neighbor search is said to be *approximation*. The main advantage K-d Neighbors has over regular KNN is that it is much faster.
+A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are constrained by the neighborhood hyperparameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then searches only the points close to or within the neighborhood for the nearest k to make a prediction. The main advantage K-d Neighbors has over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
 ##### Supervised | Learner | Probabilistic | Persistable
 
@@ -1632,7 +1632,7 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) approximating Estimator that 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | neighborhood | 10 | int | The max size of a neighborhood. |
+| 2 | neighborhood | 20 | int | The max size of a neighborhood. |
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:
@@ -1654,7 +1654,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:
@@ -1663,9 +1663,9 @@ This estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new KNearestNeighbors(3, new Euclidean());
+$estimator = new KNearestNeighbors(3, new Manhattan());
 ```
 
 ### Logistic Regression
@@ -2128,7 +2128,7 @@ $estimator = new GradientBoost(new RegressionTree(2, 3, 5), 100, 1.0, 1e-2);
 ```
 
 ### K-d Neighbors Regressor
-A fast approximating implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples in the neighborhood. The main advantage of K-d Neighbors over KNN is speed and added variance to the predictions (if that is desired).
+A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is speed, however you no longer have the ability to partially train.
 
 ##### Supervised  | Learner | Persistable
 
@@ -2136,7 +2136,7 @@ A fast approximating implementation of [KNN Regressor](#knn-regressor) using a K
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | neighborhood | 10 | int | The max size of a neighborhood. |
+| 2 | neighborhood | 20 | int | The max size of a neighborhood. |
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:
@@ -2145,9 +2145,9 @@ This estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Regressors\KDNRegressor;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KDNRegressor(5, 20, new Euclidean());
+$estimator = new KDNRegressor(5, 20, new Minkowski(4.0));
 ```
 
 ### KNN Regressor
@@ -2158,7 +2158,7 @@ A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outc
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | k | 5 | int | The number of neighboring training samples to consider when making a prediction. |
+| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 
 ##### Additional Methods:

@@ -31,13 +31,48 @@ class Neighborhood extends BinaryNode implements Leaf
     protected $labels;
 
     /**
+     * The multivariate minimum of the bounding box around the samples
+     * in the neighborhood.
+     * 
+     * @var array
+     */
+    protected $min;
+
+    /**
+     * The multivariate maximum of the bounding box around the samples
+     * in the neighborhood.
+     * 
+     * @var array
+     */
+    protected $max;
+
+    /**
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
     public function __construct(Labeled $dataset)
     {
+        $min = $max = [];
+
+        foreach ($dataset->rotate() as $values) {
+            $min[] = min($values);
+            $max[] = max($values);
+        }
+
         $this->samples = $dataset->samples();
         $this->labels = $dataset->labels();
+        $this->min = $min;
+        $this->max = $max;
+    }
+
+    /**
+     * Return the bounding box around this neighborhood.
+     * 
+     * @return array[]
+     */
+    public function box() : array
+    {
+        return [$this->min, $this->max];
     }
 
     /**

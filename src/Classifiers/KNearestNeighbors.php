@@ -75,7 +75,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 5, ?Distance $kernel = null)
+    public function __construct(int $k = 3, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException("At least 1 neighbor is required"

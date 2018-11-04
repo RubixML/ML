@@ -17,6 +17,13 @@ use InvalidArgumentException;
 class BinaryNode implements Node
 {
     /**
+     * The parent node.
+     * 
+     * @var self|null
+     */
+    protected $parent;
+
+    /**
      * The left child node.
      *
      * @var self|null
@@ -29,6 +36,16 @@ class BinaryNode implements Node
      * @var self|null
      */
     protected $right;
+
+    /**
+     * Return the parent node.
+     *
+     * @return self|null
+     */
+    public function parent() : ?self
+    {
+        return $this->parent;
+    }
 
     /**
      * Return the left child node.
@@ -74,6 +91,17 @@ class BinaryNode implements Node
     }
 
     /**
+     * Set the parent of this node.
+     * 
+     * @param  self|null  $node
+     * @return void
+     */
+    public function setParent(?self $node = null) : void
+    {
+        $this->parent = $node;
+    }
+
+    /**
      * Set the left child node.
      *
      * @param  self  $node
@@ -81,6 +109,8 @@ class BinaryNode implements Node
      */
     public function attachLeft(self $node) : void
     {
+        $node->setParent($this);
+
         $this->left = $node;
     }
 
@@ -92,6 +122,8 @@ class BinaryNode implements Node
      */
     public function attachRight(self $node) : void
     {
+        $node->setParent($this);
+
         $this->right = $node;
     }
 
@@ -102,7 +134,11 @@ class BinaryNode implements Node
      */
     public function detachLeft() : void
     {
-        $this->left = null;
+        if (isset($this->left)) {
+            $this->left->setParent(null);
+
+            $this->left = null;
+        }
     }
 
     /**
@@ -112,7 +148,11 @@ class BinaryNode implements Node
      */
     public function detachRight() : void
     {
-        $this->right = null;
+        if (isset($this->right)) {
+            $this->right->setParent(null);
+
+            $this->right = null;
+        }
     }
 
     /**

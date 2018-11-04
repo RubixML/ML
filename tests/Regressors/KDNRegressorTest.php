@@ -17,7 +17,7 @@ class KDNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TOLERANCE = 3;
 
     protected $generator;
 
@@ -27,7 +27,7 @@ class KDNRegressorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new KDNRegressor(2, 10, new Minkowski(3.0));
+        $this->estimator = new KDNRegressor(3, 10, new Minkowski(3.0));
     }
 
     public function test_build_regressor()

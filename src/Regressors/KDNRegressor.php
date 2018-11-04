@@ -10,19 +10,19 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * K-d Neighbors Regressor
  *
- * A fast approximating implementation of KNN Regressor using a K-d tree. The KDN
- * Regressor works by locating the neighborhood of a sample via binary search and
- * then does a brute force search only on the samples in the neighborhood. The
- * main advantage of K-d Neighbors over KNN is speed and added variance to the
- * predictions (if that is desired).
+ * A fast implementation of KNN Regressor using a K-d tree. The KDN Regressor works
+ * by locating the neighborhood of a sample via binary search and then does a brute
+ * force search only on the samples close to or within the neighborhood. The main
+ * advantage of K-d Neighbors over brute force KNN is speed, however you no longer
+ * have the ability to partially train.
  *
+ * References:
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
  * Associative Searching.
  *
@@ -40,20 +40,13 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     protected $k;
 
     /**
-     * The distance function to use when computing the distances.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * @param  int  $k
      * @param  int  $neighborhood
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, int $neighborhood = 10, ?Distance $kernel = null)
+    public function __construct(int $k = 3, int $neighborhood = 20, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException("At least 1 neighbor is required"
@@ -61,19 +54,13 @@ class KDNRegressor extends KDTree implements Learner, Persistable
         }
 
         if ($k > $neighborhood) {
-            throw new InvalidArgumentException("K cannot be larger than the"
-                . " size of the neighborhood, $k given but $neighborhood"
-                . " allowed.");
-        }
-
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
+            throw new InvalidArgumentException("K cannot be larger than the max"
+                . " size of a neighborhood, $k given but $neighborhood allowed.");
         }
 
         $this->k = $k;
-        $this->kernel = $kernel;
 
-        parent::__construct($neighborhood);
+        parent::__construct($neighborhood, $kernel);
     }
 
     /**
@@ -121,43 +108,16 @@ class KDNRegressor extends KDTree implements Learner, Persistable
                 . ' continuous features.');
         }
 
-        if ($this->bare() === true) {
+        if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trainied.');
         }
 
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = Stats::mean($this->findNearestNeighbors($sample));
+            $predictions[] = Stats::mean($this->neighbors($sample, $this->k));
         }
 
         return $predictions;
-    }
-
-    /**
-     * Find the k nearest neighbors to the given sample from a neighborhood.
-     *
-     * @param  array  $sample
-     * @return array
-     */
-    public function findNearestNeighbors(array $sample) : array
-    {
-        $neighborhood = $this->search($sample);
-
-        if (is_null($neighborhood)) {
-            return [];
-        }
-
-        $distances = [];
-
-        foreach ($neighborhood->samples() as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
-        }
-
-        asort($distances);
-
-        return array_intersect_key($neighborhood->labels(),
-            array_slice($distances, 0, $this->k, true));
-
     }
 }

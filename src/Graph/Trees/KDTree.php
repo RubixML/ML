@@ -11,6 +11,7 @@ use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
+use SplObjectStorage;
 
 /**
  * K-d Tree
@@ -42,6 +43,13 @@ class KDTree implements Tree
     protected $maxLeafSize;
 
     /**
+     * The distance function to use when computing the distances.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
+
+    /**
      * The number of dimensions this tree encodes.
      *
      * @var int|null
@@ -50,17 +58,23 @@ class KDTree implements Tree
 
     /**
      * @param  int  $maxLeafSize
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxLeafSize = 10)
+    public function __construct(int $maxLeafSize = 10, ?Distance $kernel = null)
     {
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException("At least one sample is required"
                 . " to form a neighborhood, $maxLeafSize given.");
         }
 
+        if (is_null($kernel)) {
+            $kernel = new Euclidean();
+        }
+
         $this->maxLeafSize = $maxLeafSize;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -120,6 +134,88 @@ class KDTree implements Tree
         } else {
             $current->attachRight(new Neighborhood($right));
         }
+    }
+
+    /**
+     * Run a k nearest neighbors search of every neighborhood.
+     * 
+     * @param  array  $sample
+     * @param  int  $k
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function neighbors(array $sample, int $k = 1) : array
+    {
+        if ($k < 1) {
+            throw new InvalidArgumentException("The number of nearest"
+                . " neighbors must be greater than 0, $k given.");
+        }
+
+        $neighborhood = $this->search($sample);
+
+        if (is_null($neighborhood)) {
+            return [];
+        }
+        
+        $distances = [];
+
+        foreach ($neighborhood->samples() as $neighbor) {
+            $distances[] = $this->kernel->compute($sample, $neighbor);
+        }
+
+        $labels = $neighborhood->labels();
+
+        array_multisort($distances, $labels);
+        
+        $visited = new SplObjectStorage();
+
+        $current = $neighborhood->parent();
+
+        while ($current) {
+            if (!$visited->contains($current)) {
+                $visited->attach($current);
+            } 
+
+            if ($current instanceof Neighborhood) {
+                foreach ($current->box() as $edge) {
+                    $distance = $this->kernel->compute($sample, $edge);
+
+                    if ($distance < $distances[0]) {
+                        foreach ($current->samples() as $neighbor) {
+                            $distances[] = $this->kernel->compute($sample, $neighbor);
+                        }
+
+                        $labels = array_merge($labels, $current->labels());
+
+                        array_multisort($distances, $labels);
+
+                        break 1;
+                    }
+                }
+            }
+
+            if ($current instanceof Coordinate) {
+                if ($current->left() !== null) {
+                    if (!$visited->contains($current->left())) {
+                        $current = $current->left();
+
+                        continue 1;
+                    }
+                }
+
+                if ($current->right() !== null) {
+                    if (!$visited->contains($current->right())) {
+                        $current = $current->right();
+
+                        continue 1;
+                    }
+                }
+            }
+
+            $current = $current->parent();
+        }
+
+        return array_slice($labels, 0, $k);
     }
 
     /**
