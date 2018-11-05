@@ -43,27 +43,22 @@ class RedisDB implements Persister
 
     /**
      * @param  string  $key
-     * @param  int  $history
      * @param  string  $host
      * @param  int  $port
      * @param  int  $db
      * @param  string  $password
+     * @param  int  $history
      * @param  float  $timeout
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
-    public function __construct(string $key, int $history = 2, string $host = '127.0.0.1', int $port = 6379,
-                                int $db = 0, string $password = null, float $timeout = 2.5)
+    public function __construct(string $key, string $host = '127.0.0.1', int $port = 6379, int $db = 0,
+                                string $password = null, int $history = 2, float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
                 . ' php.ini file.');
-        }
-
-        if ($history < 0) {
-            throw new InvalidArgumentException("The number of backups to keep"
-                . " cannot be less than 0, $history given.");
         }
 
         $connector = new Redis();
@@ -83,6 +78,11 @@ class RedisDB implements Persister
             throw new RuntimeException('Could not select database number'
                 . (string) $db . '.');
         };
+
+        if ($history < 0) {
+            throw new InvalidArgumentException("The number of backups to keep"
+                . " cannot be less than 0, $history given.");
+        }
 
         $this->key = $key;
         $this->history = $history;
@@ -132,31 +132,18 @@ class RedisDB implements Persister
     }
 
     /**
-     * Load a model given a version number where 0 is the last model saved.
+     * Load the last model that was saved.
      * 
-     * @param  int  $version
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function load(int $version = 0) : Persistable
+    public function load() : Persistable
     {
-        if ($version < 0) {
-            throw new InvalidArgumentException("Version cannot be less"
-                . " than 0, $version given.");
-        }
-
-        if ($version > $this->history) {
-            throw new InvalidArgumentException("The maximum number of"
-                . " backups is $this->history, $version given.");
-        }
-
-        $index = -($version + 1);
-
-        $data = $this->connector->lGet($this->key, $index) ?: '';
+        $data = $this->connector->lGet($this->key, -1) ?: '';
 
         if (empty($data)) {
-            throw new RuntimeException('Model does not exist in database.');
+            throw new RuntimeException('Model could not be retrieved from'
+                . ' database.');
         }
 
         $persistable = unserialize($data);

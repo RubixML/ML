@@ -41,13 +41,9 @@ class FilesystemTest extends TestCase
         $this->assertFileExists($this->path);
 
         $model = $this->persister->load();
-        $old = $this->persister->load(1);
 
         $this->assertInstanceOf(DummyClassifier::class, $model);
         $this->assertInstanceOf(Persistable::class, $model);
-
-        $this->assertInstanceOf(DummyClassifier::class, $old);
-        $this->assertInstanceOf(Persistable::class, $old);
 
         $this->persister->flush();
 

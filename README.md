@@ -3029,7 +3029,7 @@ array(2) {
 Model persistence is the practice of saving a trained model to disk so that it can be restored later, on a different machine, or used in an online system. Most estimators in Rubix are persistable, but some are not allowed due to their poor storage complexity.
 
 ### Persistent Model
-It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()` and `load()` that allow the estimator to be stored and retrieved.
+It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model class gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be stored and retrieved.
 
 ##### Meta Estimator | Verbose
 
@@ -3040,14 +3040,19 @@ It is possible to persist a model by wrapping the estimator instance in a Persis
 | 2 | persister | None | object | The persister used to store the model data. |
 
 ##### Additional Methods:
-Save the model to storage:
+Save the persistent model to storage:
 ```php
 public save() : void
 ```
 
-Returns an instantiated model from a persister:
+Load the persistent model from storage:
 ```php
-public static load(Persister $persister, int $version = 0) : self
+public static load(Persister $persister) : self
+```
+
+Prompt the user to save the model or not via stdout:
+```php
+public prompt() : void
 ```
 
 ##### Example:
@@ -3064,6 +3069,13 @@ $estimator = new PersistentModel(new LogisticRegression(256, new Adam(0.001)), $
 $estimator->save();
 
 $estimator = PersistentModel::load($persister);
+
+$estimator->prompt(); // Prompt the user to save or not
+```
+
+##### Output:
+```sh
+Save this model? (y|[n]): 
 ```
 
 ### Persisters
@@ -3074,9 +3086,9 @@ To store a persistable estimator:
 public save(Persistable $persistable) : void
 ```
 
-Load a model from storage given a version number where *0* is the last model saved:
+Load the last model that was saved:
 ```php
-public load(int $version = 0) : Persistable
+public load() : Persistable
 ```
 
 ### Filesystem
@@ -3098,7 +3110,7 @@ public flush() : void
 ```php
 use Rubix\ML\Persisters\Filesystem;
 
-$persister = new Filesystem('/path/to/example.model', 3);
+$persister = new Filesystem('/path/to/example.model', 100);
 ```
 
 ### Redis DB
@@ -3108,11 +3120,11 @@ Redis is a high performance in-memory key value store that can be used to persis
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | key | None | string | The key of the object in the database. |
-| 2 | history | 2 | int | The number of backups to keep. |
-| 3 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
-| 4 | port | 6379 | int | The port of the Redis server. |
-| 5 | db | 0 | int | The database number. |
-| 6 | password | null | string | The password to access the database. |
+| 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
+| 3 | port | 6379 | int | The port of the Redis server. |
+| 4 | db | 0 | int | The database number. |
+| 5 | password | null | string | The password to access the database. |
+| 6 | history | 2 | int | The number of backups to keep. |
 | 7 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
 
 ##### Additional Methods:
@@ -3125,7 +3137,7 @@ public info() : array
 ```php
 use Rubix\ML\Persisters\RedisDB;
 
-$persister = new RedisDB('model:sentiment', 25, '127.0.0.1', 6379, 2, 'secret', 1.5);
+$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, 1.5);
 ```
 
 ---

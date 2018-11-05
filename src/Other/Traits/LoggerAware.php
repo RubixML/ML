@@ -33,4 +33,14 @@ trait LoggerAware
 
         $this->logger = $logger;
     }
+
+    /**
+     * Return if the logger is logging or not.
+     * 
+     * @var bool
+     */
+    public function logging() : bool
+    {
+        return isset($this->logger);
+    }
 }

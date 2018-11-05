@@ -105,55 +105,20 @@ class Filesystem implements Persister
     }
 
     /**
-     * Load a model given a version number where 0 is the last model saved.
+     * Load the last model that was saved.
      * 
-     * @param  int  $version
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */
-    public function load(int $version = 0) : Persistable
+    public function load() : Persistable
     {
-        if ($version < 0) {
-            throw new InvalidArgumentException("Version cannot be less"
-                . " than 0, $version given.");
+        if (!is_file($this->path)) {
+            throw new RuntimeException('File ' . basename($this->path)
+                . ' does not exist or is a folder, check the path'
+                . ' and permissions.');
         }
-
-        if ($version > $this->history) {
-            throw new InvalidArgumentException("The maximum number of"
-                . " backups is $this->history, $version given.");
-        }
-
-        if ($version === 0) {
-            if (!is_file($this->path)) {
-                throw new RuntimeException('File ' . basename($this->path)
-                    . ' does not exist or is a folder, check the path'
-                    . ' and permissions.');
-            }
             
-            $path = $this->path;
-        } else {
-            $backups = [];
-
-            foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
-                $backups[$filename] = filemtime($filename);
-            }
-
-            arsort($backups);
-
-            $backups = array_keys($backups);
-
-            $index = $version - 1;
-
-            if (!isset($backups[$index])) {
-                throw new InvalidArgumentException("Could not load model"
-                    . " from storage.");
-            }
-
-            $path = $backups[$index];
-        }
-
-        $data = file_get_contents($path) ?: '';
+        $data = file_get_contents($this->path) ?: '';
 
         $persistable = unserialize($data);
 
@@ -165,7 +130,7 @@ class Filesystem implements Persister
     }
 
     /**
-     * Delete all backups from storage.
+     * Remove all backups from storage.
      * 
      * @return void
      */

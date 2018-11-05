@@ -318,10 +318,14 @@ class TSNE implements Estimator, Verbose
     {
         $distances = [];
 
-        foreach ($samples as $i => $a) {
-            foreach ($samples as $j => $b) {
-                $distances[$i][$j] = $this->kernel->compute($a, $b);
+        foreach ($samples as $a) {
+            $temp = [];
+
+            foreach ($samples as $b) {
+                $temp[] = $this->kernel->compute($a, $b);
             }
+
+            $distances[] = $temp;
         }
 
         return Matrix::quick($distances);

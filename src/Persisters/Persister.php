@@ -15,10 +15,9 @@ interface Persister
     public function save(Persistable $persistable) : void;
 
     /**
-     * Load a model given a version number where 0 is the last model saved.
+     * Load the last model that was saved.
      * 
-     * @param  int  $version
      * @return \Rubix\ML\Persistable
      */
-    public function load(int $version = 0) : Persistable;
+    public function load() : Persistable;
 }

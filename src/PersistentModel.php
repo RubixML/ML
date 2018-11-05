@@ -34,25 +34,21 @@ class PersistentModel implements MetaEstimator, Verbose, Learner
     protected $base;
 
     /**
-     * The persister responsible to saveing and restoring the estimator.
+     * The persister is responsible for saving and restoring the estimator.
      *
      * @var \Rubix\ML\Persisters\Persister
      */
     protected $persister;
 
     /**
-     * Factory method to restore a specific version of the model from a
-     * persister.
+     * Factory method to restore the model from persistence.
      *
      * @param  \Rubix\ML\Persisters\Persister  $persister
-     * @param  int  $version
      * @return self
      */
-    public static function load(Persister $persister, int $version = 0) : self
-    {
-        $model = $persister->load($version);
-        
-        return new self($model, $persister);
+    public static function load(Persister $persister) : self
+    {    
+        return new self($persister->load(), $persister);
     }
 
     /**
@@ -117,7 +113,21 @@ class PersistentModel implements MetaEstimator, Verbose, Learner
     {
         $this->persister->save($this->base);
 
-        if ($this->logger) $this->logger->info('Model saved');
+        if ($this->logger) $this->logger->info('Model saved successully');
+    }
+
+    /**
+     * Prompt the user to save this model or not.
+     * 
+     * @return void
+     */
+    public function prompt() : void
+    {
+        $save = strtolower(readline('Save this model? (y|[n]): '));
+
+        if ($save === 'y') {
+            $this->save();
+        }
     }
 
     /**
