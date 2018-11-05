@@ -96,7 +96,7 @@ class KDTree implements Tree
     {
         $this->dimensionality = $dataset->numColumns();
 
-        $this->root = $this->findBestSplit($dataset, 1);
+        $this->root = $this->findBestSplit($dataset, 0);
 
         $this->split($this->root, 1);
     }
@@ -228,7 +228,7 @@ class KDTree implements Tree
 
         while ($current) {
             if ($current instanceof Coordinate) {
-                if ($sample[$current->index()] < $current->value()) {
+                if ($sample[$current->column()] < $current->value()) {
                     $current = $current->left();
                 } else {
                     $current = $current->right();
@@ -254,11 +254,11 @@ class KDTree implements Tree
      */
     protected function findBestSplit(Labeled $dataset, int $depth) : Coordinate
     {
-        $index = $depth % $this->dimensionality;
+        $column = $depth % $this->dimensionality;
 
-        $value = Stats::median($dataset->column($index));
+        $value = Stats::median($dataset->column($column));
 
-        return new Coordinate($value, $index, $dataset);
+        return new Coordinate($column, $value, $dataset);
     }
 
     /**

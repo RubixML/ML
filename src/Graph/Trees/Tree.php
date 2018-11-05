@@ -3,7 +3,7 @@
 namespace Rubix\ML\Graph\Trees;
 
 interface Tree
-{
+{   
     /**
      * Return the root node of the tree.
      *

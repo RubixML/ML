@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use InvalidArgumentException;
+
 /**
  * Best
  * 
@@ -17,7 +19,7 @@ class Best extends BinaryNode implements Decision, Leaf
     /**
      * The outcome of the decision as the most probable i.e best.
      * 
-     * @var string
+     * @var int|string
      */
     protected $outcome;
 
@@ -43,15 +45,20 @@ class Best extends BinaryNode implements Decision, Leaf
     protected $n;
     
     /**
-     * @param  string  $outcome
+     * @param  int|string  $outcome
      * @param  array  $probabilities
      * @param  float  $impurity
      * @param  int  $n
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $outcome, array $probabilities, float $impurity, int $n)
+    public function __construct($outcome, array $probabilities, float $impurity, int $n)
     {
+        if (!is_int($outcome) and !is_string($outcome)) {
+            throw new InvalidArgumentException('Outcome must be an integer or'
+                . ' string, ' . gettype($outcome) . ' given.');
+        }
+
         $this->outcome = $outcome;
         $this->probabilities = $probabilities;
         $this->impurity = $impurity;
@@ -61,9 +68,9 @@ class Best extends BinaryNode implements Decision, Leaf
     /**
      * Return the outcome of the decision i.e the most probable outcome.
      * 
-     * @return string
+     * @return int|string
      */
-    public function outcome() : string
+    public function outcome()
     {
         return $this->outcome;
     }

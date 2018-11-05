@@ -14,7 +14,7 @@ use RuntimeException;
 /**
  * Dummy Classifier
  *
- * A classifier that uses a user-defined Guessing Strategyto make predictions.
+ * A classifier that uses a user-defined Guessing Strategy to make predictions.
  * Dummy Classifier is useful to provide a sanity check and to compare
  * performance with an actual classifier.
  *
@@ -79,12 +79,6 @@ class DummyClassifier implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $predictions[] = $this->strategy->guess();
-        }
-
-        return $predictions;
+        return array_map([$this->strategy, 'guess'], $dataset->samples());
     }
 }

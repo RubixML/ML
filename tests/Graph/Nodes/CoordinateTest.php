@@ -15,7 +15,7 @@ class CoordinateTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new Coordinate(5, 1, Labeled::quick([[5., 2.]], ['yes']));
+        $this->node = new Coordinate(1, 5, Labeled::quick([[5., 2.]], ['yes']));
     }
 
     public function test_build_node()

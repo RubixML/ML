@@ -1531,7 +1531,10 @@ n Extremely Randomized Classification Tree, Extra Trees differ from standard [Cl
 | 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
-This estimator does not have any additional methods.
+Return the feature importances calculated during training keyed by feature column:
+```php
+public featureImportances() : array
+```
 
 ##### Example:
 ```php
@@ -4475,7 +4478,9 @@ var_dump($result);
 ##### Classification, Regression, Clustering, Anomaly Detection
 
 ##### Parameters:
-This report does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | ratio | 0.2 | float | The ratio of test samples to use to generate the report. |
 
 ##### Example:
 ```php
@@ -4494,8 +4499,8 @@ var_dump($result);
   array(4) {
     ["pps"]=> float(72216.1351696)
     ["ppm"]=> float(4332968.1101788)
+	["total_seconds"]=> float(0.0041680335998535)
     ["average_seconds"]=> float(1.3847287706694E-5)
-    ["total_seconds"]=> float(0.0041680335998535)
     ["cardinality"]=> int(301)
   }
 

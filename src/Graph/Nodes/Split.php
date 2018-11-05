@@ -18,18 +18,18 @@ use InvalidArgumentException;
 class Split extends BinaryNode
 {
     /**
+     * The feature column (index) of the split value.
+     *
+     * @var int
+     */
+    protected $column;
+
+    /**
      * The value that the node splits on.
      *
      * @var int|float|string
      */
     protected $value;
-
-    /**
-     * The feature column (index) of the split value.
-     *
-     * @var int
-     */
-    protected $index;
 
     /**
      * The left and right splits of the training data.
@@ -39,13 +39,13 @@ class Split extends BinaryNode
     protected $groups;
 
     /**
+     * @param  int  $column
      * @param  mixed  $value
-     * @param  int  $index
      * @param  array  $groups
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($value, int $index, array $groups)
+    public function __construct(int $column, $value, array $groups)
     {
         if (!is_string($value) and !is_numeric($value)) {
             throw new InvalidArgumentException('Split value must be a string'
@@ -64,9 +64,19 @@ class Split extends BinaryNode
             }
         }
 
+        $this->column = $column;
         $this->value = $value;
-        $this->index = $index;
         $this->groups = $groups;
+    }
+
+    /**
+     * Return the feature column (index) of the split value.
+     * 
+     * @return int
+     */
+    public function column() : int
+    {
+        return $this->column;
     }
 
     /**
@@ -77,16 +87,6 @@ class Split extends BinaryNode
     public function value()
     {
         return $this->value;
-    }
-
-    /**
-     * Return the feature column (index) of the split value.
-     * 
-     * @return int
-     */
-    public function index() : int
-    {
-        return $this->index;
     }
 
     /**

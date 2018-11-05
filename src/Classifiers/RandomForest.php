@@ -118,6 +118,40 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
     }
 
     /**
+     * Return the feature importances calculated during training keyed by
+     * feature column.
+     * 
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function featureImportances() : array
+    {
+        if (empty($this->forest)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $k = count($this->forest);
+
+        $importances = [];
+
+        foreach ($this->forest as $tree) {
+            foreach ($tree->featureImportances() as $column => $value) {
+                if (isset($importances[$column])) {
+                    $importances[$column] += $value;
+                } else {
+                    $importances[$column] = $value;
+                }
+            }
+        }
+
+        foreach ($importances as &$importance) {
+            $importance /= $k;
+        }
+
+        return $importances;
+    }
+
+    /**
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
@@ -150,24 +184,18 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
     }
 
     /**
-     * Make a prediction based on the class probabilities.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($this->proba($dataset) as $probabilities) {
-            $predictions[] = Argmax::compute($probabilities);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException

@@ -17,9 +17,9 @@ use RuntimeException;
 
 class ExtraTreeRegressorTest extends TestCase
 {
-    const TRAIN_SIZE = 250;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -27,9 +27,9 @@ class ExtraTreeRegressorTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new ExtraTreeRegressor(100, 2, null);
+        $this->estimator = new ExtraTreeRegressor(30, 1, null);
     }
 
     public function test_build_regressor()

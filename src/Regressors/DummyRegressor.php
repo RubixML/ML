@@ -78,12 +78,6 @@ class DummyRegressor implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $predictions[] = $this->strategy->guess();
-        }
-
-        return $predictions;
+        return array_map([$this->strategy, 'guess'], $dataset->samples());
     }
 }

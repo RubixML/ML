@@ -193,9 +193,7 @@ class IsolationForest implements Learner, Ensemble, Persistable
         foreach ($this->forest as $tree) {
             $node = $tree->search($sample);
 
-            $depths[] = isset($node)
-                ? $node->depth()
-                : self::EPSILON;
+            $depths[] = $node ? $node->depth() : self::EPSILON;
         }
 
         $mean = Stats::mean($depths);

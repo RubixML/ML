@@ -145,14 +145,16 @@ class ITree implements Tree
 
         while (isset($current)) {
             if ($current instanceof Isolator) {
-                if (is_string($current->value())) {
-                    if ($sample[$current->index()] === $current->value()) {
+                $value = $current->value();
+
+                if (is_string($value)) {
+                    if ($sample[$current->column()] === $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->index()] < $current->value()) {
+                    if ($sample[$current->column()] < $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
@@ -177,15 +179,15 @@ class ITree implements Tree
      */
     protected function findRandomSplit(Dataset $dataset, int $depth) : Isolator
     {
-        $index = rand(0, $dataset->numColumns() - 1);
+        $column = rand(0, $dataset->numColumns() - 1);
 
         $sample = $dataset->row(rand(0, count($dataset) - 1));
 
-        $value = $sample[$index];
+        $value = $sample[$column];
 
-        $groups = $dataset->partition($index, $value);
+        $groups = $dataset->partition($column, $value);
 
-        return new Isolator($value, $index, $groups);
+        return new Isolator($column, $value, $groups);
     }
 
     /**

@@ -260,24 +260,18 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Make a prediction based on the cluster probabilities.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($this->proba($dataset) as $joint) {
-            $predictions[] = Argmax::compute($joint);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
-     * Return an array of cluster probabilities for each sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -295,13 +289,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $probabilities = [];
-
-        foreach ($dataset as $sample) {
-            $probabilities[] = $this->jointLikelihood($sample);
-        }
-
-        return $probabilities;
+        return array_map([self::class, 'jointLikelihood'], $dataset->samples());
     }
 
     /**

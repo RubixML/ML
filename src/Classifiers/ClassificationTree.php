@@ -59,7 +59,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      *
      * @var array
      */
-    protected $indices = [
+    protected $columns = [
         //
     ];
 
@@ -115,8 +115,11 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
                 . ' labeled training set.');
         }
 
+        $k = $dataset->numColumns();
+
         $this->classes = $dataset->possibleOutcomes();
-        $this->indices = $dataset->axes();
+        $this->columns = $dataset->axes();
+        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
         if ($this->logger) $this->logger->info('Training started');
 
@@ -124,11 +127,11 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
 
         if ($this->logger) $this->logger->info('Training completed');
 
-        $this->indices = [];
+        $this->columns = [];
     }
 
     /**
-     * Make a prediction based on the value of a terminal node in the tree.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
@@ -154,7 +157,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
@@ -189,26 +192,22 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
     protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestGini = INF;
-        $bestIndex = $bestValue = null;
+        $bestColumn = $bestValue = null;
         $bestGroups = [];
 
-        $k = $dataset->numColumns();
+        shuffle($this->columns);
 
-        $maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
-
-        shuffle($this->indices);
-
-        foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
+        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
             foreach ($dataset as $sample) {
-                $value = $sample[$index];
+                $value = $sample[$column];
 
-                $groups = $dataset->partition($index, $value);
+                $groups = $dataset->partition($column, $value);
 
                 $gini = $this->gini($groups);
 
                 if ($gini < $bestGini) {
+                    $bestColumn = $column;
                     $bestValue = $value;
-                    $bestIndex = $index;
                     $bestGroups = $groups;
                     $bestGini = $gini;
                 }
@@ -219,10 +218,10 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
             . " value=$bestValue impurity=$bestGini depth=$depth");
 
-        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
+        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
     }
 
     /**
@@ -235,15 +234,17 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      */
     protected function terminate(Labeled $dataset, int $depth) : BinaryNode
     {
-        $probabilities = array_fill_keys($this->classes, 0.);
-
         $n = $dataset->numRows();
 
-        foreach (array_count_values($dataset->labels()) as $class => $count) {
+        $counts = array_count_values($dataset->labels());
+
+        $prediction = Argmax::compute($counts);
+
+        $probabilities = [];
+
+        foreach ($counts as $class => $count) {
             $probabilities[$class] = $count / $n;
         }
-
-        $prediction = Argmax::compute($probabilities);
     
         $gini = $this->gini([$dataset]);
 
@@ -263,7 +264,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
     {
         $n = array_sum(array_map('count', $groups));
 
-        $gini = 0.;
+        $impurity = 0.;
 
         foreach ($groups as $group) {
             $k = $group->numRows();
@@ -272,15 +273,17 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
                 continue 1;
             }
 
-            $density = $k / $n;
-
             $counts = array_count_values($group->labels());
 
+            $gini = 0;
+
             foreach ($counts as $count) {
-                $gini += $density * (1. - ($count / $n) ** 2);
+                $gini += 1 - ($count / $n) ** 2;
             }
+
+            $impurity += ($k / $n) * $gini;
         }
 
-        return $gini;
+        return $impurity;
     }
 }

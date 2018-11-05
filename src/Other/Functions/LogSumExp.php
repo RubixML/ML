@@ -19,10 +19,10 @@ class LogSumExp
      * Compute the log of the sum of exponential values.
      *
      * @param  array  $values
-     * @return float
+     * @return float|null
      */
-    public static function compute(array $values) : float
+    public static function compute(array $values) : ?float
     {
-        return empty($values) ? 0.: log(array_sum(array_map('exp', $values)));
+        return $values ? log(array_sum(array_map('exp', $values))) : null;
     }
 }

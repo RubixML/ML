@@ -315,10 +315,10 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $max = LogSumExp::compute($jll);
+            $total = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $max);
+                $probabilities[$i][$class] = exp($likelihood - $total);
             }
         }
 

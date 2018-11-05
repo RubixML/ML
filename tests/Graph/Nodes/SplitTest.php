@@ -18,7 +18,7 @@ class SplitTest extends TestCase
     {
         $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
 
-        $this->node = new Split(45.5, 3, $this->groups);
+        $this->node = new Split(3, 45.5, $this->groups);
     }
 
     public function test_build_node()
@@ -28,9 +28,9 @@ class SplitTest extends TestCase
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    public function test_get_index()
+    public function test_get_column()
     {
-        $this->assertEquals(3, $this->node->index());
+        $this->assertEquals(3, $this->node->column());
     }
 
     public function test_get_value()

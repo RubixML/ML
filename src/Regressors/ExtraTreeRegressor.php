@@ -35,40 +35,37 @@ class ExtraTreeRegressor extends RegressionTree
     protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestVariance = INF;
-        $bestIndex = $bestValue = null;
+        $bestColumn = $bestValue = null;
         $bestGroups = [];
-
-        $maxFeatures = $this->maxFeatures
-            ?? (int) round(sqrt($dataset->numColumns()));
 
         $max = $dataset->numRows() - 1;
 
-        shuffle($this->indices);
+        shuffle($this->columns);
 
-        foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
+        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
             $sample = $dataset->row(rand(0, $max));
 
-            $value = $sample[$index];
+            $value = $sample[$column];
 
-            $groups = $dataset->partition($index, $value);
+            $groups = $dataset->partition($column, $value);
 
             $variance = $this->variance($groups);
 
             if ($variance < $bestVariance) {
+                $bestColumn = $column;
                 $bestValue = $value;
-                $bestIndex = $index;
                 $bestGroups = $groups;
                 $bestVariance = $variance;
             }
 
-            if ($variance <= $this->tolerance) {
+            if ($variance < $this->tolerance) {
                 break 1;
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
             . " value=$bestValue impurity=$bestVariance depth=$depth");
 
-        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestVariance);
+        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
 }

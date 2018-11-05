@@ -108,24 +108,33 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     }
 
     /**
-     * Make a prediction based on the class probabilities.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if ($this->bare()) {
+            throw new RuntimeException('Estimator has not been trainied.');
+        }
+        
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $joint) {
-            $predictions[] = Argmax::compute($joint);
+        foreach ($dataset as $sample) {
+            list($labels, $distances) = $this->neighbors($sample, $this->k);
+
+            $counts = array_count_values($labels);
+
+            $predictions[] = Argmax::compute($counts);
         }
 
         return $predictions;
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException

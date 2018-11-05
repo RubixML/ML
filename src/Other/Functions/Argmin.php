@@ -21,6 +21,6 @@ class Argmin
      */
     public static function compute(array $values)
     {
-        return empty($values) ? null : array_search(min($values), $values);
+        return $values ? array_search(min($values), $values) : null;
     }
 }

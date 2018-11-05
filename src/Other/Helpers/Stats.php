@@ -27,9 +27,9 @@ class Stats
      */
     public static function mean(array $values, ?int $n = null) : float
     {
-        $n = is_null($n) ? count($values) : $n;
+        $n = $n ?? count($values);
 
-        if ($n === 0) {
+        if ($n < 1) {
             throw new InvalidArgumentException('Mean is undefined for empty'
                 . ' set.');
         }
@@ -48,7 +48,7 @@ class Stats
     {
         $n = count($values);
 
-        if ($n === 0) {
+        if ($n < 1) {
             throw new InvalidArgumentException('Median is undefined for empty'
                 . ' set.');
         }
@@ -109,14 +109,14 @@ class Stats
      */
     public static function variance(array $values, ?float $mean = null, ?int $n = null) : float
     {
-        $n = is_null($n) ? count($values) : $n;
+        $n = $n ?? count($values);
 
-        if (empty($values)) {
+        if ($n < 1) {
             throw new InvalidArgumentException('Variance is undefined for an'
                 . ' empty set.');
         }
 
-        $mean = is_null($mean) ? self::mean($values) : $mean;
+        $mean = $mean ?? self::mean($values);
 
         $ssd = 0.;
 
@@ -142,6 +142,11 @@ class Stats
                 . ' an empty set.');
         }
 
+        if ($p < 0. or $p > 100.) {
+            throw new InvalidArgumentException("P must be between 0 and 1"
+                . "$p given.");
+        }
+
         $n = count($values);
 
         sort($values);
@@ -162,13 +167,14 @@ class Stats
      * Compute the interquartile range of a set of values.
      *
      * @param  array  $values
+     * @throws \InvalidArgumentException
      * @return float
      */
     public static function iqr(array $values) : float
     {
         $n = count($values);
 
-        if ($n === 0) {
+        if ($n < 1) {
             throw new InvalidArgumentException('Interquartile range is not'
                 . ' defined for empty set.');
         }
@@ -197,7 +203,7 @@ class Stats
      */
     public static function mad(array $values, ?float $median = null) : float
     {
-        $median = is_null($median) ? self::median($values) : $median;
+        $median = $median ?? self::median($values);
 
         $deviations = [];
 
@@ -220,14 +226,14 @@ class Stats
      */
     public static function centralMoment(array $values, int $moment, ?float $mean = null, ?int $n = null) : float
     {
-        $n = is_null($n) ? count($values) : $n;
+        $n = $n ?? count($values);
 
-        if ($n === 0) {
+        if ($n < 1) {
             throw new InvalidArgumentException('Central moment is undefined for'
                 . ' empty set.');
         }
 
-        $mean = is_null($mean) ? self::mean($values, $n) : $mean;
+        $mean = $mean ?? self::mean($values, $n);
 
         $sigma = 0.;
 
@@ -250,14 +256,14 @@ class Stats
      */
     public static function skewness(array $values, ?float $mean = null, ?int $n = null) : float
     {
-        $n = is_null($n) ? count($values) : $n;
+        $n = $n ?? count($values);
 
         if ($n === 0) {
             throw new InvalidArgumentException('Skewness is undefined for'
                 . ' empty set.');
         }
 
-        $mean = is_null($mean) ? self::mean($values, $n) : $mean;
+        $mean = $mean ?? self::mean($values, $n);
 
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
@@ -276,14 +282,14 @@ class Stats
      */
     public static function kurtosis(array $values, ?float $mean = null, ?int $n = null) : float
     {
-        $n = is_null($n) ? count($values) : $n;
+        $n = $n ?? count($values);
 
         if ($n === 0) {
             throw new InvalidArgumentException('Central moment is undefined for'
                 . ' empty set.');
         }
 
-        $mean = is_null($mean) ? self::mean($values, $n) : $mean;
+        $mean = $mean ?? self::mean($values, $n);
 
         $numerator = self::centralMoment($values, 4, $mean, $n);
         $denominator = self::centralMoment($values, 2, $mean, $n) ** 2;

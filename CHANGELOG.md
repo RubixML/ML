@@ -15,6 +15,7 @@
     - Fixed Naive Bayes reset category counts during partial train
     - Pipeline and Persistent Model are now Verbose
     - Classification and Regression trees now Verbose
+    - Random Forest can now return feature importances
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

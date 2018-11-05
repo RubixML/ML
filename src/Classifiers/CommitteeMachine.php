@@ -154,24 +154,18 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
     }
 
     /**
-     * Make a prediction based on the class probabilities.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($this->proba($dataset) as $joint) {
-            $predictions[] = Argmax::compute($joint);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
-     * Output a vector of probabilities estimates.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array

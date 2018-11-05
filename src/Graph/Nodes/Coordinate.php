@@ -32,12 +32,12 @@ class Coordinate extends Split implements Spatial
     protected $max;
 
     /**
+     * @param  int  $column
      * @param  mixed  $value
-     * @param  int  $index
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function __construct($value, int $index, Labeled $dataset)
+    public function __construct(int $column, $value, Labeled $dataset)
     {
         $min = $max = [];
 
@@ -46,12 +46,12 @@ class Coordinate extends Split implements Spatial
             $max[] = max($values);
         }
 
-        $groups = $dataset->partition($index, $value);
+        $groups = $dataset->partition($column, $value);
 
         $this->min = $min;
         $this->max = $max;
 
-        parent::__construct($value, $index, $groups);
+        parent::__construct($column, $value, $groups);
     }
 
     /**

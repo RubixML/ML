@@ -291,8 +291,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
     }
 
     /**
-     * Make a prediction by consulting the ensemble of experts and choosing the class
-     * label closest to the value of the weighted sum of each expert's prediction.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException

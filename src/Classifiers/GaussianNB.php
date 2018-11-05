@@ -307,8 +307,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     }
 
     /**
-     * Calculate the probabilities of each class from the joint log likelihood
-     * of a sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -331,10 +330,10 @@ class GaussianNB implements Online, Probabilistic, Persistable
         foreach ($dataset as $i => $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $max = LogSumExp::compute($jll);
+            $total = LogSumExp::compute($jll);
 
             foreach ($jll as $class => $likelihood) {
-                $probabilities[$i][$class] = exp($likelihood - $max);
+                $probabilities[$i][$class] = exp($likelihood - $total);
             }
         }
 

@@ -49,7 +49,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
      *
      * @var array
      */
-    protected $indices = [
+    protected $columns = [
         //
     ];
 
@@ -105,7 +105,10 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        $this->indices = $dataset->axes();
+        $k = $dataset->numColumns();
+
+        $this->columns = $dataset->axes();
+        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
         if ($this->logger) $this->logger->info('Training started');
 
@@ -113,7 +116,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
 
         if ($this->logger) $this->logger->info('Training completed');
 
-        $this->indices = [];
+        $this->columns = [];
     }
 
     /**
@@ -153,25 +156,22 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
     protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestVariance = INF;
-        $bestIndex = $bestValue = null;
+        $bestColumn = $bestValue = null;
         $bestGroups = [];
-        
-        $maxFeatures = $this->maxFeatures
-            ?? (int) round(sqrt($dataset->numColumns()));
 
-        shuffle($this->indices);
+        shuffle($this->columns);
 
-        foreach (array_slice($this->indices, 0, $maxFeatures) as $index) {
+        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
             foreach ($dataset as $sample) {
-                $value = $sample[$index];
+                $value = $sample[$column];
 
-                $groups = $dataset->partition($index, $value);
+                $groups = $dataset->partition($column, $value);
 
                 $variance = $this->variance($groups);
 
                 if ($variance < $bestVariance) {
+                    $bestColumn = $column;
                     $bestValue = $value;
-                    $bestIndex = $index;
                     $bestGroups = $groups;
                     $bestVariance = $variance;
                 }
@@ -182,10 +182,10 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
             . " value=$bestValue impurity=$bestVariance depth=$depth");
 
-        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestVariance);
+        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
 
     /**
@@ -197,12 +197,14 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
      */
     protected function terminate(Labeled $dataset, int $depth) : BinaryNode
     {
+        $n = $dataset->numRows();
+        
         list($mean, $variance) = Stats::meanVar($dataset->labels());
 
         if ($this->logger) $this->logger->info("Leaf node: outcome=$mean,"
             . " impurity=$variance depth=$depth");
 
-        return new Average($mean, $variance, $dataset->numRows());
+        return new Average($mean, $variance, $n);
     }
 
     /**
@@ -215,7 +217,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
     {
         $n = array_sum(array_map('count', $groups));
 
-        $variance = 0.;
+        $impurity = 0.;
 
         foreach ($groups as $group) {
             $k = $group->numRows();
@@ -224,11 +226,11 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
                 continue 1;
             }
 
-            $density = $k / $n;
+            $variance = Stats::variance($group->labels());
 
-            $variance += $density * Stats::variance($group->labels());
+            $impurity += ($k / $n) * $variance;
         }
 
-        return $variance;
+        return $impurity;
     }
 }

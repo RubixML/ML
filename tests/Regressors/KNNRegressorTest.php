@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
-use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -19,7 +19,7 @@ class KNNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 3;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -27,7 +27,7 @@ class KNNRegressorTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
+        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
         $this->estimator = new KNNRegressor(3, new Minkowski(3.0));
     }

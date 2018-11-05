@@ -19,26 +19,28 @@ use InvalidArgumentException;
  */
 class PredictionSpeed implements Report
 {
-    /**
-     * The maximum number of samples to use to generate the report.
-     * 
-     * @var int
-     */
-    protected $maxSamples;
+    const MIN_TEST_SIZE = 50;
 
     /**
-     * @param  int  $maxSamples
+     * The ratio of test samples to use to generate the report.
+     * 
+     * @var float
+     */
+    protected $ratio;
+
+    /**
+     * @param  float  $ratio
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxSamples = 200)
+    public function __construct(float $ratio = 0.2)
     {
-        if ($maxSamples < 1) {
-            throw new InvalidArgumentException("At least 1 samples is"
-                . " needed to generate the report, $maxSamples given.");
+        if ($ratio < 0. or $ratio > 1.) {
+            throw new InvalidArgumentException("Ratio must be between"
+                . " 0 and 1, $ratio given.");
         }
 
-        $this->maxSamples = $maxSamples;
+        $this->ratio = $ratio;
     }
 
     /**
@@ -57,7 +59,9 @@ class PredictionSpeed implements Report
                 . ' least one sample to predict.');
         }
 
-        $subset = $testing->randomize()->head($this->maxSamples);
+        $p = (int) round(max(self::MIN_TEST_SIZE, $this->ratio * $n));
+
+        $subset = $testing->randomize()->head($p);
 
         $start = microtime(true);
 

@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Other\Loggers\Screen;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -34,7 +35,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new ClassificationTree(50, 3, null);
+        $this->estimator = new ClassificationTree(10, 3, null);
     }
 
     public function test_build_classifier()

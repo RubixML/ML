@@ -238,13 +238,7 @@ class MeanShift implements Learner, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $predictions[] = $this->assignCluster($sample);
-        }
-
-        return $predictions;
+        return array_map([self::class, 'assignCluster'], $dataset->samples());
     }
 
     /**

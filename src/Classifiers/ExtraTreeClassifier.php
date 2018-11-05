@@ -36,25 +36,25 @@ class ExtraTreeClassifier extends ClassificationTree
     protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
     {
         $bestGini = INF;
-        $bestIndex = $bestValue = null;
+        $bestColumn = $bestValue = null;
         $bestGroups = [];
 
         $max = $dataset->numRows() - 1;
 
-        shuffle($this->indices);
+        shuffle($this->columns);
 
-        foreach (array_slice($this->indices, 0, $this->maxFeatures) as $index) {
+        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
             $sample = $dataset->row(rand(0, $max));
 
-            $value = $sample[$index];
+            $value = $sample[$column];
 
-            $groups = $dataset->partition($index, $value);
+            $groups = $dataset->partition($column, $value);
 
             $gini = $this->gini($groups);
 
             if ($gini < $bestGini) {
+                $bestColumn = $column;
                 $bestValue = $value;
-                $bestIndex = $index;
                 $bestGroups = $groups;
                 $bestGini = $gini;
             }
@@ -64,9 +64,9 @@ class ExtraTreeClassifier extends ClassificationTree
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestIndex"
+        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
             . " value=$bestValue impurity=$bestGini depth=$depth");
 
-        return new Comparison($bestValue, $bestIndex, $bestGroups, $bestGini);
+        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
     }
 }

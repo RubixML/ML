@@ -111,7 +111,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                             float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-5)
     {
         if (is_null($base)) {
-            $base = new RegressionTree(2);
+            $base = new RegressionTree(3);
         }
 
         if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
@@ -252,7 +252,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
         $predictions = array_fill(0, $dataset->numRows(), 0.);
 
-        foreach ($this->ensemble as $i => $estimator) {
+        foreach ($this->ensemble as $estimator) {
             foreach ($estimator->predict($dataset) as $j => $prediction) {
                 $predictions[$j] += $this->rate * $prediction;
             }

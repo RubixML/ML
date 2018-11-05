@@ -21,6 +21,6 @@ class Argmax
      */
     public static function compute(array $values)
     {
-        return empty($values) ? null : array_search(max($values), $values);
+        return $values ? array_search(max($values), $values) : null;
     }
 }

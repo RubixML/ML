@@ -19,7 +19,7 @@ class ComparisonTest extends TestCase
     {
         $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
 
-        $this->node = new Comparison(-41, 3, $this->groups, 400.);
+        $this->node = new Comparison(3, -41, $this->groups, 400.);
     }
 
     public function test_build_node()

@@ -268,25 +268,18 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Feed a sample through the network and make a prediction based on the highest
-     * activated output neuron.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        $predictions = [];
-
-        foreach ($this->proba($dataset) as $joint) {
-            $predictions[] = Argmax::compute($joint);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException

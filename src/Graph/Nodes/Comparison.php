@@ -31,24 +31,24 @@ class Comparison extends Split implements Decision
     protected $n;
 
     /**
+     * @param  int  $column
      * @param  mixed  $value
-     * @param  int  $index
      * @param  array  $groups
      * @param  float  $impurity
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($value, int $index, array $groups, float $impurity)
+    public function __construct(int $column, $value, array $groups, float $impurity)
     {
-        parent::__construct($value, $index, $groups);
-
         if ($impurity < 0.) {
-            throw new InvalidArgumentException('Impurity cannot be less than'
-                . ' 0.');
+            throw new InvalidArgumentException("Impurity cannot be less than"
+                . " 0, $impurity given.");
         }
 
         $this->impurity = $impurity;
         $this->n = (int) array_sum(array_map('count', $groups));
+
+        parent::__construct($column, $value, $groups);
     }
 
     /**

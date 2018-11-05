@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph\Trees;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Leaf;
@@ -195,21 +196,25 @@ abstract class CART implements Tree
     {
         $current = $this->root;
 
-        while (isset($current)) {
+        while ($current) {
             if ($current instanceof Comparison) {
-                if (is_string($current->value())) {
-                    if ($sample[$current->index()] === $current->value()) {
+                $value = $current->value();
+
+                if (is_string($value)) {
+                    if ($sample[$current->column()] === $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
                     }
                 } else {
-                    if ($sample[$current->index()] < $current->value()) {
+                    if ($sample[$current->column()] < $value) {
                         $current = $current->left();
                     } else {
                         $current = $current->right();
                     }
                 }
+
+                continue 1;
             }
 
             if ($current instanceof Leaf) {
@@ -232,19 +237,23 @@ abstract class CART implements Tree
             return [];
         }
 
+        $nodes = $this->dump($this->root);
+
         $importances = [];
 
-        foreach ($this->traverse($this->root) as $node) {
+        foreach ($nodes as $node) {
             if ($node instanceof Comparison) {
-                if (isset($importances[$node->index()])) {
-                    $importances[$node->index()] += $node->impurityDecrease();
+                $index = $node->column();
+
+                if (isset($importances[$index])) {
+                    $importances[$index] += $node->impurityDecrease();
                 } else {
-                    $importances[$node->index()] = $node->impurityDecrease();
+                    $importances[$index] = $node->impurityDecrease();
                 }
             }
         }
 
-        $total = array_sum($importances);
+        $total = array_sum($importances) ?: Estimator::EPSILON;
 
         foreach ($importances as &$importance) {
             $importance /= $total;
@@ -256,13 +265,13 @@ abstract class CART implements Tree
     }
 
     /**
-     * Return an array of all the decision nodes in the tree starting at a
+     * Return an array of all the nodes in the tree starting at a
      * given node.
      *
      * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $current
      * @return array
      */
-    public function traverse(BinaryNode $current) : array
+    public function dump(BinaryNode $current) : array
     {
         if ($current instanceof Leaf) {
             return [$current];
@@ -270,12 +279,16 @@ abstract class CART implements Tree
 
         $left = $right = [];
 
-        if ($current->left() !== null) {
-            $left = $this->traverse($current->left());
+        $node = $current->left();
+
+        if ($node instanceof BinaryNode) {
+            $left = $this->dump($node);
         }
 
-        if ($current->right() !== null) {
-            $right = $this->traverse($current->right());
+        $node = $current->right();
+
+        if ($node instanceof BinaryNode) {
+            $right = $this->dump($node);
         }
 
         return array_merge([$current], $left, $right);

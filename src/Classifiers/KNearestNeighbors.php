@@ -137,7 +137,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     }
 
     /**
-     * Make a prediction based on the class probabilities.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
@@ -145,17 +145,25 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->classes)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+        
         $predictions = [];
 
-        foreach ($this->proba($dataset) as $joint) {
-            $predictions[] = Argmax::compute($joint);
+        foreach ($dataset as $sample) {
+            $neighbors = $this->findNearestNeighbors($sample);
+
+            $counts = array_count_values($neighbors);
+
+            $predictions[] = Argmax::compute($counts);
         }
 
         return $predictions;
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
@@ -181,7 +189,9 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
             $n = count($neighbors);
 
-            foreach (array_count_values($neighbors) as $class => $count) {
+            $counts = array_count_values($neighbors);
+
+            foreach ($counts as $class => $count) {
                 $probabilities[$i][$class] = $count / $n;
             }
         }
@@ -199,8 +209,8 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     {
         $distances = [];
 
-        foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->kernel->compute($sample, $neighbor);
+        foreach ($this->samples as $neighbor) {
+            $distances[] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);
