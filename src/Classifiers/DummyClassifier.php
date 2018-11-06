@@ -79,6 +79,14 @@ class DummyClassifier implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this->strategy, 'guess'], $dataset->samples());
+        $n = $dataset->numRows();
+
+        $predictions = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            $predictions[] = $this->strategy->guess();
+        }
+
+        return $predictions;
     }
 }

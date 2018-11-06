@@ -162,8 +162,6 @@ class Params
                 . gettype($object) . ' given.');
         }
 
-        $class = get_class($object);
-
-        return substr(strrchr($class, '\\') ?: '', 1);
+        return substr(strrchr(get_class($object), '\\') ?: '', 1);
     }
 }

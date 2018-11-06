@@ -326,7 +326,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         $bestSnapshot = null;
         $previous = INF;
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.;

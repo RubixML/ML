@@ -16,6 +16,7 @@
     - Pipeline and Persistent Model are now Verbose
     - Classification and Regression trees now Verbose
     - Random Forest can now return feature importances
+    - Gradient Boost now accepts base and booster estimators
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

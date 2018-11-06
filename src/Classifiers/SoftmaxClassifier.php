@@ -242,7 +242,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
 
         $previous = INF;
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
 
             $loss = 0.;

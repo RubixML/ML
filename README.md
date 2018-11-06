@@ -2094,18 +2094,19 @@ $estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
 ```
 
 ### Gradient Boost
-Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training a base *weak* regressor. Specifically, gradient boosting attempts to improve bias by training subsequent estimators to correct for errors made by the previous learners.
+Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training boosted *weak* regressors (usually Regression Trees) to correct the error residuals of a base learner.
 
 ##### Supervised | Learner | Ensemble | Verbose | Persistable
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | Regression Tree | object | The base *weak* regressor to be boosted. |
-| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 3 | rate | 0.1 | float | The learning rate of the ensemble. |
-| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 5 | tolerance | 1e-5 | float | The amount of mean squared error to tolerate before an early stop is considered. |
+| 1 | base | Dummy Regressor | object | The base regressor to be boosted. |
+| 2 | booster | Regression Tree | object | The *weak* regressor that will fix up the error residuals of the base learner. |
+| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 4 | rate | 0.1 | float | The learning rate of the ensemble. |
+| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -2117,9 +2118,11 @@ public steps() : array
 ##### Example:
 ```php
 use Rubix\ML\Regressors\GradientBoost;
+use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
+use Rubix\ML\Other\Strategies\BlurryMean;
 
-$estimator = new GradientBoost(new RegressionTree(2, 3, 5), 100, 1.0, 1e-2);
+$estimator = new GradientBoost(new DummyRegressor(new BlurryMean(0.0)), new RegressionTree(3), 400, 0.1, 1e-4);
 ```
 
 ### K-d Neighbors Regressor

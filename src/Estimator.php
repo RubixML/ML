@@ -12,6 +12,14 @@ interface Estimator
     const DETECTOR = 4;
     const EMBEDDER = 5;
 
+    const TYPES = [
+        1 => 'Classifier',
+        2 => 'Regressor',
+        3 => 'Clusterer',
+        4 => 'Anomaly Detector',
+        5 => 'Embedder',
+    ];
+
     const EPSILON = 1e-8;
 
     /**

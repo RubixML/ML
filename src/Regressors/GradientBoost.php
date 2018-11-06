@@ -9,18 +9,19 @@ use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Strategies\BlurryMean;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
  * Gradient Boost
  *
- * Gradient Boost is a stage-wise additive ensemble that uses a Gradient
- * Descent boosting paradigm for training the base "weak" regressors.
- * Sepcifically, gradient boosting attempts to improve bias by training
- * subsequent estimators to correct for errors made by the previous
- * learners.
+ * Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent
+ * boosting paradigm for training *weak* regressors (usually Regression Trees) to
+ * correct the error residuals of a base learner.
  *
  * References:
  * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient
@@ -47,7 +48,17 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
     protected $base;
 
     /**
+     * The weak regressor that will fix up the error residuals of the base
+     * learner.
+     * 
+     * @var \Rubix\ML\Learner
+     */
+    protected $booster;
+
+    /**
      *  The max number of estimators to train in the ensemble.
+     * 
+     * @var int
      */
     protected $estimators;
 
@@ -100,6 +111,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
     /**
      * @param  \Rubix\ML\Learner|null  $base
+     * @param  \Rubix\ML\Learner|null  $booster
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
@@ -107,16 +119,25 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $rate = 0.1,
-                            float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-5)
+    public function __construct(?Learner $base = null, ?Learner $booster = null, int $estimators = 100,
+                                float $rate = 0.1, float $ratio = 0.8, float $tolerance = 1e-4)
     {
         if (is_null($base)) {
-            $base = new RegressionTree(3);
+            $base = new DummyRegressor(new BlurryMean(0.));
         }
 
-        if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
-            throw new InvalidArgumentException('Base estimator is not'
-                . ' compatible with gradient boost.');
+        if ($base->type() !== self::REGRESSOR) {
+            throw new InvalidArgumentException("Base estimator must be a"
+                . " regressor, " . self::TYPES[$base->type()] . " given.");
+        }
+
+        if (is_null($booster)) {
+            $booster = new RegressionTree(3);
+        }
+
+        if (!in_array(get_class($booster), self::AVAILABLE_ESTIMATORS)) {
+            throw new InvalidArgumentException('The estimator chosen as the'
+                . ' booster is not compatible with gradient boost.');
         }
 
         if ($estimators < 1) {
@@ -134,21 +155,16 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . " 0.01 and 1, $ratio given.");
         }
 
-        if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
-                . " than 0, $minChange given.");
-        }
-
-        if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException("Validation error tolerance must"
-                . " be between 0 and 1, $tolerance given.");
+        if ($tolerance < 0.) {
+            throw new InvalidArgumentException("Tolerance cannot be less than"
+                . " 0, $tolerance given.");
         }
 
         $this->base = $base;
+        $this->booster = $booster;
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
-        $this->minChange = $minChange;
         $this->tolerance = $tolerance;
     }
 
@@ -186,29 +202,50 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info("Learner initialized w/ params:"
+            . " base=" . Params::shortName($this->base) . " booster="
+            . Params::shortName($this->booster) . " estimators=$this->estimators"
+            . " rate=$this->rate ratio=$this->ratio tolerance=$this->tolerance");
 
         $n = $dataset->numRows();
         $p = (int) round($this->ratio * $n);
+
+        if ($this->logger) $this->logger->info('Training '
+            . Params::shortName($this->base) . ' base estimator');
+
+        $this->base->train($dataset);
+
+        $predictions = $this->base->predict($dataset);
+
+        $yHat = [];
+
+        foreach ($predictions as $i => $prediction) {
+            $yHat[] = $dataset->label($i) - $prediction;
+        }
+
+        $residuals = Labeled::quick($dataset->samples(), $yHat);
+
+        if ($this->logger) $this->logger->info('Attempting to correct residuals'
+            . ' w/ ensemble of ' . Params::shortName($this->booster) .'s');
 
         $this->ensemble = $this->steps = [];
 
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
-            $estimator = clone $this->base;
+            $booster = clone $this->booster;
 
-            $subset = $dataset->randomize()->head($p);
+            $subset = $residuals->randomize()->head($p);
 
-            $estimator->train($subset);
+            $booster->train($subset);
 
-            $predictions = $estimator->predict($dataset);
+            $predictions = $booster->predict($residuals);
 
             $loss = 0.;
             $yHat = [];
 
             foreach ($predictions as $i => $prediction) {
-                $label = $dataset->label($i);
+                $label = $residuals->label($i);
 
                 $loss += ($label - $prediction) ** 2;
                 $yHat[] = $label - ($this->rate * $prediction);
@@ -216,21 +253,17 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
             $loss /= $n;
 
-            $this->ensemble[] = $estimator;
+            $this->ensemble[] = $booster;
             $this->steps[] = $loss;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, loss: $loss");
 
-            if (abs($previous - $loss) < $this->minChange) {
-                break 1;
-            }
-
             if ($loss < $this->tolerance) {
                 break 1;
             }
 
-            $dataset = Labeled::quick($dataset->samples(), $yHat);
+            $residuals = Labeled::quick($residuals->samples(), $yHat);
 
             $previous = $loss;
         }
@@ -250,7 +283,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $predictions = array_fill(0, $dataset->numRows(), 0.);
+        $predictions = $this->base->predict($dataset);
 
         foreach ($this->ensemble as $estimator) {
             foreach ($estimator->predict($dataset) as $j => $prediction) {
