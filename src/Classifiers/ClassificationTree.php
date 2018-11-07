@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Best;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
@@ -73,9 +74,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
                                 ?int $maxFeatures = null, float $tolerance = 1e-3)
-    {
-        parent::__construct($maxDepth, $maxLeafSize);
-        
+    {   
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException("Tree must consider at least 1"
                 . " feature to determine a split, $maxFeatures given.");
@@ -88,6 +87,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
 
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
+
+        parent::__construct($maxDepth, $maxLeafSize);
     }
 
     /**
@@ -121,7 +122,13 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         $this->columns = $dataset->axes();
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'max_depth' => $this->maxDepth,
+                'max_leaf_size' => $this->maxLeafSize,
+                'max_features' => $this->maxFeatures,
+                'tolerance' => $this->tolerance,
+            ]));
 
         $this->grow($dataset);
 
@@ -218,8 +225,13 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
-            . " value=$bestValue impurity=$bestGini depth=$depth");
+        if ($this->logger) $this->logger->info('Best split at '
+            . Params::stringify([
+                'column' => $bestColumn,
+                'value' => $bestValue,
+                'impurity' => $bestGini,
+                'depth' => $depth,
+            ]));
 
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
     }
@@ -238,7 +250,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
 
         $counts = array_count_values($dataset->labels());
 
-        $prediction = Argmax::compute($counts);
+        $outcome = Argmax::compute($counts);
 
         $probabilities = [];
 
@@ -248,10 +260,14 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
     
         $gini = $this->gini([$dataset]);
 
-        if ($this->logger) $this->logger->info("Leaf node: outcome=$prediction,"
-            . " impurity=$gini depth=$depth");
+        if ($this->logger) $this->logger->info('Branch terminated w/ '
+            . Params::stringify([
+                'outcome' => $outcome,
+                'impurity' => $gini,
+                'depth' => $depth,
+            ]));
 
-        return new Best($prediction, $probabilities, $gini, $n);
+        return new Best($outcome, $probabilities, $gini, $n);
     }
 
     /**

@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\NeuralNet\Snapshot;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -314,7 +315,19 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             return;
         }
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info("Learner initialized w/ params: "
+            . Params::stringify([
+                'hidden' => $this->hidden,
+                'batch_size' => $this->batchSize,
+                'optimizer' => $this->optimizer,
+                'alpha' => $this->alpha,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'cost_fn' => $this->costFn,
+                'hold_out' => $this->holdout,
+                'metric' => $this->metric,
+                'window' => $this->window,
+            ]));
 
         $n = $dataset->numRows();
 
@@ -348,7 +361,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             }
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, score: $score, loss: $loss");
+                . " complete, score=$score loss=$loss");
 
             if ($score === $max) {
                 break 1;
@@ -381,7 +394,11 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             }
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) {
+            $this->logger->info("Best validation score=$bestScore");
+
+            $this->logger->info('Training complete');
+        }
     }
 
     /**

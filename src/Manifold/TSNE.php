@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -39,24 +40,30 @@ class TSNE implements Estimator, Verbose
      *
      * @var int
      */
-     protected $dimensions;
+    protected $dimensions;
 
      /**
       * The number of degrees of freedom for the student t distribution.
       *
       * @var int
       */
-     protected $degrees;
+    protected $degrees;
+
+    /**
+     * The number of effective nearest neighbors to refer to when computing
+     * the variance of the gaussian over that sample.
+     * 
+     * @var float
+     */
+    protected $perplexity;
 
      /**
       * The desired entropy of the Gaussian over each sample i.e the log
-      * perplexity where perplexity is defined as the number of effective
-      * nearest neighbors to refer to when computing the variance of the
-      * gaussian over that sample.
+      * perplexity.
       *
       * @var float
       */
-     protected $entropy;
+    protected $entropy;
 
      /**
       * The factor to exaggerate the distances between samples by during the
@@ -64,7 +71,7 @@ class TSNE implements Estimator, Verbose
       *
       * @var float
       */
-     protected $exaggeration;
+    protected $exaggeration;
 
     /**
      * The number of times to iterate over the embedding.
@@ -203,6 +210,7 @@ class TSNE implements Estimator, Verbose
 
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
+        $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
@@ -250,19 +258,31 @@ class TSNE implements Estimator, Verbose
                 . ' continuous features.');
         }
 
+        if ($this->logger) $this->logger->info('Embedder initialized w/ params: '
+            . Params::stringify([
+                'dimensions' => $this->dimensions,
+                'perplexity' => $this->perplexity,
+                'exaggeration' => $this->exaggeration,
+                'epochs' => $this->epochs,
+                'rate' => $this->rate,
+                'decay' => $this->decay,
+                'min_gradient' => $this->minGradient,
+                'kernel' => $this->kernel,
+                'tolerance' => $this->tolerance,
+                'precision' => $this->precision,
+            ]));
+
         $n = $dataset->numRows();
 
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) $this->logger->info('Computing high dimensional'
-            . ' affinities.');
+            . ' affinities');
 
         $distances = $this->pairwiseDistances($x);
 
         $p = $this->highAffinities($distances)
             ->multiply($this->exaggeration);
-
-        if ($this->logger) $this->logger->info('Embedding started');
 
         $y = $yHat = Matrix::gaussian($n, $this->dimensions)
             ->multiply(1e-3);
@@ -275,8 +295,8 @@ class TSNE implements Estimator, Verbose
             if ($epoch === $this->early) {
                 $p = $p->divide($this->exaggeration);
 
-                if ($this->logger) $this->logger->info("Early exaggeration"
-                    . " stage completed");
+                if ($this->logger) $this->logger->info('Early exaggeration'
+                    . ' stage complete');
             }
 
             $distances = $this->pairwiseDistances($y);
@@ -296,14 +316,14 @@ class TSNE implements Estimator, Verbose
             $this->steps[] = $magnitude;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " completed, gradient: $magnitude");
+                . " complete, gradient=$magnitude");
 
             if ($magnitude < $this->minGradient) {
                 break 1;
             }
         }
 
-        if ($this->logger) $this->logger->info("Embedding complete");
+        if ($this->logger) $this->logger->info('Embedding complete');
 
         return $y->asArray();
     }

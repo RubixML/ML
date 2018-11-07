@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
@@ -224,7 +225,14 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'base' => $this->base,
+                'estimators' => $this->estimators,
+                'rate' => $this->rate,
+                'ratio' => $this->ratio,
+                'tolerance' => $this->tolerance,
+            ]));
 
         $this->classes = $dataset->possibleOutcomes();
 
@@ -268,9 +276,9 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             $this->influences[] = $influence;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, loss: $loss");
+                . " complete, loss=$loss");
 
-            if ($loss < $this->tolerance or $total < 0.) {
+            if ($loss < $this->tolerance or $total <= 0.) {
                 break 1;
             }
 
@@ -287,7 +295,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             }
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**

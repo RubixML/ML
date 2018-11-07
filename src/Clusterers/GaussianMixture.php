@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
@@ -189,14 +190,19 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
                 . ' continuous features.');
         }
 
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'k' => $this->k,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+            ]));
+
         $n = $dataset->numRows();
 
         if ($this->logger) $this->logger->info("Initializing $this->k"
-            . " gaussian components");
+            . ' gaussian components');
 
         list($means, $variances) = $this->initializeComponents($dataset);
-
-        if ($this->logger) $this->logger->info('Training started');
 
         $this->means = $prevMeans = $means;
         $this->variances = $prevVariances = $variances;
@@ -246,7 +252,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $this->steps[] = $shift;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-            . " complete, shift: $shift");
+                . " complete, shift=$shift");
 
             if ($shift < $this->minChange) {
                 break 1;
@@ -256,7 +262,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $prevVariances = $this->variances;
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**

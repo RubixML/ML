@@ -202,10 +202,15 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info("Learner initialized w/ params:"
-            . " base=" . Params::shortName($this->base) . " booster="
-            . Params::shortName($this->booster) . " estimators=$this->estimators"
-            . " rate=$this->rate ratio=$this->ratio tolerance=$this->tolerance");
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'base' => $this->base,
+                'booster' => $this->booster,
+                'estimators' => $this->estimators,
+                'rate' => $this->rate,
+                'ratio' => $this->ratio,
+                'tolerance' => $this->tolerance,
+            ]));
 
         $n = $dataset->numRows();
         $p = (int) round($this->ratio * $n);
@@ -226,7 +231,8 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
         $residuals = Labeled::quick($dataset->samples(), $yHat);
 
         if ($this->logger) $this->logger->info('Attempting to correct residuals'
-            . ' w/ ensemble of ' . Params::shortName($this->booster) .'s');
+            . " w/ $this->estimators " . Params::shortName($this->booster)
+            . $this->estimators > 1 ? 's' : '');
 
         $this->ensemble = $this->steps = [];
 
@@ -257,7 +263,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, loss: $loss");
+                . " complete, loss=$loss");
 
             if ($loss < $this->tolerance) {
                 break 1;
@@ -268,7 +274,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
             $previous = $loss;
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**

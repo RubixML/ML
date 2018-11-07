@@ -148,6 +148,45 @@ class Params
     }
 
     /**
+     * Zip together a set of args with their cooresponding params.
+     * 
+     * @param  array  $args
+     * @param  array  $params
+     * @return array
+     */
+    public static function zip(array $args, array $params) : array
+    {
+        return array_combine($args, $params) ?: [];
+    }
+
+    /**
+     * Return a string representation of the constructor arguments from
+     * an associative constructor array.
+     * 
+     * @param  array  $constructor
+     * @param  string  $separator
+     * @return string
+     */
+    public static function stringify(array $constructor, string $separator = '=') : string
+    {
+        $strings = [];
+
+        foreach ($constructor as $arg => $param) {
+            if (is_object($param)) {
+                $param = self::shortName($param);
+            }
+
+            if (is_array($param)) {
+                $param = '[' . self::stringify(self::zip(array_keys($param), $param)) . ']';
+            }
+
+            $strings[] = (string) $arg . $separator . (string) $param;
+        }
+
+        return implode(' ', $strings);
+    }
+
+    /**
      * Return the short class name from a fully qualified class name
      * (fqcn).
      * 

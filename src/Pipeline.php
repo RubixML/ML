@@ -190,9 +190,6 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
      */
     public function preprocess(Dataset $dataset) : void
     {
-        if ($this->logger) $this->logger->info('Preprocessing '
-            . $dataset->numRows() . ' samples');
-
         foreach ($this->transformers as $transformer) {
             $dataset->apply($transformer);
         }

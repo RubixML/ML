@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -187,12 +188,19 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 . ' continuous features.');
         }
 
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'c' => $this->c,
+                'fuzz' => $this->fuzz,
+                'kernel' => $this->kernel,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+            ]));
+
         if ($this->logger) $this->logger->info("Initializing $this->c"
-            . " cluster centroids");
+            . ' cluster centroids');
 
         $this->centroids = $this->initializeCentroids($dataset);
-
-        if ($this->logger) $this->logger->info('Training started');
 
         $this->steps = $memberships = [];
 
@@ -224,7 +232,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, loss: $loss");
+                . " complete, loss=$loss");
 
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
@@ -233,7 +241,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             $previous = $loss;
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**

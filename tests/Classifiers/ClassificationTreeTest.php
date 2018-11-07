@@ -7,7 +7,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Other\Loggers\Screen;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;

@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
@@ -59,13 +60,18 @@ class ExtraTreeClassifier extends ClassificationTree
                 $bestGini = $gini;
             }
 
-            if ($gini <= $this->tolerance) {
+            if ($gini < $this->tolerance) {
                 break 1;
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
-            . " value=$bestValue impurity=$bestGini depth=$depth");
+        if ($this->logger) $this->logger->info('Best split at '
+            . Params::stringify([
+                'column' => $bestColumn,
+                'value' => $bestValue,
+                'impurity' => $bestGini,
+                'depth' => $depth,
+            ]));
 
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
     }

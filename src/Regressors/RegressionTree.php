@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -64,8 +65,6 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
                                 ?int $maxFeatures = null, float $tolerance = 1e-4)
     {
-        parent::__construct($maxDepth, $maxLeafSize);
-
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException("Tree must consider at least 1"
                 . " feature to determine a split, $maxFeatures given.");
@@ -78,6 +77,8 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
 
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
+
+        parent::__construct($maxDepth, $maxLeafSize);
     }
 
     /**
@@ -110,7 +111,13 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         $this->columns = $dataset->axes();
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info("Learner initialized w/ params: "
+            . Params::stringify([
+                'max_depth' => $this->maxDepth,
+                'max_leaf_size' => $this->maxLeafSize,
+                'max_features' => $this->maxFeatures,
+                'tolerance' => $this->tolerance,
+            ]));
 
         $this->grow($dataset);
 
@@ -182,8 +189,13 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
-            . " value=$bestValue impurity=$bestVariance depth=$depth");
+        if ($this->logger) $this->logger->info('Best split at '
+            . Params::stringify([
+                'column' => $bestColumn,
+                'value' => $bestValue,
+                'impurity' => $bestVariance,
+                'depth' => $depth,
+            ]));
 
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
@@ -201,8 +213,12 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         
         list($mean, $variance) = Stats::meanVar($dataset->labels());
 
-        if ($this->logger) $this->logger->info("Leaf node: outcome=$mean,"
-            . " impurity=$variance depth=$depth");
+        if ($this->logger) $this->logger->info('Branch terminated w/ '
+            . Params::stringify([
+                'outcome' => $mean,
+                'impurity' => $variance,
+                'depth' => $depth,
+            ]));
 
         return new Average($mean, $variance, $n);
     }

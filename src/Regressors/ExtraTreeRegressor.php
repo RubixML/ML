@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\Comparison;
 use InvalidArgumentException;
 
@@ -63,8 +64,13 @@ class ExtraTreeRegressor extends RegressionTree
             }
         }
 
-        if ($this->logger) $this->logger->info("Best split: column=$bestColumn"
-            . " value=$bestValue impurity=$bestVariance depth=$depth");
+        if ($this->logger) $this->logger->info('Best split at '
+            . Params::stringify([
+                'column' => $bestColumn,
+                'value' => $bestValue,
+                'impurity' => $bestVariance,
+                'depth' => $depth,
+            ]));
 
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }

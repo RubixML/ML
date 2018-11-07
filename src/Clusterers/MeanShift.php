@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -165,7 +166,13 @@ class MeanShift implements Learner, Verbose, Persistable
                 . ' continuous features.');
         }
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'radius' => $this->radius,
+                'kernel' => $this->kernel,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+            ]));
 
         $this->centroids = $previous = $dataset->samples();
 
@@ -205,7 +212,7 @@ class MeanShift implements Learner, Verbose, Persistable
             $this->steps[] = $shift;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, shift: $shift");
+                . " complete, shift=$shift");
 
             if ($shift < $this->minChange) {
                 break 1;
@@ -216,7 +223,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
         $this->centroids = array_values($this->centroids);
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**

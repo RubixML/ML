@@ -10,6 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Binary;
@@ -235,7 +236,15 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
             return;
         }
 
-        if ($this->logger) $this->logger->info('Training started');
+        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+            . Params::stringify([
+                'batch_size' => $this->batchSize,
+                'optimizer' => $this->optimizer,
+                'alpha' => $this->alpha,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'cost_fn' => $this->costFn,
+            ]));
         
         $n = $dataset->numRows();
 
@@ -255,7 +264,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, loss: $loss");
+                . " complete, loss=$loss");
 
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
@@ -264,7 +273,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
             $previous = $loss;
         }
 
-        if ($this->logger) $this->logger->info("Training complete");
+        if ($this->logger) $this->logger->info('Training complete');
     }
 
     /**
