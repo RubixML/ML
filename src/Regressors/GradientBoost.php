@@ -11,8 +11,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Strategies\BlurryMean;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -110,27 +110,18 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Learner|null  $base
      * @param  \Rubix\ML\Learner|null  $booster
      * @param  int  $estimators
      * @param  float  $rate
      * @param  float  $ratio
      * @param  float  $tolerance
+     * @param  \Rubix\ML\Learner|null  $base
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $base = null, ?Learner $booster = null, int $estimators = 100,
-                                float $rate = 0.1, float $ratio = 0.8, float $tolerance = 1e-4)
+    public function __construct(?Learner $booster = null, int $estimators = 100, float $rate = 0.1,
+                                float $ratio = 0.8, float $tolerance = 1e-4, ?Learner $base = null)
     {
-        if (is_null($base)) {
-            $base = new DummyRegressor(new BlurryMean(0.));
-        }
-
-        if ($base->type() !== self::REGRESSOR) {
-            throw new InvalidArgumentException("Base estimator must be a"
-                . " regressor, " . self::TYPES[$base->type()] . " given.");
-        }
-
         if (is_null($booster)) {
             $booster = new RegressionTree(3);
         }
@@ -160,12 +151,21 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . " 0, $tolerance given.");
         }
 
-        $this->base = $base;
+        if (is_null($base)) {
+            $base = new DummyRegressor(new Mean());
+        }
+
+        if ($base->type() !== self::REGRESSOR) {
+            throw new InvalidArgumentException("Base estimator must be a"
+                . " regressor, " . self::TYPES[$base->type()] . " given.");
+        }
+
         $this->booster = $booster;
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
         $this->tolerance = $tolerance;
+        $this->base = $base;
     }
 
     /**
@@ -232,7 +232,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
         if ($this->logger) $this->logger->info('Attempting to correct residuals'
             . " w/ $this->estimators " . Params::shortName($this->booster)
-            . $this->estimators > 1 ? 's' : '');
+            . ($this->estimators > 1 ? 's' : ''));
 
         $this->ensemble = $this->steps = [];
 

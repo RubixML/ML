@@ -10,6 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use PHPUnit\Framework\TestCase;
@@ -33,6 +34,8 @@ class AdalineTest extends TestCase
         $this->testing = $this->training->randomize()->head(3);
 
         $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, new HuberLoss(1.));
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_regressor()

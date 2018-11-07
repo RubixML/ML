@@ -6,8 +6,8 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Other\Strategies\BlurryMean;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -26,7 +26,7 @@ class DummyRegressorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new DummyRegressor(new BlurryMean());
+        $this->estimator = new DummyRegressor(new Mean());
     }
 
     public function test_build_regressor()

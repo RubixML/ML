@@ -4,10 +4,10 @@ namespace Rubix\ML\Tests\Other\Strategies;
 
 use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\Continuous;
-use Rubix\ML\Other\Strategies\BlurryMedian;
+use Rubix\ML\Other\Strategies\BlurryPercentile;
 use PHPUnit\Framework\TestCase;
 
-class BlurryMedianTest extends TestCase
+class BlurryPercentileTest extends TestCase
 {
     protected $values;
 
@@ -21,12 +21,12 @@ class BlurryMedianTest extends TestCase
 
         $this->range = [0, 6];
 
-        $this->strategy = new BlurryMedian(0.3);
+        $this->strategy = new BlurryPercentile(50., 0.3);
     }
 
     public function test_build_strategy()
     {
-        $this->assertInstanceOf(BlurryMedian::class, $this->strategy);
+        $this->assertInstanceOf(BlurryPercentile::class, $this->strategy);
         $this->assertInstanceOf(Continuous::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }

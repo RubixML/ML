@@ -10,6 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
@@ -47,6 +48,8 @@ class MultiLayerPerceptronTest extends TestCase
             new Dense(5),
             new Activation(new ReLU()),
         ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_classifier()

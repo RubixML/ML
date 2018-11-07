@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -35,6 +36,8 @@ class ClassificationTreeTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new ClassificationTree(10, 3, null);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_classifier()

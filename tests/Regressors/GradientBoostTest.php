@@ -7,10 +7,11 @@ use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Other\Strategies\BlurryMean;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -30,7 +31,9 @@ class GradientBoostTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new GradientBoost(new DummyRegressor(new BlurryMean(0.)), new RegressionTree(3), 30, 0.1, 0.5, 1e-4);
+        $this->estimator = new GradientBoost(new RegressionTree(3), 30, 0.1, 0.5, 1e-4, new DummyRegressor(new Mean()));
+    
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_regressor()

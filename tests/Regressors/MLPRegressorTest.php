@@ -10,6 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\Datasets\Generators\SwissRoll;
@@ -41,6 +42,8 @@ class MLPRegressorTest extends TestCase
             new Dense(10),
             new Activation(new LeakyReLU()),
         ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new LeastSquares(), 0.1, new MeanSquaredError(), 3);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_regressor()

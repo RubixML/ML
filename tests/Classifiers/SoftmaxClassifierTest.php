@@ -9,6 +9,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
@@ -38,6 +39,8 @@ class SoftmaxClassifierTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new SoftmaxClassifier(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_classifier()

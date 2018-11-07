@@ -6,6 +6,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Manifold\TSNE;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -28,6 +29,8 @@ class TSNETest extends TestCase
         ]);
 
         $this->estimator = new TSNE(1, 10, 12., 500, 1., 0.2, 1e-6, new Euclidean(), 1e-5, 100);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_embedder()

@@ -9,6 +9,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\AdaBoost;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -34,6 +35,8 @@ class AdaBoostTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new AdaBoost(new ClassificationTree(1), 50, 1., 0.8, 1e-4);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_classifier()

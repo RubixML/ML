@@ -8,6 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -32,6 +33,8 @@ class GaussianMixtureTest extends TestCase
         ]);
 
         $this->estimator = new GaussianMixture(3, 100, 1e-3);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_clusterer()

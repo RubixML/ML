@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -33,6 +34,8 @@ class MeanShiftTest extends TestCase
         ]);
 
         $this->estimator = new MeanShift(10.0, new Euclidean(), 100, 1e-4);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_clusterer()

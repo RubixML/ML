@@ -6,8 +6,8 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
-use Rubix\ML\Other\Strategies\BlurryMean;
 use InvalidArgumentException;
 
 /**
@@ -37,7 +37,7 @@ class DummyRegressor implements Learner, Persistable
     public function __construct(?Continuous $strategy = null)
     {
         if (is_null($strategy)) {
-            $strategy = new BlurryMean();
+            $strategy = new Mean();
         }
 
         $this->strategy = $strategy;

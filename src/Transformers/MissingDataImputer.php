@@ -4,8 +4,8 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
-use Rubix\ML\Other\Strategies\BlurryMean;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
@@ -59,7 +59,7 @@ class MissingDataImputer implements Transformer, Stateful
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct($placeholder = '?', Continuous $continuous = null, Categorical $categorical = null)
+    public function __construct($placeholder = '?', ?Continuous $continuous = null, ?Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
             throw new InvalidArgumentException('Placeholder must be a string or'
@@ -67,7 +67,7 @@ class MissingDataImputer implements Transformer, Stateful
         }
 
         if (is_null($continuous)) {
-            $continuous = new BlurryMean();
+            $continuous = new Mean();
         }
 
         if (is_null($categorical)) {

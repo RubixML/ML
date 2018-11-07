@@ -209,10 +209,10 @@ MIT
 		- [Residual Breakdown](#residual-breakdown)
 	- [Other](#other)
 		- [Guessing Strategies](#guessing-strategies)
-			- [Blurry Mean](#blurry-mean)
-			- [Blurry Median](#blurry-median)
+			- [Blurry Percentile](#blurry-percentile)
 			- [K Most Frequent](#k-most-frequent)
 			- [Lottery](#lottery)
+			- [Mean](#mean)
 			- [Popularity Contest](#popularity-contest)
 			- [Wild Guess](#wild-guess)
 		- [Helpers](#helpers)
@@ -2057,7 +2057,7 @@ Regressor that guesses the output values based on a [Guessing Strategy](#guessin
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | strategy | Blurry Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
+| 1 | strategy | Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2065,9 +2065,9 @@ This estimator does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Other\Strategies\BlurryMedian;
+use Rubix\ML\Other\Strategies\BlurryPercentile;
 
-$estimator = new DummyRegressor(new BlurryMedian(0.2));
+$estimator = new DummyRegressor(new BlurryPercentile(56.5, 0.1));
 ```
 
 ### Extra Tree Regressor
@@ -2101,12 +2101,12 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | Dummy Regressor | object | The base regressor to be boosted. |
-| 2 | booster | Regression Tree | object | The *weak* regressor that will fix up the error residuals of the base learner. |
-| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 4 | rate | 0.1 | float | The learning rate of the ensemble. |
-| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 1 | booster | Regression Tree | object | The *weak* regressor that will fix up the error residuals of the base learner. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | rate | 0.1 | float | The learning rate of the ensemble. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
+| 5 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 6 | base | Dummy Regressor | object | The base regressor to be boosted. |
 
 ##### Additional Methods:
 
@@ -2120,9 +2120,9 @@ public steps() : array
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
-use Rubix\ML\Other\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\Mean;
 
-$estimator = new GradientBoost(new DummyRegressor(new BlurryMean(0.0)), new RegressionTree(3), 400, 0.1, 1e-4);
+$estimator = new GradientBoost(new RegressionTree(3), 400, 0.1, 1e-4, new DummyRegressor(new Mean()));
 ```
 
 ### K-d Neighbors Regressor
@@ -2646,7 +2646,7 @@ In the real world, it is common to have data with missing values here and there.
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
-| 2 | continuous strategy | Blurry Mean | object | The guessing strategy to employ for continuous feature columns. |
+| 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
 | 3 | categorical strategy | Popularity Contest | object | The guessing strategy to employ for categorical feature columns. |
 
 ##### Additional Methods:
@@ -2655,10 +2655,10 @@ This transformer does not have any additional methods.
 ##### Example:
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Transformers\Strategies\BlurryMean;
+use Rubix\ML\Transformers\Strategies\Mean;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 
-$transformer = new MissingDataImputer('?', new BlurryMean(0.2), new PopularityContest());
+$transformer = new MissingDataImputer('?', new Mean(), new PopularityContest());
 ```
 
 ### Numeric String Converter
@@ -4566,74 +4566,26 @@ To make a guess based on the fitted data:
 public guess() : mixed
 ```
 
-##### Example:
-```php
-use Rubix\ML\Other\Strategies\BlurryMedian;
-
-$values = [1, 2, 3, 4, 5];
-
-$strategy = new BlurryMedian(0.05);
-
-$strategy->fit($values);
-
-var_dump($strategy->range()); // Min and max guess for continuous strategies
-
-var_dump($strategy->guess());
-var_dump($strategy->guess());
-var_dump($strategy->guess());
-```
-
-##### Output:
-```sh
-array(2) {
-  [0]=> float(2.85)
-  [1]=> float(3.15)
-}
-
-float(2.897176548)
-float(3.115719462)
-float(3.105983314)
-```
-Strategies are broken up into the Categorical type and the Continuous type. You can output the set of all possible categorical guesses by calling the `set()` method on any Categorical Strategy. Likewise, you can call `range()` on any Continuous Strategy to output the minimum and maximum values the guess can take on.
-
-Here are the guessing Strategies available to use in Rubix.
-
-### Blurry Mean
-This strategy adds a blur factor to the mean of a set of values producing a random guess centered around the mean. The amount of blur is determined as the blur factor times the standard deviation of the fitted data.
+### Blurry Percentile
+A strategy that guesses within the domain of the p-th percentile of the fitted data plus some gaussian noise.
 
 ##### Continuous
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | blur | 0.3 | float | The amount of gaussian noise to add to the guess. |
+| 1 | p | 50.0 | float | The index of the percentile to predict where 50 is the median. |
+| 2 | blur | 0.1 | float | The amount of gaussian noise to add to the guess as a factor of the median absolute deviation (MAD). |
 
 ##### Example:
 ```php
-use Rubix\ML\Other\Strategies\BlurryMean;
+use Rubix\ML\Other\Strategies\BlurryPercentile;
 
-$strategy = new BlurryMean(0.05);
-```
-
-### Blurry Median
-A robust strategy that uses the median and median absolute deviation (MAD) of the fitted data to make guesses.
-
-##### Continuous
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | blur | 0.3 | float | The amount of gaussian noise to add to the guess. |
-
-##### Example:
-```php
-use Rubix\ML\Other\Strategies\BlurryMedian;
-
-$strategy = new BlurryMedian(0.5);
+$strategy = new BlurryPercentile(34.0, 0.2);
 ```
 
 ### K Most Frequent
-This Strategy outputs one of K most frequent discrete values at random.
+This strategy outputs one of K most frequent discrete values at random.
 
 ##### Categorical
 
@@ -4662,6 +4614,21 @@ This Strategy does not have any parameters.
 use Rubix\ML\Other\Strategies\Lottery;
 
 $strategy = new Lottery();
+```
+
+### Mean
+This strategy always predicts the mean of the fitted data.
+
+##### Continuous
+
+##### Parameters:
+This strategy does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Other\Strategies\Mean;
+
+$strategy = new Mean();
 ```
 
 ### Popularity Contest

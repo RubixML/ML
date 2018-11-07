@@ -8,6 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
@@ -35,6 +36,8 @@ class ExtraTreeClassifierTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new ExtraTreeClassifier(10, 3, null);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_classifier()
