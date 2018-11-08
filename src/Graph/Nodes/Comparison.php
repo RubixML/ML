@@ -78,24 +78,20 @@ class Comparison extends Split implements Decision
      *
      * @return float
      */
-    public function impurityDecrease() : float
+    public function purityIncrease() : float
     {
-        $decrease = $this->impurity;
+        $impurity = $this->impurity;
 
-        if (isset($this->left)) {
-            if ($this->left instanceof Decision) {
-                $decrease -= $this->left->impurity()
-                    * ($this->left->n() / $this->n);
-            }
+        if ($this->left instanceof Decision) {
+            $impurity -= $this->left->impurity()
+                * ($this->left->n() / $this->n);
         }
 
-        if (isset($this->right)) {
-            if ($this->right instanceof Decision) {
-                $decrease -= $this->right->impurity()
-                    * ($this->right->n() / $this->n);
-            }
+        if ($this->right instanceof Decision) {
+            $impurity -= $this->right->impurity()
+                * ($this->right->n() / $this->n);
         }
 
-        return $decrease;
+        return $impurity;
     }
 }

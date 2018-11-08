@@ -96,43 +96,40 @@ class KDTree implements Tree
     {
         $this->dimensionality = $dataset->numColumns();
 
-        $this->root = $this->findBestSplit($dataset, 0);
+        $depth = 1;
 
-        $this->split($this->root, 1);
-    }
+        $this->root = $this->findBestSplit($dataset, $depth);
 
-    /**
-     * Recursive function to split the training data adding coordinate nodes along
-     * the way.
-     *
-     * @param  \Rubix\ML\Graph\Nodes\Coordinate  $current
-     * @param  int  $depth
-     * @return void
-     */
-    protected function split(Coordinate $current, int $depth) : void
-    {
-        list($left, $right) = $current->groups();
+        $stack = [[$this->root, $depth]];
 
-        $current->cleanup();
+        while($stack) {
+            list($current, $depth) = array_pop($stack) ?? [];
 
-        if ($left->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($left, $depth);
+            list($left, $right) = $current->groups();
 
-            $current->attachLeft($node);
+            $depth++;
 
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachLeft(new Neighborhood($left));
-        }
+            if ($left->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($left, $depth);
+    
+                $current->attachLeft($node);
 
-        if ($right->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($right, $depth);
+                $stack[] = [$node, $depth];
+            } else {
+                $current->attachLeft(new Neighborhood($left));
+            }
+    
+            if ($right->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($right, $depth);
+    
+                $current->attachRight($node);
 
-            $current->attachRight($node);
+                $stack[] = [$node, $depth];
+            } else {
+                $current->attachRight(new Neighborhood($right));
+            }
 
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachRight(new Neighborhood($right));
+            $current->cleanup();
         }
     }
 

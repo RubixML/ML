@@ -1407,10 +1407,10 @@ Short for Adaptive Boosting, this ensemble classifier can improve the performanc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
-| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 4 | rate | 1.0 | float | The learning rate i.e step size. |
-| 5 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
-| 6 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | rate | 1.0 | float | The learning rate i.e step size. |
+| 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
+| 5 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 ##### Additional Methods:
 
@@ -1448,7 +1448,8 @@ A tree-based classifier that minimizes [gini impurity](https://en.wikipedia.org/
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The max number of features to consider when determining a best split. |
-| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
+| 4 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1457,7 +1458,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new ClassificationTree(100, 7, 4, 1e-4);
+$estimator = new ClassificationTree(100, 7, 4, 0.1, 1e-4);
 ```
 
 ### Committee Machine
@@ -1528,7 +1529,8 @@ n Extremely Randomized Classification Tree, Extra Trees differ from standard [Cl
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The max number of features to consider when determining a best split. |
-| 4 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
+| 4 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 Return the feature importances calculated during training keyed by feature column:
@@ -1540,7 +1542,7 @@ public featureImportances() : array
 ```php
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new ExtraTreeClassifier(50, 3, 4);
+$estimator = new ExtraTreeClassifier(50, 3, 4, 0.25, 1e-3);
 ```
 
 ### Gaussian Naive Bayes
@@ -2081,7 +2083,8 @@ An Extremely Randomized Regression Tree, Extra Trees differ from standard Regres
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The number of features to consider when determining a best split. |
-| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
+| 4 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2090,7 +2093,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Classifiers\ExtraTreeRegressor;
 
-$estimator = new ExtraTreeRegressor(100, 3, 20, 1e-4);
+$estimator = new ExtraTreeRegressor(30, 3, 20, 0.1, 1e-4);
 ```
 
 ### Gradient Boost
@@ -2237,7 +2240,8 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
-| 4 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
+| 4 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2246,7 +2250,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(80, 1, null, 0.);
+$estimator = new RegressionTree(50, 2, null, 0.05, 1e-4);
 ```
 
 ### Ridge

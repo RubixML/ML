@@ -5,6 +5,7 @@
     - Transformers can now transform labels
     - Added Cyclic neural net Optimizer
     - Added k-d neighbors search with pruning
+    - Added post pruning to CART estimators
     - Estimators with explicit loss functions are now Verbose
     - Grid Search: Added option to retrain best model on full dataset
     - Filesystem Persister now keeps backups of latest models

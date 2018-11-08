@@ -166,7 +166,7 @@ class MeanShift implements Learner, Verbose, Persistable
                 . ' continuous features.');
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'radius' => $this->radius,
                 'kernel' => $this->kernel,

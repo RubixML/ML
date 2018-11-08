@@ -70,11 +70,13 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
                 . ' estimator.');
         }
 
-        if ($base->type() !== self::CLASSIFIER and $base->type() !== self::REGRESSOR
-            and $base->type() !== self::DETECTOR) {
-                throw new InvalidArgumentException('This meta estimator only supports'
-                    . ' classifiers, regressors, and anomaly detectors.');
-            }
+        $type = $base->type();
+
+        if ($type !== self::CLASSIFIER and $type !== self::REGRESSOR and $type !== self::DETECTOR) {
+            throw new InvalidArgumentException('This meta estimator only'
+                . ' supports classifiers, regressors, and anomaly detectors, '
+                . self::TYPES[$base->type()] . ' given.');
+        }
 
         if ($estimators < 1) {
             throw new InvalidArgumentException("Ensemble must train at least"
@@ -121,14 +123,14 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        $n = (int) round($this->ratio * $dataset->numRows());
+        $p = (int) round($this->ratio * $dataset->numRows());
 
         $this->ensemble = [];
 
-        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $estimator = clone $this->base;
 
-            $subset = $dataset->randomSubsetWithReplacement($n);
+            $subset = $dataset->randomSubsetWithReplacement($p);
 
             $estimator->train($subset);
 
@@ -137,7 +139,7 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
     }
 
     /**
-     * Make a prediction on a given sample dataset.
+     * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException

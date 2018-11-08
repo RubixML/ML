@@ -68,12 +68,13 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
      * @param  int|null  $maxFeatures
+     * @param  float  $minImpurityIncrease
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
-                                ?int $maxFeatures = null, float $tolerance = 1e-3)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, ?int $maxFeatures = null,
+                                float $minImpurityIncrease = 0., float $tolerance = 1e-3)
     {   
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException("Tree must consider at least 1"
@@ -88,7 +89,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
 
-        parent::__construct($maxDepth, $maxLeafSize);
+        parent::__construct($maxDepth, $maxLeafSize, $minImpurityIncrease);
     }
 
     /**
@@ -127,6 +128,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
                 'max_depth' => $this->maxDepth,
                 'max_leaf_size' => $this->maxLeafSize,
                 'max_features' => $this->maxFeatures,
+                'min_purity_increase' => $this->minPurityIncrease,
                 'tolerance' => $this->tolerance,
             ]));
 

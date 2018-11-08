@@ -28,7 +28,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new RegressionTree(30, 1, null);
+        $this->estimator = new RegressionTree(30, 1, null, 0., 1e-4);
     }
 
     public function test_build_regressor()

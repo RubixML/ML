@@ -25,6 +25,8 @@ use InvalidArgumentException;
  */
 abstract class CART implements Tree
 {
+    const BETA = 1e-8;
+
     /**
      * The root node of the tree.
      *
@@ -47,19 +49,20 @@ abstract class CART implements Tree
     protected $maxLeafSize;
 
     /**
-     * The number of times the tree has split. i.e. a decision is made.
-     *
-     * @var int
+     * The minimum increase in purity necessary for a node not to be post pruned.
+     * 
+     * @var float
      */
-    protected $splits;
+    protected $minPurityIncrease;
 
     /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
+     * @param  float  $minPurityIncrease
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minPurityIncrease = 0.)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have depth less'
@@ -71,9 +74,14 @@ abstract class CART implements Tree
                 . ' to create a leaf.');
         }
 
+        if ($minPurityIncrease < 0.) {
+            throw new InvalidArgumentException('Min purity increase must be'
+                . " greater than or equal to 0, $minPurityIncrease given.");
+        }
+
         $this->maxDepth = $maxDepth;
         $this->maxLeafSize = $maxLeafSize;
-        $this->splits = 0;
+        $this->minPurityIncrease = $minPurityIncrease;
     }
 
     /**
@@ -96,16 +104,6 @@ abstract class CART implements Tree
     abstract protected function terminate(Labeled $dataset, int $depth) : BinaryNode;
 
     /**
-     * The complexity of the decision tree i.e. the number of splits.
-     *
-     * @return int
-     */
-    public function complexity() : int
-    {
-        return $this->splits;
-    }
-
-    /**
      * Return the root node of the tree.
      * 
      * @return \Rubix\ML\Graph\Nodes\Comparison|null
@@ -124,65 +122,64 @@ abstract class CART implements Tree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->root = $this->findBestSplit($dataset, 0);
+        $depth = 1;
 
-        $this->splits = 1;
+        $this->root = $this->findBestSplit($dataset, $depth);
 
-        $this->split($this->root, 1);
-    }
+        $stack = [[$this->root, $depth]];
 
-    /**
-     * Recursive function to split the training data adding comparison nodes along
-     * the way. The terminating conditions are a) split would make node
-     * responsible for less values than $maxLeafSize or b) the max depth of the
-     * branch has been reached.
-     *
-     * @param  \Rubix\ML\Graph\Nodes\Comparison  $current
-     * @param  int  $depth
-     * @return void
-     */
-    protected function split(Comparison $current, int $depth) : void
-    {
-        list($left, $right) = $current->groups();
+        while($stack) {
+            list($current, $depth) = array_pop($stack) ?? [];
 
-        $current->cleanup();
+            list($left, $right) = $current->groups();
 
-        if ($left->empty() or $right->empty()) {
-            $node = $this->terminate($left->merge($right), $depth);
+            $depth++;
 
-            $current->attachLeft($node);
-            $current->attachRight($node);
-            return;
-        }
+            if ($left->empty() or $right->empty()) {
+                $node = $this->terminate($left->merge($right), $depth);
+    
+                $current->attachLeft($node);
+                $current->attachRight($node);
 
-        if ($depth >= $this->maxDepth) {
-            $current->attachLeft($this->terminate($left, $depth));
-            $current->attachRight($this->terminate($right, $depth));
-            return;
-        }
+                continue 1;
+            }
+    
+            if ($depth >= $this->maxDepth) {
+                $current->attachLeft($this->terminate($left, $depth));
+                $current->attachRight($this->terminate($right, $depth));
+                
+                continue 1;
+            }
 
-        if ($left->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($left, $depth);
+            if ($left->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($left, $depth);
 
-            $current->attachLeft($node);
+                if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
+                    $current->attachLeft($node);
 
-            $this->splits++;
+                    $stack[] = [$node, $depth];
+                } else {
+                    $current->attachLeft($this->terminate($left, $depth));
+                }
+            } else {
+                $current->attachLeft($this->terminate($left, $depth));
+            }
+    
+            if ($right->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($right, $depth);
+    
+                if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
+                    $current->attachRight($node);
 
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachLeft($this->terminate($left, $depth));
-        }
+                    $stack[] = [$node, $depth];
+                } else {
+                    $current->attachRight($this->terminate($right, $depth));
+                }
+            } else {
+                $current->attachRight($this->terminate($right, $depth));
+            }
 
-        if ($right->numRows() > $this->maxLeafSize) {
-            $node = $this->findBestSplit($right, $depth);
-
-            $current->attachRight($node);
-
-            $this->splits++;
-
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachRight($this->terminate($right, $depth));
+            $current->cleanup();
         }
     }
 
@@ -226,7 +223,7 @@ abstract class CART implements Tree
     }
 
     /**
-     * Return an array indexed by column number that contains the normalized
+     * Return an array indexed by feature column that contains the normalized
      * importance score of that column in determining the overall prediction.
      *
      * @return array
@@ -246,14 +243,14 @@ abstract class CART implements Tree
                 $index = $node->column();
 
                 if (isset($importances[$index])) {
-                    $importances[$index] += $node->impurityDecrease();
+                    $importances[$index] += $node->purityIncrease();
                 } else {
-                    $importances[$index] = $node->impurityDecrease();
+                    $importances[$index] = $node->purityIncrease();
                 }
             }
         }
 
-        $total = array_sum($importances) ?: Estimator::EPSILON;
+        $total = array_sum($importances) ?: self::BETA;
 
         foreach ($importances as &$importance) {
             $importance /= $total;

@@ -237,7 +237,7 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
                 . ' Labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Search initialized w/ params: '
+        if ($this->logger) $this->logger->info('Search initialized w/ '
             . Params::stringify([
                 'base' => $this->base,
                 'grid' => $this->grid,

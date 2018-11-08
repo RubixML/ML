@@ -188,7 +188,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 . ' continuous features.');
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'c' => $this->c,
                 'fuzz' => $this->fuzz,

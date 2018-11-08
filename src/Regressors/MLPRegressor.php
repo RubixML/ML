@@ -306,7 +306,7 @@ class MLPRegressor implements Online, Verbose, Persistable
             return;
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'batch_size' => $this->batchSize,
                 'optimizer' => $this->optimizer,

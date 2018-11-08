@@ -84,52 +84,47 @@ class ITree implements Tree
      */
     public function grow(Dataset $dataset) : void
     {
-        $this->root = $this->findRandomSplit($dataset, 1);
+        $depth = 1;
 
-        $this->split($this->root, 1);
-    }
+        $this->root = $this->findBestSplit($dataset, $depth);
 
-    /**
-     * Recursive function to split the training data adding comparison nodes along
-     * the way. The terminating conditions are a) split would make node
-     * responsible for less values than $maxLeafSize or b) the max depth of the
-     * branch has been reached.
-     *
-     * @param  \Rubix\ML\Graph\Nodes\Isolator  $current
-     * @param  int  $depth
-     * @return void
-     */
-    protected function split(Isolator $current, int $depth) : void
-    {
-        list($left, $right) = $current->groups();
+        $stack = [[$this->root, $depth]];
 
-        $current->cleanup();
+        while($stack) {
+            list($current, $depth) = array_pop($stack) ?? [];
 
-        if ($depth >= $this->maxDepth) {
-            $current->attachLeft($this->terminate($left, $depth));
-            $current->attachRight($this->terminate($right, $depth));
+            list($left, $right) = $current->groups();
 
-            return;
-        }
+            $depth++;
 
-        if ($left->numRows() > $this->maxLeafSize) {
-            $node = $this->findRandomSplit($left, $depth);
+            if ($depth >= $this->maxDepth) {
+                $current->attachLeft($this->terminate($left, $depth));
+                $current->attachRight($this->terminate($right, $depth));
+    
+                continue 1;
+            }
+    
+            if ($left->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($left, $depth);
+    
+                $current->attachLeft($node);
+    
+                $stack[] = [$node, $depth];
+            } else {
+                $current->attachLeft($this->terminate($left, $depth));
+            }
+    
+            if ($right->numRows() > $this->maxLeafSize) {
+                $node = $this->findBestSplit($right, $depth);
+    
+                $current->attachRight($node);
+    
+                $stack[] = [$node, $depth];
+            } else {
+                $current->attachRight($this->terminate($right, $depth));
+            }
 
-            $current->attachLeft($node);
-
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachLeft($this->terminate($left, $depth));
-        }
-
-        if ($right->numRows() > $this->maxLeafSize) {
-            $node = $this->findRandomSplit($right, $depth);
-
-            $current->attachRight($node);
-
-            $this->split($node, $depth + 1);
-        } else {
-            $current->attachRight($this->terminate($right, $depth));
+            $current->cleanup();
         }
     }
 
@@ -160,6 +155,8 @@ class ITree implements Tree
                         $current = $current->right();
                     }
                 }
+
+                continue 1;
             }
 
             if ($current instanceof Cell) {
@@ -177,7 +174,7 @@ class ITree implements Tree
      * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Isolator
      */
-    protected function findRandomSplit(Dataset $dataset, int $depth) : Isolator
+    protected function findBestSplit(Dataset $dataset, int $depth) : Isolator
     {
         $column = rand(0, $dataset->numColumns() - 1);
 

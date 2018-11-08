@@ -57,13 +57,14 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
-     * @param  int  $maxFeatures
+     * @param  int|null  $maxFeatures
+     * @param  float  $minPurityIncrease
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3,
-                                ?int $maxFeatures = null, float $tolerance = 1e-4)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, ?int $maxFeatures = null,
+                                float $minPurityIncrease = 0., float $tolerance = 1e-4)
     {
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException("Tree must consider at least 1"
@@ -78,7 +79,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         $this->maxFeatures = $maxFeatures;
         $this->tolerance = $tolerance;
 
-        parent::__construct($maxDepth, $maxLeafSize);
+        parent::__construct($maxDepth, $maxLeafSize, $minPurityIncrease);
     }
 
     /**
@@ -111,11 +112,12 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         $this->columns = $dataset->axes();
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
-        if ($this->logger) $this->logger->info("Learner initialized w/ params: "
+        if ($this->logger) $this->logger->info("Learner initialized w/ "
             . Params::stringify([
                 'max_depth' => $this->maxDepth,
                 'max_leaf_size' => $this->maxLeafSize,
                 'max_features' => $this->maxFeatures,
+                'min_purity_increase' => $this->minPurityIncrease,
                 'tolerance' => $this->tolerance,
             ]));
 

@@ -315,7 +315,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             return;
         }
 
-        if ($this->logger) $this->logger->info("Learner initialized w/ params: "
+        if ($this->logger) $this->logger->info("Learner initialized w/ "
             . Params::stringify([
                 'hidden' => $this->hidden,
                 'batch_size' => $this->batchSize,

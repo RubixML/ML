@@ -202,7 +202,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'base' => $this->base,
                 'booster' => $this->booster,

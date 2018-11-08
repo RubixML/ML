@@ -190,7 +190,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
                 . ' continuous features.');
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'k' => $this->k,
                 'epochs' => $this->epochs,

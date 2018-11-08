@@ -258,7 +258,7 @@ class TSNE implements Estimator, Verbose
                 . ' continuous features.');
         }
 
-        if ($this->logger) $this->logger->info('Embedder initialized w/ params: '
+        if ($this->logger) $this->logger->info('Embedder initialized w/ '
             . Params::stringify([
                 'dimensions' => $this->dimensions,
                 'perplexity' => $this->perplexity,
