@@ -181,6 +181,11 @@ MIT
 			- [Jaccard](#jaccard)
 			- [Manhattan](#manhattan)
 			- [Minkowski](#minkowski)
+		- [SVM](#svm)
+			- [Linear](#linear)
+			- [Polynomial](#polynomial)
+			- [RBF](#rbf)
+			- [Sigmoidal](#sigmoidal)
 	- [Cross Validation](#cross-validation)
 		- [Validators](#validators)
 			- [Hold Out](#hold-out)
@@ -1817,7 +1822,7 @@ $estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new Cros
 ```
 
 ### SVC
-The Support Vector Machine Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space. Note that this estimator requires the SVM PHP extension installed.
+The Support Vector Machine Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space. Note that this estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) installed.
 
 ##### Supervised | Learner | Persistable
 
@@ -3885,7 +3890,7 @@ Distance functions are a type of Kernel that measures the distance between two c
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3898,7 +3903,7 @@ $kernel = new Canberra();
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3911,7 +3916,7 @@ $kernel = new Cosine();
 The Diagonal (sometimes called Chebyshev) distance is a measure that constrains movement to horizontal, vertical, and diagonal from a point. An example that uses Diagonal movement is a chess board.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3924,7 +3929,7 @@ $kernel = new Diagonal();
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3937,7 +3942,7 @@ $kernel = new Euclidean();
 The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3950,7 +3955,7 @@ $kernel = new Hamming();
 The generalized Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3963,7 +3968,7 @@ $kernel = new Jaccard();
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
 ##### Parameters:
-This distance metric does not have any parameters.
+This kernel does not have any parameters.
 
 ##### Example:
 ```php
@@ -3985,6 +3990,71 @@ The Minkowski distance is a metric in a normed vector space which can be conside
 use Rubix\ML\Kernels\Distance\Minkowski;
 
 $kernel = new Minkowski(4.0);
+```
+
+---
+### SVM
+Support Vector Machine kernels are used in the context of classification and regression to project sample vectors into a non-linear feature space, allowing them to marginalize non-linear data.
+
+### Linear
+A simple linear kernel computed by the dot product.
+
+##### Parameters:
+This kernel does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Kernels\SVM\Linear;
+
+$kernel = new Linear();
+```
+
+### Polynomial
+Operating in high dimensions, the polynomial to the pth degree of the sample vector.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | degree | 3 | int | The degree of the polynomial. |
+| 2 | gamma | null | float | The kernel coefficient. |
+| 3 | coef0 | 0. | float | The independent term. |
+
+##### Example:
+```php
+use Rubix\ML\Kernels\SVM\Polynomial;
+
+$kernel = new Polynomial(3, null, 0.);
+```
+
+### RBF
+Non linear radias basis function computes the distance from a centroid or origin.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | gamma | null | float | The kernel coefficient. |
+
+##### Example:
+```php
+use Rubix\ML\Kernels\SVM\RBF;
+
+$kernel = new RBF(null);
+```
+
+### Sigmoidal
+S shaped nonliearity kernel.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | gamma | null | float | The kernel coefficient. |
+| 2 | coef0 | 0. | float | The independent term. |
+
+##### Example:
+```php
+use Rubix\ML\Kernels\SVM\Sigmoidal;
+
+$kernel = new Sigmoidal(null, 0.);
 ```
 
 ---

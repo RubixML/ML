@@ -5,6 +5,7 @@ php:
     - '7.2'
 
 before_install:
+    - pecl install -f svm
     - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
