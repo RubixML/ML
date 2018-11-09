@@ -14,6 +14,7 @@ $ composer require rubix/ml
 
 ## Requirements
 - [PHP](https://php.net) 7.1.3 or above
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine support
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 
@@ -68,6 +69,7 @@ MIT
 			- [Naive Bayes](#naive-bayes)
 			- [Random Forest](#random-forest)
 			- [Softmax Classifier](#softmax-classifier)
+			- [SVC](#svc)
 		- [Clusterers](#clusterers)
 			- [DBSCAN](#dbscan)
 			- [Fuzzy C Means](#fuzzy-c-means)
@@ -1795,7 +1797,6 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
 ##### Additional Methods:
-
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -1813,6 +1814,30 @@ use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
 $estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new CrossEntropy(), 1e-5);
+```
+
+### SVC
+The Support Vector Machine Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space. Note that this estimator requires the SVM PHP extension installed.
+
+##### Supervised | Learner | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
+| 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
+| 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
+| 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+
+##### Additional Methods:
+This estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\SVC;
+use Rubix\ML\Kernels\SVM\Linear;
+
+$estimator = new SVC(1.0, new Linear(), true, 1e-3);
 ```
 
 ---

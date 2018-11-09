@@ -1,0 +1,83 @@
+<?php
+
+namespace Rubix\ML\Tests\Classifiers;
+
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Classifiers\SVC;
+use Rubix\ML\Kernels\SVM\RBF;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\Datasets\Generators\Agglomerate;
+use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
+use RuntimeException;
+
+class SVCTest extends TestCase
+{
+    const TRAIN_SIZE = 200;
+    const TEST_SIZE = 5;
+    const MIN_PROB = 0.33;
+
+    protected $generator;
+
+    protected $estimator;
+
+    public function setUp()
+    {
+        $this->generator = new Agglomerate([
+            'male' => new Blob([69.2, 195.7, 40.], [1., 3., 0.3]),
+            'female' => new Blob([63.7, 168.5, 38.1], [0.8, 2.5, 0.4]),
+        ], [0.45, 0.55]);
+
+        $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);
+    }
+
+    public function test_build_classifier()
+    {
+        $this->assertInstanceOf(SVC::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    public function test_estimator_type()
+    {
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+    }
+
+    public function test_train_predict()
+    {
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+
+        $transformer = new ZScaleStandardizer();
+
+        $transformer->fit($dataset);
+        $dataset->apply($transformer);
+
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $this->estimator->train($dataset);
+
+        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+            $this->assertEquals($testing->label($i), $prediction);
+        }
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick());
+    }
+
+    public function test_predict_untrained()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick());
+    }
+}

@@ -48,10 +48,16 @@ class RawPixelEncoder implements Extractor
      * @param  bool  $rgb
      * @param  string  $driver
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return void
      */
     public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
+        if (!extension_loaded('gd')) {
+            throw new RuntimeException('GD extension is not loaded, check'
+                . ' php.ini file.');
+        }
+
         if (count($size) !== 2) {
             throw new InvalidArgumentException('Size must contain width and'
                 . ' height but ' . count($size) . ' dimensions given.');
