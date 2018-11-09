@@ -3,19 +3,17 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Trees\CART;
+use Rubix\ML\Regressors\SVR;
+use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ExtraTreeRegressorTest extends TestCase
+class SVRTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
@@ -29,15 +27,13 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new ExtraTreeRegressor(50, 1, null, 0., 1e-4);
+        $this->estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3);
     }
 
     public function test_build_regressor()
     {
-        $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
-        $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(SVR::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

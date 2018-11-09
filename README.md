@@ -14,6 +14,9 @@ $ composer require rubix/ml
 
 ## Requirements
 - [PHP](https://php.net) 7.1.3 or above
+
+#### Optional:
+
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine support
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
@@ -88,6 +91,7 @@ MIT
 			- [MLP Regressor](#mlp-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
+			- [SVR](#svr)
 	- [Meta-Estimators](#meta-estimators)
 		- [Data Preprocessing](#data-preprocessing)
 			- [Pipeline](#pipeline)
@@ -375,9 +379,9 @@ float(0.945)
 ### Visualization
 Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of what Rubix has to offer. Therefore, we leave you with the choice of using any of the many great plotting and visualization frameworks out there to communicate the insights you obtain.
 
-If you are looking for a place to start, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript and tends to play well with PHP.
+If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite plotting or spreadsheet software such as [Tableu](https://www.tableau.com) or [Excel](https://products.office.com/en-us/excel). PHP has built in functions for manipulating both JSON and CSV formats, and there are a number of libraries available that help reading and writing these formats to file from PHP. 
 
-If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite spreadsheet or plotting software.
+If you are looking for more control over your visualizations, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript that plays well with PHP.
 
 ### Next Steps
 After you've gone through this basic introduction to machine learning in Rubix, we highly recommend reading over the [API Reference](#api-reference) to get an idea of what the library can do. The API Reference is the place you'll go to get detailed information and examples about the classes that make up the library. If you have a question or need help, feel free to post on our Github page.
@@ -1833,6 +1837,7 @@ The Support Vector Machine Classifier is a maximum margin classifier that can ef
 | 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 5 | cache size | 100. | float | The size in megabytes of the kernel cache. |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1842,7 +1847,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
 
-$estimator = new SVC(1.0, new Linear(), true, 1e-3);
+$estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
 ```
 
 ---
@@ -2311,6 +2316,32 @@ public bias() : float|null
 use Rubix\ML\Regressors\Ridge;
 
 $estimator = new Ridge(2.0);
+```
+
+### SVR
+Note that this estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) installed.
+
+##### Supervised | Learner | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
+| 2 | epsilon | 0.1 | float | Specifies the margin within which no penalty is associated in the training loss. |
+| 3 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
+| 4 | shrinking | true | bool | Should we use the shrinking heuristic? |
+| 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | cache size | 100. | float | The size in megabytes of the kernel cache. |
+
+##### Additional Methods:
+This estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\Classifiers\SVC;
+use Rubix\ML\Kernels\SVM\Linear;
+
+$estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
 ```
 
 ---

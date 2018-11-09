@@ -1,5 +1,5 @@
 - Unreleased
-    - Added Support Vector Machine classifier
+    - Added Support Vector Machine classifier and regressor
     - Added Verbose interface for logging
     - Added Linear Discriminant Analysis (LDA) transformer
     - Manifold learners are now considered Estimators

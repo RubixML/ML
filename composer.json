@@ -14,7 +14,7 @@
             "name": "Andrew DalPino",
             "email": "me@andrewdalpino.com",
             "homepage": "https://andrewdalpino.com",
-            "role": "Engineer"
+            "role": "Lead Engineer"
         }
     ],
     "require": {
@@ -26,13 +26,15 @@
     "require-dev": {
         "ext-gd": "*",
         "ext-redis": "*",
+        "ext-svm": "*",
         "phpstan/phpstan": "^0.10.0",
         "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "7.2.*"
     },
     "suggest": {
         "ext-gd": "For image vectorization",
-        "ext-redis": "To persist models to a Redis DB"
+        "ext-redis": "To persist models to a Redis DB",
+        "ext-svm": "For Support Vector Machine support"
     },
     "autoload": {
         "psr-4": {

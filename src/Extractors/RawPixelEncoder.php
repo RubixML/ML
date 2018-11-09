@@ -55,7 +55,7 @@ class RawPixelEncoder implements Extractor
     {
         if (!extension_loaded('gd')) {
             throw new RuntimeException('GD extension is not loaded, check'
-                . ' php.ini file.');
+                . ' PHP configuration.');
         }
 
         if (count($size) !== 2) {

@@ -58,7 +58,7 @@ class RedisDB implements Persister
     {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
-                . ' php.ini file.');
+                . ' PHP configuration.');
         }
 
         $connector = new Redis();

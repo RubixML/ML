@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Classifiers;
+namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
@@ -15,11 +15,7 @@ use svmmodel;
 use svm;
 
 /**
- * SVC
- * 
- * The Support Vector Machine Classifier is a maximum margin classifier that
- * can efficiently perform non-linear classification by implicitly mapping
- * feature vectors into high dimensional feature space.
+ * SVR
  * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
@@ -28,7 +24,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SVC implements Learner, Persistable
+class SVR implements Learner, Persistable
 {
     /**
      * The support vector machine instance.
@@ -45,16 +41,8 @@ class SVC implements Learner, Persistable
     protected $model;
 
     /**
-     * The mappings from integer to class label.
-     * 
-     * @var string[]
-     */
-    protected $classes =[
-        //
-    ];
-
-    /**
      * @param  float  $c
+     * @param  float  $epsilon
      * @param  \Rubix\ML\Kernels\SVM\Kernel|null  $kernel
      * @param  bool  $shrinking
      * @param  float  $tolerance
@@ -63,7 +51,7 @@ class SVC implements Learner, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $c = 1.0, ?Kernel $kernel = null, bool $shrinking = true,
+    public function __construct(float $c = 1.0, float $epsilon = 0.1, ?Kernel $kernel = null, bool $shrinking = true,
                                 float $tolerance = 1e-3, float $cacheSize = 100.)
     {
         if (!extension_loaded('svm')) {
@@ -76,6 +64,11 @@ class SVC implements Learner, Persistable
                 . " $c given.");
         }
 
+        if ($epsilon < 0.) {
+            throw new InvalidArgumentException('Epsilon cannot be less than 0'
+                . " $epsilon given.");
+        }
+
         if (is_null($kernel)) {
             $kernel = new RBF();
         }
@@ -85,14 +78,15 @@ class SVC implements Learner, Persistable
                 . " $tolerance given.");
         }
 
-        if ($cacheSize < 0.) {
-            throw new InvalidArgumentException('Cache size cannot be less than'
+        if ($cacheSize <= 0.) {
+            throw new InvalidArgumentException('Cache size must be greater than'
                 . " 0M, {$cacheSize}M given.");
         }
 
         $options = [
-            svm::OPT_TYPE => svm::C_SVC,
+            svm::OPT_TYPE => svm::EPSILON_SVR,
             svm::OPT_C => $c,
+            svm::OPT_P => $epsilon,
             svm::OPT_SHRINKING => $shrinking,
             svm::OPT_EPS => $tolerance,
             svm::OPT_CACHE_SIZE => $cacheSize,
@@ -112,7 +106,7 @@ class SVC implements Learner, Persistable
      */
     public function type() : int
     {
-        return self::CLASSIFIER;
+        return self::REGRESSOR;
     }
 
     /**
@@ -134,16 +128,12 @@ class SVC implements Learner, Persistable
             . ' continuous features.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
-
-        $mapping = array_flip($this->classes);
-
         $labels = $dataset->labels();
 
         $data = [];
 
         foreach ($dataset->samples() as $i => $sample) {
-            $data[] = array_merge([$mapping[$labels[$i]]], $sample);
+            $data[] = array_merge([$labels[$i]], $sample);
         }
 
         $this->model = $this->svm->train($data);
@@ -168,12 +158,6 @@ class SVC implements Learner, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $predictions[] = $this->classes[$this->model->predict($sample)];
-        }
-
-        return $predictions;
+        return array_map([$this->model, 'predict'], $dataset->samples());
     }
 }
