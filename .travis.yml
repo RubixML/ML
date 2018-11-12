@@ -6,6 +6,7 @@ php:
 
 before_install:
     - pecl install -f svm
+    - pecl install -f igbinary
     - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
