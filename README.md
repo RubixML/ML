@@ -17,9 +17,10 @@ $ composer require rubix/ml
 
 #### Optional:
 
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine support
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
+- [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## License
 MIT
@@ -123,6 +124,9 @@ MIT
 			- [Persisters](#persisters)
 				- [Filesystem](#filesystem)
 				- [Redis DB](#redis-db)
+			- [Serializers](#serializers)
+				- [Binary](#binary-serializer)
+				- [Native](#native)
 		- [Model Selection](#model-selection)
 			- [Grid Search](#grid-search)
 	- [Neural Network](#neural-network)
@@ -1822,11 +1826,11 @@ use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new CrossEntropy(), 1e-5);
+$estimator = new SoftmaxClassifier(300, 100, new Momentum(0.001), 1e-4, new CrossEntropy(), 1e-4);
 ```
 
 ### SVC
-The Support Vector Machine Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space. Note that this estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) installed.
+The multiclass Support Vector Machine Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space. Note that this estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses LIBSVM under the hood.
 
 ##### Supervised | Learner | Persistable
 
@@ -2620,7 +2624,7 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 ```
 
 ### Linear Discriminant Analysis
-A supervised dimensionality reduction technique that projects a dataset onto the most discriminative features based on class labels. In other words, LDA finds a linear combination of features that characterizes or separates two or more classes.
+A supervised dimensionality reduction technique that projects a dataset onto the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or separates two or more classes.
 
 ##### Supervised | Continuous *Only* | Stateful
 
@@ -2875,7 +2879,7 @@ $transformer = new RobustStandardizer(true);
 ```
 
 ### Sparse Random Projector
-The Sparse Random Projector uses a random matrix sampled from a sparse uniform distribution (mostly 0s) to project a sample matrix onto a target dimensionality.
+The Sparse Random Projector uses a random matrix sampled from a sparse uniform distribution (mostly *0*s) to project a sample matrix onto a target dimensionality.
 
 ##### Continuous *Only* | Stateful
 
@@ -3022,10 +3026,10 @@ $estimator->predict($testing); // Aggregates and averages their predictions
 ```
 
 ### Model Selection
-Model selection is the task of selecting a version of a model with a hyperparameter combination that maximizes performance on a specific validation metric. Rubix provides the *Grid Search* meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
+Model selection is the task of selecting a version of a model with a hyper-parameter combination that maximizes performance on a specific validation metric. Rubix provides the *Grid Search* meta-Estimator that performs an exhaustive search over all combinations of parameters given as possible arguments.
 
 ### Grid Search
-Grid Search is an algorithm that optimizes hyperparameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
+Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one [Estimator](#estimators) per combination of parameters and predictions are made using the best Estimator. You can access the scores for each parameter combination by calling the `results()` method on the trained Grid Search meta-Estimator or you can get the best parameters by calling `best()`.
 
 You can chose which parameters to search manually or you can generate parameters  to be used with Grid Search using the [Params](#params) helper.
 
@@ -3042,12 +3046,12 @@ You can chose which parameters to search manually or you can generate parameters
 
 ##### Additional Methods:
 
-Every combination of parmeters from the last grid search:
+Every combination of parameters from the last grid search:
 ```php
 public params() : array
 ```
 
-The validation scores of each parmeter search:
+The validation scores of each parameter search:
 ```php
 public scores() : array
 ```
@@ -3170,6 +3174,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 |--|--|--|--|--|
 | 1 | path | None | string | The path to the file on the filesystem. |
 | 2 | history | 2 | int | The number of backups to keep. |
+| 3 | serializer | Native | object | The serializer used to convert to and from serial format. |
 
 ##### Additional Methods:
 Delete all backups from the filesystem:
@@ -3180,8 +3185,9 @@ public flush() : void
 ##### Example:
 ```php
 use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Persisters\Serializers\Binary;
 
-$persister = new Filesystem('/path/to/example.model', 100);
+$persister = new Filesystem('/path/to/example.model', 1, new Binary());
 ```
 
 ### Redis DB
@@ -3196,7 +3202,8 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 4 | db | 0 | int | The database number. |
 | 5 | password | null | string | The password to access the database. |
 | 6 | history | 2 | int | The number of backups to keep. |
-| 7 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
+| 7 | serializer | Native | object | The serializer used to convert to and from serial format. |
+| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
 
 ##### Additional Methods:
 Return an associative array of info from the Redis server:
@@ -3207,8 +3214,48 @@ public info() : array
 ##### Example:
 ```php
 use Rubix\ML\Persisters\RedisDB;
+use Rubix\ML\Persisters\Serializers\Native;
 
-$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, 1.5);
+$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, new Native(), 1.5);
+```
+---
+### Serializers
+Serializers take persistable objects and convert between object and serial (text, binary, etc.) representations of them. They are responsible for making persistable objects savable to a backend system such as a database or filesystem. Note that serializers should **never** be given data from userland in a live system as this is a security issue.
+
+To serialize a persistable object:
+```php
+public serialize(Persistable $persistable) : string
+```
+
+To unserialize a persistable object:
+```php
+public unserialize(string $data) : Persistable
+```
+
+### Binary Serializer
+Converts persistable object to and from a binary encoding. Binary format is smaller and typically faster than plain text serializers.
+
+##### Parameters:
+This serializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Persisters\Serializers\Binary;
+
+$serializer = new Binary();
+```
+
+### Native
+The native PHP plain text serialization format.
+
+##### Parameters:
+This serializer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Persisters\Serializers\Native;
+
+$serializer = new Native();
 ```
 
 ---

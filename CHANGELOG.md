@@ -14,6 +14,8 @@
     - Added PSR-3 compatible screen logger
     - Grid Search is now Verbose
     - t-SNE embedder is now Verbose
+    - Added Serializer interface
+    - Added Native and Binary serializers
     - Fixed Naive Bayes reset category counts during partial train
     - Pipeline and Persistent Model are now Verbose
     - Classification and Regression trees now Verbose

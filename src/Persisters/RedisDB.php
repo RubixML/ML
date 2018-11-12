@@ -3,6 +3,8 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Persisters\Serializers\Serializer;
 use InvalidArgumentException;
 use RuntimeException;
 use Redis;
@@ -42,23 +44,37 @@ class RedisDB implements Persister
     protected $connector;
 
     /**
+     * The serializer used to convert to and from serial format.
+     * 
+     * @var \Rubix\ML\Persisters\Serializers\Serializer
+     */
+    protected $serializer;
+
+    /**
      * @param  string  $key
      * @param  string  $host
      * @param  int  $port
      * @param  int  $db
      * @param  string  $password
      * @param  int  $history
+     * @param  \Rubix\ML\Persisters\Serializers\Serializer|null  $serializer
      * @param  float  $timeout
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return void
      */
     public function __construct(string $key, string $host = '127.0.0.1', int $port = 6379, int $db = 0,
-                                string $password = null, int $history = 2, float $timeout = 2.5)
+                                string $password = null, int $history = 2, ?Serializer $serializer = null,
+                                float $timeout = 2.5)
     {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
                 . ' PHP configuration.');
+        }
+
+        if ($timeout <= 0.) {
+            throw new InvalidArgumentException('Timeout must be greater than 0'
+                . ", $timeout given.");
         }
 
         $connector = new Redis();
@@ -84,9 +100,14 @@ class RedisDB implements Persister
                 . " cannot be less than 0, $history given.");
         }
 
+        if (is_null($serializer)) {
+            $serializer = new Native();
+        }
+
         $this->key = $key;
         $this->history = $history;
         $this->connector = $connector;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -108,7 +129,7 @@ class RedisDB implements Persister
      */
     public function save(Persistable $persistable) : void
     {
-        $data = serialize($persistable);
+        $data = $this->serializer->serialize($persistable);
 
         $success = $length = $this->connector->rPush($this->key, $data);
 
@@ -146,7 +167,7 @@ class RedisDB implements Persister
                 . ' database.');
         }
 
-        $persistable = unserialize($data);
+        $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
             throw new RuntimeException('Model could not be reconstituted.');

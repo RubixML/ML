@@ -6,6 +6,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Persisters\Serializers\Native;
 use PHPUnit\Framework\TestCase;
 
 class FilesystemTest extends TestCase
@@ -22,7 +23,7 @@ class FilesystemTest extends TestCase
 
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem($this->path, 1);
+        $this->persister = new Filesystem($this->path, 1, new Native());
     }
 
     public function test_build_persister()

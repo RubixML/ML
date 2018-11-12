@@ -17,8 +17,15 @@ use svm;
 /**
  * SVR
  * 
+ * The Support Vector Machine Regressor is a maximum margin algorithm for the
+ * purposes of regression analysis. Similarly to the Support Vector Machine Classifier,
+ * the model produced by SVR (*R* for regression) depends only on a subset of the
+ * training data, because the cost function for building the model ignores any training
+ * data close to the model prediction given by parameter epsilon.
+ * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+ * [2] A. Smola et al. (2003). A Tutorial on Support Vector Regression.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -95,7 +102,6 @@ class SVR implements Learner, Persistable
         $options = array_replace($options, $kernel->options());
 
         $this->svm = new svm();
-
         $this->svm->setOptions($options);
     }
 

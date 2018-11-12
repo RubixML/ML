@@ -17,12 +17,13 @@ use svm;
 /**
  * SVC
  * 
- * The Support Vector Machine Classifier is a maximum margin classifier that
- * can efficiently perform non-linear classification by implicitly mapping
+ * The multiclass Support Vector Machine Classifier is a maximum margin classifier
+ * that can efficiently perform non-linear classification by implicitly mapping
  * feature vectors into high dimensional feature space.
  * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+ * [2] C. Cortes et al. (1995). Support-Vector Networks.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -85,8 +86,8 @@ class SVC implements Learner, Persistable
                 . " $tolerance given.");
         }
 
-        if ($cacheSize < 0.) {
-            throw new InvalidArgumentException('Cache size cannot be less than'
+        if ($cacheSize <= 0.) {
+            throw new InvalidArgumentException('Cache size must be greater than'
                 . " 0M, {$cacheSize}M given.");
         }
 
@@ -101,7 +102,6 @@ class SVC implements Learner, Persistable
         $options = array_replace($options, $kernel->options());
 
         $this->svm = new svm();
-
         $this->svm->setOptions($options);
     }
 

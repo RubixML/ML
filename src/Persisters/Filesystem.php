@@ -3,6 +3,8 @@
 namespace Rubix\ML\Persisters;
 
 use Rubix\ML\Persistable;
+use Rubix\ML\Persisters\Serializers\Native;
+use Rubix\ML\Persisters\Serializers\Serializer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -36,12 +38,20 @@ class Filesystem implements Persister
     protected $history;
 
     /**
+     * The serializer used to convert to and from serial format.
+     * 
+     * @var \Rubix\ML\Persisters\Serializers\Serializer
+     */
+    protected $serializer;
+
+    /**
      * @param  string  $path
      * @param  int  $history
+     * @param  \Rubix\ML\Persisters\Serializers\Serializer|null  $serializer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $path, int $history = 2)
+    public function __construct(string $path, int $history = 2, ?Serializer $serializer = null)
     {
         if (!is_writable(dirname($path))) {
             throw new InvalidArgumentException('Folder does not exist or is not'
@@ -53,8 +63,13 @@ class Filesystem implements Persister
                 . " cannot be less than 0, $history given.");
         }
 
+        if (is_null($serializer)) {
+            $serializer = new Native();
+        }
+
         $this->path = $path;
         $this->history = $history;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -94,7 +109,7 @@ class Filesystem implements Persister
             }
         }
 
-        $data = serialize($persistable);
+        $data = $this->serializer->serialize($persistable);
 
         $success = file_put_contents($this->path, $data, LOCK_EX);
 
@@ -120,7 +135,7 @@ class Filesystem implements Persister
             
         $data = file_get_contents($this->path) ?: '';
 
-        $persistable = unserialize($data);
+        $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
             throw new RuntimeException('Model could not be reconstituted.');

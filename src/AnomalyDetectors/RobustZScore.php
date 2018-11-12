@@ -167,17 +167,15 @@ class RobustZScore implements Learner, Persistable
                 $median = $this->medians[$column];
                 $mad = $this->mads[$column];
 
-                $z = (self::LAMBDA * ($feature - $median)) / $mad;
+                $z = abs((self::LAMBDA * ($feature - $median)) / $mad);
 
-                $zHat = abs($z);
-
-                if ($zHat > $this->threshold) {
+                if ($z > $this->threshold) {
                     $predictions[] = 1;
 
                     continue 2;
                 }
 
-                $score += $zHat;
+                $score += $z;
             }
 
             $score /= $p;

@@ -46,7 +46,7 @@ class IsolationForestTest extends TestCase
         $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
     }
 
-    public function test_train_predict_proba()
+    public function test_train_predict()
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
