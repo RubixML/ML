@@ -24,7 +24,7 @@ class RidgeTest extends TestCase
 
     public function setUp()
     {
-        $this->training = Labeled::load(dirname(__DIR__) . '/mpg.dataset');
+        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
         $this->testing = $this->training->randomize()->head(3);
 

@@ -78,22 +78,4 @@ class DataFrameTest extends TestCase
     {
         $this->assertEquals(DataFrame::CATEGORICAL, $this->dataframe->columnType(2));
     }
-
-    public function test_column_ranges()
-    {
-        $outcome = [
-            ['nice', 'mean'],
-            ['furry', 'rough'],
-            ['friendly', 'loner'],
-        ];
-
-        $this->assertEquals($outcome, $this->dataframe->ranges());
-    }
-
-    public function test_column_range()
-    {
-        $outcome = ['friendly', 'loner'];
-
-        $this->assertEquals($outcome, $this->dataframe->columnRange(2));
-    }
 }

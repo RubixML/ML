@@ -399,7 +399,7 @@ Data is what powers machine learning programs so naturally we treat it as a firs
 ### Dataset Objects
 In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way.
 
-There are two *types* of data that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently.
+There are two *types* of features that Estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix. For example, the number 5 could be represented as a continuous variable by casting it to an integer or it can be interpreted as the index of a category by using a string type (*'5'*). It is important to note the distinction between the two types as they are handled differently.
 
 ##### Example:
 ```php
@@ -523,8 +523,8 @@ $subset = $dataset->take(5);
 // Split the dataset into left and right subsets
 list($left, $right) = $dataset->split(0.5);
 
-// Partition the dataset by the feature column at index 4
-list($left, $right) = $dataset->partition(4, 1532485673);
+// Partition the dataset by the feature column at index 4 by value '50'
+list($left, $right) = $dataset->partition(4, 50);
 
 // Fold the dataset into 8 equal size datasets
 $folds = $dataset->fold(8);
@@ -572,7 +572,7 @@ $tallPeople = $dataset->filterByColumn(2, function ($value) {
 
 #### Sorting
 
-To sort a Dataset by a specific feature column:
+To sort a dataset in place by a specific feature column:
 ```php
 public sortByColumn(int $index, bool $descending = false) : self
 ```
@@ -658,32 +658,6 @@ $transformer->fit($dataset);
 $dataset->apply($transformer);
 ```
 
-#### Saving and Restoring
-Dataset objects can be saved and restored from a serialized object file which makes them easy to work with. Saving will capture the current state of the dataset including any transformations that have been applied.
-
-Save the Dataset to a file:
-```php
-public save(?string $path = null) : void
-```
-
-Restore the Dataset from a file:
-```php
-public static load(string $path) : self
-```
-
-##### Example:
-```php
-// Save the dataset to a file
-$dataset->save('path/to/dataset');
-
-// Assign a filename (ex. 1531772454.dataset)
-$dataset->save();
-
-$dataset = Labeled::load('path/to/dataset');
-```
-
-There are two types of Dataset objects in Rubix, *labeled* and *unlabeled*.
-
 ### Labeled
 For *supervised* Estimators you will need to train it with a Labeled dataset consisting of a sample matrix with the addition of an array of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned.
 
@@ -746,6 +720,7 @@ Group the samples by label and return them in their own Dataset:
 ```php
 public stratify() : array
 ```
+
 Split the Dataset into left and right stratified subsets with a given **ratio** of samples in each:
 ```php
 public stratifiedSplit($ratio = 0.5) : array
@@ -754,11 +729,6 @@ public stratifiedSplit($ratio = 0.5) : array
 Fold the Dataset **k** - 1 times to form **k** equal size stratified Datasets
 ```php
 public stratifiedFold($k = 10) : array
-```
-
-Zip the samples and labels together and return them in an array:
-```php
-public zip() : array
 ```
 
 ##### Example:

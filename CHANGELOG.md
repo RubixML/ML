@@ -23,6 +23,7 @@
     - Gradient Boost now accepts base and booster estimators
     - Blurry Median strategy is now Blurry Percentile
     - Added Mean strategy
+    - Removed dataset save and load methods
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

@@ -46,7 +46,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('The number of feature'
-                        . ' columns must be equal for all samples.');
+                        . " columns must be equal for all samples, $n needed "
+                        . count($sample) . ' given.');
                 }
 
                 foreach ($sample as $feature) {
@@ -113,7 +114,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function column(int $index) : array
     {
         if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException('Column does not exist.');
+            throw new InvalidArgumentException("Column $index does not exist.");
         }
 
         return array_column($this->samples, $index);
@@ -141,11 +142,15 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             return [];
         }
 
-        return array_map(function ($feature) {
-            return is_string($feature)
+        $types = [];
+
+        foreach ($this->samples[0] as $feature) {
+            $types[] = is_string($feature)
                 ? self::CATEGORICAL
                 : self::CONTINUOUS;
-        }, $this->samples[0]);
+        }
+
+        return $types;
     }
 
     /**
@@ -153,58 +158,21 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param  int  $index
      * @throws \InvalidArgumentException
-     * @return int
+     * @return int|null
      */
-    public function columnType(int $index) : int
+    public function columnType(int $index) : ?int
     {
+        if (!isset($this->samples[0])) {
+            return null;
+        }
+
         if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException('Column does not exist.');
+            throw new InvalidArgumentException("Column $index does not exist.");
         }
 
         return is_string($this->samples[0][$index])
             ? self::CATEGORICAL
             : self::CONTINUOUS;
-    }
-
-    /**
-     * Return the ranges of each feature column.
-     * 
-     * @return array[]
-     */
-    public function ranges() : array
-    {
-        $ranges = [];
-
-        foreach ($this->rotate() as $column => $values) {
-            if ($this->columnType((int) $column) === self::CONTINUOUS) {
-                $ranges[] = [min($values), max($values)];
-            } else {
-                $ranges[] = array_values(array_unique($values));
-            }
-        }
-
-        return $ranges;
-    }
-
-    /**
-     * Return the range of a feature column. The range for a continuous column
-     * is defined as the minimum and maximum values, and for catagorical
-     * columns the range is defined as every unique category.
-     * 
-     * @param  int  $index
-     * @return (int|float|string)[]
-     */
-    public function columnRange(int $index) : array
-    {
-        $values = $this->column($index);
-
-        if ($this->columnType($index) === self::CONTINUOUS) {
-            $range = [min($values), max($values)];
-        } else {
-            $range = array_values(array_unique($values));
-        }
-
-        return $range;
     }
 
     /**

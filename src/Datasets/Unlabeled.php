@@ -41,29 +41,6 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Restore an unlabeled dataset from a serialized object file.
-     *
-     * @param  string  $path
-     * @throws \RuntimeException
-     * @return self
-     */
-    public static function load(string $path) : self
-    {
-        if (!file_exists($path) or !is_readable($path)) {
-            throw new RuntimeException('File ' . basename($path) . ' cannot be'
-                . ' opened. Check path and permissions.');
-        }
-
-        $dataset = unserialize(file_get_contents($path) ?: '');
-
-        if (!$dataset instanceof Unlabeled) {
-            throw new RuntimeException('Dataset could not be reconstituted.');
-        }
-
-        return $dataset;
-    }
-
-    /**
      * Build a dataset from an iterator.
      * 
      * @param  iterable  $samples
@@ -190,7 +167,7 @@ class Unlabeled extends DataFrame implements Dataset
     {
         $samples = [];
 
-        foreach ($this->samples as $i => $sample) {
+        foreach ($this->samples as $sample) {
             if ($fn($sample[$index])) {
                 $samples[] = $sample;
             }
@@ -200,7 +177,7 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Sort the dataset by a column in the sample matrix.
+     * Sort the dataset in place by a column in the sample matrix.
      *
      * @param  int  $index
      * @param  bool  $descending
@@ -226,7 +203,7 @@ class Unlabeled extends DataFrame implements Dataset
     {
         if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Split ratio must be strictly'
-            . ' between 0 and 1.');
+                . " between 0 and 1, $ratio given.");
         }
 
         $p = (int) ($ratio * $this->numRows());
@@ -247,8 +224,8 @@ class Unlabeled extends DataFrame implements Dataset
     public function fold(int $k = 3) : array
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('Cannot fold the dataset less'
-                . ' than 1 time.');
+            throw new InvalidArgumentException('Cannot create less than 2'
+                . " folds, $k given.");
         }
 
         $samples = $this->samples;
@@ -303,7 +280,7 @@ class Unlabeled extends DataFrame implements Dataset
     {
         if (!is_string($value) and !is_numeric($value)) {
             throw new InvalidArgumentException('Value must be a string or'
-                . ' numeric type.');
+                . ' numeric type, ' . gettype($value) . ' given.');
         }
 
         $left = $right = [];
@@ -340,7 +317,7 @@ class Unlabeled extends DataFrame implements Dataset
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
-                . ' less than 1 sample.');
+                . " less than 1 sample, $n given.");
         }
 
         $max = $this->numRows() - 1;
@@ -366,7 +343,9 @@ class Unlabeled extends DataFrame implements Dataset
     {
         if (count($weights) !== count($this->samples)) {
             throw new InvalidArgumentException('The number of weights must be'
-                . ' equals to the number of samples in the dataset.');
+                . ' equal to the number of samples in the dataset, '
+                . count($this->samples) . ' needed, ' . count($weights)
+                . ' given.');
         }
 
         $total = array_sum($weights);
@@ -380,7 +359,7 @@ class Unlabeled extends DataFrame implements Dataset
             foreach ($weights as $row => $weight) {
                 $delta -= $weight;
 
-                if ($delta < 0.) {
+                if ($delta <= 0.) {
                     $subset[] = $this->samples[$row];
                     break 1;
                 }
@@ -391,28 +370,14 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Save the dataset to a serialized object file.
-     *
-     * @param  string|null  $path
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return void
+     * Specify data which should be serialized to JSON.
+     * 
+     * @return mixed
      */
-    public function save(?string $path = null) : void
+    public function jsonSerialize()
     {
-        if (is_null($path)) {
-            $path = (string) time() . '.dataset';
-        }
-
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable. Check path and permissions.');
-        }
-
-        $success = file_put_contents($path, serialize($this), LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException('Failed to serialize object to storage.');
-        }
+        return [
+            'samples' => $this->samples,
+        ];
     }
 }

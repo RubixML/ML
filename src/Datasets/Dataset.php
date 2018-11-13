@@ -4,20 +4,13 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Transformers\Transformer;
 use IteratorAggregate;
+use JsonSerializable;
 use ArrayAccess;
 use Countable;
 
-interface Dataset extends ArrayAccess, IteratorAggregate, Countable
+interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
     const PHI = 100000000;
-
-    /**
-     * Restore a dataset from a serialized object file.
-     *
-     * @param  string  $path
-     * @return self
-     */
-    public static function load(string $path);
 
     /**
      * Return the 2-dimensional sample matrix.
@@ -68,26 +61,9 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * Get the datatype for a feature column given a column index.
      *
      * @param  int  $index
-     * @return int
+     * @return int|null
      */
-    public function columnType(int $index) : int;
-
-    /**
-     * Return the ranges of each feature column.
-     * 
-     * @return array[]
-     */
-    public function ranges() : array;
-
-    /**
-     * Return the range of a feature column. The range for a continuous column
-     * is defined as the minimum and maximum values, and for catagorical
-     * columns the range is defined as every unique category.
-     * 
-     * @param  int  $index
-     * @return (int|float|string)[]
-     */
-    public function columnRange(int $index) : array;
+    public function columnType(int $index) : ?int;
 
     /**
      * Return the number of feature columns in the datasets.
@@ -103,14 +79,6 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return self
      */
     public function apply(Transformer $transformer);
-
-    /**
-     * Save the dataset to a serialized object file.
-     *
-     * @param  string|null  $path
-     * @return void
-     */
-    public function save(?string $path = null) : void;
 
     /**
      * Rotate the dataframe.

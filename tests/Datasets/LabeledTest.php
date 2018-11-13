@@ -302,22 +302,6 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_save_and_load()
-    {
-        $this->assertFalse(file_exists(__DIR__ . '/test.dataset'));
-
-        $this->dataset->save(__DIR__ . '/test.dataset');
-
-        $this->assertFileExists(__DIR__ . '/test.dataset');
-
-        $dataset = Labeled::load(__DIR__ . '/test.dataset');
-
-        $this->assertInstanceOf(Labeled::class, $dataset);
-        $this->assertInstanceOf(Dataset::class, $dataset);
-
-        $this->assertTrue(unlink(__DIR__ . '/test.dataset'));
-    }
-
     public function test_merge_dataset()
     {
         $this->assertCount(count($this->samples), $this->dataset);
@@ -330,18 +314,5 @@ class LabeledTest extends TestCase
 
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
         $this->assertEquals('not monster', $merged->label(6));
-    }
-
-    public function test_zip()
-    {
-        $outcome = [
-            ['nice', 'furry', 'friendly', 'not monster'],
-            ['mean', 'furry', 'loner', 'monster'],
-            ['nice', 'rough', 'friendly', 'not monster'],
-            ['mean', 'rough', 'friendly', 'monster'],
-            ['nice', 'rough', 'friendly', 'not monster'],
-        ];
-
-        $this->assertEquals($outcome, $this->dataset->head(5)->zip());
     }
 }

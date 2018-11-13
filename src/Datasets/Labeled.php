@@ -55,28 +55,6 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Restore a labeled dataset from a serialized object file.
-     *
-     * @param  string  $path
-     * @return self
-     */
-    public static function load(string $path) : self
-    {
-        if (!file_exists($path) or !is_readable($path)) {
-            throw new RuntimeException('File ' . basename($path) . ' cannot be'
-                . ' opened. Check path and permissions.');
-        }
-
-        $dataset = unserialize(file_get_contents($path) ?: '');
-
-        if (!$dataset instanceof Labeled) {
-            throw new RuntimeException('Dataset could not be reconstituted.');
-        }
-
-        return $dataset;
-    }
-
-    /**
      * Build a dataset from an iterator.
      * 
      * @param  iterable  $samples
@@ -101,17 +79,18 @@ class Labeled extends DataFrame implements Dataset
     public function __construct(array $samples = [], array $labels = [], bool $validate = true)
     {
         if (count($samples) !== count($labels)) {
-            throw new InvalidArgumentException('The ratio of samples to labels'
-             . ' must be equal.');
+            throw new InvalidArgumentException('The proportion of samples to'
+             . ' labels must be equal, ' . count($samples) . ' samples and '
+             . count($labels) . ' labels given.');
         }
 
         if ($validate) {
             $labels = array_values($labels);
 
             foreach ($labels as &$label) {
-                if (!is_string($label) and !is_numeric($label) and !is_array($label)) {
-                    throw new InvalidArgumentException('Label must be a string,'
-                        . ' numeric, or array type, ' . gettype($label) . ' found.');
+                if (!is_string($label) and !is_numeric($label)) {
+                    throw new InvalidArgumentException('Label must be a string'
+                        . ' or numeric type, ' . gettype($label) . ' found.');
                 }
             }
         }
@@ -141,20 +120,24 @@ class Labeled extends DataFrame implements Dataset
     public function label(int $index)
     {
         if (!isset($this->labels[$index])) {
-            throw new InvalidArgumentException('Row at offset '
-                . (string) $index . ' does not exist.');
+            throw new InvalidArgumentException("Row at offset $index"
+                . ' does not exist.');
         }
 
         return $this->labels[$index];
     }
 
     /**
-     * Return the integer encoded data type of the label.
+     * Return the integer encoded data type of the label or null if empty.
      *
-     * @return int
+     * @return int|null
      */
-    public function labelType() : int
+    public function labelType() : ?int
     {
+        if (!isset($this->labels[0])) {
+            return null;
+        }
+
         return is_string($this->labels[0])
             ? DataFrame::CATEGORICAL
             : DataFrame::CONTINUOUS;
@@ -167,7 +150,7 @@ class Labeled extends DataFrame implements Dataset
      */
     public function possibleOutcomes() : array
     {
-        return array_values(array_unique($this->labels));
+        return array_values(array_unique($this->labels, SORT_REGULAR));
     }
 
     /**
@@ -339,7 +322,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Sort the dataset by a column in the sample matrix.
+     * Sort the dataset in place by a column in the sample matrix.
      *
      * @param  int  $index
      * @param  bool  $descending
@@ -356,7 +339,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Sort the dataset by its labels.
+     * Sort the dataset in place by its labels.
      *
      * @param  bool  $descending
      * @return \Rubix\ML\Datasets\Dataset
@@ -400,7 +383,7 @@ class Labeled extends DataFrame implements Dataset
     {
         if ($ratio <= 0 or $ratio >= 1) {
             throw new InvalidArgumentException('Split ratio must be strictly'
-            . ' between 0 and 1.');
+            . " between 0 and 1, $ratio given.");
         }
 
         $n = (int) ($ratio * $this->numRows());
@@ -429,7 +412,7 @@ class Labeled extends DataFrame implements Dataset
     {
         if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Split ratio must be strictly'
-            . ' between 0 and 1.');
+            . " between 0 and 1, $ratio given.");
         }
 
         $left = $right = [[], [], false];
@@ -461,8 +444,8 @@ class Labeled extends DataFrame implements Dataset
     public function fold(int $k = 10) : array
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('Cannot fold the dataset less than'
-            . '1 time.');
+            throw new InvalidArgumentException('Cannot create less than 2'
+                . " folds, $k given.");
         }
 
         $samples = $this->samples;
@@ -481,7 +464,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Fold the dataset k - 1 times to form k equal size stratified datasets.
+     * Fold the dataset into k equal sized stratified datasets.
      *
      * @param  int  $k
      * @throws \InvalidArgumentException
@@ -490,8 +473,8 @@ class Labeled extends DataFrame implements Dataset
     public function stratifiedFold(int $k = 10) : array
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('Cannot fold the dataset less'
-                . ' than 1 time.');
+            throw new InvalidArgumentException('Cannot create less than 2'
+                . " folds, $k given.");
         }
 
         $folds = [];
@@ -510,6 +493,22 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return $folds;
+    }
+
+    /**
+     * Stratifying subroutine groups samples by label.
+     *
+     * @return array[]
+     */
+    protected function _stratify() : array
+    {
+        $strata = [];
+
+        foreach ($this->labels as $index => $label) {
+            $strata[$label][] = $this->samples[$index];
+        }
+
+        return $strata;
     }
 
     /**
@@ -545,10 +544,16 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param  int  $index
      * @param  mixed  $value
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function partition(int $index, $value) : array
     {
+        if (!is_string($value) and !is_numeric($value)) {
+            throw new InvalidArgumentException('Value must be a string or'
+                . ' numeric type, ' . gettype($value) . ' given.');
+        }
+
         $left = $right = [[], [], false];
 
         if ($this->columnType($index) === DataFrame::CATEGORICAL) {
@@ -587,7 +592,7 @@ class Labeled extends DataFrame implements Dataset
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a subset of'
-                . ' less than 1 sample.');
+                . " less than 1 sample, $n given.");
         }
 
         $max = $this->numRows() - 1;
@@ -616,7 +621,9 @@ class Labeled extends DataFrame implements Dataset
     {
         if (count($weights) !== count($this->samples)) {
             throw new InvalidArgumentException('The number of weights must be'
-                . ' equal to the number of samples in the dataset.');
+                . ' equal to the number of samples in the dataset, '
+                . count($this->samples) . ' needed, ' . count($weights)
+                . ' given.');
         }
 
         $total = array_sum($weights);
@@ -630,7 +637,7 @@ class Labeled extends DataFrame implements Dataset
             foreach ($weights as $row => $weight) {
                 $delta -= $weight;
 
-                if ($delta < 0.) {
+                if ($delta <= 0.) {
                     $samples[] = $this->samples[$row];
                     $labels[] = $this->labels[$row];
 
@@ -643,60 +650,15 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Save the dataset to a serialized object file.
-     *
-     * @param  string|null  $path
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @return void
-     */
-    public function save(?string $path = null) : void
-    {
-        if (is_null($path)) {
-            $path = (string) time() . '.dataset';
-        }
-
-        if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable. Check path and permissions.');
-        }
-
-        $success = file_put_contents($path, serialize($this), LOCK_EX);
-
-        if (!$success) {
-            throw new RuntimeException('Failed to serialize object to storage.');
-        }
-    }
-
-    /**
-     * Zip the samples and labels together and return them in an array.
+     * Specify data which should be serialized to JSON.
      * 
-     * @return array[]
+     * @return mixed
      */
-    public function zip() : array
+    public function jsonSerialize()
     {
-        $rows = $this->samples;
-
-        foreach ($rows as $i => &$sample) {
-            $sample[] = $this->labels[$i];
-        }
-
-        return $rows;
-    }
-
-    /**
-     * Stratifying subroutine groups samples by label.
-     *
-     * @return array[]
-     */
-    protected function _stratify() : array
-    {
-        $strata = [];
-
-        foreach ($this->labels as $index => $label) {
-            $strata[$label][] = $this->samples[$index];
-        }
-
-        return $strata;
+        return [
+            'samples' => $this->samples,
+            'labels' => $this->labels,
+        ];
     }
 }
