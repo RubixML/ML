@@ -17,9 +17,9 @@ $ composer require rubix/ml
 
 #### Optional:
 
-- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine
+- [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
-- [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
+- [Redis extension](https://github.com/phpredis/phpredis) for persisting models to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## License
@@ -58,6 +58,7 @@ MIT
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
 			- [Local Outlier Factor](#local-outlier-factor)
+			- [One Class SVM](#one-class-svm)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
@@ -1377,6 +1378,31 @@ public mads() : ?array
 use Rubix\ML\AnomalyDetection\RobustZScore;
 
 $estimator = new RobustZScore(1.5, 3.0);
+```
+
+### One Class SVM
+An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes like the multiclass SVM. Note that this estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine under the hood.
+
+##### Unsupervised | Learner | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | nu | 0.1 | float | An upper bound on the percentage margin errors and a lower bound on the percentage of support vectors. |
+| 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
+| 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
+| 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
+| 5 | cache size | 100. | float | The size in megabytes of the kernel cache. |
+
+##### Additional Methods:
+This estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\OneClassSVM;
+use Rubix\ML\Kernels\SVM\Polynomial;
+
+$estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 ```
 
 ---

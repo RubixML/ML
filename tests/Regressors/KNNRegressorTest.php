@@ -19,7 +19,7 @@ class KNNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 5;
+    const TOLERANCE = 10;
 
     protected $generator;
 

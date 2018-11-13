@@ -1,5 +1,6 @@
 - Unreleased
     - Added Support Vector Machine classifier and regressor
+    - Added One Class SVM anomaly detector
     - Added Verbose interface for logging
     - Added Linear Discriminant Analysis (LDA) transformer
     - Manifold learners are now considered Estimators
