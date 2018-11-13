@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
@@ -57,14 +58,14 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
+     * @param  float  $minPurityIncrease 
      * @param  int|null  $maxFeatures
-     * @param  float  $minPurityIncrease
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, ?int $maxFeatures = null,
-                                float $minPurityIncrease = 0., float $tolerance = 1e-4)
+    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minPurityIncrease = 0.,
+                                ?int $maxFeatures = null, float $tolerance = 1e-4)
     {
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException("Tree must consider at least 1"
@@ -171,9 +172,13 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         shuffle($this->columns);
 
         foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
-            foreach ($dataset as $sample) {
-                $value = $sample[$column];
+            $values = $dataset->column($column);
 
+            if ($dataset->columnType($column) === DataFrame::CATEGORICAL) {
+                $values = array_unique($values);
+            }
+
+            foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);
 
                 $variance = $this->variance($groups);
