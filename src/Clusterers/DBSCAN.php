@@ -100,10 +100,10 @@ class DBSCAN implements Estimator
                 . ' continuous features.');
         }
 
-        $samples = $dataset->samples();
-
         $predictions = [];
         $cluster = 0;
+
+        $samples = $dataset->samples();
 
         foreach ($samples as $i => $sample) {
             if (isset($predictions[$i])) {
@@ -120,7 +120,7 @@ class DBSCAN implements Estimator
 
             $predictions[$i] = $cluster;
 
-            while (!empty($neighbors)) {
+            while ($neighbors) {
                 $index = array_pop($neighbors);
 
                 if (isset($predictions[$index])) {
@@ -133,12 +133,10 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                $centroid = $dataset->row($index);
-
-                $seeds = $this->groupNeighbors($centroid, $samples);
+                $seeds = $this->groupNeighbors($samples[$index], $samples);
 
                 if (count($seeds) >= $this->minDensity) {
-                    $neighbors = array_unique(array_merge($neighbors, $seeds));
+                    $neighbors = array_unique(array_merge($neighbors, $seeds), SORT_REGULAR);
                 }
             }
 
@@ -149,22 +147,22 @@ class DBSCAN implements Estimator
     }
 
     /**
-     * Group the samples that are within a given radius of the centroid into a
-     * neighborhood.
+     * Group the samples that are within a given radius of the center into a
+     * neighborhood and return the indices.
      *
-     * @param  array  $centroid
+     * @param  array  $center
      * @param  array  $samples
      * @return array
      */
-    protected function groupNeighbors(array $centroid, array $samples) : array
+    protected function groupNeighbors(array $center, array $samples) : array
     {
         $neighborhood = [];
 
-        foreach ($samples as $i => $sample) {
-            $distance = $this->kernel->compute($sample, $centroid);
+        foreach ($samples as $index => $sample) {
+            $distance = $this->kernel->compute($center, $sample);
 
             if ($distance <= $this->radius) {
-                $neighborhood[] = $i;
+                $neighborhood[] = $index;
             }
         }
 

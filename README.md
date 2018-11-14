@@ -2763,7 +2763,7 @@ $transformer = new OneHotEncoder();
 ```
 
 ### Polynomial Expander
-This transformer will generate polynomial features up to and including the specified degree. Polynomial expansion is often used to fit data that is non-linear using a linear Estimator such as [Ridge](#ridge).
+This transformer will generate polynomials up to and including the specified degree of each feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
 
 ##### Continuous *Only*
 

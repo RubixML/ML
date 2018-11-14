@@ -19,7 +19,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ELU implements Rectifier
+class ELU implements ActivationFunction
 {
     /**
      * At which negative value the ELU will saturate. i.e. alpha = 1.means
@@ -37,8 +37,8 @@ class ELU implements Rectifier
     public function __construct(float $alpha = 1.)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('Alpha parameter must be'
-                . ' positive.');
+            throw new InvalidArgumentException('Alpha cannot be less than'
+                . " 0, $alpha given.");
         }
 
         $this->alpha = $alpha;
@@ -48,7 +48,7 @@ class ELU implements Rectifier
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -63,9 +63,7 @@ class ELU implements Rectifier
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value > 0. ? $value : $this->alpha * (exp($value) - 1.);
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -77,8 +75,24 @@ class ELU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($output) {
-            return $output > 0. ? 1. : $output + $this->alpha;
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z > 0. ? $z : $this->alpha * (exp($z) - 1.);
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return $computed > 0. ? 1. : $computed + $this->alpha;
     }
 }

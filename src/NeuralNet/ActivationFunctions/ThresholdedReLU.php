@@ -18,7 +18,7 @@ use Rubix\Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ThresholdedReLU implements Rectifier
+class ThresholdedReLU implements ActivationFunction
 {
     /**
      * The input value necessary to trigger an activation.
@@ -41,7 +41,7 @@ class ThresholdedReLU implements Rectifier
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -56,9 +56,7 @@ class ThresholdedReLU implements Rectifier
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value > $this->threshold ? $value : 0.;
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -70,8 +68,24 @@ class ThresholdedReLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return $activation > $this->threshold ? 1. : 0.;
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z > $this->threshold ? $z : 0.;
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return $computed > $this->threshold ? 1. : 0.;
     }
 }

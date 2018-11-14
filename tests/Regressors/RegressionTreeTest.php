@@ -48,7 +48,9 @@ class RegressionTreeTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $test = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($test);
 
         $testing = $this->generator->generate(self::TEST_SIZE);
 

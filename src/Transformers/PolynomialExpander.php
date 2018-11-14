@@ -7,9 +7,10 @@ use InvalidArgumentException;
 /**
  * Polynomial Expander
  *
- * This Transformer will generate polynomial features up to and including the
- * specified degree. Polynomial expansion is often used to fit data that is
- * non-linear using a linear Estimator such as Ridge.
+ * This transformer will generate polynomials up to and including the
+ * specified degree of each feature column. Polynomial expansion is sometimes
+ * used to fit data that is non-linear using a linear estimator such as Ridge
+ * or Logistic Regression.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -35,7 +36,7 @@ class PolynomialExpander implements Transformer
     {
         if ($degree < 1) {
             throw new InvalidArgumentException('The degree of the polynomial'
-                . ' must be greater than 0.');
+                . " must be greater than 0, $degree given.");
         }
 
         $this->degree = $degree;

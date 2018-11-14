@@ -19,7 +19,7 @@ use InvalidArgumentException;
  */
 class PredictionSpeed implements Report
 {
-    const MIN_TEST_SIZE = 50;
+    const MIN_TEST_SIZE = 200;
 
     /**
      * The ratio of test samples to use to generate the report.

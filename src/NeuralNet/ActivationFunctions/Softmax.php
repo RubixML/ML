@@ -29,10 +29,10 @@ class Softmax extends Sigmoid
         foreach ($z->asColumnVectors() as $vector) {
             $cache = $vector->exp();
 
-            $sigma = $cache->sum() ?: self::EPSILON;
+            $total = $cache->sum() ?: self::EPSILON;
 
             foreach ($cache as $j => $value) {
-                $activations[$j][] = $value / $sigma;
+                $activations[$j][] = $value / $total;
             }
         }
 

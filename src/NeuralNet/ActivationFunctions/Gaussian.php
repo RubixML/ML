@@ -20,7 +20,7 @@ class Gaussian implements ActivationFunction
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -35,9 +35,7 @@ class Gaussian implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return exp(-($value ** 2));
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -50,5 +48,14 @@ class Gaussian implements ActivationFunction
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
         return $z->multiply($computed)->multiply(-2.);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return exp(-($z ** 2));
     }
 }

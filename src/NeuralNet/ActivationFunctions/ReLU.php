@@ -18,13 +18,13 @@ use Rubix\Tensor\Matrix;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ReLU implements Rectifier
+class ReLU implements ActivationFunction
 {
     /**
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -39,9 +39,7 @@ class ReLU implements Rectifier
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value > 0. ? $value : 0.;
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -53,8 +51,24 @@ class ReLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return $activation > 0. ? 1. : 0.;
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z > 0. ? $z : 0.;
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return $computed > 0. ? 1. : 0.;
     }
 }

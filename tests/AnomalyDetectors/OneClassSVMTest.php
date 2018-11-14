@@ -31,7 +31,7 @@ class OneClassSVMTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new OneClassSVM(0.1, new Polynomial(4, 0.01), true, 1e-3);
+        $this->estimator = new OneClassSVM(0.05, new Polynomial(4, 1e-3), true, 1e-4);
     }
 
     public function test_build_detector()

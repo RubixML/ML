@@ -349,10 +349,10 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += ($b !== 0. ? ($a / $b) : 1.) ** $this->lambda;
+                $total += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
             }
 
-            $membership[$cluster] = 1. / $total;
+            $membership[$cluster] = 1. / ($total ?: self::EPSILON);
         }
 
         return $membership;

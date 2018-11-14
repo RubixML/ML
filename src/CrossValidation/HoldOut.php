@@ -51,7 +51,7 @@ class HoldOut implements Validator
     {
         if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
-                . ' between 0.01 and 1.0.');
+                . " between 0.01 and 1, $ratio given.");
         }
 
         $this->ratio = $ratio;

@@ -51,7 +51,7 @@ class ISRU implements ActivationFunction
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -68,9 +68,7 @@ class ISRU implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value / sqrt(1. + $this->alpha * $value ** 2);
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -82,8 +80,24 @@ class ISRU implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->map(function ($output) {
-            return (1. / sqrt((1. + $this->alpha * $output ** 2))) ** 3;
-        });
+        return $z->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z / sqrt(1. + $this->alpha * $z ** 2);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _differentiate(float $z) : float
+    {
+        return (1. / sqrt((1. + $this->alpha * $z ** 2))) ** 3;
     }
 }

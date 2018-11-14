@@ -17,7 +17,7 @@ use InvalidArgumentException;
 class Cell extends BinaryNode implements Leaf
 {
     /**
-     * The estimated depth of this node.
+     * The approximated depth of this node.
      *
      * @var float
      */

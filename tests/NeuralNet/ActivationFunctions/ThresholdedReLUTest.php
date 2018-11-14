@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\Rectifier;
 use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +29,6 @@ class ThresholdedReLUTest extends TestCase
     public function test_build_activation_function()
     {
         $this->assertInstanceOf(ThresholdedReLU::class, $this->activationFunction);
-        $this->assertInstanceOf(Rectifier::class, $this->activationFunction);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
     }
 

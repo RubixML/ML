@@ -109,17 +109,17 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     public function __construct(int $k, int $epochs = 100, float $minChange = 1e-3)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("Must target at least one"
+            throw new InvalidArgumentException('Must target at least one'
                 . " cluster, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 

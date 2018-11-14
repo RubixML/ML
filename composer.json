@@ -33,8 +33,9 @@
     },
     "suggest": {
         "ext-gd": "For image vectorization",
+        "ext-igbinary": "For fast binary serialization of persistables",
         "ext-redis": "To persist models to a Redis DB",
-        "ext-svm": "For Support Vector Machine support"
+        "ext-svm": "For Support Vector Machine engine (libsvm)"
     },
     "autoload": {
         "psr-4": {

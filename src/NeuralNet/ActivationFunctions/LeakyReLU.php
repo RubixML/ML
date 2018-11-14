@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeakyReLU implements Rectifier
+class LeakyReLU implements ActivationFunction
 {
     /**
      * The amount of leakage as a ratio of the input value to allow to pass
@@ -38,8 +38,8 @@ class LeakyReLU implements Rectifier
     public function __construct(float $leakage = 0.1)
     {
         if ($leakage < 0. or $leakage > 1.) {
-            throw new InvalidArgumentException('Leakage parameter must be'
-                . ' between 0 and 1.');
+            throw new InvalidArgumentException('Leakage must be between'
+                . " 0 and 1, $leakage given.");
         }
 
         $this->leakage = $leakage;
@@ -49,7 +49,7 @@ class LeakyReLU implements Rectifier
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -64,9 +64,7 @@ class LeakyReLU implements Rectifier
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value > 0. ? $value : $this->leakage * $value;
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -78,8 +76,24 @@ class LeakyReLU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->map(function ($input) {
-            return $input > 0. ? 1. : $this->leakage;
-        });
+        return $z->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z > 0. ? $z : $this->leakage * $z;
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _differentiate(float $z) : float
+    {
+        return $z > 0. ? 1. : $this->leakage;
     }
 }

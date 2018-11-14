@@ -41,14 +41,9 @@ class AggregateReport implements Report
         }
 
         foreach ($reports as $index => $report) {
-            if (!is_string($index) and !is_int($index)) {
-                throw new InvalidArgumentException('Report index must be a'
-                    . ' string or integer.');
-            }
-
             if (!$report instanceof Report) {
-                throw new InvalidArgumentException('Aggregate must contain all'
-                    . ' reports, ' . gettype($report) . ' found.');
+                throw new InvalidArgumentException('Can only aggregate reports'
+                    . ', ' . gettype($report) . ' found.');
             }
 
             $this->reports[$index] = $report;

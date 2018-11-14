@@ -18,7 +18,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SELU implements Rectifier
+class SELU implements ActivationFunction
 {
     const ALPHA = 1.6732632423543772848170429916717;
     const SCALE = 1.0507009873554804934193349852946;
@@ -39,6 +39,8 @@ class SELU implements Rectifier
     protected $scale;
 
     /**
+     * The exponential leakage coefficient.
+     * 
      * @var float
      */
     protected $beta;
@@ -69,7 +71,7 @@ class SELU implements Rectifier
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -84,11 +86,7 @@ class SELU implements Rectifier
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value > 0.
-                ? $this->scale * $value
-                : $this->beta * (exp($value) - 1.);
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -100,10 +98,24 @@ class SELU implements Rectifier
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return $activation > 0.
-                ? $this->scale
-                : $activation + 1.;
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z > 0. ? $this->scale * $z : $this->beta * (exp($z) - 1.);
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return $computed > 0. ? $this->scale : $computed + 1.;
     }
 }

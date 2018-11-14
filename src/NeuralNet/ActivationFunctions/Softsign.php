@@ -25,7 +25,7 @@ class Softsign implements ActivationFunction
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -40,9 +40,7 @@ class Softsign implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return $value / (1. + abs($value));
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -54,8 +52,24 @@ class Softsign implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->map(function ($output) {
-            return 1. / (1. + abs($output)) ** 2;
-        });
+        return $z->map([$this, '_differentiate']);
+    }
+
+        /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $z / (1. + abs($z));
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _differentiate(float $z) : float
+    {
+        return 1. / (1. + abs($z)) ** 2;
     }
 }

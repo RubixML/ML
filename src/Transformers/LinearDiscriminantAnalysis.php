@@ -126,14 +126,14 @@ class LinearDiscriminantAnalysis implements Transformer, Stateful
                 . ' labeled training set.');
         }
 
-        if ($dataset->labelType() !== DataFrame::CATEGORICAL) {
-            throw new InvalidArgumentException('This transformer can only'
-                . ' fit categorical labels.');
-        }
-
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
+        }
+
+        if ($dataset->labelType() !== DataFrame::CATEGORICAL) {
+            throw new InvalidArgumentException('This transformer only works'
+                . ' with categorical labels.');
         }
 
         list($n, $d) = $dataset->shape();

@@ -33,7 +33,7 @@ class Normal implements Initializer
     {
         if ($stddev <= 0.) {
             throw new InvalidArgumentException('Standard deviation cannot be'
-                . ' less than or equal to 0.');
+                . " less than or equal to 0, $stddev given.");
         }
 
         $this->stddev = $stddev;

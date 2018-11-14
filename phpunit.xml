@@ -36,11 +36,17 @@
         <testsuite name="Kernels">
             <directory>tests/Kernels</directory>
         </testsuite>
+        <testsuite name="Manifold">
+            <directory>tests/Manifold</directory>
+        </testsuite>
         <testsuite name="Neural Net">
             <directory>tests/NeuralNet</directory>
         </testsuite>
         <testsuite name="Other">
             <directory>tests/Other</directory>
+        </testsuite>
+        <testsuite name="Persisters">
+            <directory>tests/Persisters</directory>
         </testsuite>
         <testsuite name="Regressors">
             <directory>tests/Regressors</directory>

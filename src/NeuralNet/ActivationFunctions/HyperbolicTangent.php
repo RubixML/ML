@@ -20,7 +20,7 @@ class HyperbolicTangent implements ActivationFunction
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -47,8 +47,15 @@ class HyperbolicTangent implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return 1. - ($activation ** 2);
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return 1. - ($computed ** 2);
     }
 }

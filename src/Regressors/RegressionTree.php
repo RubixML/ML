@@ -117,8 +117,8 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
             . Params::stringify([
                 'max_depth' => $this->maxDepth,
                 'max_leaf_size' => $this->maxLeafSize,
-                'max_features' => $this->maxFeatures,
                 'min_purity_increase' => $this->minPurityIncrease,
+                'max_features' => $this->maxFeatures,
                 'tolerance' => $this->tolerance,
             ]));
 
@@ -172,11 +172,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         shuffle($this->columns);
 
         foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
-            $values = $dataset->column($column);
-
-            if ($dataset->columnType($column) === DataFrame::CATEGORICAL) {
-                $values = array_unique($values);
-            }
+            $values = array_unique($dataset->column($column), SORT_REGULAR);
 
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);

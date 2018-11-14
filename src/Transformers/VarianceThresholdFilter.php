@@ -44,8 +44,8 @@ class VarianceThresholdFilter implements Transformer, Stateful
     public function __construct(float $threshold = 0.)
     {
         if ($threshold < 0.) {
-            throw new InvalidArgumentException('Threshold must be a positive'
-                . ' value.');
+            throw new InvalidArgumentException('Threshold must be 0 or greater'
+                . ", $threshold given.");
         }
 
         $this->threshold = $threshold;

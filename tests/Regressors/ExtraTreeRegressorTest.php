@@ -10,26 +10,27 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
-use Rubix\ML\Datasets\Generators\SwissRoll;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class ExtraTreeRegressorTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
-    const TOLERANCE = 5;
-
-    protected $generator;
+    const TOLERANCE = 3;
 
     protected $estimator;
 
+    protected $training;
+
+    protected $testing;
+
     public function setUp()
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
+        $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
-        $this->estimator = new ExtraTreeRegressor(50, 2, 0., null, 1e-4);
+        $this->testing = $this->training->randomize()->head(3);
+
+        $this->estimator = new ExtraTreeRegressor(30, 3, 0., null, 1e-4);
     }
 
     public function test_build_regressor()
@@ -49,12 +50,10 @@ class ExtraTreeRegressorTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($this->training);
 
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
+        foreach ($this->estimator->predict($this->testing) as $i => $prediction) {
+            $this->assertEquals($this->testing->label($i), $prediction, '', self::TOLERANCE);
         }
     }
 

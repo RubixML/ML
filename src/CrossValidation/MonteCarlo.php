@@ -60,12 +60,12 @@ class MonteCarlo implements Validator
     {
         if ($simulations < 2) {
             throw new InvalidArgumentException('Must run at least 2'
-                . ' simulations.');
+                . " simulations, $simulations given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
-                . ' between 0.01 and 1.0.');
+                . " between 0.01 and 1, $ratio given.");
         }
 
         $this->simulations = $simulations;

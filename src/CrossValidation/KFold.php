@@ -57,8 +57,8 @@ class KFold implements Validator
     public function __construct(int $k = 10, bool $stratify = false)
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('The number of folds cannot be'
-                . ' less than two.');
+            throw new InvalidArgumentException('K cannot be less than 2'
+                . ", $k given.");
         }
 
         $this->k = $k;

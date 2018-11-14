@@ -22,6 +22,8 @@ use Rubix\Tensor\Matrix;
  */
 class He implements Initializer
 {
+    const ETA = 0.70710678118;
+    
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
@@ -31,7 +33,7 @@ class He implements Initializer
      */
     public function init(int $fanIn, int $fanOut) : Matrix
     {
-        $scale = (6 / ($fanIn + $fanOut)) ** (1. / sqrt(2));
+        $scale = (6. / ($fanIn + $fanOut)) ** self::ETA;
 
         return Matrix::uniform($fanOut, $fanIn)
             ->multiply($scale);

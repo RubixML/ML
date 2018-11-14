@@ -20,7 +20,7 @@ class Sigmoid implements ActivationFunction
      * Return a tuple of the min and max output value for this activation
      * function.
      *
-     * @return array
+     * @return float[]
      */
     public function range() : array
     {
@@ -35,9 +35,7 @@ class Sigmoid implements ActivationFunction
      */
     public function compute(Matrix $z) : Matrix
     {
-        return $z->map(function ($value) {
-            return 1. / (1. + exp(-$value));
-        });
+        return $z->map([$this, '_compute']);
     }
 
     /**
@@ -49,8 +47,24 @@ class Sigmoid implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map(function ($activation) {
-            return $activation * (1. - $activation);
-        });
+        return $computed->map([$this, '_differentiate']);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return 1. / (1. + exp(-$z));
+    }
+
+    /**
+     * @param  float  $computed
+     * @return float
+     */
+    public function _differentiate(float $computed) : float
+    {
+        return $computed * (1. - $computed);
     }
 }

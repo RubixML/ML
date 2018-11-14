@@ -27,7 +27,7 @@ class SVRTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3);
+        $this->estimator = new SVR(1.0, 0.025, new RBF(1e-3), true, 1e-3);
     }
 
     public function test_build_regressor()

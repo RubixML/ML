@@ -57,11 +57,9 @@ class AdalineTest extends TestCase
     {
         $this->estimator->train($this->training);
 
-        $predictions = $this->estimator->predict($this->testing);
-
-        $this->assertEquals($this->testing->label(0), $predictions[0], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(1), $predictions[1], '', self::TOLERANCE);
-        $this->assertEquals($this->testing->label(2), $predictions[2], '', self::TOLERANCE);
+        foreach ($this->estimator->predict($this->testing) as $i => $prediction) {
+            $this->assertEquals($this->testing->label($i), $prediction, '', self::TOLERANCE);
+        }
     }
 
     public function test_train_with_unlabeled()

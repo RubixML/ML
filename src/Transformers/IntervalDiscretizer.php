@@ -56,7 +56,7 @@ class IntervalDiscretizer implements Transformer, Stateful
     {
         if ($bins < 2) {
             throw new InvalidArgumentException('Must have at least 2'
-                . ' bins per feature column.');
+                . " bins per feature column, $bins given.");
         }
 
         $last = chr(ord(self::START_CATEGORY) + ($bins - 1));
