@@ -358,7 +358,7 @@ class MLPRegressor implements Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($epoch >= ($this->window - 1)) {
+            if ($epoch >= $this->window) {
                 $window = array_slice($this->scores, -$this->window);
 
                 $worst = $window;
@@ -371,7 +371,7 @@ class MLPRegressor implements Online, Verbose, Persistable
         }
 
         if (end($this->scores) < $bestScore) {
-            if (isset($bestSnapshot)) {
+            if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
 
                 if ($this->logger) $this->logger->info('Network restored'

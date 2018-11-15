@@ -371,7 +371,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 break 1;
             }
 
-            if ($epoch >= ($this->window - 1)) {
+            if ($epoch >= $this->window) {
                 $window = array_slice($this->scores, -$this->window);
 
                 $worst = $window;
@@ -386,7 +386,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         }
 
         if (end($this->scores) < $bestScore) {
-            if (isset($bestSnapshot)) {
+            if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
 
                 if ($this->logger) $this->logger->info('Network restored'
