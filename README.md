@@ -47,13 +47,6 @@ MIT
 			- [Circle](#circle)
 			- [Half Moon](#half-moon)
 			- [Swiss Roll](#swiss-roll)
-	- [Feature Extraction](#feature-extraction)
-		- [Extractors](#extractors)
-	    	- [Word Count Vectorizer](#word-count-vectorizer)
-			- [Raw Pixel Encoder](#raw-pixel-encoder)
-		- [Tokenizers](#tokenizers)
-			- [Whitespace](#whitespace)
-			- [Word](#word-tokenizer)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -113,10 +106,12 @@ MIT
 			    - [Polynomial Expander](#polynomial-expander)
 				- [Principal Component Analysis](#principal-component-analysis)
 			    - [Quartile Standardizer](#quartile-standardizer)
+				- [Raw Pixel Encoder](#raw-pixel-encoder)
 			    - [Robust Standardizer](#robust-standardizer)
 			    - [Sparse Random Projector](#sparse-random-projector)
 				- [TF-IDF Transformer](#tf---idf-transformer)
 				- [Variance Threshold Filter](#variance-threshold-filter)
+				- [Word Count Vectorizer](#word-count-vectorizer)
 				- [Z Scale Standardizer](#z-scale-standardizer)
 		- [Ensemble](#ensemble)
 			- [Bootstrap Aggregator](#bootstrap-aggregator)
@@ -235,6 +230,9 @@ MIT
 			- [Params](#params)
 		- [Loggers](#loggers)
 			- [Screen](#screen)
+		- [Tokenizers](#tokenizers)
+			- [Whitespace](#whitespace)
+			- [Word](#word-tokenizer)
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
     - [What is a Tuple?](#what-is-a-tuple)
@@ -1044,125 +1042,6 @@ $samples = $extractor->extract($data);
 $dataset = new Unlabeled($samples);
 
 $dataset = new Labeled($samples, $labels);
-```
-
-### Word Count Vectorizer
-In machine learning, word *counts* are often used to represent natural language as numerical vectors called *documents*. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms an array of strings (text *blobs*) into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appeared in a given sample.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
-| 2 | stop words | None | array | An array of stop words i.e. words to filter out of the original text. |
-| 3 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
-| 4 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
-
-##### Additional Methods:
-Return the fitted vocabulary i.e. the words that will be vectorized:
-```php
-public vocabulary() : array
-```
-
-Return the size of the vocabulary:
-```php
-public size() : int
-```
-
-##### Example:
-```php
-use Rubix\ML\Extractors\WordCountVectorizer;
-use Rubix\ML\Extractors\Tokenizers\Word;
-
-$stopwords = ['i', 'me', 'myself', 'we', 'our', ...];
-
-$extractor = new WordCountVectorizer(5000, $stopwords, true, new Word());
-```
-
-### Raw Pixel Encoder
-The Raw Pixel Encoder takes an array of images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP. Note that the GD extension is required to use this feature.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
-| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
-
-##### Additional Methods:
-
-Return the dimensionality of the vector that gets encoded:
-```php
-public dimensions() : int
-```
-
-##### Example:
-```php
-use Rubix\ML\Extractors\PixelEncoder;
-
-$extractor = new PixelEncoder([28, 28], true, 'gd');
-```
-
-### Tokenizers
-Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to encode text into word counts.
-
-To tokenize a body of text:
-```php
-public tokenize(string $text) : array
-```
-
-##### Example:
-```php
-use Rubix\ML\Extractors\Tokenizers\Word;
-
-$text = 'I would like to die on Mars, just not on impact.';
-
-$tokenizer = new Word();
-
-var_dump($tokenizer->tokenize($text));
-```
-
-##### Output:
-```sh
-  array(10) {
-    [0]=> string(5) "would"
-	[1]=> string(4) "like"
-	[2]=> string(2) "to"
-	[3]=> string(3) "die"
-	[4]=> string(2) "on"
-	[5]=> string(4) "Mars"
-	[6]=> string(4) "just"
-	[7]=> string(3) "not"
-	[8]=> string(2) "on"
-	[9]=> string(6) "impact"
-  }
-```
-
-### Whitespace
-Tokens are delimited by a user-specified whitespace character.
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
-
-##### Example:
-```php
-use Rubix\ML\Extractors\Tokenizers\Whitespace;
-
-$tokenizer = new Whitespace(',');
-```
-
-### Word Tokenizer
-The Word tokenizer uses regular expressions to pluck words from a sample of text.
-
-##### Parameters:
-This tokenizer does not have any parameters.
-
-##### Example:
-```php
-use Rubix\ML\Extractors\Tokenizers\Word;
-
-$tokenizer = new Word();
 ```
 
 ---
@@ -2845,6 +2724,32 @@ use Rubix\ML\Transformers\QuartileStandardizer;
 $transformer = new QuartileStandardizer(true);
 ```
 
+### Raw Pixel Encoder
+The Raw Pixel Encoder takes images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP. Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+
+##### Resource (Images)
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
+| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+
+##### Additional Methods:
+
+Return the dimensionality of the vector that gets encoded:
+```php
+public dimensions() : int
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\RawPixelEncoder;
+
+$transformer = new RawPixelEncoder([28, 28], true, 'gd');
+```
+
 ### Robust Standardizer
 This transformer standardizes continuous features by centering around the median and scaling by the median absolute deviation (MAD), a value referred to as robust Z Score. The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
 
@@ -2908,7 +2813,7 @@ int(663)
 ```
 
 ### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This transformer makes the assumption that the input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
+Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus. This transformer makes the assumption that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
 ##### Continuous *Only* | Stateful | Elastic
 
@@ -2953,6 +2858,39 @@ public selected() : array
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 
 $transformer = new VarianceThresholdFilter(50);
+```
+
+### Word Count Vectorizer
+In machine learning, word *counts* are often used to represent natural language as numerical vectors called *documents*. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms text *blobs* into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appeared in a given sample.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
+| 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
+| 3 | stop words | None | array | An array of stop words i.e. words to filter out of the original text. |
+| 4 | normalize | true | bool | Should we remove extra whitespace and lowercase? |
+| 5 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
+
+##### Additional Methods:
+Return the fitted vocabulary i.e. the words that will be vectorized:
+```php
+public vocabulary() : array
+```
+
+Return the size of the vocabulary:
+```php
+public size() : int
+```
+
+##### Example:
+```php
+use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Other\Tokenizers\Word;
+
+$stopwords = ['i', 'me', 'myself', 'we', 'our', ...];
+
+$transformer = new WordCountVectorizer(5000, 3, $stopwords, true, new Word());
 ```
 
 ### Z Scale Standardizer
@@ -4949,6 +4887,70 @@ A logger that outputs to the php standard output.
 use Rubix\ML\Other\Loggers\Screen;
 
 $logger = new Screen('credit', true);
+```
+
+---
+### Tokenizers
+Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to encode text into word counts.
+
+To tokenize a body of text:
+```php
+public tokenize(string $text) : array
+```
+
+##### Example:
+```php
+use Rubix\ML\Extractors\Tokenizers\Word;
+
+$text = 'I would like to die on Mars, just not on impact.';
+
+$tokenizer = new Word();
+
+var_dump($tokenizer->tokenize($text));
+```
+
+##### Output:
+```sh
+  array(10) {
+    [0]=> string(5) "would"
+	[1]=> string(4) "like"
+	[2]=> string(2) "to"
+	[3]=> string(3) "die"
+	[4]=> string(2) "on"
+	[5]=> string(4) "Mars"
+	[6]=> string(4) "just"
+	[7]=> string(3) "not"
+	[8]=> string(2) "on"
+	[9]=> string(6) "impact"
+  }
+```
+
+### Whitespace
+Tokens are delimited by a user-specified whitespace character.
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
+
+##### Example:
+```php
+use Rubix\ML\Extractors\Tokenizers\Whitespace;
+
+$tokenizer = new Whitespace(',');
+```
+
+### Word Tokenizer
+The Word tokenizer uses regular expressions to pluck words from a sample of text.
+
+##### Parameters:
+This tokenizer does not have any parameters.
+
+##### Example:
+```php
+use Rubix\ML\Extractors\Tokenizers\Word;
+
+$tokenizer = new Word();
 ```
 
 ---

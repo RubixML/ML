@@ -43,19 +43,27 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     public function column(int $index) : array;
 
     /**
-     * Return an array representing the indices of each feature column.
-     *
-     * @return array
-     */
-    public function axes() : array;
-
-    /**
      * Return an array of feature column datatypes autodectected using the first
      * sample in the dataframe.
      *
      * @return array
      */
     public function types() : array;
+
+    /**
+     * Return the number of columns match a specific data type.
+     * 
+     * @param  int  $type
+     * @return int
+     */
+    public function typeCount(int $type) : int;
+
+        /**
+     * Return the number of feature columns for each data type.
+     * 
+     * @return int[]
+     */
+    public function typeCounts() : array;
 
     /**
      * Get the datatype for a feature column given a column index.
@@ -73,6 +81,21 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     public function numColumns() : int;
 
     /**
+     * Return a tuple containing the shape of the dataframe i.e the number of
+     * rows and columns.
+     *
+     * @var array
+     */
+    public function shape() : array;
+
+    /**
+     * Return the number of elements in the dataframe.
+     *
+     * @return int
+     */
+    public function size() : int;
+
+    /**
      * Apply a tranformation to the sample matrix.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
@@ -81,11 +104,20 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     public function apply(Transformer $transformer);
 
     /**
-     * Rotate the dataframe.
+     * Rotate the dataframe and return it in an array. i.e. rows become
+     * columns and columns become rows.
      *
-     * @return self
+     * @return array
      */
-    public function rotate();
+    public function columns() : array;
+
+    /**
+     * Return the columns that match a given data type.
+     * 
+     * @param  int  $type
+     * @return array
+     */
+    public function columnsByType(int $type) : array;
 
     /**
      * Return a dataset containing only the first n samples.

@@ -25,6 +25,7 @@
     },
     "require-dev": {
         "ext-gd": "*",
+        "ext-igbinary": "*",
         "ext-redis": "*",
         "ext-svm": "*",
         "phpstan/phpstan": "^0.10.0",

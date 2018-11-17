@@ -1,11 +1,11 @@
 <?php
 
-namespace Rubix\ML\Extractors\Tokenizers;
+namespace Rubix\ML\Other\Tokenizers;
 
 interface Tokenizer
 {
     /**
-     * Tokenize a string.
+     * Tokenize a block of text.
      *
      * @param  string  $string
      * @return array

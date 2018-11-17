@@ -121,7 +121,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         $k = $dataset->numColumns();
 
         $this->classes = $dataset->possibleOutcomes();
-        $this->columns = $dataset->axes();
+        $this->columns = range(0, $dataset->numColumns() - 1);
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
         if ($this->logger) $this->logger->info('Learner initialized w/ params: '
@@ -208,7 +208,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         shuffle($this->columns);
 
         foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
-            $values = array_unique($dataset->column($column), SORT_REGULAR);
+            $values = array_unique($dataset->column($column));
 
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);

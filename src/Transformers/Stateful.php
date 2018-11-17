@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 
-interface Stateful
+interface Stateful extends Transformer
 {
     /**
      * Fit the transformer to the dataset.

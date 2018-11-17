@@ -107,8 +107,7 @@ class MinMaxNormalizer implements Transformer, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        $this->minimums = $this->maximums
-            = $this->scales = $this->mins = [];
+        $this->minimums = $this->maximums = $this->scales = $this->mins = [];
 
         foreach ($dataset->types() as $column => $type) {
             if ($type === DataFrame::CONTINUOUS) {
@@ -133,25 +132,23 @@ class MinMaxNormalizer implements Transformer, Elastic
             return;
         }
 
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
+        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
 
-                list($min, $max) = Stats::range($values);
+        foreach ($columns as $column => $values) {
+            list($min, $max) = Stats::range($values);
 
-                $min = min($min, $this->minimums[$column]);
-                $max = max($max, $this->maximums[$column]);
+            $min = min($min, $this->minimums[$column]);
+            $max = max($max, $this->maximums[$column]);
 
-                $scale = ($this->max - $this->min)
-                    / ($max - $min) ?: self::EPSILON;
+            $scale = ($this->max - $this->min)
+                / ($max - $min) ?: self::EPSILON;
 
-                $minHat = $this->min - $min * $scale;
+            $minHat = $this->min - $min * $scale;
 
-                $this->minimums[$column] = $min;
-                $this->maximums[$column] = $max;
-                $this->scales[$column] = $scale;
-                $this->mins[$column] = $minHat;
-            }
+            $this->minimums[$column] = $min;
+            $this->maximums[$column] = $max;
+            $this->scales[$column] = $scale;
+            $this->mins[$column] = $minHat;
         }
     }
 

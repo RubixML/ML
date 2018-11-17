@@ -220,7 +220,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         foreach ($dataset->stratify() as $class => $stratum) {
             $classCounts = $this->counts[$class];
 
-            foreach ($stratum->rotate() as $column => $values) {
+            foreach ($stratum->columns() as $column => $values) {
                 $columnCounts = $classCounts[$column];
 
                 $counts = array_count_values($values);

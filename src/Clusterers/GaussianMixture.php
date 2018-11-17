@@ -318,7 +318,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
         $means = $variances = [];
 
         foreach ($bootstrap->stratify() as $cluster => $stratum) {
-            foreach ($stratum->rotate() as $column => $values) {
+            foreach ($stratum->columns() as $column => $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
                 $means[$cluster][] = $mean;

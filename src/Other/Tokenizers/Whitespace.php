@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Extractors\Tokenizers;
+namespace Rubix\ML\Other\Tokenizers;
 
 /**
  * Whitespace
@@ -31,7 +31,7 @@ class Whitespace implements Tokenizer
     }
 
     /**
-     * Tokenize a string.
+     * Tokenize a block of text.
      *
      * @param  string  $string
      * @return array

@@ -67,9 +67,7 @@ class Concentration implements Metric
 
         $labeled = Labeled::quick($testing->samples(), $predictions);
 
-        $globals = array_map(function ($values) {
-            return Stats::mean($values);
-        }, $testing->rotate()->samples());
+        $globals = array_map([Stats::class, 'mean'], $testing->columns());
 
         $strata = $labeled->stratify();
 
@@ -80,7 +78,7 @@ class Concentration implements Metric
         foreach ($strata as $cluster => $stratum) {
             $centroid = [];
 
-            foreach ($stratum->rotate() as $column => $values) {
+            foreach ($stratum->columns() as $column => $values) {
                 $mean = Stats::mean((array) $values);
 
                 $dispersion = ($mean - $globals[$column]) ** 2;

@@ -194,7 +194,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
         $this->means = $this->variances = array_fill_keys($classes, []);
 
         foreach ($dataset->stratify() as $class => $stratum) {
-            foreach ($stratum->rotate() as $values) {
+            foreach ($stratum->columns() as $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$class][] = $mean;
@@ -247,7 +247,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
 
             $n = $stratum->numRows();
 
-            foreach ($stratum->rotate() as $column => $values) {
+            foreach ($stratum->columns() as $column => $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
                 $this->means[$class][$column] = (($n * $mean)

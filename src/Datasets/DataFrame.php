@@ -13,6 +13,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
     const CATEGORICAL = 1;
     const CONTINUOUS = 2;
+    const RESOURCE = 3;
 
     /**
      * The feature vectors of the dataset. i.e the data table.
@@ -51,11 +52,13 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 }
 
                 foreach ($sample as $feature) {
-                    if (!is_string($feature) and !is_numeric($feature)) {
-                        throw new InvalidArgumentException('Feature must be a'
-                            . ' string or numeric type, '
-                            . gettype($feature) . ' found.');
+                    if (is_string($feature) or is_numeric($feature) or is_resource($feature)) {
+                        continue 1;
                     }
+
+                    throw new InvalidArgumentException('Feature must be a'
+                        . ' resource, string or numeric type, '
+                        . gettype($feature) . ' found.');
                 }
             }
         }
@@ -95,16 +98,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return an array representing the indices of each feature column.
-     *
-     * @return array
-     */
-    public function axes() : array
-    {
-        return array_keys($this->samples[0] ?? []);
-    }
-
-    /**
      * Return the feature column at the given index.
      *
      * @param  int  $index
@@ -138,19 +131,42 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function types() : array
     {
-        if (!isset($this->samples[0])) {
-            return [];
-        }
-
         $types = [];
 
-        foreach ($this->samples[0] as $feature) {
-            $types[] = is_string($feature)
-                ? self::CATEGORICAL
-                : self::CONTINUOUS;
+        for ($i = 0; $i < $this->numColumns(); $i++) {
+            $types[] = $this->columnType($i);
         }
 
         return $types;
+    }
+
+    /**
+     * Return the number of columns match a specific data type.
+     * 
+     * @param  int  $type
+     * @return int
+     */
+    public function typeCount(int $type) : int
+    {
+        $counts = $this->typeCounts();
+
+        return $counts[$type] ?? 0;
+    }
+
+    /**
+     * Return the number of feature columns for each data type.
+     * 
+     * @return int[]
+     */
+    public function typeCounts() : array
+    {
+        $counts = [
+            self::CATEGORICAL => 0,
+            self::CONTINUOUS => 0,
+            self::RESOURCE => 0,
+        ];
+
+        return array_replace($counts, array_count_values($this->types()));
     }
 
     /**
@@ -170,9 +186,21 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
             throw new InvalidArgumentException("Column $index does not exist.");
         }
 
-        return is_string($this->samples[0][$index])
-            ? self::CATEGORICAL
-            : self::CONTINUOUS;
+        $feature = $this->samples[0][$index];
+
+        switch (true) {
+            case is_string($feature):
+                return self::CATEGORICAL;
+
+            case is_numeric($feature):
+                return self::CONTINUOUS;
+
+            case is_resource($feature):
+                return self::RESOURCE;
+
+            default:
+                return null;
+        }
     }
 
     /**
@@ -198,26 +226,46 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Rotate the dataframe and return it in an array. i.e. rows become
-     * columns and columns become rows. This operation is equivalent to
-     * transposing a matrix.
+     * columns and columns become rows.
      *
-     * @return self
+     * @return array
      */
-    public function rotate() : self
+    public function columns() : array
     {
         if ($this->numRows() > 1) {
-            $rotated = array_map(null, ...$this->samples);
-        } else {
-            $n = $this->numColumns();
+            return array_map(null, ...$this->samples);
+        }
 
-            $rotated = [];
+        $n = $this->numColumns();
 
-            for ($i = 0; $i < $n; $i++) {
-                $rotated[] = array_column($this->samples, $i);
+        $columns = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            $columns[] = array_column($this->samples, $i);
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Return the columns that match a given data type.
+     * 
+     * @param  int  $type
+     * @return array
+     */
+    public function columnsByType(int $type) : array
+    {
+        $n = $this->numColumns();
+
+        $columns = [];
+
+        for ($i = 0; $i < $n; $i++) {
+            if ($this->columnType($i) === $type) {
+                $columns[$i] = array_column($this->samples, $i);
             }
         }
 
-        return new self($rotated, false);
+        return $columns;
     }
 
     /**

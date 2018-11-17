@@ -34,10 +34,12 @@ class PolynomialExpanderTest extends TestCase
     {
         $this->dataset->apply($this->transformer);
 
-        $this->assertEquals([
+        $outcome = [
             [1, 1, 2, 4, 3, 9, 4, 16],
             [40, 1600, 20, 400, 30, 900, 10, 100],
             [100, 10000, 300, 90000, 200, 40000, 400, 160000],
-        ], $this->dataset->samples());
+        ];
+
+        $this->assertEquals($outcome, $this->dataset->samples());
     }
 }

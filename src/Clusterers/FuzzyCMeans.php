@@ -204,7 +204,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
         $this->steps = $memberships = [];
 
-        $rotated = $dataset->rotate();
+        $rotated = $dataset->columns();
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {

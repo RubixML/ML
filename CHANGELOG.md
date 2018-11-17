@@ -25,6 +25,7 @@
     - Blurry Median strategy is now Blurry Percentile
     - Added Mean strategy
     - Removed dataset save and load methods
+    - Subsumed Extractor api into Transformer
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

@@ -56,12 +56,6 @@ class DataFrameTest extends TestCase
         $this->assertEquals($outcome, $this->dataframe->column(2));
     }
 
-    public function test_axes()
-    {
-        $this->assertEquals(array_keys($this->samples[0]),
-            $this->dataframe->axes());
-    }
-
     public function test_get_num_columns()
     {
         $this->assertEquals(3, $this->dataframe->numColumns());
@@ -69,9 +63,22 @@ class DataFrameTest extends TestCase
 
     public function test_column_types()
     {
-        $outcome = [DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL];
+        $outcome = [
+            DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL,
+        ];
 
         $this->assertEquals($outcome, $this->dataframe->types());
+    }
+
+    public function test_column_type_counts()
+    {
+        $outcome = [
+            DataFrame::CATEGORICAL => 3,
+            DataFrame::CONTINUOUS => 0,
+            DataFrame::RESOURCE => 0,
+        ];
+
+        $this->assertEquals($outcome, $this->dataframe->typeCounts());
     }
 
     public function test_column_type()

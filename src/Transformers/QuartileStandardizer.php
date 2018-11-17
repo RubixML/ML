@@ -78,18 +78,16 @@ class QuartileStandardizer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
+
         $this->medians = $this->iqrs = [];
 
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
+        foreach ($columns as $column => $values) {
+            $median = Stats::median($values);
+            $iqr = Stats::iqr($values);
 
-                $median = Stats::median($values);
-                $iqr = Stats::iqr($values);
-
-                $this->medians[$column] = $median;
-                $this->iqrs[$column] = $iqr ?: self::EPSILON;
-            }
+            $this->medians[$column] = $median;
+            $this->iqrs[$column] = $iqr ?: self::EPSILON;
         }
     }
 

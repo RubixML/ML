@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Extractors;
+namespace Rubix\ML\Transformers;
 
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -19,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RawPixelEncoder implements Extractor
+class RawPixelEncoder implements Transformer
 {
     /**
      * The image will be scaled and cropped according to the setting of this
@@ -90,43 +90,39 @@ class RawPixelEncoder implements Extractor
     }
 
     /**
-     * @param  array  $samples
-     * @return void
-     */
-    public function fit(array $samples) : void
-    {
-        //
-    }
-
-    /**
-     * Extract the pixel data from each sample image and represent it as a 1-d
-     * vector of size width x height.
+     * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @throws \RuntimeException
-     * @return array
+     * @param  array|null  $labels
+     * @return void
      */
-    public function extract(array $samples) : array
+    public function transform(array &$samples, ?array &$labels = null) : void
     {
         $vectors = [];
 
-        foreach ($samples as $sample) {
-            if (is_resource($sample)) {
-                $image = $this->intervention->make($sample);
+        foreach ($samples as &$sample) {
+            $vectors = [];
 
-                if ($this->channels === 1) {
-                    $image = $image->greyscale();
+            foreach ($sample as $column => $feature) {
+                if (is_resource($feature)) {
+                    $image = $this->intervention->make($feature);
+
+                    if ($this->channels === 1) {
+                        $image = $image->greyscale();
+                    }
+
+                    $image = $image->fit(...$this->size);
+
+                    $vectors[] = $this->vectorize($image->getCore());
+
+                    $image->destroy();
+
+                    unset($sample[$column]);
                 }
-
-                $image = $image->fit(...$this->size);
-
-                $vectors[] = $this->vectorize($image->getCore());
-
-                $image->destroy();
             }
-        }
 
-        return $vectors;
+            $sample = array_merge($sample, ...$vectors);
+        }
     }
 
     /**

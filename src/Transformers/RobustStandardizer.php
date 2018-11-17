@@ -80,17 +80,15 @@ class RobustStandardizer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
+
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
-                
-                list($median, $mad) = Stats::medMad($values);
+        foreach ($columns as $column => $values) {
+            list($median, $mad) = Stats::medMad($values);
 
-                $this->medians[$column] = $median;
-                $this->mads[$column] = $mad ?: self::EPSILON;
-            }
+            $this->medians[$column] = $median;
+            $this->mads[$column] = $mad ?: self::EPSILON;
         }
     }
 

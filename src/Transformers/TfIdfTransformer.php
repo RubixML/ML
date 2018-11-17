@@ -73,9 +73,9 @@ class TfIdfTransformer implements Transformer, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This transformer only works on'
-                . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This transformer only works'
+                . ' with continuous features.');
         }
 
         $this->counts = array_fill(0, $dataset->numColumns(), 0);

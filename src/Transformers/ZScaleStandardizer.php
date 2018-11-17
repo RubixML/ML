@@ -105,18 +105,16 @@ class ZScaleStandardizer implements Transformer, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
+        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
+
         $this->means = $this->variances = $this->stddevs = [];
 
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
+        foreach ($columns as $column => $values) {
+            list($mean, $variance) = Stats::meanVar($values);
 
-                list($mean, $variance) = Stats::meanVar($values);
-
-                $this->means[$column] = $mean;
-                $this->variances[$column] = $variance;
-                $this->stddevs[$column] = sqrt($variance ?: self::EPSILON);
-            }
+            $this->means[$column] = $mean;
+            $this->variances[$column] = $variance;
+            $this->stddevs[$column] = sqrt($variance ?: self::EPSILON);
         }
 
         $this->n = $dataset->numRows();

@@ -97,19 +97,17 @@ class IntervalDiscretizer implements Transformer, Stateful
     {
         $this->intervals = [];
 
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
-                $values = $dataset->column($column);
+        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
 
-                list($min, $max) = Stats::range($values);
+        foreach ($columns as $column => $values) {
+            list($min, $max) = Stats::range($values);
 
-                $edges = Vector::linspace($min, $max, $this->bins + 1)
-                    ->asArray();
+            $edges = Vector::linspace($min, $max, $this->bins + 1)
+                ->asArray();
 
-                array_shift($edges);
+            array_shift($edges);
 
-                $this->intervals[$column] = $edges;
-            }
+            $this->intervals[$column] = $edges;
         }
     }
 

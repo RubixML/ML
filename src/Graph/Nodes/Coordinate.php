@@ -41,7 +41,7 @@ class Coordinate extends Split implements Spatial
     {
         $min = $max = [];
 
-        foreach ($dataset->rotate() as $values) {
+        foreach ($dataset->columns() as $values) {
             $min[] = min($values);
             $max[] = max($values);
         }

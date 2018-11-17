@@ -35,24 +35,12 @@ class OneHotEncoder implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        $columns = $dataset->columnsByType(DataFrame::CATEGORICAL);
+
         $this->categories = [];
 
-        $position = 0;
-
-        foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CATEGORICAL) {
-                $categories = [];
-
-                foreach ($dataset as $sample) {
-                    $category = $sample[$column];
-
-                    if (!isset($categories[$category])) {
-                        $categories[$category] = $position++;
-                    }
-                }
-
-                $this->categories[$column] = $categories;
-            }
+        foreach ($columns as $column => $values) {
+             $this->categories[$column] = array_flip(array_unique($values));
         }
     }
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rubix\ML\Tests\Extractors\Tokenizers;
+namespace Rubix\ML\Tests\Other\Tokenizers;
 
-use Rubix\ML\Extractors\Tokenizers\Tokenizer;
-use Rubix\ML\Extractors\Tokenizers\Whitespace;
+use Rubix\ML\Other\Tokenizers\Tokenizer;
+use Rubix\ML\Other\Tokenizers\Whitespace;
 use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase

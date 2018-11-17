@@ -27,9 +27,6 @@
         <testsuite name="Datasets">
             <directory>tests/Datasets</directory>
         </testsuite>
-        <testsuite name="Extractors">
-            <directory>tests/Extractors</directory>
-        </testsuite>
         <testsuite name="Graph">
             <directory>tests/Graph</directory>
         </testsuite>
