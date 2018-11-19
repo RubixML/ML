@@ -1,10 +1,7 @@
 <?php
 
-namespace Rubix\ML\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -51,33 +48,17 @@ class MulticlassBreakdown implements Report
     /**
      * Generate the report.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Estimator $estimator, Dataset $testing) : array
+    public function generate(array $predictions, array $labels) : array
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER) {
-            throw new InvalidArgumentException('This report only works with'
-                . ' classifiers.');
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This report requires a'
-                . ' Labeled testing set.');
-        }
-
-        $n = $testing->numRows();
-
-        if ($n === 0) {
-            throw new InvalidArgumentException('Testing set must contain at'
-                . ' least one sample.');
-        }
-
-        $predictions = $estimator->predict($testing);
-
-        $labels = $testing->labels();
 
         if (is_null($this->classes)) {
             $classes = array_unique(array_merge($predictions, $labels));
@@ -85,25 +66,27 @@ class MulticlassBreakdown implements Report
             $classes = $this->classes;
         }
 
+        $n = count($predictions);
+
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
             array_fill_keys($classes, 0);
 
-        foreach ($predictions as $i => $outcome) {
-            if (!isset($truePositives[$outcome])) {
-                continue 1;
-            }
+        foreach ($predictions as $i => $prediction) {
+            if (isset($truePositives[$prediction])) {
+                $label = $labels[$i];
 
-            if ($outcome === $labels[$i]) {
-                $truePositives[$outcome]++;
+                if ($prediction === $label) {
+                    $truePositives[$prediction]++;
 
-                foreach ($classes as $class) {
-                    if ($class !== $outcome) {
-                        $trueNegatives[$class]++;
+                    foreach ($classes as $class) {
+                        if ($class !== $prediction) {
+                            $trueNegatives[$class]++;
+                        }
                     }
+                } else {
+                    $falsePositives[$prediction]++;
+                    $falseNegatives[$label]++;
                 }
-            } else {
-                $falsePositives[$outcome]++;
-                $falseNegatives[$labels[$i]]++;
             }
         }
 

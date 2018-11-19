@@ -1,9 +1,7 @@
 <?php
 
-namespace Rubix\ML\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
 /**
@@ -42,27 +40,27 @@ class AggregateReport implements Report
 
         foreach ($reports as $index => $report) {
             if (!$report instanceof Report) {
-                throw new InvalidArgumentException('Can only aggregate reports'
-                    . ', ' . gettype($report) . ' found.');
+                throw new InvalidArgumentException('Can only aggregate report'
+                    . 'objects, ' . gettype($report) . ' found.');
             }
-
-            $this->reports[$index] = $report;
         }
+
+        $this->reports = $reports;
     }
 
     /**
      * Generate the report.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @return array
      */
-    public function generate(Estimator $estimator, Dataset $testing) : array
+    public function generate(array $predictions, array $labels) : array
     {
         $reports = [];
 
         foreach ($this->reports as $index => $report) {
-            $reports[$index] = $report->generate($estimator, clone $testing);
+            $reports[$index] = $report->generate($predictions, $labels);
         }
 
         return $reports;

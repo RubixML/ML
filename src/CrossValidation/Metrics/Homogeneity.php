@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -36,50 +33,41 @@ class Homogeneity implements Metric
     }
 
     /**
-     * Calculate the homogeneity of a clustering.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::CLUSTERER) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' clusterers.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        if ($testing->numRows() < 1) {
+        if (empty($predictions)) {
             return 0.;
         }
 
-        $predictions = $estimator->predict($testing);
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
+        }
 
-        $labels = $testing->labels();
-
+        $clusters = array_unique($predictions);
         $classes = array_unique($labels);
 
         $table = [];
 
-        foreach (array_unique($predictions) as $outcome) {
-            $table[$outcome] = array_fill_keys($classes, 0);
+        foreach ($clusters as $cluster) {
+            $table[$cluster] = array_fill_keys($classes, 0);
         }
 
-        foreach ($predictions as $i => $outcome) {
-            $table[$outcome][$labels[$i]] += 1;
+        foreach ($predictions as $i => $prediction) {
+            $table[$prediction][$labels[$i]] += 1;
         }
 
         $score = 0.;
 
-        foreach ($table as $distribution) {
-            $score += max($distribution)
-                / (array_sum($distribution) ?: self::EPSILON);
+        foreach ($table as $dist) {
+            $score += max($dist) / (array_sum($dist) ?: self::EPSILON);
         }
 
         return $score / count($table);

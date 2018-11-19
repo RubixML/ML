@@ -1,10 +1,7 @@
 <?php
 
-namespace Rubix\ML\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -52,32 +49,18 @@ class ConfusionMatrix implements Report
     /**
      * Generate the report.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Estimator $estimator, Dataset $testing) : array
+    public function generate(array $predictions, array $labels) : array
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
-            throw new InvalidArgumentException('This report only works with'
-                . ' classifiers and anomaly detectors.');
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This report requires a'
-                . ' Labeled testing set.');
-        }
-
-        if ($testing->numRows() === 0) {
-            throw new InvalidArgumentException('Testing set must contain at'
-                . ' least one sample.');
-        }
-
-        $predictions = $estimator->predict($testing);
-
-        $labels = $testing->labels();
-
+        
         if (is_null($this->classes)) {
             $classes = array_unique(array_merge($predictions, $labels));
         } else {
@@ -86,12 +69,10 @@ class ConfusionMatrix implements Report
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
-        foreach ($predictions as $i => $outcome) {
-            if (!isset($matrix[$outcome])) {
-                continue 1;
+        foreach ($predictions as $i => $prediction) {
+            if (isset($matrix[$prediction])) {
+                $matrix[$prediction][$labels[$i]]++;
             }
-
-            $matrix[$outcome][$labels[$i]]++;
         }
 
         return $matrix;

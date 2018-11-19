@@ -85,7 +85,7 @@ class WordCountVectorizer implements Stateful
     {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabular must'
-                . " be at least 1 word, $maxVocabulary given.");
+                . " be at least 1, $maxVocabulary given.");
         }
 
         if ($minDocumentFrequency < 1) {
@@ -101,7 +101,7 @@ class WordCountVectorizer implements Stateful
         }
 
         if ($normalize) {
-            $stopWords = array_map('trim', array_map('strtolower', $stopWords));
+            $stopWords = array_map('strtolower', $stopWords);
         }
 
         if (is_null($tokenizer)) {

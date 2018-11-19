@@ -43,13 +43,6 @@ class MonteCarlo implements Validator
     protected $stratify;
 
     /**
-     * The validation score of each simulation since the last test.
-     * 
-     * @var array|null
-     */
-    protected $scores;
-
-    /**
      * @param  int  $simulations
      * @param  float  $ratio
      * @param  bool  $stratify
@@ -74,16 +67,6 @@ class MonteCarlo implements Validator
     }
 
     /**
-     * Return the validation scores computed at last test time.
-     * 
-     * @return array|null
-     */
-    public function scores() : ?array
-    {
-        return $this->scores;
-    }
-
-    /**
      * Test the estimator with the supplied dataset and return a score.
      *
      * @param  \Rubix\ML\Learner  $estimator
@@ -93,9 +76,9 @@ class MonteCarlo implements Validator
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        $scores = [];
+        $score = 0.;
 
-        for ($epoch = 0; $epoch < $this->simulations; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->simulations; $epoch++) {
             $dataset->randomize();
 
             if ($this->stratify) {
@@ -106,11 +89,11 @@ class MonteCarlo implements Validator
 
             $estimator->train($training);
 
-            $scores[] = $metric->score($estimator, $testing);
+            $predictions = $estimator->predict($testing);
+
+            $score += $metric->score($predictions, $testing->labels());
         }
 
-        $this->scores = $scores;
-
-        return Stats::mean($scores);
+        return $score / $this->simulations;
     }
 }

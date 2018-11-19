@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Trees\Tree;
-use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Tree;
+use Rubix\ML\Graph\KDTree;
 use PHPUnit\Framework\TestCase;
 
 class KDTreeTest extends TestCase

@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -30,37 +27,30 @@ class MeanAbsoluteError implements Metric
     }
 
     /**
-     * Calculate the negative mean absolute error of the predictions.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::REGRESSOR) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' regresors.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        $n = $testing->numRows();
-
-        if ($n < 1) {
+        if (empty($predictions)) {
             return 0.;
+        }
+
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
 
         $error = 0.;
 
-        foreach ($estimator->predict($testing) as $i => $prediction) {
-            $error += abs($testing->label($i) - $prediction);
+        foreach ($predictions as $i => $prediction) {
+            $error += abs($labels[$i] - $prediction);
         }
 
-        return -($error / $n);
+        return -($error / count($predictions));
     }
 }

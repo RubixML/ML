@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Graph\Trees;
+namespace Rubix\ML\Graph;
 
 interface Tree
 {   

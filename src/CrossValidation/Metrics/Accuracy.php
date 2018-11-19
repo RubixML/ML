@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
@@ -29,40 +26,34 @@ class Accuracy implements Metric
         return [0., 1.];
     }
 
+
     /**
-     * Test the accuracy of the predictions.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' classifiers and anomaly detectors.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        $n = $testing->numRows();
-
-        if ($n < 1) {
+        if (empty($predictions)) {
             return 0.;
+        }
+
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
 
         $score = 0.;
 
-        foreach ($estimator->predict($testing) as $i => $prediction) {
-            if ($prediction === $testing->label($i)) {
+        foreach ($predictions as $i => $prediction) {
+            if ($prediction === $labels[$i]) {
                 $score++;
             }
         }
 
-        return $score / $n;
+        return $score / count($predictions);
     }
 }

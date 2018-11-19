@@ -296,9 +296,9 @@ class MLPRegressor implements Online, Verbose, Persistable
                 . ' labeled training set.');
         }
 
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with continuous features.');
         }
 
         if (is_null($this->network)) {
@@ -337,7 +337,9 @@ class MLPRegressor implements Online, Verbose, Persistable
 
             $loss /= $n;
 
-            $score = $this->metric->score($this, $testing);
+            $predictions = $this->predict($testing);
+
+            $score = $this->metric->score($predictions, $testing->labels());
 
             $this->steps[] = $loss;
             $this->scores[] = $score;

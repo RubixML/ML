@@ -7,14 +7,14 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
-/**
+/** 
  * Hold Out
  *
  * In the holdout method, we randomly assign data points to two sets (training
  * and testing set). The size of each of the testing set is given by the holdout
  * ratio and is typically smaller than the training set.
  *
- * @category    Machine Learning
+ * @category    Machine Learning 
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
@@ -35,13 +35,6 @@ class HoldOut implements Validator
     protected $stratify;
 
     /**
-     * The validation score of the last test.
-     * 
-     * @var array|null
-     */
-    protected $scores;
-
-    /**
      * @param  float  $ratio
      * @param  bool  $stratify
      * @throws \InvalidArgumentException
@@ -56,16 +49,6 @@ class HoldOut implements Validator
 
         $this->ratio = $ratio;
         $this->stratify = $stratify;
-    }
-
-    /**
-     * Return the validation scores computed at last test time.
-     * 
-     * @return array|null
-     */
-    public function scores() : ?array
-    {
-        return $this->scores;
     }
 
     /**
@@ -86,10 +69,8 @@ class HoldOut implements Validator
 
         $estimator->train($training);
 
-        $score = $metric->score($estimator, $testing);
+        $predictions = $estimator->predict($testing);
 
-        $this->scores = [$score];
-
-        return $score;
+        return $metric->score($predictions, $testing->labels());
     }
 }

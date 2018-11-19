@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -32,36 +29,33 @@ class RSquared implements Metric
     }
 
     /**
-     * Calculate the coefficient of determination i.e. R^2 from the predictions.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::REGRESSOR) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' regresors.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        if ($testing->numRows() < 0) {
+        if (empty($predictions)) {
             return 0.;
         }
 
-        $mean = Stats::mean($testing->labels());
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
+        }
+
+        $mean = Stats::mean($labels);
 
         $ssr = $sst = 0.;
 
-        foreach ($estimator->predict($testing) as $i => $prediction) {
-            $ssr += ($testing->label($i) - $prediction) ** 2;
-            $sst += ($testing->label($i) - $mean) ** 2;
+        foreach ($predictions as $i => $prediction) {
+            $label = $labels[$i];
+
+            $ssr += ($label - $prediction) ** 2;
+            $sst += ($label - $mean) ** 2;
         }
 
         return 1. - ($ssr / ($sst ?: self::EPSILON));

@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-
 interface Metric
 {
     const EPSILON = 1e-8;
@@ -17,11 +14,11 @@ interface Metric
     public function range() : array;
 
     /**
-     * Score an estimator using a labeled testing set.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float;
+    public function score(array $predictions, array $labels) : float;
 }

@@ -7,7 +7,7 @@ use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Trees\ITree;
+use Rubix\ML\Graph\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;

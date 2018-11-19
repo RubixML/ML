@@ -253,9 +253,9 @@ class TSNE implements Estimator, Verbose
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This embedder only works with'
-                . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with continuous features.');
         }
 
         if ($this->logger) $this->logger->info('Embedder initialized w/ '

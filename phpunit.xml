@@ -48,9 +48,6 @@
         <testsuite name="Regressors">
             <directory>tests/Regressors</directory>
         </testsuite>
-        <testsuite name="Reports">
-            <directory>tests/Reports</directory>
-        </testsuite>
         <testsuite name="Transformers">
             <directory>tests/Transformers</directory>
         </testsuite>

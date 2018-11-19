@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Graph\Trees;
+namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Cell;

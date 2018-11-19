@@ -37,8 +37,7 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
     protected $estimator;
 
     /**
-     * The transformers that process the sample data before they are fed to the
-     * estimator for training, testing, and prediction.
+     * The transformer middleware that preprocesses the data for the estimator.
      *
      * @var array
      */
@@ -68,11 +67,10 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
                     . ' transformers as middleware, ' . gettype($transformer)
                     . ' found.');
             }
-
-            $this->transformers[] = $transformer;
         }
 
         $this->estimator = $estimator;
+        $this->transformers = $transformers;
         $this->elastic = $elastic;
     }
 

@@ -121,9 +121,9 @@ class RobustZScore implements Learner, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with continuous features.');
         }
 
         $this->medians = $this->mads = [];

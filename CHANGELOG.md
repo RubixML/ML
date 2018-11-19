@@ -26,6 +26,8 @@
     - Added Mean strategy
     - Removed dataset save and load methods
     - Subsumed Extractor api into Transformer
+    - Removed Concentration metric
+    - Changed Metric and Report API
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

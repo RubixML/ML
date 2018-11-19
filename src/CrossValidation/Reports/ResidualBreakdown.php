@@ -1,10 +1,7 @@
 <?php
 
-namespace Rubix\ML\Reports;
+namespace Rubix\ML\CrossValidation\Reports;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -26,48 +23,34 @@ class ResidualBreakdown implements Report
     /**
      * Generate the report.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return array
      */
-    public function generate(Estimator $estimator, Dataset $testing) : array
+    public function generate(array $predictions, array $labels) : array
     {
-        if ($estimator->type() !== Estimator::REGRESSOR) {
-            throw new InvalidArgumentException('This report only works with'
-                . ' regressors.');
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
 
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This report requires a'
-                . ' Labeled testing set.');
-        }
-
-        $n = $testing->numRows();
-
-        if ($n < 1) {
-            throw new InvalidArgumentException('Testing set must contain at'
-                . ' least one sample.');
-        }
-
-        $predictions = $estimator->predict($testing);
-
-        $muHat = Stats::mean($testing->labels());
+        $muHat = Stats::mean($labels);
 
         $errors = $l1 = $l2 = [];
 
         $sse = $sst = 0.;
 
         foreach ($predictions as $i => $prediction) {
-            $expected = $testing->label($i);
+            $label = $labels[$i];
 
-            $errors[] = $error = $expected - $prediction;
+            $errors[] = $error = $label - $prediction;
 
             $l1[] = abs($error);
             $l2[] = $t = $error ** 2;
 
             $sse += $t;
-            $sst += ($expected - $muHat) ** 2;
+            $sst += ($label - $muHat) ** 2;
         }
 
         list($mean, $variance) = Stats::meanVar($errors);
@@ -88,7 +71,7 @@ class ResidualBreakdown implements Report
             'error_kurtosis' => Stats::kurtosis($errors, $mean),
             'error_min' => min($errors),
             'error_max' => max($errors),
-            'cardinality' => $n,
+            'cardinality' => count($predictions),
         ];
     }
 }

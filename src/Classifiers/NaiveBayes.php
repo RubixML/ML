@@ -207,9 +207,9 @@ class NaiveBayes implements Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' categorical features.');
+        if ($dataset->typeCount(DataFrame::CATEGORICAL) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with categorical features.');
         }
 
         if (is_null($this->weights) or is_null($this->counts) or is_null($this->probs)) {

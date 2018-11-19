@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
-use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -31,33 +28,28 @@ class MedianAbsoluteError implements Metric
     }
 
     /**
-     * Calculate the negative median absolute error of the predictions.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::REGRESSOR) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' regresors.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        if ($testing->numRows() < 1) {
+        if (empty($predictions)) {
             return 0.;
+        }
+
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
         }
 
         $errors = [];
 
-        foreach ($estimator->predict($testing) as $i => $prediction) {
-            $errors[] = abs($testing->label($i) - $prediction);
+        foreach ($predictions as $i => $prediction) {
+            $errors[] = abs($labels[$i] - $prediction);
         }
 
         return -Stats::median($errors);

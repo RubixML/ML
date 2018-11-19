@@ -1,37 +1,17 @@
 <?php
 
-namespace Rubix\ML\Tests\Reports;
+namespace Rubix\ML\Tests\CrossValidation\Reports;
 
-use Rubix\ML\Reports\Report;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Reports\MulticlassBreakdown;
-use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\CrossValidation\Reports\Report;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 use PHPUnit\Framework\TestCase;
 
 class MulticlassBreakdownTest extends TestCase
 {
     protected $report;
 
-    protected $testing;
-
-    protected $estimator;
-
     public function setUp()
     {
-        $samples = [[], [], [], [], []];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $this->testing = Labeled::quick($samples, $labels);
-
-        $this->estimator = $this->createMock(KNearestNeighbors::class);
-
-        $this->estimator->method('type')->willReturn(KNearestNeighbors::CLASSIFIER);
-
-        $this->estimator->method('predict')->willReturn([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
-        ]);
-
         $this->report = new MulticlassBreakdown();
     }
 
@@ -43,6 +23,10 @@ class MulticlassBreakdownTest extends TestCase
 
     public function test_generate_report()
     {
+        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
+
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
         $outcome = [
             'overall' => [
                 'accuracy' => 0.6,
@@ -93,7 +77,7 @@ class MulticlassBreakdownTest extends TestCase
             ],
         ];
 
-        $result = $this->report->generate($this->estimator, $this->testing);
+        $result = $this->report->generate($predictions, $labels);
 
         $this->assertEquals($outcome, $result);
     }

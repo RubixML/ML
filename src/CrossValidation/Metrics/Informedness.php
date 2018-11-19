@@ -37,55 +37,43 @@ class Informedness implements Metric
     }
 
     /**
-     * Calculate the informedness score of the predicted classes. Informedness
-     * is determined by recall + specificity - 1.
+     * Score a set of predictions.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\Datasets\Dataset  $testing
+     * @param  array  $predictions
+     * @param  array  $labels
      * @throws \InvalidArgumentException
      * @return float
      */
-    public function score(Estimator $estimator, Dataset $testing) : float
+    public function score(array $predictions, array $labels) : float
     {
-        if ($estimator->type() !== Estimator::CLASSIFIER and $estimator->type() !== Estimator::DETECTOR) {
-            throw new InvalidArgumentException('This metric only works with'
-                . ' classifiers and anomaly detectors.');
-        }
-
-        if (!$testing instanceof Labeled) {
-            throw new InvalidArgumentException('This metric requires a labeled'
-                . ' testing set.');
-        }
-
-        $n = $testing->numRows();
-
-        if ($n < 1) {
+        if (empty($predictions)) {
             return 0.;
         }
 
-        $predictions = $estimator->predict($testing);
-
-        $labels = $testing->labels();
+        if (count($predictions) !== count($labels)) {
+            throw new InvalidArgumentException('The number of labels'
+                . ' must equal the number of predictions.');
+        }
 
         $classes = array_unique(array_merge($predictions, $labels));
-
-        $k = count($classes);
 
         $truePositives = $trueNegatives = $falsePositives = $falseNegatives
             = array_fill_keys($classes, 0);
 
-        foreach ($predictions as $i => $outcome) {
-            if ($outcome === $labels[$i]) {
-                $truePositives[$outcome]++;
+        foreach ($predictions as $i => $prediction) {
+            $label = $labels[$i];
+
+            if ($prediction === $label) {
+                $truePositives[$prediction]++;
 
                 foreach ($classes as $class) {
-                    if ($class !== $outcome) {
+                    if ($class !== $prediction) {
                         $trueNegatives[$class]++;
                     }
                 }
             } else {
-                $falsePositives[$outcome]++;
-                $falseNegatives[$labels[$i]]++;
+                $falsePositives[$prediction]++;
+                $falseNegatives[$label]++;
             }
         }
 
@@ -100,6 +88,6 @@ class Informedness implements Metric
                 + $tn / (($tn + $fp) ?: self::EPSILON) - 1.;
         }
 
-        return $score / $k;
+        return $score / count($classes);
     }
 }

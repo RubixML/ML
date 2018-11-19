@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Trees\Tree;
-use Rubix\ML\Graph\Trees\ITree;
+use Rubix\ML\Graph\Tree;
+use Rubix\ML\Graph\ITree;
 use PHPUnit\Framework\TestCase;
 
 class ITreeTest extends TestCase

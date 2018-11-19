@@ -1,7 +1,7 @@
 # Rubix ML for PHP
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=for-the-badge)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-Rubix ML is a machine learning library that lets you build programs that learn from data in [PHP](https://php.net).
+Rubix ML is a machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
 
 ## Our Mission
 The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP language. We aspire to provide the framework to facilitate rapid prototyping, small to medium sized projects, and education. If you're eager to get started you can follow along with the [basic introduction](#basic-introduction) or browse the [API reference](#api-reference).
@@ -199,7 +199,6 @@ MIT
 		- [Metrics](#validation-metrics)
 			- [Accuracy](#accuracy)
 			- [Completeness](#completeness)
-			- [Concentration](#concentration)
 			- [F1 Score](#f1-score)
 			- [Homogeneity](#homogeneity)
 			- [Informedness](#informedness)
@@ -210,14 +209,12 @@ MIT
 			- [RMS Error](#rms-error)
 			- [R Squared](#r-squared)
 			- [V Measure](#v-measure)
-	- [Reports](#reports)
-		- [Aggregate Report](#aggregate-report)
-		- [Confusion Matrix](#confusion-matrix)
-		- [Contingency Table](#contingency-table)
-		- [Multiclass Breakdown](#multiclass-breakdown)
-		- [Outlier Ratio](#outlier-ratio)
-		- [Prediction Speed](#prediction-speed)
-		- [Residual Breakdown](#residual-breakdown)
+		- [Reports](#reports)
+			- [Aggregate Report](#aggregate-report)
+			- [Confusion Matrix](#confusion-matrix)
+			- [Contingency Table](#contingency-table)
+			- [Multiclass Breakdown](#multiclass-breakdown)
+			- [Residual Breakdown](#residual-breakdown)
 	- [Other](#other)
 		- [Guessing Strategies](#guessing-strategies)
 			- [Blurry Percentile](#blurry-percentile)
@@ -236,9 +233,8 @@ MIT
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
     - [What is a Tuple?](#what-is-a-tuple)
-	- [Does Rubix use an underlying BLAS implementation?](#does-rubix-use-an-underlying-blas-implementation)
-	- [Does Rubix support multithreading or GPUs?](#does-rubix-support-multithreading-or-gpus)
-	- [Do you plan to support reinforcement learning?](#do-you-plan-to-support-reinforcement-learning)
+	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
+	- [Do you support reinforcement learning?](#do-you-support-reinforcement-learning)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -4169,14 +4165,14 @@ $validator = new MonteCarlo(30, 0.1);
 
 ### Validation Metrics
 
-Validation metrics are for evaluating the performance of an Estimator given some ground truth such as class labels.
+Validation metrics are for evaluating the performance of an Estimator given some ground-truth such as class labels.
 
-To compute a validation score, pass in a trained estimator and a testing set:
+To compute a validation score, pass in the predictions from an estimator along with the ground-truth labels:
 ```php
-public score(Estimator $estimator, Dataset $testing) : float
+public score(array $predictions, array $labels) : float
 ```
 
-To output the range of values the metric can take on in a 2-tuple:
+To output the range of values the validation score can take on in a 2-tuple:
 ```php
 public range() : array
 ```
@@ -4188,7 +4184,7 @@ use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 ...
 $metric = new MeanAbsoluteError();
 
-$score = $metric->score($estimator, $testing);
+$score = $metric->score($predictions, $labels);
 
 var_dump($metric->range());
 
@@ -4206,9 +4202,9 @@ float(-0.99846070553066)
 ```
 
 ### Accuracy
-Accuracy is a quick classification and detection metric defined as the number of true positives over all samples in the testing set.
+Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
-##### Classification | Detection
+##### Classification | Anomaly Detection
 
 ##### Example:
 ```php
@@ -4229,22 +4225,10 @@ use Rubix\ML\CrossValidation\Metrics\Completeness;
 $metric = new Completeness();
 ```
 
-### Concentration
-An unsupervised metric that measures the ratio between the within-cluster dispersion and the between-cluster dispersion (also called *Calinski-Harabaz* score).
-
-##### Clustering
-
-##### Example:
-```php
-use Rubix\ML\CrossValidation\Metrics\Concentration;
-
-$metric = new Concentration();
-```
-
 ### F1 Score
 A weighted average of precision and recall with equal relative contribution.
 
-##### Classification | Detection
+##### Classification | Anomaly Detection
 
 ##### Example:
 ```php
@@ -4268,7 +4252,7 @@ $metric = new Homogeneity();
 ### Informedness
 Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
 
-##### Classification
+##### Classification | Anomaly Detection
 
 ##### Example:
 ```php
@@ -4280,7 +4264,7 @@ $metric = new Informedness();
 ### MCC
 Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
 
-##### Classification
+##### Classification | Anomaly Detection
 
 ##### Example:
 ```php
@@ -4363,62 +4347,48 @@ $metric = new VMeasure();
 
 ---
 ### Reports
-Reports allow you to evaluate the performance of a model with a testing set. To generate a report, pass a *trained* Estimator and a testing Dataset to the Report's `generate()` method. The output is an associative array that can be used to generate visualizations or other useful statistics.
+Reports show a comprehensive 
 
-To generate a report:
+To generate a report from the predictions of an estimator given some ground-truth labels:
 ```php
-public generate(Estimator $estimator, Dataset $dataset) : array
+public generate(array $predictions, array $labels) : array
 ```
 
 ##### Example:
 ```php
-use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Reports\ConfusionMatrix;
-use Rubix\ML\Datasets\Labeled;
 
 ...
-$dataset = new Labeled($samples, $labels);
+$report = new ConfusionMatrix(['positive', 'negative']);
 
-list($training, $testing) = $dataset->randomize()->split(0.8);
-
-$estimator = new KNearestNeighbors(7);
-
-$report = new ConfusionMatrix(['positive', 'negative', 'neutral']);
-
-$estimator->train($training);
-
-$result = $report->generate($estimator, $testing);
+$result = $report->generate($predictions, $labels);
 ```
 
-Most Reports require a Labeled dataset because they need some sort of ground truth to go compare to. The Reports that are available in Rubix are listed below.
-
 ### Aggregate Report
-A Report that aggregates the results of multiple reports. The reports are indexed by their order given at construction time.
+A Report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
 
 ##### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | reports | [ ] | array | An array of Report objects to aggregate. |
+| 1 | reports | None | array | An array of report objects to aggregate. |
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\AggregateReport;
-use Rubix\ML\Reports\ConfusionMatrix;
-use Rubix\ML\Reports\MulticlassBreakdown;
-use Rubix\ML\Reports\PredictionSpeed;
+use Rubix\ML\CrossValidation\Reports\AggregateReport;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 ...
 $report = new AggregateReport([
-	new ConfusionMatrix(['wolf', 'lamb']),
-	new MulticlassBreakdown(),
-	new PredictionSpeed(),
+	'matrix' => new ConfusionMatrix(['wolf', 'lamb']),
+	'breakdown' => new MulticlassBreakdown(),
 ]);
 
 $result = $report->generate($estimator, $testing);
 ```
 
 ### Confusion Matrix
-A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a Classifier. The name stems from the fact that the matrix makes it easy to see the classes that the Classifier might be confusing.
+A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
 
 ##### Classification
 
@@ -4429,7 +4399,7 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\ConfusionMatrix;
+use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
 ...
 $report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
@@ -4440,7 +4410,6 @@ var_dump($result);
 ```
 
 ##### Output:
-
 ```sh
   array(3) {
     ["dog"]=> array(2) {
@@ -4464,7 +4433,6 @@ var_dump($result);
 ```
 
 ### Contingency Table
-
 A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
 
 ##### Clustering
@@ -4474,7 +4442,7 @@ This report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\ContingencyTable;
+use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
 ...
 $report = new ContingencyTable();
@@ -4509,7 +4477,7 @@ array(3) {
 ```
 
 ### Multiclass Breakdown
-A Report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Cardinality, Miss Rate, and more.
+A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
 
 ##### Classification
 
@@ -4520,7 +4488,7 @@ A Report that drills down in to each unique class outcome. The report includes m
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\MulticlassBreakdown;
+use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 ...
 $report = new MulticlassBreakdown(['wolf', 'lamb']);
@@ -4554,72 +4522,6 @@ var_dump($result);
 ...
 ```
 
-### Outlier Ratio
-Outlier Ratio is the ratio of outliers to inliers in an Anomaly Detection problem. It can be used to gauge the amount of contamination that a detector is predicting.
-
-##### Anomaly Detection
-
-##### Parameters:
-This report does not have any parameters.
-
-##### Example:
-```php
-use Rubix\ML\Reports\OutlierRatio;
-
-...
-$report = new OutlierRatio();
-
-$result = $report->generate($estimator, $testing);
-
-var_dump($result);
-```
-
-##### Output:
-```sh
-  array(4) {
-    ["ratio"]=> float(0.042345)
-	["proportion"]=> float(0.040625)
-	["percentage"]=> float(4.0625)
-	["outliers"]=> int(13)
-    ["inliers"]=> int(307)
-    ["cardinality"]=> int(320)
-  }
-```
-
-### Prediction Speed
- This report measures the prediction speed of an Estimator given as the number of predictions per second (PPS), per minute (PPM), as well as the average time to make a single prediction.
-
-##### Classification, Regression, Clustering, Anomaly Detection
-
-##### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | ratio | 0.2 | float | The ratio of test samples to use to generate the report. |
-
-##### Example:
-```php
-use Rubix\ML\Reports\PredictionSpeed;
-
-...
-$report = new PredictionSpeed();
-
-$result = $report->generate($estimator, $testing);
-
-var_dump($result);
-```
-
-##### Output:
-```sh
-  array(4) {
-    ["pps"]=> float(72216.1351696)
-    ["ppm"]=> float(4332968.1101788)
-	["total_seconds"]=> float(0.0041680335998535)
-    ["average_seconds"]=> float(1.3847287706694E-5)
-    ["cardinality"]=> int(301)
-  }
-
-```
-
 ### Residual Breakdown
 Residual Breakdown is a Report that measures the differences between the predicted and actual values of a regression problem in detail. The statistics provided in the report cover the first (*mean*), second (*variance*), third (*skewness*), and fourth order (*kurtosis*) moments of the distribution of residuals produced by a testing set as well as standard error metrics and r squared.
 
@@ -4630,7 +4532,7 @@ This report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\Reports\ResidualBreakdown;
+use Rubix\ML\CrossValidation\Reports\ResidualBreakdown;
 
 ...
 $report = new ResidualBreakdown();
@@ -4958,24 +4860,26 @@ $tokenizer = new Word();
 Here you can find answers to the most frequently asked questions.
 
 ### What environment should I run Rubix in?
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. Even then, it is advised to run your models as background services and serve requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. In the latter scenario, we reccommend running your models as background services and serving the requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
 
 To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
 ```sh
-$ php program.php
+$ php example.php
 ```
 
 ### What is a Tuple?
-A *tuple* is simply a way to denote an immutable sequential PHP array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
+A *tuple* is simply a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
 
-### Does Rubix use an underlying BLAS implementation?
-Not currently. As far as we know, PHP does not have any Basic Linear Algebra Subprograms extension yet. There is a high level linear algebra extension called [Lapack](http://php.net/manual/en/book.lapack.php), however it does not cover low level operations like matrix multiplication and it is not easy to install.
+##### Example:
+```php
+$tuple = ['first', 'second', 0.001, ...]; // 3-tuple
+```
 
-### Does Rubix support multithreading or GPUs?
-Not currently, and doing so is not trivial either due to PHP's architecture, however we do plan to add CPU multithreading to some Estimators in the future. We do not intend to support for GPU processing as (outside neural nets) that would not be much of a benefit for the types of problems that Rubix aims to solve.
+### Does Rubix support multithreading?
+Not currently, however we do plan to add CPU multithreading to some Estimators in the future.
 
-### Do you plan to support reinforcement learning?
-No. Rubix is designed for *supervised* and *unsupervised* learning only.
+### Do you support reinforcement learning?
+We do not. Rubix currently employs just *supervised* and *unsupervised* learning, however we might support it in the future.
 
 ---
 ## Testing

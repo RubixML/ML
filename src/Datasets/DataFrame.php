@@ -58,7 +58,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
                     throw new InvalidArgumentException('Feature must be a'
                         . ' resource, string or numeric type, '
-                        . gettype($feature) . ' found.');
+                        . gettype($feature) . ' given.');
                 }
             }
         }

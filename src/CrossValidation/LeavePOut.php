@@ -30,13 +30,6 @@ class LeavePOut implements Validator
     protected $p;
 
     /**
-     * The validation score of each epoch since the last test.
-     * 
-     * @var array|null
-     */
-    protected $scores;
-
-    /**
      * @param  int  $p
      * @throws \InvalidArgumentException
      * @return void
@@ -49,16 +42,6 @@ class LeavePOut implements Validator
         }
 
         $this->p = $p;
-    }
-
-    /**
-     * Return the validation scores computed at test time.
-     * 
-     * @return array|null
-     */
-    public function scores() : ?array
-    {
-        return $this->scores;
     }
 
     /**
@@ -75,22 +58,20 @@ class LeavePOut implements Validator
 
         $dataset->randomize();
 
-        $scores = [];
+        $score = 0.;
 
         for ($i = 0; $i < $n; $i++) {
-            $window = [$i * $this->p, $this->p];
-
             $training = clone $dataset;
 
-            $testing = $training->splice(...$window);
+            $testing = $training->splice($i * $this->p, $this->p);
 
             $estimator->train($training);
 
-            $scores[] = $metric->score($estimator, $testing);
+            $predictions = $estimator->predict($testing);
+
+            $score += $metric->score($predictions, $testing->labels());
         }
 
-        $this->scores = $scores;
-
-        return Stats::mean($scores);
+        return $score / $n;
     }
 }

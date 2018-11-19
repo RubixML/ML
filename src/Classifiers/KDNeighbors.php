@@ -8,7 +8,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
-use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
@@ -97,9 +97,9 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with continuous features.');
         }
 
         $this->classes = $dataset->possibleOutcomes();

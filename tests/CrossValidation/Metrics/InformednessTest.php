@@ -2,38 +2,16 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 use PHPUnit\Framework\TestCase;
 
 class InformednessTest extends TestCase
 {
-    const TOLERANCE = 1e-10;
-
     protected $metric;
-
-    protected $estimator;
-
-    protected $testing;
 
     public function setUp()
     {
-        $samples = [[], [], [], [], []];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $this->testing = Labeled::quick($samples, $labels);
-
-        $this->estimator = $this->createMock(KNearestNeighbors::class);
-
-        $this->estimator->method('type')->willReturn(KNearestNeighbors::CLASSIFIER);
-
-        $this->estimator->method('predict')->willReturn([
-            'wolf', 'lamb', 'wolf', 'lamb', 'wolf',
-        ]);
-
         $this->metric = new Informedness();
     }
 
@@ -50,16 +28,15 @@ class InformednessTest extends TestCase
 
     public function test_score_predictions()
     {
-        $score = $this->metric->score($this->estimator, $this->testing);
+        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
 
-        $this->assertEquals(0.16666666670277763, $score, '', self::TOLERANCE);
-    }
+        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-    public function test_within_range()
-    {
         list($min, $max) = $this->metric->range();
 
-        $score = $this->metric->score($this->estimator, $this->testing);
+        $score = $this->metric->score($predictions, $labels);
+
+        $this->assertEquals(0.16666666670277763, $score);
 
         $this->assertThat($score, $this->logicalAnd(
             $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))

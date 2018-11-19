@@ -126,9 +126,9 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This estimator only works'
+                . ' with continuous features.');
         }
 
         $this->classes = array_unique(array_merge($this->classes, $dataset->possibleOutcomes()));
