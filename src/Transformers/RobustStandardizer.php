@@ -19,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustStandardizer implements Transformer, Stateful
+class RobustStandardizer implements Stateful
 {
     /**
      * Should we center the data?

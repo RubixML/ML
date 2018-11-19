@@ -18,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class QuartileStandardizer implements Transformer, Stateful
+class QuartileStandardizer implements Stateful
 {
     /**
      * Should we center the data?

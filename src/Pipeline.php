@@ -30,13 +30,6 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
     use LoggerAware;
 
     /**
-     * The wrapped estimator instance.
-     *
-     * @var \Rubix\ML\Estimator
-     */
-    protected $estimator;
-
-    /**
      * The transformer middleware that preprocesses the data for the estimator.
      *
      * @var array
@@ -46,6 +39,13 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
     ];
 
     /**
+     * The wrapped estimator instance.
+     *
+     * @var \Rubix\ML\Estimator
+     */
+    protected $estimator;
+
+    /**
      * Should we update elastic transformers during partial train?
      * 
      * @var bool
@@ -53,13 +53,13 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
     protected $elastic;
 
     /**
-     * @param  \Rubix\ML\Estimator  $estimator
      * @param  array  $transformers
+     * @param  \Rubix\ML\Estimator  $estimator
      * @param  bool  $elastic
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(Estimator $estimator, array $transformers = [], bool $elastic = true)
+    public function __construct(array $transformers = [], Estimator $estimator, bool $elastic = true)
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
@@ -69,8 +69,8 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
             }
         }
 
-        $this->estimator = $estimator;
         $this->transformers = $transformers;
+        $this->estimator = $estimator;
         $this->elastic = $elastic;
     }
 

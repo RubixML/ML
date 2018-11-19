@@ -35,9 +35,9 @@ class PipelineTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new Pipeline(new NaiveBayes(1.0), [
+        $this->estimator = new Pipeline([
             new IntervalDiscretizer(6),
-        ]);
+        ], new NaiveBayes(1.0));
     }
 
     public function test_build_meta_estimator()

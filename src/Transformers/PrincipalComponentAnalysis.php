@@ -25,7 +25,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Transformer, Stateful
+class PrincipalComponentAnalysis implements Stateful
 {
     /**
      * The target number of dimensions to project onto.

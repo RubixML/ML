@@ -22,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MissingDataImputer implements Transformer, Stateful
+class MissingDataImputer implements Stateful
 {
     /**
      * The placeholder of a missing value.

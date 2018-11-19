@@ -18,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Transformer, Elastic
+class MinMaxNormalizer implements Elastic
 {
     /**
      * The minimum value of the transformed features.

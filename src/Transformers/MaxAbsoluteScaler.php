@@ -16,7 +16,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Transformer, Elastic
+class MaxAbsoluteScaler implements Elastic
 {
     /**
      * The maximum absolute values for each fitted feature column.

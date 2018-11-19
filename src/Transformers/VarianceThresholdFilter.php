@@ -19,7 +19,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class VarianceThresholdFilter implements Transformer, Stateful
+class VarianceThresholdFilter implements Stateful
 {
     /**
      * Feature columns with a variance greater than this threshold will be

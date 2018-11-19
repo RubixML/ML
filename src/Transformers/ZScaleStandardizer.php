@@ -21,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Transformer, Elastic
+class ZScaleStandardizer implements Elastic
 {
     /**
      * Should we center the data?
