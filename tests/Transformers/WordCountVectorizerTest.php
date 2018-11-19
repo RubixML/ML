@@ -23,7 +23,7 @@ class WordCountVectorizerTest extends TestCase
             ['with a dandy ubrella'],
         ]);
 
-        $this->transformer = new WordCountVectorizer(50, 1, ['quick', 'pig'], true, new Word());
+        $this->transformer = new WordCountVectorizer(50, 1, ['quick', 'pig'], new Word());
     }
 
     public function test_build_transformer()
@@ -33,7 +33,7 @@ class WordCountVectorizerTest extends TestCase
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_transform()
+    public function test_fit_transform()
     {
         $this->transformer->fit($this->dataset);
 

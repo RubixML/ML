@@ -28,6 +28,7 @@
     - Subsumed Extractor api into Transformer
     - Removed Concentration metric
     - Changed Metric and Report API
+    - Added Text Normalizer transformer
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

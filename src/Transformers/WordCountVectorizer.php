@@ -50,14 +50,6 @@ class WordCountVectorizer implements Stateful
     ];
 
     /**
-     * Should the text be normalized before tokenized? i.e. remove extra
-     * whitespace and lowercase.
-     *
-     * @var bool
-     */
-    protected $normalize;
-
-    /**
      * The tokenizer used to extract text data into tokenable values.
      *
      * @var \Rubix\ML\Other\Tokenizers\Tokenizer
@@ -76,12 +68,11 @@ class WordCountVectorizer implements Stateful
      * @param  int  $maxVocabulary
      * @param  int  $minDocumentFrequency
      * @param  array  $stopWords
-     * @param  bool  $normalize
      * @param  \Rubix\ML\Other\Tokenizers\Tokenizer|null  $tokenizer
      * @return void
      */
-    public function __construct(int $maxVocabulary = PHP_INT_MAX, int $minDocumentFrequency = 1, array $stopWords = [],
-                                bool $normalize = true, ?Tokenizer $tokenizer = null)
+    public function __construct(int $maxVocabulary = PHP_INT_MAX, int $minDocumentFrequency = 1,
+                                array $stopWords = [], ?Tokenizer $tokenizer = null)
     {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabular must'
@@ -100,10 +91,6 @@ class WordCountVectorizer implements Stateful
             }
         }
 
-        if ($normalize) {
-            $stopWords = array_map('strtolower', $stopWords);
-        }
-
         if (is_null($tokenizer)) {
             $tokenizer = new Word();
         }
@@ -111,7 +98,6 @@ class WordCountVectorizer implements Stateful
         $this->maxVocabulary = $maxVocabulary;
         $this->minDocumentFrequency = $minDocumentFrequency;
         $this->stopWords = array_flip(array_unique($stopWords));
-        $this->normalize = $normalize;
         $this->tokenizer = $tokenizer;
     }
 
@@ -151,10 +137,6 @@ class WordCountVectorizer implements Stateful
             $tfs = $dfs = [];
 
             foreach ($values as $text) {
-                if ($this->normalize) {
-                    $text = preg_replace('/\s+/', ' ', strtolower($text));
-                }
-
                 $tokens = $this->tokenizer->tokenize($text);
 
                 $counts = array_count_values($tokens);
@@ -212,10 +194,6 @@ class WordCountVectorizer implements Stateful
                 $text = $sample[$column];
 
                 $vector = array_fill(0, count($vocabulary), 0);
-
-                if ($this->normalize) {
-                    $text = preg_replace('/\s+/', ' ', strtolower($text)) ?? '';
-                }
 
                 $tokens = $this->tokenizer->tokenize($text);
 
