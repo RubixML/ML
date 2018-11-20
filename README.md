@@ -50,6 +50,7 @@ MIT
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
+			- [K-d LOF](#k-d-lof)
 			- [Local Outlier Factor](#local-outlier-factor)
 			- [One Class SVM](#one-class-svm)
 			- [Robust Z Score](#robust-z-score)
@@ -1201,6 +1202,30 @@ This estimator does not have any additional methods.
 use Rubix\ML\AnomalyDetection\IsolationForest;
 
 $estimator = new IsolationForest(300, 0.01, 0.2);
+```
+
+### K-d LOF
+A K-d tree accelerated version of [Local Outlier Factor]($local-outlier-factor) (LOF). Unlike brute force LOF however, this estimator cannot be partially trained.
+
+##### Unsupervised | Learner | Persistable
+
+##### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
+| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
+| 4 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+
+##### Additional Methods:
+This estimator does not have any additional methods.
+
+##### Example:
+```php
+use Rubix\ML\AnomalyDetection\KDLOF;
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$estimator = new KDLOF(10, 0.1, 20, new Euclidean());
 ```
 
 ### Local Outlier Factor

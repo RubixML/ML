@@ -16,7 +16,7 @@ use RuntimeException;
 
 class ExtraTreeRegressorTest extends TestCase
 {
-    const TOLERANCE = 3;
+    const TOLERANCE = 5;
 
     protected $estimator;
 

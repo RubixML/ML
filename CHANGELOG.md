@@ -3,6 +3,7 @@
     - Added One Class SVM anomaly detector
     - Added Verbose interface for logging
     - Added Linear Discriminant Analysis (LDA) transformer
+    - Added K-d tree accelerated Local Outlier Factor (LOF)
     - Manifold learners are now considered Estimators
     - Transformers can now transform labels
     - Added Cyclic neural net Optimizer

@@ -296,7 +296,7 @@ class TSNE implements Estimator, Verbose
                 $p = $p->divide($this->exaggeration);
 
                 if ($this->logger) $this->logger->info('Early exaggeration'
-                    . ' stage complete');
+                    . ' stage exhausted');
             }
 
             $distances = $this->pairwiseDistances($y);

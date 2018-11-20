@@ -2,23 +2,22 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
-use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Local Outlier Factor
+ * K-d LOF
  *
- * Local Outlier Factor (LOF) measures the local deviation of density of a given sample
- * with respect to its k nearest neighbors. As such, LOF only considers the local region
- * of a sample thus enabling it to detect anomalies within individual clusters of data.
- *
+ * A K-d tree accelerated version of Local Outlier Factor (LOF). Unlike brute
+ * force LOF however, this estimator cannot be partially trained.
+ * 
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
  * Outliers.
@@ -27,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Online, Persistable
+class KDLOF extends KDTree implements Learner, Persistable
 {
     const THRESHOLD = 1.5;
 
@@ -45,23 +44,6 @@ class LocalOutlierFactor implements Online, Persistable
      * @var float
      */
     protected $contamination;
-
-    /**
-     * The distance kernel to use when computing the distances between two
-     * data points.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
-     * The training samples.
-     * 
-     * @var array[]
-     */
-    protected $samples = [
-        //
-    ];
 
     /**
      * The precomputed k distances between each training sample and its kth
@@ -92,11 +74,13 @@ class LocalOutlierFactor implements Online, Persistable
     /**
      * @param  int  $k
      * @param  float  $contamination
+     * @param  int  $maxLeafSize
      * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 20, float $contamination = 0.1, ?Distance $kernel = null)
+    public function __construct(int $k = 20, float $contamination = 0.1, int $maxLeafSize = 20,
+                                ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -108,13 +92,15 @@ class LocalOutlierFactor implements Online, Persistable
                 . " than 0, $contamination given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
+        if ($k > $maxLeafSize) {
+            throw new InvalidArgumentException('K cannot be larger than the max'
+                . " leaf size, $k given but $maxLeafSize allowed.");
         }
 
         $this->k = $k;
         $this->contamination = $contamination;
-        $this->kernel = $kernel;
+
+        parent::__construct($maxLeafSize, $kernel);
     }
 
     /**
@@ -134,42 +120,31 @@ class LocalOutlierFactor implements Online, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        $this->samples = $this->kdistances = $this->lrds = [];
-
-        $this->partial($dataset);
-    }
-
-    /**
-     * Perform a partial train on the learner.
-     *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function partial(Dataset $dataset) : void
-    {
         if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
             throw new InvalidArgumentException('This estimator only works'
                 . ' with continuous features.');
         }
 
-        $this->samples = array_merge($this->samples, $dataset->samples());
+        $this->kdistances = $this->lrds = [];
+
+        $this->grow($dataset);
 
         $distances = [];
 
-        foreach ($this->samples as $i => $sample) {
-            $distances[] = $d = $this->localRegion($sample);
+        foreach ($dataset as $sample) {
+            list($dHat) = $this->neighbors($sample, $this->k);
 
-            $this->kdistances[$i] = end($d);
+            $distances[] = $dHat;
+            $this->kdistances[] = end($dHat);
         }
 
-        foreach ($distances as $i => $row) {
-            $this->lrds[$i] = $this->localReachabilityDensity($row);
+        foreach ($distances as $row) {
+            $this->lrds[] = $this->localReachabilityDensity($row);
         }
 
         $lofs = [];
 
-        foreach ($this->samples as $sample) {
+        foreach ($dataset as $sample) {
             $lofs[] = $this->localOutlierFactor($sample);
         }
 
@@ -187,8 +162,8 @@ class LocalOutlierFactor implements Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->offset)) {
-            throw new RuntimeException('Estimator has not been trained.');
+        if ($this->bare()) {
+            throw new RuntimeException('Estimator has not been trainied.');
         }
 
         $predictions = [];
@@ -216,7 +191,7 @@ class LocalOutlierFactor implements Online, Persistable
                 . ' not been computed, must train estimator first.');
         }
 
-        $distances = $this->localRegion($sample);
+        list($distances) = $this->neighbors($sample, $this->k);
 
         $lrd = $this->localReachabilityDensity($distances);
 
@@ -253,26 +228,5 @@ class LocalOutlierFactor implements Online, Persistable
         $mean = Stats::mean($rds);
 
         return 1. / ($mean ?: self::EPSILON);
-    }
-
-    /**
-     * Find the K nearest neighbors to the given sample vector using the
-     * brute force method.
-     *
-     * @param  array  $sample
-     * @throws \RuntimeException
-     * @return array
-     */
-    protected function localRegion(array $sample) : array
-    {
-        $distances = [];
-
-        foreach ($this->samples as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
-        }
-
-        asort($distances);
-
-        return array_slice($distances, 0, $this->k, true);
     }
 }

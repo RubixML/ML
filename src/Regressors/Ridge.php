@@ -167,7 +167,9 @@ class Ridge implements Learner, Persistable
 
         $xT = $x->transpose();
 
-        return $xT->matmul($x)->add($penalty)->inverse()
+        return $xT->matmul($x)
+            ->add($penalty)
+            ->inverse()
             ->dot($xT->dot($y));
     }
 }
