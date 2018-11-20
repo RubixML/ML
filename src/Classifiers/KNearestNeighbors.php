@@ -43,6 +43,14 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     protected $kernel;
 
     /**
+     * Should we use the inverse distances as confidence scores when
+     * making predictions?
+     * 
+     * @var bool
+     */
+    protected $weighted;
+
+    /**
      * The unique class outcomes.
      *
      * @var array
@@ -72,10 +80,11 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     /**
      * @param  int  $k
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param  bool  $weighted
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, ?Distance $kernel = null)
+    public function __construct(int $k = 3, ?Distance $kernel = null, bool $weighted = true)
     {
         if ($k < 1) {
             throw new InvalidArgumentException("At least 1 neighbor is required"
@@ -88,6 +97,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
         $this->k = $k;
         $this->kernel = $kernel;
+        $this->weighted = $weighted;
     }
 
     /**
@@ -145,21 +155,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->classes)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-        
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $neighbors = $this->findNearestNeighbors($sample);
-
-            $counts = array_count_values($neighbors);
-
-            $predictions[] = Argmax::compute($counts);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
@@ -181,31 +177,43 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.));
+        $probabilities = [];
 
-        foreach ($dataset as $i => $sample) {
-            $neighbors = $this->findNearestNeighbors($sample);
+        foreach ($dataset as $sample) {
+            list($distances, $labels) = $this->neighbors($sample);
 
-            $n = count($neighbors);
+            if ($this->weighted) {
+                $weights = array_fill_keys($labels, 0.);
 
-            $counts = array_count_values($neighbors);
-
-            foreach ($counts as $class => $count) {
-                $probabilities[$i][$class] = $count / $n;
+                foreach ($labels as $i => $label) {
+                    $weights[$label] += 1. / (1. + $distances[$i]);
+                }
+            } else {
+                $weights = array_count_values($labels);
             }
+
+            $total = array_sum($weights) ?: self::EPSILON;
+
+            $temp = array_fill_keys($this->classes, 0.);
+
+            foreach ($weights as $class => $weight) {
+                $temp[$class] = $weight / $total;
+            }
+
+            $probabilities[] = $temp;
         }
 
         return $probabilities;
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector.
+     * Find the K nearest neighbors to the given sample vector using
+     * the brute force method.
      *
      * @param  array  $sample
-     * @return array
+     * @return array[]
      */
-    protected function findNearestNeighbors(array $sample) : array
+    protected function neighbors(array $sample) : array
     {
         $distances = [];
 
@@ -215,7 +223,10 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
         asort($distances);
 
-        return array_intersect_key($this->labels,
-            array_slice($distances, 0, $this->k, true));
+        $distances = array_slice($distances, 0, $this->k, true);
+
+        $labels = array_intersect_key($this->labels, $distances);
+
+        return [$distances, $labels];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 
 /**
  * Coordinate
@@ -34,10 +34,10 @@ class Coordinate extends Split implements Spatial
     /**
      * @param  int  $column
      * @param  mixed  $value
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function __construct(int $column, $value, Labeled $dataset)
+    public function __construct(int $column, $value, Dataset $dataset)
     {
         $min = $max = [];
 

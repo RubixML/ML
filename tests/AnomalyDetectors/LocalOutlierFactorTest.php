@@ -56,7 +56,9 @@ class LocalOutlierFactorTest extends TestCase
         $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
         $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+        $predictions = $this->estimator->predict($testing);
+
+        foreach ($predictions as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction);
         }
     }

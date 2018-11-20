@@ -4,11 +4,11 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\CART;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Params;

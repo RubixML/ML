@@ -41,6 +41,14 @@ class KNNRegressor implements Online, Persistable
     protected $kernel;
 
     /**
+     * Should we use the inverse distances as confidence scores when
+     * making predictions?
+     * 
+     * @var bool
+     */
+    protected $weighted;
+
+    /**
      * The training samples.
      *
      * @var array
@@ -61,13 +69,14 @@ class KNNRegressor implements Online, Persistable
     /**
      * @param  int  $k
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param  bool  $weighted
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, ?Distance $kernel = null)
+    public function __construct(int $k = 3, ?Distance $kernel = null, bool $weighted = true)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("At least 1 neighbor is required"
+            throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");
         }
 
@@ -77,6 +86,7 @@ class KNNRegressor implements Online, Persistable
 
         $this->k = $k;
         $this->kernel = $kernel;
+        $this->weighted = $weighted;
     }
 
     /**
@@ -152,29 +162,47 @@ class KNNRegressor implements Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            $predictions[] = Stats::mean($this->findNearestNeighbors($sample));
+            list ($distances, $labels) = $this->neighbors($sample);
+
+            if ($this->weighted) {
+                $weights = [];
+
+                foreach ($distances as $i => $distance) {
+                    $weights[] = 1. / (1. + $distance);
+                }
+
+                $outcome = Stats::weightedMean($labels, $weights);
+            } else {
+                $outcome = Stats::mean($labels);
+            }
+
+            $predictions[] = $outcome;
         }
 
         return $predictions;
     }
 
     /**
-     * Find the K nearest neighbors to the given sample vector.
+     * Find the K nearest neighbors to the given sample vector using
+     * the brute force method.
      *
      * @param  array  $sample
-     * @return array
+     * @return array[]
      */
-    protected function findNearestNeighbors(array $sample) : array
+    protected function neighbors(array $sample) : array
     {
         $distances = [];
 
-        foreach ($this->samples as $index => $neighbor) {
-            $distances[$index] = $this->kernel->compute($sample, $neighbor);
+        foreach ($this->samples as $neighbor) {
+            $distances[] = $this->kernel->compute($sample, $neighbor);
         }
 
         asort($distances);
 
-        return array_intersect_key($this->labels,
-            array_slice($distances, 0, $this->k, true));
+        $distances = array_slice($distances, 0, $this->k, true);
+
+        $labels = array_values(array_intersect_key($this->labels, $distances));
+
+        return [$distances, $labels];
     }
 }

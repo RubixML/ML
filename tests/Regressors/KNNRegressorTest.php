@@ -19,7 +19,7 @@ class KNNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -29,7 +29,7 @@ class KNNRegressorTest extends TestCase
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
-        $this->estimator = new KNNRegressor(3, new Minkowski(3.0));
+        $this->estimator = new KNNRegressor(3, new Minkowski(3.0), true);
     }
 
     public function test_build_regressor()
@@ -48,22 +48,15 @@ class KNNRegressorTest extends TestCase
     
     public function test_train_partial_predict_proba()
     {
-        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+        
+        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE / 3));
+        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
+        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
 
-        $transformer = new ZScaleStandardizer();
+        $predictions = $this->estimator->predict($testing);
 
-        $transformer->fit($dataset);
-        $dataset->apply($transformer);
-
-        $testing = $dataset->randomize()->take(self::TEST_SIZE);
-
-        $folds = $dataset->fold(3);
-
-        $this->estimator->train($folds[0]);
-        $this->estimator->partial($folds[1]);
-        $this->estimator->partial($folds[2]);
-
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+        foreach ($predictions as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
         }
     }

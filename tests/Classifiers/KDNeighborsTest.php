@@ -6,6 +6,7 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\KDNeighbors;
@@ -34,12 +35,13 @@ class KDNeighborsTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new KDNeighbors(3, 10, new Euclidean());
+        $this->estimator = new KDNeighbors(3, 10, new Euclidean(), true);
     }
 
     public function test_build_classifier()
     {
         $this->assertInstanceOf(KDNeighbors::class, $this->estimator);
+        $this->assertInstanceOf(KDTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

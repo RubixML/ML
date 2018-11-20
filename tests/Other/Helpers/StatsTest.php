@@ -19,6 +19,13 @@ class StatsTest extends TestCase
         $this->assertEquals(8.75, Stats::mean($this->values));
     }
 
+    public function test_weighted_mean()
+    {
+        $weights = [3, 2, 5, 1, 2, 4, 4, 2, 3, 5];
+
+        $this->assertEquals(9.225806451612904, Stats::weightedMean($this->values, $weights));
+    }
+
     public function test_variance()
     {
         $this->assertEquals(21.1125, Stats::variance($this->values));

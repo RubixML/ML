@@ -4,11 +4,11 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
-use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
@@ -43,6 +43,14 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     protected $k;
 
     /**
+     * Should we use the inverse distances as confidence scores when
+     * making predictions?
+     * 
+     * @var bool
+     */
+    protected $weighted;
+
+    /**
      * The unique class outcomes.
      *
      * @var array
@@ -53,26 +61,28 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
     /**
      * @param  int  $k
-     * @param  int  $neighborhood
+     * @param  int  $maxLeafSize
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param  bool  $weighted
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, int $neighborhood = 20, ?Distance $kernel = null)
+    public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null, bool $weighted = true)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("At least 1 neighbor is required"
+            throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");
         }
 
-        if ($k > $neighborhood) {
-            throw new InvalidArgumentException("K cannot be larger than the max"
-                . " size of a neighborhood, $k given but $neighborhood allowed.");
+        if ($k > $maxLeafSize) {
+            throw new InvalidArgumentException('K cannot be larger than the max'
+                . " leaf size, $k given but $maxLeafSize allowed.");
         }
 
         $this->k = $k;
+        $this->weighted = $weighted;
 
-        parent::__construct($neighborhood, $kernel);
+        parent::__construct($maxLeafSize, $kernel);
     }
 
     /**
@@ -116,21 +126,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
-            throw new RuntimeException('Estimator has not been trainied.');
-        }
-        
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            list($labels, $distances) = $this->neighbors($sample, $this->k);
-
-            $counts = array_count_values($labels);
-
-            $predictions[] = Argmax::compute($counts);
-        }
-
-        return $predictions;
+        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
     }
 
     /**
@@ -152,17 +148,30 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
             throw new RuntimeException('Estimator has not been trainied.');
         }
 
-        $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.));
+        $probabilities = [];
 
-        foreach ($dataset as $i => $sample) {
-            list($labels, $distances) = $this->neighbors($sample, $this->k);
+        foreach ($dataset as $sample) {
+            list($distances, $labels) = $this->neighbors($sample);
 
-            $n = count($labels);
+            if ($this->weighted) {
+                $weights = array_fill_keys($labels, 0.);
 
-            foreach (array_count_values($labels) as $class => $count) {
-                $probabilities[$i][$class] = $count / $n;
+                foreach ($labels as $i => $label) {
+                    $weights[$label] += 1. / (1. + $distances[$i]);
+                }
+            } else {
+                $weights = array_count_values($labels);
             }
+
+            $total = array_sum($weights) ?: self::EPSILON;
+
+            $temp = array_fill_keys($this->classes, 0.);
+
+            foreach ($weights as $class => $weight) {
+                $temp[$class] = $weight / $total;
+            }
+
+            $probabilities[] = $temp;
         }
 
         return $probabilities;

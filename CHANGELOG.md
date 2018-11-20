@@ -29,6 +29,7 @@
     - Removed Concentration metric
     - Changed Metric and Report API
     - Added Text Normalizer transformer
+    - Added weighted predictions to KNN estimators
 
 - 0.0.6-alpha
     - Added Gradient Boost regressor

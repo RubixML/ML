@@ -34,7 +34,7 @@ class KNearestNeighborsTest extends TestCase
             'outer' => new Circle(0., 0., 10., 0.1),
         ], [3, 3, 4]);
 
-        $this->estimator = new KNearestNeighbors(3, new Euclidean());
+        $this->estimator = new KNearestNeighbors(3, new Euclidean(), true);
     }
 
     public function test_build_classifier()
@@ -60,11 +60,15 @@ class KNearestNeighborsTest extends TestCase
         $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
         $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+        $predictions = $this->estimator->predict($testing);
+
+        foreach ($predictions as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction);
         }
 
-        foreach ($this->estimator->proba($testing) as $i => $prob) {
+        $probabilities = $this->estimator->proba($testing);
+
+        foreach ($probabilities as $i => $prob) {
             $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
         }
     }

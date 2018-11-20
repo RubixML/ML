@@ -53,11 +53,13 @@ class AdalineTest extends TestCase
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
     }
 
-    public function test_make_prediction()
+    public function test_train_predict()
     {
         $this->estimator->train($this->training);
 
-        foreach ($this->estimator->predict($this->testing) as $i => $prediction) {
+        $predictions = $this->estimator->predict($this->testing);
+
+        foreach ($predictions as $i => $prediction) {
             $this->assertEquals($this->testing->label($i), $prediction, '', self::TOLERANCE);
         }
     }

@@ -1478,8 +1478,9 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | neighborhood | 20 | int | The max size of a neighborhood. |
+| 2 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1489,7 +1490,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KDNeighbors(3, 10, new Euclidean());
+$estimator = new KDNeighbors(3, 10, new Euclidean(), false);
 ```
 
 ### K Nearest Neighbors
@@ -1502,6 +1503,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -1511,7 +1513,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new KNearestNeighbors(3, new Manhattan());
+$estimator = new KNearestNeighbors(3, new Manhattan(), true);
 ```
 
 ### Logistic Regression
@@ -2048,8 +2050,9 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The K
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | neighborhood | 20 | int | The max size of a neighborhood. |
+| 2 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2059,7 +2062,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Regressors\KDNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KDNRegressor(5, 20, new Minkowski(4.0));
+$estimator = new KDNRegressor(5, 20, new Minkowski(4.0), true);
 ```
 
 ### KNN Regressor
@@ -2072,6 +2075,7 @@ A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outc
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 ##### Additional Methods:
 This estimator does not have any additional methods.
@@ -2081,7 +2085,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KNNRegressor(2, new Minkowski(3.0));
+$estimator = new KNNRegressor(2, new Minkowski(3.0), false);
 ```
 
 ### MLP Regressor

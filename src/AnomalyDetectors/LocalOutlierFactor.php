@@ -99,12 +99,12 @@ class LocalOutlierFactor implements Online, Persistable
     public function __construct(int $k = 20, float $contamination = 0.1, ?Distance $kernel = null)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("At least 1 neighbor is required"
+            throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to form a local region, $k given.");
         }
 
         if ($contamination < 0.) {
-            throw new InvalidArgumentException("Contamination cannot be less"
+            throw new InvalidArgumentException('Contamination cannot be less'
                 . " than 0, $contamination given.");
         }
 

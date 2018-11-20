@@ -38,6 +38,39 @@ class Stats
     }
 
     /**
+     * Compute the weighted mean of a set of values.
+     *
+     * @param  array  $values
+     * @param  array  $weights
+     * @param  int|null  $n
+     * @return float
+     */
+    public static function weightedMean(array $values, array $weights, ?int $n = null) : float
+    {
+        $n = $n ?? count($values);
+
+        if ($n < 1) {
+            throw new InvalidArgumentException('Mean is undefined for empty'
+                . ' set.');
+        }
+
+        if (count($weights) !== $n) {
+            throw new InvalidArgumentException('The number of weights must'
+                . ' equal the number of values.');
+        }
+
+        $total = array_sum($weights) ?: self::EPSILON;
+
+        $temp = 0.;
+
+        foreach ($values as $i => $value) {
+            $temp += $value * ($weights[$i] ?: self::EPSILON);
+        }
+
+        return $temp / $total;
+    }
+
+    /**
      * Calculate the median of a set of values.
      *
      * @param  array  $values

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
@@ -89,10 +90,10 @@ class KDTree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function grow(Labeled $dataset) : void
+    public function grow(Dataset $dataset) : void
     {
         $this->dimensionality = $dataset->numColumns();
 
@@ -154,19 +155,19 @@ class KDTree implements Tree
         if (is_null($neighborhood)) {
             return [];
         }
+
+        list($samples, $labels) = $neighborhood->neighbors();
         
         $distances = [];
 
-        foreach ($neighborhood->samples() as $neighbor) {
+        foreach ($samples as $neighbor) {
             $distances[] = $this->kernel->compute($sample, $neighbor);
         }
-
-        $labels = $neighborhood->labels();
 
         array_multisort($distances, $labels);
         
         $visited = new SplObjectStorage();
-        $visited->attach($neighborhood);
+        $visited->attach($neighborhood); 
 
         $current = $neighborhood->parent();
 
@@ -175,11 +176,13 @@ class KDTree implements Tree
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    foreach ($current->samples() as $neighbor) {
+                    list ($sHat, $lHat) = $current->neighbors();
+
+                    foreach ($sHat as $neighbor) {
                         $distances[] = $this->kernel->compute($sample, $neighbor);
                     }
 
-                    $labels = array_merge($labels, $current->labels());
+                    $labels = array_merge($labels, $lHat);
 
                     array_multisort($distances, $labels);
                 }
@@ -187,10 +190,10 @@ class KDTree implements Tree
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
                         if ($child instanceof Spatial) {
-                            foreach ($child->box() as $edge) {
-                                $distance = $this->kernel->compute($sample, $edge);
+                            foreach ($child->box() as $side) {
+                                $distance = $this->kernel->compute($sample, $side);
         
-                                if ($distance < $distances[$k - 1]) {
+                                if ($distance < ($distances[$k - 1] ?? INF)) {
                                     $current = $child;
         
                                     continue 2;
@@ -206,10 +209,10 @@ class KDTree implements Tree
             $current = $current->parent();
         }
 
-        $labels = array_slice($labels, 0, $k);
         $distances = array_slice($distances, 0, $k);
+        $labels = array_slice($labels, 0, $k);
 
-        return [$labels, $distances];
+        return [$distances, $labels];
     }
 
     /**
@@ -245,11 +248,11 @@ class KDTree implements Tree
     /**
      * Find the best split of a given subset of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Coordinate
      */
-    protected function findBestSplit(Labeled $dataset, int $depth) : Coordinate
+    protected function findBestSplit(Dataset $dataset, int $depth) : Coordinate
     {
         $column = $depth % $this->dimensionality;
 

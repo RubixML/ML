@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 
 /**
@@ -24,11 +25,13 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     protected $samples;
 
     /**
-     * The samples that make up the neighborhood.
+     * The labels that make up the neighborhood.
      *
      * @var array
      */
-    protected $labels;
+    protected $labels = [
+        //
+    ];
 
     /**
      * The multivariate minimum of the bounding box around the samples
@@ -47,10 +50,10 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     protected $max;
 
     /**
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
-    public function __construct(Labeled $dataset)
+    public function __construct(Dataset $dataset)
     {
         $min = $max = [];
 
@@ -62,7 +65,10 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
         $this->min = $min;
         $this->max = $max;
         $this->samples = $dataset->samples();
-        $this->labels = $dataset->labels();
+
+        if ($dataset instanceof Labeled) {
+            $this->labels = $dataset->labels();
+        }
     }
 
     /**
@@ -76,11 +82,21 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     }
 
     /**
+     * Return a tuple of the samples and labels stored in the neighborhood.
+     * 
+     * @return array[]
+     */
+    public function neighbors() : array
+    {
+        return [$this->samples, $this->labels];
+    }
+
+    /**
      * Return the samples in the neighborhood.
      * 
      * @return array[]
      */
-    public function samples()
+    public function samples() : array
     {
         return $this->samples;
     }
@@ -90,7 +106,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
      * 
      * @return (int|float|string)[]
      */
-    public function labels()
+    public function labels() : array
     {
         return $this->labels;
     }

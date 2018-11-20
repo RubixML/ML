@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\KDNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -17,7 +18,7 @@ class KDNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TOLERANCE = 5;
 
     protected $generator;
 
@@ -27,12 +28,13 @@ class KDNRegressorTest extends TestCase
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
-        $this->estimator = new KDNRegressor(3, 10, new Minkowski(3.0));
+        $this->estimator = new KDNRegressor(3, 10, new Minkowski(3.0), true);
     }
 
     public function test_build_regressor()
     {
         $this->assertInstanceOf(KDNRegressor::class, $this->estimator);
+        $this->assertInstanceOf(KDTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -45,11 +47,13 @@ class KDNRegressorTest extends TestCase
 
     public function test_train_predict()
     {
+        $testing = $this->generator->generate(self::TEST_SIZE);
+        
         $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
 
-        $testing = $this->generator->generate(self::TEST_SIZE);
+        $predictions = $this->estimator->predict($testing);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
+        foreach ($predictions as $i => $prediction) {
             $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
         }
     }
