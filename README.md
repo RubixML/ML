@@ -1926,13 +1926,11 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
-| 4 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 5 | rate | 1. | float | The learning rate that controls the step size. |
-| 6 | decay | 0.2 | float | The amount to decay the momentum by each update. |
-| 7 | min gradient | 1e-6 | float | The minimum gradient necessary to continue fitting. |
+| 4 | rate | 10. | float | The learning rate that controls the step size. |
+| 5 | momentum | 0.5 | float | The amount of momentum to carry over into the next update. |
+| 6 | epochs | 1000 | int | The number of times to iterate over the embedding. |
+| 7 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
 | 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
-| 9 | tolerance | 1e-5 | float | The tolerance of the binary search for appropriate sigma. |
-| 10 | precision | 100 | int | The number of iterations when locating an appropriate sigma. |
 
 ##### Additional Methods:
 
@@ -1946,7 +1944,7 @@ public steps() : array
 use Rubi\ML\Manifold\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(2, 30, 12., 1000, 1., 0.1, 1e-6, new Manhattan(), 1e-5, 100);
+$embedder = new TSNE(2, 30, 12., 10., 0.5, 500, 1e-6, new Manhattan());
 ```
 
 ---

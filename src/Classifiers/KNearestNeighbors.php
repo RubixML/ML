@@ -155,7 +155,34 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
+        if (empty($this->classes)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $predictions = [];
+
+        foreach ($dataset as $sample) {
+            list($distances, $labels) = $this->neighbors($sample);
+
+            if ($this->weighted) {
+                $weights = array_fill_keys($labels, 0.);
+
+                foreach ($labels as $i => $label) {
+                    $weights[$label] += 1. / (1. + $distances[$i]);
+                }
+            } else {
+                $weights = array_count_values($labels);
+            }
+
+            $predictions[] = Argmax::compute($weights);
+        }
+
+        return $predictions;
     }
 
     /**

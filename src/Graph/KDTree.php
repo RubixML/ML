@@ -146,18 +146,18 @@ class KDTree implements Tree
     public function neighbors(array $sample, int $k = 1) : array
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("The number of nearest"
+            throw new InvalidArgumentException('The number of nearest'
                 . " neighbors must be greater than 0, $k given.");
         }
 
         $neighborhood = $this->search($sample);
 
         if (is_null($neighborhood)) {
-            return [];
+            return [[], []];
         }
 
         list($samples, $labels) = $neighborhood->neighbors();
-        
+
         $distances = [];
 
         foreach ($samples as $neighbor) {
@@ -165,18 +165,21 @@ class KDTree implements Tree
         }
 
         array_multisort($distances, $labels);
-        
+
         $visited = new SplObjectStorage();
-        $visited->attach($neighborhood); 
+        $stack = [];
 
-        $current = $neighborhood->parent();
+        $visited->attach($neighborhood);
+        $stack[] = $neighborhood->parent();
 
-        while ($current) {
+        while ($stack) {
+            $current = array_pop($stack);
+
             if (!$visited->contains($current)) {
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    list ($sHat, $lHat) = $current->neighbors();
+                    list($sHat, $lHat) = $current->neighbors();
 
                     foreach ($sHat as $neighbor) {
                         $distances[] = $this->kernel->compute($sample, $neighbor);
@@ -194,7 +197,7 @@ class KDTree implements Tree
                                 $distance = $this->kernel->compute($sample, $side);
         
                                 if ($distance < ($distances[$k - 1] ?? INF)) {
-                                    $current = $child;
+                                    $stack[] = $child;
         
                                     continue 2;
                                 }
@@ -206,7 +209,13 @@ class KDTree implements Tree
                 }
             }
 
-            $current = $current->parent();
+            $parent = $current->parent();
+
+            if (!isset($parent)) {
+                continue 1;
+            }
+
+            $stack[] = $parent;
         }
 
         $distances = array_slice($distances, 0, $k);

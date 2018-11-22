@@ -35,6 +35,9 @@ class TSNE implements Estimator, Verbose
 {
     use LoggerAware;
 
+    const BINARY_PRECISION = 100;
+    const SEARCH_TOLERANCE = 1e-5;
+
     /**
      * The number of dimensions of the embedding.
      *
@@ -96,11 +99,11 @@ class TSNE implements Estimator, Verbose
     protected $rate;
 
     /**
-     * The amount to decay the momentum by each update.
+     * The amount of momentum to carry over into the next update.
      *
      * @var float
      */
-    protected $decay;
+    protected $momentum;
 
     /**
      * The minimum gradient necessary to continue fitting.
@@ -110,27 +113,20 @@ class TSNE implements Estimator, Verbose
     protected $minGradient;
 
     /**
+     * The training window to consider during early stop checking i.e. the last
+     * n epochs.
+     *
+     * @var int
+     */
+    protected $window;
+
+    /**
      * The distance metric used to measure distances between samples in both
      * high and low dimensions.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
-
-    /**
-     * The tolerance of the binary search for an appropriate variance of the
-     * Gaussian over each sample.
-     *
-     * @var float
-     */
-    protected $tolerance;
-
-    /**
-     * The number of iterations when locating an appropriate variance.
-     *
-     * @var int
-     */
-    protected $precision;
 
     /**
      * The magnitudes of the gradient at each epoch since the last embedding.
@@ -147,61 +143,50 @@ class TSNE implements Estimator, Verbose
      * @param  float  $exaggeration
      * @param  int  $epochs
      * @param  float  $rate
-     * @param  float  $decay
+     * @param  float  $momentum
      * @param  float  $minGradient
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  float  $tolerance
-     * @param  int  $precision
+     * @param  int  $window
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                int $epochs = 1000, float $rate = 1.0, float $decay = 0.2, float $minGradient = 1e-6,
-                Distance $kernel = null, float $tolerance = 1e-5, int $precision = 100)
+                float $rate = 10., float $momentum = 0.5, int $epochs = 1000, float $minGradient = 1e-7,
+                int $window = 5, ?Distance $kernel = null)
     {
         if ($dimensions < 1) {
-            throw new InvalidArgumentException('Cannot embed less than 1'
-                . ' dimension.');
+            throw new InvalidArgumentException('Cannot embed into less than 1'
+                . " dimension, $dimensions given.");
         }
 
         if ($perplexity < 1) {
             throw new InvalidArgumentException('Perplexity cannot be less than'
-                . ' 1.');
+                . " 1, $perplexity given.");
         }
 
         if ($exaggeration < 1.) {
             throw new InvalidArgumentException('Early exaggeration must be 1 or'
-             . ' greater.');
+             . " greater, $exaggeration given.");
         }
 
         if ($epochs < 250) {
             throw new InvalidArgumentException('Must iterate for at least 250'
-                . ' epochs.');
+                . " epochs, $epochs given.");
         }
 
         if ($rate <= 0.) {
             throw new InvalidArgumentException('Learning rate must be greater'
-                . ' than 0.');
+                . " than 0, $rate given.");
         }
 
-        if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException('Momentum decay must be between'
-                . ' 0 and 1.');
+        if ($momentum < 0. or $momentum > 1.) {
+            throw new InvalidArgumentException('Momentum must be between 0 and'
+                . " 1, $momentum given.");
         }
 
         if ($minGradient < 0.) {
             throw new InvalidArgumentException('The minimum magnitude of the'
-                . ' gradient must be 0 or greater.');
-        }
-
-        if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Binary seach tolerance cannot'
-                . ' be less than 0.');
-        }
-
-        if ($precision < 1) {
-            throw new InvalidArgumentException('Binary search precision must'
-                . ' be at at least 1.');
+                . " gradient must be 0 or greater, $minGradient given.");
         }
 
         if (is_null($kernel)) {
@@ -214,13 +199,12 @@ class TSNE implements Estimator, Verbose
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
-        $this->early = (int) min(250, round($epochs / 4));
+        $this->early = (int) min(250, round($epochs / 4)) + 1;
         $this->rate = $rate;
-        $this->decay = $decay;
+        $this->momentum = $momentum;
         $this->minGradient = $minGradient;
+        $this->window = $window;
         $this->kernel = $kernel;
-        $this->tolerance = $tolerance;
-        $this->precision = $precision;
     }
 
     /**
@@ -265,11 +249,10 @@ class TSNE implements Estimator, Verbose
                 'exaggeration' => $this->exaggeration,
                 'epochs' => $this->epochs,
                 'rate' => $this->rate,
-                'decay' => $this->decay,
+                'momentum' => $this->momentum,
                 'min_gradient' => $this->minGradient,
+                'window' => $this->window,
                 'kernel' => $this->kernel,
-                'tolerance' => $this->tolerance,
-                'precision' => $this->precision,
             ]));
 
         $n = $dataset->numRows();
@@ -288,6 +271,7 @@ class TSNE implements Estimator, Verbose
             ->multiply(1e-3);
 
         $velocity = Matrix::zeros($n, $this->dimensions);
+        $gains = Matrix::ones($n, $this->dimensions)->asArray();
 
         $this->steps = [];
 
@@ -305,13 +289,24 @@ class TSNE implements Estimator, Verbose
 
             $gradient = $this->computeGradient($p, $q, $y, $distances);
 
-            $velocity = $gradient
-                ->multiply($this->rate)
-                ->add($velocity->multiply(1. - $this->decay));
-
-            $y = $y->add($velocity);
-
             $magnitude = $gradient->l2Norm();
+
+            $vHat = $velocity->multiply($gradient);
+
+            foreach ($gains as $i => &$row) {
+                foreach ($row as $j => &$value) {
+                    $value = $vHat[$i][$j] > 0. ? $value + 0.2 : $value * 0.8;
+                }
+            }
+
+            $gHat = Matrix::quick($gains);
+
+            $gradient = $gradient->multiply($gHat);
+
+            $velocity = $velocity->multiply($this->momentum)
+                ->subtract($gradient->multiply($this->rate));
+
+            $y = $y->subtract($velocity);
 
             $this->steps[] = $magnitude;
 
@@ -320,6 +315,17 @@ class TSNE implements Estimator, Verbose
 
             if ($magnitude < $this->minGradient) {
                 break 1;
+            }
+
+            if ($epoch > $this->window) {
+                $window = array_slice($this->steps, -$this->window);
+
+                $worst = $window;
+                sort($worst);
+
+                if ($window === $worst) {
+                    break 1;
+                }
             }
         }
 
@@ -367,7 +373,7 @@ class TSNE implements Estimator, Verbose
             $maxBeta = INF;
             $beta = 1.;
 
-            for ($l = 0; $l < $this->precision; $l++) {
+            for ($l = 0; $l < self::BINARY_PRECISION; $l++) {
                 $pSigma = 0.;
 
                 foreach ($row as $j => $distance) {
@@ -396,7 +402,7 @@ class TSNE implements Estimator, Verbose
 
                 $diff = $entropy - $this->entropy;
 
-                if (abs($diff) < $this->tolerance) {
+                if (abs($diff) < self::SEARCH_TOLERANCE) {
                     break 1;
                 }
 
