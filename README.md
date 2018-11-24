@@ -1,10 +1,12 @@
 # Rubix ML for PHP
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=for-the-badge)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=for-the-badge)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=for-the-badge)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=for-the-badge)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-Rubix ML is a machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
+Rubix ML is a high-level machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
 
-## Our Mission
-The goal of Rubix is to bring easy to use machine learning (ML) capabilities to the PHP programming language. We aspire to provide the framework to facilitate rapid prototyping, small to medium sized projects, and education. If you're eager to get started you can follow along with the [basic introduction](#basic-introduction) or browse the [API reference](#api-reference).
+## Features
+- Fast and easy prototyping with user-friendly Estimator API
+- Modular component system combines power and flexbility
+- Open source and free to use commercially
 
 ## Installation
 Install Rubix using composer:
@@ -216,7 +218,7 @@ MIT
 			- [Confusion Matrix](#confusion-matrix)
 			- [Contingency Table](#contingency-table)
 			- [Multiclass Breakdown](#multiclass-breakdown)
-			- [Residual Breakdown](#residual-breakdown)
+			- [Residual Analysis](#residual-analysis)
 	- [Other](#other)
 		- [Guessing Strategies](#guessing-strategies)
 			- [Blurry Percentile](#blurry-percentile)
@@ -1926,12 +1928,11 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
-| 4 | rate | 10. | float | The learning rate that controls the step size. |
-| 5 | momentum | 0.5 | float | The amount of momentum to carry over into the next update. |
-| 6 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 7 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
-| 8 | window | 5 | int | The training window to consider during early stop checking i.e. the last n epochs. |
-| 9 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 4 | rate | 100. | float | The learning rate that controls the step size. |
+| 5 | epochs | 1000 | int | The number of times to iterate over the embedding. |
+| 6 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
+| 7 | window | 5 | int | The training window to consider during early stop checking i.e. the last n epochs. |
+| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 
 ##### Additional Methods:
 
@@ -1945,7 +1946,7 @@ public steps() : array
 use Rubi\ML\Manifold\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(2, 30, 12., 10., 0.5, 500, 1e-6, 5, new Manhattan());
+$embedder = new TSNE(2, 30, 12., 10., 500, 1e-6, 5, new Manhattan());
 ```
 
 ---
@@ -4548,29 +4549,33 @@ var_dump($result);
 ##### Output:
 ```sh
 ...
-["wolf"]=>
-	array(15) {
-        ["accuracy"]=> int(1)
-        ["precision"]=> float(0.99999999998723)
-        ["recall"]=> float(0.99999999998723)
-        ["specificity"]=> float(0.99999999998812)
-        ["miss_rate"]=> float(1.2771450563775E-11)
-        ["fall_out"]=> float(1.1876499783625E-11)
-        ["f1_score"]=> float(0.99999999498723)
-        ["mcc"]=> float(0.99999999999998)
-        ["informedness"]=> float(0.99999999997535)
-        ["true_positives"]=> int(783)
-        ["true_negatives"]=> int(842)
-        ["false_positives"]=> int(0)
-        ["false_negatives"]=> int(0)
-        ["cardinality"]=> int(783)
-        ["density"]=> float(0.48184615384615)
-	}
+["label"]=> array(2) {
+	["wolf"]=> array(19) {
+      	["accuracy"]=> float(0.6)
+      	["precision"]=> float(0.66666666666667)
+      	["recall"]=> float(0.66666666666667)
+      	["specificity"]=> float(0.5)
+      	["negative_predictive_value"]=> float(0.5)
+      	["false_discovery_rate"]=> float(0.33333333333333)
+      	["miss_rate"]=> float(0.33333333333333)
+      	["fall_out"]=> float(0.5)
+      	["false_omission_rate"]=> float(0.5)
+     	["f1_score"]=> float(0.66666666666667)
+      	["mcc"]=> float(0.16666666666667)
+      	["informedness"]=> float(0.16666666666667)
+      	["markedness"]=> float(0.16666666666667)
+      	["true_positives"]=> int(2)
+      	["true_negatives"]=> int(1)
+      	["false_positives"]=> int(1)
+      	["false_negatives"]=> int(1)
+      	["cardinality"]=> int(3)
+      	["density"]=> float(0.6)
+    }
 ...
 ```
 
-### Residual Breakdown
-Residual Breakdown is a Report that measures the differences between the predicted and actual values of a regression problem in detail. The statistics provided in the report cover the first (*mean*), second (*variance*), third (*skewness*), and fourth order (*kurtosis*) moments of the distribution of residuals produced by a testing set as well as standard error metrics and r squared.
+### Residual Analysis
+Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
 
 ##### Regression
 
@@ -4579,10 +4584,10 @@ This report does not have any parameters.
 
 ##### Example:
 ```php
-use Rubix\ML\CrossValidation\Reports\ResidualBreakdown;
+use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 
 ...
-$report = new ResidualBreakdown();
+$report = new ResidualAnalysis();
 
 $result = $report->generate($estimator, $testing);
 
@@ -4595,6 +4600,7 @@ var_dump($result);
     ["mean_absolute_error"]=> float(0.44927554249285)
     ["median_absolute_error"]=> float(0.30273889978541)
     ["mean_squared_error"]=> float(0.44278193357447)
+	["mean_squared_log_error"]=> float(-0.35381010755)
     ["rms_error"]=> float(0.66541861529001)
     ["error_mean"]=> float(0.14748941084881)
     ["error_variance"]=> float(0.42102880726195)

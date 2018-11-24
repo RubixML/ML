@@ -101,6 +101,7 @@ class MulticlassBreakdown implements Report
             $precision = $tp / (($tp + $fp) ?: self::EPSILON);
             $recall = $tp / (($tp + $fn) ?: self::EPSILON);
             $specificity = $tn / (($tn + $fp) ?: self::EPSILON);
+            $npv = $tn / (($tn + $fn) ?: self::EPSILON);
             $cardinality = $tp + $fn;
 
             $f1 = 2. * (($precision * $recall))
@@ -114,11 +115,15 @@ class MulticlassBreakdown implements Report
             $table[$label]['precision'] = $precision;
             $table[$label]['recall'] = $recall;
             $table[$label]['specificity'] = $specificity;
+            $table[$label]['negative_predictive_value'] = $npv;
+            $table[$label]['false_discovery_rate'] = 1. - $precision;
             $table[$label]['miss_rate'] = 1. - $recall;
             $table[$label]['fall_out'] = 1. - $specificity;
+            $table[$label]['false_omission_rate'] = 1. - $npv;
             $table[$label]['f1_score'] = $f1;
-            $table[$label]['informedness'] = $recall + $specificity - 1;
             $table[$label]['mcc'] = $mcc;
+            $table[$label]['informedness'] = $recall + $specificity - 1.;
+            $table[$label]['markedness'] = $precision + $npv - 1.;
             $table[$label]['true_positives'] = $tp;
             $table[$label]['true_negatives'] = $tn;
             $table[$label]['false_positives'] = $fp;
@@ -128,15 +133,16 @@ class MulticlassBreakdown implements Report
         }
 
         $overall = array_fill_keys([
-            'accuracy', 'precision', 'recall', 'specificity', 'miss_rate',
-            'fall_out', 'f1_score', 'informedness', 'mcc',
+            'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
+            'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
+            'f1_score', 'mcc', 'informedness', 'markedness',
         ], 0.);
 
         $k = count($classes);
 
-        foreach ($table as $row) {
+        foreach ($table as $metrics) {
             foreach ($overall as $metric => &$value) {
-                $value += $row[$metric] / $k;
+                $value += $metrics[$metric] / $k;
             }
         }
 

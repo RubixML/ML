@@ -55,11 +55,12 @@ class SELU implements ActivationFunction
     {
         if ($alpha < 0.) {
             throw new InvalidArgumentException('Alpha parameter must be'
-                . ' positive.');
+                . " greater than 0, $alpha given.");
         }
 
         if ($scale < 1.) {
-            throw new InvalidArgumentException('Scale must be greater than 1.');
+            throw new InvalidArgumentException('Scale must be greater than'
+                . " 1, $scale given.");
         }
 
         $this->scale = $scale;

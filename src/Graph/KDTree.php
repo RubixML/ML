@@ -211,11 +211,9 @@ class KDTree implements Tree
 
             $parent = $current->parent();
 
-            if (!isset($parent)) {
-                continue 1;
+            if ($parent) {
+                $stack[] = $parent;
             }
-
-            $stack[] = $parent;
         }
 
         $distances = array_slice($distances, 0, $k);

@@ -3,21 +3,21 @@
 namespace Rubix\ML\Tests\CrossValidation\Reports;
 
 use Rubix\ML\CrossValidation\Reports\Report;
-use Rubix\ML\CrossValidation\Reports\ResidualBreakdown;
+use Rubix\ML\CrossValidation\Reports\ResidualAnalysis;
 use PHPUnit\Framework\TestCase;
 
-class ResidualBreakdownTest extends TestCase
+class ResidualAnalysisTest extends TestCase
 {
     protected $report;
 
     public function setUp()
     {
-        $this->report = new ResidualBreakdown();
+        $this->report = new ResidualAnalysis();
     }
 
     public function test_build_report()
     {
-        $this->assertInstanceOf(ResidualBreakdown::class, $this->report);
+        $this->assertInstanceOf(ResidualAnalysis::class, $this->report);
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
@@ -29,9 +29,10 @@ class ResidualBreakdownTest extends TestCase
 
         $outcome = [
             'mean_absolute_error' => 0.8,
-            'median_absolute_error' => 1,
+            'median_absolute_error' => 1.,
             'mean_squared_error' => 1,
-            'rms_error' => 1.0,
+            'mean_squared_log_error' => 0.,
+            'rms_error' => 1.,
             'error_mean' => -0.2,
             'error_variance' => 0.9599999999999997,
             'error_skewness' => -0.22963966338592326,

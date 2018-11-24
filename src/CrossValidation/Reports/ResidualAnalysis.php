@@ -6,19 +6,16 @@ use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 /**
- * Residual Breakdown
+ * Residual Analysis
  *
- * Residual Breakdown is a report that measures the differences between the predicted
- * and actual values of a regression problem in detail. The statistics provided
- * in the report cover the first (mean), second (variance), third (skewness),
- * and fourth (kurtosis) order moments of the distribution of residuals produced
- * by a testing set.
+ * Residual Analysis is a report that measures the differences between the predicted
+ * and actual values of a regression problem in detail.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ResidualBreakdown implements Report
+class ResidualAnalysis implements Report
 {
     /**
      * Generate the report.
@@ -63,6 +60,7 @@ class ResidualBreakdown implements Report
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
+            'mean_squared_log_error' => log($mse),
             'rms_error' => sqrt($mse),
             'r_squared' => $r2,
             'error_mean' => $mean,
