@@ -132,22 +132,22 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException("Ensemble must contain at least"
+            throw new InvalidArgumentException('Ensemble must contain at least'
                 . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
-            throw new InvalidArgumentException("Learning rate must be greater"
+            throw new InvalidArgumentException('Learning rate must be greater'
                 . " than 0, $rate given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Subsample ratio must be between"
+            throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
 
         if ($tolerance < 0.) {
-            throw new InvalidArgumentException("Tolerance cannot be less than"
+            throw new InvalidArgumentException('Tolerance cannot be less than'
                 . " 0, $tolerance given.");
         }
 
@@ -156,8 +156,8 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
         }
 
         if ($base->type() !== self::REGRESSOR) {
-            throw new InvalidArgumentException("Base estimator must be a"
-                . " regressor, " . self::TYPES[$base->type()] . " given.");
+            throw new InvalidArgumentException('Base estimator must be a'
+                . ' regressor, ' . self::TYPES[$base->type()] . ' given.');
         }
 
         $this->booster = $booster;

@@ -21,13 +21,15 @@ use RuntimeException;
 
 class GridSearchTest extends TestCase
 {
-    const TRAIN_SIZE = 250;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.33;
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -40,6 +42,8 @@ class GridSearchTest extends TestCase
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [new Euclidean(), new Manhattan()],
         ], new F1Score(), new HoldOut(0.2));
+
+        $this->metric = new F1Score();
     }
 
     public function test_build_meta_estimator()
@@ -56,18 +60,18 @@ class GridSearchTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_predict_proba()
+    public function test_train_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($training);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $predictions = $this->estimator->predict($testing);
 
-        foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
-        }
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 }

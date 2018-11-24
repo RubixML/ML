@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\Adaline;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -19,7 +20,8 @@ use RuntimeException;
 
 class AdalineTest extends TestCase
 {
-    const TOLERANCE = 3;
+    const TEST_SIZE = 5;
+    const MIN_SCORE = 0.6;
 
     protected $estimator;
 
@@ -27,13 +29,17 @@ class AdalineTest extends TestCase
 
     protected $testing;
 
+    protected $metric;
+
     public function setUp()
     {
         $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
-        $this->testing = $this->training->randomize()->head(3);
+        $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
 
         $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, new HuberLoss(1.));
+
+        $this->metric = new RSquared();
 
         $this->estimator->setLogger(new BlackHole());
     }
@@ -59,9 +65,9 @@ class AdalineTest extends TestCase
 
         $predictions = $this->estimator->predict($this->testing);
 
-        foreach ($predictions as $i => $prediction) {
-            $this->assertEquals($this->testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $score = $this->metric->score($predictions, $this->testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

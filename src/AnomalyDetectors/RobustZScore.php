@@ -68,13 +68,13 @@ class RobustZScore implements Learner, Persistable
     public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
     {
         if ($tolerance < 0.) {
-            throw new InvalidArgumentException("Score tolerance must be"
-                . " 0 or greater, $tolerance given.");
+            throw new InvalidArgumentException('Tolerance must be 0 or'
+                . " greater, $tolerance given.");
         }
 
         if ($threshold < 0.) {
-            throw new InvalidArgumentException("Score threshold must be"
-                . " 0 or greater, $threshold given.");
+            throw new InvalidArgumentException('Threshold must be 0 or'
+                . " greater, $threshold given.");
         }
 
         $this->tolerance = $tolerance;

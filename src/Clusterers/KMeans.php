@@ -69,12 +69,12 @@ class KMeans implements Online, Persistable
     public function __construct(int $k, ?Distance $kernel = null, int $epochs = PHP_INT_MAX)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException("Must target at least one"
+            throw new InvalidArgumentException('Must target at least one'
                 . " cluster, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 

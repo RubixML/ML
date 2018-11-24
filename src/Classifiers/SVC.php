@@ -142,7 +142,7 @@ class SVC implements Learner, Persistable
 
         $data = [];
 
-        foreach ($dataset->samples() as $i => $sample) {
+        foreach ($dataset as $i => $sample) {
             $data[] = array_merge([$mapping[$labels[$i]]], $sample);
         }
 

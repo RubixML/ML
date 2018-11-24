@@ -99,17 +99,17 @@ class MeanShift implements Learner, Verbose, Persistable
                                 float $minChange = 1e-4)
     {
         if ($radius <= 0.) {
-            throw new InvalidArgumentException("Cluster radius must be"
+            throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 

@@ -79,12 +79,12 @@ class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistab
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException("Ensemble must train at least"
+            throw new InvalidArgumentException('Ensemble must train at least'
                 . " 1 estimator, $estimators given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Subsample ratio must be between"
+            throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
 

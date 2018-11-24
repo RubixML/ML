@@ -15,6 +15,7 @@ use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -22,12 +23,14 @@ use RuntimeException;
 class CommitteeMachineTest extends TestCase
 {
     const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.33;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -42,6 +45,8 @@ class CommitteeMachineTest extends TestCase
             new KNearestNeighbors(3, new Euclidean()),
             new GaussianNB(),
         ]);
+
+        $this->metric = new Accuracy();
     }
 
     public function test_build_classifier()
@@ -59,19 +64,19 @@ class CommitteeMachineTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_predict_proba()
+    public function test_train_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($training);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $predictions = $this->estimator->predict($testing);
 
-        foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
-        }
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

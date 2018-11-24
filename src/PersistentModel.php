@@ -6,8 +6,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Traits\LoggerAware;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Persistent Model

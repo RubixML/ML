@@ -64,7 +64,7 @@ class OneHotEncoder implements Stateful
             foreach ($this->categories as $column => $categories) {
                 $features = array_fill_keys($categories, 0);
 
-                $category = $sample[$column];
+                $category = $sample[$column] ?? null;
 
                 if (isset($categories[$category])) {
                     $features[$categories[$category]] = 1;

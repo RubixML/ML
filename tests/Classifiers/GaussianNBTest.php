@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -18,12 +19,14 @@ use RuntimeException;
 class GaussianNBTest extends TestCase
 {
     const TRAIN_SIZE = 100;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.33;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
     
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -34,6 +37,8 @@ class GaussianNBTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new GaussianNB(null);
+
+        $this->metric = new Accuracy();
     }
 
     public function test_build_classifier()
@@ -51,21 +56,23 @@ class GaussianNBTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_partial_predict_proba()
+    public function test_train_partial_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE / 3));
-        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
-        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
+        $folds = $training->stratifiedFold(3);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
 
-        foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
-        }
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

@@ -16,7 +16,7 @@ use RuntimeException;
  * K-d LOF
  *
  * A K-d tree accelerated version of Local Outlier Factor (LOF). Unlike brute
- * force LOF however, this estimator cannot be partially trained.
+ * force LOF, this estimator cannot be partially trained.
  * 
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
@@ -75,7 +75,7 @@ class KDLOF extends KDTree implements Learner, Persistable
      * @param  int  $k
      * @param  float  $contamination
      * @param  int  $maxLeafSize
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */

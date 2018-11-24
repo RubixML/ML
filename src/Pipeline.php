@@ -64,7 +64,7 @@ class Pipeline implements MetaEstimator, Online, Verbose, Persistable
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
                 throw new InvalidArgumentException('Pipeline only accepts'
-                    . ' transformers as middleware, ' . gettype($transformer)
+                    . ' transformer middleware, ' . gettype($transformer)
                     . ' found.');
             }
         }

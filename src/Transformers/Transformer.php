@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\ML\Datasets\DataFrame;
-
 interface Transformer
 {
     const EPSILON = 1e-8;

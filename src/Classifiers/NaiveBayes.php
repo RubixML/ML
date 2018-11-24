@@ -93,7 +93,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     public function __construct(float $alpha = 1.0, ?array $priors = null)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException("Alpha cannot be less"
+            throw new InvalidArgumentException('Alpha cannot be less'
                 . " than 0, $alpha given.");
         }
 

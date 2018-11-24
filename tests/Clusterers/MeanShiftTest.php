@@ -13,17 +13,21 @@ use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class MeanShiftTest extends TestCase
 {
-    const TEST_SIZE = 300;
-    const TOLERANCE = 3;
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -34,6 +38,8 @@ class MeanShiftTest extends TestCase
         ]);
 
         $this->estimator = new MeanShift(10.0, new Euclidean(), 100, 1e-4);
+
+        $this->metric = new VMeasure();
 
         $this->estimator->setLogger(new BlackHole());
     }
@@ -54,17 +60,17 @@ class MeanShiftTest extends TestCase
 
     public function test_train_predict()
     {
-        $dataset = $this->generator->generate(self::TEST_SIZE);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
 
-        $this->estimator->train($dataset);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($dataset);
+        $this->estimator->train($training);
 
-        $clusters = array_count_values($predictions);
+        $predictions = $this->estimator->predict($testing);
 
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[0], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[1], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[2], '', self::TOLERANCE);
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_predict_untrained()

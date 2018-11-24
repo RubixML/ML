@@ -163,33 +163,33 @@ class MLPRegressor implements Online, Verbose, Persistable
                             int $window = 3)
     {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException("Cannot have less than 1 sample"
+            throw new InvalidArgumentException('Cannot have less than 1 sample'
                 . " per batch, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException("L2 regularization penalty must"
+            throw new InvalidArgumentException('L2 regularization penalty must'
                 . " be non-negative, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 
         if ($holdout < 0.01 or $holdout > 0.5) {
-            throw new InvalidArgumentException("Holdout ratio must be"
-                . " between 0.01 and 0.5, $holdout given.");
+            throw new InvalidArgumentException('Holdout ratio must be between'
+                . " 0.01 and 0.5, $holdout given.");
         }
 
         if ($window < 2) {
-            throw new InvalidArgumentException("The window of epochs used for"
-                . " progress monitoring must be at least 2, $window given.");
+            throw new InvalidArgumentException('The window of epochs used for'
+                . " monitoring must be greater than 1, $window given.");
         }
 
         if (is_null($optimizer)) {
@@ -352,7 +352,7 @@ class MLPRegressor implements Online, Verbose, Persistable
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, score=$score loss=$loss");
 
-            if ($score === $max) {
+            if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
@@ -360,7 +360,11 @@ class MLPRegressor implements Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($epoch >= $this->window) {
+            if ($score === $max) {
+                break 1;
+            }
+
+            if ($epoch > $this->window) {
                 $window = array_slice($this->scores, -$this->window);
 
                 $worst = $window;

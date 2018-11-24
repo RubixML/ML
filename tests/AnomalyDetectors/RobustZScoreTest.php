@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -17,10 +18,13 @@ class RobustZScoreTest extends TestCase
 {
     const TRAIN_SIZE = 200;
     const TEST_SIZE = 10;
+    const MIN_SCORE = 0.8;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -30,6 +34,8 @@ class RobustZScoreTest extends TestCase
         ], [0.9, 0.1]);
 
         $this->estimator = new RobustZScore(1.8, 3.0);
+
+        $this->metric = new F1Score();
     }
 
     public function test_build_detector()
@@ -47,13 +53,17 @@ class RobustZScoreTest extends TestCase
 
     public function test_train_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($training);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_predict_untrained()

@@ -138,27 +138,27 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
         }
 
         if ($base->type() !== self::CLASSIFIER) {
-            throw new InvalidArgumentException("Base estimator must be a"
-                . " classifier, {$base->type()} given.");
+            throw new InvalidArgumentException('Base estimator must be a'
+                . ' classifier, ' . self::TYPES[$base->type()] . ' given.');
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException("Ensemble must contain at least"
+            throw new InvalidArgumentException('Ensemble must contain at least'
                 . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
-            throw new InvalidArgumentException("Learning rate must be greater"
+            throw new InvalidArgumentException('Learning rate must be greater'
                 . " than 0, $rate given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Subsample ratio must be between"
+            throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
 
         if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException("Validation error tolerance must"
+            throw new InvalidArgumentException('Validation error tolerance must'
                 . " be between 0 and 1, $tolerance given.");
         }
 

@@ -93,12 +93,12 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException("The number of estimators in the"
+            throw new InvalidArgumentException('The number of estimators in the'
                 . " ensemble cannot be less than 1, $estimators given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Subsample ratio must be between"
+            throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
 

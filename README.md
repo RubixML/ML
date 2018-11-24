@@ -1930,7 +1930,8 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 5 | momentum | 0.5 | float | The amount of momentum to carry over into the next update. |
 | 6 | epochs | 1000 | int | The number of times to iterate over the embedding. |
 | 7 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
-| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 8 | window | 5 | int | The training window to consider during early stop checking i.e. the last n epochs. |
+| 9 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 
 ##### Additional Methods:
 
@@ -1944,7 +1945,7 @@ public steps() : array
 use Rubi\ML\Manifold\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(2, 30, 12., 10., 0.5, 500, 1e-6, new Manhattan());
+$embedder = new TSNE(2, 30, 12., 10., 0.5, 500, 1e-6, 5, new Manhattan());
 ```
 
 ---

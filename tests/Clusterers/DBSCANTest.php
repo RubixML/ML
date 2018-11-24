@@ -8,16 +8,19 @@ use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 
 class DBSCANTest extends TestCase
 {
     const TEST_SIZE = 300;
-    const TOLERANCE = 3;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -25,9 +28,11 @@ class DBSCANTest extends TestCase
             'red' => new Blob([255, 0, 0], 3.),
             'green' => new Blob([0, 128, 0], 1.),
             'blue' => new Blob([0, 0, 255], 2.),
-        ]);
+        ], [3, 3, 4]);
 
         $this->estimator = new DBSCAN(10.0, 75, new Euclidean());
+
+        $this->metric = new VMeasure();
     }
 
     public function test_build_clusterer()
@@ -43,14 +48,12 @@ class DBSCANTest extends TestCase
 
     public function test_train_predict()
     {
-        $dataset = $this->generator->generate(self::TEST_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $predictions = $this->estimator->predict($dataset);
+        $predictions = $this->estimator->predict($testing);
 
-        $clusters = array_count_values($predictions);
+        $score = $this->metric->score($predictions, $testing->labels());
 
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[0], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[1], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[2], '', self::TOLERANCE);
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 }

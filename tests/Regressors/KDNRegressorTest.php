@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Regressors\KDNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -17,18 +18,22 @@ use RuntimeException;
 class KDNRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
         $this->estimator = new KDNRegressor(3, 10, new Minkowski(3.0), true);
+        
+        $this->metric = new RSquared();
     }
 
     public function test_build_regressor()
@@ -47,15 +52,17 @@ class KDNRegressorTest extends TestCase
 
     public function test_train_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
         $testing = $this->generator->generate(self::TEST_SIZE);
         
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($training);
 
         $predictions = $this->estimator->predict($testing);
 
-        foreach ($predictions as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

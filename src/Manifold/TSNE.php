@@ -35,6 +35,12 @@ class TSNE implements Estimator, Verbose
 {
     use LoggerAware;
 
+    const INIT_MOMENTUM = 0.5;
+    const MOMENTUM_BOOST = 0.3;
+
+    const INC_GAIN = 0.2;
+    const DEC_GAIN = 0.8;
+
     const BINARY_PRECISION = 100;
     const SEARCH_TOLERANCE = 1e-5;
 
@@ -99,13 +105,6 @@ class TSNE implements Estimator, Verbose
     protected $rate;
 
     /**
-     * The amount of momentum to carry over into the next update.
-     *
-     * @var float
-     */
-    protected $momentum;
-
-    /**
      * The minimum gradient necessary to continue fitting.
      *
      * @var float
@@ -143,7 +142,6 @@ class TSNE implements Estimator, Verbose
      * @param  float  $exaggeration
      * @param  int  $epochs
      * @param  float  $rate
-     * @param  float  $momentum
      * @param  float  $minGradient
      * @param  int  $window
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
@@ -151,8 +149,8 @@ class TSNE implements Estimator, Verbose
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                float $rate = 10., float $momentum = 0.5, int $epochs = 1000, float $minGradient = 1e-7,
-                int $window = 5, ?Distance $kernel = null)
+                    float $rate = 100., int $epochs = 1000, float $minGradient = 1e-7, int $window = 5,
+                    ?Distance $kernel = null)
     {
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Cannot embed into less than 1'
@@ -169,9 +167,9 @@ class TSNE implements Estimator, Verbose
              . " greater, $exaggeration given.");
         }
 
-        if ($epochs < 250) {
-            throw new InvalidArgumentException('Must iterate for at least 250'
-                . " epochs, $epochs given.");
+        if ($epochs < 1) {
+            throw new InvalidArgumentException('Estimator must train for at'
+                . " least 1 epoch, $epochs given.");
         }
 
         if ($rate <= 0.) {
@@ -179,14 +177,14 @@ class TSNE implements Estimator, Verbose
                 . " than 0, $rate given.");
         }
 
-        if ($momentum < 0. or $momentum > 1.) {
-            throw new InvalidArgumentException('Momentum must be between 0 and'
-                . " 1, $momentum given.");
-        }
-
         if ($minGradient < 0.) {
             throw new InvalidArgumentException('The minimum magnitude of the'
                 . " gradient must be 0 or greater, $minGradient given.");
+        }
+
+        if ($window < 2) {
+            throw new InvalidArgumentException('The window of epochs used for'
+                . " monitoring must be greater than 1, $window given.");
         }
 
         if (is_null($kernel)) {
@@ -199,9 +197,8 @@ class TSNE implements Estimator, Verbose
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->epochs = $epochs;
-        $this->early = (int) min(250, round($epochs / 4)) + 1;
+        $this->early = (int) max(250, round($epochs / 4));
         $this->rate = $rate;
-        $this->momentum = $momentum;
         $this->minGradient = $minGradient;
         $this->window = $window;
         $this->kernel = $kernel;
@@ -247,9 +244,8 @@ class TSNE implements Estimator, Verbose
                 'dimensions' => $this->dimensions,
                 'perplexity' => $this->perplexity,
                 'exaggeration' => $this->exaggeration,
-                'epochs' => $this->epochs,
                 'rate' => $this->rate,
-                'momentum' => $this->momentum,
+                'epochs' => $this->epochs,
                 'min_gradient' => $this->minGradient,
                 'window' => $this->window,
                 'kernel' => $this->kernel,
@@ -268,21 +264,15 @@ class TSNE implements Estimator, Verbose
             ->multiply($this->exaggeration);
 
         $y = $yHat = Matrix::gaussian($n, $this->dimensions)
-            ->multiply(1e-3);
+            ->multiply(1e-4);
 
         $velocity = Matrix::zeros($n, $this->dimensions);
         $gains = Matrix::ones($n, $this->dimensions)->asArray();
+        $momentum = self::INIT_MOMENTUM;
 
         $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            if ($epoch === $this->early) {
-                $p = $p->divide($this->exaggeration);
-
-                if ($this->logger) $this->logger->info('Early exaggeration'
-                    . ' stage exhausted');
-            }
-
             $distances = $this->pairwiseDistances($y);
 
             $q = $this->lowAffinities($distances);
@@ -291,19 +281,19 @@ class TSNE implements Estimator, Verbose
 
             $magnitude = $gradient->l2Norm();
 
-            $vHat = $velocity->multiply($gradient);
+            $direction = $velocity->multiply($gradient);
 
             foreach ($gains as $i => &$row) {
-                foreach ($row as $j => &$value) {
-                    $value = $vHat[$i][$j] > 0. ? $value + 0.2 : $value * 0.8;
+                foreach ($row as $j => &$gain) {
+                    $gain = $direction[$i][$j] > 0.
+                        ? $gain + self::INC_GAIN
+                        : $gain * self::DEC_GAIN;
                 }
             }
 
-            $gHat = Matrix::quick($gains);
+            $gradient = $gradient->multiply(Matrix::quick($gains));
 
-            $gradient = $gradient->multiply($gHat);
-
-            $velocity = $velocity->multiply($this->momentum)
+            $velocity = $velocity->multiply($momentum)
                 ->subtract($gradient->multiply($this->rate));
 
             $y = $y->subtract($velocity);
@@ -312,6 +302,10 @@ class TSNE implements Estimator, Verbose
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, gradient=$magnitude");
+
+            if (is_nan($magnitude)) {
+                break 1;
+            }
 
             if ($magnitude < $this->minGradient) {
                 break 1;
@@ -326,6 +320,15 @@ class TSNE implements Estimator, Verbose
                 if ($window === $worst) {
                     break 1;
                 }
+            }
+
+            if ($epoch === $this->early) {
+                $p = $p->divide($this->exaggeration);
+
+                $momentum += self::MOMENTUM_BOOST;
+
+                if ($this->logger) $this->logger->info('Early exaggeration'
+                    . ' stage exhausted');
             }
         }
 

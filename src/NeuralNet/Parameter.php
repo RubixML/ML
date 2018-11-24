@@ -8,8 +8,8 @@ use Rubix\Tensor\Matrix;
  * Parameter
  *
  * This wrapper enables parameters to be identified by object hash and thus
- * used as cache keys by gradient descent optimizers such as Adam, AdaGrad,
- * and RMS Prop.
+ * used as cache keys by adaptive gradient descent optimizers such as Adam,
+ * AdaGrad, and RMS Prop.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -42,7 +42,7 @@ class Parameter
     }
 
     /**
-     * Update the parameter Matrix.
+     * Mutate the parameter Matrix.
      *
      * @param  \Rubix\Tensor\Matrix  $step
      * @return void

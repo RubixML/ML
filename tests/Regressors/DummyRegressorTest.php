@@ -9,24 +9,29 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 
 class DummyRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 100;
-    const TEST_SIZE = 5;
-    const TOLERANCE = INF;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = -INF;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
         $this->estimator = new DummyRegressor(new Mean());
+
+        $this->metric = new RSquared();
     }
 
     public function test_build_regressor()
@@ -44,13 +49,17 @@ class DummyRegressorTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
-
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $this->estimator->train($training);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

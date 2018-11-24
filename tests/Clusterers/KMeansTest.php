@@ -11,17 +11,21 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class KMeansTest extends TestCase
 {
-    const TEST_SIZE = 300;
-    const TOLERANCE = 3;
+    const TRAIN_SIZE = 300;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -32,6 +36,8 @@ class KMeansTest extends TestCase
         ]);
 
         $this->estimator = new KMeans(3, new Euclidean(), 1000);
+
+        $this->metric = new VMeasure();
     }
 
     public function test_build_clusterer()
@@ -48,23 +54,23 @@ class KMeansTest extends TestCase
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
-    public function test_train_predict()
+    public function test_train_partial_predict()
     {
-        $dataset = $this->generator->generate(self::TEST_SIZE);
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
+        $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $folds = $dataset->stratifiedFold(3);
+        $folds = $training->stratifiedFold(3);
 
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
-        $predictions = $this->estimator->predict($dataset);
+        $predictions = $this->estimator->predict($testing);
 
-        $clusters = array_count_values($predictions);
+        $score = $this->metric->score($predictions, $testing->labels());
 
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[0], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[1], '', self::TOLERANCE);
-        $this->assertEquals(self::TEST_SIZE / 3, $clusters[2], '', self::TOLERANCE);
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_predict_untrained()

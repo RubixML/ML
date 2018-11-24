@@ -15,6 +15,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -23,12 +24,14 @@ use RuntimeException;
 class LogisticRegressionTest extends TestCase
 {
     const TRAIN_SIZE = 200;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.5;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -38,6 +41,8 @@ class LogisticRegressionTest extends TestCase
         ], [0.45, 0.55]);
 
         $this->estimator = new LogisticRegression(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
+
+        $this->metric = new Accuracy();
 
         $this->estimator->setLogger(new BlackHole());
     }
@@ -58,7 +63,7 @@ class LogisticRegressionTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_partial_predict_proba()
+    public function test_train_partial_predict()
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -75,13 +80,11 @@ class LogisticRegressionTest extends TestCase
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $predictions = $this->estimator->predict($testing);
 
-        foreach ($this->estimator->proba($testing) as $i => $prob) {
-            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
-        }
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

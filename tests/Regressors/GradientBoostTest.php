@@ -13,6 +13,7 @@ use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -20,19 +21,23 @@ use RuntimeException;
 class GradientBoostTest extends TestCase
 {
     const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
-    const TOLERANCE = 3;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.7;
 
     protected $generator;
 
     protected $estimator;
 
+    protected $metric;
+
     public function setUp()
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 30, 0.1, 0.5, 1e-4, new DummyRegressor(new Mean()));
+        $this->estimator = new GradientBoost(new RegressionTree(3), 50, 0.1, 0.5, 1e-4, new DummyRegressor(new Mean()));
     
+        $this->metric = new RSquared();
+
         $this->estimator->setLogger(new BlackHole());
     }
 
@@ -52,13 +57,17 @@ class GradientBoostTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $training = $this->generator->generate(self::TRAIN_SIZE);
 
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $this->estimator->train($training);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

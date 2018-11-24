@@ -110,22 +110,22 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                                 int $epochs = PHP_INT_MAX, float $minChange = 1e-4)
     {
         if ($c < 1) {
-            throw new InvalidArgumentException("Must target at least one"
+            throw new InvalidArgumentException('Must target at least one'
                 . " cluster, $c given.");
         }
 
         if ($fuzz <= 1.) {
-            throw new InvalidArgumentException("Fuzz factor must be greater"
+            throw new InvalidArgumentException('Fuzz factor must be greater'
                 . " than 1, $fuzz given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 

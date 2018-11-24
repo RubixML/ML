@@ -121,22 +121,22 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
                             int $epochs = 1000, float $minChange = 1e-4, ?CostFunction $costFn = null)
     {
         if ($batchSize < 1) {
-            throw new InvalidArgumentException("Cannot have less than 1 sample"
+            throw new InvalidArgumentException('Cannot have less than 1 sample'
                 . " per batch, $batchSize given.");
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException("L2 regularization penalty must"
+            throw new InvalidArgumentException('L2 regularization penalty must'
                 . " be non-negative, $alpha given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException("Estimator must train for at"
+            throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException("Minimum change cannot be less"
+            throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
         }
 
@@ -266,6 +266,10 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
             . " complete, loss=$loss");
+
+            if (is_nan($loss)) {
+                break 1;
+            }
 
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;

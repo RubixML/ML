@@ -6,9 +6,10 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Regressors\SVR;
-use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\Generators\SwissRoll;
+use Rubix\ML\Kernels\SVM\Polynomial;
+use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -16,18 +17,22 @@ use RuntimeException;
 class SVRTest extends TestCase
 {
     const TRAIN_SIZE = 300;
-    const TEST_SIZE = 5;
-    const TOLERANCE = 10;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = -INF;
 
     protected $generator;
 
     protected $estimator;
+    
+    protected $metric;
 
     public function setUp()
     {
-        $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
+        $this->generator = new HalfMoon(0., 0., 1., 90, 0.02);
 
-        $this->estimator = new SVR(1.0, 0.025, new RBF(1e-3), true, 1e-3);
+        $this->estimator = new SVR(0.1, 1e-3, new Polynomial(4), false, 1e-3);
+
+        $this->metric = new RSquared();
     }
 
     public function test_build_regressor()
@@ -45,13 +50,17 @@ class SVRTest extends TestCase
 
     public function test_train_predict()
     {
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $training = $this->generator->generate(self::TRAIN_SIZE);
 
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $this->estimator->train($training);
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

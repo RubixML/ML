@@ -71,35 +71,6 @@ class Stats
     }
 
     /**
-     * Calculate the median of a set of values.
-     *
-     * @param  array  $values
-     * @throws \InvalidArgumentException
-     * @return float
-     */
-    public static function median(array $values) : float
-    {
-        $n = count($values);
-
-        if ($n < 1) {
-            throw new InvalidArgumentException('Median is undefined for empty'
-                . ' set.');
-        }
-
-        $mid = intdiv($n, 2);
-
-        sort($values);
-
-        if ($n % 2 === 1) {
-            $median = $values[$mid];
-        } else {
-            $median = self::mean([$values[$mid - 1], $values[$mid]]);
-        }
-
-        return $median;
-    }
-
-    /**
      * Return the midrange of a set of values.
      *
      * @param  array  $values
@@ -158,6 +129,35 @@ class Stats
         }
 
         return $ssd / $n;
+    }
+
+    /**
+     * Calculate the median of a set of values.
+     *
+     * @param  array  $values
+     * @throws \InvalidArgumentException
+     * @return float
+     */
+    public static function median(array $values) : float
+    {
+        $n = count($values);
+
+        if ($n < 1) {
+            throw new InvalidArgumentException('Median is undefined for empty'
+                . ' set.');
+        }
+
+        $mid = intdiv($n, 2);
+
+        sort($values);
+
+        if ($n % 2 === 1) {
+            $median = $values[$mid];
+        } else {
+            $median = self::mean([$values[$mid - 1], $values[$mid]]);
+        }
+
+        return $median;
     }
 
     /**

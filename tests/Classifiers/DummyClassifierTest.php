@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -18,10 +19,13 @@ class DummyClassifierTest extends TestCase
 {
     const TRAIN_SIZE = 100;
     const TEST_SIZE = 5;
+    const MIN_SCORE = 0.;
 
     protected $estimator;
 
     protected $generator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -32,6 +36,8 @@ class DummyClassifierTest extends TestCase
         ], [0.7, 0.1, 0.2]);
 
         $this->estimator = new DummyClassifier(new PopularityContest());
+
+        $this->metric = new Accuracy();
     }
 
     public function test_build_classifier()
@@ -49,12 +55,16 @@ class DummyClassifierTest extends TestCase
 
     public function test_train_predict()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE));
+        $this->estimator->train($training);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertContains($prediction, $testing->possibleOutcomes());
-        }
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 }

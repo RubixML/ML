@@ -15,6 +15,7 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
@@ -25,12 +26,14 @@ use RuntimeException;
 class MLPRegressorTest extends TestCase
 {
     const TRAIN_SIZE = 400;
-    const TEST_SIZE = 5;
-    const TOLERANCE = 3;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.7;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -42,6 +45,8 @@ class MLPRegressorTest extends TestCase
             new Dense(10),
             new Activation(new LeakyReLU()),
         ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new LeastSquares(), 0.1, new MeanSquaredError(), 3);
+
+        $this->metric = new RSquared();
 
         $this->estimator->setLogger(new BlackHole());
     }
@@ -78,9 +83,11 @@ class MLPRegressorTest extends TestCase
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

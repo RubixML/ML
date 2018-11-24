@@ -79,7 +79,7 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
 
             if ($expert->type() !== self::CLASSIFIER) {
                 throw new InvalidArgumentException('Base estimator must be a'
-                    . ' classifier, ' . gettype($expert) . ' given.');
+                    . ' classifier, ' . self::TYPES[$expert->type()] . ' given.');
             }
 
             if (!$expert instanceof Probabilistic) {
@@ -90,9 +90,9 @@ class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, P
 
         if (is_array($influences)) {
             if (count($influences) !== $n) {
-                throw new InvalidArgumentException("The number of influence"
+                throw new InvalidArgumentException('The number of influence'
                     . " values must equal the number of experts, $n needed"
-                    . " but " . count($influences) . "given.");
+                    . ' but ' . count($influences) . 'given.');
             }
 
             $total = array_sum($influences);

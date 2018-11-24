@@ -12,6 +12,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -19,12 +20,14 @@ use RuntimeException;
 class KNearestNeighborsTest extends TestCase
 {
     const TRAIN_SIZE = 200;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.33;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -35,6 +38,8 @@ class KNearestNeighborsTest extends TestCase
         ], [3, 3, 4]);
 
         $this->estimator = new KNearestNeighbors(3, new Euclidean(), true);
+
+        $this->metric = new Accuracy();
     }
 
     public function test_build_classifier()
@@ -54,23 +59,21 @@ class KNearestNeighborsTest extends TestCase
 
     public function test_train_partial_predict_proba()
     {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($this->generator->generate(self::TRAIN_SIZE / 3));
-        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
-        $this->estimator->partial($this->generator->generate(self::TRAIN_SIZE / 3));
+        $folds = $training->stratifiedFold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
 
         $predictions = $this->estimator->predict($testing);
 
-        foreach ($predictions as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $score = $this->metric->score($predictions, $testing->labels());
 
-        $probabilities = $this->estimator->proba($testing);
-
-        foreach ($probabilities as $i => $prob) {
-            $this->assertGreaterThan(self::MIN_PROB, $prob[$testing->label($i)]);
-        }
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

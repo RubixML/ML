@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -19,12 +20,14 @@ use RuntimeException;
 class SVCTest extends TestCase
 {
     const TRAIN_SIZE = 200;
-    const TEST_SIZE = 5;
-    const MIN_PROB = 0.33;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
     protected $estimator;
+
+    protected $metric;
 
     public function setUp()
     {
@@ -34,6 +37,8 @@ class SVCTest extends TestCase
         ], [0.45, 0.55]);
 
         $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);
+
+        $this->metric = new Accuracy();
     }
 
     public function test_build_classifier()
@@ -62,9 +67,11 @@ class SVCTest extends TestCase
 
         $this->estimator->train($dataset);
 
-        foreach ($this->estimator->predict($testing) as $i => $prediction) {
-            $this->assertEquals($testing->label($i), $prediction);
-        }
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

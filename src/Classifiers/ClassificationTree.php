@@ -78,12 +78,12 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
                                 ?int $maxFeatures = null, float $tolerance = 1e-3)
     {   
         if (isset($maxFeatures) and $maxFeatures < 1) {
-            throw new InvalidArgumentException("Tree must consider at least 1"
+            throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
         }
 
         if ($tolerance < 0.) {
-            throw new InvalidArgumentException("Impurity tolerance must be 0"
+            throw new InvalidArgumentException('Impurity tolerance must be 0'
                 . " or greater, $tolerance given.");
         }
 

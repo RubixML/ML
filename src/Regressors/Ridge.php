@@ -55,8 +55,8 @@ class Ridge implements Learner, Persistable
     public function __construct(float $alpha = 1.)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException("L2 regularization penalty must"
-                . " be non-negative, $alpha given.");
+            throw new InvalidArgumentException('L2 regularization penalty must'
+                . " 0 or greater, $alpha given.");
         }
 
         $this->alpha = $alpha;

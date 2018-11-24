@@ -8,13 +8,15 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class RidgeTest extends TestCase
 {
-    const TOLERANCE = 3;
+    const TEST_SIZE = 5;
+    const MIN_SCORE = 0.9;
     
     protected $estimator;
 
@@ -22,13 +24,17 @@ class RidgeTest extends TestCase
 
     protected $testing;
 
+    protected $metric;
+
     public function setUp()
     {
         $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
-        $this->testing = $this->training->randomize()->head(3);
+        $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
 
         $this->estimator = new Ridge(1.0);
+
+        $this->metric = new RSquared();
     }
 
     public function test_build_regressor()
@@ -48,9 +54,11 @@ class RidgeTest extends TestCase
     {
         $this->estimator->train($this->training);
 
-        foreach ($this->estimator->predict($this->testing) as $i => $prediction) {
-            $this->assertEquals($this->testing->label($i), $prediction, '', self::TOLERANCE);
-        }
+        $predictions = $this->estimator->predict($this->testing);
+
+        $score = $this->metric->score($predictions, $this->testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
     public function test_train_with_unlabeled()

@@ -84,17 +84,17 @@ class IsolationForest implements Learner, Ensemble, Persistable
     public function __construct(int $estimators = 300, float $contamination = 0.1, float $ratio = 0.2)
     {
         if ($estimators < 1) {
-            throw new InvalidArgumentException("The number of estimators in the"
+            throw new InvalidArgumentException('The number of estimators in the'
                 . " ensemble cannot be less than 1, $estimators given.");
         }
 
         if ($contamination < 0.) {
-            throw new InvalidArgumentException("Contamination cannot be less"
+            throw new InvalidArgumentException('Contamination cannot be less'
                 . " than 0, $contamination given.");
         }
 
         if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException("Subsample ratio must be between"
+            throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
         }
 
