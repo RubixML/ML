@@ -91,6 +91,7 @@ MIT
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
+		- [HTML Stripper](#html-stripper)
 		- [Interval Discretizer](#interval-discretizer)
 		- [L1 Normalizer](#l1-normalizer)
 		- [L2 Normalizer](#l2-normalizer)
@@ -2237,6 +2238,23 @@ public static estimate(int $n, float $maxDistortion = 0.1) : int
 use Rubix\ML\Transformers\GaussianRandomProjector;
 
 $transformer = new GaussianRandomProjector(100);
+```
+
+### HTML Stripper
+Removes any HTML tags that may be in the text of a categorical variable.
+
+##### Categorical
+
+#### Parameters:
+This transformer does not have any parameters.
+
+#### Additional Methods:
+This transformer does not have any additional methods.
+
+```php
+use Rubix\ML\Transformers\HTMLStripper;
+
+$transformer = new HTMLStripper();
 ```
 
 ### Interval Discretizer

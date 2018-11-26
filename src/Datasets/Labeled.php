@@ -63,8 +63,14 @@ class Labeled extends DataFrame implements Dataset
      */
     public static function fromIterator(iterable $samples, iterable $labels) : self
     {
-        $samples = is_array($samples) ? $samples : iterator_to_array($samples);
-        $labels = is_array($labels) ? $labels : iterator_to_array($labels);
+        $samples = is_array($samples)
+            ? $samples
+            : iterator_to_array($samples, false);
+
+
+        $labels = is_array($labels)
+            ? $labels
+            : iterator_to_array($labels, false);
 
         return self::build($samples, $labels);
     }
