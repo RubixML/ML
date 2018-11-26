@@ -21,7 +21,11 @@ use svm;
  * purposes of regression analysis. Similarly to the Support Vector Machine Classifier,
  * the model produced by SVR (*R* for regression) depends only on a subset of the
  * training data, because the cost function for building the model ignores any training
- * data close to the model prediction given by parameter epsilon.
+ * data close to the model prediction given by parameter epsilon. The value of epsilon
+ * defines a margin of tolerance where no penalty is given to errors.
+ * 
+ * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
+ * engine written in C++ under the hood.
  * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.

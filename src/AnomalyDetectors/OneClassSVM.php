@@ -20,6 +20,9 @@ use svm;
  * SVM aims to find a maximum margin between a set of data points and the origin,
  * rather than between classes like the multiclass SVM.
  * 
+ * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
+ * engine written in C++ under the hood.
+ * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
  *

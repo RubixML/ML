@@ -17,13 +17,13 @@ use RuntimeException;
 /**
  * K-d Neighbors
  *
- * A fast K Nearest Neighbors algorithm that uses a K-d tree to divide the training
- * set into neighborhoods whose max size are constrained by the neighborhood
- * hyperparameter. K-d Neighbors does a binary search to locate the nearest
- * neighborhood and then searches only the points close to or within the neighborhood
- * for the nearest k to make a prediction. The main advantage K-d Neighbors has over
- * regular brute force KNN is that it is faster, however it cannot be partially
- * trained.
+ * A fast K Nearest Neighbors algorithm that uses a K-d tree to divide the
+ * training set into neighborhoods whose max size are controlled by the max
+ * leaf size parameter. K-d Neighbors does a binary search to locate the
+ * nearest neighborhood and then prunes all neighborhood whose bounding box
+ * is further than the kth nearest neighbor found so far. The main advantage
+ * K-d Neighbors has over regular brute force KNN is that it is faster, however
+ * it cannot be partially trained.
  *
  * References:
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for

@@ -18,9 +18,12 @@ use RuntimeException;
 /**
  * AdaBoost
  *
- * Short for Adaptive Boosting, this ensemble classifier can improve the
- * performance of an otherwise weak classifier by focusing more attention on
+ * Short for *Adaptive Boosting*, this ensemble classifier can improve the
+ * performance of an otherwise *weak* classifier by focusing more attention on
  * samples that are harder to classify.
+ *
+ * > **Note**: The default base classifier is a *Decision Stump* i.e a
+ * Classification Tree with a max depth of 1.
  *
  * References:
  * [1] Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line

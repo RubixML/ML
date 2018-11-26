@@ -11,11 +11,10 @@ use RuntimeException;
 /**
  * Bootstrap Aggregator
  *
- * Bootstrap Aggregating (or bagging) is a model averaging technique designed to
- * improve the stability and performance of a user-specified base Estimator by
- * training a number of them on a unique bootstrapped training set. Bootstrap
- * Aggregator then collects all of their predictions and makes a final
- * prediction based on the results.
+ * Bootstrap Aggregating (or *bagging* for short) is a model averaging
+ * technique designed to improve the stability and performance of a
+ * user-specified base estimator by training a number of them on a unique
+ * *bootstrapped* training set sampled at random with replacement.
  * 
  * References:
  * [1] L. Breiman. (1996). Bagging Predictors.

@@ -19,8 +19,11 @@ use RuntimeException;
  * Committee Machine
  *
  * A voting ensemble that aggregates the predictions of a committee of heterogeneous
- * probabilistic classifiers (called experts). The committee uses a user-specified
- * influence-based scheme to make final predictions.
+ * classifiers (called *experts*). The committee uses a user-specified influence-based
+ * scheme to sway final predictions.
+ *
+ * > **Note**: Influence values can be arbitrary as they are normalized upon object
+ * creation.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

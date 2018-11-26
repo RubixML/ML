@@ -21,6 +21,9 @@ use svm;
  * that can efficiently perform non-linear classification by implicitly mapping
  * feature vectors into high dimensional feature space.
  * 
+ * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
+ * engine written in C++ under the hood.
+ * 
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
  * [2] C. Cortes et al. (1995). Support-Vector Networks.

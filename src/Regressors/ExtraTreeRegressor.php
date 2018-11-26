@@ -10,11 +10,12 @@ use InvalidArgumentException;
 /**
  * Extra Tree Regressor
  *
- * An Extremely Randomized Regression Tree. Extra Trees differ from standard
- * Regression Trees in that they choose a random split drawn from max features.
- * When max features is set to 1 this amounts to building a totally random
- * tree. Extra Tree can be used in an Ensemble, such as Bootstrap Aggregator, or
- * by itself, however, it is generally considered a weak learner by itself.
+ * An *Extremely Randomized* Regression Tree, these trees differ from standard
+ * Regression Trees in that they choose a split drawn from a set random set
+ * determined by max features, rather than searching the entire column.
+ *
+ * > **Note**: Decision tree based algorithms can handle both categorical and
+ * continuous features at the same time.
  *
  * References:
  * [1] P. Geurts et al. (2005). Extremely Randomized Trees.

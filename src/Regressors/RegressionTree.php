@@ -21,8 +21,11 @@ use RuntimeException;
 /**
  * Regression Tree
  *
- * A Leaf Tree learning algorithm that performs greedy splitting by
- * minimizing the variance (*impurity*) among Leaf node splits.
+ * A Decision Tree learning algorithm (CART) that performs greedy splitting
+ * by minimizing the variance (*impurity*) among decision node splits.
+ *
+ * > **Note**: Decision tree based algorithms can handle both categorical
+ * and continuous features at the same time.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -19,9 +19,13 @@ use RuntimeException;
 /**
  * Gradient Boost
  *
- * Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent
- * boosting paradigm for training *weak* regressors (usually Regression Trees) to
- * correct the error residuals of a base learner.
+ * Gradient Boost is a stage-wise additive ensemble that uses a Gradient
+ * Descent boosting paradigm for training *weak* regressors (using
+ * Regression Trees) to correct the error residuals of a base learner.
+ *
+ * > **Note**: The default base classifier is a Dummy Classifier using the
+ * *Mean* Strategy and the default booster is a Regression Tree with a max
+ * depth of 3.
  *
  * References:
  * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient

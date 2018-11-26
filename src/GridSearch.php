@@ -17,13 +17,10 @@ use ReflectionClass;
 /**
  * Grid Search
  *
- * Grid Search is an algorithm that optimizes hyperparameter selection. From the
- * user’s perspective, the process of training and predicting is the same,
- * however, under the hood, Grid Search trains one Estimator per combination of
- * parameters and predictions are made using the best Estimator. You can access
- * the scores for each parameter combination by calling the results() method on
- * the trained Grid Search meta-Estimator or you can get the best parameters by
- * calling best().
+ * Grid Search is an algorithm that optimizes hyper-parameter selection. From
+ * the user's perspective, the process of training and predicting is the same,
+ * however, under the hood, Grid Search trains one estimator per combination
+ * of parameters and the best model is selected as the base estimator.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

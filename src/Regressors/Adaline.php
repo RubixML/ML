@@ -26,7 +26,7 @@ use RuntimeException;
  *
  * Adaptive Linear Neuron or (*Adaline*) is a type of single layer neural network
  * with a linear output neuron. Training is equivalent to solving Ridge regression
- * iteratively online using Gradient Descent.
+ * iteratively using Gradient Descent.
  *
  * References:
  * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical

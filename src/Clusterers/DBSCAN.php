@@ -13,9 +13,11 @@ use InvalidArgumentException;
  * DBSCAN
  *
  * Density-Based Spatial Clustering of Applications with Noise is a clustering
- * algorithm able to find non-linearly separable and arbitrarily-shaped
- * clusters. In addition, DBSCAN also has the ability to mark outliers as noise
- * and thus can be used as a quasi Anomaly Detector as well.
+ * algorithm able to find non-linearly separable and arbitrarily-shaped clusters.
+ * In addition, DBSCAN also has the ability to mark outliers as *noise* and thus
+ * can be used as a quasi Anomaly Detector.
+ *
+ * > **Note**: Noise samples are assigned the cluster number *-1*.
  *
  * References:
  * [1] M. Ester et al. (1996). A Densty-Based Algorithmfor Discovering Clusters.

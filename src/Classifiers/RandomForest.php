@@ -57,6 +57,14 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
     protected $ratio;
 
     /**
+     * The maximum number of processor threads to use when training
+     * the ensemble.
+     * 
+     * @var int
+     */
+    protected $threads;
+
+    /**
      * The possible class outcomes.
      *
      * @var array
@@ -78,10 +86,12 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
      * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $ratio
+     * @param  int  $threads
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1,
+                                int $threads = 4)
     {
         if (is_null($base)) {
             $base = new ClassificationTree();
@@ -105,6 +115,7 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->threads = $threads;
     }
 
     /**
@@ -172,14 +183,14 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
 
         $this->forest = [];
 
-        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
-            $tree = clone $this->base;
+        for ($i = 0; $i < $this->estimators; $i++) {
+            $estimator = clone $this->base;
 
             $subset = $dataset->randomSubsetWithReplacement($k);
 
-            $tree->train($subset);
+            $estimator->train($subset);
 
-            $this->forest[] = $tree;
+            $this->forest[] = $estimator;
         }
     }
 

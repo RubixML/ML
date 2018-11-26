@@ -28,11 +28,16 @@ use RuntimeException;
 /**
  * MLP Regressor
  *
- * A Neural Network with a continuous output layer suitable for regression
- * problems. The MLP also features progress monitoring which means that it will
- * automatically stop training when it can no longer make progress. It also
- * utilizes snapshotting to make sure that it always uses the best parameters
- * even if progress declined during training.
+ * A multi layer Neural Network with a continuous output layer suitable
+ * for regression problems.
+ *
+ * > **Note**: The MLP features progress monitoring which stops training
+ * when it can no longer make progress. It also utilizes snapshotting to
+ * make sure that it always uses the best parameters even if progress may
+ * have declined during training.
+ * 
+ * References:
+ * [1] G. E. Hinton. (1989). Connectionist learning procedures.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

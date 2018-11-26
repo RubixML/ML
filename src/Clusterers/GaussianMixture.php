@@ -19,7 +19,7 @@ use RuntimeException;
 /**
  * Gaussian Mixture
  *
- * A Gaussian Mixture model is a probabilistic model for representing the
+ * A Gaussian Mixture model (GMM) is a probabilistic model for representing the
  * presence of clusters within an overall population without requiring a sample
  * to know which sub-population it belongs to a priori. GMMs are similar to
  * centroid-based clusterers like K Means but allow not just the means to

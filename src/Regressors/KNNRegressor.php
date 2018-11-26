@@ -16,9 +16,13 @@ use RuntimeException;
 /**
  * KNN Regressor
  *
- * A version of K Nearest Neighbors that uses the mean outcome of K nearest
- * data points to make continuous valued predictions suitable for regression
- * problems.
+ * A version of K Nearest Neighbors that uses the mean outcome of K
+ * nearest data points to make continuous valued predictions suitable
+ * for regression problems.
+ *
+ * > **Note**: K Nearest Neighbors is considered a *lazy* learning
+ * estimator because it does the majority of its computation at
+ * prediction time.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

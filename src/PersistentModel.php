@@ -10,11 +10,11 @@ use Rubix\ML\Other\Traits\LoggerAware;
 /**
  * Persistent Model
  *
- * It is possible to persist a model to disk by wrapping the Estimator instance
- * in a Persistent Model meta-Estimator. The Persistent Model class gives the
- * Estimator two additional methods save() and restore() that serialize and
- * unserialize to and from disk. In order to be persisted the Estimator must
- * implement the Persistable interface.
+ * It is possible to persist a model by wrapping the estimator instance
+ * in a Persistent Model meta-estimator. The Persistent Model wrapper
+ * gives the estimator three additional methods `save()`, `load()`, and
+ * `prompt()` that allow the estimator to be saved and retrieved from
+ * storage.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

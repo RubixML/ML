@@ -16,13 +16,12 @@ use RuntimeException;
 /**
  * Naive Bayes
  *
- * Probability-based classifier that uses probabilistic inference to derive the
- * predicted class. The posterior probabilities are calculated using [Bayes'
- * Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part
- * relates to the fact that it assumes that all features are independent. In
- * practice, the independent assumption tends to work out most of the time
- * despite most features being correlated in the real world.
- *
+ * Probability-based classifier that uses inference to derive the predicted class.
+ * The posterior probabilities are calculated using Bayes' Theorem and the naive
+ * part relates to the fact that it assumes that all features are independent. In
+ * practice, the independent assumption tends to work out most of the time despite
+ * most features being correlated in the real world.
+ 
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

@@ -13,11 +13,14 @@ use RuntimeException;
 /**
  * Robust Z Score
  *
- * A quick global anomaly Detector, Robust Z Score uses a threshold to detect
- * outliers within a Dataset. The modified Z score consists of taking the median
- * and median absolute deviation (MAD) instead of the mean and standard
- * deviation thus making the statistic more robust to training sets that may
- * already contain outliers.
+ * A quick *global* anomaly detector that uses a robust Z score to score and
+ * detect outliers within a dataset. The modified Z score consists of taking
+ * the median and median absolute deviation (MAD) instead of the mean and
+ * standard deviation (*standard* Z score) thus making the statistic more
+ * robust to training sets that may already contain outliers. Outliers can be
+ * flagged in one of two ways. First, their average Z score can be above the
+ * user-defined tolerance level or an individual feature's score could be above
+ * the threshold (*hard* limit).
  *
  * References:
  * [1] P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.

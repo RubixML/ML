@@ -30,11 +30,18 @@ use RuntimeException;
 /**
  * Multi Layer Perceptron
  *
- * Multiclass Neural Network model that uses a series of user-defined Hidden
- * Layers as intermediate computational units. The MLP features progress
- * monitoring which means that it will automatically stop training when it can
- * no longer make progress. It also utilizes snapshotting to make sure that it
- * always uses the best parameters even if progress declined during training.
+ * A multiclass feedforward Neural Network classifier that uses a series of
+ * user-defined hidden layers as intermediate computational units. Multiple
+ * layers and non-linear activation functions allow the Multi Layer Perceptron
+ * to handle complex non-linear problems.
+ *
+ * > **Note**: The MLP features progress monitoring which stops training when it can
+ * no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure
+ * that it always uses the best parameters even if progress may have declined during
+ * training.
+ * 
+ * References:
+ * [1] G. E. Hinton. (1989). Connectionist learning procedures.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
