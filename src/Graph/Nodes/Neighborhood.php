@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 
 /**
@@ -29,9 +28,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
      *
      * @var array
      */
-    protected $labels = [
-        //
-    ];
+    protected $labels;
 
     /**
      * The multivariate minimum of the bounding box around the samples
@@ -50,10 +47,10 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     protected $max;
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function __construct(Dataset $dataset)
+    public function __construct(Labeled $dataset)
     {
         $min = $max = [];
 
@@ -65,10 +62,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
         $this->min = $min;
         $this->max = $max;
         $this->samples = $dataset->samples();
-
-        if ($dataset instanceof Labeled) {
-            $this->labels = $dataset->labels();
-        }
+        $this->labels = $dataset->labels();
     }
 
     /**

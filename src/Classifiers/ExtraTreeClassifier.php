@@ -45,7 +45,7 @@ class ExtraTreeClassifier extends ClassificationTree
         shuffle($this->columns);
 
         foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
-            $sample = $dataset->row(rand(0, $max));
+            $sample = $dataset[rand(0, $max)];
 
             $value = $sample[$column];
 

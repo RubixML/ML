@@ -220,7 +220,7 @@ class KMeans implements Online, Persistable
         for ($i = 0; $i < $this->k; $i++) {
             $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
 
-            $centroids[] = $subset->row(0);
+            $centroids[] = $subset[0];
 
             if ($i === $this->k) {
                 break 1;

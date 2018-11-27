@@ -4,7 +4,6 @@ namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
-use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
@@ -35,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Learner, Ensemble, Verbose, Persistable
+class GradientBoost implements Learner, Verbose, Persistable
 {
     use LoggerAware;
 
@@ -220,6 +219,7 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
+                'tolerance' => $this->tolerance,
                 'base' => $this->base,
             ]));
 

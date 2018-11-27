@@ -304,7 +304,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         for ($i = 0; $i < $this->c; $i++) {
             $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
 
-            $centroids[] = $subset->row(0);
+            $centroids[] = $subset[0];
 
             if ($i === $this->c) {
                 break 1;

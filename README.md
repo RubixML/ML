@@ -231,9 +231,11 @@ MIT
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
+	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
     - [What is a Tuple?](#what-is-a-tuple)
 	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
-	- [Do you support reinforcement learning?](#do-you-support-reinforcement-learning)
+	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
+	- [Do you support Reinforcement Learning?](#do-you-support-reinforcement-learning)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -4716,8 +4718,16 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU multithreading to some Estimators in the future.
 
-### Do you support reinforcement learning?
+### Does Rubix support Deep Learning?
+Yes. Rubix supports Deep (Representational) Learning through a number of learners including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
+
+### Do you support Reinforcement Learning?
 We do not. Rubix currently employs *supervised* and *unsupervised* learning, however we might support it in the future.
+
+### I'm getting out of memory errors
+Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
+
+> **Note**: Machine Learning typically requires alot of memory. Depending on the size of your model, your system memory, and the amount of data, you may need to do batch training. See [Online](#online) estimators.
 
 ---
 ## Testing

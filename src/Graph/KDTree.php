@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
@@ -90,10 +89,10 @@ class KDTree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return void
      */
-    public function grow(Dataset $dataset) : void
+    public function grow(Labeled $dataset) : void
     {
         $this->dimensionality = $dataset->numColumns();
 
@@ -219,7 +218,7 @@ class KDTree implements Tree
         $distances = array_slice($distances, 0, $k);
         $labels = array_slice($labels, 0, $k);
 
-        return [$distances, $labels];
+        return [$labels, $distances];
     }
 
     /**
@@ -255,11 +254,11 @@ class KDTree implements Tree
     /**
      * Find the best split of a given subset of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Coordinate
      */
-    protected function findBestSplit(Dataset $dataset, int $depth) : Coordinate
+    protected function findBestSplit(Labeled $dataset, int $depth) : Coordinate
     {
         $column = $depth % $this->dimensionality;
 

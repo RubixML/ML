@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -46,7 +45,6 @@ class RandomForestTest extends TestCase
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Ensemble::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

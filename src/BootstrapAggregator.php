@@ -23,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BootstrapAggregator implements MetaEstimator, Learner, Ensemble, Persistable
+class BootstrapAggregator implements MetaEstimator, Learner, Persistable
 {
     /**
      * The base estimator instance.

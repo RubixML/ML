@@ -178,7 +178,7 @@ class ITree implements Tree
     {
         $column = rand(0, $dataset->numColumns() - 1);
 
-        $sample = $dataset->row(rand(0, count($dataset) - 1));
+        $sample = $dataset[rand(0, count($dataset) - 1)];
 
         $value = $sample[$column];
 

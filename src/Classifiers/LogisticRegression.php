@@ -312,9 +312,11 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
 
         $samples = Matrix::quick($dataset->samples())->transpose();
 
+        $activations = $this->network->infer($samples);
+
         $probabilities = [];
 
-        foreach ($this->network->infer($samples)->row(0) as $activation) {
+        foreach ($activations[0] as $activation) {
             $probabilities[] = [
                 $this->classes[0] => 1. - $activation,
                 $this->classes[1] => $activation,

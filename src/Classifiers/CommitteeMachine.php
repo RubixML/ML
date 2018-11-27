@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ensemble;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -29,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Ensemble, Probabilistic, Persistable
+class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The committee of experts. i.e. the ensemble of estimators.

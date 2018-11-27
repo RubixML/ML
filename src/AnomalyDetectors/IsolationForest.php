@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Learner, Ensemble, Persistable
+class IsolationForest implements Learner, Persistable
 {
     /**
      * The number of estimators to train in the ensemble.

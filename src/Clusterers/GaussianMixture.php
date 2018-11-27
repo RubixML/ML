@@ -317,6 +317,8 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         $labels = $clusterer->predict($dataset);
 
+        unset($clusterer);
+
         $bootstrap = Labeled::quick($dataset->samples(), $labels);
 
         $means = $variances = [];

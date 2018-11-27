@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ensemble;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -28,9 +27,9 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
+class RandomForest implements Learner, Probabilistic, Persistable
 {
-    const AVAILABLE_ESTIMATORS = [
+    const AVAILABLE_TREES = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];
@@ -97,7 +96,7 @@ class RandomForest implements Learner, Ensemble, Probabilistic, Persistable
             $base = new ClassificationTree();
         }
 
-        if (!in_array(get_class($base), self::AVAILABLE_ESTIMATORS)) {
+        if (!in_array(get_class($base), self::AVAILABLE_TREES)) {
             throw new InvalidArgumentException('Base estimator is not'
                 . ' compatible with this ensemble.');
         }
