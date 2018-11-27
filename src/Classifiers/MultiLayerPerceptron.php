@@ -380,7 +380,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 break 1;
             }
 
-            if ($score === $max) {
+            if ($loss < self::EPSILON or $score >= $max) {
                 break 1;
             }
 

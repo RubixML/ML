@@ -129,7 +129,7 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
      * @return void
      */
     public function __construct(?Learner $base = null, int $estimators = 100, float $rate = 1.,
-                                float $ratio = 0.8, float $tolerance = 1e-4)
+                                float $ratio = 0.8, float $tolerance = 1e-3)
     {
         if (is_null($base)) {
             $base = new ClassificationTree(1);
@@ -281,7 +281,11 @@ class AdaBoost implements Learner, Ensemble, Verbose, Persistable
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
 
-            if ($loss < $this->tolerance or $total <= 0.) {
+            if (is_nan($loss) or $total <= 0) {
+                break 1;
+            }
+
+            if ($loss < $this->tolerance) {
                 break 1;
             }
 

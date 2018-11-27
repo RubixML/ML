@@ -365,7 +365,7 @@ class MLPRegressor implements Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($score === $max) {
+            if ($loss < self::EPSILON or $score >= $max) {
                 break 1;
             }
 

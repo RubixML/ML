@@ -39,17 +39,10 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 {
     use LoggerAware;
 
-    const AVAILABLE_ESTIMATORS = [
+    const AVAILABLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];
-
-    /**
-     *  The base regressor to be boosted.
-     * 
-     * @var \Rubix\ML\Learner
-     */
-    protected $base;
 
     /**
      * The weak regressor that will fix up the error residuals of the base
@@ -81,19 +74,25 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
     protected $ratio;
 
     /**
-     *  The minimum change in the loss to continue training.
-     * 
+     * The minimum change in the cost function necessary to continue training.
+     *
      * @var float
      */
     protected $minChange;
 
     /**
-     * The amount of mean squared error to tolerate before early
-     * stopping.
+     * The amount of mean squared error to tolerate before early stopping.
      *
      * @var float
      */
     protected $tolerance;
+
+    /**
+     * The base regressor to be boosted.
+     * 
+     * @var \Rubix\ML\Learner
+     */
+    protected $base;
 
     /**
      * The ensemble of "weak" regressors.
@@ -115,29 +114,26 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
     /**
      * @param  \Rubix\ML\Learner|null  $booster
-     * @param  int  $estimators
      * @param  float  $rate
+     * @param  int  $estimators
      * @param  float  $ratio
+     * @param  float  $minChange
      * @param  float  $tolerance
      * @param  \Rubix\ML\Learner|null  $base
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $booster = null, int $estimators = 100, float $rate = 0.1,
-                                float $ratio = 0.8, float $tolerance = 1e-4, ?Learner $base = null)
+    public function __construct(?Learner $booster = null, float $rate = 0.1, int $estimators = 100,
+                                float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-3,
+                                ?Learner $base = null)
     {
         if (is_null($booster)) {
             $booster = new RegressionTree(3);
         }
 
-        if (!in_array(get_class($booster), self::AVAILABLE_ESTIMATORS)) {
+        if (!in_array(get_class($booster), self::AVAILABLE_BOOSTERS)) {
             throw new InvalidArgumentException('The estimator chosen as the'
                 . ' booster is not compatible with gradient boost.');
-        }
-
-        if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . " 1 estimator, $estimators given.");
         }
 
         if ($rate < 0.) {
@@ -145,9 +141,19 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
                 . " than 0, $rate given.");
         }
 
+        if ($estimators < 1) {
+            throw new InvalidArgumentException('Ensemble must contain at least'
+                . " 1 estimator, $estimators given.");
+        }
+
         if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Subsample ratio must be between'
                 . " 0.01 and 1, $ratio given.");
+        }
+
+        if ($minChange < 0.) {
+            throw new InvalidArgumentException('Minimum change cannot be less'
+                . " than 0, $minChange given.");
         }
 
         if ($tolerance < 0.) {
@@ -165,9 +171,10 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
         }
 
         $this->booster = $booster;
-        $this->estimators = $estimators;
         $this->rate = $rate;
+        $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->minChange = $minChange;
         $this->tolerance = $tolerance;
         $this->base = $base;
     }
@@ -208,12 +215,12 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
-                'base' => $this->base,
                 'booster' => $this->booster,
-                'estimators' => $this->estimators,
                 'rate' => $this->rate,
+                'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
-                'tolerance' => $this->tolerance,
+                'min_change' => $this->minChange,
+                'base' => $this->base,
             ]));
 
         $n = $dataset->numRows();
@@ -268,6 +275,14 @@ class GradientBoost implements Learner, Ensemble, Verbose, Persistable
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
+
+            if (is_nan($loss)) {
+                break 1;
+            }
+
+            if (abs($previous - $loss) < $this->minChange) {
+                break 1;
+            }
 
             if ($loss < $this->tolerance) {
                 break 1;

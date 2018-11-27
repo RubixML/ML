@@ -214,6 +214,10 @@ class MeanShift implements Learner, Verbose, Persistable
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, shift=$shift");
 
+            if (is_nan($shift)) {
+                break 1;
+            }
+
             if ($shift < $this->minChange) {
                 break 1;
             }

@@ -50,7 +50,6 @@ MIT
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
-			- [K-d LOF](#k-d-lof)
 			- [Local Outlier Factor](#local-outlier-factor)
 			- [One Class SVM](#one-class-svm)
 			- [Robust Z Score](#robust-z-score)
@@ -1093,30 +1092,6 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 $estimator = new IsolationForest(300, 0.01, 0.2);
 ```
 
-### K-d LOF
-A K-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) (LOF). Unlike brute force LOF, this estimator cannot be partially trained.
-
-##### Unsupervised | Learner | Persistable
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
-| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
-| 4 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-
-#### Additional Methods:
-This estimator does not have any additional methods.
-
-#### Example:
-```php
-use Rubix\ML\AnomalyDetection\KDLOF;
-use Rubix\ML\Kernels\Distance\Euclidean;
-
-$estimator = new KDLOF(10, 0.1, 20, new Euclidean());
-```
-
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
@@ -1215,7 +1190,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 1.0 | float | The learning rate i.e step size. |
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
-| 5 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
+| 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 #### Additional Methods:
 
@@ -1955,11 +1930,12 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | booster | Regression Tree | object | The *weak* regressor that will fix up the error residuals of the base learner. |
-| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 3 | rate | 0.1 | float | The learning rate of the ensemble. |
+| 2 | rate | 0.1 | float | The learning rate of the ensemble. |
+| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
-| 5 | tolerance | 1e-4 | float | The amount of validation error to tolerate before an early stop is considered. |
-| 6 | base | Dummy Regressor | object | The base regressor to be boosted. |
+| 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
+| 6 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before early stopping. |
+| 7 | base | Dummy Regressor | object | The base regressor to be boosted. |
 
 #### Additional Methods:
 
@@ -1975,7 +1951,7 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Other\Strategies\Mean;
 
-$estimator = new GradientBoost(new RegressionTree(3), 400, 0.1, 1e-4, new DummyRegressor(new Mean()));
+$estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3, new DummyRegressor(new Mean()));
 ```
 
 ### K-d Neighbors Regressor

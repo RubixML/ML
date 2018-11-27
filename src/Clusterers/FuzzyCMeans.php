@@ -234,6 +234,10 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             if ($this->logger) $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
 
+            if (is_nan($loss)) {
+                break 1;
+            }
+
             if (abs($previous - $loss) < $this->minChange) {
                 break 1;
             }
