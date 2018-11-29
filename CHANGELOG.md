@@ -1,4 +1,6 @@
 - Unreleased
+
+- 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor
     - Added One Class SVM anomaly detector
     - Added Verbose interface for logging

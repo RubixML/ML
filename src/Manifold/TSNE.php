@@ -35,11 +35,14 @@ class TSNE implements Estimator, Verbose
 {
     use LoggerAware;
 
+    const Y_INIT = 1e-4;
+
     const INIT_MOMENTUM = 0.5;
     const MOMENTUM_BOOST = 0.3;
 
     const INC_GAIN = 0.2;
     const DEC_GAIN = 0.8;
+    const MIN_GAIN = 0.01;
 
     const BINARY_PRECISION = 100;
     const SEARCH_TOLERANCE = 1e-5;
@@ -264,7 +267,7 @@ class TSNE implements Estimator, Verbose
             ->multiply($this->exaggeration);
 
         $y = $yHat = Matrix::gaussian($n, $this->dimensions)
-            ->multiply(1e-4);
+            ->multiply(self::Y_INIT);
 
         $velocity = Matrix::zeros($n, $this->dimensions);
         $gains = Matrix::ones($n, $this->dimensions)->asArray();
@@ -275,9 +278,7 @@ class TSNE implements Estimator, Verbose
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $distances = $this->pairwiseDistances($y);
 
-            $q = $this->lowAffinities($distances);
-
-            $gradient = $this->computeGradient($p, $q, $y, $distances);
+            $gradient = $this->gradient($p, $y, $distances);
 
             $magnitude = $gradient->l2Norm();
 
@@ -285,9 +286,11 @@ class TSNE implements Estimator, Verbose
 
             foreach ($gains as $i => &$row) {
                 foreach ($row as $j => &$gain) {
-                    $gain = $direction[$i][$j] > 0.
+                    $gain = $direction[$i][$j] < 0.
                         ? $gain + self::INC_GAIN
                         : $gain * self::DEC_GAIN;
+
+                    $gain = max(self::MIN_GAIN, $gain);
                 }
             }
 
@@ -296,7 +299,7 @@ class TSNE implements Estimator, Verbose
             $velocity = $velocity->multiply($momentum)
                 ->subtract($gradient->multiply($this->rate));
 
-            $y = $y->subtract($velocity);
+            $y = $y->add($velocity);
 
             $this->steps[] = $magnitude;
 
@@ -437,35 +440,23 @@ class TSNE implements Estimator, Verbose
     }
 
     /**
-     * Calculate the joint likelihood of each sample in the embedded space as
-     * being nearest neighbor to each other sample.
-     *
-     * @param  \Rubix\Tensor\Matrix  $distances
-     * @return \Rubix\Tensor\Matrix
-     */
-    protected function lowAffinities(Matrix $distances) : Matrix
-    {
-        $q = $distances->divide($this->degrees)->add(1.)
-            ->pow((1. + $this->degrees) / -2.);
-
-        $qSigma = $q->sum()->clip(self::EPSILON, INF)
-            ->multiply(2.);
-
-        return $q->divide($qSigma);
-    }
-
-    /**
      * Compute the gradient of the KL Divergence cost function with respect to
      * the embedding.
      *
      * @param  \Rubix\Tensor\Matrix  $p
-     * @param  \Rubix\Tensor\Matrix  $q
      * @param  \Rubix\Tensor\Matrix  $y
      * @param  \Rubix\Tensor\Matrix  $distances
      * @return \Rubix\Tensor\Matrix
      */
-    protected function computeGradient(Matrix $p, Matrix $q, Matrix $y, Matrix $distances) : Matrix
+    protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
+        $q = $distances->square()->divide($this->degrees)->add(1.)
+            ->pow((1. + $this->degrees) / -2.);
+
+        $qSigma = $q->sum()->multiply(2.);
+
+        $q = $q->divide($qSigma)->clip(self::EPSILON, INF);
+
         $pqd = $p->subtract($q)->multiply($distances);
 
         $c = 2. * (1. + $this->degrees) / $this->degrees;
@@ -473,9 +464,9 @@ class TSNE implements Estimator, Verbose
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
-            $yHat = $y->rowAsVector($i);
+            $yHat = $y->rowAsVector($i)->subtract($y);
             
-            $gradient[] = $row->matmul($y->subtract($yHat))
+            $gradient[] = $row->matmul($yHat)
                 ->multiply($c)
                 ->row(0);
         }
