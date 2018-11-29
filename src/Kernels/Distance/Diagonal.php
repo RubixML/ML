@@ -24,12 +24,12 @@ class Diagonal implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distances = [];
+        $deltas = [];
 
-        foreach ($a as $i => $coordinate) {
-            $distances[] = abs($coordinate - $b[$i]);
+        foreach ($a as $i => $value) {
+            $deltas[] = abs($value - $b[$i]);
         }
 
-        return max($distances);
+        return max($deltas);
     }
 }

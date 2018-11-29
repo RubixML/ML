@@ -62,7 +62,7 @@ class MissingDataImputer implements Stateful
     public function __construct($placeholder = '?', ?Continuous $continuous = null, ?Categorical $categorical = null)
     {
         if (!is_numeric($placeholder) and !is_string($placeholder)) {
-            throw new InvalidArgumentException('Placeholder must be a string or'
+            throw new InvalidArgumentException('Placeholder1D must be a string or'
                 . ' numeric type, ' . gettype($placeholder) . ' found.');
         }
 

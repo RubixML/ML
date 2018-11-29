@@ -7,7 +7,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\Layers\Activation;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
@@ -21,7 +21,7 @@ class SnapshotTest extends TestCase
 
     public function setUp()
     {
-        $this->network = new FeedForward(new Placeholder(1), [
+        $this->network = new FeedForward(new Placeholder1D(1), [
             new Dense(5),
             new Activation(new ELU()),
         ], new Binary(['yes', 'no'], 1e-4, new LeastSquares()), new Stochastic());

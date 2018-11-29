@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * > **Note**: Noise samples are assigned the cluster number *-1*.
  *
  * References:
- * [1] M. Ester et al. (1996). A Densty-Based Algorithmfor Discovering Clusters.
+ * [1] M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -18,7 +18,7 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -287,7 +287,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
-            new Placeholder($dataset->numColumns()),
+            new Placeholder1D($dataset->numColumns()),
             $this->hidden,
             new Multiclass($this->classes, $this->alpha, $this->costFn),
             $this->optimizer

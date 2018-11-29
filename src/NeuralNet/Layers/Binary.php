@@ -122,7 +122,7 @@ class Binary implements Output
             $costFunction = new CrossEntropy();
         }
 
-        $this->classes = [$classes[0] => 0, $classes[1] => 1];
+        $this->classes = array_flip(array_values($classes));
         $this->alpha = $alpha;
         $this->costFunction = $costFunction;
         $this->initializer = new Xavier1();

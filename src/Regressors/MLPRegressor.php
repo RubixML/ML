@@ -16,7 +16,7 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -276,7 +276,7 @@ class MLPRegressor implements Online, Verbose, Persistable
         }
 
         $this->network = new FeedForward(
-            new Placeholder($dataset->numColumns()),
+            new Placeholder1D($dataset->numColumns()),
             $this->hidden,
             new Continuous($this->alpha, $this->costFn),
             $this->optimizer

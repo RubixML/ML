@@ -73,10 +73,10 @@ class FeedForward implements Network
 
         $this->layers[] = $output;
 
-        $this->initialize();
-
         $this->optimizer = $optimizer;
         $this->backPass = array_reverse($this->hidden());
+
+        $this->initialize();
     }
 
     /**

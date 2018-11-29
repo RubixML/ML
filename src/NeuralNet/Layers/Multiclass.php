@@ -222,9 +222,13 @@ class Multiclass implements Output
         $expected = [];
 
         foreach ($this->classes as $i => $class) {
+            $joint = [];
+
             foreach ($labels as $label) {
-                $expected[$i][] = $class === $label ? 1. : 0.;
+                $joint[] = $class === $label ? 1. : 0.;
             }
+
+            $expected[] = $joint;
         }
 
         $expected = Matrix::quick($expected);

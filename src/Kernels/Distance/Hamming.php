@@ -29,8 +29,8 @@ class Hamming implements Distance
 
         $distance = 0;
 
-        foreach ($a as $i => $coordinate) {
-            if ($coordinate !== $b[$i]) {
+        foreach ($a as $i => $value) {
+            if ($value !== $b[$i]) {
                 $distance++;
             }
         }

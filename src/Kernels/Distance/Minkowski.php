@@ -61,8 +61,8 @@ class Minkowski implements Distance
     {
         $distance = 0.;
 
-        foreach ($a as $i => $coordinate) {
-            $distance += abs($coordinate - $b[$i]) ** $this->lambda;
+        foreach ($a as $i => $value) {
+            $distance += abs($value - $b[$i]) ** $this->lambda;
         }
 
         return $distance ** $this->inverse;

@@ -115,8 +115,8 @@ class TSNE implements Estimator, Verbose
     protected $minGradient;
 
     /**
-     * The training window to consider during early stop checking i.e. the last
-     * n epochs.
+     * The number of most recent epochs to consider when determining an early
+     * stop.
      *
      * @var int
      */
@@ -152,7 +152,7 @@ class TSNE implements Estimator, Verbose
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                    float $rate = 100., int $epochs = 1000, float $minGradient = 1e-7, int $window = 5,
+                    float $rate = 100., int $epochs = 1000, float $minGradient = 1e-8, int $window = 3,
                     ?Distance $kernel = null)
     {
         if ($dimensions < 1) {

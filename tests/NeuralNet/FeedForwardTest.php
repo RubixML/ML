@@ -11,7 +11,7 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +44,7 @@ class FeedForwardTest extends TestCase
             [0.002, 0.],
         ];
 
-        $this->input = new Placeholder(2);
+        $this->input = new Placeholder1D(2);
 
         $this->hidden = [
             new Dense(5),
@@ -71,7 +71,7 @@ class FeedForwardTest extends TestCase
 
     public function test_get_input_layer()
     {
-        $this->assertInstanceOf(Placeholder::class, $this->network->input());
+        $this->assertInstanceOf(Placeholder1D::class, $this->network->input());
     }
 
     public function test_get_hidden_layers()

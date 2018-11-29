@@ -26,9 +26,11 @@ class Jaccard implements Distance
     {
         $distance = $mins = $maxs = 0.;
 
-        foreach ($a as $i => $coordinate) {
-            $mins += min($coordinate, $b[$i]);
-            $maxs += max($coordinate, $b[$i]);
+        foreach ($a as $i => $valueA) {
+            $valueB = $b[$i];
+
+            $mins += min($valueA, $valueB);
+            $maxs += max($valueA, $valueB);
         }
 
         return 1. - ($mins / ($maxs ?: self::EPSILON));

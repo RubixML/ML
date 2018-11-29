@@ -85,7 +85,7 @@
     - Added Texture Histogram descriptor
     - Added Average Color descriptor
     - Removed parameters from Dropout and Alpha Dropout layers
-    - Added option to remove biases in Dense and Placeholder layers
+    - Added option to remove biases in Dense and Placeholder1D layers
     - Optimized Dataset objects
     - Optimized matrix and vector operations
     - Added grid params to Param helper

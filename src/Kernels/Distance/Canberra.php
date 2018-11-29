@@ -25,9 +25,11 @@ class Canberra implements Distance
     {
         $distance = 0.;
 
-        foreach ($a as $i => $coordinate) {
-            $distance += abs($coordinate - $b[$i])
-                / ((abs($coordinate) + abs($b[$i])) ?: self::EPSILON);
+        foreach ($a as $i => $valueA) {
+            $valueB = $b[$i];
+
+            $distance += abs($valueA - $valueB)
+                / ((abs($valueA) + abs($valueB)) ?: self::EPSILON);
         }
 
         return $distance;

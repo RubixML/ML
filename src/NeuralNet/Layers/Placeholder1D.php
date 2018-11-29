@@ -6,16 +6,16 @@ use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
- * Placeholder
+ * Placeholder 1D
  *
- * The Placeholder input layer serves to represent future input values as well
- * as add a bias to the forward pass.
+ * The Placeholder 1D input layer represents the *future* input values of a mini
+ * batch (matrix) of single dimensional tensors (vectors) to the neural network.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Placeholder implements Input
+class Placeholder1D implements Input
 {
     /**
      * The number of input nodes. i.e. feature inputs.

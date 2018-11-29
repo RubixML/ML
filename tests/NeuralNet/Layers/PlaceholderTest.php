@@ -5,7 +5,7 @@ namespace Rubix\ML\Tests\NeuralNet\Layers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use PHPUnit\Framework\TestCase;
 
 class PlaceholderTest extends TestCase
@@ -26,12 +26,12 @@ class PlaceholderTest extends TestCase
             [0.002, -6.],
         ]);
 
-        $this->layer = new Placeholder(3);
+        $this->layer = new Placeholder1D(3);
     }
 
     public function test_build_layer()
     {
-        $this->assertInstanceOf(Placeholder::class, $this->layer);
+        $this->assertInstanceOf(Placeholder1D::class, $this->layer);
         $this->assertInstanceOf(Input::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
     }

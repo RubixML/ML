@@ -4,7 +4,7 @@
 Rubix ML is a high-level machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
 
 - Fast and easy prototyping with user-friendly API
-- 40+ modern *supervised* and *unsupervised* learners
+- 40+ modern Supervised and Unsupervised learners
 - Modular architecture combines power and flexbility
 - Open source and free to use commercially
 
@@ -31,13 +31,17 @@ MIT
 
 ### Table of Contents
 
- - [Basic Introduction](#basic-introduction)
-	 - [Obtaining Data](#obtaining-data)
-	 - [Choosing an Estimator](#choosing-an-estimator)
-	 - [Training and Prediction](#training-and-prediction)
-	 - [Evaluation](#evaluating-model-performance)
-	 - [Visualization](#visualization)
-     - [Next Steps](#next-steps)
+- [Basic Introduction](#basic-introduction)
+	- [Obtaining Data](#obtaining-data)
+	- [Choosing an Estimator](#choosing-an-estimator)
+	- [Training and Prediction](#training-and-prediction)
+	- [Evaluation](#evaluating-model-performance)
+	- [Visualization](#visualization)
+    - [Next Steps](#next-steps)
+- Example Projects
+	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
+	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
+	- [Housing Price Predictor](https://github.com/RubixML/Housing)
 - [API Reference](#api-reference)
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
@@ -140,7 +144,7 @@ MIT
             - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
-				- [Placeholder](#placeholder)
+				- [Placeholder 1D](#placeholder-1d)
 			- [Hidden Layers](#hidden-layers)
                 - [Activation](#activation)
 				- [Alpha Dropout](#alpha-dropout)
@@ -1429,7 +1433,7 @@ A type of linear classifier that uses the logistic (*sigmoid*) function to disti
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs to execute. |
@@ -1583,7 +1587,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 4 | epochs | 1000 | int | The maximum number of training epochs to execute. |
@@ -1810,14 +1814,14 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | dimensions | 2 | int | The number of dimensions to embed the data into. |
+| 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
 | 4 | rate | 100. | float | The learning rate that controls the step size. |
 | 5 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 6 | min gradient | 1e-7 | float | The minimum gradient necessary to continue embedding. |
-| 7 | window | 5 | int | The training window to consider during early stop checking i.e. the last n epochs. |
-| 8 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 6 | min gradient | 1e-8 | float | The minimum gradient necessary to continue embedding. |
+| 7 | window | 3 | int | The number of most recent epochs to consider when determining an early stop. |
+| 7 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 
 #### Additional Methods:
 
@@ -1846,7 +1850,7 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network]
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | batch size | 50 | int | The number of training samples to process at a time. |
+| 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 4 | epochs | 100 | int | The maximum number of training epochs to execute. |
@@ -3122,19 +3126,19 @@ There are three types of layers that form a network, **Input**, **Hidden**, and 
 ### Input Layers
 The entry point for data into a neural network is the input layer which is the first layer in the network. Input layers do not have any learnable parameters.
 
-### Placeholder
-The Placeholder input layer serves to represent the *future* input values of a mini batch to the network.
+### Placeholder 1D
+The Placeholder 1D input layer represents the *future* input values of a mini batch (matrix) of single dimensional tensors (vectors) to the neural network.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | inputs | None | int | The number of inputs to the network. |
+| 1 | inputs | None | int | The number of inputs to the neural network. |
 
 #### Example:
 ```php
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 
-$layer = new Placeholder(100);
+$layer = new Placeholder1D(100);
 ```
 
 ### Hidden Layers

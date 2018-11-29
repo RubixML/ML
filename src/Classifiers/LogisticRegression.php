@@ -16,7 +16,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Layers\Placeholder;
+use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
@@ -116,7 +116,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $batchSize = 50, ?Optimizer $optimizer = null, float $alpha = 1e-4,
+    public function __construct(int $batchSize = 100, ?Optimizer $optimizer = null, float $alpha = 1e-4,
                             int $epochs = 1000, float $minChange = 1e-4, ?CostFunction $costFn = null)
     {
         if ($batchSize < 1) {
@@ -200,7 +200,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
         $this->classes = $dataset->possibleOutcomes();
 
         $this->network = new FeedForward(
-            new Placeholder($dataset->numColumns()),
+            new Placeholder1D($dataset->numColumns()),
             [],
             new Binary($this->classes, $this->alpha, $this->costFn),
             $this->optimizer

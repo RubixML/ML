@@ -132,7 +132,7 @@ class IsolationForest implements Learner, Persistable
 
         $this->forest = [];
 
-        for ($epoch = 0; $epoch < $this->estimators; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $tree = new ITree($maxDepth);
 
             $subset = $dataset->randomize()->head($p);
