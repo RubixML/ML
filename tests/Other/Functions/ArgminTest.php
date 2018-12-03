@@ -7,23 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 class ArgminTest extends TestCase
 {
-    protected $values;
-
-    protected $outcome;
-
     public function setUp()
     {
-        $this->values = [
-            'yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0,
-        ];
-
-        $this->outcome = 'maybe';
+        //
     }
 
     public function test_compute()
     {
-        $value = Argmin::compute($this->values);
+        $value = Argmin::compute(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);
 
-        $this->assertEquals($this->outcome, $value);
+        $this->assertEquals('maybe', $value);
     }
 }

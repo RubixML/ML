@@ -120,7 +120,17 @@ class Ridge implements Learner, Persistable
         $x = Matrix::build($samples)->augmentLeft($biases);
         $y = Vector::build($labels);
 
-        $coefficients = $this->computeCoefficients($x, $y)->asArray();
+        $alphas = array_fill(0, $x->n() - 1, $this->alpha);
+
+        $penalty = Matrix::diagonal(array_merge([0.], $alphas));
+
+        $xT = $x->transpose();
+
+        $coefficients = $xT->matmul($x)
+            ->add($penalty)
+            ->inverse()
+            ->dot($xT->dot($y))
+            ->asArray();
 
         $this->bias = (float) array_shift($coefficients);
         $this->weights = Vector::quick($coefficients);
@@ -149,27 +159,5 @@ class Ridge implements Learner, Persistable
             ->dot($this->weights)
             ->add($this->bias)
             ->asArray();
-    }
-
-    /**
-     * Compute the coefficients of the training data like ordinary least squares,
-     * however add a regularization term to the equation.
-     *
-     * @param  \Rubix\Tensor\Matrix  $x
-     * @param  \Rubix\Tensor\Vector  $y
-     * @return \Rubix\Tensor\ColumnVector
-     */
-    protected function computeCoefficients(Matrix $x, Vector $y) : ColumnVector
-    {
-        $alphas = array_fill(0, $x->n() - 1, $this->alpha);
-
-        $penalty = Matrix::diagonal(array_merge([0.], $alphas));
-
-        $xT = $x->transpose();
-
-        return $xT->matmul($x)
-            ->add($penalty)
-            ->inverse()
-            ->dot($xT->dot($y));
     }
 }

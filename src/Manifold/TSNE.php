@@ -372,25 +372,29 @@ class TSNE implements Estimator, Verbose
      */
     protected function highAffinities(Matrix $distances) : Matrix
     {
-        $p = [[]];
+        $zeros = array_fill(0, count($distances), 0);
+
+        $p = [];
 
         foreach ($distances as $i => $row) {
+            $affinities = $zeros;
             $minBeta = -INF;
             $maxBeta = INF;
             $beta = 1.;
 
             for ($l = 0; $l < self::BINARY_PRECISION; $l++) {
+                $affinities = [];
                 $pSigma = 0.;
 
                 foreach ($row as $j => $distance) {
                     if ($i !== $j) {
-                        $temp = exp(-$distance * $beta);
+                        $affinity = exp(-$distance * $beta);
                     } else {
-                        $temp = 0.;
+                        $affinity = 0.;
                     }
 
-                    $p[$i][$j] = $temp;
-                    $pSigma += $temp;
+                    $affinities[] = $affinity;
+                    $pSigma += $affinity;
                 }
 
                 if ($pSigma === 0.) {
@@ -399,7 +403,7 @@ class TSNE implements Estimator, Verbose
 
                 $distSigma = 0.;
 
-                foreach ($p[$i] as $j => &$prob) {
+                foreach ($affinities as $j => &$prob) {
                     $prob /= $pSigma;
                     $distSigma += $row[$j] * $prob;
                 }
@@ -430,13 +434,17 @@ class TSNE implements Estimator, Verbose
                     }
                 }
             }
+
+            $p[] = $affinities;
         }
 
         $p = Matrix::quick($p);
 
         $pHat = $p->add($p->transpose());
 
-        return $pHat->divide($pHat->sum()->clip(self::EPSILON, INF));
+        $sigma = $pHat->sum()->clip(self::EPSILON, INF);
+
+        return $pHat->divide($sigma);
     }
 
     /**
