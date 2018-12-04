@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use InvalidArgumentException;
@@ -33,7 +35,7 @@ class TfIdfTransformer implements Elastic
     /**
      * The inverse document frequency values for each feature column.
      *
-     * @var array|null
+     * @var \Rubix\Tensor\Vector|null
      */
     protected $idfs;
 
@@ -57,9 +59,9 @@ class TfIdfTransformer implements Elastic
     /**
      * Return the inverse document frequencies calculated during fitting.
      *
-     * @return array|null
+     * @return \Rubix\Tensor\Vector|null
      */
-    public function idfs() : ?array
+    public function idfs() : ?Vector
     {
         return $this->idfs;
     }
@@ -78,10 +80,8 @@ class TfIdfTransformer implements Elastic
                 . ' with continuous features.');
         }
 
-        $this->counts = array_fill(0, $dataset->numColumns(), 0);
-        $this->n = 0;
-
-        $this->idfs = [];
+        $this->counts = Vector::ones($dataset->numColumns())->asArray();
+        $this->n = 1;
 
         $this->update($dataset);
     }
@@ -109,11 +109,13 @@ class TfIdfTransformer implements Elastic
 
         $this->n += $dataset->numRows();
 
-        foreach ($this->counts as $column => $count) {
-            $idf = log($this->n / ($count ?: self::EPSILON), 10);
+        $idfs = [];
 
-            $this->idfs[$column] = $idf;
+        foreach ($this->counts as $column => $count) {
+            $idfs[] = log($this->n / $count) + 1;
         }
+
+        $this->idfs = Vector::quick($idfs);
     }
 
     /**
@@ -130,10 +132,8 @@ class TfIdfTransformer implements Elastic
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        foreach ($samples as &$sample) {
-            foreach ($sample as $i => &$feature) {
-                $feature *= $this->idfs[$i];
-            }
-        }
+        $samples = Matrix::quick($samples)
+            ->multiply($this->idfs)
+            ->asArray();
     }
 }

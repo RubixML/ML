@@ -1,4 +1,5 @@
 - Unreleased
+    - Added term frequency smoothing to TF-IDF Transformer
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

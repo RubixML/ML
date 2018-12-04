@@ -2672,7 +2672,7 @@ public counts() : ?array
 
 Return the inverse document frequencies calculated during fitting:
 ```php
-public idfs() : ?array
+public idfs() : ?Vector
 ```
 
 #### Example:
