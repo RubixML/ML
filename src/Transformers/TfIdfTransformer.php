@@ -75,11 +75,6 @@ class TfIdfTransformer implements Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with continuous features.');
-        }
-
         $this->counts = Vector::ones($dataset->numColumns())->asArray();
         $this->n = 1;
 
@@ -94,6 +89,11 @@ class TfIdfTransformer implements Elastic
      */
     public function update(Dataset $dataset) : void
     {
+        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+            throw new InvalidArgumentException('This transformer only works'
+                . ' with continuous features.');
+        }
+        
         if (is_null($this->counts)) {
             $this->fit($dataset);
             return;
@@ -112,7 +112,7 @@ class TfIdfTransformer implements Elastic
         $idfs = [];
 
         foreach ($this->counts as $column => $count) {
-            $idfs[] = log($this->n / $count) + 1;
+            $idfs[] = log($this->n / $count) + 1.;
         }
 
         $this->idfs = Vector::quick($idfs);

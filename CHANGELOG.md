@@ -1,5 +1,6 @@
 - Unreleased
-    - Added term frequency smoothing to TF-IDF Transformer
+    - Added Delta TF-IDF Transformer
+    - Added document frequency smoothing to TF-IDF Transformer
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

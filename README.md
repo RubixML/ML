@@ -92,6 +92,7 @@ MIT
 			- [Ridge](#ridge)
 			- [SVR](#svr)
 	- [Transformers](#transformers)
+		- [Delta TF-IDF Transformer](#delta-tf---idf-transformer)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [HTML Stripper](#html-stripper)
@@ -2172,6 +2173,34 @@ Some transformers are able to adapt as new data comes through. The `update()` me
 
 ```php
 public update(Dataset $dataset) : void
+```
+
+### Delta TF-IDF Transformer
+A supervised TF-IDF (Term Frequency Inverse Document Frequency) Transformer that differentiates between terms used in the context of two opposing classes such as positive or negative sentiment.
+
+> **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
+
+##### Continuous *Only* | Stateful | Elastic
+
+#### Parameters:
+This transformer does not have any parameters.
+
+#### Additional Methods:
+Return the document counts for each word (feature column):
+```php
+public counts() : ?array
+```
+
+Return the inverse document frequencies calculated during fitting:
+```php
+public idfs() : ?Vector
+```
+
+#### Example:
+```php
+use Rubix\ML\Transformers\DeltaTfIdfTransformer;
+
+$transformer = new DeltaTfIdfTransformer();
 ```
 
 ### Dense Random Projector

@@ -17,9 +17,9 @@ use RuntimeException;
 
 class RegressionTreeTest extends TestCase
 {
-    const TRAIN_SIZE = 350;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 10;
-    const MIN_SCORE = 0.8;
+    const MIN_SCORE = 0.7;
 
     protected $generator;
 
