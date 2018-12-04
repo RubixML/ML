@@ -141,6 +141,7 @@ MIT
             - [He](#he)
             - [Le Cun](#le-cun)
             - [Normal](#normal)
+			- [Uniform](#uniform)
             - [Xavier 1](#xavier-1)
             - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
@@ -3118,6 +3119,21 @@ Generates a random weight matrix from a Gaussian distribution with user-specifie
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
 $initializer = new Normal(0.1);
+```
+
+### Uniform
+Generates a random uniform distribution centered at 0 and bounded at both ends by the parameter beta.
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | beta | 0.05 | float | The minimum and maximum bound on the random distribution. |
+
+#### Example:
+```php
+use Rubix\ML\NeuralNet\Initializers\Uniform;
+
+$initializer = new Uniform(1e-3);
 ```
 
 ### Xavier 1
