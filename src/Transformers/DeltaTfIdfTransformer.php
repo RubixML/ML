@@ -3,6 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Vector;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
@@ -27,8 +28,58 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class DeltaTfIdfTransformer extends TfIdfTransformer
+class DeltaTfIdfTransformer implements Elastic
 {
+    /**
+     * The times a word / feature appeared in a document.
+     *
+     * @var array|null
+     */
+    protected $counts;
+
+    /**
+     * The inverse document frequency values for each feature column.
+     *
+     * @var \Rubix\Tensor\Vector|null
+     */
+    protected $idfs;
+
+    /**
+     * The number of documents (samples) that have been fitted so far
+     * from the positive stratum.
+     * 
+     * @var int
+     */
+    protected $nPos;
+
+    /**
+     * The number of documents (samples) that have been fitted so far
+     * from the negative stratum.
+     * 
+     * @var int
+     */
+    protected $nNeg;
+
+    /**
+     * Return the document counts for each word (feature column).
+     *
+     * @return array|null
+     */
+    public function counts() : ?array
+    {
+        return $this->counts;
+    }
+
+    /**
+     * Return the inverse document frequencies calculated during fitting.
+     *
+     * @return \Rubix\Tensor\Vector|null
+     */
+    public function idfs() : ?Vector
+    {
+        return $this->idfs;
+    }
+
     /**
      * Fit the transformer to the dataset.
      *
@@ -43,12 +94,18 @@ class DeltaTfIdfTransformer extends TfIdfTransformer
                 . ' labeled training set.');
         }
 
-        list($rows, $columns) = $dataset->shape();
+        $classes = $dataset->possibleOutcomes();
 
-        $ones = Vector::ones($columns)->asArray();
+        if (count($classes) !== 2) {
+            throw new InvalidArgumentException('This transformer only works'
+                . ' with exactly 2 possible label values, '
+                . (string) count($classes) . ' found.');
+        }
+
+        $ones = Vector::ones($dataset->numColumns())->asArray();
 
         $this->counts[0] = $this->counts[1] = $ones;
-        $this->n = $rows;
+        $this->nPos = $this->nNeg = 1;
 
         $this->update($dataset);
     }
@@ -69,14 +126,6 @@ class DeltaTfIdfTransformer extends TfIdfTransformer
         if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
-        }
-
-        $classes = $dataset->possibleOutcomes();
-
-        if (count($classes) !== 2) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with exactly 2 possible label values, '
-                . (string) count($classes) . ' found.');
         }
 
         if (is_null($this->counts)) {
@@ -100,17 +149,36 @@ class DeltaTfIdfTransformer extends TfIdfTransformer
             $this->counts[$i] = $counts;
         }
 
-        list($dfPos, $dfNeg) = $this->counts;
+        $this->nPos += count($strata[0]);
+        $this->nNeg += count($strata[1]);
 
-        $nPos = count($strata[0]) + 1;
-        $nNeg = count($strata[1]) + 1;
+        list($dfPos, $dfNeg) = $this->counts;
 
         $idfs = [];
 
-        foreach ($dfPos as $i => $value) {
-            $idfs[] = log($nPos / $value) - log($nNeg / $dfNeg[$i]) + 1.;
+        foreach ($dfPos as $i => $df) {
+            $idfs[] = log(($this->nPos / $df) / ($this->nNeg / $dfNeg[$i])) + 1.;
         }
 
         $this->idfs = Vector::quick($idfs);
+    }
+
+    /**
+     * Transform the dataset in place.
+     *
+     * @param  array  $samples
+     * @param  array|null  $labels
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function transform(array &$samples, ?array &$labels = null) : void
+    {
+        if (is_null($this->idfs)) {
+            throw new RuntimeException('Transformer has not been fitted.');
+        }
+
+        $samples = Matrix::quick($samples)
+            ->multiply($this->idfs)
+            ->asArray();
     }
 }
