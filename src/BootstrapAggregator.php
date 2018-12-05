@@ -74,7 +74,7 @@ class BootstrapAggregator implements MetaEstimator, Learner, Persistable
         if ($type !== self::CLASSIFIER and $type !== self::REGRESSOR and $type !== self::DETECTOR) {
             throw new InvalidArgumentException('This meta estimator only'
                 . ' supports classifiers, regressors, and anomaly detectors, '
-                . self::TYPES[$base->type()] . ' given.');
+                . self::TYPES[$type] . ' given.');
         }
 
         if ($estimators < 1) {
@@ -82,9 +82,9 @@ class BootstrapAggregator implements MetaEstimator, Learner, Persistable
                 . " 1 estimator, $estimators given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Subsample ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+        if ($ratio < 0.01 or $ratio > 0.99) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0.01 and 0.99, $ratio given.");
         }
 
         $this->base = $base;

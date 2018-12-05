@@ -179,13 +179,15 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
             throw new RuntimeException('Estimator has not been trained.');
         }
 
+        $template = array_fill_keys($this->classes, 0.);
+
         $probabilities = [];
 
         foreach ($dataset as $sample) {
             $node = $this->search($sample);
 
             $probabilities[] = $node instanceof Best
-                ? $node->probabilities()
+                ? array_replace($template, $node->probabilities())
                 : null;
         }
 
