@@ -3,7 +3,6 @@
 namespace Rubix\ML\Other\Traits;
 
 use Rubix\ML\Verbose;
-use Rubix\ML\MetaEstimator;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -34,14 +33,6 @@ trait LoggerAware
      */
     public function setLogger(LoggerInterface $logger) : void
     {
-        if ($this instanceof MetaEstimator) {
-            $estimator = $this->estimator();
-            
-            if ($estimator instanceof Verbose) {
-                $estimator->setLogger($logger);
-            }
-        }
-
         $this->logger = $logger;
     }
 

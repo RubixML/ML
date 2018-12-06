@@ -7,7 +7,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -48,7 +47,6 @@ class PipelineTest extends TestCase
     public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
-        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

@@ -23,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BootstrapAggregator implements MetaEstimator, Learner, Persistable
+class BootstrapAggregator implements Learner, Persistable
 {
     /**
      * The base estimator instance.
@@ -64,11 +64,6 @@ class BootstrapAggregator implements MetaEstimator, Learner, Persistable
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
-        if ($base instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base estimator cannot be a meta'
-                . ' estimator.');
-        }
-
         $type = $base->type();
 
         if ($type !== self::CLASSIFIER and $type !== self::REGRESSOR and $type !== self::DETECTOR) {
@@ -100,16 +95,6 @@ class BootstrapAggregator implements MetaEstimator, Learner, Persistable
     public function type() : int
     {
         return $this->base->type();
-    }
-
-    /**
-     * Return the base estimator instance.
-     *
-     * @return \Rubix\ML\Estimator
-     */
-    public function estimator() : Estimator
-    {
-        return $this->base;
     }
 
     /**

@@ -49,6 +49,7 @@ MIT
 	- [Meta-Estimators](#meta-estimators)
 		- [Bootstrap Aggregator](#bootstrap-aggregator)
 		- [Grid Search](#grid-search)
+		- [Model Orchestra](#model-orchestra)
 		- [Persistent Model](#persistent-model)
 		- [Pipeline](#pipeline)
 	- [Estimators](#estimators)
@@ -825,7 +826,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 
 > **Note**: Bootstrap Aggregator does not work with clusterers or manifold learners.
 
-##### Meta Estimator | Ensemble | Persistable
+##### Learner | Persistable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -850,7 +851,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 > **Note**: You can choose the parameters to search manually or you can generate them randomly using the [Params](#params) helper.
 
-##### Meta Estimator | Verbose | Persistable
+##### Learner | Persistable | Verbose
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -899,10 +900,50 @@ $grid = [
 $estimator = new GridSearch(KNearestNeightbors::class, $grid, new Accuracy(), new KFold(10), true);
 ```
 
+### Model Orchestra
+A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of estimators (Classifiers or Regressors) and a *conductor* estimator. The role of the conductor is to learn the influence scores of each estimator in the orchestra while using their predictions as inputs to make a final weighted prediction.
+
+> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a Pipeline and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
+
+##### Supervised | Learner | Persistable | Verbose
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | orchestra | | array | The estimator instances that comprise the orchestra section of the ensemble. |
+| 2 | conductor | | object | The estimator that will weight each prediction and give the final output. |
+| 3 | ratio | 0.8 | float | The ratio of samples used to train the orchestra (the remaining are used to train the conductor).
+
+#### Additional Methods:
+Return an array of estimators comprising the orchestra part of the ensemble:
+```php
+public orchestra() : array
+```
+
+Return the conductor estimator:
+```php
+public conductor() : Estimator
+```
+
+#### Example:
+```php
+use Rubix\ML\ModelOrchestra;
+use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+
+$estimator = new ModelOrchestra([
+	new ClassificationTree(10, 3, 2),
+	new KNearestNeighbors(3, new Euclidean()),
+	new GaussianNB(),
+], new SoftmaxClassifier(10), 0.8);
+```
+
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
 
-##### Meta Estimator | Verbose
+#####  Learner | Verbose
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -944,7 +985,7 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 
 > **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
 
-##### Meta Estimator | Online | Verbose | Persistable
+##### Online | Persistable | Verbose
 
 #### Parameters:
 | # | Param | Default | Type | Description |

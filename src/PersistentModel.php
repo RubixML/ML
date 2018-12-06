@@ -20,7 +20,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements MetaEstimator, Verbose, Learner
+class PersistentModel implements Learner, Verbose
 {
     use LoggerAware;
 

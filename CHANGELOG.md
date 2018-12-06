@@ -1,8 +1,10 @@
 - Unreleased
+    - Added Model Orchestra meta estimator
     - Added Delta TF-IDF Transformer
     - Added document frequency smoothing to TF-IDF Transformer
     - Added Unform neural net weight initializer
     - Fixed missing probabilities in Classification Tree
+    - Removed MetaEstimator interface
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

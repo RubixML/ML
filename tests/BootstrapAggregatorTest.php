@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
@@ -37,7 +36,6 @@ class BootstrapAggregatorTest extends TestCase
     public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
-        $this->assertInstanceOf(MetaEstimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

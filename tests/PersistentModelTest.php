@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Classifiers\DummyClassifier;
@@ -31,7 +30,6 @@ class PersistentModelTest extends TestCase
     public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(PersistentModel::class, $this->model);
-        $this->assertInstanceOf(MetaEstimator::class, $this->model);
         $this->assertInstanceOf(Verbose::class, $this->model);
         $this->assertInstanceOf(Estimator::class, $this->model);
     }

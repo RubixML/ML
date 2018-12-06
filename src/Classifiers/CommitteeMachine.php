@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
@@ -72,11 +71,6 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
             if (!$expert instanceof Learner) {
                 throw new InvalidArgumentException('Base estimator must'
                     . ' implement the learner interface.');
-            }
-
-            if ($expert instanceof MetaEstimator) {
-                throw new InvalidArgumentException('Base estimator cannot be a'
-                    . ' meta estimator, ' . gettype($expert) . ' given.');
             }
 
             if ($expert->type() !== self::CLASSIFIER) {

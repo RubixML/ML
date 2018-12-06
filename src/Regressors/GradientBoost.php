@@ -5,7 +5,6 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;

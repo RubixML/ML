@@ -33,7 +33,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements MetaEstimator, Online, Verbose, Persistable
+class Pipeline implements Online, Persistable, Verbose
 {
     use LoggerAware;
 

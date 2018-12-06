@@ -26,7 +26,7 @@ use ReflectionClass;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
+class GridSearch implements Learner, Persistable, Verbose
 {
     use LoggerAware;
 
@@ -136,11 +136,6 @@ class GridSearch implements MetaEstimator, Learner, Verbose, Persistable
         if (!$proxy instanceof Learner) {
             throw new InvalidArgumentException('Base class must be an instance'
                 . ' of a learner.');
-        }
-
-        if ($proxy instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base estimator cannot be a meta'
-                . ' estimator.');
         }
 
         $args = Params::args($base);

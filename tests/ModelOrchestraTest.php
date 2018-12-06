@@ -2,23 +2,25 @@
 
 namespace Rubix\ML\Tests;
 
-use Rubix\ML\Verbose;
+use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
+use Rubix\ML\ModelOrchestra;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\CrossValidation\HoldOut;
+use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class GridSearchTest extends TestCase
+class ModelOrchestraTest extends TestCase
 {
     const TRAIN_SIZE = 300;
     const TEST_SIZE = 10;
@@ -36,19 +38,23 @@ class GridSearchTest extends TestCase
             'inner' => new Circle(0., 0., 1., 0.01),
             'middle' => new Circle(0., 0., 5., 0.05),
             'outer' => new Circle(0., 0., 10., 0.1),
-        ]);
+        ], [3, 3, 4]);
 
-        $this->estimator = new GridSearch(KNearestNeighbors::class, [
-            [1, 3, 5], [new Euclidean(), new Manhattan()],
-        ], new F1Score(), new HoldOut(0.2));
+        $this->estimator = new ModelOrchestra([
+            new ClassificationTree(10, 3, 2),
+            new KNearestNeighbors(3, new Euclidean()),
+            new GaussianNB(),
+        ], new SoftmaxClassifier(10), 0.8);
 
-        $this->metric = new F1Score();
+        $this->metric = new Accuracy();
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
-    public function test_build_meta_estimator()
+    public function test_build_classifier()
     {
-        $this->assertInstanceOf(GridSearch::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(ModelOrchestra::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
@@ -71,5 +77,12 @@ class GridSearchTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_train_with_unlabeled()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick());
     }
 }

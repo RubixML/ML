@@ -5,7 +5,6 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
-use Rubix\ML\MetaEstimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
@@ -132,11 +131,6 @@ class AdaBoost implements Learner, Verbose, Persistable
     {
         if (is_null($base)) {
             $base = new ClassificationTree(1);
-        }
-
-        if ($base instanceof MetaEstimator) {
-            throw new InvalidArgumentException('Base estimator cannot be a'
-                . ' meta estimator, ' . gettype($base). ' given.');
         }
 
         if ($base->type() !== self::CLASSIFIER) {
