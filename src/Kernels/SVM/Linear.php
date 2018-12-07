@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
+use RuntimeException;
 use svm;
 
 /**
@@ -15,6 +16,18 @@ use svm;
  */
 class Linear implements Kernel
 {
+    /**
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('svm')) {
+            throw new RuntimeException('SVM extension is not loaded, check'
+                . ' PHP configuration.');
+        }
+    }
+
     /**
      * Return the options for the libsvm runtime.
      * 

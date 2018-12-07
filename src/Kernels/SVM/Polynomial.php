@@ -3,6 +3,7 @@
 namespace Rubix\ML\Kernels\SVM;
 
 use InvalidArgumentException;
+use RuntimeException;
 use svm;
 
 /**
@@ -43,10 +44,16 @@ class Polynomial implements Kernel
      * @param  float  $gamma
      * @param  float  $coef0
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return void
      */
     public function __construct(int $degree = 3, ?float $gamma = null, float $coef0 = 0.)
     {
+        if (!extension_loaded('svm')) {
+            throw new RuntimeException('SVM extension is not loaded, check'
+                . ' PHP configuration.');
+        }
+
         if ($degree < 1) {
             throw new InvalidArgumentException('Degree must be greater than 0,'
                 . " $degree given.");

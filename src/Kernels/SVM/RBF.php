@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Kernels\SVM;
 
+use RuntimeException;
 use svm;
 
 /**
@@ -25,10 +26,16 @@ class RBF implements Kernel
 
     /**
      * @param  float|null  $gamma
+     * @throws \RuntimeException
      * @return void
      */
     public function __construct(?float $gamma = null)
     {
+        if (!extension_loaded('svm')) {
+            throw new RuntimeException('SVM extension is not loaded, check'
+                . ' PHP configuration.');
+        }
+
         $this->gamma = $gamma;
     }
 
