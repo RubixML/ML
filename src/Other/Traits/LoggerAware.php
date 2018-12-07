@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Other\Traits;
 
+use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
 use Psr\Log\LoggerInterface;
 
@@ -33,6 +34,14 @@ trait LoggerAware
      */
     public function setLogger(LoggerInterface $logger) : void
     {
+        if ($this instanceof Wrapper) {
+            $estimator = $this->base();
+            
+            if ($estimator instanceof Verbose) {
+                $estimator->setLogger($logger);
+            }
+        }
+
         $this->logger = $logger;
     }
 

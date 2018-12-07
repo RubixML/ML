@@ -33,7 +33,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Persistable, Verbose
+class Pipeline implements Online, Wrapper, Persistable, Verbose
 {
     use LoggerAware;
 
@@ -97,7 +97,7 @@ class Pipeline implements Online, Persistable, Verbose
      *
      * @return \Rubix\ML\Estimator
      */
-    public function estimator() : Estimator
+    public function base() : Estimator
     {
         return $this->estimator;
     }

@@ -20,7 +20,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Learner, Verbose
+class PersistentModel implements Learner, Wrapper, Verbose
 {
     use LoggerAware;
 
@@ -75,7 +75,7 @@ class PersistentModel implements Learner, Verbose
      *
      * @return \Rubix\ML\Estimator
      */
-    public function estimator() : Estimator
+    public function base() : Estimator
     {
         return $this->base;
     }
