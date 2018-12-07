@@ -147,7 +147,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info("Learner initialized w/ "
+        if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'orchestra' => $this->orchestra,
                 'conductor' => $this->conductor,

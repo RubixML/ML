@@ -15,7 +15,7 @@ use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -46,7 +46,7 @@ class ModelOrchestraTest extends TestCase
             new GaussianNB(),
         ], new SoftmaxClassifier(10), 0.8);
 
-        $this->metric = new Accuracy();
+        $this->metric = new F1Score();
 
         $this->estimator->setLogger(new BlackHole());
     }
