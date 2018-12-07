@@ -3,6 +3,7 @@ language: php
 php:
     - '7.1'
     - '7.2'
+    - '7.3'
 
 before_install:
     - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
