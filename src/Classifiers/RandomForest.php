@@ -106,9 +106,9 @@ class RandomForest implements Learner, Probabilistic, Persistable
                 . " ensemble cannot be less than 1, $estimators given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Subsample ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+        if ($ratio < 0.01 or $ratio > 0.99) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0.01 and 0.99, $ratio given.");
         }
 
         $this->base = $base;

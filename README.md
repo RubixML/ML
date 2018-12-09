@@ -4838,7 +4838,7 @@ Try adjusting the `memory_limit` option in your php.ini file to something more r
 
 ---
 ## Testing
-Rubix utilizes a combination of static analysis and unit tests to reduce the mount of bugs in code. Rubix provides two Composer scripts that can be run from the root directory to automate the testing process.
+Rubix utilizes a combination of static analysis and unit tests to reduce the number of bugs. Rubix provides two Composer scripts that can be run from the root directory to automate the testing process.
 
 > **Note**:  due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.
 
