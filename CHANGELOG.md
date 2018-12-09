@@ -6,6 +6,7 @@
     - Fixed missing probabilities in Classification Tree
     - Removed MetaEstimator interface
     - Added model Wrapper interface
+    - AdaBoost is now probabilistic
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

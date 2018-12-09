@@ -1228,7 +1228,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Supervised | Learner | Verbose | Persistable
+##### Supervised | Learner | Probabilistic | Verbose | Persistable
 
 #### Parameters:
 | # | Param | Default | Type | Description |

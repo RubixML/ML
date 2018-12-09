@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -47,6 +48,7 @@ class AdaBoostTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(AdaBoost::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);

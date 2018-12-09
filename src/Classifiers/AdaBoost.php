@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
@@ -32,7 +33,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Learner, Verbose, Persistable
+class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
     
@@ -307,7 +308,46 @@ class AdaBoost implements Learner, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->ensemble)) {
+        return array_map([Argmax::class, 'compute'], $this->score($dataset));
+    }
+
+    /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        $scores = $this->score($dataset);
+
+        $probabilities = [];
+
+        foreach ($scores as $scores) {
+            $total = array_sum($scores) ?: self::EPSILON;
+
+            $dist = [];
+
+            foreach ($scores as $class => $score) {
+                $dist[$class] = $score / $total ;
+            }
+
+            $probabilities[] = $dist;
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Return the influence scores for each sample in the dataset.
+     * 
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @return array
+     */
+    protected function score(Dataset $dataset) : array
+    {
+        if (empty($this->ensemble) or empty($this->influences)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -322,12 +362,6 @@ class AdaBoost implements Learner, Verbose, Persistable
             }
         }
 
-        $predictions = [];
-
-        foreach ($scores as $dist) {
-            $predictions[] = Argmax::compute($dist);
-        }
-
-        return $predictions;
+        return $scores;
     }
 }
