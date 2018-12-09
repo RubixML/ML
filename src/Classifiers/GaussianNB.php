@@ -194,12 +194,17 @@ class GaussianNB implements Online, Probabilistic, Persistable
         $this->means = $this->variances = array_fill_keys($classes, []);
 
         foreach ($dataset->stratify() as $class => $stratum) {
+            $means = $variances = [];
+
             foreach ($stratum->columns() as $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
-                $this->means[$class][] = $mean;
-                $this->variances[$class][] = $variance ?: self::EPSILON;
+                $means[] = $mean;
+                $variances[] = $variance ?: self::EPSILON;
             }
+
+            $this->means[$class] = $means;
+            $this->variances[$class] = $variances;
 
             $this->weights[$class] += $stratum->numRows();
         }
@@ -241,6 +246,9 @@ class GaussianNB implements Online, Probabilistic, Persistable
         }
 
         foreach ($dataset->stratify() as $class => $stratum) {
+            $means = $this->means[$class];
+            $variances = $this->variances[$class];
+
             $oldWeight = $this->weights[$class];
             $oldMeans = $this->means[$class];
             $oldVariances = $this->variances[$class];
@@ -250,7 +258,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
             foreach ($stratum->columns() as $column => $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
-                $this->means[$class][$column] = (($n * $mean)
+                $means[$column] = (($n * $mean)
                     + ($oldWeight * $oldMeans[$column]))
                     / ($oldWeight + $n);
 
@@ -260,9 +268,12 @@ class GaussianNB implements Online, Probabilistic, Persistable
                     * ($n * $oldMeans[$column] - $n * $mean) ** 2)
                     / ($oldWeight + $n);
 
-                $this->variances[$class][$column] = $vHat ?: self::EPSILON;
+                $variances[$column] = $vHat ?: self::EPSILON;
             }
 
+            $this->means[$class] = $means;
+            $this->variances[$class] = $variances;
+            
             $this->weights[$class] += $n;
         }
 

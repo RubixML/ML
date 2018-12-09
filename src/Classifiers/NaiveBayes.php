@@ -218,9 +218,11 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
         foreach ($dataset->stratify() as $class => $stratum) {
             $classCounts = $this->counts[$class];
+            $classProbs = $this->probs[$class];
 
             foreach ($stratum->columns() as $column => $values) {
                 $columnCounts = $classCounts[$column];
+                $columnProbs = $classProbs[$column];
 
                 $counts = array_count_values($values);
 
@@ -242,9 +244,12 @@ class NaiveBayes implements Online, Probabilistic, Persistable
                     $probs[$category] = log(($count + $this->alpha) / $total);
                 }
 
-                $this->counts[$class][$column] = $columnCounts;
-                $this->probs[$class][$column] = $probs;
+                $classCounts[$column] = $columnCounts;
+                $classProbs[$column] = $probs;
             }
+
+            $this->counts[$class] = $classCounts;
+            $this->probs[$class] = $classProbs;
 
             $this->weights[$class] += $stratum->numRows();
         }
