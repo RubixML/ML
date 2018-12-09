@@ -17,7 +17,7 @@ use InvalidArgumentException;
  * t-SNE
  *
  * T-distributed Stochastic Neighbor Embedding is a two-stage non-linear
- * manifold learning algorithm based on batch Gradient Decent. During the first
+ * manifold learning algorithm based on batch Gradient Descent. During the first
  * stage (*early* stage) the samples are exaggerated to encourage distant
  * clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient,
  * momentum is employed to help escape bad local minima.

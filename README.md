@@ -43,6 +43,7 @@ $ composer require rubix/ml
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
 	- [Housing Price Predictor](https://github.com/RubixML/Housing)
+	- [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 - [API Reference](#api-reference)
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
@@ -1848,7 +1849,7 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions. Embedders are manifold learners that provide the `predict()` API for embedding a dataset. The predictions of an Embedder are the low dimensional embeddings as n-dimensional arrays where n is the dimensionality of the embedding.
 
 ### t-SNE
-T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Decent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
+T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
 ##### Unsupervised | Verbose
 
@@ -4788,7 +4789,7 @@ $tokenizer = new Word();
 Here you can find answers to the most frequently asked questions.
 
 ### What environment should I run Rubix in?
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. In the latter scenario, we reccommend running your models as background services and serving the requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. In the latter scenario, we recommend running your models as background services and serving the requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
 
 To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
 ```sh
@@ -4804,18 +4805,18 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
 ### Does Rubix support multithreading?
-Not currently, however we do plan to add CPU multithreading to some Estimators in the future.
+Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
 Yes. Rubix supports Deep (Representational) Learning through a number of learners including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
-### Do you support Reinforcement Learning?
-We do not. Rubix currently employs *supervised* and *unsupervised* learning, however we might support it in the future.
+### Does Rubix support Reinforcement Learning?
+We do not. Rubix only supports *supervised* and *unsupervised* learning.
 
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
 
-> **Note**: Machine Learning typically requires alot of memory. Depending on the size of your model, your system memory, and the amount of data, you may need to do batch training. See [Online](#online) estimators.
+> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the size of your model, your system memory, and the amount of data. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
 
 ---
 ## Testing
