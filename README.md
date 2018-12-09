@@ -220,6 +220,7 @@ $ composer require rubix/ml
 	- [Other](#other)
 		- [Guessing Strategies](#guessing-strategies)
 			- [Blurry Percentile](#blurry-percentile)
+			- [Constant](#constant)
 			- [K Most Frequent](#k-most-frequent)
 			- [Lottery](#lottery)
 			- [Mean](#mean)
@@ -4416,6 +4417,23 @@ A strategy that guesses within the domain of the p-th percentile of the fitted d
 use Rubix\ML\Other\Strategies\BlurryPercentile;
 
 $strategy = new BlurryPercentile(34.0, 0.2);
+```
+
+### Constant
+Always guess a constant value.
+
+##### Continuous
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | value | 0. | float | The value to guess. |
+
+#### Example:
+```php
+use Rubix\ML\Other\Strategies\Constant;
+
+$strategy = new Constant(17.);
 ```
 
 ### K Most Frequent

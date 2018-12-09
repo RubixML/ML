@@ -11,15 +11,11 @@ class WildGuessTest extends TestCase
 {
     protected $values;
 
-    protected $range;
-
     protected $strategy;
 
     public function setUp()
     {
         $this->values = [1, 2, 3, 4, 5];
-
-        $this->range = [1, 5];
 
         $this->strategy = new WildGuess(2);
     }
@@ -38,8 +34,8 @@ class WildGuessTest extends TestCase
         $guess = $this->strategy->guess();
 
         $this->assertThat($guess, $this->logicalAnd(
-            $this->greaterThanOrEqual($this->range[0]),
-            $this->lessThanOrEqual($this->range[1]))
+            $this->greaterThanOrEqual(1),
+            $this->lessThanOrEqual(5))
         );
     }
 }
