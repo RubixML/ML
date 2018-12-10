@@ -4834,7 +4834,7 @@ We do not. Rubix only supports *supervised* and *unsupervised* learning.
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
 
-> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the size of your model, your system memory, and the amount of data. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
+> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the size of your model and the amount of training data. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
 
 ---
 ## Testing
