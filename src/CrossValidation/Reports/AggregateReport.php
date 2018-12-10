@@ -57,12 +57,12 @@ class AggregateReport implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        $reports = [];
+        $results = [];
 
         foreach ($this->reports as $index => $report) {
-            $reports[$index] = $report->generate($predictions, $labels);
+            $results[$index] = $report->generate($predictions, $labels);
         }
 
-        return $reports;
+        return $results;
     }
 }

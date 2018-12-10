@@ -172,7 +172,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
         }
 
         if ($this->logger) $this->logger->info('Training '
-            . Params::shortName($this->conductor) . ' conductor');
+            . Params::shortName($this->conductor) . ' (conductor)');
 
         $this->conductor->train($right);
 

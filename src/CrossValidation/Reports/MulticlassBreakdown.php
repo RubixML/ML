@@ -90,6 +90,15 @@ class MulticlassBreakdown implements Report
             }
         }
 
+        $k = count($classes);
+
+        $overall = array_fill_keys([
+            'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
+            'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
+            'f1_score', 'mcc', 'informedness', 'markedness', 'true_positives',
+            'true_negatives', 'false_positives', 'false_negatives',
+        ], 0);
+
         $table = array_fill_keys($classes, []);
 
         foreach ($truePositives as $label => $tp) {
@@ -111,40 +120,51 @@ class MulticlassBreakdown implements Report
                 / sqrt((($tp + $fp) * ($tp + $fn)
                 * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
 
-            $table[$label]['accuracy'] = $accuracy;
-            $table[$label]['precision'] = $precision;
-            $table[$label]['recall'] = $recall;
-            $table[$label]['specificity'] = $specificity;
-            $table[$label]['negative_predictive_value'] = $npv;
-            $table[$label]['false_discovery_rate'] = 1. - $precision;
-            $table[$label]['miss_rate'] = 1. - $recall;
-            $table[$label]['fall_out'] = 1. - $specificity;
-            $table[$label]['false_omission_rate'] = 1. - $npv;
-            $table[$label]['f1_score'] = $f1;
-            $table[$label]['mcc'] = $mcc;
-            $table[$label]['informedness'] = $recall + $specificity - 1.;
-            $table[$label]['markedness'] = $precision + $npv - 1.;
-            $table[$label]['true_positives'] = $tp;
-            $table[$label]['true_negatives'] = $tn;
-            $table[$label]['false_positives'] = $fp;
-            $table[$label]['false_negatives'] = $fn;
-            $table[$label]['cardinality'] = $cardinality;
-            $table[$label]['density'] = $cardinality / $n;
+            $metrics = [];
+
+            $metrics['accuracy'] = $accuracy;
+            $metrics['precision'] = $precision;
+            $metrics['recall'] = $recall;
+            $metrics['specificity'] = $specificity;
+            $metrics['negative_predictive_value'] = $npv;
+            $metrics['false_discovery_rate'] = 1. - $precision;
+            $metrics['miss_rate'] = 1. - $recall;
+            $metrics['fall_out'] = 1. - $specificity;
+            $metrics['false_omission_rate'] = 1. - $npv;
+            $metrics['f1_score'] = $f1;
+            $metrics['mcc'] = $mcc;
+            $metrics['informedness'] = $recall + $specificity - 1.;
+            $metrics['markedness'] = $precision + $npv - 1.;
+            $metrics['true_positives'] = $tp;
+            $metrics['true_negatives'] = $tn;
+            $metrics['false_positives'] = $fp;
+            $metrics['false_negatives'] = $fn;
+            $metrics['cardinality'] = $cardinality;
+            $metrics['density'] = $cardinality / $n;
+
+            $table[$label] = $metrics;
+
+            $overall['accuracy'] += $accuracy / $k;
+            $overall['precision'] += $precision / $k;
+            $overall['recall'] += $recall / $k;
+            $overall['specificity'] += $specificity / $k;
+            $overall['negative_predictive_value'] += $npv / $k;
+            $overall['false_discovery_rate'] += (1. - $precision) / $k;
+            $overall['miss_rate'] += (1. - $recall) / $k;
+            $overall['fall_out'] += (1. - $specificity) / $k;
+            $overall['false_omission_rate'] += (1. - $npv) / $k;
+            $overall['f1_score'] += $f1 / $k;
+            $overall['mcc'] += $mcc / $k;
+            $overall['informedness'] += ($recall + $specificity - 1.) / $k;
+            $overall['markedness'] += ($precision + $npv - 1.) / $k;
+            $overall['true_positives'] += $tp;
+            $overall['true_negatives'] += $tn;
+            $overall['false_positives'] += $fp;
+            $overall['false_negatives'] += $fn;
         }
 
-        $overall = array_fill_keys([
-            'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
-            'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
-            'f1_score', 'mcc', 'informedness', 'markedness',
-        ], 0.);
-
-        $k = count($classes);
-
-        foreach ($table as $metrics) {
-            foreach ($overall as $metric => &$value) {
-                $value += $metrics[$metric] / $k;
-            }
-        }
+        $overall['cardinality'] = $n;
+        $overall['density'] = 1.;
 
         return [
             'overall' => $overall,

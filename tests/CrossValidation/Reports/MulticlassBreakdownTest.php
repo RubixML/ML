@@ -42,6 +42,12 @@ class MulticlassBreakdownTest extends TestCase
                 'mcc' => 0.16666666666666666,
                 'informedness' => 0.16666666666666652,
                 'markedness' => 0.16666666666666652,
+                'true_positives' => 3,
+                'true_negatives' => 3,
+                'false_positives' => 2,
+                'false_negatives' => 2,
+                'cardinality' => 5,
+                'density' => 1.0,
             ],
             'label' => [
                 'wolf' => [

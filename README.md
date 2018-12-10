@@ -4193,15 +4193,15 @@ var_dump($result);
     ["mean_absolute_error"]=> float(0.44927554249285)
     ["median_absolute_error"]=> float(0.30273889978541)
     ["mean_squared_error"]=> float(0.44278193357447)
-	["mean_squared_log_error"]=> float(-0.35381010755)
     ["rms_error"]=> float(0.66541861529001)
+	["mean_squared_log_error"]=> float(-0.35381010755)
+	["r_squared"]=> float(0.99393263320234)
     ["error_mean"]=> float(0.14748941084881)
     ["error_variance"]=> float(0.42102880726195)
     ["error_skewness"]=> float(-2.7901397847317)
     ["error_kurtosis"]=> float(12.967400285518)
     ["error_min"]=> float(-3.5540079974946)
     ["error_max"]=> float(1.4097829828182)
-    ["r_squared"]=> float(0.99393263320234)
     ["cardinality"]=> int(80)
   }
 ```
