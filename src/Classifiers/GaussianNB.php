@@ -53,23 +53,29 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array|null
+     * @var array
      */
-    protected $weights;
+    protected $weights = [
+        //
+    ];
 
     /**
      * The precomputed means of each feature column of the training set.
      *
-     * @var array|null
+     * @var array
      */
-    protected $means;
+    protected $means = [
+        //
+    ];
 
     /**
      * The precomputed variances of each feature column of the training set.
      *
-     * @var array|null
+     * @var array
      */
-    protected $variances;
+    protected $variances = [
+        //
+    ];
 
     /**
      * The possible class outcomes.
@@ -240,7 +246,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
                 . ' continuous features.');
         }
 
-        if (is_null($this->weights) or is_null($this->means) or is_null($this->variances)) {
+        if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
             $this->train($dataset);
             return;
         }
@@ -302,7 +308,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
             . ' continuous features.');
         }
 
-        if (is_null($this->means) or is_null($this->variances)) {
+        if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -332,7 +338,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
             . ' continuous features.');
         }
 
-        if (is_null($this->means) or is_null($this->variances)) {
+        if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -365,9 +371,8 @@ class GaussianNB implements Online, Probabilistic, Persistable
     {
         $likelihood = [];
 
-        foreach ($this->classes as $class) {
+        foreach ($this->means as $class => $means) {
             $score = $this->priors[$class] ?? self::LOG_EPSILON;
-            $means = $this->means[$class];
             $variances = $this->variances[$class];
 
             foreach ($sample as $column => $feature) {

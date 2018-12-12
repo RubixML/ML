@@ -54,25 +54,31 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array|null
+     * @var array
      */
-    protected $weights;
+    protected $weights = [
+        //
+    ];
 
     /**
      * The count of each feature from the training set used for online
      * probability calculation.
      *
-     * @var array|null
+     * @var array
      */
-    protected $counts;
+    protected $counts = [
+        //
+    ];
 
     /**
      * The precomputed negative log probabilities of each feature conditioned on
      * a given class label.
      *
-     * @var array|null
+     * @var array
      */
-    protected $probs;
+    protected $probs = [
+        //
+    ];
 
     /**
      * The possible class outcomes.
@@ -211,7 +217,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
                 . ' with categorical features.');
         }
 
-        if (is_null($this->weights) or is_null($this->counts) or is_null($this->probs)) {
+        if (empty($this->weights) or empty($this->counts) or empty($this->probs)) {
             $this->train($dataset);
             return;
         }
@@ -222,7 +228,6 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
             foreach ($stratum->columns() as $column => $values) {
                 $columnCounts = $classCounts[$column];
-                $columnProbs = $classProbs[$column];
 
                 $counts = array_count_values($values);
 
@@ -280,7 +285,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
             . ' categorical features.');
         }
 
-        if (is_null($this->probs)) {
+        if (empty($this->probs)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -310,7 +315,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
             . ' categorical features.');
         }
 
-        if (is_null($this->probs)) {
+        if (empty($this->probs)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -343,9 +348,8 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     {
         $likelihood = [];
 
-        foreach ($this->classes as $class) {
+        foreach ($this->probs as $class => $probs) {
             $score = $this->priors[$class] ?? self::LOG_EPSILON;
-            $probs = $this->probs[$class];
 
             foreach ($sample as $column => $feature) {
                 $score += $probs[$column][$feature] ?? self::LOG_EPSILON;

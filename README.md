@@ -3432,7 +3432,7 @@ $optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
 ### Cyclical
-The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the uppoer bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus acheiving higher accuracy.
+The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus acheiving higher accuracy.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
