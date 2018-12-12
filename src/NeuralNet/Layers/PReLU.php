@@ -151,9 +151,7 @@ class PReLU implements Hidden, Parametric
 
         $dOut = $prevGradient();
 
-        $dIn = $this->input->map(function ($value) {
-            return $value > 0. ? 0. : $value;
-        });
+        $dIn = $this->input->clip(-INF, 0.);
 
         $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
 
@@ -185,16 +183,20 @@ class PReLU implements Hidden, Parametric
 
         $alphas = $this->alphas->w()->column(0);
 
-        $computed = [[]];
+        $computed = [];
 
         foreach ($z as $i => $row) {
             $alpha = $alphas[$i];
 
-            foreach ($row as $j => $value) {
-                $computed[$i][$j] = $value > 0.
+            $activations = [];
+
+            foreach ($row as $value) {
+                $activations[] = $value > 0.
                     ? $value
                     : $alpha * $value;
             }
+
+            $computed[] = $activations;
         }
 
         return Matrix::quick($computed);
@@ -216,14 +218,18 @@ class PReLU implements Hidden, Parametric
 
         $alphas = $this->alphas->w()->column(0);
 
-        $gradients = [[]];
+        $gradients = [];
 
         foreach ($z as $i => $row) {
             $alpha = $alphas[$i];
 
-            foreach ($row as $j => $value) {
-                $gradients[$i][$j] = $value > 0. ? 1. : $alpha;
+            $gradient = [];
+
+            foreach ($row as $value) {
+                $gradient[] = $value > 0. ? 1. : $alpha;
             }
+
+            $gradients[] = $gradient;
         }
 
         return Matrix::quick($gradients);
