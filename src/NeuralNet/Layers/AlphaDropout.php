@@ -3,9 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Alpha Dropout
@@ -23,19 +20,12 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AlphaDropout implements Hidden, Nonparametric
+class AlphaDropout extends Dropout
 {
     const ALPHA = 1.6732632423543772848170429916717;
     const SCALE = 1.0507009873554804934193349852946;
 
     const ALPHA_P = -self::ALPHA * self::SCALE;
-
-    /**
-     * The ratio of neurons that are dropped during each training pass.
-     *
-     * @var float
-     */
-    protected $ratio;
 
     /**
      * The scaling coefficient.
@@ -52,60 +42,15 @@ class AlphaDropout implements Hidden, Nonparametric
     protected $b;
 
     /**
-     * The width of the layer.
-     *
-     * @var int|null
-     */
-    protected $width;
-
-    /**
-     * The memoized dropout mask.
-     *
-     * @var \Rubix\Tensor\Matrix|null
-     */
-    protected $mask;
-
-    /**
      * @param  float  $ratio
-     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(float $ratio = 0.1)
     {
-        if ($ratio <= 0. or $ratio >= 1.) {
-            throw new InvalidArgumentException('Dropout ratio must be between 0'
-                . ' and 1.0.');
-        }
-
-        $this->ratio = $ratio;
         $this->a = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
         $this->b = -$this->a * self::ALPHA_P * $ratio;
-    }
 
-    /**
-     * Return the width of the layer.
-     * 
-     * @return int|null
-     */
-    public function width() : ?int
-    {
-        return $this->width;
-    }
-
-    /**
-     * Initialize the layer with the fan in from the previous layer and return
-     * the fan out for this layer.
-     *
-     * @param  int  $fanIn
-     * @return int
-     */
-    public function init(int $fanIn) : int
-    {
-        $fanOut = $fanIn;
-        
-        $this->width = $fanOut;
-
-        return $fanOut;
+        parent::__construct($ratio);
     }
 
     /**
@@ -117,13 +62,10 @@ class AlphaDropout implements Hidden, Nonparametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        $mask = Matrix::rand(...$input->shape())->map(function ($value) {
-            return $value > $this->ratio ? 1. : 0.;
-        });
+        $mask = Matrix::rand(...$input->shape())
+            ->map([$this, 'drop']);
 
-        $saturation = $mask->map(function ($value) {
-            return $value === 0. ? self::ALPHA_P : 0.;
-        });
+        $saturation = $mask->map([$this, 'saturate']);
 
         $this->mask = $mask;
 
@@ -134,37 +76,13 @@ class AlphaDropout implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
-     *
-     * @param  \Rubix\Tensor\Matrix  $input
-     * @return \Rubix\Tensor\Matrix
+     * Boost dropped neurons by a factor of alpha p.
+     * 
+     * @param  float  $value
+     * @return float
      */
-    public function infer(Matrix $input) : Matrix
+    public function saturate(float $value) : float
     {
-        return $input;
-    }
-
-    /**
-     * Calculate the errors and gradients of the layer and update the parameters.
-     *
-     * @param  callable  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
-     * @throws \RuntimeException
-     * @return callable
-     */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
-    {
-        if (is_null($this->mask)) {
-            throw new RuntimeException('Must perform forward pass before'
-                . ' backpropagating.');
-        }
-
-        $mask = $this->mask;
-
-        unset($this->mask);
-
-        return function () use ($prevGradient, $mask) {
-            return $prevGradient()->multiply($mask);
-        };
+        return $value === 0. ? self::ALPHA_P : 0.;
     }
 }
