@@ -74,7 +74,7 @@ class Adam implements Optimizer
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException("The learning rate must be"
+            throw new InvalidArgumentException('The learning rate must be'
                 . " greater than 0, $rate given.");
         }
 

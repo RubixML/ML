@@ -1,12 +1,12 @@
 # ![Rubix ML Logo](https://avatars0.githubusercontent.com/u/43308973?s=100&v=4) Rubix ML for PHP
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange&logo=)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://www.php.net/) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
 Rubix ML is a high-level machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
 
 - Easy and fast prototyping with user-friendly API
 - 40+ modern Supervised and Unsupervised learners
-- Modular architecture combines power and flexbility
+- Modular architecture combines power and flexibility
 - Open source and free to use commercially
 
 ## Installation
@@ -95,7 +95,7 @@ $ composer require rubix/ml
 			- [Ridge](#ridge)
 			- [SVR](#svr)
 	- [Transformers](#transformers)
-		- [Delta TF-IDF Transformer](#delta-tf---idf-transformer)
+		- [Delta TF-IDF Transformer](#delta-tf-idf-transformer)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [HTML Stripper](#html-stripper)
@@ -116,7 +116,7 @@ $ composer require rubix/ml
 		- [Robust Standardizer](#robust-standardizer)
 		- [Sparse Random Projector](#sparse-random-projector)
 		- [Text Normalizer](#text-normalizer)
-		- [TF-IDF Transformer](#tf---idf-transformer)
+		- [TF-IDF Transformer](#tf-idf-transformer)
 		- [Variance Threshold Filter](#variance-threshold-filter)
 		- [Word Count Vectorizer](#word-count-vectorizer)
 		- [Z Scale Standardizer](#z-scale-standardizer)
@@ -391,7 +391,7 @@ If you are just looking for a quick way to visualize the data then we recommend 
 If you are looking for more control over your visualizations, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript that plays well with PHP.
 
 ### Next Steps
-After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
+After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) such as the [Credit Card Default Predictor](https://github.com/RubixML/Credit) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
 
 ---
 ### API Reference
@@ -2799,7 +2799,7 @@ Return the size of the vocabulary:
 public size() : int
 ```
 
-##	## Example:
+#### Example:
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Other\Tokenizers\Word;
@@ -2845,7 +2845,7 @@ $transformer = new ZScaleStandardizer(true);
 
 ---
 ### Neural Network
-A number of the Estimators in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as feature detection, normalization, and regularization.
+A number of the learners in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as higher order feature detection, non-linear activation, normalization, and regularization.
 
 ### Activation Functions
 The input to a node in the network is often passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a *biologically inspired* neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
@@ -4854,4 +4854,4 @@ composer test
 
 ---
 ## Contributing
-See CONTRIBUTING.md for guidlines
+See CONTRIBUTING.md for guidelines.

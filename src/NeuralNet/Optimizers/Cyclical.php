@@ -80,7 +80,7 @@ class Cyclical implements Optimizer
                                 float $decay = 0.99994)
     {
         if ($lower <= 0.) {
-            throw new InvalidArgumentException("The lower bound must be"
+            throw new InvalidArgumentException('The lower bound must be'
                 . " greater than 0, $lower given.");
         }
 
