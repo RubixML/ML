@@ -2218,7 +2218,7 @@ public update(Dataset $dataset) : void
 ```
 
 ### Delta TF-IDF Transformer
-A supervised TF-IDF (Term Frequency Inverse Document Frequency) Transformer that differentiates between terms used in the context of two opposing classes such as positive or negative sentiment.
+A supervised TF-IDF (Term Frequency Inverse Document Frequency) Transformer that uses class labels to boost the TF-IDFs of terms by how informative they are. Terms that receive high weight are those whose concentration is primary in one class whereas low weighted terms are more evenly distributed among the classes.
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
@@ -2228,14 +2228,14 @@ A supervised TF-IDF (Term Frequency Inverse Document Frequency) Transformer that
 This transformer does not have any parameters.
 
 #### Additional Methods:
-Return the document counts for each word (feature column):
-```php
-public counts() : ?array
-```
-
 Return the inverse document frequencies calculated during fitting:
 ```php
-public idfs() : ?Vector
+public idfs() : ?array
+```
+
+Return the entropies of each term that were calculated during fitting:
+```php
+public entropies() : ?array
 ```
 
 #### Example:
@@ -2736,14 +2736,9 @@ Term Frequency - Inverse Document Frequency is a measure of how important a word
 This transformer does not have any parameters.
 
 #### Additional Methods:
-Return the document counts for each word (feature column):
-```php
-public counts() : ?array
-```
-
 Return the inverse document frequencies calculated during fitting:
 ```php
-public idfs() : ?Vector
+public idfs() : ?array
 ```
 
 #### Example:

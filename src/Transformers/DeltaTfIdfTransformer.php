@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Rubix\Tensor\Vector;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
@@ -14,8 +12,9 @@ use RuntimeException;
  * Delta TF-IDF Transformer
  * 
  * A supervised TF-IDF (Term Frequency Inverse Document Frequency) Transformer that
- * differentiates between terms used in the context of two opposing classes such as
- * positive or negative sentiment.
+ * uses class labels to boost the TF-IDFs of terms by how informative they are. Terms
+ * that receive high weight are those whose concentration is primary in one class
+ * whereas low weighted terms are more evenly distributed among the classes.
  * 
  * > **Note**: This transformer assumes that its input is made up of word frequency
  * vectors such as those created by the Word Count Vectorizer.
@@ -23,6 +22,8 @@ use RuntimeException;
  * References:
  * [1] J. Martineau et al. (2009). Delta TFIDF: An Improved Feature Space
  * for Sentiment Analysis.
+ * [2] S. Ghosh et al. (2018). Class Specific TF-IDF Boosting for Short-text
+ * Classification.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -31,53 +32,69 @@ use RuntimeException;
 class DeltaTfIdfTransformer implements Elastic
 {
     /**
-     * The times a word / feature appeared in a document.
-     *
-     * @var array|null
+     * The class specific term frequencies of each word i.e. the number of
+     * times a word appears in the context of a class label.
+     * 
+     * @var array[]|null
      */
-    protected $counts;
+    protected $tfs;
 
     /**
-     * The inverse document frequency values for each feature column.
+     * The document frequencies of each word i.e. the number of times a word
+     * appeared in a document given the entire corpus.
      *
-     * @var \Rubix\Tensor\Vector|null
+     * @var int[]|null
+     */
+    protected $dfs;
+
+    /**
+     * The number of times a word appears throughout the entire corpus.
+     * 
+     * @var int[]
+     */
+    protected $totals = [
+        //
+    ];
+
+    /**
+     * The number of documents (samples) that have been fitted so far.
+     * 
+     * @var int|null
+     */
+    protected $n;
+
+    /**
+     * The inverse document frequency values of each feature column.
+     *
+     * @var float[]|null
      */
     protected $idfs;
 
     /**
-     * The number of documents (samples) that have been fitted so far
-     * from the positive stratum.
-     * 
-     * @var int
-     */
-    protected $nPos;
-
-    /**
-     * The number of documents (samples) that have been fitted so far
-     * from the negative stratum.
-     * 
-     * @var int
-     */
-    protected $nNeg;
-
-    /**
-     * Return the document counts for each word (feature column).
+     * The entropy for each term.
      *
-     * @return array|null
+     * @var float[]|null
      */
-    public function counts() : ?array
-    {
-        return $this->counts;
-    }
+    protected $entropies;
 
     /**
      * Return the inverse document frequencies calculated during fitting.
      *
-     * @return \Rubix\Tensor\Vector|null
+     * @return float[]|null
      */
-    public function idfs() : ?Vector
+    public function idfs() : ?array
     {
         return $this->idfs;
+    }
+
+    /**
+     * Return the entropies of each term that were calculated during fitting.
+     *
+     * @return float[]|null
+     */
+    public function entropies() : ?array
+    {
+        return $this->entropies;
     }
 
     /**
@@ -96,16 +113,11 @@ class DeltaTfIdfTransformer implements Elastic
 
         $classes = $dataset->possibleOutcomes();
 
-        if (count($classes) !== 2) {
-            throw new InvalidArgumentException('This transformer only works'
-                . ' with exactly 2 possible label values, '
-                . (string) count($classes) . ' found.');
-        }
+        $ones = array_fill(0, $dataset->numColumns(), 1);
 
-        $ones = Vector::ones($dataset->numColumns())->asArray();
-
-        $this->counts[0] = $this->counts[1] = $ones;
-        $this->nPos = $this->nNeg = 1;
+        $this->tfs = array_fill_keys($classes, $ones);
+        $this->dfs = $this->totals = $ones;
+        $this->n = 1;
 
         $this->update($dataset);
     }
@@ -128,39 +140,48 @@ class DeltaTfIdfTransformer implements Elastic
                 . ' with continuous features.');
         }
 
-        if (is_null($this->counts)) {
+        if (is_null($this->tfs) or is_null($this->dfs)) {
             $this->fit($dataset);
             return;
         }
 
-        $strata = array_values($dataset->stratify());
-
-        foreach ($strata as $i => $stratum) {
-            $counts = $this->counts[$i];
+        foreach ($dataset->stratify() as $class => $stratum) {
+            $tfs = $this->tfs[$class];
 
             foreach ($stratum as $sample) {
                 foreach ($sample as $column => $feature) {
                     if ($feature > 0) {
-                        $counts[$column]++;
+                        $tfs[$column] += $feature;
+
+                        $this->dfs[$column]++;
+                        $this->totals[$column] += $feature;
                     }
                 }
             }
 
-            $this->counts[$i] = $counts;
+            $this->tfs[$class] = $tfs;
         }
 
-        $this->nPos += count($strata[0]);
-        $this->nNeg += count($strata[1]);
-
-        list($dfPos, $dfNeg) = $this->counts;
+        $this->n += $dataset->numRows();
 
         $idfs = [];
 
-        foreach ($dfPos as $i => $df) {
-            $idfs[] = log(($this->nPos / $df) / ($this->nNeg / $dfNeg[$i])) + 1.;
+        foreach ($this->dfs as $df) {
+            $idfs[] = log($this->n / $df) + 1.;
         }
 
-        $this->idfs = Vector::quick($idfs);
+        $entropies = array_fill(0, count($this->totals), 0.);
+
+        foreach ($this->tfs as $tfs) {
+            foreach ($tfs as $column => $tf) {
+                $delta = $tf / $this->totals[$column];
+
+                $entropies[$column] += -$delta * log($delta);
+            }
+        }
+
+        $this->idfs = $idfs;
+        $this->entropies = $entropies;
     }
 
     /**
@@ -173,12 +194,17 @@ class DeltaTfIdfTransformer implements Elastic
      */
     public function transform(array &$samples, ?array &$labels = null) : void
     {
-        if (is_null($this->idfs)) {
+        if (is_null($this->idfs) or is_null($this->entropies)) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
-        $samples = Matrix::quick($samples)
-            ->multiply($this->idfs)
-            ->asArray();
+        foreach ($samples as &$sample) {
+            foreach ($sample as $column => &$feature) {
+                if ($feature > 0) {
+                    $feature *= $this->idfs[$column];
+                    $feature += $this->entropies[$column];
+                }
+            }
+        }
     }
 }
