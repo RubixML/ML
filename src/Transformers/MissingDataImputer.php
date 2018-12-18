@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
-use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\KMostFrequent;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -71,7 +71,7 @@ class MissingDataImputer implements Stateful
         }
 
         if (is_null($categorical)) {
-            $categorical = new PopularityContest();
+            $categorical = new KMostFrequent();
         }
 
         $this->placeholder = $placeholder;
@@ -90,16 +90,28 @@ class MissingDataImputer implements Stateful
         $this->strategies = [];
 
         foreach ($dataset->types() as $column => $type) {
-            $values = $dataset->column($column);
+            $values = [];
 
-            $values = array_filter($values, function ($value) {
-                return $value !== $this->placeholder;
-            });
+            foreach ($dataset->column($column) as $value) {
+                if ($value !== $this->placeholder) {
+                    $values[] = $value;
+                }
+            }
 
-            if ($type === DataFrame::CATEGORICAL) {
-                $strategy = clone $this->categorical;
-            } else {
-                $strategy = clone $this->continuous;
+            switch ($type) {
+                case DataFrame::CATEGORICAL:
+                    $strategy = clone $this->categorical;
+                    break 1;
+
+                case DataFrame::CONTINUOUS:
+                    $strategy = clone $this->continuous;
+                    break 1;
+
+                default:
+                    throw new InvalidArgumentException('This transformer'
+                        . ' only handles categorical and continuous'
+                        . ' features, ' . DataFrame::TYPES[$type]
+                        . ' found.');
             }
 
             $strategy->fit($values);

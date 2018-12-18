@@ -5,7 +5,7 @@
 Rubix ML is a high-level machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
 
 - Easy and fast prototyping with user-friendly API
-- 40+ modern Supervised and Unsupervised learners
+- 30+ modern *supervised* and *unsupervised* learners
 - Modular architecture combines power and flexibility
 - Open source and free to use commercially
 
@@ -1020,20 +1020,19 @@ $estimator = new Pipeline([
 
 ---
 ### Estimators
-Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators that can be trained using data are called *Learners* and they can be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic Estimator API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), and [Persistable](#persistable). A basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
+Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators that can be trained using data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
 
 To make predictions, pass the estimator a dataset object filled with samples you'd like to predict:
 ```php
 public predict(Dataset $dataset) : array
 ```
 
-> **Note**: The return value of `predict()` is an array containing the predictions indexed in the order in which they were fed in.
+> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
 
 ### Learner
+Most estimators have the ability to be trained using data. These estimators are called *Learners*. Learners have a method called `train()` and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can learn the function that maps input samples to their appropriate output values.
 
-Most estimators are able to be trained using data. These estimators are called *Learners* and require a training dataset to be passed in to the `train()` method before they can make predictions.
-
-To train an estimator pass it a training dataset:
+To train an learner pass it a training dataset:
 ```php
 public train(Dataset $training) : void
 ```
@@ -1044,8 +1043,9 @@ public train(Dataset $training) : void
 $estimator->train($dataset);
 ```
 
-### Online
+> **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
 
+### Online
 Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new data is acquired.
 
 You can partially train an online estimator with:
@@ -1069,8 +1069,7 @@ $estimator->partial($folds[2]);
 
 ---
 ### Probabilistic
-
-Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular outcome.
+Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
 
 Return the probability estimates of a prediction:
 ```php
@@ -1100,7 +1099,7 @@ array(2) {
 ```
 
 ### Verbose
-Estimators that implement the Verbose interface are capable of logging to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the included [Screen Logger](#screen) in real time.
+Verbose estimators are capable of logging errors and important training events to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the included [Screen Logger](#screen). Logging is especially useful for monitoring the progress of the underlying learning algorithm in real time.
 
 To set the logger pass in any PSR-3 compatible logger instance:
 ```php
@@ -1116,7 +1115,6 @@ $estimator->setLogger(new Screen('sentiment'));
 
 ---
 ### Anomaly Detectors
-
 Anomaly detection is the process of identifying samples that do not conform to an expected pattern. The output prediction of a detector is a binary encoding (either *0* for a normal sample or *1* for a detected anomaly).
 
 ### Isolation Forest
@@ -1469,7 +1467,7 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 ```
 
 ### Logistic Regression
-A type of linear classifier that uses the logistic (*sigmoid*) function to distinguish between two possible outcomes.
+A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of two classes.
 
 ##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
@@ -1507,7 +1505,7 @@ $estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new Cr
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems.
 
-> **Note**: The MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
+> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
 ##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
@@ -1883,7 +1881,7 @@ $embedder = new TSNE(2, 30, 12., 10., 500, 1e-6, 5, new Manhattan());
 
 ---
 ### Regressors
-Regression analysis is used to predict continuous-valued outcomes.
+Regressors are used to predict continuous real-valued outcomes. 
 
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using Gradient Descent.
@@ -2053,9 +2051,9 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0), false);
 ```
 
 ### MLP Regressor
-A multi layer [Neural Network](#neural-network) with a continuous output layer suitable for regression problems.
+A multi layer feed forward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems.
 
-> **Note**: The MLP features progress monitoring which stops training when it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always uses the best parameters even if progress may have declined during training.
+> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
 ##### Supervised | Learner | Online | Verbose | Persistable
 
@@ -2211,7 +2209,7 @@ public fit(Dataset $dataset) : void
 ```
 
 ### Elastic
-Some transformers are able to adapt as new data comes through. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer after it has already been fitted.
+Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer even after it has already been fitted.
 
 ```php
 public update(Dataset $dataset) : void
@@ -2246,7 +2244,7 @@ $transformer = new DeltaTfIdfTransformer();
 ```
 
 ### Dense Random Projector
-The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project a samples onto a manifold of target dimensionality.
+The Dense Random Projector uses a random matrix sampled from a dense uniform distribution of [-1, 1] to project  onto a vector space of a target dimensionality.
 
 ##### Continuous *Only* | Stateful
 
@@ -2270,7 +2268,7 @@ $transformer = new DenseRandomProjector(50);
 ```
 
 ### Gaussian Random Projector
-A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) and offers similar performance. This version uses a random matrix sampled from a Gaussian distribution.
+A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a Gaussian distribution to project the input samples onto a lower dimensional vector space.
 
 ##### Continuous *Only* | Stateful
 
@@ -2494,7 +2492,7 @@ In the real world, it is common to have data with missing values here and there.
 |--|--|--|--|--|
 | 1 | placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
 | 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
-| 3 | categorical strategy | Popularity Contest | object | The guessing strategy to employ for categorical feature columns. |
+| 3 | categorical strategy | K Most Frequent | object | The guessing strategy to employ for categorical feature columns. |
 
 #### Additional Methods:
 This transformer does not have any additional methods.
@@ -2502,10 +2500,10 @@ This transformer does not have any additional methods.
 #### Example:
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Transformers\Strategies\Mean;
+use Rubix\ML\Transformers\Strategies\BlurryPercentile;
 use Rubix\ML\Transformers\Strategies\PopularityContest;
 
-$transformer = new MissingDataImputer('?', new Mean(), new PopularityContest());
+$transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new PopularityContest());
 ```
 
 ### Numeric String Converter
@@ -2870,7 +2868,7 @@ The Gaussian activation function is a type of Radial Basis Function (*RBF*) whos
 ##### Radial
 
 #### Parameters:
-This Activation Function does not have any parameters.
+This activation Function does not have any parameters.
 
 #### Example:
 ```php
@@ -2885,7 +2883,7 @@ S-shaped function that squeezes the input value into an output space between -1 
 ##### Sigmoidal
 
 #### Parameters:
-This Activation Function does not have any parameters.
+This activation Function does not have any parameters.
 
 #### Example:
 ```php
@@ -2934,7 +2932,7 @@ Rectified Linear Units output only the positive part of its inputs and are analo
 ##### Retifier
 
 #### Parameters:
-This Activation Function does not have any parameters.
+This activation Function does not have any parameters.
 
 #### Example:
 ```php
@@ -2967,7 +2965,7 @@ A bounded S-shaped function (specifically the Logistic function) with an output 
 ##### Sigmoidal
 
 #### Parameters:
-This Activation Function does not have any parameters.
+This activation Function does not have any parameters.
 
 #### Example:
 ```php
@@ -4454,7 +4452,7 @@ Hold a lottery in which each category has an equal chance of being picked.
 ##### Categorical
 
 #### Parameters:
-This Strategy does not have any parameters.
+This strategy does not have any parameters.
 
 #### Example:
 ```php
@@ -4484,7 +4482,7 @@ Hold a popularity contest where the probability of winning (being guessed) is ba
 ##### Categorical
 
 #### Parameters:
-This Strategy does not have any parameters.
+This strategy does not have any parameters.
 
 #### Example:
 ```php
@@ -4802,7 +4800,7 @@ $tokenizer = new Word();
 Here you can find answers to the most frequently asked questions.
 
 ### What environment should I run Rubix in?
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be working with the command line in Rubix unless you are building a system to work live in production. In the latter scenario, we recommend running your models as background services and serving the requests from a cache. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be running on the command line in Rubix. In the case where you want to serve predictions, we recommend running your models as background services and serving the requests from a cache. If you need real-time prediction capabilities then you can train the model in a terminal and serve the model via the FPM module in your server side code. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
 
 To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
 ```sh
@@ -4829,11 +4827,11 @@ We do not. Rubix only supports *supervised* and *unsupervised* learning.
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
 
-> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the size of your model and the amount of training data. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
+> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
 
 ---
 ## Testing
-Rubix utilizes a combination of static analysis and unit tests for quality assurance and to reduce the number of bugs. Rubix provides two Composer scripts that can be run from the root directory to automate the testing process.
+Rubix utilizes a combination of static analysis and unit tests for quality assurance and to reduce the number of bugs. Rubix provides two [Composer](https://getcomposer.org/) scripts that can be run from the root directory to automate the testing process.
 
 > **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.
 
@@ -4849,4 +4847,4 @@ composer test
 
 ---
 ## Contributing
-See CONTRIBUTING.md for guidelines.
+See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.

@@ -51,14 +51,12 @@ class PolynomialExpander implements Transformer
      */
     public function transform(array &$samples, ?array &$labels = null) : void
     {
-        $columns = count(current($samples));
-
         foreach ($samples as &$sample) {
             $vector = [];
 
-            for ($i = 0; $i < $columns; $i++) {
-                for ($j = 1; $j <= $this->degree; $j++) {
-                    $vector[] = $sample[$i] ** $j;
+            foreach ($sample as $feature) {
+                for ($exp = 1; $exp <= $this->degree; $exp++) {
+                    $vector[] = $feature ** $exp;
                 }
             }
 

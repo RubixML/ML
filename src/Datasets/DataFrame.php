@@ -15,6 +15,12 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     const CONTINUOUS = 2;
     const RESOURCE = 3;
 
+    const TYPES = [
+        1 => 'Categorical',
+        2 => 'Continuous',
+        3 => 'Resource',
+    ];
+
     /**
      * The feature vectors of the dataset. i.e the data table.
      *
