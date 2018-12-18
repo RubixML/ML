@@ -187,25 +187,31 @@ class WordCountVectorizer implements Stateful
             throw new RuntimeException('Transformer is not fitted.');
         }
 
+        $templates = [];
+
+        foreach ($this->vocabulary as $column => $vocabulary) {
+            $templates[$column] = array_fill(0, count($vocabulary), 0);
+        }
+
         foreach ($samples as &$sample) {
             $vectors = [];
 
             foreach ($this->vocabulary as $column => $vocabulary) {
                 $text = $sample[$column];
 
-                $vector = array_fill(0, count($vocabulary), 0);
-
                 $tokens = $this->tokenizer->tokenize($text);
 
                 $counts = array_count_values($tokens);
 
+                $features = $templates[$column];
+
                 foreach ($counts as $token => $count) {
                     if (isset($vocabulary[$token])) {
-                        $vector[$vocabulary[$token]] += $count;
+                        $features[$vocabulary[$token]] = $count;
                     }
                 }
 
-                $vectors[] = $vector;
+                $vectors[] = $features;
 
                 unset($sample[$column]);
             }

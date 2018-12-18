@@ -40,7 +40,9 @@ class OneHotEncoder implements Stateful
         $this->categories = [];
 
         foreach ($columns as $column => $values) {
-             $this->categories[$column] = array_flip(array_unique($values));
+            $categories = array_values(array_unique($values));
+
+             $this->categories[$column] = array_flip($categories);
         }
     }
 
@@ -58,13 +60,19 @@ class OneHotEncoder implements Stateful
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
+        $templates = [];
+
+        foreach ($this->categories as $column => $categories) {
+            $templates[$column] = array_fill(0, count($categories), 0);
+        }
+
         foreach ($samples as &$sample) {
             $vector = [];
 
             foreach ($this->categories as $column => $categories) {
-                $features = array_fill_keys($categories, 0);
-
                 $category = $sample[$column] ?? null;
+
+                $features = $templates[$column];
 
                 if (isset($categories[$category])) {
                     $features[$categories[$category]] = 1;
