@@ -1522,7 +1522,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | metric | Accuracy | object | The validation metric used to monitor the training progress of the network. |
+| 9 | metric | F1 Score | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
 #### Additional Methods:

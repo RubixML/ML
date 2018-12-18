@@ -21,7 +21,7 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use InvalidArgumentException;
@@ -174,7 +174,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 100, ?Optimizer $optimizer = null,
-                            float $alpha = 1e-4, int $epochs = PHP_INT_MAX, float $minChange = 1e-4,
+                            float $alpha = 1e-4, int $epochs = 1000, float $minChange = 1e-4,
                             ?CostFunction $costFn = null, float $holdout = 0.1, ?Metric $metric = null,
                             int $window = 3)
     {
@@ -204,8 +204,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         }
 
         if ($window < 2) {
-            throw new InvalidArgumentException('The window of epochs used for'
-                . " monitoring must be greater than 1, $window given.");
+            throw new InvalidArgumentException('Window must be at least 2'
+                . " epochs, $window given.");
         }
 
         if (is_null($optimizer)) {
@@ -217,7 +217,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         }
 
         if (is_null($metric)) {
-            $metric = new Accuracy();
+            $metric = new F1Score();
         }
 
         $this->hidden = $hidden;

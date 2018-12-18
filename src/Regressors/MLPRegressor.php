@@ -163,7 +163,7 @@ class MLPRegressor implements Online, Verbose, Persistable
      * @return void
      */
     public function __construct(array $hidden = [], int $batchSize = 100, ?Optimizer $optimizer = null,
-                            float $alpha = 1e-4, int $epochs = PHP_INT_MAX, float $minChange = 1e-4,
+                            float $alpha = 1e-4, int $epochs = 1000, float $minChange = 1e-4,
                             ?CostFunction $costFn = null, float $holdout = 0.1, ?Metric $metric = null,
                             int $window = 3)
     {
@@ -193,8 +193,8 @@ class MLPRegressor implements Online, Verbose, Persistable
         }
 
         if ($window < 2) {
-            throw new InvalidArgumentException('The window of epochs used for'
-                . " monitoring must be greater than 1, $window given.");
+            throw new InvalidArgumentException('Window must be at least 2'
+                . " epochs, $window given.");
         }
 
         if (is_null($optimizer)) {
