@@ -43,7 +43,7 @@ class HuberLoss implements CostFunction
     {
         if ($delta <= 0.) {
             throw new InvalidArgumentException('Delta must be greater than'
-                . ' 0.');
+                . " 0, $delta given.");
         }
 
         $this->delta = $delta;
@@ -69,9 +69,8 @@ class HuberLoss implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        return $expected->subtract($activations)->map(function($z) {
-            return $this->beta * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
-        });
+        return $expected->subtract($activations)
+            ->map([$this, '_compute']);
     }
 
     /**
@@ -91,5 +90,14 @@ class HuberLoss implements CostFunction
             ->add($this->beta)
             ->pow(-0.5)
             ->multiply($alpha);
+    }
+
+    /**
+     * @param  float  $z
+     * @return float
+     */
+    public function _compute(float $z) : float
+    {
+        return $this->beta * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
     }
 }

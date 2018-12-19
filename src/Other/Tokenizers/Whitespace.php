@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
+use InvalidArgumentException;
+
 /**
  * Whitespace
  *
@@ -23,10 +25,16 @@ class Whitespace implements Tokenizer
 
     /**
      * @param  string  $delimiter
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(string $delimiter = ' ')
     {
+        if (strlen($delimiter) < 1) {
+            throw new InvalidArgumentException('Delimiter must be'
+                . ' at least 1 character.');
+        }
+
         $this->delimiter = $delimiter;
     }
 

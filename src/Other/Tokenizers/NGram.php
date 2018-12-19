@@ -17,6 +17,9 @@ use InvalidArgumentException;
  */
 class NGram implements Tokenizer
 {
+    const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+    const WORD_REGEX = '/\w+/u';
+
     const SEPARATOR = ' ';
 
     /**
@@ -35,7 +38,7 @@ class NGram implements Tokenizer
     {
         if ($n < 2) {
             throw new InvalidArgumentException('The number of words'
-                . " per token must be greater than 2, $n given.");
+                . " per token must be greater than 1, $n given.");
         }
 
         $this->n = $n;
@@ -49,26 +52,32 @@ class NGram implements Tokenizer
      */
     public function tokenize(string $string) : array
     {
-        $tokens = $words = [];
+        $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
 
-        preg_match_all('/\w+/u', $string, $words);
+        $tokens = [];
 
-        $words = $words[0];
+        foreach ($sentences as $sentence) {
+            $words = [];
 
-        $length = count($words) - $this->n + 1;
+            preg_match_all(self::WORD_REGEX, $sentence, $words);
 
-        for ($i = 0; $i < $length; $i++) {
-            $nGram = '';
+            $words = $words[0];
 
-            for ($j = 0; $j < $this->n; $j++) {
-                $nGram .= $words[$i + $j];
+            $length = count($words) - $this->n + 1;
 
-                if ($j < $this->n - 1) {
-                    $nGram .= self::SEPARATOR;
+            for ($i = 0; $i < $length; $i++) {
+                $nGram = '';
+
+                for ($j = 0; $j < $this->n; $j++) {
+                    $nGram .= $words[$i + $j];
+
+                    if ($j < $this->n - 1) {
+                        $nGram .= self::SEPARATOR;
+                    }
                 }
-            }
 
-            $tokens[] = $nGram;
+                $tokens[] = $nGram;
+            }
         }
 
         return $tokens;

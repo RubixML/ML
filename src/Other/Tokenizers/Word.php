@@ -13,6 +13,8 @@ namespace Rubix\ML\Other\Tokenizers;
  */
 class Word implements Tokenizer
 {
+    const WORD_REGEX = '/\w+/u';
+
     /**
      * Tokenize a block of text.
      *
@@ -23,7 +25,7 @@ class Word implements Tokenizer
     {
         $tokens = [];
 
-        preg_match_all('/\w+/u', $string, $tokens);
+        preg_match_all(self::WORD_REGEX, $string, $tokens);
 
         return $tokens[0];
     }
