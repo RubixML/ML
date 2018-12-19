@@ -285,8 +285,10 @@ class TSNE implements Estimator, Verbose
             $direction = $velocity->multiply($gradient);
 
             foreach ($gains as $i => &$row) {
+                $temp = $direction[$i];
+
                 foreach ($row as $j => &$gain) {
-                    $gain = $direction[$i][$j] < 0.
+                    $gain = $temp[$j] < 0.
                         ? $gain + self::INC_GAIN
                         : $gain * self::DEC_GAIN;
 
