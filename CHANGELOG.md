@@ -1,6 +1,5 @@
 - Unreleased
     - Added Model Orchestra meta estimator
-    - Added Delta TF-IDF Transformer
     - Added document frequency smoothing to TF-IDF Transformer
     - Added Uniform neural net weight initializer
     - Fixed missing probabilities in Classification Tree

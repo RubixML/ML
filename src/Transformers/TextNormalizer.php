@@ -14,6 +14,8 @@ namespace Rubix\ML\Transformers;
  */
 class TextNormalizer implements Transformer
 {
+    const SPACE_REGEX = '/\s+/';
+
     /**
      * Transform the dataset in place.
      *
@@ -27,7 +29,7 @@ class TextNormalizer implements Transformer
         foreach ($samples as &$sample) {
             foreach ($sample as &$feature) {
                 if (is_string($feature)) {
-                    $feature = preg_replace('/\s+/', ' ', strtolower($feature));
+                    $feature = strtolower(preg_replace(self::SPACE_REGEX, ' ', $feature) ?: '');
                 }
             }
         }
