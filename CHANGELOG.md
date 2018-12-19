@@ -8,6 +8,7 @@
     - Added model Wrapper interface
     - AdaBoost is now probabilistic
     - Added Constant guessing strategy
+    - Added N-Gram tokenizer
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

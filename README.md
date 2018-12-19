@@ -237,6 +237,7 @@ $ composer require rubix/ml
 			- [Binary](#binary-serializer)
 			- [Native](#native)
 		- [Tokenizers](#tokenizers)
+			- [N-Gram](#n-gram)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
@@ -4765,6 +4766,21 @@ var_dump($tokenizer->tokenize($text));
 	[8]=> string(2) "on"
 	[9]=> string(6) "impact"
   }
+```
+
+### N-Gram
+N-Grams are sequences of n-words of a given string. For example, if *n* is 2 then the tokenizer will generate tokens consisting of 2 contiguous words.
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | n | 2 | int | The number of contiguous words to a single token. |
+
+#### Example:
+```php
+use Rubix\ML\Extractors\Tokenizers\NGram;
+
+$tokenizer = new NGram(3);
 ```
 
 ### Whitespace
