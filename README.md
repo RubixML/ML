@@ -39,7 +39,7 @@ $ composer require rubix/ml
 	- [Evaluation](#evaluating-model-performance)
 	- [Visualization](#visualization)
     - [Next Steps](#next-steps)
-- Example Projects
+- Tutorials & Examples
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
 	- [Housing Price Predictor](https://github.com/RubixML/Housing)
@@ -386,12 +386,12 @@ float(0.945)
 ### Visualization
 Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of Rubix . Therefore, we leave you with the freedom of using any of the many great plotting and visualization frameworks out there to communicate the insights you obtain.
 
-If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite plotting or spreadsheet software such as [Tableu](https://www.tableau.com) or [Excel](https://products.office.com/en-us/excel). PHP has built in functions for manipulating both JSON and CSV formats, and there are a number of libraries available that help reading and writing these formats to file from PHP. 
+If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite plotting or spreadsheet software such as [Tableu](https://www.tableau.com), [Google Sheets](https://www.google.com/sheets/about/), or [Excel](https://products.office.com/en-us/excel). PHP has built in functions for manipulating both JSON and CSV formats, and there are a number of libraries available that help reading and writing these formats to file from PHP. 
 
 If you are looking for more control over your visualizations, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript that plays well with PHP.
 
 ### Next Steps
-After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) such as the [Credit Card Default Predictor](https://github.com/RubixML/Credit) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
+After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
 
 ---
 ### API Reference
@@ -4352,7 +4352,7 @@ $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 This section includes broader functioning classes that do not fall under a specific category.
 
 ### Guessing Strategies
-Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information and basic means. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).
+Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).
 
 The Strategy interface provides an API similar to Transformers as far as fitting, however, instead of being fit to an entire dataset, each Strategy is fit to an array of either continuous or discrete values.
 
@@ -4490,14 +4490,14 @@ To generate a *unique* distribution of integer parameters:
 public static ints(int $min, int $max, int $n = 10) : array
 ```
 
-To generate a distribution of floating point parameters:
+To generate a random distribution of floating point parameters:
 ```php
 public static floats(float $min, float $max, int $n = 10) : array
 ```
 
-To generate a uniform grid of parameters:
+To generate a uniformly spaced grid of parameters:
 ```php
-public static floats(float $start, float $end, int $n = 10) : array
+public static grid(float $min, float $max, int $n = 10) : array
 ```
 
 #### Example:

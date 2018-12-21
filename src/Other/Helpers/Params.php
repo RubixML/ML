@@ -97,17 +97,17 @@ class Params
     /**
      * Generate a grid of evenly distributed parameters.
      *
-     * @param  float  $start
-     * @param  float  $end
+     * @param  float  $min
+     * @param  float  $max
      * @param  int  $n
      * @throws \InvalidArgumentException
      * @return array
      */
-    public static function grid(float $start, float $end, int $n = 10) : array
+    public static function grid(float $min, float $max, int $n = 10) : array
     {
-        if (($end - $start) < 0.) {
-            throw new InvalidArgumentException('End cannot be less than'
-                . ' start.');
+        if ($min > $max) {
+            throw new InvalidArgumentException('Max cannot be less than'
+                . ' min.');
         }
 
         if ($n < 2) {
@@ -115,9 +115,9 @@ class Params
                 . ' parameters.');
         }
 
-        $interval = ($end - $start) / ($n - 1);
+        $interval = ($max - $min) / ($n - 1);
 
-        return range($start, $end, $interval);
+        return range($min, $max, $interval);
     }
 
     /**

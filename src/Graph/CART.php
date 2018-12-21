@@ -128,7 +128,7 @@ abstract class CART implements Tree
 
         $stack = [[$this->root, $depth]];
 
-        while($stack) {
+        while ($stack) {
             list($current, $depth) = array_pop($stack) ?? [];
 
             list($left, $right) = $current->groups();
@@ -234,11 +234,9 @@ abstract class CART implements Tree
             return [];
         }
 
-        $nodes = $this->dump($this->root);
-
         $importances = [];
 
-        foreach ($nodes as $node) {
+        foreach ($this->dump() as $node) {
             if ($node instanceof Comparison) {
                 $index = $node->column();
 
@@ -265,30 +263,27 @@ abstract class CART implements Tree
      * Return an array of all the nodes in the tree starting at a
      * given node.
      *
-     * @param  \Rubix\ML\Graph\Nodes\BinaryNode  $current
      * @return array
      */
-    public function dump(BinaryNode $current) : array
+    public function dump() : array
     {
-        if ($current instanceof Leaf) {
-            return [$current];
+        $stack = [$this->root];
+
+        $nodes = [];
+
+        while ($stack) {
+            $current = array_pop($stack);
+
+            $nodes[] = $current;
+
+            if ($current instanceof BinaryNode) {
+                foreach ($current->children() as $child) {
+                    $stack[] = $child;
+                }
+            }
         }
 
-        $left = $right = [];
-
-        $node = $current->left();
-
-        if ($node instanceof BinaryNode) {
-            $left = $this->dump($node);
-        }
-
-        $node = $current->right();
-
-        if ($node instanceof BinaryNode) {
-            $right = $this->dump($node);
-        }
-
-        return array_merge([$current], $left, $right);
+        return $nodes;
     }
 
     /**
