@@ -148,18 +148,6 @@ class Params
     }
 
     /**
-     * Zip together a set of args with their cooresponding params.
-     * 
-     * @param  array  $args
-     * @param  array  $params
-     * @return array
-     */
-    public static function zip(array $args, array $params) : array
-    {
-        return array_combine($args, $params) ?: [];
-    }
-
-    /**
      * Return a string representation of the constructor arguments from
      * an associative constructor array.
      * 
@@ -177,7 +165,9 @@ class Params
             }
 
             if (is_array($param)) {
-                $param = '[' . self::stringify(self::zip(array_keys($param), $param)) . ']';
+                $temp = array_combine(array_keys($param), $param) ?: [];
+
+                $param = '[' . self::stringify($temp) . ']';
             }
 
             $strings[] = (string) $arg . $separator . (string) $param;

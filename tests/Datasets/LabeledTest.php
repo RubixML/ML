@@ -99,6 +99,20 @@ class LabeledTest extends TestCase
         $this->assertEquals($this->labels, $this->dataset->labels());
     }
 
+    public function test_zip()
+    {
+        $outcome = [
+            ['nice', 'furry', 'friendly', 'not monster'],
+            ['mean', 'furry', 'loner', 'monster'],
+            ['nice', 'rough', 'friendly', 'not monster'],
+            ['mean', 'rough', 'friendly', 'monster'],
+            ['nice', 'rough', 'friendly', 'not monster'],
+            ['nice', 'furry', 'loner', 'not monster'],
+        ];
+        
+        $this->assertEquals($outcome, $this->dataset->zip());
+    }
+
     public function test_get_label()
     {
         $this->assertEquals('not monster', $this->dataset->label(0));

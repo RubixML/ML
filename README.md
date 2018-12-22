@@ -680,6 +680,11 @@ Return an array of labels:
 public labels() : array
 ```
 
+Return the samples and labels in a single array:
+```php
+public zip() : array
+```
+
 Return the label at the given row offset:
 ```php
 public label(int $index) : mixed

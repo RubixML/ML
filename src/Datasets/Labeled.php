@@ -117,6 +117,22 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Return the samples and labels in a single array.
+     * 
+     * @return array[]
+     */
+    public function zip() : array
+    {
+        $rows = $this->samples;
+
+        foreach ($rows as $i => &$row) {
+            $row[] = $this->labels[$i];
+        }
+
+        return $rows;
+    }
+
+    /**
      * Return a label given by row index.
      *
      * @param  int  $index

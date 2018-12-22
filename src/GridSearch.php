@@ -247,7 +247,7 @@ class GridSearch implements Learner, Persistable, Verbose
         foreach ($this->combineGrid($this->grid) as $params) {
             $estimator = new $this->base(...$params);
 
-            $constructor = Params::zip($this->args, $params);
+            $constructor = array_combine($this->args, $params) ?: [];
 
             if ($this->logger) $this->logger->info('Testing parameters '
                 . Params::stringify($constructor));

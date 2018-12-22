@@ -8,6 +8,8 @@
     - AdaBoost is now probabilistic
     - Added Constant guessing strategy
     - Added N-Gram tokenizer
+    - Changed FCM and K Means default max epochs
+    - Added zip method to Labeled dataset
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor
