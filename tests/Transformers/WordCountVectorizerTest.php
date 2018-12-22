@@ -23,7 +23,7 @@ class WordCountVectorizerTest extends TestCase
             ['with a dandy ubrella'],
         ]);
 
-        $this->transformer = new WordCountVectorizer(50, 1, ['quick', 'pig'], new Word());
+        $this->transformer = new WordCountVectorizer(50, 1, new Word());
     }
 
     public function test_build_transformer()
@@ -40,8 +40,8 @@ class WordCountVectorizerTest extends TestCase
         $this->dataset->apply($this->transformer);
     
         $outcome = [
-            [2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+            [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
         ];
     
         $this->assertEquals($outcome, $this->dataset->samples());

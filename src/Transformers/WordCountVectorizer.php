@@ -41,15 +41,6 @@ class WordCountVectorizer implements Stateful
     protected $minDocumentFrequency;
 
     /**
-     * An array of stop words i.e. words to filter out of the original text.
-     *
-     * @var array
-     */
-    protected $stopWords = [
-        //
-    ];
-
-    /**
      * The tokenizer used to extract text data into tokenable values.
      *
      * @var \Rubix\ML\Other\Tokenizers\Tokenizer
@@ -67,12 +58,11 @@ class WordCountVectorizer implements Stateful
     /**
      * @param  int  $maxVocabulary
      * @param  int  $minDocumentFrequency
-     * @param  array  $stopWords
      * @param  \Rubix\ML\Other\Tokenizers\Tokenizer|null  $tokenizer
      * @return void
      */
     public function __construct(int $maxVocabulary = PHP_INT_MAX, int $minDocumentFrequency = 1,
-                                array $stopWords = [], ?Tokenizer $tokenizer = null)
+                                ?Tokenizer $tokenizer = null)
     {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabular must'
@@ -84,20 +74,12 @@ class WordCountVectorizer implements Stateful
             . " be at least 1, $minDocumentFrequency given.");
         }
 
-        foreach ($stopWords as $word) {
-            if (!is_string($word)) {
-                throw new InvalidArgumentException('Stop word must be a string, '
-                    . gettype($word) . ' found.');
-            }
-        }
-
         if (is_null($tokenizer)) {
             $tokenizer = new Word();
         }
 
         $this->maxVocabulary = $maxVocabulary;
         $this->minDocumentFrequency = $minDocumentFrequency;
-        $this->stopWords = array_flip(array_unique($stopWords));
         $this->tokenizer = $tokenizer;
     }
 
@@ -142,14 +124,12 @@ class WordCountVectorizer implements Stateful
                 $counts = array_count_values($tokens);
 
                 foreach ($counts as $token => $count) {
-                    if (!isset($this->stopWords[$token])) {
-                        if (isset($tfs[$token])) {
-                            $tfs[$token] += $count;
-                            $dfs[$token] += 1;
-                        } else {
-                            $tfs[$token] = $count;
-                            $dfs[$token] = 1;
-                        }
+                    if (isset($tfs[$token])) {
+                        $tfs[$token] += $count;
+                        $dfs[$token] += 1;
+                    } else {
+                        $tfs[$token] = $count;
+                        $dfs[$token] = 1;
                     }
                 }
             }

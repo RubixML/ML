@@ -10,6 +10,7 @@
     - Added N-Gram tokenizer
     - Changed FCM and K Means default max epochs
     - Added zip method to Labeled dataset
+    - Removed stop word filter from Word Count Vectorizer
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

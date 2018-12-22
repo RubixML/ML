@@ -2756,8 +2756,7 @@ In machine learning, word *counts* are often used to represent natural language 
 |--|--|--|--|--|
 | 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
 | 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
-| 3 | stop words | None | array | An array of stop words i.e. words to filter out of the original text. |
-| 4 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
+| 3 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
 
 #### Additional Methods:
 Return the fitted vocabulary i.e. the words that will be vectorized:
@@ -2773,15 +2772,13 @@ public size() : int
 #### Example:
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Other\Tokenizers\NGram;
 
-$stopwords = ['i', 'me', 'myself', 'we', 'our', ...];
-
-$transformer = new WordCountVectorizer(5000, 3, $stopwords, new Word());
+$transformer = new WordCountVectorizer(10000, 2, new NGram(2));
 ```
 
 ### Z Scale Standardizer
-A way of centering and scaling a sample matrix by computing the Z Score for each continuous feature. Z Scores have a mean of 0 and *unit* variance.
+A method of centering and scaling a dataset such that it has 0 mean and unit variance (Z Score).
 
 ##### Continuous | Stateful | Elastic
 
