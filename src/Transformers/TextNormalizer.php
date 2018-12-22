@@ -21,7 +21,6 @@ class TextNormalizer implements Transformer
      *
      * @param  array  $samples
      * @param  array|null  $labels
-     * @throws \RuntimeException
      * @return void
      */
     public function transform(array &$samples, ?array &$labels = null) : void

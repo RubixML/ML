@@ -3,13 +3,11 @@
 namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Transformers\Stateful;
-use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\WordCountVectorizer;
+use Rubix\ML\Transformers\StopWordFilter;
 use PHPUnit\Framework\TestCase;
 
-class WordCountVectorizerTest extends TestCase
+class StopWordFilterTest extends TestCase
 {
     protected $transformer;
 
@@ -23,25 +21,22 @@ class WordCountVectorizerTest extends TestCase
             ['with a dandy umbrella'],
         ]);
 
-        $this->transformer = new WordCountVectorizer(50, 1, new Word());
+        $this->transformer = new StopWordFilter(['a', 'quick', 'pig']);
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(WordCountVectorizer::class, $this->transformer);
-        $this->assertInstanceOf(Stateful::class, $this->transformer);
+        $this->assertInstanceOf(StopWordFilter::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
-    public function test_fit_transform()
+    public function test_transform()
     {
-        $this->transformer->fit($this->dataset);
-
         $this->dataset->apply($this->transformer);
     
         $outcome = [
-            [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+            ['the  brown fox jumped over the lazy man sitting at  bus stop drinking  can of coke'],
+            ['with  dandy umbrella'],
         ];
     
         $this->assertEquals($outcome, $this->dataset->samples());

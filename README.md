@@ -115,6 +115,7 @@ $ composer require rubix/ml
 		- [Raw Pixel Encoder](#raw-pixel-encoder)
 		- [Robust Standardizer](#robust-standardizer)
 		- [Sparse Random Projector](#sparse-random-projector)
+		- [Stop Word Filter](#stop-word-filter)
 		- [Text Normalizer](#text-normalizer)
 		- [TF-IDF Transformer](#tf-idf-transformer)
 		- [Variance Threshold Filter](#variance-threshold-filter)
@@ -2682,6 +2683,25 @@ public static minDimensions(int $n, float $maxDistortion = 0.1) : int
 use Rubix\ML\Transformers\SparseRandomProjector;
 
 $transformer = new SparseRandomProjector(30);
+```
+
+### Stop Word Filter
+Removes user-specified words from a corpus of text.
+
+##### Categorical
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | stop words | | array | A list of stop words to filter out of each text feature. |
+
+#### Additional Methods:
+This transformer does not have any additional methods.
+
+```php
+use Rubix\ML\Transformers\StopWordFilter;
+
+$transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ```
 
 ### Text Normalizer
