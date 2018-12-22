@@ -107,7 +107,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * @return void
      */
     public function __construct(int $c, float $fuzz = 2.0, ?Distance $kernel = null,
-                                int $epochs = PHP_INT_MAX, float $minChange = 1e-4)
+                                int $epochs = 300, float $minChange = 1e-4)
     {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'

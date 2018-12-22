@@ -40,6 +40,7 @@ $ composer require rubix/ml
 	- [Visualization](#visualization)
     - [Next Steps](#next-steps)
 - Tutorials & Examples
+	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
 	- [Housing Price Predictor](https://github.com/RubixML/Housing)
@@ -1516,7 +1517,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 5 | epochs | 1000 | int | The maximum number of training epochs to execute. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
@@ -1722,8 +1723,8 @@ Probabilistic distance-based clusterer that allows samples to belong to multiple
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
 | 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| 4 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
-| 5 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 5 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
 
 #### Additional Methods:
 
@@ -1742,7 +1743,7 @@ public steps() : array
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3);
 ```
 
 ### Gaussian Mixture
@@ -1792,7 +1793,7 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
 | 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
-| 3 | epochs | PHP_INT_MAX | int | The maximum number of training rounds to execute. |
+| 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
 
 #### Additional Methods:
 
@@ -2064,7 +2065,7 @@ A multi layer feed forward [Neural Network](#neural-network) with a continuous o
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
-| 5 | epochs | PHP_INT_MAX | int | The maximum number of training epochs to execute. |
+| 5 | epochs | 1000 | int | The maximum number of training epochs to execute. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |

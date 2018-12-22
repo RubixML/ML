@@ -66,7 +66,7 @@ class KMeans implements Online, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k, ?Distance $kernel = null, int $epochs = PHP_INT_MAX)
+    public function __construct(int $k, ?Distance $kernel = null, int $epochs = 300)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('Must target at least one'
