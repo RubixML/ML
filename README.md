@@ -2705,12 +2705,14 @@ $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ```
 
 ### Text Normalizer
-Converts all text to lowercase and removes extra whitespace.
+This transformer converts all text to lowercase and *optionally* removes extra whitespace.
 
 ##### Categorical
 
 #### Parameters:
-This transformer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | trim | false | bool | Should we trim excess whitespace? |
 
 #### Additional Methods:
 This transformer does not have any additional methods.
@@ -2718,7 +2720,7 @@ This transformer does not have any additional methods.
 ```php
 use Rubix\ML\Transformers\TextNormalizer;
 
-$transformer = new TextNormalizer();
+$transformer = new TextNormalizer(true);
 ```
 
 ### TF-IDF Transformer

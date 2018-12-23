@@ -54,7 +54,7 @@ class NGram implements Tokenizer
     {
         $sentences = preg_split(self::SENTENCE_REGEX, $string) ?: [];
 
-        $tokens = [];
+        $nGrams = [];
 
         foreach ($sentences as $sentence) {
             $words = [];
@@ -76,10 +76,10 @@ class NGram implements Tokenizer
                     }
                 }
 
-                $tokens[] = $nGram;
+                $nGrams[] = $nGram;
             }
         }
 
-        return $tokens;
+        return $nGrams;
     }
 }

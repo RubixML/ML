@@ -21,7 +21,7 @@ class TextNormalizerTest extends TestCase
             ['with a Dandy   ubrella'],
         ]);
 
-        $this->transformer = new TextNormalizer();
+        $this->transformer = new TextNormalizer(true);
     }
 
     public function test_build_transformer()
