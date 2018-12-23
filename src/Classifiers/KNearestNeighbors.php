@@ -221,13 +221,13 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
             $total = array_sum($weights) ?: self::EPSILON;
 
-            $temp = array_fill_keys($this->classes, 0.);
+            $dist = array_fill_keys($this->classes, 0.);
 
             foreach ($weights as $class => $weight) {
-                $temp[$class] = $weight / $total;
+                $dist[$class] = $weight / $total;
             }
 
-            $probabilities[] = $temp;
+            $probabilities[] = $dist;
         }
 
         return $probabilities;

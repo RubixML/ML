@@ -56,14 +56,6 @@ class RandomForest implements Learner, Probabilistic, Persistable
     protected $ratio;
 
     /**
-     * The maximum number of processor threads to use when training
-     * the ensemble.
-     * 
-     * @var int
-     */
-    protected $threads;
-
-    /**
      * The possible class outcomes.
      *
      * @var array
@@ -85,12 +77,10 @@ class RandomForest implements Learner, Probabilistic, Persistable
      * @param  \Rubix\ML\Learner|null  $base
      * @param  int  $estimators
      * @param  float  $ratio
-     * @param  int  $threads
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1,
-                                int $threads = 4)
+    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
     {
         if (is_null($base)) {
             $base = new ClassificationTree();
@@ -114,7 +104,6 @@ class RandomForest implements Learner, Probabilistic, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->threads = $threads;
     }
 
     /**

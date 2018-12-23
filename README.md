@@ -1002,7 +1002,7 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 |--|--|--|--|--|
 | 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
 | 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
-| 3 | elastic | true | bool | Should we update elastic transformers during partial training? |
+| 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
 
 #### Additional Methods:
 This meta estimator does not have any additional methods.
@@ -1703,7 +1703,7 @@ Density-Based Spatial Clustering of Applications with Noise is a clustering algo
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | radius | | float | The maximum radius between two points for them to be considered in the same cluster. |
+| 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
 

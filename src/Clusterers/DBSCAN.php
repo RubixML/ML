@@ -59,7 +59,7 @@ class DBSCAN implements Estimator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius, int $minDensity = 5, ?Distance $kernel = null)
+    public function __construct(float $radius = 0.5, int $minDensity = 5, ?Distance $kernel = null)
     {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'

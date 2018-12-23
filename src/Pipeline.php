@@ -54,7 +54,7 @@ class Pipeline implements Online, Wrapper, Persistable, Verbose
     protected $estimator;
 
     /**
-     * Should we update elastic transformers during partial train?
+     * Should we update the elastic transformers during partial train?
      * 
      * @var bool
      */
@@ -67,7 +67,7 @@ class Pipeline implements Online, Wrapper, Persistable, Verbose
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $transformers = [], Estimator $estimator, bool $elastic = true)
+    public function __construct(array $transformers, Estimator $estimator, bool $elastic = true)
     {
         foreach ($transformers as $transformer) {
             if (!$transformer instanceof Transformer) {
