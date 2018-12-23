@@ -12,6 +12,8 @@
     - Changed FCM and K Means default max epochs
     - Added zip method to Labeled dataset
     - Removed stop word filter from Word Count Vectorizer
+    - Changed order of t-SNE hyper-parameters
+    - Grid search now has automatic default Metric
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

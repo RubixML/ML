@@ -9,6 +9,10 @@ use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionMethod;
@@ -120,14 +124,14 @@ class GridSearch implements Learner, Persistable, Verbose
     /**
      * @param  string  $base
      * @param  array  $grid
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
+     * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
      * @param  \Rubix\ML\CrossValidation\Validator|null  $validator
      * @param  bool  $retrain
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $grid, Metric $metric, Validator $validator = null,
-                                bool $retrain = true)
+    public function __construct(string $base, array $grid, Metric $metric = null,
+                                Validator $validator = null, bool $retrain = true)
     {
         $reflector = new ReflectionClass($base);
 
@@ -148,6 +152,29 @@ class GridSearch implements Learner, Persistable, Verbose
         foreach ($grid as &$options) {
             if (!is_array($options)) {
                 $options = [$options];
+            }
+        }
+
+        if (is_null($metric)) {
+            switch ($proxy->type()) {
+                case self::CLASSIFIER:
+                    $metric = new F1Score();
+                    break 1;
+    
+                case self::REGRESSOR:
+                    $metric = new RSquared();
+                    break 1;
+                
+                case self::CLUSTERER:
+                    $metric = new VMeasure();
+                    break 1;
+    
+                case self::DETECTOR:
+                    $metric = new F1Score();
+                    break 1;
+    
+                default:
+                    $metric = new Accuracy();
             }
         }
 

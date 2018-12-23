@@ -108,6 +108,14 @@ class TSNE implements Estimator, Verbose
     protected $rate;
 
     /**
+     * The distance metric used to measure distances between samples in both
+     * high and low dimensions.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
+
+    /**
      * The minimum gradient necessary to continue fitting.
      *
      * @var float
@@ -123,14 +131,6 @@ class TSNE implements Estimator, Verbose
     protected $window;
 
     /**
-     * The distance metric used to measure distances between samples in both
-     * high and low dimensions.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * The magnitudes of the gradient at each epoch since the last embedding.
      *
      * @var float[]
@@ -143,17 +143,17 @@ class TSNE implements Estimator, Verbose
      * @param  int  $dimensions
      * @param  int  $perplexity
      * @param  float  $exaggeration
-     * @param  int  $epochs
      * @param  float  $rate
+     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param  int  $epochs
      * @param  float  $minGradient
      * @param  int  $window
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
      * @return void
      */
     public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                    float $rate = 100., int $epochs = 1000, float $minGradient = 1e-8, int $window = 3,
-                    ?Distance $kernel = null)
+                                float $rate = 100., ?Distance $kernel = null, int $epochs = 1000,
+                                float $minGradient = 1e-8, int $window = 3)
     {
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Cannot embed into less than 1'
@@ -199,12 +199,12 @@ class TSNE implements Estimator, Verbose
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
+        $this->rate = $rate;
+        $this->kernel = $kernel;
         $this->epochs = $epochs;
         $this->early = (int) max(250, round($epochs / 4));
-        $this->rate = $rate;
         $this->minGradient = $minGradient;
         $this->window = $window;
-        $this->kernel = $kernel;
     }
 
     /**

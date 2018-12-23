@@ -28,7 +28,7 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new TSNE(1, 10, 12., 10., 500, 1e-7, 5, new Euclidean());
+        $this->estimator = new TSNE(1, 10, 12., 10., new Euclidean(), 500, 1e-7, 5);
 
         $this->estimator->setLogger(new BlackHole());
     }

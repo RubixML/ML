@@ -868,7 +868,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 |--|--|--|--|--|
 | 1 | base | | string | The fully qualified class name of the base Estimator. |
 | 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
-| 3 | metric | | object | The validation metric used to score each set of parameters. |
+| 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
 | 5 | retrain | true | bool | Should we retrain using the best parameter combination and entire dataset? |
 
@@ -1866,10 +1866,10 @@ T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold l
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
 | 4 | rate | 100. | float | The learning rate that controls the step size. |
-| 5 | epochs | 1000 | int | The number of times to iterate over the embedding. |
-| 6 | min gradient | 1e-8 | float | The minimum gradient necessary to continue embedding. |
-| 7 | window | 3 | int | The number of most recent epochs to consider when determining an early stop. |
-| 7 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 5 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
+| 6 | epochs | 1000 | int | The number of times to iterate over the embedding. |
+| 7 | min gradient | 1e-8 | float | The minimum gradient necessary to continue embedding. |
+| 8 | window | 3 | int | The number of most recent epochs to consider when determining an early stop. |
 
 #### Additional Methods:
 
@@ -1883,15 +1883,15 @@ public steps() : array
 use Rubi\ML\Manifold\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(2, 30, 12., 10., 500, 1e-6, 5, new Manhattan());
+$embedder = new TSNE(2, 30, 12., 10., new Manhattan(), 500, 1e-6, 5);
 ```
 
 ---
 ### Regressors
-Regressors are used to predict continuous real-valued outcomes. 
+Regressors are used to predict continuous real-valued outcomes.
 
 ### Adaline
-Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using Gradient Descent.
+Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
 
 ##### Supervised | Learner | Online | Verbose | Persistable
 
