@@ -62,7 +62,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * The precomputed means of each feature column of the training set.
      *
-     * @var array
+     * @var array[]
      */
     protected $means = [
         //
@@ -71,16 +71,16 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * The precomputed variances of each feature column of the training set.
      *
-     * @var array
+     * @var array[]
      */
     protected $variances = [
         //
     ];
 
     /**
-     * The possible class outcomes.
+     * The possible class labels.
      *
-     * @var array
+     * @var (int|string)[]
      */
     protected $classes = [
         //
@@ -135,17 +135,17 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * Return the class prior probabilities.
      *
-     * @return array
+     * @return float[]
      */
     public function priors() : array
     {
         $priors = [];
 
         if (is_array($this->priors)) {
-            $max = LogSumExp::compute($this->priors);
+            $total = LogSumExp::compute($this->priors);
 
             foreach ($this->priors as $class => $probability) {
-                $priors[$class] = exp($probability - $max);
+                $priors[$class] = exp($probability - $total);
             }
         }
 
@@ -155,7 +155,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * Return the running mean of each feature column of the training data.
      *
-     * @return array|null
+     * @return array[]|null
      */
     public function means() : ?array
     {
@@ -165,7 +165,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * Return the running variances of each feature column of the training data.
      *
-     * @return array|null
+     * @return array[]|null
      */
     public function variances() : ?array
     {
@@ -369,11 +369,12 @@ class GaussianNB implements Online, Probabilistic, Persistable
      */
     protected function jointLogLikelihood(array $sample) : array
     {
-        $likelihood = [];
+        $likelihoods = [];
 
         foreach ($this->means as $class => $means) {
-            $score = $this->priors[$class] ?? self::LOG_EPSILON;
             $variances = $this->variances[$class];
+
+            $likelihood = $this->priors[$class] ?? self::LOG_EPSILON;
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
@@ -382,12 +383,12 @@ class GaussianNB implements Online, Probabilistic, Persistable
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
 
-                $score += $pdf;
+                $likelihood += $pdf;
             }
 
-            $likelihood[$class] = $score;
+            $likelihoods[$class] = $likelihood;
         }
 
-        return $likelihood;
+        return $likelihoods;
     }
 }

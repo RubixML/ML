@@ -346,18 +346,18 @@ class NaiveBayes implements Online, Probabilistic, Persistable
      */
     protected function jointLogLikelihood(array $sample) : array
     {
-        $likelihood = [];
+        $likelihoods = [];
 
         foreach ($this->probs as $class => $probs) {
-            $score = $this->priors[$class] ?? self::LOG_EPSILON;
+            $likelihood = $this->priors[$class] ?? self::LOG_EPSILON;
 
             foreach ($sample as $column => $feature) {
-                $score += $probs[$column][$feature] ?? self::LOG_EPSILON;
+                $likelihood += $probs[$column][$feature] ?? self::LOG_EPSILON;
             }
 
-            $likelihood[$class] = $score;
+            $likelihoods[$class] = $likelihood;
         }
 
-        return $likelihood;
+        return $likelihoods;
     }
 }

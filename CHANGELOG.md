@@ -16,6 +16,7 @@
     - Changed order of t-SNE hyper-parameters
     - Grid search now has automatic default Metric
     - Base k-D Tree now uses highest variance splits
+    - Renamed Raw Pixel Encoder to Image Vectorizer
 
 - 0.0.7-alpha
     - Added Support Vector Machine classifier and regressor

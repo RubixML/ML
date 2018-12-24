@@ -149,10 +149,10 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
         $priors = [];
 
         if (is_array($this->priors)) {
-            $max = LogSumExp::compute($this->priors);
+            $total = LogSumExp::compute($this->priors);
 
             foreach ($this->priors as $class => $probability) {
-                $priors[$class] = exp($probability - $max);
+                $priors[$class] = exp($probability - $total);
             }
         }
 
@@ -375,11 +375,11 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         $labels = $clusterer->predict($dataset);
 
-        $bootstrap = Labeled::quick($dataset->samples(), $labels);
+        $dataset = Labeled::quick($dataset->samples(), $labels);
 
         $means = $variances = [];
 
-        foreach ($bootstrap->stratify() as $cluster => $stratum) {
+        foreach ($dataset->stratify() as $cluster => $stratum) {
             $mHat = $vHat = [];
 
             foreach ($stratum->columns() as $values) {
@@ -411,7 +411,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $means = $this->means[$cluster];
             $variances = $this->variances[$cluster];
 
-            $score = $prior;
+            $likelihood = $prior;
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
@@ -420,10 +420,10 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
                 $pdf = -0.5 * log(self::TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
 
-                $score += $pdf;
+                $likelihood += $pdf;
             }
 
-            $likelihoods[$cluster] = $score;
+            $likelihoods[$cluster] = $likelihood;
         }
 
         return $likelihoods;

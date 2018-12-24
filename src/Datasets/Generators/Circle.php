@@ -53,12 +53,12 @@ class Circle implements Generator
     public function __construct(float $x = 0.0, float $y = 0.0, float $scale = 1.0, float $noise = 0.1)
     {
         if ($scale < 0.) {
-            throw new InvalidArgumentException("Scaling factor must be greater"
+            throw new InvalidArgumentException('Scaling factor must be greater'
                 . " than 0, $scale given.");
         }
 
         if ($noise < 0. or $noise > 1.) {
-            throw new InvalidArgumentException("Noise factor must be between 0"
+            throw new InvalidArgumentException('Noise factor must be between 0'
                 . " and less 1, $noise given.");
         }
 

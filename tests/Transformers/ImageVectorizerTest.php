@@ -4,10 +4,10 @@ namespace Rubix\ML\Tests\Transformers;
 
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
-use Rubix\ML\Transformers\RawPixelEncoder;
+use Rubix\ML\Transformers\ImageVectorizer;
 use PHPUnit\Framework\TestCase;
 
-class RawPixelEncoderTest extends TestCase
+class ImageVectorizerTest extends TestCase
 {
     protected $transformer;
 
@@ -19,12 +19,12 @@ class RawPixelEncoderTest extends TestCase
             [imagecreatefromjpeg(__DIR__ . '/../space.jpg')],
         ]);
 
-        $this->transformer = new RawPixelEncoder([3, 3], true, 'gd');
+        $this->transformer = new ImageVectorizer([3, 3], true, 'gd');
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(RawPixelEncoder::class, $this->transformer);
+        $this->assertInstanceOf(ImageVectorizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 

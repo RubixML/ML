@@ -99,6 +99,7 @@ $ composer require rubix/ml
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [HTML Stripper](#html-stripper)
+		- [Image Vectorizer](#image-vectorizer)
 		- [Interval Discretizer](#interval-discretizer)
 		- [L1 Normalizer](#l1-normalizer)
 		- [L2 Normalizer](#l2-normalizer)
@@ -112,7 +113,6 @@ $ composer require rubix/ml
 		- [Polynomial Expander](#polynomial-expander)
 		- [Principal Component Analysis](#principal-component-analysis)
 		- [Quartile Standardizer](#quartile-standardizer)
-		- [Raw Pixel Encoder](#raw-pixel-encoder)
 		- [Robust Standardizer](#robust-standardizer)
 		- [Sparse Random Projector](#sparse-random-projector)
 		- [Stop Word Filter](#stop-word-filter)
@@ -2287,6 +2287,34 @@ use Rubix\ML\Transformers\HTMLStripper;
 $transformer = new HTMLStripper();
 ```
 
+### Image Vectorizer
+Image Vectorizer takes images (as PHP Resources) and converts them into a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP.
+
+> **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+
+##### Resource (Images)
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
+| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
+| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+
+#### Additional Methods:
+
+Return the dimensionality of the vector that gets encoded:
+```php
+public dimensions() : int
+```
+
+#### Example:
+```php
+use Rubix\ML\Transformers\ImageVectorizer;
+
+$transformer = new ImageVectorizer([28, 28], true, 'gd');
+```
+
 ### Interval Discretizer
 This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
 
@@ -2602,34 +2630,6 @@ public iqrs() : array
 use Rubix\ML\Transformers\QuartileStandardizer;
 
 $transformer = new QuartileStandardizer(true);
-```
-
-### Raw Pixel Encoder
-The Raw Pixel Encoder takes images (as [PHP Resources](http://php.net/manual/en/language.types.resource.php)) and converts them to a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP.
-
-> **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
-
-##### Resource (Images)
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
-| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
-
-#### Additional Methods:
-
-Return the dimensionality of the vector that gets encoded:
-```php
-public dimensions() : int
-```
-
-#### Example:
-```php
-use Rubix\ML\Transformers\RawPixelEncoder;
-
-$transformer = new RawPixelEncoder([28, 28], true, 'gd');
 ```
 
 ### Robust Standardizer

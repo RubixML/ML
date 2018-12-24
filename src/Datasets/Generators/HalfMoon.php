@@ -60,17 +60,17 @@ class HalfMoon implements Generator
                                 float $noise = 0.1)
     {
         if ($scale < 0.) {
-            throw new InvalidArgumentException("Scaling factor must be greater"
+            throw new InvalidArgumentException('Scaling factor must be greater'
                 . " than 0, $scale given.");
         }
 
         if ($rotation < 0. or $rotation > 360.) {
-            throw new InvalidArgumentException("Rotation must be between 0 and"
+            throw new InvalidArgumentException('Rotation must be between 0 and'
                 . " 360 degrees, $rotation given.");
         }
 
         if ($noise < 0. or $noise > 1.) {
-            throw new InvalidArgumentException("Noise factor must be between 0"
+            throw new InvalidArgumentException('Noise factor must be between 0'
                 . " and less 1, $noise given.");
         }
 

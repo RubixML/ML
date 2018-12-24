@@ -68,7 +68,7 @@ class Agglomerate implements Generator
 
         foreach ($generators as $generator) {
             if ($generator->dimensions() !== $d) {
-                throw new InvalidArgumentException("Generators must have the"
+                throw new InvalidArgumentException('Generators must have the'
                     . " same dimensionality, $d needed but found"
                     . " {$generator->dimensions()}.");
             }
@@ -76,14 +76,14 @@ class Agglomerate implements Generator
 
         if (is_array($weights)) {
             if (count($weights) !== $k) {
-                throw new InvalidArgumentException("The number of weights must"
+                throw new InvalidArgumentException('The number of weights must'
                     . " equal the number of generators, $k needed but found "
                     . count($weights) . ".");
             }
 
             foreach ($weights as $weight) {
                 if ($weight < 0) {
-                    throw new InvalidArgumentException("Weights must all be"
+                    throw new InvalidArgumentException('Weights must all be'
                         . " positive, $weight found.");
                 }
             }

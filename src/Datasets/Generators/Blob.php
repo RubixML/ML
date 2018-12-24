@@ -56,8 +56,8 @@ class Blob implements Generator
         }
 
         if ($d !== count($stddev)) {
-            throw new InvalidArgumentException("The number of center"
-                . " coordinates and standard deviations must the same.");
+            throw new InvalidArgumentException('The number of center'
+                . ' coordinates and standard deviations must the same.');
         }
 
         foreach ($center as $column => $mean) {
@@ -72,7 +72,7 @@ class Blob implements Generator
             }
 
             if ($stddev[$column] <= 0) {
-                throw new InvalidArgumentException("Standard deviation must be"
+                throw new InvalidArgumentException('Standard deviation must be'
                  . " greater than 0, $stddev[$column] given.");
             }
         }

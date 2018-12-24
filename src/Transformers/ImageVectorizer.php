@@ -8,18 +8,19 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Raw Pixel Encoder
+ * Image Vectorizer
  *
- * The Raw Pixel Encoder takes an array of images (as PHP Resources)
- * and converts them into a flat vector of raw color channel data. Scaling and
- * cropping is handled automatically by Intervention Image for PHP. Note that
- * the GD extension is required to use this feature.
+ * Image Vectorizer takes images (as PHP Resources) and converts them into a
+ * flat vector of raw color channel data. Scaling and cropping is handled
+ * automatically by Intervention Image for PHP.
+ * 
+ * > **Note**: The GD extension is required to use this transformer.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RawPixelEncoder implements Transformer
+class ImageVectorizer implements Transformer
 {
     /**
      * The image will be scaled and cropped according to the setting of this
@@ -58,6 +59,8 @@ class RawPixelEncoder implements Transformer
                 . ' PHP configuration.');
         }
 
+        $size = array_values($size);
+
         if (count($size) !== 2) {
             throw new InvalidArgumentException('Size must contain width and'
                 . ' height but ' . count($size) . ' dimensions given.');
@@ -70,7 +73,7 @@ class RawPixelEncoder implements Transformer
         }
 
         if ($size[0] < 1 or $size[1] < 1) {
-            throw new InvalidArgumentException("Width and height must be"
+            throw new InvalidArgumentException('Width and height must be'
                 . " greater than 1 pixel, $size[0] and $size[1] given.");
         }
 
@@ -98,8 +101,6 @@ class RawPixelEncoder implements Transformer
      */
     public function transform(array &$samples, ?array &$labels = null) : void
     {
-        $vectors = [];
-
         foreach ($samples as &$sample) {
             $vectors = [];
 
