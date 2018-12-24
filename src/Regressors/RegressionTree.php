@@ -3,7 +3,6 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
 use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -14,7 +13,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
-use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -31,10 +29,9 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RegressionTree extends CART implements Learner, Verbose, Persistable
+class RegressionTree extends CART implements Learner, Persistable
 {
-    use LoggerAware;
-    
+   
     /**
      * The maximum number of features to consider when determining a split.
      *
@@ -116,18 +113,7 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
         $this->columns = range(0, $dataset->numColumns() - 1);
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
-        if ($this->logger) $this->logger->info("Learner initialized w/ "
-            . Params::stringify([
-                'max_depth' => $this->maxDepth,
-                'max_leaf_size' => $this->maxLeafSize,
-                'min_purity_increase' => $this->minPurityIncrease,
-                'max_features' => $this->maxFeatures,
-                'tolerance' => $this->tolerance,
-            ]));
-
         $this->grow($dataset);
-
-        if ($this->logger) $this->logger->info('Training completed');
 
         $this->columns = [];
     }
@@ -163,10 +149,9 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
      * determined by the variance of the split.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $bestVariance = INF;
         $bestColumn = $bestValue = null;
@@ -195,14 +180,6 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
             }
         }
 
-        if ($this->logger) $this->logger->info('Best split at '
-            . Params::stringify([
-                'column' => $bestColumn,
-                'value' => $bestValue,
-                'impurity' => $bestVariance,
-                'depth' => $depth,
-            ]));
-
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
 
@@ -210,21 +187,13 @@ class RegressionTree extends CART implements Learner, Verbose, Persistable
      * Terminate the branch with the most likely outcome.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    protected function terminate(Labeled $dataset, int $depth) : BinaryNode
+    protected function terminate(Labeled $dataset) : BinaryNode
     {
         $n = $dataset->numRows();
         
         list($mean, $variance) = Stats::meanVar($dataset->labels());
-
-        if ($this->logger) $this->logger->info('Branch terminated w/ '
-            . Params::stringify([
-                'outcome' => $mean,
-                'impurity' => $variance,
-                'depth' => $depth,
-            ]));
 
         return new Average($mean, $variance, $n);
     }

@@ -85,23 +85,20 @@ abstract class CART implements Tree
     }
 
     /**
-     * Greedy algorithm to choose the best split for a given dataset.
+     * Choose the best split for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    abstract protected function findBestSplit(Labeled $dataset, int $depth) : Comparison;
+    abstract protected function findBestSplit(Labeled $dataset) : Comparison;
 
     /**
-     * Terminate the branch by selecting the most likely outcome as the
-     * prediction.
+     * Terminate the branch.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    abstract protected function terminate(Labeled $dataset, int $depth) : BinaryNode;
+    abstract protected function terminate(Labeled $dataset) : BinaryNode;
 
     /**
      * Return the root node of the tree.
@@ -124,7 +121,7 @@ abstract class CART implements Tree
     {
         $depth = 1;
 
-        $this->root = $this->findBestSplit($dataset, $depth);
+        $this->root = $this->findBestSplit($dataset);
 
         $stack = [[$this->root, $depth]];
 
@@ -136,7 +133,7 @@ abstract class CART implements Tree
             $depth++;
 
             if ($left->empty() or $right->empty()) {
-                $node = $this->terminate($left->merge($right), $depth);
+                $node = $this->terminate($left->merge($right));
     
                 $current->attachLeft($node);
                 $current->attachRight($node);
@@ -145,38 +142,38 @@ abstract class CART implements Tree
             }
     
             if ($depth >= $this->maxDepth) {
-                $current->attachLeft($this->terminate($left, $depth));
-                $current->attachRight($this->terminate($right, $depth));
+                $current->attachLeft($this->terminate($left));
+                $current->attachRight($this->terminate($right));
                 
                 continue 1;
             }
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left, $depth);
+                $node = $this->findBestSplit($left);
 
                 if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
                     $current->attachLeft($node);
 
                     $stack[] = [$node, $depth];
                 } else {
-                    $current->attachLeft($this->terminate($left, $depth));
+                    $current->attachLeft($this->terminate($left));
                 }
             } else {
-                $current->attachLeft($this->terminate($left, $depth));
+                $current->attachLeft($this->terminate($left));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right, $depth);
+                $node = $this->findBestSplit($right);
     
                 if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
                     $current->attachRight($node);
 
                     $stack[] = [$node, $depth];
                 } else {
-                    $current->attachRight($this->terminate($right, $depth));
+                    $current->attachRight($this->terminate($right));
                 }
             } else {
-                $current->attachRight($this->terminate($right, $depth));
+                $current->attachRight($this->terminate($right));
             }
 
             $current->cleanup();

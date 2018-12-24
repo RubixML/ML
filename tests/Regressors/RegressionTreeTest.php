@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
@@ -41,7 +40,6 @@ class RegressionTreeTest extends TestCase
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }

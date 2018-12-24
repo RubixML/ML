@@ -41,7 +41,7 @@ class Comparison extends Split implements Decision
     public function __construct(int $column, $value, array $groups, float $impurity)
     {
         if ($impurity < 0.) {
-            throw new InvalidArgumentException("Impurity cannot be less than"
+            throw new InvalidArgumentException('Impurity cannot be less than'
                 . " 0, $impurity given.");
         }
 

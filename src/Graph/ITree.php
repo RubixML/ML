@@ -86,11 +86,11 @@ class ITree implements Tree
     {
         $depth = 1;
 
-        $this->root = $this->findBestSplit($dataset, $depth);
+        $this->root = $this->findBestSplit($dataset);
 
         $stack = [[$this->root, $depth]];
 
-        while($stack) {
+        while ($stack) {
             list($current, $depth) = array_pop($stack) ?? [];
 
             list($left, $right) = $current->groups();
@@ -105,7 +105,7 @@ class ITree implements Tree
             }
     
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left, $depth);
+                $node = $this->findBestSplit($left);
     
                 $current->attachLeft($node);
     
@@ -115,7 +115,7 @@ class ITree implements Tree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right, $depth);
+                $node = $this->findBestSplit($right);
     
                 $current->attachRight($node);
     
@@ -138,7 +138,7 @@ class ITree implements Tree
     {
         $current = $this->root;
 
-        while (isset($current)) {
+        while ($current) {
             if ($current instanceof Isolator) {
                 $value = $current->value();
 
@@ -171,10 +171,9 @@ class ITree implements Tree
      * Randomized algorithm to find a split point in the data.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Isolator
      */
-    protected function findBestSplit(Dataset $dataset, int $depth) : Isolator
+    protected function findBestSplit(Dataset $dataset) : Isolator
     {
         $column = rand(0, $dataset->numColumns() - 1);
 

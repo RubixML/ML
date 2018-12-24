@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Verbose;
 use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -15,7 +14,6 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -29,10 +27,8 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ClassificationTree extends CART implements Learner, Probabilistic, Verbose, Persistable
+class ClassificationTree extends CART implements Learner, Probabilistic, Persistable
 {
-    use LoggerAware;
-
     /**
      * The maximum number of features to consider when determining a split.
      *
@@ -124,18 +120,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         $this->columns = range(0, $dataset->numColumns() - 1);
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ params: '
-            . Params::stringify([
-                'max_depth' => $this->maxDepth,
-                'max_leaf_size' => $this->maxLeafSize,
-                'min_purity_increase' => $this->minPurityIncrease,
-                'max_features' => $this->maxFeatures,
-                'tolerance' => $this->tolerance,
-            ]));
-
         $this->grow($dataset);
-
-        if ($this->logger) $this->logger->info('Training completed');
 
         $this->columns = [];
     }
@@ -198,10 +183,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function findBestSplit(Labeled $dataset, int $depth) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Comparison
     {
         $bestGini = INF;
         $bestColumn = $bestValue = null;
@@ -230,14 +214,6 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
             }
         }
 
-        if ($this->logger) $this->logger->info('Best split at '
-            . Params::stringify([
-                'column' => $bestColumn,
-                'value' => $bestValue,
-                'impurity' => $bestGini,
-                'depth' => $depth,
-            ]));
-
         return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
     }
 
@@ -246,10 +222,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
      * probability.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
-    protected function terminate(Labeled $dataset, int $depth) : BinaryNode
+    protected function terminate(Labeled $dataset) : BinaryNode
     {
         $n = $dataset->numRows();
 
@@ -264,13 +239,6 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Verbose
         }
     
         $gini = $this->gini([$dataset]);
-
-        if ($this->logger) $this->logger->info('Branch terminated w/ '
-            . Params::stringify([
-                'outcome' => $outcome,
-                'impurity' => $gini,
-                'depth' => $depth,
-            ]));
 
         return new Best($outcome, $probabilities, $gini, $n);
     }

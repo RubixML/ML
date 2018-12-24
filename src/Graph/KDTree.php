@@ -7,6 +7,7 @@ use Rubix\ML\Graph\Nodes\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -51,13 +52,6 @@ class KDTree implements Tree
     protected $kernel;
 
     /**
-     * The number of dimensions this tree encodes.
-     *
-     * @var int|null
-     */
-    protected $dimensionality;
-
-    /**
      * @param  int  $maxLeafSize
      * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
      * @throws \InvalidArgumentException
@@ -95,37 +89,35 @@ class KDTree implements Tree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->dimensionality = $dataset->numColumns();
+        $this->root = $this->findBestSplit($dataset);
 
-        $depth = 1;
-
-        $this->root = $this->findBestSplit($dataset, $depth);
-
-        $stack = [[$this->root, $depth]];
+        $stack = [$this->root];
 
         while ($stack) {
-            list($current, $depth) = array_pop($stack) ?? [];
+            $current = array_pop($stack);
+
+            if (!$current instanceof Coordinate) {
+                continue 1;
+            }
 
             list($left, $right) = $current->groups();
 
-            $depth++;
-
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left, $depth);
+                $node = $this->findBestSplit($left);
     
                 $current->attachLeft($node);
 
-                $stack[] = [$node, $depth];
+                $stack[] = $node;
             } else {
                 $current->attachLeft(new Neighborhood($left));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right, $depth);
+                $node = $this->findBestSplit($right);
     
                 $current->attachRight($node);
 
-                $stack[] = [$node, $depth];
+                $stack[] = $node;
             } else {
                 $current->attachRight(new Neighborhood($right));
             }
@@ -256,14 +248,17 @@ class KDTree implements Tree
      * Find the best split of a given subset of the training data.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  int  $depth
      * @return \Rubix\ML\Graph\Nodes\Coordinate
      */
-    protected function findBestSplit(Labeled $dataset, int $depth) : Coordinate
+    protected function findBestSplit(Labeled $dataset) : Coordinate
     {
-        $column = $depth % $this->dimensionality;
+        $columns = $dataset->columns();
 
-        $value = Stats::median($dataset->column($column));
+        $variances = array_map([Stats::class, 'variance'], $columns);
+
+        $column = Argmax::compute($variances);
+
+        $value = Stats::median($columns[$column]);
 
         return new Coordinate($column, $value, $dataset);
     }
