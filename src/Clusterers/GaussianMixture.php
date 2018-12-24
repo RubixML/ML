@@ -13,6 +13,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Functions\LogSumExp;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -66,7 +67,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * The precomputed prior probabilities of each cluster given by weight.
      *
-     * @var array
+     * @var float[]
      */
     protected $priors = [
         //
@@ -75,7 +76,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * The computed means of each feature column for each gaussian.
      *
-     * @var array
+     * @var array[]
      */
     protected $means = [
         //
@@ -84,7 +85,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * The computed variances of each feature column for each gaussian.
      *
-     * @var array
+     * @var array[]
      */
     protected $variances = [
         //
@@ -93,7 +94,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * The amount of gaussian shift during each epoch of training.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -139,19 +140,29 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Return the cluster prior probabilities i.e. the mixing component.
+     * Return the cluster prior probabilities.
      *
-     * @return array
+     * @return float[]
      */
     public function priors() : array
     {
-        return $this->priors;
+        $priors = [];
+
+        if (is_array($this->priors)) {
+            $max = LogSumExp::compute($this->priors);
+
+            foreach ($this->priors as $class => $probability) {
+                $priors[$class] = exp($probability - $max);
+            }
+        }
+
+        return $priors;
     }
 
     /**
      * Return the computed mean vectors of each component.
      *
-     * @return array
+     * @return array[]
      */
     public function means() : array
     {
@@ -161,7 +172,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the multivariate variance of each component.
      *
-     * @return array
+     * @return array[]
      */
     public function variances() : array
     {
@@ -169,9 +180,9 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Return the amount of gaussian shift at each epoch of training.
+     * Return the loss at each epoch of training.
      *
-     * @return array
+     * @return float[]
      */
     public function steps() : array
     {
@@ -199,71 +210,85 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         $n = $dataset->numRows();
 
+        $columns = $dataset->columns();
+
         if ($this->logger) $this->logger->info("Initializing $this->k"
             . ' gaussian components');
 
         list($means, $variances) = $this->initializeComponents($dataset);
 
-        $this->means = $prevMeans = $means;
-        $this->variances = $prevVariances = $variances;
+        $this->means = $means;
+        $this->variances = $variances;
 
-        $this->priors = array_fill(0, $this->k, 1. / $this->k);
+        $this->priors = array_fill(0, $this->k, log(1. / $this->k));
 
-        $this->steps = $memberships = [];
+        $this->steps = [];
+
+        $prevLoss = 0.;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            foreach ($dataset as $i => $sample) {
-                $memberships[$i] = $this->jointLikelihood($sample);
+            $memberships = [];
+
+            foreach ($dataset as $sample) {
+                $jll = $this->jointLogLikelihood($sample);
+
+                $memberships[] = array_map('exp', $jll);
             }
 
-            foreach ($this->priors as $cluster => &$prior) {
-                $prior = array_sum(array_column($memberships, $cluster)) / $n;
+            $loss = 0.;
 
-                $means = $this->means[$cluster];
-                $variances = $this->variances[$cluster];
+            for ($cluster = 0; $cluster < $this->k; $cluster++) {                
+                $mHat = array_column($memberships, $cluster);
 
-                foreach ($means as $column => $mean) {
+                $means = $variances = [];
+
+                foreach ($columns as $values) {
                     $a = $b = $total = 0.;
 
-                    foreach ($dataset as $i => $sample) {
-                        $prob = $memberships[$i][$cluster];
+                    foreach ($values as $i => $value) {
+                        $membership = $mHat[$i];
 
-                        $a += $prob * $sample[$column];
-                        $total += $prob;
+                        $a += $membership * $value;
+                        $total += $membership;
                     }
 
-                    $means[$column] = $a / ($total ?: self::EPSILON);
+                    $total = $total ?: self::EPSILON;
 
-                    foreach ($dataset as $i => $sample) {
-                        $prob = $memberships[$i][$cluster];
+                    $mean = $a / $total;
 
-                        $b += $prob * ($sample[$column] - $mean) ** 2;
+                    foreach ($values as $i => $value) {
+                        $b += $mHat[$i] * ($value - $mean) ** 2;
                     }
 
-                    $variances[$column] = $b / ($total ?: self::EPSILON);
+                    $variance = $b / $total;
+
+                    $means[] = $mean;
+                    $variances[] = $variance ?: self::EPSILON;
+
+                    $loss += $total;
                 }
+
+                $prior = array_sum($mHat) / $n;
 
                 $this->means[$cluster] = $means;
                 $this->variances[$cluster] = $variances;
+                $this->priors[$cluster] = log($prior);
             }
 
-            $shift = $this->gaussianShift($prevMeans, $prevVariances);
-
-            $this->steps[] = $shift;
+            $this->steps[] = $loss;
 
             if ($this->logger) $this->logger->info("Epoch $epoch"
-                . " complete, shift=$shift");
+                . " complete, loss=$loss");
 
-            if (is_nan($shift)) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
-            if ($shift < $this->minChange) {
+            if (abs($loss - $prevLoss) < $this->minChange) {
                 break 1;
             }
 
-            $prevMeans = $this->means;
-            $prevVariances = $this->variances;
+            $prevLoss = $loss;
         }
 
         if ($this->logger) $this->logger->info('Training complete');
@@ -277,7 +302,24 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
+            throw new InvalidArgumentException('This estimator only works with'
+                . ' continuous features.');
+        }
+
+        if (empty($this->priors)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $predictions = [];
+
+        foreach ($dataset as $sample) {
+            $jll = $this->jointLogLikelihood($sample);
+
+            $predictions[] = Argmax::compute($jll);
+        }
+
+        return $predictions;
     }
 
     /**
@@ -299,7 +341,23 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        return array_map([self::class, 'jointLikelihood'], $dataset->samples());
+        $probabilities = [];
+
+        foreach ($dataset as $sample) {
+            $jll = $this->jointLogLikelihood($sample);
+
+            $total = LogSumExp::compute($jll);
+
+            $dist = [];
+
+            foreach ($jll as $cluster => $likelihood) {
+                $dist[$cluster] = exp($likelihood - $total);
+            }
+
+            $probabilities[] = $dist;
+        }
+
+        return $probabilities;
     }
 
     /**
@@ -317,34 +375,37 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         $labels = $clusterer->predict($dataset);
 
-        unset($clusterer);
-
         $bootstrap = Labeled::quick($dataset->samples(), $labels);
 
         $means = $variances = [];
 
         foreach ($bootstrap->stratify() as $cluster => $stratum) {
-            foreach ($stratum->columns() as $column => $values) {
+            $mHat = $vHat = [];
+
+            foreach ($stratum->columns() as $values) {
                 list($mean, $variance) = Stats::meanVar($values);
 
-                $means[$cluster][] = $mean;
-                $variances[$cluster][] = $variance;
+                $mHat[] = $mean;
+                $vHat[] = $variance;
             }
+
+            $means[$cluster] = $mHat;
+            $variances[$cluster] = $vHat;
         }
 
         return [$means, $variances];
     }
 
     /**
-     * Calculate the normalized joint likelihood of a sample being a member
+     * Calculate the joint log likelihood of a sample being a member
      * of each of the gaussian components.
      *
      * @param  array  $sample
      * @return array
      */
-    protected function jointLikelihood(array $sample) : array
+    protected function jointLogLikelihood(array $sample) : array
     {
-        $likelihood = [];
+        $likelihoods = [];
 
         foreach ($this->priors as $cluster => $prior) {
             $means = $this->means[$cluster];
@@ -356,49 +417,15 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
                 $mean = $means[$column];
                 $variance = $variances[$column];
 
-                $pdf = 1. / sqrt(self::TWO_PI * $variance);
-                $pdf *= exp(-(($feature - $mean) ** 2 / (2. * $variance)));
+                $pdf = -0.5 * log(self::TWO_PI * $variance);
+                $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
 
-                $score *= $pdf;
+                $score += $pdf;
             }
 
-            $likelihood[$cluster] = $score;
+            $likelihoods[$cluster] = $score;
         }
 
-        $total = array_sum($likelihood) ?: self::EPSILON;
-
-        foreach ($likelihood as &$probability) {
-            $probability /= $total;
-        }
-
-        return $likelihood;
-    }
-
-    /**
-     * Calculate the magnitude (l2) of gaussian shift from the previous epoch.
-     *
-     * @param  array  $prevMeans
-     * @param  array  $prevVariances
-     * @return float
-     */
-    protected function gaussianShift(array $prevMeans, array $prevVariances) : float
-    {
-        $shift = 0.;
-
-        foreach ($this->means as $cluster => $means) {
-            $variances = $this->variances[$cluster];
-
-            $prevMean = $prevMeans[$cluster];
-            $prevVariance = $prevVariances[$cluster];
-
-            foreach ($means as $column => $mean) {
-                $variance = $variances[$column];
-
-                $shift += ($prevMean[$column] - $mean) ** 2;
-                $shift += ($prevVariance[$column] - $variance) ** 2;
-            }
-        }
-
-        return $shift;
+        return $likelihoods;
     }
 }

@@ -16,8 +16,9 @@ use SplObjectStorage;
 /**
  * K-d Tree
  *
- * A multidimensional binary search tree or *K-d* Tree is a structure for fast
- * retrieval (log n) by associative search.
+ * A multi-dimensional binary search tree for fast nearest neighbor queries.
+ * Each node maintains its own *bounding box* that is used to prune off leaf
+ * nodes during a search.
  *
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
  * Associative Searching.
@@ -102,7 +103,7 @@ class KDTree implements Tree
 
         $stack = [[$this->root, $depth]];
 
-        while($stack) {
+        while ($stack) {
             list($current, $depth) = array_pop($stack) ?? [];
 
             list($left, $right) = $current->groups();

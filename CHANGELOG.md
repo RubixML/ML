@@ -3,6 +3,7 @@
     - Added Stop Word Filter transformer
     - Added document frequency smoothing to TF-IDF Transformer
     - Added Uniform neural net weight initializer
+    - Improved Gaussian Mixture numerical stability
     - Fixed missing probabilities in Classification Tree
     - Removed MetaEstimator interface
     - Added model Wrapper interface
