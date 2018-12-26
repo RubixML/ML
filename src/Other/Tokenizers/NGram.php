@@ -63,17 +63,13 @@ class NGram implements Tokenizer
 
             $words = $words[0];
 
-            $length = count($words) - $this->n + 1;
+            $p = count($words) - $this->n;
 
-            for ($i = 0; $i < $length; $i++) {
-                $nGram = '';
+            for ($i = 0; $i <= $p; $i++) {
+                $nGram = $words[$i];
 
-                for ($j = 0; $j < $this->n; $j++) {
-                    $nGram .= $words[$i + $j];
-
-                    if ($j < $this->n - 1) {
-                        $nGram .= self::SEPARATOR;
-                    }
+                for ($j = 1; $j < $this->n; $j++) {
+                    $nGram .= self::SEPARATOR . $words[$i + $j];
                 }
 
                 $nGrams[] = $nGram;
