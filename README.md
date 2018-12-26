@@ -247,7 +247,8 @@ $ composer require rubix/ml
     - [What is a Tuple?](#what-is-a-tuple)
 	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
-	- [Do you support Reinforcement Learning?](#do-you-support-reinforcement-learning)
+	- [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
+	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -256,21 +257,21 @@ $ composer require rubix/ml
 Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of machine learning that Rubix supports out of the box, *Supervised* and *Unsupervised*.
 
  - **Supervised** learning is a technique that uses a labeled dataset in which the outcome of each sample has been *labeled* by a human expert prior to training. There are two types of supervised learning to consider in Rubix:
-	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of Iris flower or predicting someone's personality type.
+	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of Iris flower or predicting someone's MBTI personality type.
 	 - **Regression** aims at predicting continuous *values* such as the sale price of a house or the position of a steering wheel in degrees. The major difference between classification and regression is that while there are a finite number of classes that a sample can belong to, there are infinitely many real values that a regression model can predict.
 - **Unsupervised** learning by contrast does *not* use a labeled dataset, rather it focuses on finding patterns within the raw samples.
-	- **Clustering** is the process of grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering can be used is in differentiating tissues in PET scan images.
-	- **Anomaly Detection** is flagging samples that do not conform to the expected pattern of the training data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
+	- **Clustering** is grouping data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering can be used is in differentiating tissues in PET scan images.
+	- **Anomaly Detection** is the process of flagging samples that do not conform to the expected pattern of the training data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
 	- **Manifold Learning** is a dimensionality reduction method used in visualizing high dimensional datasets by producing a low dimensional (1 - 3) representation of the feature space.
 
 ### Obtaining Data
-Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful (or not) marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the dimensionality of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The idea is to engineer enough of the right features for the model to be able to recognize patterns in the data.
+Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The goal is to engineer enough of the right features for the learner to be able to train effectively.
 
-An alternative to collecting data yourself is to access one of the many datasets that are free to use from a public repository. The advantage of using a public dataset is that, chances are, it has already been cleaned and therefore ready to use right out of the box. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) as a great place to get started.
+An alternative to collecting data yourself can be to access one of the many public datasets that are free to use. The advantages of using a public dataset is that, usually, the data has already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) as a great place to get started using open source datasets.
 
-Note that there are a number of PHP libraries that make extracting data from CSV, databases, and cloud services a lot easier, and we recommend checking them out as well.
+Note that there are a number of PHP libraries that make extracting data from various sources such as CSV, database, and the cloud easy and intuitive, and we recommend checking those out as well as a good place to get started.
 
-Here are a few libraries that we recommend that will help you get started extracting data:
+Here are a few libraries that we recommend for data extraction:
 
 - [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extractor
 - [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstraction layer
@@ -302,7 +303,7 @@ In practice, you will test out a number of different estimators to get the best 
 
 Like most Estimators, the [K Nearest Neighbors](#k-nearest-neighbors) classifier requires a set of parameters (called *hyper-parameters*) to be chosen up front by the user. These parameters can be selected based on some prior knowledge of the problem space, or at random. The defaults provided in Rubix are usually a good place to start for most machine learning problems. In addition, Rubix provides a meta-Estimator called [Grid Search](#grid-search) that optimizes the hyper-parameter space by searching for the most effective combination. For the purposes of our simple example we will just go with our intuition and choose the parameters outright.
 
-You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) guide which we highly recommend reading over a few times to get a good grasp for how each parameter effects the performance of the estimator.
+You can find a full description of all of the K Nearest Neighbors parameters in the [API reference](#api-reference) guide which we highly recommend reading over at least 3 times to get a better grasp for how each parameter effects the action of the estimator.
 
 In KNN, the hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 5 closest neighbors to a given unknown sample have 4 married labels and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.8.
 
@@ -331,7 +332,7 @@ Passing the Labeled dataset to the instantiated learner, we can train our K Near
 $estimator->train($dataset);
 ```
 
-For our 100 sample example training set, this should only take a matter of microseconds, but larger datasets with higher dimensionality and fancier learning algorithms can take much longer. Once the estimator has been fully trained, we can feed in some unknown samples to see what the model predicts. Turning back to out example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
+For our 100 sample example training set, this should only take a matter of microseconds, but larger datasets with higher dimensionality and fancier learning algorithms can take much longer. Once the estimator has been fully trained, we can feed in some unknown samples to see what the model predicts. Turning back to our example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
 ```php
 use Rubix\ML\Dataset\Unlabeled;
 
@@ -357,8 +358,6 @@ array(5) {
 	[4] => 'married'
 }
 ```
-
-From these results, we can deduce that, based on the data that the model has been trained with, it is important for couples to communicate and spend time together if they are going to stay happily married. We didn't need a machine learning model to tell us that, but imagine scaling this example to use a whole self-report inventory with 100 or more questions.
 
 ### Evaluating Model Performance
 Making predictions is not very useful unless the estimator can correctly generalize what it has learned during training to the real world. [Cross Validation](#cross-validation) is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](#hold-out) validator will take care of randomizing and splitting the dataset into training and testing sets for us, such that a portion of the data is *held out* to be used to test (or *validate*) the model. The reason we do not use *all* of the data for training is because we want to test the Estimator on samples that it has never seen before.
@@ -2771,7 +2770,7 @@ $transformer = new VarianceThresholdFilter(50);
 ```
 
 ### Word Count Vectorizer
-In machine learning, word *counts* are often used to represent natural language as numerical vectors called *documents*. The Word Count Vectorizer builds a vocabulary using hash tables from the training samples during fitting and transforms text *blobs* into sparse feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appeared in a given sample.
+The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3082,7 +3081,7 @@ $costFunction = new HuberLoss(0.5);
 ```
 
 ### Least Squares
-Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of a network.
+Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of the network.
 
 #### Parameters:
 This cost function does not have any parameters.
@@ -4833,13 +4832,20 @@ Not currently, however we do plan to add CPU and GPU multithreading in the futur
 ### Does Rubix support Deep Learning?
 Yes. Rubix supports Deep (Representational) Learning through a number of learners including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
+### What is the difference between categorical and continuous data types?
+There are 2 classes of data types that Rubix distinguishes by convention.
+
+Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *color* or *city* and can be 1 of K possible values. Categorical features are denoted as *string* types.
+
+Continuous data are *quantitative* properties of sample such as *height* or *age* and can be any number within the set of infinite *real* numbers. Continuous features are represented as either *float* or *int* types.
+
 ### Does Rubix support Reinforcement Learning?
 We do not. Rubix only supports *supervised* and *unsupervised* learning.
 
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
 
-> **Note**: Machine Learning typically requires a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
+> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
 
 ---
 ## Testing

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use RuntimeException;
@@ -26,7 +25,7 @@ class ImageVectorizer implements Transformer
      * The image will be scaled and cropped according to the setting of this
      * parameter which will have an effect on the size of the outpput vector.
      *
-     * @var array
+     * @var int[]
      */
     protected $size;
 
@@ -89,7 +88,7 @@ class ImageVectorizer implements Transformer
      */
     public function dimensions() : int
     {
-        return (int) ($this->size[0] * $this->size[1] * $this->channels);
+        return $this->size[0] * $this->size[1] * $this->channels;
     }
 
     /**
