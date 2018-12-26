@@ -3072,7 +3072,7 @@ The pseudo Huber Loss function transitions between L1 and L2 (Least Squares) los
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | delta | 1. | float | The pivot point i.e the point where numbers larger will be evalutated with an L1 loss while number smaller will be evalutated with an L2 loss. |
+| 1 | delta | 1. | float | The pivot point i.e the point where numbers larger will be evaluated with an L1 loss while number smaller will be evaluated with an L2 loss. |
 
 #### Example:
 ```php
@@ -4839,7 +4839,7 @@ We do not. Rubix only supports *supervised* and *unsupervised* learning.
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
 
-> **Note**: Machine Learning typically requires alot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
+> **Note**: Machine Learning typically requires a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
 
 ---
 ## Testing
