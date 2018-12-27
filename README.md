@@ -1,4 +1,4 @@
-# ![Rubix ML Logo](https://avatars0.githubusercontent.com/u/43308973?s=100&v=4) Rubix ML for PHP
+# ![Rubix ML Logo](https://avatars0.githubusercontent.com/u/43308973?s=80&v=4) Rubix ML for PHP
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
@@ -239,6 +239,7 @@ $ composer require rubix/ml
 			- [Native](#native)
 		- [Tokenizers](#tokenizers)
 			- [N-Gram](#n-gram)
+			- [Skip-Gram](#skip-gram)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
@@ -1297,9 +1298,9 @@ $estimator = new ClassificationTree(30, 7, 0.1, 4, 1e-4);
 ```
 
 ### Committee Machine
-A voting ensemble that aggregates the predictions of a committee of heterogeneous classifiers (called *experts*). The committee uses a user-specified influence-based scheme to sway final predictions.
+A voting ensemble that aggregates the predictions of a committee of heterogeneous classifiers (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
 
-> **Note**: Influence values can be arbitrary as they are normalized upon object creation.
+> **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
 
 ##### Supervised | Learner | Ensemble | Probabilistic | Persistable
 
@@ -1356,7 +1357,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree Classifier
-An *Extremely Randomized* Classification Tree, these trees differ from standard [Classification Trees](#classification-tree) in that they choose a split drawn from a set random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+An *Extremely Randomized* Classification Tree, these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
@@ -4778,6 +4779,22 @@ use Rubix\ML\Extractors\Tokenizers\NGram;
 $tokenizer = new NGram(3);
 ```
 
+### Skip-Gram
+Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be skipped forming n-grams of the new forward looking sequences.
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | n | 2 | int | The number of contiguous words to a single token. |
+| 2 | skip | 2 | int | The number of words to skip over to form new sequences. |
+
+#### Example:
+```php
+use Rubix\ML\Extractors\Tokenizers\SkipGram;
+
+$tokenizer = new SkipGram(2, 2);
+```
+
 ### Whitespace
 Tokens are delimited by a user-specified whitespace character.
 
@@ -4830,7 +4847,7 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
-Yes. Rubix supports Deep (Representational) Learning through a number of learners including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
+Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input data such as edges and textures in computer vision. A number of learners in Rubix support Deep *Representation* Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
 ### What is the difference between categorical and continuous data types?
 There are 2 classes of data types that Rubix distinguishes by convention.

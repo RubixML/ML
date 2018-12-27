@@ -27,6 +27,8 @@ class WhitespaceTest extends TestCase
 
         $tokens = $this->tokenizer->tokenize($data);
 
+        $this->assertCount(11, $tokens);
+
         $this->assertEquals(['I', 'would', 'like', 'to', 'die', 'on',
             'Mars,', 'just', 'not', 'on', 'impact.'], $tokens);
     }

@@ -27,6 +27,8 @@ class NGramTest extends TestCase
 
         $tokens = $this->tokenizer->tokenize($data);
 
+        $this->assertCount(10, $tokens);
+
         $this->assertEquals(['I would', 'would like', 'like to', 'to die', 'die on', 'on Mars', 'Mars just',
             'just not', 'not on', 'on impact'], $tokens);
     }

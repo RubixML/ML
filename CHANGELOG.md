@@ -9,7 +9,8 @@
     - Added model Wrapper interface
     - AdaBoost is now probabilistic
     - Added Constant guessing strategy
-    - Added N-Gram tokenizer
+    - Added N-Gram word tokenizer
+    - Added Skip-Gram word tokenizer
     - Changed FCM and K Means default max epochs
     - Added zip method to Labeled dataset
     - Removed stop word filter from Word Count Vectorizer
