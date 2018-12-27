@@ -22,12 +22,18 @@ use RuntimeException;
 class ImageVectorizer implements Transformer
 {
     /**
-     * The image will be scaled and cropped according to the setting of this
-     * parameter which will have an effect on the size of the outpput vector.
+     * The width to fit the image to.
      *
-     * @var int[]
+     * @var int
      */
-    protected $size;
+    protected $width;
+
+    /**
+     * The height to fit the image to.
+     *
+     * @var int
+     */
+    protected $height;
 
     /**
      * The number of color channels to encode.
@@ -76,7 +82,8 @@ class ImageVectorizer implements Transformer
                 . " greater than 1 pixel, $size[0] and $size[1] given.");
         }
 
-        $this->size = $size;
+        $this->width = $size[0];
+        $this->height = $size[1];
         $this->channels = $rgb ? 3 : 1;
         $this->intervention = new ImageManager(['driver' => $driver]);
     }
@@ -88,7 +95,7 @@ class ImageVectorizer implements Transformer
      */
     public function dimensions() : int
     {
-        return $this->size[0] * $this->size[1] * $this->channels;
+        return $this->width * $this->height * $this->channels;
     }
 
     /**
@@ -107,11 +114,16 @@ class ImageVectorizer implements Transformer
                 if (is_resource($feature)) {
                     $image = $this->intervention->make($feature);
 
+                    $resize = $image->getWidth() !== $this->width
+                        and $image->getHeight() !== $this->height;
+
+                    if ($resize) {
+                        $image = $image->fit($this->width, $this->height);
+                    }
+
                     if ($this->channels === 1) {
                         $image = $image->greyscale();
                     }
-
-                    $image = $image->fit(...$this->size);
 
                     $vectors[] = $this->vectorize($image->getCore());
 
@@ -128,22 +140,20 @@ class ImageVectorizer implements Transformer
     /**
      * Convert an image into a vector of raw color channel data.
      *
-     * @param  resource  $image
+     * @param  mixed  $image
      * @throws \InvalidArgumentException
      * @return array
      */
     public function vectorize($image) : array
     {
         if (!is_resource($image)) {
-            throw new InvalidArgumentException('Input is not a resource.');
+            throw new InvalidArgumentException('Input must be a resource.');
         }
-
-        list($width, $height) = $this->size;
 
         $vector = [];
 
-        for ($x = 0; $x < $width; $x++) {
-            for ($y = 0; $y < $height; $y++) {
+        for ($x = 0; $x < $this->width; $x++) {
+            for ($y = 0; $y < $this->height; $y++) {
                 $pixel = imagecolorsforindex($image, imagecolorat($image, $x, $y));
 
                 $pixel = array_slice($pixel, 0, $this->channels);

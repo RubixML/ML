@@ -127,6 +127,55 @@ class KDTree implements Tree
     }
 
     /**
+     * Find the best split of a given subset of the training data.
+     *
+     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @return \Rubix\ML\Graph\Nodes\Coordinate
+     */
+    protected function findBestSplit(Labeled $dataset) : Coordinate
+    {
+        $columns = $dataset->columns();
+
+        $variances = array_map([Stats::class, 'variance'], $columns);
+
+        $column = Argmax::compute($variances);
+
+        $value = Stats::median($columns[$column]);
+
+        return new Coordinate($column, $value, $dataset);
+    }
+
+        /**
+     * Search the tree for a neighborhood and return an array of samples and
+     * labels.
+     *
+     * @param  array  $sample
+     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
+     */
+    public function search(array $sample) : ?Neighborhood
+    {
+        $current = $this->root;
+
+        while ($current) {
+            if ($current instanceof Coordinate) {
+                if ($sample[$current->column()] < $current->value()) {
+                    $current = $current->left();
+                } else {
+                    $current = $current->right();
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Neighborhood) {
+                return $current;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Run a k nearest neighbors search of every neighborhood and return
      * the labels and distances in a tuple.
      * 
@@ -148,6 +197,11 @@ class KDTree implements Tree
             return [[], []];
         }
 
+        $visited = new SplObjectStorage();
+        $stack = [];
+
+        $visited->attach($neighborhood);
+
         list($samples, $labels) = $neighborhood->neighbors();
 
         $distances = [];
@@ -158,10 +212,6 @@ class KDTree implements Tree
 
         array_multisort($distances, $labels);
 
-        $visited = new SplObjectStorage();
-        $stack = [];
-
-        $visited->attach($neighborhood);
         $stack[] = $neighborhood->parent();
 
         while ($stack) {
@@ -212,55 +262,6 @@ class KDTree implements Tree
         $labels = array_slice($labels, 0, $k);
 
         return [$labels, $distances];
-    }
-
-    /**
-     * Search the tree for a neighborhood and return an array of samples and
-     * labels.
-     *
-     * @param  array  $sample
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
-     */
-    public function search(array $sample) : ?Neighborhood
-    {
-        $current = $this->root;
-
-        while ($current) {
-            if ($current instanceof Coordinate) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Neighborhood) {
-                return $current;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Find the best split of a given subset of the training data.
-     *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return \Rubix\ML\Graph\Nodes\Coordinate
-     */
-    protected function findBestSplit(Labeled $dataset) : Coordinate
-    {
-        $columns = $dataset->columns();
-
-        $variances = array_map([Stats::class, 'variance'], $columns);
-
-        $column = Argmax::compute($variances);
-
-        $value = Stats::median($columns[$column]);
-
-        return new Coordinate($column, $value, $dataset);
     }
 
     /**
