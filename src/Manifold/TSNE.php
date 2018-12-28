@@ -248,10 +248,10 @@ class TSNE implements Estimator, Verbose
                 'perplexity' => $this->perplexity,
                 'exaggeration' => $this->exaggeration,
                 'rate' => $this->rate,
+                'kernel' => $this->kernel,
                 'epochs' => $this->epochs,
                 'min_gradient' => $this->minGradient,
                 'window' => $this->window,
-                'kernel' => $this->kernel,
             ]));
 
         $n = $dataset->numRows();

@@ -39,6 +39,7 @@ $ composer require rubix/ml
 	- [Evaluation](#evaluating-model-performance)
 	- [Visualization](#visualization)
     - [Next Steps](#next-steps)
+- [System Architecture](#system-architecture)
 - Tutorials & Examples
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
@@ -394,6 +395,12 @@ If you are looking for more control over your visualizations, we highly recommen
 
 ### Next Steps
 After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
+
+---
+### System Architecture
+The Rubix architecture is defined by a few key abstractions and their corresponding types and interfaces.
+
+![Rubix ML System Architecture](https://github.com/RubixML/RubixML/blob/master/docs/images/rubix-ml-system-architecture.png)
 
 ---
 ### API Reference
