@@ -32,14 +32,14 @@ class AlphaDropout extends Dropout
      *
      * @var float
      */
-    protected $a;
+    protected $alpha;
 
     /**
      * The centering coefficient.
      *
      * @var float
      */
-    protected $b;
+    protected $beta;
 
     /**
      * @param  float  $ratio
@@ -47,15 +47,14 @@ class AlphaDropout extends Dropout
      */
     public function __construct(float $ratio = 0.1)
     {
-        $this->a = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
-        $this->b = -$this->a * self::ALPHA_P * $ratio;
+        $this->alpha = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
+        $this->beta = -$this->alpha * self::ALPHA_P * $ratio;
 
         parent::__construct($ratio);
     }
 
     /**
-     * Compute the input sum and activation of each neuron in the layer and
-     * return an activation matrix.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -71,8 +70,8 @@ class AlphaDropout extends Dropout
 
         return $input->multiply($mask)
             ->add($saturation)
-            ->multiply($this->a)
-            ->add($this->b);
+            ->multiply($this->alpha)
+            ->add($this->beta);
     }
 
     /**

@@ -108,8 +108,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Compute the input sum and activation of each neuron in the layer and
-     * return an activation matrix.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @throws \RuntimeException
@@ -128,7 +127,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @throws \RuntimeException

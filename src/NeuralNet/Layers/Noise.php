@@ -24,12 +24,11 @@ use InvalidArgumentException;
 class Noise implements Hidden, Nonparametric
 {
     /**
-     * The amount of gaussian noise to add to the inputs i.e the standard
-     * deviation of the noise.
+     * The standard devaiation of the gaussian noise to add to the inputs.
      *
      * @var float
      */
-    protected $amount;
+    protected $stddev;
 
     /**
      * The width of the layer.
@@ -39,18 +38,18 @@ class Noise implements Hidden, Nonparametric
     protected $width;
 
     /**
-     * @param  float  $amount
+     * @param  float  $stddev
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $amount = 0.1)
+    public function __construct(float $stddev = 0.1)
     {
-        if ($amount < 0.) {
-            throw new InvalidArgumentException('Noise parameter must be'
-                . '0 or greater.');
+        if ($stddev < 0.) {
+            throw new InvalidArgumentException('Standard deviation must be'
+                . " 0 or greater, $stddev given.");
         }
 
-        $this->amount = $amount;
+        $this->stddev = $stddev;
     }
 
     /**
@@ -78,7 +77,7 @@ class Noise implements Hidden, Nonparametric
     }
 
     /**
-     * Generate a random noise matrix and add it to the input.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -86,13 +85,13 @@ class Noise implements Hidden, Nonparametric
     public function forward(Matrix $input) : Matrix
     {
         $noise = Matrix::gaussian(...$input->shape())
-            ->multiply($this->amount);
+            ->multiply($this->stddev);
 
         return $input->add($noise);
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix

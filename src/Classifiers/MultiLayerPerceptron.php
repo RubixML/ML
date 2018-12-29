@@ -184,8 +184,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         }
 
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization penalty must'
-                . " be non-negative, $alpha given.");
+            throw new InvalidArgumentException('L2 regularization amount must'
+                . " be 0 or greater, $alpha given.");
         }
 
         if ($epochs < 1) {

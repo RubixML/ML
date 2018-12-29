@@ -2,12 +2,12 @@
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-Rubix ML is a high-level machine learning library that lets you build programs that learn from data using the [PHP](https://php.net) language.
+A high-level machine learning library that allows you to build programs that learn from data using the [PHP](https://php.net) language.
 
-- Easy and fast prototyping with user-friendly API
-- 30+ modern *supervised* and *unsupervised* learners
-- Modular architecture combines power and flexibility
-- Open source and free to use commercially
+- **Easy** and fast prototyping with user-friendly API
+- **30+** modern *supervised* and *unsupervised* learners
+- **Modular** architecture combines power and flexibility
+- **Open source** and free to use commercially
 
 ## Installation
 Install Rubix ML using Composer:
@@ -3312,13 +3312,13 @@ weights through the cost function in the output layer.
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | amount | 0.1 | float | The amount of gaussian noise to add to the inputs i.e the standard deviation of the noise. |
+| 1 | stddev | 0.1 | float | The standard deviation of the gaussian noise to add to the inputs. |
 
 #### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\Noise;
 
-$layer = new Noise(0.3);
+$layer = new Noise(2.0);
 ```
 
 ### PReLU

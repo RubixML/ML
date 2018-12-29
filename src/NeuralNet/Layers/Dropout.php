@@ -61,8 +61,8 @@ class Dropout implements Hidden, Nonparametric
     public function __construct(float $ratio = 0.5)
     {
         if ($ratio <= 0. or $ratio >= 1.) {
-            throw new InvalidArgumentException('Dropout ratio must be between 0'
-                . ' and 1.0.');
+            throw new InvalidArgumentException('Dropout ratio must be between'
+                . " 0 and 1, $ratio given.");
         }
 
         $this->ratio = $ratio;
@@ -96,8 +96,7 @@ class Dropout implements Hidden, Nonparametric
     }
 
     /**
-     * Generate a random dropout mask with the probability of dropping an input
-     * equal to the ratio.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -111,7 +110,7 @@ class Dropout implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix

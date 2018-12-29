@@ -69,7 +69,7 @@ class PReLU implements Hidden, Parametric
     {
         if ($initial < 0. or $initial > 1.) {
             throw new InvalidArgumentException('Initial leakage parameter must'
-                . ' be between 0 and 1.');
+                . " be between 0 and 1, $initial given.");
         }
 
         $this->initial = $initial;
@@ -104,8 +104,7 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Compute the input sum and activation of each neuron in the layer and
-     * return an activation matrix.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -120,7 +119,7 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix

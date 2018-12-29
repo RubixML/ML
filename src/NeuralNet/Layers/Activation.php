@@ -66,7 +66,8 @@ class Activation implements Hidden, Nonparametric
     }
 
     /**
-     * Initialize the layer.
+     * Initialize the layer with the fan in from the previous layer and return
+     * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
@@ -81,8 +82,7 @@ class Activation implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the input sum and activation of each neuron in the layer and
-     * return an activation matrix.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -97,7 +97,7 @@ class Activation implements Hidden, Nonparametric
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix

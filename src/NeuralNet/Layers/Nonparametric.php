@@ -7,7 +7,7 @@ use Rubix\Tensor\Matrix;
 interface Nonparametric extends Layer
 {
     /**
-     * Compute the training activations of each neuron in the layer.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
@@ -15,7 +15,7 @@ interface Nonparametric extends Layer
     public function forward(Matrix $input) : Matrix;
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix

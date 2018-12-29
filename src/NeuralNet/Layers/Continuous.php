@@ -81,8 +81,8 @@ class Continuous implements Output
     public function __construct(float $alpha = 1e-4, ?CostFunction $costFunction = null)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization parameter'
-                . ' must be be non-negative.');
+            throw new InvalidArgumentException('L2 regularization amount'
+                . " must be 0 or greater, $alpha given.");
         }
 
         if (is_null($costFunction)) {
@@ -124,8 +124,7 @@ class Continuous implements Output
     }
 
     /**
-     * Compute the input sum and activation of each neuron in the layer and return
-     * an activation matrix.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @throws \RuntimeException
@@ -146,7 +145,7 @@ class Continuous implements Output
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @throws \RuntimeException

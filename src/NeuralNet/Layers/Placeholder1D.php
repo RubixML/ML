@@ -33,7 +33,7 @@ class Placeholder1D implements Input
     {
         if ($inputs < 1) {
             throw new InvalidArgumentException('The number of input nodes must'
-            . ' be greater than 0.');
+            . " be greater than 0, $inputs given.");
         }
 
         $this->inputs = $inputs;
@@ -60,26 +60,25 @@ class Placeholder1D implements Input
     }
 
     /**
-     * Just return the input vector adding a bias since the input layer does not
-     * have any paramters.
+     * Compute a forward pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
+     * @throws \InvalidArgumentException
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
     {
         if ($input->m() !== $this->inputs) {
             throw new InvalidArgumentException('The number of feature columns'
-                . ' must equal the number of input inputs. '
-                . (string) $input->m() . ' found, '
-                . (string) $this->inputs . ' needed.');
+                . ' must equal the number of inputs. '
+                . " {$input->m()} found, but $this->inputs needed.");
         }
 
         return $input;
     }
 
     /**
-     * Compute the inferential activations of each neuron in the layer.
+     * Compute an inferential pass through the layer.
      *
      * @param  \Rubix\Tensor\Matrix  $input
      * @return \Rubix\Tensor\Matrix
