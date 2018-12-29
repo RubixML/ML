@@ -1,4 +1,6 @@
 - Unreleased
+
+- 0.0.8-alpha
     - Added Model Orchestra meta estimator
     - Added Stop Word Filter transformer
     - Added document frequency smoothing to TF-IDF Transformer

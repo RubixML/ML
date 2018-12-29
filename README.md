@@ -1,4 +1,4 @@
-# ![Rubix ML Logo](https://avatars0.githubusercontent.com/u/43308973?s=80&v=4) Rubix ML for PHP
+ ![Rubix ML for PHP](https://github.com/RubixML/RubixML/blob/master/docs/images/rubix-ml-logo.svg =350x)
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
@@ -16,7 +16,7 @@ $ composer require rubix/ml
 ```
 
 ## Requirements
-- [PHP](https://php.net) 7.1.3 or above
+- [PHP](https://php.net/manual/en/install.php) 7.1.3 or above
 
 #### Optional:
 
@@ -24,9 +24,6 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting models to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
-
-## License
-[MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)
 
 ## Documentation
 
@@ -389,9 +386,9 @@ float(0.945)
 ### Visualization
 Visualization is how you communicate the findings of your experiment to the end-user and is key to deriving value from your hard work. Although visualization is important (important enough for us to mention it), we consider it to be beyond the scope of Rubix . Therefore, we leave you with the freedom of using any of the many great plotting and visualization frameworks out there to communicate the insights you obtain.
 
-If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite plotting or spreadsheet software such as [Tableu](https://www.tableau.com), [Google Sheets](https://www.google.com/sheets/about/), or [Excel](https://products.office.com/en-us/excel). PHP has built in functions for manipulating both JSON and CSV formats, and there are a number of libraries available that help reading and writing these formats to file from PHP. 
+If you are just looking for a quick way to visualize the data then we recommend exporting it to a file (JSON and CSV work great) and importing it into your favorite plotting or spreadsheet software such as [Plotly](https://plot.ly/), [Tableu](https://www.tableau.com), [Google Sheets](https://www.google.com/sheets/about/), or [Excel](https://products.office.com/en-us/excel). PHP has built in functions for manipulating both JSON and CSV formats, and there are a number of libraries available that help reading and writing these formats to file from PHP. 
 
-If you are looking for more control over your visualizations, we highly recommend [D3.js](https://d3js.org/), since it is an amazing data-driven framework written in Javascript that plays well with PHP.
+If you are looking to publish your visualizations to the world, we highly recommend [D3.js](https://d3js.org/) since it is an amazing data-driven framework written in Javascript that plays well with PHP.
 
 ### Next Steps
 After you've gone through this basic introduction to machine learning in Rubix, we highly recommend checking out some [example projects](https://github.com/RubixML) and reading over the [API Reference](#api-reference) to get a better idea for what the library can do. If you have a question or need help, feel free to post on our Github page. We'd love to hear from you.
@@ -400,7 +397,7 @@ After you've gone through this basic introduction to machine learning in Rubix, 
 ### System Architecture
 The Rubix architecture is defined by a few key abstractions and their corresponding types and interfaces.
 
-![Rubix ML System Architecture](https://github.com/RubixML/RubixML/blob/master/docs/images/rubix-ml-system-architecture.png)
+![Rubix ML System Architecture](https://github.com/RubixML/RubixML/blob/master/docs/images/rubix-ml-system-architecture.svg)
 
 ---
 ### API Reference
@@ -866,7 +863,7 @@ $estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
 ### Grid Search
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
 
-> **Note**: You can choose the parameters to search manually or you can generate them randomly using the [Params](#params) helper.
+> **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
 
 ##### Learner | Persistable | Verbose
 
@@ -1190,7 +1187,7 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 | 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 5 | cache size | 100. | float | The size in megabytes of the kernel cache. |
+| 5 | cache size | 100. | float | The size of the kernel cache in MB. |
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -1683,7 +1680,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 5 | cache size | 100. | float | The size in megabytes of the kernel cache. |
+| 5 | cache size | 100. | float | The size of the kernel cache in MB. |
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -2191,7 +2188,7 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 | 3 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
 | 4 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
-| 6 | cache size | 100. | float | The size in megabytes of the kernel cache. |
+| 6 | cache size | 100. | float | The size of the kernel cache in MB. |
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -4890,3 +4887,6 @@ composer test
 ---
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
+
+## License
+[MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)
