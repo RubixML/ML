@@ -68,11 +68,9 @@ class KFold implements Validator
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if ($this->stratify) {
-            $folds = $dataset->stratifiedFold($this->k);
-        } else {
-            $folds = $dataset->randomize()->fold($this->k);
-        }
+        $folds = $this->stratify
+            ? $dataset->stratifiedFold($this->k)
+            : $dataset->randomize()->fold($this->k);
 
         $score = 0.;
 

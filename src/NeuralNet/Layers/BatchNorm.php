@@ -139,7 +139,7 @@ class BatchNorm implements Hidden, Parametric
     {
         if (is_null($this->n) or empty($this->mean) or empty($this->variance)
             or is_null($this->beta) or is_null($this->gamma)) {
-                throw new RuntimeException('Layer has not been initilaized.');
+                throw new RuntimeException('Layer has not been initialized.');
         }
 
         $beta = $this->beta->w()->column(0);
@@ -151,33 +151,42 @@ class BatchNorm implements Hidden, Parametric
         $oldVariances = $this->variance->asArray();
         $oldWeight = $this->n;
 
-        $stdInv = $xHat = $out = [[]];
-
-        $newMeans = $newVars = $stddevs = [];
+       $newMeans = $newVars = $stddevs = $stdInv = $xHat = $out = [];
 
         foreach ($input as $i => $row) {
             list($mean, $variance) = Stats::meanVar($row);
 
+            $oldMean = $oldMeans[$i];
+
             $newMeans[] = (($n * $mean)
-                + ($oldWeight * $oldMeans[$i]))
+                + ($oldWeight * $oldMean))
                 / ($oldWeight + $n);
 
             $newVars[] = ($oldWeight
                 * $oldVariances[$i] + ($n * $variance)
                 + ($oldWeight / ($n * ($oldWeight + $n)))
-                * ($n * $oldMeans[$i] - $n * $mean) ** 2)
+                * ($n * $oldMean - $n * $mean) ** 2)
                 / ($oldWeight + $n);
 
             $stddev = sqrt($variance ?: self::EPSILON);
 
-            foreach ($row as $j => $value) {
-                $a = 1. / $stddev;
-                $b = $a * ($value - $mean);
+            $gHat = $gamma[$i];
+            $bHat = $beta[$i];
 
-                $stdInv[$i][$j] = $a;
-                $xHat[$i][$j] = $b;
-                $out[$i][$j] = $gamma[$i] * $b + $beta[$i];
+            $stdInvRow = $xHatRow = $outRow = [];
+
+            foreach ($row as $value) {
+                $alpha = 1. / $stddev;
+                $beta = $alpha * ($value - $mean);
+
+                $stdInvRow[] = $alpha;
+                $xHatRow[] = $beta;
+                $outRow[] = $gHat * $beta + $bHat;
             }
+
+            $stdInv[] = $stdInvRow;
+            $xHat[] = $xHatRow;
+            $out[] = $outRow;
 
             $stddevs[] = $stddev;
         }
@@ -216,12 +225,16 @@ class BatchNorm implements Hidden, Parametric
             $mean = $this->mean[$i];
             $stddev = $this->stddev[$i];
 
+            $vector = [];
+
             foreach ($row as $value) {
-                $out[$i][] = $gamma[$i]
+                $vector[] = $gamma[$i]
                     * ($value - $mean)
                     / $stddev
                     + $beta[$i];
             }
+
+            $out[] = $vector;
         }
 
         return Matrix::quick($out);
