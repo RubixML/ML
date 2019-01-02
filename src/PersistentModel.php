@@ -5,7 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\WrapsProbabilistic;
+use RuntimeException;
 
 /**
  * Persistent Model
@@ -22,7 +22,7 @@ use Rubix\ML\Other\Traits\WrapsProbabilistic;
  */
 class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 {
-    use LoggerAware, WrapsProbabilistic;
+    use LoggerAware;
 
     /**
      * The underlying persistable estimator instance.
@@ -100,6 +100,25 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     public function predict(Dataset $dataset) : array
     {
         return $this->base->predict($dataset);
+    }
+
+        /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        $base = $this->base();
+
+        if ($base instanceof Probabilistic) {
+            return $base->proba($dataset);
+        }
+
+        throw new RuntimeException('Base estimator must'
+            . ' implement the probabilistic interface.');
     }
 
     /**
