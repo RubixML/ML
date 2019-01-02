@@ -8,8 +8,8 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Traits\WrapsProbabilistic;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Pipeline
@@ -36,7 +36,7 @@ use InvalidArgumentException;
  */
 class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 {
-    use LoggerAware, WrapsProbabilistic;
+    use LoggerAware;
 
     /**
      * The transformer middleware that preprocesses the data for the estimator.
@@ -147,6 +147,27 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
         $this->preprocess($dataset);
 
         return $this->estimator->predict($dataset);
+    }
+
+    /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        $base = $this->base();
+
+        if ($base instanceof Probabilistic) {
+            $this->preprocess($dataset);
+            
+            return $base->proba($dataset);
+        }
+
+        throw new RuntimeException('Base estimator must'
+            . ' implement the probabilistic interface.');
     }
 
     /**

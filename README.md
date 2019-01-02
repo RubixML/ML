@@ -919,7 +919,7 @@ A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of est
 
 > **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a Pipeline and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
 
-##### Supervised | Learner | Persistable | Verbose
+##### Supervised | Learner | Probabilistic | Persistable | Verbose
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -957,7 +957,7 @@ $estimator = new ModelOrchestra([
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
 
-#####  Learner | Verbose
+##### Learner | Probabilistic | Verbose
 
 #### Parameters:
 | # | Param | Default | Type | Description |
