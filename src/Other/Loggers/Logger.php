@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Other\Loggers;
 
-use Psr\Log\LoggerInterface;
+use Psr\Log\AbstractLogger;
 
-interface Logger extends LoggerInterface
+abstract class Logger extends AbstractLogger
 {
     //
 }
