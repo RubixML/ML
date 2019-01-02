@@ -137,7 +137,7 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param  int  $index
      * @throws \InvalidArgumentException
-     * @return (int|float|string)
+     * @return int|float|string
      */
     public function label(int $index)
     {

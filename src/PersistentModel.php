@@ -2,10 +2,10 @@
 
 namespace Rubix\ML;
 
-use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\WrapsProbabilistic;
 
 /**
  * Persistent Model
@@ -20,9 +20,9 @@ use Rubix\ML\Other\Traits\LoggerAware;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Learner, Wrapper, Verbose
+class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 {
-    use LoggerAware;
+    use LoggerAware, WrapsProbabilistic;
 
     /**
      * The underlying persistable estimator instance.

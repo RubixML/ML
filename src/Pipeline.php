@@ -8,6 +8,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\WrapsProbabilistic;
 use InvalidArgumentException;
 
 /**
@@ -33,9 +34,9 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Pipeline implements Online, Wrapper, Persistable, Verbose
+class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 {
-    use LoggerAware;
+    use LoggerAware, WrapsProbabilistic;
 
     /**
      * The transformer middleware that preprocesses the data for the estimator.

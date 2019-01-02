@@ -1,4 +1,5 @@
 - Unreleased
+    - Pipeline and Persistent Model are now Probabilistic
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

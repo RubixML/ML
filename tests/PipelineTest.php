@@ -8,6 +8,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Pipeline;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -50,6 +51,7 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Pipeline::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Wrapper::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
