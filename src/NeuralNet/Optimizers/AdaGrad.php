@@ -74,7 +74,7 @@ class AdaGrad implements Optimizer
         $this->cache[$param] = $cache = $cache->add($gradient->square());
 
         $step = $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->clip(self::EPSILON, INF));
+            ->divide($cache->sqrt()->clipLower(self::EPSILON));
 
         return $step;
     }

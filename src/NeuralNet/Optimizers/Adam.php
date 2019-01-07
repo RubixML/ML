@@ -131,7 +131,7 @@ class Adam implements Optimizer
         $rHat = $cache->divide(1. - $this->rmsDecay ** $this->t);
 
         return $vHat->multiply($this->rate)
-            ->divide($rHat->sqrt()->clip(self::EPSILON, INF));
+            ->divide($rHat->sqrt()->clipLower(self::EPSILON));
 
     }
 }

@@ -89,6 +89,6 @@ class RMSProp implements Optimizer
             ->add($gradient->square()->multiply(1. - $this->decay));
 
         return $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->clip(self::EPSILON, INF));
+            ->divide($cache->sqrt()->clipLower(self::EPSILON));
     }
 }

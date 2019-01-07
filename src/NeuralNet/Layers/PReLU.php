@@ -150,7 +150,7 @@ class PReLU implements Hidden, Parametric
 
         $dOut = $prevGradient();
 
-        $dIn = $this->input->clip(-INF, 0.);
+        $dIn = $this->input->clipUpper(0.);
 
         $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
 

@@ -59,7 +59,7 @@ class CrossEntropy implements CostFunction
         $denominator = Matrix::ones(...$activations->shape())
             ->subtract($activations)
             ->multiply($activations)
-            ->clip(self::EPSILON, INF);
+            ->clipLower(self::EPSILON);
 
         return $activations->subtract($expected)
             ->divide($denominator);

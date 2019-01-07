@@ -444,7 +444,7 @@ class TSNE implements Estimator, Verbose
 
         $pHat = $p->add($p->transpose());
 
-        $sigma = $pHat->sum()->clip(self::EPSILON, INF);
+        $sigma = $pHat->sum()->clipLower(self::EPSILON);
 
         return $pHat->divide($sigma);
     }
@@ -465,7 +465,7 @@ class TSNE implements Estimator, Verbose
 
         $qSigma = $q->sum()->multiply(2.);
 
-        $q = $q->divide($qSigma)->clip(self::EPSILON, INF);
+        $q = $q->divide($qSigma)->clipLower(self::EPSILON);
 
         $pqd = $p->subtract($q)->multiply($distances);
 

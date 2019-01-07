@@ -210,10 +210,6 @@ class IsolationForest implements Learner, Persistable
      */
     protected function c(int $n) : float
     {
-        if ($n <= 1) {
-            return 1.;
-        }
-        
-        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
+        return $n > 1 ? 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n : 1.;
     }
 }
