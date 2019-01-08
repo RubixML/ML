@@ -169,7 +169,6 @@ $ composer require rubix/ml
 			- [RMS Prop](#rms-prop)
 			- [Step Decay](#step-decay)
 			- [Stochastic](#stochastic)
-		- [Snapshots](#snapshots)
 	- [Kernels](#kernels)
 		- [Distance](#distance)
 			- [Canberra](#canberra)
@@ -911,13 +910,13 @@ $grid = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new Accuracy(), new KFold(10), true);
+$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), true);
 ```
 
 ### Model Orchestra
 A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of estimators (Classifiers or Regressors) and a *conductor* estimator. The role of the conductor is to learn the influence scores of each estimator in the orchestra while using their predictions as inputs to make a final weighted prediction.
 
-> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a Pipeline and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
+> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
 
 ##### Supervised | Learner | Probabilistic | Persistable | Verbose
 
@@ -1041,7 +1040,7 @@ public predict(Dataset $dataset) : array
 > **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
 
 ### Learner
-Most estimators have the ability to be trained using data. These estimators are called *Learners*. Learners have a method called `train()` and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can learn the function that maps input samples to their appropriate output values.
+Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can formulate a generalized function that maps future samples to good predictions.
 
 To train an learner pass it a training dataset:
 ```php
@@ -1050,23 +1049,21 @@ public train(Dataset $training) : void
 
 #### Example:
 ```php
-...
 $estimator->train($dataset);
 ```
 
 > **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
 
 ### Online
-Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new data is acquired.
+Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new information about the world is acquired.
 
-You can partially train an online estimator with:
+You can partially train an online estimator by:
 ```php
 public partial(Dataset $dataset) : void
 ```
 
 #### Example:
 ```php
-...
 $folds = $dataset->fold(3);
 
 $estimator->train($folds[0]);
@@ -1089,8 +1086,7 @@ public proba(Dataset $dataset) : array
 
 #### Example:
 ```php
-...
-$probabilities = $estimator->proba($dataset->head(2));  
+$probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
 ```
@@ -1174,7 +1170,7 @@ $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 ```
 
 ### One Class SVM
-An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes like the multiclass SVM.
+An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with  multiclass SVM ([SVC](#svc)).
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
@@ -1183,8 +1179,8 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | nu | 0.1 | float | An upper bound on the percentage margin errors and a lower bound on the percentage of support vectors. |
-| 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
+| 1 | nu | 0.1 | float | An upper bound on the percentage of margin errors and a lower bound on the percentage of support vectors. |
+| 2 | kernel | RBF | object | The kernel function used to express non-linear data in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 5 | cache size | 100. | float | The size of the kernel cache in MB. |
@@ -1201,7 +1197,7 @@ $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 ```
 
 ### Robust Z Score
-A quick *global* anomaly detector that uses a robust Z score to score and detect outliers within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
+A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
 
 ##### Unsupervised | Learner | Persistable
 
@@ -1287,7 +1283,7 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
@@ -1311,7 +1307,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | experts | | array | An array of classifiers instances that will comprise the committee. |
+| 1 | experts | | array | An array of classifier instances that comprise the committee. |
 | 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
 
 
@@ -1361,7 +1357,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ```
 
 ### Extra Tree Classifier
-An *Extremely Randomized* Classification Tree, these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
+An *Extremely Randomized* Classification Tree - these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
@@ -1372,7 +1368,7 @@ An *Extremely Randomized* Classification Tree, these trees differ from standard 
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
@@ -1390,20 +1386,18 @@ $estimator = new ExtraTreeClassifier(50, 3, 0.10, 4, 1e-3);
 ```
 
 ### Gaussian Naive Bayes
-A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features.
-
-> **Note**: The distribution of feature values is assumed to be Gaussian.
+A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
 
 ##### Supervised | Learner | Online | Probabilistic | Persistable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
+| 1 | priors | Auto | array | The user-defined class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
 #### Additional Methods:
 
-Return the class prior log probabilities based on their weight over all training samples:
+Return the class prior probabilities:
 ```php
 public priors() : array
 ```
@@ -1423,13 +1417,13 @@ public variances() : ?array
 use Rubix\ML\Classifiers\GaussianNB;
 
 $estimator = new GaussianNB([
-	'benign' => 0.8,
-	'malignant' => 0.2,
+	'benign' => 0.9,
+	'malignant' => 0.1,
 ]);
 ```
 
 ### K-d Neighbors
-A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhood whose bounding box is further than the kth nearest neighbor found so far. The main advantage K-d Neighbors has over regular brute force KNN is that it is faster, however it cannot be partially trained.
+A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
 ##### Supervised | Learner | Probabilistic | Persistable
 
@@ -1437,8 +1431,8 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -1455,7 +1449,7 @@ $estimator = new KDNeighbors(3, 10, new Euclidean(), false);
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a weighted vote to classify the unknown sample.
 
-> **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
+> **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#kd-neighbors).
 
 ##### Supervised | Learner | Online | Probabilistic | Persistable
 
@@ -1478,7 +1472,7 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 ```
 
 ### Logistic Regression
-A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of two classes.
+A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes.
 
 ##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
@@ -1514,7 +1508,7 @@ $estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new Cr
 ```
 
 ### Multi Layer Perceptron
-A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex non-linear problems.
+A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex deep learning problems.
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
@@ -1576,7 +1570,7 @@ $estimator = new MultiLayerPerceptron([
 ```
 
 ### Naive Bayes
-Probability-based classifier that uses inference to derive the predicted class. The posterior probabilities are calculated using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). and the naive part relates to the fact that it assumes that all features are independent. In practice, the independent assumption tends to work out most of the time despite most features being correlated in the real world.
+Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated). In practice, the independence assumption works out most of the time despite most features being correlated in the real world.
 
 ##### Supervised | Learner | Online | Probabilistic | Persistable
 
@@ -1667,7 +1661,7 @@ $estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, ne
 ```
 
 ### SVC
-The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space.
+The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space (called the *kernel trick*).
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
@@ -1695,10 +1689,10 @@ $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
 
 ---
 ### Clusterers
-Clustering is a technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Clusterers take unlabeled data points and assign them a label (cluster). The value of each prediction is the cluster number each sample was assigned to (ex. 1, 2, ..., c).
+Clustering is a technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Another way of looking at it is that clusterers take unlabeled data points and assign them a label (cluster number).
 
 ### DBSCAN
-Density-Based Spatial Clustering of Applications with Noise is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a quasi [Anomaly Detector](#anomaly-detectors).
+*Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a *quasi* [Anomaly Detector](#anomaly-detectors).
 
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
@@ -1723,7 +1717,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
 
 ### Fuzzy C Means
-Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the fuzz parameter.
+Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the *fuzz* parameter.
 
 ##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
 
@@ -1794,7 +1788,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ```
 
 ### K Means
-A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given a number of target clusters given by the parameter *k*.
+A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
 ##### Unsupervised | Learner | Online | Persistable
 
@@ -1859,7 +1853,7 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions. Embedders are manifold learners that provide the `predict()` API for embedding a dataset. The predictions of an Embedder are the low dimensional embeddings as n-dimensional arrays where n is the dimensionality of the embedding.
 
 ### t-SNE
-T-distributed Stochastic Neighbor Embedding is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
+*T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
 ##### Unsupervised | Verbose
 
@@ -1963,7 +1957,7 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
-| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
@@ -1978,9 +1972,9 @@ $estimator = new ExtraTreeRegressor(30, 3, 0.05, 20, 1e-4);
 ```
 
 ### Gradient Boost
-Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training *weak* regressors (using Regression Trees) to correct the error residuals of a base learner.
+Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training *weak* regressors (Regression Trees) to correct the error residuals of the base learner.
 
-> **Note**: The default base classifier is a Dummy Classifier using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
+> **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
 ##### Supervised | Learner | Ensemble | Verbose | Persistable
 
@@ -2021,7 +2015,7 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The K
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | max leaf size | 20 | int | The max number of samples in a *neighborhood* (leaf node). |
+| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
 | 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
@@ -2062,7 +2056,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0), false);
 ```
 
 ### MLP Regressor
-A multi layer feed forward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems.
+A multi layer feedforward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](#multi-layer-perceptron) classifier, the MLP Regressor is able to tackle deep learning problems by forming higher-order representations of the features using intermediate computational units called *hidden* layers.
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
@@ -2119,7 +2113,7 @@ $estimator = new MLPRegressor([
 ```
 
 ### Regression Tree
-A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) among decision node splits.
+A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) of the labels at each decision node split.
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
@@ -2130,7 +2124,7 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
-| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node not to be post pruned. |
+| 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
@@ -2145,14 +2139,14 @@ $estimator = new RegressionTree(50, 2, 35., null, 1e-4);
 ```
 
 ### Ridge
-L2 penalized least squares linear regression.
+L2 penalized least squares linear regression solved using closed-form equation.
 
 ##### Supervised | Learner | Persistable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The L2 regularization penalty. |
+| 1 | alpha | 1.0 | float | The L2 regularization penalty amount to be added to the weight coefficients. |
 
 #### Additional Methods:
 
@@ -2161,7 +2155,7 @@ Return the weights of the model:
 public weights() : array|null
 ```
 
-Return the bias parameter of the regression line:
+Return the bias parameter:
 ```php
 public bias() : float|null
 ```
@@ -2174,7 +2168,7 @@ $estimator = new Ridge(2.0);
 ```
 
 ### SVR
-The Support Vector Machine Regressor is a maximum margin algorithm for the purposes of regression. Similarly to the Support Vector Machine Classifier, the model produced by SVR (*R* for regression) depends only on a subset of the training data, because the cost function for building the model ignores any training data close to the model prediction given by parameter epsilon. The value of epsilon defines a margin of tolerance where no penalty is given to errors.
+The Support Vector Machine Regressor is a maximum margin algorithm for the purposes of regression. Similarly to the [Support Vector Machine Classifier](#svc), the model produced by SVR (*R* for regression) depends only on a subset of the training data, because the cost function for building the model ignores any training data close to the model prediction given by parameter *epsilon*. Thus, the value of epsilon defines a margin of tolerance where no penalty is given to errors.
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
@@ -2205,18 +2199,29 @@ $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
 ### Transformers
 Transformers take dataset objects and transform them in various ways. Examples of transformations that can be applied are scaling and centering, normalization, dimensionality reduction, and imputation.
 
-> **Note**: To transform a dataset without having to pass the raw samples and labels you can pass a transformer to the `apply()` method on a Dataset object.
-
 The transformer directly transforms the data in place via the `transform()` method:
 ```php
-public transform(array $samples, ?array $labels = null) : void
+public transform(array &$samples, ?array &$labels = null) : void
 ```
+
+> **Note**: To transform a dataset without having to pass the raw samples and labels you can pass a transformer to the `apply()` method on a Dataset object.
 
 ### Stateful
 For stateful transformers, the fit method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* an estimator.
 
+> **Note**: A stateful transformer must be fitted before it can transform.
+
 ```php
 public fit(Dataset $dataset) : void
+```
+
+#### Example
+```php
+use Rubix\ML\Transformers\OneHotEncoder;
+
+$transformer = new OneHotEncoder();
+
+$transformer->fit($dataset);
 ```
 
 ### Elastic
@@ -2226,8 +2231,23 @@ Some transformers are able to adapt to new training data. The `update()` method 
 public update(Dataset $dataset) : void
 ```
 
+#### Example
+```php
+use Rubix\ML\Transformers\ZScaleStandardizer;
+
+$transformer = new ZScaleStandardizer();
+
+$folds = $dataset->fold(3);
+
+$transformer->fit($folds[0]);
+
+$transformer->update($folds[1]);
+
+$transformer->update($folds[2]);
+```
+
 ### Dense Random Projector
-The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project onto a vector space of a target dimensionality.
+The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project onto a vector space of target dimensionality.
 
 ##### Continuous *Only* | Stateful
 
@@ -2411,7 +2431,7 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 ```
 
 ### Linear Discriminant Analysis
-A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or separates two or more classes.
+A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or best separates two or more classes.
 
 ##### Supervised | Continuous *Only* | Stateful
 
@@ -2518,7 +2538,7 @@ $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new Popul
 ```
 
 ### Numeric String Converter
-Convert all numeric strings into their floating point counterparts. Useful for when extracting from a source that only recognizes data as string types.
+Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
 ##### Categorical
 
@@ -2536,7 +2556,7 @@ $transformer = new NumericStringConverter();
 ```
 
 ### One Hot Encoder
-The One Hot Encoder takes a column of categorical features and produces a n-d one-hot (numerical) representation where n is equal to the number of unique categories in that column. A 0 indicates that a category is not present in the sample whereas a 1 indicates that a category is present.
+The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 indicates that a category is not present in the sample whereas a 1 indicates that a category is present.
 
 ##### Categorical | Stateful
 
@@ -2574,7 +2594,7 @@ $transformer = new PolynomialExpander(3);
 ```
 
 ### Principal Component Analysis
-Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that would retain as much of the information within the data as possible.
+Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information within as possible.
 
 ##### Unsupervised | Continuous *Only* | Stateful
 
@@ -2608,7 +2628,7 @@ $transformer = new PrincipalComponentAnalysis(15);
 
 ### Quartile Standardizer
 
-This standardizer centers the sample matrix around the median and scales each feature according to the interquartile range (*IQR*) for each column. The IQR is the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*).
+This standardizer centers the sample matrix around the median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
 
 ##### Continuous | Stateful
 
@@ -2637,7 +2657,7 @@ $transformer = new QuartileStandardizer(true);
 ```
 
 ### Robust Standardizer
-This standardizer transforms continuous features by centering around the median and scaling by the median absolute deviation (MAD). The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer).
+This standardizer transforms continuous features by centering around the median and scaling by the median absolute deviation (MAD). The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
 ##### Continuous | Stateful
 
@@ -2666,7 +2686,7 @@ $transformer = new RobustStandardizer(true);
 ```
 
 ### Sparse Random Projector
-The Sparse Random Projector uses a random matrix sampled from a sparse uniform distribution (mostly *0*s) to project a sample matrix onto a target dimensionality.
+The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to project a sample matrix onto a target dimensionality.
 
 ##### Continuous *Only* | Stateful
 
@@ -2690,7 +2710,7 @@ $transformer = new SparseRandomProjector(30);
 ```
 
 ### Stop Word Filter
-Removes user-specified words from a corpus of text.
+Removes user-specified words from any categorical feature column including blobs of text.
 
 ##### Categorical
 
@@ -3259,19 +3279,17 @@ $layer = new AlphaDropout(0.1);
 Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of covariate shift within the network making it possible to use higher learning rates and converge faster under some circumstances.
 
 #### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | epsilon | 1e-8 | float | The variance smoothing parameter i.e a small value added to the variance for numerical stability. |
+This layer does not have any parameters.
 
 #### Example:
 ```php
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
 
-$layer = new BatchNorm(1e-3);
+$layer = new BatchNorm();
 ```
 
 ### Dense
-Dense layers are fully connected hidden layers, meaning each neuron is connected to each other neuron in the previous layer by a weighted *synapse*. Dense layers employ [Activation Functions](#activation-functions) that control the output of each neuron in the layer.
+Dense layers are fully connected hidden layers, meaning each neuron is connected to each other neuron in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3507,27 +3525,11 @@ use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 $optimizer = new Stochastic(0.001);
 ```
 
-### Snapshots
-Snapshots are a way to capture the state of a neural network at a moment in time. A Snapshot object holds all of the parameters in the network and can be used to restore the network back to a previous state.
-
-To take a snapshot of your network simply call the `take()` method on the Snapshot object. To restore the network from a snapshot pass the Snapshot to the `restore()` method on a network.
-
-The example below shows how to take a snapshot and then restore the network via the snapshot.
-```php
-...
-$snapshot = Snapshot::take($network);
-
-...
-
-$network->restore($snapshot);
-...
-```
-
 ---
 ### Kernels
 
 ### Distance
-Distance functions are a type of kernel that measures the distance between two coordinate vectors. They can be used throughout Rubix in Estimators that use the concept of distance to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
+Distance functions are a type of kernel that measure the distance between two coordinate vectors. They are used throughout Rubix in Estimators that employ the concept of *distance* to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
 
 ### Canberra
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
@@ -3640,7 +3642,7 @@ $kernel = new Minkowski(4.0);
 Support Vector Machine kernels are used in the context of SVM-based estimators to project sample vectors into a non-linear feature space, allowing them to marginalize non-linear data.
 
 ### Linear
-A simple linear kernel computed by the dot product.
+A simple linear kernel computed by the dot product of two vectors.
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3653,7 +3655,7 @@ $kernel = new Linear();
 ```
 
 ### Polynomial
-Operating in high dimensions, the polynomial to the p'th degree of the sample vector.
+This kernel projects a sample vector using polynomials of the p'th degree.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3685,7 +3687,7 @@ $kernel = new RBF(null);
 ```
 
 ### Sigmoidal
-S shaped nonliearity kernel.
+S shaped nonliearity kernel with output values ranging from -1 to 1.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3705,7 +3707,7 @@ $kernel = new Sigmoidal(null, 0.);
 Cross validation is the process of testing the generalization performance of a model.
 
 ### Validators
-Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled) object, and validation [Metric](#validation-metrics) and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset chosen by the testing algorithm.
+Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled) object, and validation [Metric](#validation-metrics) and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset created by the testing algorithm.
 
 ```php
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
@@ -3735,7 +3737,7 @@ float(0.869)
 ```
 
 ### Hold Out
-Hold Out is the simplest form of cross validation available in Rubix. It uses a *hold out* set equal to the size of the given ratio of the entire training set to test the model. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
+Hold Out is a simple cross validation technique that uses a *hold out* validation set. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3767,7 +3769,9 @@ $validator = new KFold(5, true);
 ```
 
 ### Leave P Out
-Leave P Out tests the model with a unique holdout set of P samples for each round until all samples have been tested. Note that this process can become slow with large datasets and small values of P.
+Leave P Out tests the model with a unique holdout set of P samples for each round until all samples have been tested.
+
+> **Note**: Leave P Out can become slow with large datasets and small values of P.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3782,7 +3786,7 @@ $validator = new LeavePOut(50);
 ```
 
 ### Monte Carlo
-Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (random splits of the dataset).
+Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (randomized splits of the dataset).
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3799,8 +3803,7 @@ $validator = new MonteCarlo(30, 0.1);
 ```
 
 ### Validation Metrics
-
-Validation metrics are for evaluating the performance of an Estimator given some ground-truth such as class labels.
+Validation metrics are for evaluating the performance of an Estimator given the ground truth labels.
 
 To compute a validation score, pass in the predictions from an estimator along with the ground-truth labels:
 ```php
@@ -3849,7 +3852,7 @@ $metric = new Accuracy();
 ```
 
 ### Completeness
-A ground-truth (requiring labels) clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
+A ground truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
 
 ##### Clustering
 
@@ -3873,7 +3876,7 @@ $metric = new F1Score();
 ```
 
 ### Homogeneity
-A ground-truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogenous* when the entire cluster is comprised of a single class of samples.
+A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogenous* when the entire cluster is comprised of a single class of samples.
 
 ##### Clustering
 
@@ -3945,7 +3948,7 @@ $metric = new MedianAbsoluteError();
 ```
 
 ### RMS Error
-Root Mean Squared Error or average L2 loss is a metric that is used to measure the residuals of a regression problem.
+Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to measure the residuals of a regression problem.
 
 ##### Regression
 
@@ -3957,7 +3960,7 @@ $metric = new RMSError();
 ```
 
 ### R Squared
-The *coefficient of determination* or R Squared is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
+The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
 
 ##### Regression
 
@@ -3982,9 +3985,9 @@ $metric = new VMeasure();
 
 ---
 ### Reports
-Reports show a comprehensive 
+Reports offer a comprehensive view of the performance of an estimator given the problem in question.
 
-To generate a report from the predictions of an estimator given some ground-truth labels:
+To generate a report from the predictions of an estimator given some ground truth labels:
 ```php
 public generate(array $predictions, array $labels) : array
 ```
@@ -3993,14 +3996,13 @@ public generate(array $predictions, array $labels) : array
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
 
-...
 $report = new ConfusionMatrix(['positive', 'negative']);
 
 $result = $report->generate($predictions, $labels);
 ```
 
 ### Aggregate Report
-A Report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
+A report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
