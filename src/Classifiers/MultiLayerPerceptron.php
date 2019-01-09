@@ -233,7 +233,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

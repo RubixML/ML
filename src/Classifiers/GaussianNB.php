@@ -123,7 +123,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */
@@ -305,7 +305,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     {
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
+                . ' continuous features.');
         }
 
         if (empty($this->means) or empty($this->variances)) {
@@ -335,7 +335,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     {
         if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
             throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
+                . ' continuous features.');
         }
 
         if (empty($this->means) or empty($this->variances)) {

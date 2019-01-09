@@ -156,7 +156,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

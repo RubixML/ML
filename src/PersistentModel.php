@@ -61,7 +61,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

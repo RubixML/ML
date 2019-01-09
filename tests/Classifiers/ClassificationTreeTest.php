@@ -56,7 +56,7 @@ class ClassificationTreeTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
-    public function test_train_predict()
+    public function test_train_predict_importances()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -69,6 +69,10 @@ class ClassificationTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(3, $importances);
     }
 
     public function test_train_with_unlabeled()

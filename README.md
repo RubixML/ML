@@ -4890,5 +4890,6 @@ composer test
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
 
+---
 ## License
 [MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)

@@ -84,7 +84,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

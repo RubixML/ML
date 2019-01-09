@@ -23,7 +23,7 @@ interface Estimator
     const EPSILON = 1e-8;
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

@@ -56,6 +56,13 @@ abstract class CART implements Tree
     protected $minPurityIncrease;
 
     /**
+     * The number of feature columns in the training set.
+     * 
+     * @var int
+     */
+    protected $featureCount;
+
+    /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
      * @param  float  $minPurityIncrease
@@ -119,6 +126,8 @@ abstract class CART implements Tree
      */
     public function grow(Labeled $dataset) : void
     {
+        $this->featureCount = $dataset->numColumns();
+
         $depth = 1;
 
         $this->root = $this->findBestSplit($dataset);
@@ -221,7 +230,7 @@ abstract class CART implements Tree
 
     /**
      * Return an array indexed by feature column that contains the normalized
-     * importance score of that column in determining the overall prediction.
+     * importance score of that feature.
      *
      * @return array
      */
@@ -231,17 +240,13 @@ abstract class CART implements Tree
             return [];
         }
 
-        $importances = [];
+        $importances = array_fill(0, $this->featureCount, 0.);
 
         foreach ($this->dump() as $node) {
             if ($node instanceof Comparison) {
                 $index = $node->column();
 
-                if (isset($importances[$index])) {
-                    $importances[$index] += $node->purityIncrease();
-                } else {
-                    $importances[$index] = $node->purityIncrease();
-                }
+                $importances[$index] += $node->purityIncrease();
             }
         }
 

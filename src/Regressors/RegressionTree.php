@@ -84,7 +84,7 @@ class RegressionTree extends CART implements Learner, Persistable
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */

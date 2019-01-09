@@ -20,7 +20,7 @@ use RuntimeException;
 /**
  * Classification Tree
  *
- * A Leaf Tree-based classifier that minimizes gini impurity to greedily
+ * A binary tree-based classifier that minimizes gini impurity to greedily
  * search for the best splits in a training set.
  *
  * @category    Machine Learning
@@ -90,7 +90,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     }
 
     /**
-     * Return the integer encoded type of estimator this is.
+     * Return the integer encoded estimator type.
      *
      * @return int
      */
@@ -100,7 +100,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     }
 
     /**
-     * Train the Leaf tree by learning the most optimal splits in the
+     * Train the binary tree by learning the most optimal splits in the
      * training set.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
