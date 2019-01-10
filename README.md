@@ -1156,7 +1156,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of a given sa
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -1457,7 +1457,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -1510,7 +1510,7 @@ $estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new Cr
 ### Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex deep learning problems.
 
-> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
+> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
 ##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
 
@@ -1570,7 +1570,7 @@ $estimator = new MultiLayerPerceptron([
 ```
 
 ### Naive Bayes
-Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated). In practice, the independence assumption works out most of the time despite most features being correlated in the real world.
+Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated).
 
 ##### Supervised | Learner | Online | Probabilistic | Persistable
 
@@ -1703,7 +1703,7 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 |--|--|--|--|--|
 | 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points.
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points.
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -1717,7 +1717,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ```
 
 ### Fuzzy C Means
-Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a fuzzy region defined by the *fuzz* parameter.
+Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
 ##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
 
@@ -1726,7 +1726,7 @@ Probabilistic distance-based clusterer that allows samples to belong to multiple
 |--|--|--|--|--|
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| 3 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
 | 5 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
 
@@ -1751,7 +1751,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3);
 ```
 
 ### Gaussian Mixture
-A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow not just the centers (*means*) to be learned but the radii (*variances*) as well.
+A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow the centers (*means*) *and* the radii (*variances*) to be learned as well.
 
 ##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
 
@@ -1796,7 +1796,7 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
-| 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
 
 #### Additional Methods:
@@ -1815,7 +1815,7 @@ $estimator = new KMeans(3, new Euclidean());
 ```
 
 ### Mean Shift
-A hierarchical clustering algorithm that uses peak finding to locate the local maxima (centroids) of a training set given by a radius constraint.
+A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
 ##### Unsupervised | Learner | Verbose | Persistable
 
@@ -1823,7 +1823,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | | float | The radius of each cluster centroid. |
-| 2 | kernel | Euclidean | object | The distance metric used to measure the distance between two sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 3 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
 | 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
 
@@ -1946,7 +1946,7 @@ $estimator = new DummyRegressor(new BlurryPercentile(56.5, 0.1));
 ```
 
 ### Extra Tree Regressor
-An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](#regression-tree) in that they choose a split drawn from a set random set determined by max features, rather than searching the entire column.
+An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](#regression-tree) in that they choose a split drawn from a random set determined by the max features parameter, rather than searching the entire column for the best split.
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
@@ -1972,7 +1972,7 @@ $estimator = new ExtraTreeRegressor(30, 3, 0.05, 20, 1e-4);
 ```
 
 ### Gradient Boost
-Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent boosting paradigm for training *weak* regressors (Regression Trees) to correct the error residuals of the base learner.
+Gradient Boost is a stage-wise additive model that uses a Gradient Descent boosting paradigm for training  boosters (Regression Trees) to correct the error residuals of a *weak* base learner.
 
 > **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
@@ -1981,13 +1981,13 @@ Gradient Boost is a stage-wise additive ensemble that uses a Gradient Descent bo
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | booster | Regression Tree | object | The *weak* regressor that will fix up the error residuals of the base learner. |
+| 1 | booster | Regression Tree | object | The regressor that will fix up the error residuals of the base learner. |
 | 2 | rate | 0.1 | float | The learning rate of the ensemble. |
 | 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before early stopping. |
-| 7 | base | Dummy Regressor | object | The base regressor to be boosted. |
+| 7 | base | Dummy Regressor | object | The *weak* learner to be boosted. |
 
 #### Additional Methods:
 
@@ -2007,7 +2007,7 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3,
 ```
 
 ### K-d Neighbors Regressor
-A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is speed, however you no longer have the ability to partially train.
+A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
 ##### Supervised  | Learner | Persistable
 
@@ -2016,7 +2016,7 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a K-d tree. The K
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -2031,7 +2031,7 @@ $estimator = new KDNRegressor(5, 20, new Minkowski(4.0), true);
 ```
 
 ### KNN Regressor
-A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
+A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
@@ -2041,7 +2041,7 @@ A version of [K Nearest Neighbors](#k-nearest-neighbors) that uses the mean outc
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between two sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -2058,7 +2058,7 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0), false);
 ### MLP Regressor
 A multi layer feedforward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](#multi-layer-perceptron) classifier, the MLP Regressor is able to tackle deep learning problems by forming higher-order representations of the features using intermediate computational units called *hidden* layers.
 
-> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
+> **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
 ##### Supervised | Learner | Online | Verbose | Persistable
 
@@ -2113,7 +2113,7 @@ $estimator = new MLPRegressor([
 ```
 
 ### Regression Tree
-A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the variance (*impurity*) of the labels at each decision node split.
+A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the impurity (variance) of the labels at each decision node split.
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
@@ -2135,7 +2135,7 @@ This estimator does not have any additional methods.
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(50, 2, 35., null, 1e-4);
+$estimator = new RegressionTree(30, 2, 35., null, 1e-4);
 ```
 
 ### Ridge
@@ -2207,9 +2207,7 @@ public transform(array &$samples, ?array &$labels = null) : void
 > **Note**: To transform a dataset without having to pass the raw samples and labels you can pass a transformer to the `apply()` method on a Dataset object.
 
 ### Stateful
-For stateful transformers, the fit method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* an estimator.
-
-> **Note**: A stateful transformer must be fitted before it can transform.
+For stateful transformers, the `fit()` method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* a learner.
 
 ```php
 public fit(Dataset $dataset) : void
@@ -2225,7 +2223,7 @@ $transformer->fit($dataset);
 ```
 
 ### Elastic
-Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer even after it has already been fitted.
+Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer with new data even after it has previously been fitted. *Updating* is to transformer as *partially training* is to online learner.
 
 ```php
 public update(Dataset $dataset) : void
@@ -2247,7 +2245,7 @@ $transformer->update($folds[2]);
 ```
 
 ### Dense Random Projector
-The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to project onto a vector space of target dimensionality.
+The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to reduce the dimensionality of a dataset by projecting it onto a vector space of target dimensionality.
 
 ##### Continuous *Only* | Stateful
 
@@ -2258,7 +2256,7 @@ The Dense Random Projector uses a random matrix sampled from a dense uniform dis
 
 #### Additional Methods:
 
-Estimate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
@@ -2271,7 +2269,7 @@ $transformer = new DenseRandomProjector(50);
 ```
 
 ### Gaussian Random Projector
-A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a Gaussian distribution to project the input samples onto a lower dimensional vector space.
+A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
 ##### Continuous *Only* | Stateful
 
@@ -2282,7 +2280,7 @@ A random projector is a dimensionality reducer based on the Johnson-Lindenstraus
 
 #### Additional Methods:
 
-Estimate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
+Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
@@ -2305,6 +2303,7 @@ This transformer does not have any parameters.
 #### Additional Methods:
 This transformer does not have any additional methods.
 
+#### Example:
 ```php
 use Rubix\ML\Transformers\HTMLStripper;
 
@@ -2405,7 +2404,7 @@ $transformer = new L2Normalizer();
 ```
 
 ### Lambda Function
-Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [tuple](#what-is-a-tuple).
+Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](#what-is-a-tuple).
 
 ##### Categorical | Continuous
 
@@ -2510,18 +2509,18 @@ public maximums() : ?array
 ```php
 use Rubix\ML\Transformers\MinMaxNormalizer;
 
-$transformer = new MinMaxNormalizer(-5, 5);
+$transformer = new MinMaxNormalizer(-5., 5.);
 ```
 
 ### Missing Data Imputer
-In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value placeholders with a guess based on a given [Strategy](#guessing-strategies).
+In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
 
 ##### Categorical | Continuous | Stateful
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | placeholder | '?' | string or numeric | The placeholder that denotes a missing value. |
+| 1 | placeholder | '?' | string or numeric | The placeholder value that denotes a missing value. |
 | 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
 | 3 | categorical strategy | K Most Frequent | object | The guessing strategy to employ for categorical feature columns. |
 
@@ -2531,8 +2530,8 @@ This transformer does not have any additional methods.
 #### Example:
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Transformers\Strategies\BlurryPercentile;
-use Rubix\ML\Transformers\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\BlurryPercentile;
+use Rubix\ML\Other\Strategies\PopularityContest;
 
 $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new PopularityContest());
 ```
@@ -2556,7 +2555,7 @@ $transformer = new NumericStringConverter();
 ```
 
 ### One Hot Encoder
-The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 indicates that a category is not present in the sample whereas a 1 indicates that a category is present.
+The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
 ##### Categorical | Stateful
 
@@ -2574,7 +2573,7 @@ $transformer = new OneHotEncoder();
 ```
 
 ### Polynomial Expander
-This transformer will generate polynomials up to and including the specified degree of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
+This transformer will generate polynomials up to and including the specified *degree* of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
 
 ##### Continuous *Only*
 
@@ -2594,7 +2593,7 @@ $transformer = new PolynomialExpander(3);
 ```
 
 ### Principal Component Analysis
-Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the *k* principal components that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information within as possible.
+Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
 
 ##### Unsupervised | Continuous *Only* | Stateful
 
@@ -2628,14 +2627,14 @@ $transformer = new PrincipalComponentAnalysis(15);
 
 ### Quartile Standardizer
 
-This standardizer centers the sample matrix around the median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
+This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
 
 ##### Continuous | Stateful
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | true | bool | Should we center the sample matrix? |
+| 1 | center | true | bool | Should we center the sample dataset? |
 
 #### Additional Methods:
 
@@ -2657,14 +2656,14 @@ $transformer = new QuartileStandardizer(true);
 ```
 
 ### Robust Standardizer
-This standardizer transforms continuous features by centering around the median and scaling by the median absolute deviation (MAD). The use of robust statistics makes this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
+This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
 ##### Continuous | Stateful
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | true | bool | Should we center the sample matrix? |
+| 1 | center | true | bool | Should we center the sample dataset? |
 
 #### Additional Methods:
 
@@ -2686,14 +2685,14 @@ $transformer = new RobustStandardizer(true);
 ```
 
 ### Sparse Random Projector
-The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to project a sample matrix onto a target dimensionality.
+The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
 
 ##### Continuous *Only* | Stateful
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | dimensions | None | int | The number of target dimensions to project onto. |
+| 1 | dimensions | | int | The number of target dimensions to project onto. |
 
 #### Additional Methods:
 
@@ -2748,7 +2747,7 @@ $transformer = new TextNormalizer(true);
 ```
 
 ### TF-IDF Transformer
-Term Frequency - Inverse Document Frequency is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document and is offset by the frequency of the word in the corpus.
+*Term Frequency - Inverse Document Frequency* is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
@@ -2795,7 +2794,7 @@ $transformer = new VarianceThresholdFilter(50);
 ```
 
 ### Word Count Vectorizer
-The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word from the vocabulary and the value denotes the number of times that word appears in a given sample.
+The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2818,20 +2817,20 @@ public size() : int
 #### Example:
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Other\Tokenizers\NGram;
+use Rubix\ML\Other\Tokenizers\SkipGram;
 
-$transformer = new WordCountVectorizer(10000, 2, new NGram(2));
+$transformer = new WordCountVectorizer(10000, 3, new SkipGram());
 ```
 
 ### Z Scale Standardizer
-A method of centering and scaling a dataset such that it has 0 mean and unit variance (Z Score).
+A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
 
 ##### Continuous | Stateful | Elastic
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | center | true | bool | Should we center the sample matrix? |
+| 1 | center | true | bool | Should we center the sample dataset? |
 
 #### Additional Methods:
 
@@ -2859,22 +2858,22 @@ $transformer = new ZScaleStandardizer(true);
 
 ---
 ### Neural Network
-A number of the learners in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation that repeatedly takes small steps towards minimizing a supplied cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of tasks such as higher order feature detection, non-linear activation, normalization, and regularization.
+A number of estimators in Rubix are implemented as a Neural Network under the hood. Neural nets are trained using an iterative supervised learning process called Gradient Descent with Backpropagation that repeatedly takes small steps towards minimizing a user-defined cost function. Networks can have an arbitrary number of intermediate computational layers called *hidden* layers. Hidden layers can perform a number of different functions including higher order feature detection, non-linear activation, normalization, and regularization.
 
 ### Activation Functions
 The input to a node in the network is often passed through an Activation Function (sometimes referred to as a *transfer* function) which determines its output behavior. In the context of a *biologically inspired* neural network, the activation function is an abstraction representing the rate of action potential firing of a neuron.
 
-Activation Functions can be broken down into three classes - Sigmoidal (or *S* shaped) such as [Hyperbolic Tangent](#hyperbolic-tangent), Rectifiers such as [ELU](#elu), and Radial Basis Functions (*RBFs*) such as [Gaussian](#gaussian).
+Activation Functions can be broken down into three classes - Sigmoidal (or *S* shaped) such as [Hyperbolic Tangent](#hyperbolic-tangent), Rectifiers such as [ELU](#elu) and LeakyReLU(#leaky-relu), and Radial Basis Functions (*RBFs*) such as [Gaussian](#gaussian).
 
 ### ELU
-Exponential Linear Units are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
+*Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
 
 ##### Rectifier
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+| 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be less than -1.0 when inactivated. |
 
 #### Example:
 ```php
@@ -2931,7 +2930,7 @@ $activationFunction = new ISRU(2.0);
 ```
 
 ### Leaky ReLU
-Leaky Rectified Linear Units are functions that output x when x > 0 or a small leakage value when x < 0. The amount of leakage is controlled by the user-specified parameter.
+Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
 
 ##### Rectifier
 
@@ -2948,7 +2947,9 @@ $activationFunction = new LeakyReLU(0.3);
 ```
 
 ### ReLU
-Rectified Linear Units output only the positive part of its inputs and are analogous to a half-wave rectifiers in electrical engineering.
+Rectified Linear Units output only the positive part of the inputs.
+
+> **Note**: ReLUs are analogous to half-wave rectifiers in electrical engineering.
 
 ##### Retifier
 
@@ -2963,7 +2964,7 @@ $activationFunction = new ReLU();
 ```
 
 ### SELU
-Scaled Exponential Linear Unit is a self-normalizing activation function based on [ELU](#elu).
+Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
 
 ##### Rectifier
 
@@ -2981,7 +2982,7 @@ $activationFunction = new SELU(1.05070, 1.67326);
 ```
 
 ### Sigmoid
-A bounded S-shaped function (specifically the Logistic function) with an output value between 0 and 1.
+A bounded S-shaped function (specifically the *Logistic* function) with an output value between 0 and 1.
 
 ##### Sigmoidal
 
@@ -2996,7 +2997,7 @@ $activationFunction = new Sigmoid();
 ```
 
 ### Softmax
-The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1, and all activations add up to 1.
+The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1 *and* all activations together add up to exactly 1.
 
 ##### Sigmoidal
 
@@ -3028,7 +3029,7 @@ $activationFunction = new SoftPlus();
 ```
 
 ### Softsign
-A function that squashes the output of a neuron to + or - 1 from 0. In other words, the output is between -1 and 1.
+A function that squashes the input smoothly between -1 and 1.
 
 ##### Sigmoidal
 
@@ -3050,7 +3051,7 @@ Thresholded ReLU has a user-defined threshold parameter that controls the level 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | threshold | 0.0 | float | The input value necessary to trigger an activation. |
+| 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
 
 #### Example:
 ```php
@@ -3060,10 +3061,10 @@ $activationFunction = new ThresholdedReLU(0.5);
 ```
 
 ### Cost Functions
-In neural networks, the cost function is a function that the network tries to minimize during training. The cost of a particular sample is defined as the difference between the output of the network and what the correct output should be given the label. Different cost functions have different ways of punishing erroneous activations.
+In neural networks, the cost function is a function that the network tries to minimize during training. The cost of a particular activation is defined as the difference between the output of the network and what the correct output should be given the ground truth label. Different cost functions have different ways of punishing erroneous activations and thus produce differently shaped gradients when backpropagated.
 
 ### Cross Entropy
-Cross Entropy, or log loss, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
+Cross Entropy, or *log loss*, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
 
 #### Parameters:
 This cost function does not have any parameters.
@@ -3091,7 +3092,7 @@ $costFunction = new Exponential(0.5);
 ```
 
 ### Huber Loss
-The pseudo Huber Loss function transitions between L1 and L2 (Least Squares) loss at a given pivot point (*delta*) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 loss makes Huber Loss robust to outliers while maintaining smoothness near the minimum.
+The *pseudo* Huber Loss function transitions between L1 and L2 (Least Squares) loss at a given pivot point (*delta*) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 loss makes Huber Loss robust to outliers while maintaining smoothness near the minimum.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3133,10 +3134,10 @@ $costFunction = new RelativeEntropy();
 
 ---
 ### Initializers
-Initializers are responsible for setting the initial weight parameters of a neural network. Different activation layers respond to different weight initializations therefore it is important to choose the initializer that suits your network architecture.
+Initializers are responsible for setting the initial weight parameters of the weight layers of a neural network. Certain activation functions respond differently when given inputs from weight layers with different initializations.
 
 ### He
-The He initializer was designed for hidden layers that feed into rectified linear layers such [ReLU](#relu), [Leaky ReLU](#leaky-relu), [ELU](#elu), and [SELU](#selu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
+The He initializer was designed for hidden layers that feed into rectified linear unit layers such as [ReLU](#relu), [Leaky ReLU](#leaky-relu), and [ELU](#elu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
 
 #### Parameters:
 This initializer does not have any parameters.
@@ -3192,7 +3193,7 @@ $initializer = new Uniform(1e-3);
 ```
 
 ### Xavier 1
-The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
+The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is equal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
 
 #### Parameters:
 This initializer does not have any parameters.
@@ -3219,7 +3220,7 @@ $initializer = new Xavier2();
 
 ---
 ### Layers
-Every neural network is made up of layers of computational units called neurons. Each layer processes and transforms the input from the previous layer.
+Every neural network is made up of layers of computational units called neurons. Each layer processes and transforms the input from the previous layer in such a way that makes it easier for the next layer to form high-level abstractions.
 
 There are three types of layers that form a network, **Input**, **Hidden**, and **Output**. A network can have as many Hidden layers as the user specifies, however, there can only be 1 Input and 1 Output layer per network.
 
@@ -3242,7 +3243,7 @@ $layer = new Placeholder1D(100);
 ```
 
 ### Hidden Layers
-In multilayer networks, hidden layers are responsible for transforming the input space in such a way that can be linearly separable by the final output layer. The more complex the problem, the more hidden layers and neurons will be necessary to handle the problem.
+In multilayer networks, hidden layers are responsible for transforming the input space in such a way that can be linearly separable by the final output layer.
 
 ### Activation
 Activation layers apply a nonlinear activation function to their inputs.
@@ -3263,6 +3264,8 @@ $layer = new Activation(new ReLU());
 ### Alpha Dropout
 Alpha Dropout is a type of dropout layer that maintains the mean and variance of the original inputs in order to ensure the self-normalizing property of [SELU](#selu) networks with dropout. Alpha Dropout fits with SELU networks by randomly setting activations to the negative saturation value of the activation function at a given ratio each pass.
 
+> **Note**: Alpha Dropout is generally only used in the context of SELU networks. Use regular [Dropout](#dropout) for other types of neural nets.
+
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -3276,7 +3279,7 @@ $layer = new AlphaDropout(0.1);
 ```
 
 ### Batch Norm
-Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of covariate shift within the network making it possible to use higher learning rates and converge faster under some circumstances.
+Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of *covariate shift* within the network making it possible to use higher learning rates and converge faster under some circumstances.
 
 #### Parameters:
 This layer does not have any parameters.
@@ -3289,7 +3292,7 @@ $layer = new BatchNorm();
 ```
 
 ### Dense
-Dense layers are fully connected hidden layers, meaning each neuron is connected to each other neuron in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
+Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3306,7 +3309,7 @@ $layer = new Dense(100, new He());
 ```
 
 ### Dropout
-Dropout layers temporarily disable neurons during each training pass. Dropout is a regularization technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data. It is a very efficient way of performing model averaging with neural networks.
+Dropout layers temporarily disable neurons during each training pass. Dropout is a regularization and model averaging technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3321,8 +3324,7 @@ $layer = new Dropout(0.5);
 ```
 
 ### Noise
-This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the
-weights through the cost function in the output layer.
+This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3337,7 +3339,7 @@ $layer = new Noise(2.0);
 ```
 
 ### PReLU
-The PReLU layer uses ReLU activation function's whose leakage coefficients are parameterized and optimized on a per neuron basis along with the weights and biases.
+The PReLU layer uses leaky ReLU activation functions whose leakage coefficients are parameterized and optimized on a per neuron basis during training.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3352,10 +3354,10 @@ $layer = new PReLU(0.1);
 ```
 
 ### Output Layers
-Activations are read directly from the Output layer when making predictions. The type of output layer will determine the type of Estimator the neural network can power (i.e Binary Classifier, Multiclass Classifier, or Regressor).
+Activations are read directly from the Output layer when making predictions. The type of output layer will determine the type of Estimator the network can bestow (i.e Binary Classifier, Multiclass Classifier, or Regressor).
 
 ### Binary
-This Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
+The Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4817,7 +4819,7 @@ $tokenizer = new Whitespace(',');
 ```
 
 ### Word Tokenizer
-The Word tokenizer uses regular expressions to pluck words from a sample of text.
+The Word tokenizer uses regular expressions to pluck words from a blob of text.
 
 #### Parameters:
 This tokenizer does not have any parameters.
