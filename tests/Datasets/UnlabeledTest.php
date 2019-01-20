@@ -46,6 +46,20 @@ class UnlabeledTest extends TestCase
         $this->assertInstanceOf(Dataset::class, $this->dataset);
     }
 
+    public function test_stack_datasets()
+    {
+        $dataset1 = new Unlabeled([['sample1']]);
+        $dataset2 = new Unlabeled([['sample2']]);
+        $dataset3 = new Unlabeled([['sample3']]);
+
+        $dataset = Unlabeled::stack([$dataset1, $dataset2, $dataset3]);
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+
+        $this->assertEquals(3, $dataset->numRows());
+        $this->assertEquals(1, $dataset->numColumns());
+    }
+
     public function test_bad_data_bool()
     {
         $this->expectException(InvalidArgumentException::class);

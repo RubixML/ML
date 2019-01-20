@@ -53,6 +53,20 @@ class LabeledTest extends TestCase
         $this->assertInstanceOf(Dataset::class, $this->dataset);
     }
 
+    public function test_stack_datasets()
+    {
+        $dataset1 = new Labeled([['sample1']], ['label1']);
+        $dataset2 = new Labeled([['sample2']], ['label2']);
+        $dataset3 = new Labeled([['sample3']], ['label3']);
+
+        $dataset = Labeled::stack([$dataset1, $dataset2, $dataset3]);
+
+        $this->assertInstanceOf(Labeled::class, $dataset);
+
+        $this->assertEquals(3, $dataset->numRows());
+        $this->assertEquals(1, $dataset->numColumns());
+    }
+
     public function test_bad_data_bool()
     {
         $this->expectException(InvalidArgumentException::class);

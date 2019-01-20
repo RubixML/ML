@@ -1,5 +1,6 @@
 - Unreleased
     - Pipeline and Persistent Model are now Probabilistic
+    - Added stack method to dataset API
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

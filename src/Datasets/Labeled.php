@@ -76,6 +76,32 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
+     * Stack a number of datasets on top of each other to form a single
+     * dataset.
+     * 
+     * @param  array  $datasets
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function stack(array $datasets) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($datasets as $dataset) {
+            if (!$dataset instanceof self) {
+                throw new InvalidArgumentException('Dataset must be'
+                    . ' an instance of Labeled, ' . get_class($dataset)
+                    . ' given.');
+            }
+
+            $samples = array_merge($samples, $dataset->samples());
+            $labels = array_merge($labels, $dataset->labels());
+        }
+
+        return self::quick($samples, $labels);
+    }
+
+    /**
      * @param  array  $samples
      * @param  array  $labels
      * @param  bool  $validate

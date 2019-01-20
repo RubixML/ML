@@ -13,6 +13,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     const PHI = 100000000;
 
     /**
+     * Stack a number of datasets on top of each other to form a single
+     * dataset.
+     * 
+     * @param  array  $datasets
+     * @return self
+     */
+    public static function stack(array $datasets);
+
+    /**
      * Return the 2-dimensional sample matrix.
      *
      * @return array

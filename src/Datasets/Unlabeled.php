@@ -56,6 +56,31 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
+     * Stack a number of datasets on top of each other to form a single
+     * dataset.
+     * 
+     * @param  array  $datasets
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public static function stack(array $datasets) : self
+    {
+        $samples = $labels = [];
+
+        foreach ($datasets as $dataset) {
+            if (!$dataset instanceof Dataset) {
+                throw new InvalidArgumentException('Dataset must be'
+                    . ' an instance of Dataset, ' . get_class($dataset)
+                    . ' given.');
+            }
+
+            $samples = array_merge($samples, $dataset->samples());
+        }
+
+        return self::quick($samples);
+    }
+
+    /**
      * @param  array  $samples
      * @param  bool  $validate
      * @return void

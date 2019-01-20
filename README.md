@@ -18,7 +18,7 @@ $ composer require rubix/ml
 ## Requirements
 - [PHP](https://php.net/manual/en/install.php) 7.1.3 or above
 
-#### Optional:
+#### Optional
 
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
@@ -409,8 +409,13 @@ In Rubix, data is passed around using specialized data structures called Dataset
 
 The Dataset interface has a robust API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available on the basic interface.
 
-#### Selecting
+#### Stacking
+Stack a number of dataset objects on top of each other and return a single dataset:
+```php
+public static stack(array $datasets) : self;
+```
 
+#### Selecting
 Return all the samples in the dataset:
 ```php
 public samples() : array
