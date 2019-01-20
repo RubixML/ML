@@ -627,7 +627,6 @@ array(3) {
 ```
 
 #### Prepending and Appending
-
 To prepend a given dataset onto the beginning of another dataset:
 ```php
 public prepend(Dataset $dataset) : self
@@ -639,7 +638,6 @@ public append(Dataset $dataset) : self
 ```
 
 #### Applying a Transformation
-
 You can apply a fitted [Transformer](#transformers) to a Dataset directly passing it to the apply method on the Dataset.
 
 ```php

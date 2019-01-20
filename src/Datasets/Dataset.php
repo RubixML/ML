@@ -249,12 +249,20 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     public function randomWeightedSubsetWithReplacement(int $n, array $weights);
 
     /**
-     * Merge this dataset with another dataset.
+     * Prepend this dataset with another dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function merge(Dataset $dataset) : Dataset;
+    public function prepend(Dataset $dataset) : Dataset;
+
+    /**
+     * Append this dataset with another dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset;
 
     /**
      * Is the dataset empty?

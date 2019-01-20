@@ -330,13 +330,27 @@ class LabeledTest extends TestCase
         $this->assertCount(3, $subset);
     }
 
-    public function test_merge_dataset()
+    public function test_prepend_dataset()
     {
         $this->assertCount(count($this->samples), $this->dataset);
 
         $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
 
-        $merged = $this->dataset->merge($dataset);
+        $merged = $this->dataset->prepend($dataset);
+
+        $this->assertCount(count($this->samples) + 1, $merged);
+
+        $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(0));
+        $this->assertEquals('not monster', $merged->label(6));
+    }
+
+    public function test_append_dataset()
+    {
+        $this->assertCount(count($this->samples), $this->dataset);
+
+        $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
+
+        $merged = $this->dataset->append($dataset);
 
         $this->assertCount(count($this->samples) + 1, $merged);
 

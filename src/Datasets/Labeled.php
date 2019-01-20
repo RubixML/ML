@@ -277,13 +277,33 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Merge this dataset with another dataset.
+     * Prepend this dataset with another dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function merge(Dataset $dataset) : Dataset
+    public function prepend(Dataset $dataset) : Dataset
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Can only merge with a labeled'
+                . 'dataset.');
+        }
+
+        $samples = array_merge($dataset->samples(), $this->samples);
+        $labels = array_merge($dataset->labels(), $this->labels);
+
+        return self::quick($samples, $labels);
+    }
+
+    /**
+     * Append this dataset with another dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Can only merge with a labeled'

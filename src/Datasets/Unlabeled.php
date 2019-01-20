@@ -148,12 +148,23 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Merge this dataset with another dataset.
+     * Prepend this dataset with another dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function merge(Dataset $dataset) : Dataset
+    public function prepend(Dataset $dataset) : Dataset
+    {
+        return self::quick(array_merge($dataset->samples(), $this->samples));
+    }
+
+    /**
+     * Append this dataset with another dataset.
+     *
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @return \Rubix\ML\Datasets\Dataset
+     */
+    public function append(Dataset $dataset) : Dataset
     {
         return self::quick(array_merge($this->samples, $dataset->samples()));
     }
