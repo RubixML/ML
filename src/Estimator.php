@@ -13,11 +13,11 @@ interface Estimator
     const EMBEDDER = 5;
 
     const TYPES = [
-        1 => 'Classifier',
-        2 => 'Regressor',
-        3 => 'Clusterer',
-        4 => 'Anomaly Detector',
-        5 => 'Embedder',
+        1 => 'classifier',
+        2 => 'regressor',
+        3 => 'clusterer',
+        4 => 'anomaly detector',
+        5 => 'embedder',
     ];
 
     const EPSILON = 1e-8;

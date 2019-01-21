@@ -203,6 +203,15 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 . " 0.01 and 0.5, $holdout given.");
         }
 
+        if (isset($metric)) {
+            if (!in_array(self::CLASSIFIER, $metric->compatibility())) {
+                throw new InvalidArgumentException(Params::shortName($metric)
+                    . ' is not compatible with classifiers.');
+            }
+        } else {
+            $metric = new F1Score();
+        }
+
         if ($window < 2) {
             throw new InvalidArgumentException('Window must be at least 2'
                 . " epochs, $window given.");
@@ -214,10 +223,6 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
         if (is_null($costFn)) {
             $costFn = new CrossEntropy();
-        }
-
-        if (is_null($metric)) {
-            $metric = new F1Score();
         }
 
         $this->hidden = $hidden;

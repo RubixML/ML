@@ -2,6 +2,7 @@
     - Pipeline and Persistent Model are now Probabilistic
     - Added stack method to dataset API
     - Changed merge method on dataset to append and prepend
+    - Added compatibility method to validation metrics
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

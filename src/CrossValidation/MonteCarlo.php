@@ -3,8 +3,10 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
@@ -72,10 +74,17 @@ class MonteCarlo implements Validator
      * @param  \Rubix\ML\Learner  $estimator
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
+     * @throws \InvalidArgumentException
      * @return float
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
+        if (!in_array($estimator->type(), $metric->compatibility())) {
+            throw new InvalidArgumentException(Params::shortName($metric)
+                . ' is not compatible with '
+                . Estimator::TYPES[$estimator->type()] . 's.');
+        }
+
         $score = 0.;
 
         for ($epoch = 1; $epoch <= $this->simulations; $epoch++) {

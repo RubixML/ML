@@ -14,6 +14,13 @@ interface Metric
     public function range() : array;
 
     /**
+     * The estimator types that this metric is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array;
+
+    /**
      * Score a set of predictions.
      *
      * @param  array  $predictions

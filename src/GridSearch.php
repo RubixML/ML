@@ -130,8 +130,8 @@ class GridSearch implements Learner, Persistable, Verbose
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $grid, Metric $metric = null,
-                                Validator $validator = null, bool $retrain = true)
+    public function __construct(string $base, array $grid, ?Metric $metric = null,
+                                ?Validator $validator = null, bool $retrain = true)
     {
         $reflector = new ReflectionClass($base);
 
@@ -155,7 +155,13 @@ class GridSearch implements Learner, Persistable, Verbose
             }
         }
 
-        if (is_null($metric)) {
+        if (isset($metric)) {
+            if (!in_array($proxy->type(), $metric->compatibility())) {
+                throw new InvalidArgumentException(Params::shortName($metric)
+                    . ' is not compatible with '
+                    . self::TYPES[$proxy->type()] . 's.');
+            }
+        } else {
             switch ($proxy->type()) {
                 case self::CLASSIFIER:
                     $metric = new F1Score();

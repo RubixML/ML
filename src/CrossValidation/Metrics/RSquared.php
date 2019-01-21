@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -26,6 +27,18 @@ class RSquared implements Metric
     public function range() : array
     {
         return [-INF, 1.];
+    }
+
+    /**
+     * The estimator types that this metric is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            Estimator::REGRESSOR,
+        ];
     }
 
     /**

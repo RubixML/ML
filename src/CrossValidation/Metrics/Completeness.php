@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
 /**
@@ -30,6 +31,18 @@ class Completeness implements Metric
     public function range() : array
     {
         return [0., 1.];
+    }
+
+    /**
+     * The estimator types that this metric is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            Estimator::CLUSTERER,
+        ];
     }
 
     /**

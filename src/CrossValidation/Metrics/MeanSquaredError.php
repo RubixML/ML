@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
 /**
@@ -24,6 +25,18 @@ class MeanSquaredError implements Metric
     public function range() : array
     {
         return [-INF, 0.];
+    }
+
+    /**
+     * The estimator types that this metric is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            Estimator::REGRESSOR,
+        ];
     }
 
     /**

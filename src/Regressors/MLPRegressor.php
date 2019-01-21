@@ -192,6 +192,15 @@ class MLPRegressor implements Online, Verbose, Persistable
                 . " 0.01 and 0.5, $holdout given.");
         }
 
+        if (isset($metric)) {
+            if (!in_array(self::REGRESSOR, $metric->compatibility())) {
+                throw new InvalidArgumentException(Params::shortName($metric)
+                    . ' is not compatible with regressors.');
+            }
+        } else {
+            $metric = new MeanSquaredError();
+        }
+
         if ($window < 2) {
             throw new InvalidArgumentException('Window must be at least 2'
                 . " epochs, $window given.");
@@ -203,10 +212,6 @@ class MLPRegressor implements Online, Verbose, Persistable
 
         if (is_null($costFn)) {
             $costFn = new LeastSquares();
-        }
-
-        if (is_null($metric)) {
-            $metric = new MeanSquaredError();
         }
 
         $this->hidden = $hidden;

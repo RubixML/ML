@@ -456,17 +456,16 @@ class Labeled extends DataFrame implements Dataset
 
         $n = (int) ($ratio * $this->numRows());
 
-        $left = [
-            array_slice($this->samples, 0, $n),
-            array_slice($this->labels, 0, $n),
-        ];
+        $leftSamples = array_slice($this->samples, 0, $n);
+        $leftLabels = array_slice($this->labels, 0, $n);
 
-        $right = [
-            array_slice($this->samples, $n),
-            array_slice($this->labels, $n),
-        ];
+        $rightSamples = array_slice($this->samples, $n);
+        $rightLabels = array_slice($this->labels, $n);
 
-        return [self::quick(...$left), self::quick(...$right)];
+        return [
+            self::quick($leftSamples, $leftLabels),
+            self::quick($rightSamples, $rightLabels),
+        ];
     }
 
     /**
@@ -483,23 +482,22 @@ class Labeled extends DataFrame implements Dataset
             . " between 0 and 1, $ratio given.");
         }
 
-        $left = $right = [[], [], false];
+        $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         foreach ($this->_stratify() as $label => $stratum) {
-            $n = (int) ($ratio * count($stratum));
+            $n = (int) floor($ratio * count($stratum));
 
-            $left = [
-                array_merge($left[0], array_splice($stratum, 0, $n)),
-                array_merge($left[1], array_fill(0, $n, $label)),
-            ];
+            $leftSamples = array_merge($leftSamples, array_splice($stratum, 0, $n));
+            $leftLabels = array_merge($leftLabels, array_fill(0, $n, $label));
 
-            $right = [
-                array_merge($right[0], $stratum),
-                array_merge($right[1], array_fill(0, count($stratum), $label)),
-            ];
+            $rightSamples = array_merge($rightSamples, $stratum);
+            $rightLabels = array_merge($rightLabels, array_fill(0, count($stratum), $label));
         }
 
-        return [self::quick(...$left), self::quick(...$right)];
+        return [
+            self::quick($leftSamples, $leftLabels),
+            self::quick($rightSamples, $rightLabels),
+        ];
     }
 
     /**
@@ -516,16 +514,17 @@ class Labeled extends DataFrame implements Dataset
                 . " folds, $k given.");
         }
 
-        $samples = $this->samples;
-        $labels = $this->labels;
-
-        $n = (int) floor(count($samples) / $k);
+        $n = (int) floor($this->numRows() / $k);
 
         $folds = [];
 
         for ($i = 0; $i < $k; $i++) {
-            $folds[] = self::quick(array_splice($samples, 0, $n),
-                array_splice($labels, 0, $n));
+            $offset = $i * $n;
+
+            $samples = array_slice($this->samples, $offset, $n);
+            $labels = array_slice($this->labels, $offset, $n);
+
+            $folds[] = self::quick($samples, $labels);
         }
 
         return $folds;
@@ -622,31 +621,34 @@ class Labeled extends DataFrame implements Dataset
                 . ' numeric type, ' . gettype($value) . ' given.');
         }
 
-        $left = $right = [[], [], false];
+        $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
         if ($this->columnType($index) === DataFrame::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] === $value) {
-                    $left[0][] = $sample;
-                    $left[1][] = $this->labels[$i];
+                    $leftSamples[] = $sample;
+                    $leftLabels[] = $this->labels[$i];
                 } else {
-                    $right[0][] = $sample;
-                    $right[1][] = $this->labels[$i];
+                    $rightSamples[] = $sample;
+                    $rightLabels[] = $this->labels[$i];
                 }
             }
         } else {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] < $value) {
-                    $left[0][] = $sample;
-                    $left[1][] = $this->labels[$i];
+                    $leftSamples[] = $sample;
+                    $leftLabels[] = $this->labels[$i];
                 } else {
-                    $right[0][] = $sample;
-                    $right[1][] = $this->labels[$i];
+                    $rightSamples[] = $sample;
+                    $rightLabels[] = $this->labels[$i];
                 }
             }
         }
 
-        return [self::quick(...$left), self::quick(...$right)];
+        return [
+            self::quick($leftSamples, $leftLabels),
+            self::quick($rightSamples, $rightLabels),
+        ];
     }
 
     /**

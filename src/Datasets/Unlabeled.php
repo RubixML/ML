@@ -81,16 +81,6 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * @param  array  $samples
-     * @param  bool  $validate
-     * @return void
-     */
-    public function __construct(array $samples = [], bool $validate = true)
-    {
-        parent::__construct($samples, $validate);
-    }
-
-    /**
      * Apply a transformation to the dataset and return for chaining.
      *
      * @param  \Rubix\ML\Transformers\Transformer  $transformer
@@ -223,9 +213,9 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function sortByColumn(int $index, bool $descending = false)
     {
-        $order = $this->column($index);
+        $column = $this->column($index);
 
-        array_multisort($order, $this->samples, $descending ? SORT_DESC : SORT_ASC);
+        array_multisort($column, $this->samples, $descending ? SORT_DESC : SORT_ASC);
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
@@ -25,6 +26,18 @@ class MedianAbsoluteError implements Metric
     public function range() : array
     {
         return [-INF, 0.];
+    }
+
+    /**
+     * The estimator types that this metric is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            Estimator::REGRESSOR,
+        ];
     }
 
     /**
