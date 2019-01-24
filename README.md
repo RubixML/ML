@@ -3810,14 +3810,19 @@ $validator = new MonteCarlo(30, 0.1);
 ### Validation Metrics
 Validation metrics are for evaluating the performance of an Estimator given the ground truth labels.
 
-To compute a validation score, pass in the predictions from an estimator along with the ground-truth labels:
+Compute a validation score, pass in the predictions from an estimator along with the ground-truth labels:
 ```php
 public score(array $predictions, array $labels) : float
 ```
 
-To output the range of values the validation score can take on in a 2-tuple:
+Output the range of values the validation score can take on in a 2-tuple:
 ```php
 public range() : array
+```
+
+Return a list of estimators that metric is compatible with:
+```php
+public compatibility() : array
 ```
 
 #### Example:
@@ -3997,6 +4002,11 @@ To generate a report from the predictions of an estimator given some ground trut
 public generate(array $predictions, array $labels) : array
 ```
 
+Return a list of estimators that report is compatible with:
+```php
+public compatibility() : array
+```
+
 #### Example:
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
@@ -4012,7 +4022,7 @@ A report that aggregates the results of multiple reports. The reports are indexe
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | reports | None | array | An array of report objects to aggregate. |
+| 1 | reports | | array | An array of report objects to aggregate. |
 
 #### Example:
 ```php
@@ -4022,8 +4032,9 @@ use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 ...
 $report = new AggregateReport([
-	'matrix' => new ConfusionMatrix(['wolf', 'lamb']),
 	'breakdown' => new MulticlassBreakdown(),
+	'matrix1' => new ConfusionMatrix(['wolf', 'lamb']),
+	'matrix2' => new ConfusionMatrix(['human', 'gorilla']),
 ]);
 
 $result = $report->generate($estimator, $testing);

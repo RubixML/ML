@@ -27,6 +27,13 @@ class AggregateReport implements Report
     ];
 
     /**
+     * The estimator compatibility of the aggregate.
+     * 
+     * @var int[]
+     */
+    protected $compatibility;
+
+    /**
      * @param  array  $reports
      * @throws \InvalidArgumentException
      * @return void
@@ -34,18 +41,41 @@ class AggregateReport implements Report
     public function __construct(array $reports)
     {
         if (empty($reports)) {
-            throw new InvalidArgumentException('Cannot generate an aggregate of'
-                . ' less than 1 report.');
+            throw new InvalidArgumentException('Cannot generate an aggregate'
+                . ' of less than 1 report.');
         }
 
-        foreach ($reports as $index => $report) {
+        $compatibilities = [];
+
+        foreach ($reports as $report) {
             if (!$report instanceof Report) {
                 throw new InvalidArgumentException('Can only aggregate report'
                     . 'objects, ' . gettype($report) . ' found.');
             }
+
+            $compatibilities[] = $report->compatibility();
+        }
+
+        $compatibility = array_intersect(...$compatibilities);
+
+        if (count($compatibility) < 1) {
+            throw new InvalidArgumentException('Aggregate must only contain'
+                . ' reports that share at least 1 estimator they are'
+                . ' compatible in common with.');
         }
 
         $this->reports = $reports;
+        $this->compatibility = array_values($compatibility);
+    }
+
+    /**
+     * The estimator types that this report is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->compatibility;
     }
 
     /**

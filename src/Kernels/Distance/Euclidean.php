@@ -6,8 +6,7 @@ namespace Rubix\ML\Kernels\Distance;
  * Euclidean
  *
  * This is the ordinary straight line (bee line) distance between two points in
- * Euclidean space. The associated norm of the Euclidean distance is called the
- * L2 norm.
+ * Euclidean space.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

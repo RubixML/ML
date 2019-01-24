@@ -274,9 +274,7 @@ abstract class CART implements Tree
         $nodes = [];
 
         while ($stack) {
-            $current = array_pop($stack);
-
-            $nodes[] = $current;
+            $nodes[] = $current = array_pop($stack);
 
             if ($current instanceof BinaryNode) {
                 foreach ($current->children() as $child) {

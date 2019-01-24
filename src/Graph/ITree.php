@@ -8,7 +8,7 @@ use Rubix\ML\Graph\Nodes\Isolator;
 use InvalidArgumentException;
 
 /**
- * I Tree
+ * I-Tree
  *
  * The base Isloation Tree implementation with completely random splitting.
  *
@@ -52,12 +52,12 @@ class ITree implements Tree
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
     {
         if ($maxDepth < 1) {
-            throw new InvalidArgumentException("A tree cannot have a depth"
+            throw new InvalidArgumentException('A tree cannot have a depth'
                 . " less than 1, $maxDepth given.");
         }
 
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException("At least one sample is required"
+            throw new InvalidArgumentException('At least one sample is required'
                 . " to create a leaf, $maxLeafSize given.");
         }
 
@@ -86,7 +86,7 @@ class ITree implements Tree
     {
         $depth = 1;
 
-        $this->root = $this->findBestSplit($dataset);
+        $this->root = $this->chooseRandomSplit($dataset);
 
         $stack = [[$this->root, $depth]];
 
@@ -105,7 +105,7 @@ class ITree implements Tree
             }
     
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left);
+                $node = $this->chooseRandomSplit($left);
     
                 $current->attachLeft($node);
     
@@ -115,7 +115,7 @@ class ITree implements Tree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right);
+                $node = $this->chooseRandomSplit($right);
     
                 $current->attachRight($node);
     
@@ -173,7 +173,7 @@ class ITree implements Tree
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return \Rubix\ML\Graph\Nodes\Isolator
      */
-    protected function findBestSplit(Dataset $dataset) : Isolator
+    protected function chooseRandomSplit(Dataset $dataset) : Isolator
     {
         $column = rand(0, $dataset->numColumns() - 1);
 

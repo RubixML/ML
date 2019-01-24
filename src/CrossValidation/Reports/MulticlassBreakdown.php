@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\CrossValidation\Reports;
 
+use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
 /**
@@ -43,6 +44,19 @@ class MulticlassBreakdown implements Report
         }
 
         $this->classes = $classes;
+    }
+
+    /**
+     * The estimator types that this report is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            Estimator::CLASSIFIER,
+            Estimator::DETECTOR,
+        ];
     }
 
     /**
