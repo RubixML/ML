@@ -76,7 +76,7 @@ class GaussianRandomProjector implements Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
+        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataFrame::CONTINUOUS) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }

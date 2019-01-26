@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -111,6 +112,16 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
@@ -136,10 +147,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->classes = array_unique(array_merge($this->classes, $dataset->possibleOutcomes()));
         $this->samples = array_merge($this->samples, $dataset->samples());
@@ -151,18 +159,16 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->classes)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -195,14 +201,11 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->classes)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

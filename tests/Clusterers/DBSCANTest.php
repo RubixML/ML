@@ -3,13 +3,14 @@
 namespace Rubix\ML\Tests\Clusterers;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Clusterers\DBSCAN;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class DBSCANTest extends TestCase
 {
@@ -46,7 +47,7 @@ class DBSCANTest extends TestCase
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
     }
 
-    public function test_train_predict()
+    public function test_predict()
     {
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -55,5 +56,12 @@ class DBSCANTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_predict_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([['bad']]));
     }
 }

@@ -64,6 +64,11 @@ class ModelOrchestraTest extends TestCase
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
+    public function test_compatibility()
+    {
+        $this->assertCount(1, $this->estimator->compatibility());
+    }
+
     public function test_train_predict()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

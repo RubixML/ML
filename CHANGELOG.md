@@ -2,6 +2,8 @@
     - Pipeline and Persistent Model are now Probabilistic
     - Added stack method to dataset API
     - Changed merge method on dataset to append and prepend
+    - Implemented specifications
+    - Added dataset compatibility for estimators
     - Added compatibility method to validation metrics
     - Added estimator compatibility to reports
 

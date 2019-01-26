@@ -11,6 +11,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
 /**
@@ -218,6 +219,18 @@ class TSNE implements Estimator, Verbose
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Return the magnitudes of the gradient at each epoch from the last
      * embedding.
      *
@@ -237,10 +250,7 @@ class TSNE implements Estimator, Verbose
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Embedder initialized w/ '
             . Params::stringify([

@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -177,6 +178,16 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->base->compatibility();
+    }
+
+    /**
      * Return the weights associated with each training sample.
      *
      * @return array
@@ -221,6 +232,8 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
@@ -343,6 +356,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     protected function score(Dataset $dataset) : array

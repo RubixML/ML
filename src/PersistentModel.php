@@ -71,6 +71,16 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->base->compatibility();
+    }
+
+    /**
      * Return the base estimator instance.
      *
      * @return \Rubix\ML\Estimator

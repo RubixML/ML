@@ -97,6 +97,13 @@ class MLPRegressorTest extends TestCase
         $this->estimator->train(Unlabeled::quick());
     }
 
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
+    }
+
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);

@@ -13,6 +13,7 @@ use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
+use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionMethod;
@@ -156,11 +157,7 @@ class GridSearch implements Learner, Persistable, Verbose
         }
 
         if (isset($metric)) {
-            if (!in_array($proxy->type(), $metric->compatibility())) {
-                throw new InvalidArgumentException(Params::shortName($metric)
-                    . ' is not compatible with '
-                    . self::TYPES[$proxy->type()] . 's.');
-            }
+            EstimatorIsCompatibleWithMetric::check($proxy, $metric);
         } else {
             switch ($proxy->type()) {
                 case self::CLASSIFIER:
@@ -205,6 +202,16 @@ class GridSearch implements Learner, Persistable, Verbose
     public function type() : int
     {
         return $this->estimator->type();
+    }
+
+    /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->estimator->compatibility();
     }
 
     /**

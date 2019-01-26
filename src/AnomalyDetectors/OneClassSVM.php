@@ -8,9 +8,9 @@ use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Kernels\SVM\Kernel;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
-use svmmodel;
 use svm;
 
 /**
@@ -108,6 +108,18 @@ class OneClassSVM implements Learner, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -116,10 +128,7 @@ class OneClassSVM implements Learner, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->model = $this->svm->train($dataset->samples());
     }
@@ -134,14 +143,11 @@ class OneClassSVM implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
-        }
-
         if (is_null($this->model)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

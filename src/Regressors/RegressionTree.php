@@ -13,6 +13,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -94,6 +95,19 @@ class RegressionTree extends CART implements Learner, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CATEGORICAL,
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
@@ -107,6 +121,8 @@ class RegressionTree extends CART implements Learner, Persistable
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $k = $dataset->numColumns();
 
@@ -130,6 +146,8 @@ class RegressionTree extends CART implements Learner, Persistable
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

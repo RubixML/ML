@@ -7,7 +7,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -113,6 +115,19 @@ class IsolationForest implements Learner, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CATEGORICAL,
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
@@ -122,6 +137,8 @@ class IsolationForest implements Learner, Persistable
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
         $n = $dataset->numRows();
         
         $maxDepth = (int) ceil(log(max($n, 2), 2));
@@ -158,6 +175,7 @@ class IsolationForest implements Learner, Persistable
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -165,6 +183,8 @@ class IsolationForest implements Learner, Persistable
         if (is_null($this->offset)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

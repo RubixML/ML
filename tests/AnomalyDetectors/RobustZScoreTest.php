@@ -12,6 +12,7 @@ use Rubix\ML\AnomalyDetectors\RobustZScore;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 
 class RobustZScoreTest extends TestCase
@@ -64,6 +65,13 @@ class RobustZScoreTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
     public function test_predict_untrained()

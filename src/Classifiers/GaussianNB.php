@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -133,6 +134,18 @@ class GaussianNB implements Online, Probabilistic, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Return the class prior probabilities.
      *
      * @return float[]
@@ -187,10 +200,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $classes = $dataset->possibleOutcomes();
 
@@ -236,20 +246,18 @@ class GaussianNB implements Online, Probabilistic, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
+        if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
+            $this->train($dataset);
+
+            return;
+        }
+
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This Estimator requires a'
                 . ' Labeled training set.');
         }
 
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
-        if (empty($this->weights) or empty($this->means) or empty($this->variances)) {
-            $this->train($dataset);
-            return;
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
             $means = $this->means[$class];
@@ -303,14 +311,11 @@ class GaussianNB implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -333,14 +338,11 @@ class GaussianNB implements Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

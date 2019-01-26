@@ -13,6 +13,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 
 class KMeansTest extends TestCase
@@ -73,10 +74,17 @@ class KMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
+    }
+
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick());
+        $this->estimator->predict(Unlabeled::quick([[1.0]]));
     }
 }

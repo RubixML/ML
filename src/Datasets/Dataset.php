@@ -60,19 +60,18 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     public function types() : array;
 
     /**
-     * Return the number of columns match a specific data type.
-     * 
-     * @param  int  $type
-     * @return int
-     */
-    public function typeCount(int $type) : int;
-
-        /**
-     * Return the number of feature columns for each data type.
+     * Return the unique data types.
      * 
      * @return int[]
      */
-    public function typeCounts() : array;
+    public function uniqueTypes() : array;
+
+    /**
+     * Does the dataset consist of data of a single type?
+     * 
+     * @return bool
+     */
+    public function homogeneous() : bool;
 
     /**
      * Get the datatype for a feature column given a column index.

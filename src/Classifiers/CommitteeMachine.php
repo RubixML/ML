@@ -44,6 +44,13 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     protected $influences;
 
     /**
+     * The data types that the committee is compatible with.
+     * 
+     * @var int[]
+     */
+    protected $compatibility;
+
+    /**
      * The unique class labels.
      *
      * @var array
@@ -60,9 +67,9 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function __construct(array $experts, ?array $influences = null)
     {
-        $n = count($experts);
+        $k = count($experts);
 
-        if ($n < 1) {
+        if ($k < 1) {
             throw new InvalidArgumentException('Ensemble must contain at least'
                 . ' 1 estimator, 0 given.');
         }
@@ -85,9 +92,9 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
         }
 
         if (is_array($influences)) {
-            if (count($influences) !== $n) {
+            if (count($influences) !== $k) {
                 throw new InvalidArgumentException('The number of influence'
-                    . " values must equal the number of experts, $n needed"
+                    . " values must equal the number of experts, $k needed"
                     . ' but ' . count($influences) . 'given.');
             }
 
@@ -102,11 +109,22 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
                 $influence /= $total;
             }
         } else {
-            $influences = array_fill(0, $n, 1 / $n);
+            $influences = array_fill(0, $k, 1 / $k);
+        }
+
+        $compatibility = array_intersect(...array_map(function ($estimator) {
+            return $estimator->compatibility();
+        }, $experts));
+
+        if (count($compatibility) < 1) {
+            throw new InvalidArgumentException('Committee must only'
+                . ' contain estimators that share at least 1 data type'
+                . ' they are compatible with.');
         }
 
         $this->experts = $experts;
         $this->influences = $influences;
+        $this->compatibility = $compatibility;
     }
 
     /**
@@ -117,6 +135,16 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     public function type() : int
     {
         return self::CLASSIFIER;
+    }
+
+    /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->compatibility;
     }
 
     /**

@@ -62,6 +62,13 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     protected $ratio;
 
     /**
+     * The data types that the orchestra is compatible with.
+     * 
+     * @var int[]
+     */
+    protected $compatibility;
+
+    /**
      * @param  array  $orchestra
      * @param  \Rubix\ML\Learner  $conductor
      * @param  float  $ratio
@@ -85,6 +92,16 @@ class ModelOrchestra implements Learner, Persistable, Verbose
             }
         }
 
+        $compatibility = array_intersect(...array_map(function ($estimator) {
+            return $estimator->compatibility();
+        }, $orchestra));
+
+        if (count($compatibility) < 1) {
+            throw new InvalidArgumentException('Orchestra must only'
+                . ' contain estimators that share at least 1 data type'
+                . ' they are compatible with.');
+        }
+
         if ($conductor->type() !== reset($orchestra)->type()) {
             throw new InvalidArgumentException('The conductor must be the same'
                 . ' type as the rest of the orchestra, '
@@ -99,6 +116,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
         $this->orchestra = $orchestra;
         $this->conductor = $conductor;
         $this->ratio = $ratio;
+        $this->compatibility = $compatibility;
     }
 
     /**
@@ -109,6 +127,16 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     public function type() : int
     {
         return $this->conductor->type();
+    }
+
+    /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->compatibility;
     }
 
     /**

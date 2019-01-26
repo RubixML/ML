@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -95,6 +96,18 @@ class RobustZScore implements Learner, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Return the array of computed feature column medians.
      *
      * @return array|null
@@ -124,10 +137,7 @@ class RobustZScore implements Learner, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->medians = $this->mads = [];
 
@@ -150,14 +160,11 @@ class RobustZScore implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->medians) or empty($this->mads)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $p = $dataset->numColumns();
 

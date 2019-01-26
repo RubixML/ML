@@ -70,15 +70,9 @@ class DataFrameTest extends TestCase
         $this->assertEquals($outcome, $this->dataframe->types());
     }
 
-    public function test_column_type_counts()
+    public function test_homogeneous()
     {
-        $outcome = [
-            DataFrame::CATEGORICAL => 3,
-            DataFrame::CONTINUOUS => 0,
-            DataFrame::RESOURCE => 0,
-        ];
-
-        $this->assertEquals($outcome, $this->dataframe->typeCounts());
+        $this->assertTrue($this->dataframe->homogeneous());
     }
 
     public function test_column_type()

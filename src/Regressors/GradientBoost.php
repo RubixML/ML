@@ -11,6 +11,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -188,6 +189,16 @@ class GradientBoost implements Learner, Verbose, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return array_values(array_intersect($this->base->compatibility(), $this->booster->compatibility()));
+    }
+
+    /**
      * Return the average cost at every epoch.
      *
      * @return array
@@ -210,6 +221,8 @@ class GradientBoost implements Learner, Verbose, Persistable
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
@@ -299,6 +312,8 @@ class GradientBoost implements Learner, Verbose, Persistable
      * Make a prediction from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -306,6 +321,8 @@ class GradientBoost implements Learner, Verbose, Persistable
         if (empty($this->ensemble)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = $this->base->predict($dataset);
 

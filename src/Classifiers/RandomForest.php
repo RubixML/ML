@@ -117,6 +117,16 @@ class RandomForest implements Learner, Probabilistic, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->base->compatibility();
+    }
+
+    /**
      * Return the feature importances calculated during training keyed by
      * feature column.
      * 

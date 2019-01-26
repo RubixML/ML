@@ -130,10 +130,10 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return an array of feature column datatypes autodectected using the first
+     * Return an array of feature column data types autodectected using the first
      * sample in the dataframe.
      *
-     * @return array
+     * @return int[]
      */
     public function types() : array
     {
@@ -147,32 +147,23 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Return the number of columns match a specific data type.
-     * 
-     * @param  int  $type
-     * @return int
-     */
-    public function typeCount(int $type) : int
-    {
-        $counts = $this->typeCounts();
-
-        return $counts[$type] ?? 0;
-    }
-
-    /**
-     * Return the number of feature columns for each data type.
+     * Return the unique data types.
      * 
      * @return int[]
      */
-    public function typeCounts() : array
+    public function uniqueTypes() : array
     {
-        $counts = [
-            self::CATEGORICAL => 0,
-            self::CONTINUOUS => 0,
-            self::RESOURCE => 0,
-        ];
+        return array_unique($this->types());
+    }
 
-        return array_replace($counts, array_count_values($this->types()));
+    /**
+     * Does the dataframe consist of data of a single type?
+     * 
+     * @return bool
+     */
+    public function homogeneous() : bool
+    {
+        return count($this->uniqueTypes()) === 1;
     }
 
     /**
@@ -180,16 +171,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param  int  $index
      * @throws \InvalidArgumentException
-     * @return int|null
+     * @throws \RuntimeException
+     * @return int
      */
-    public function columnType(int $index) : ?int
+    public function columnType(int $index) : int
     {
-        if (!isset($this->samples[0])) {
-            return null;
+        if ($this->empty()) {
+            throw new RuntimeException('Cannot determine data type'
+                . ' of an empty dataframe.');
         }
 
         if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException("Column $index does not exist.");
+            throw new InvalidArgumentException("Column $index does not"
+             . 'exist.');
         }
 
         $feature = $this->samples[0][$index];
@@ -205,7 +199,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 return self::RESOURCE;
 
             default:
-                return null;
+                throw new RuntimeException('Data type could not be '
+                    . ' determined.');
         }
     }
 

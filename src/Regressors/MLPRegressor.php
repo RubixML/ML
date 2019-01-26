@@ -22,6 +22,8 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
+use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -193,10 +195,7 @@ class MLPRegressor implements Online, Verbose, Persistable
         }
 
         if (isset($metric)) {
-            if (!in_array(self::REGRESSOR, $metric->compatibility())) {
-                throw new InvalidArgumentException(Params::shortName($metric)
-                    . ' is not compatible with regressors.');
-            }
+            EstimatorIsCompatibleWithMetric::check($this, $metric);
         } else {
             $metric = new MeanSquaredError();
         }
@@ -234,6 +233,18 @@ class MLPRegressor implements Online, Verbose, Persistable
     public function type() : int
     {
         return self::REGRESSOR;
+    }
+
+    /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
     }
 
     /**
@@ -301,20 +312,18 @@ class MLPRegressor implements Online, Verbose, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
+        if (is_null($this->network)) {
+            $this->train($dataset);
+
+            return;
+        }
+
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
-
-        if (is_null($this->network)) {
-            $this->train($dataset);
-            return;
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
@@ -413,14 +422,11 @@ class MLPRegressor implements Online, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
-        }
-
         if (is_null($this->network)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $samples = Matrix::quick($dataset->samples())->transpose();
 

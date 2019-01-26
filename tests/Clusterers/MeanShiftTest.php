@@ -15,6 +15,7 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 use RuntimeException;
 
 class MeanShiftTest extends TestCase
@@ -71,6 +72,13 @@ class MeanShiftTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
     public function test_predict_untrained()

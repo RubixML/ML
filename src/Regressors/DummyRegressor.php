@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use InvalidArgumentException;
@@ -51,6 +52,20 @@ class DummyRegressor implements Learner, Persistable
     public function type() : int
     {
         return self::REGRESSOR;
+    }
+
+    /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CATEGORICAL,
+            DataFrame::CONTINUOUS,
+            DataFrame::RESOURCE,
+        ];
     }
 
     /**

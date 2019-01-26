@@ -13,6 +13,7 @@ use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -152,6 +153,16 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * Return the computed cluster centroids of the training data.
      *
      * @return array
@@ -183,10 +194,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
@@ -269,14 +277,11 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'calculateMembership'], $dataset->samples());
     }

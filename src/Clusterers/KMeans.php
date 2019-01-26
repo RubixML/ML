@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -98,6 +99,16 @@ class KMeans implements Online, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * Return the computed cluster centroids of the training data.
      *
      * @return array
@@ -116,10 +127,7 @@ class KMeans implements Online, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->centroids = $this->initializeCentroids($dataset);
 
@@ -135,15 +143,13 @@ class KMeans implements Online, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->centroids)) {
             $this->train($dataset);
+
             return;
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $labels = array_fill(0, $dataset->numRows(), -1);
         $sizes = array_fill(0, $this->k, 0);
@@ -185,14 +191,11 @@ class KMeans implements Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
-
         if (empty($this->centroids)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'assignCluster'], $dataset->samples());
     }

@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -128,6 +129,16 @@ class LocalOutlierFactor implements Online, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -148,10 +159,7 @@ class LocalOutlierFactor implements Online, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->samples = array_merge($this->samples, $dataset->samples());
 
@@ -182,11 +190,14 @@ class LocalOutlierFactor implements Online, Persistable
      * Make predictions from a dataset.
      * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
         if (is_null($this->offset)) {
             throw new RuntimeException('Estimator has not been trained.');
         }

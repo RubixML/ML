@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -104,6 +105,16 @@ class KNNRegressor implements Online, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -135,10 +146,7 @@ class KNNRegressor implements Online, Persistable
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->samples = array_merge($this->samples, $dataset->samples());
         $this->labels = array_merge($this->labels, $dataset->labels());
@@ -154,14 +162,11 @@ class KNNRegressor implements Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

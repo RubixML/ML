@@ -20,6 +20,7 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -167,6 +168,18 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Return the average cost at every epoch.
      *
      * @return array
@@ -222,20 +235,18 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
+        if (is_null($this->network)) {
+            $this->train($dataset);
+            
+            return;
+        }
+
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
-
-        if (is_null($this->network)) {
-            $this->train($dataset);
-            return;
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([

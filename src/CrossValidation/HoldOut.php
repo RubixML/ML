@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
 /** 
@@ -64,11 +65,7 @@ class HoldOut implements Validator
      */
     public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
-        if (!in_array($estimator->type(), $metric->compatibility())) {
-            throw new InvalidArgumentException(Params::shortName($metric)
-                . ' is not compatible with '
-                . Estimator::TYPES[$estimator->type()] . 's.');
-        }
+        EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
         list($testing, $training) = $this->stratify
             ? $dataset->stratifiedSplit($this->ratio)

@@ -68,10 +68,17 @@ class OneClassSVMTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
+    }
+
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick());
+        $this->estimator->predict(Unlabeled::quick([[1.5]]));
     }
 }

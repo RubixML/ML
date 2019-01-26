@@ -5,12 +5,13 @@ namespace Rubix\ML\Tests\Manifold;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Manifold\TSNE;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class TSNETest extends TestCase
 {
@@ -40,7 +41,7 @@ class TSNETest extends TestCase
         $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    public function test_embed()
+    public function test_predict()
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -49,5 +50,12 @@ class TSNETest extends TestCase
         $this->assertCount(self::TRAIN_SIZE, $embedding);
 
         // file_put_contents('test.json', json_encode($embedding, JSON_PRETTY_PRINT));
+    }
+
+    public function test_predict_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->predict(Unlabeled::quick([['bad']]));
     }
 }

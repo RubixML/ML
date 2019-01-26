@@ -14,6 +14,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Functions\Argmax;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -100,6 +101,19 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CATEGORICAL,
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Train the binary tree by learning the most optimal splits in the
      * training set.
      *
@@ -113,6 +127,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $k = $dataset->numColumns();
 
@@ -130,6 +146,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -137,6 +154,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -156,6 +175,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function proba(Dataset $dataset) : array
@@ -163,6 +183,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $template = array_fill_keys($this->classes, 0.);
 

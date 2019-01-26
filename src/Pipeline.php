@@ -94,6 +94,16 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->estimator->compatibility();
+    }
+
+    /**
      * Return the base estimator instance.
      *
      * @return \Rubix\ML\Estimator

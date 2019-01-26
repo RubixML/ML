@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -84,6 +85,16 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -95,10 +106,7 @@ class KDNRegressor extends KDTree implements Learner, Persistable
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->grow($dataset);
     }
@@ -113,14 +121,11 @@ class KDNRegressor extends KDTree implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trainied.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 

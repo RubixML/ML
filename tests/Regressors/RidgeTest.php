@@ -63,11 +63,16 @@ class RidgeTest extends TestCase
 
     public function test_train_with_unlabeled()
     {
-        $dataset = new Unlabeled([['bad']]);
-
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train($dataset);
+        $this->estimator->train(Unlabeled::quick([['bad']]));
+    }
+
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
     public function test_predict_untrained()

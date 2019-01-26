@@ -14,6 +14,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Functions\LogSumExp;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -140,6 +141,18 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CONTINUOUS,
+        ];
+    }
+
+    /**
      * Return the cluster prior probabilities.
      *
      * @return float[]
@@ -196,10 +209,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      */
     public function train(Dataset $dataset) : void
     {
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) $this->logger->info('Learner initialized w/ '
             . Params::stringify([
@@ -298,18 +308,17 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      * Make predictions from a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->priors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -332,14 +341,11 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->priors)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

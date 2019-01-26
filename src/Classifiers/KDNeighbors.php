@@ -11,6 +11,8 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Other\Specifications\DatasetIsLabeled;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -67,7 +69,8 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null, bool $weighted = true)
+    public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null,
+                                bool $weighted = true)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -96,6 +99,18 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return $this->kernel->compatibility();
+    }
+
+    /**
+     * Train the learner with a dataset.
+     * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -103,14 +118,11 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
+            throw new InvalidArgumentException('Estimator requires a'
                 . ' labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CONTINUOUS) !== $dataset->numColumns()) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with continuous features.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $this->classes = $dataset->possibleOutcomes();
 
@@ -122,18 +134,16 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if (empty($this->classes)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -166,14 +176,11 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-                . ' continuous features.');
-        }
-
         if ($this->bare()) {
             throw new RuntimeException('Estimator has not been trainied.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

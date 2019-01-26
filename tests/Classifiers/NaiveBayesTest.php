@@ -88,6 +88,13 @@ class NaiveBayesTest extends TestCase
         $this->estimator->train(Unlabeled::quick());
     }
 
+    public function test_train_incompatible()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Unlabeled::quick([[1.0]]));
+    }
+
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);

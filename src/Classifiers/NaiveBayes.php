@@ -143,6 +143,18 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     }
 
     /**
+     * Return the data types that this estimator is compatible with.
+     * 
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataFrame::CATEGORICAL,
+        ];
+    }
+
+    /**
      * Return the class prior probabilities.
      *
      * @return array
@@ -212,7 +224,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
                 . ' Labeled training set.');
         }
 
-        if ($dataset->typeCount(DataFrame::CATEGORICAL) !== $dataset->numColumns()) {
+        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataFrame::CATEGORICAL) {
             throw new InvalidArgumentException('This estimator only works'
                 . ' with categorical features.');
         }
