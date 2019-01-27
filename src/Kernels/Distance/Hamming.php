@@ -27,7 +27,6 @@ class Hamming implements Distance
     {
         return [
             DataFrame::CATEGORICAL,
-            DataFrame::CONTINUOUS,
         ];
     }
 

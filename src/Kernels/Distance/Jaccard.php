@@ -7,7 +7,7 @@ use Rubix\ML\Datasets\DataFrame;
 /**
  * Jaccard
  *
- * The generalized Jaccard distance is a measure of similarity that one
+ * The *generalized* Jaccard distance is a measure of similarity that one
  * sample has to another with a range from 0 to 1. The higher the percentage,
  * the more dissimilar they are.
  *

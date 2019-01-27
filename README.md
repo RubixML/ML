@@ -842,7 +842,8 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 
 > **Note**: Bootstrap Aggregator does not work with clusterers or manifold learners.
 
-##### Learner | Persistable
+##### Interfaces: Learner | Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -867,7 +868,8 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 > **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
 
-##### Learner | Persistable | Verbose
+##### Interfaces: Learner, Persistable, Verbose
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -921,7 +923,8 @@ A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of est
 
 > **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
 
-##### Supervised | Learner | Probabilistic | Persistable | Verbose
+##### Interfaces: Learner, Probabilistic, Persistable, Verbose
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -959,7 +962,8 @@ $estimator = new ModelOrchestra([
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
 
-##### Learner | Probabilistic | Verbose
+##### Interfaces: Learner, Probabilistic, Verbose
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1001,7 +1005,8 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 
 > **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
 
-##### Online | Persistable | Verbose
+##### Interfaces: Learner, Online, Persistable, Verbose
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1130,7 +1135,8 @@ Anomaly detection is the process of identifying samples that do not conform to a
 ### Isolation Forest
 An ensemble detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Unsupervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1152,7 +1158,8 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
-##### Unsupervised | Learner | Online | Persistable
+##### Interfaces: Learner, Online, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1177,7 +1184,8 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Unsupervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1202,7 +1210,8 @@ $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 ### Robust Z Score
 A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
 
-##### Unsupervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1238,7 +1247,8 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Supervised | Learner | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Probabilistic, Verbose, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1277,9 +1287,8 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-2);
 ### Classification Tree
 A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
 
-> **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
-
-##### Supervised | Learner | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Probabilistic, Verbose, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1305,7 +1314,8 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
 
-##### Supervised | Learner | Ensemble | Probabilistic | Persistable
+##### Interfaces: Learner, Ensemble, Probabilistic, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1341,7 +1351,8 @@ $estimator = new CommitteeMachine([
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
-##### Supervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Categorical, Continuous, Resource
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1362,9 +1373,9 @@ $estimator = new DummyClassifier(new PopularityContest());
 ### Extra Tree Classifier
 An *Extremely Randomized* Classification Tree - these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
-> **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-##### Supervised | Learner | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Probabilistic, Verbose, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1391,7 +1402,8 @@ $estimator = new ExtraTreeClassifier(50, 3, 0.10, 4, 1e-3);
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1428,7 +1440,8 @@ $estimator = new GaussianNB([
 ### K-d Neighbors
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
-##### Supervised | Learner | Probabilistic | Persistable
+##### Interfaces: Learner, Probabilistic, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1454,7 +1467,8 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#kd-neighbors).
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1477,7 +1491,8 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 ### Logistic Regression
 A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes.
 
-##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1515,7 +1530,8 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1575,7 +1591,8 @@ $estimator = new MultiLayerPerceptron([
 ### Naive Bayes
 Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated).
 
-##### Supervised | Learner | Online | Probabilistic | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Persistable
+##### Compatibility: Categorical
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1608,7 +1625,8 @@ $estimator = new NaiveBayes(2.5, [
 ### Random Forest
 Ensemble classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap* set) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
 
-##### Supervised | Learner | Probabilistic | Persistable
+##### Interfaces: Learner, Probabilistic, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1631,7 +1649,8 @@ $estimator = new RandomForest(ClassificationTree(10), 400, 0.1);
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a Softmax output layer.
 
-##### Supervised | Learner | Online | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
+##### Compatibility: Continous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1668,7 +1687,8 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Supervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Continous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1699,7 +1719,8 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
-##### Unsupervised
+##### Interfaces: None
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1722,7 +1743,8 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 ### Fuzzy C Means
 Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
-##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Probabilistic, Verbose, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1756,7 +1778,8 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3);
 ### Gaussian Mixture
 A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow the centers (*means*) *and* the radii (*variances*) to be learned as well.
 
-##### Unsupervised | Learner | Probabilistic | Verbose | Persistable
+##### Interfaces: Learner, Probabilistic, Verbose, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1793,7 +1816,8 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
-##### Unsupervised | Learner | Online | Persistable
+##### Interfaces: Learner, Online, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1820,7 +1844,8 @@ $estimator = new KMeans(3, new Euclidean());
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
-##### Unsupervised | Learner | Verbose | Persistable
+##### Interfaces: Learner, Verbose, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1858,7 +1883,8 @@ Manifold learning is a type of non-linear dimensionality reduction used primaril
 ### t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
-##### Unsupervised | Verbose
+##### Interfaces: Verbose
+##### Compatibility: Continous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1894,7 +1920,8 @@ Regressors are used to predict continuous real-valued outcomes.
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
 
-##### Supervised | Learner | Online | Verbose | Persistable
+##### Interfaces: Learner, Online, Verbose, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1930,7 +1957,8 @@ $estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5));
 ### Dummy Regressor
 Regressor that guesses output values based on a user-defined [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
-##### Supervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Categorical, Continuous, Resource
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1953,7 +1981,8 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-##### Supervised | Learner | Verbose | Persistable
+##### Interfaces: Learner, Verbose, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1979,7 +2008,8 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 
 > **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
-##### Supervised | Learner | Ensemble | Verbose | Persistable
+##### Interfaces: Learner, Ensemble, Verbose, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2012,7 +2042,8 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3,
 ### K-d Neighbors Regressor
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
-##### Supervised  | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2038,7 +2069,8 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
-##### Supervised | Learner | Online | Persistable
+##### Interfaces: Learner, Online, Persistable
+##### Compatibility: Variable
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2063,7 +2095,8 @@ A multi layer feedforward [Neural Network](#neural-network) with a continuous ou
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-##### Supervised | Learner | Online | Verbose | Persistable
+##### Interfaces: Learner, Online, Verbose, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2120,7 +2153,8 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-##### Supervised | Learner | Verbose | Persistable
+##### Interfaces: Learner, Verbose, Persistable
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2144,7 +2178,8 @@ $estimator = new RegressionTree(30, 2, 35., null, 1e-4);
 ### Ridge
 L2 penalized least squares linear regression solved using closed-form equation.
 
-##### Supervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2175,7 +2210,8 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Supervised | Learner | Persistable
+##### Interfaces: Learner, Persistable
+##### Compatibility: Continous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3539,6 +3575,8 @@ Distance functions are a type of kernel that measure the distance between two co
 ### Canberra
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
 
+##### Compatibility: Continuous
+
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3551,6 +3589,8 @@ $kernel = new Canberra();
 
 ### Cosine
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
+
+##### Compatibility: Continuous
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3578,6 +3618,8 @@ $kernel = new Diagonal();
 ### Euclidean
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
+##### Compatibility: Continuous
+
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3591,6 +3633,8 @@ $kernel = new Euclidean();
 ### Hamming
 The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
 
+##### Compatibility: Categorical
+
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3602,7 +3646,9 @@ $kernel = new Hamming();
 ```
 
 ### Jaccard
-The generalized Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
+The *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
+
+##### Compatibility: Continuous
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3617,6 +3663,8 @@ $kernel = new Jaccard();
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
+##### Compatibility: Continuous
+
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3629,6 +3677,8 @@ $kernel = new Manhattan();
 
 ### Minkowski
 The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the *lambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
+
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3852,7 +3902,7 @@ float(-0.99846070553066)
 ### Accuracy
 Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
-##### Classification | Anomaly Detection
+##### Compatibility: Classification, Anomaly Detection
 
 #### Example:
 ```php
@@ -3864,7 +3914,7 @@ $metric = new Accuracy();
 ### Completeness
 A ground truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
 
-##### Clustering
+##### Compatibility: Clustering
 
 #### Example:
 ```php
@@ -3876,7 +3926,7 @@ $metric = new Completeness();
 ### F1 Score
 A weighted average of precision and recall with equal relative contribution.
 
-##### Classification | Anomaly Detection
+##### Compatibility: Classification, Anomaly Detection
 
 #### Example:
 ```php
@@ -3888,7 +3938,7 @@ $metric = new F1Score();
 ### Homogeneity
 A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogenous* when the entire cluster is comprised of a single class of samples.
 
-##### Clustering
+##### Compatibility: Clustering
 
 #### Example:
 ```php
@@ -3900,7 +3950,7 @@ $metric = new Homogeneity();
 ### Informedness
 Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
 
-##### Classification | Anomaly Detection
+##### Compatibility: Classification, Anomaly Detection
 
 #### Example:
 ```php
@@ -3912,7 +3962,7 @@ $metric = new Informedness();
 ### MCC
 Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
 
-##### Classification | Anomaly Detection
+##### Compatibility: Classification, Anomaly Detection
 
 #### Example:
 ```php
@@ -3924,7 +3974,7 @@ $metric = new MCC();
 ### Mean Absolute Error
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
-##### Regression
+##### Compatibility: Regression
 
 #### Example:
 ```php
@@ -3936,7 +3986,7 @@ $metric = new MeanAbsoluteError();
 ### Mean Squared Error
 A regression metric that punishes bad predictions the worse they get by averaging the *squared* error  over the testing set.
 
-##### Regression
+##### Compatibility: Regression
 
 #### Example:
 ```php
@@ -3948,7 +3998,7 @@ $metric = new MeanSquaredError();
 ### Median Absolute Error
 Median Absolute Error (MAE) is a robust measure of the error that ignores highly erroneous predictions.
 
-##### Regression
+##### Compatibility: Regression
 
 #### Example:
 ```php
@@ -3960,7 +4010,7 @@ $metric = new MedianAbsoluteError();
 ### RMS Error
 Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to measure the residuals of a regression problem.
 
-##### Regression
+##### Compatibility: Regression
 
 #### Example:
 ```php
@@ -3972,7 +4022,7 @@ $metric = new RMSError();
 ### R Squared
 The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
 
-##### Regression
+##### Compatibility: Regression
 
 #### Example:
 ```php
@@ -3984,7 +4034,7 @@ $metric = new RSquared();
 ### V Measure
 V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
 
-##### Clustering
+##### Compatibility: Clustering
 
 #### Example:
 ```php
@@ -4043,7 +4093,7 @@ $result = $report->generate($estimator, $testing);
 ### Confusion Matrix
 A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
 
-##### Classification
+##### Compatibility: Classification, Anomaly Detection
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4088,7 +4138,7 @@ var_dump($result);
 ### Contingency Table
 A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
 
-##### Clustering
+##### Compatibility: Clustering
 
 #### Parameters:
 This report does not have any parameters.
@@ -4132,7 +4182,7 @@ array(3) {
 ### Multiclass Breakdown
 A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
 
-##### Classification
+##### Compatibility: Classification, Anomaly Detection
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4182,7 +4232,7 @@ var_dump($result);
 ### Residual Analysis
 Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
 
-##### Regression
+##### Compatibility: Regression
 
 #### Parameters:
 This report does not have any parameters.

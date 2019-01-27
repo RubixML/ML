@@ -1,4 +1,5 @@
 /vendor
 composer.lock
 test.json
+.vscode
 .vs
