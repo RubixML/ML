@@ -188,6 +188,16 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->ensemble and $this->influences;
+    }
+
+    /**
      * Return the weights associated with each training sample.
      *
      * @return array
@@ -321,6 +331,11 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->ensemble) or empty($this->influences)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+        
         return array_map([Argmax::class, 'compute'], $this->score($dataset));
     }
 
@@ -328,10 +343,16 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function proba(Dataset $dataset) : array
     {
+        if (empty($this->ensemble) or empty($this->influences)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+
         $scores = $this->score($dataset);
 
         $probabilities = [];
@@ -361,10 +382,6 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      */
     protected function score(Dataset $dataset) : array
     {
-        if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
         $scores = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.));
 

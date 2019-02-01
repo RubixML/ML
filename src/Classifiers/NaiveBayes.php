@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,7 +29,7 @@ use RuntimeException;
  */
 class NaiveBayes implements Online, Probabilistic, Persistable
 {
-    const LOG_EPSILON = -8;
+    const LOG_EPSILON = -18.420680744;
 
     /**
      * The amount of additive (Laplace) smoothing to apply to the probabilities.
@@ -152,6 +153,18 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         return [
             DataFrame::CATEGORICAL,
         ];
+    }
+
+    /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->weights
+            and $this->counts
+            and $this->probs;
     }
 
     /**
@@ -292,14 +305,12 @@ class NaiveBayes implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' categorical features.');
-        }
+        if (empty($this->weights) or empty($this->probs)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
-        if (empty($this->probs)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];
 
@@ -322,14 +333,12 @@ class NaiveBayes implements Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CONTINUOUS, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' categorical features.');
-        }
+        if (empty($this->weights) or empty($this->probs)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
-        if (empty($this->probs)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $probabilities = [];
 

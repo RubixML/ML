@@ -95,6 +95,16 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->bare();
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void

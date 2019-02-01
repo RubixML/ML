@@ -269,9 +269,9 @@ abstract class CART implements Tree
      */
     public function dump() : array
     {
-        $stack = [$this->root];
-
         $nodes = [];
+
+        $stack = [$this->root];
 
         while ($stack) {
             $nodes[] = $current = array_pop($stack);

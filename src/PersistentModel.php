@@ -81,6 +81,16 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->base->trained();
+    }
+
+    /**
      * Return the base estimator instance.
      *
      * @return \Rubix\ML\Estimator
@@ -150,9 +160,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
      */
     public function prompt() : void
     {
-        $save = strtolower(readline('Save this model? (y|[n]): '));
-
-        if ($save === 'y') {
+        if (strtolower(readline('Save this model? (y|[n]): ')) === 'y') {
             $this->save();
         }
     }

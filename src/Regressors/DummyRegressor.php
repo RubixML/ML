@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Dummy Regressor
@@ -32,6 +33,13 @@ class DummyRegressor implements Learner, Persistable
     protected $strategy;
 
     /**
+     * Has the learner been trained?
+     * 
+     * @var bool
+     */
+    protected $trained;
+
+    /**
      * @param  \Rubix\ML\Other\Strategies\Continuous|null  $strategy
      * @return void
      */
@@ -42,6 +50,7 @@ class DummyRegressor implements Learner, Persistable
         }
 
         $this->strategy = $strategy;
+        $this->trained = false;
     }
 
     /**
@@ -69,6 +78,16 @@ class DummyRegressor implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->trained;
+    }
+
+    /**
      * Fit the training set to the given guessing strategy.
      *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
@@ -83,16 +102,24 @@ class DummyRegressor implements Learner, Persistable
         }
 
         $this->strategy->fit($dataset->labels());
+
+        $this->trained = true;
     }
 
     /**
      * Make a prediction of a given sample dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
     {
+        if (!$this->trained) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        }
+
         $n = $dataset->numRows();
 
         $predictions = [];

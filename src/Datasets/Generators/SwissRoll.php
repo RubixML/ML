@@ -103,7 +103,7 @@ class SwissRoll implements Generator
      * @param  int  $n
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n = 100) : Dataset
+    public function generate(int $n) : Dataset
     {
         $t = Vector::rand($n)->multiply(2)->add(1)
             ->multiply(1.5 * M_PI);

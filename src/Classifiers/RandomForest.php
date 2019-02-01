@@ -127,6 +127,16 @@ class RandomForest implements Learner, Probabilistic, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->forest);
+    }
+
+    /**
      * Return the feature importances calculated during training keyed by
      * feature column.
      * 
@@ -136,8 +146,8 @@ class RandomForest implements Learner, Probabilistic, Persistable
     public function featureImportances() : array
     {
         if (empty($this->forest)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            return [];
+        };
 
         $k = count($this->forest);
 
@@ -213,8 +223,9 @@ class RandomForest implements Learner, Probabilistic, Persistable
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->forest)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.));

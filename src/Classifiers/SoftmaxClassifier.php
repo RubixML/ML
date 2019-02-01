@@ -180,6 +180,16 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return isset($this->network);
+    }
+
+    /**
      * Return the average cost at every epoch.
      *
      * @return array
@@ -313,14 +323,12 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (in_array(DataFrame::CATEGORICAL, $dataset->types())) {
-            throw new InvalidArgumentException('This estimator only works with'
-            . ' continuous features.');
-        }
-
         if (is_null($this->network)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $samples = Matrix::quick($dataset->samples())->transpose();
 

@@ -19,7 +19,7 @@ use SplObjectStorage;
  *
  * A multi-dimensional binary search tree for fast nearest neighbor queries.
  * Each node maintains its own *bounding box* that is used to prune off leaf
- * nodes during a search.
+ * nodes during search.
  *
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
  * Associative Searching.
@@ -198,7 +198,6 @@ class KDTree implements Tree
         }
 
         $visited = new SplObjectStorage();
-        $stack = [];
 
         $visited->attach($neighborhood);
 
@@ -212,7 +211,7 @@ class KDTree implements Tree
 
         array_multisort($distances, $labels);
 
-        $stack[] = $neighborhood->parent();
+        $stack = [$neighborhood->parent()];
 
         while ($stack) {
             $current = array_pop($stack);

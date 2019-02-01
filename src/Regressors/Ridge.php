@@ -85,6 +85,16 @@ class Ridge implements Learner, Persistable
         ];
     }
 
+        /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->bias and $this->weights;
+    }
+
     /**
      * Return the weights of the model.
      * 

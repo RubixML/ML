@@ -6,6 +6,7 @@
     - Added dataset compatibility for estimators
     - Added compatibility method to validation metrics
     - Added estimator compatibility to reports
+    - Added trained method to learner API
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

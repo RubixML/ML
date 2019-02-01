@@ -46,7 +46,9 @@ class FilesystemTest extends TestCase
         $this->assertInstanceOf(DummyClassifier::class, $model);
         $this->assertInstanceOf(Persistable::class, $model);
 
-        $this->persister->flush();
+        foreach (glob("$this->path.*.old") as $filename) {
+            unlink($filename);
+        }
 
         unlink($this->path);
 

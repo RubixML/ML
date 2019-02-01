@@ -62,6 +62,13 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     protected $elastic;
 
     /**
+     * Whether or not the transformers have been fitted.
+     * 
+     * @var bool
+     */
+    protected $fitted;
+
+    /**
      * @param  array  $transformers
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  bool  $elastic
@@ -81,6 +88,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
         $this->transformers = $transformers;
         $this->estimator = $estimator;
         $this->elastic = $elastic;
+        $this->fitted = false;
     }
 
     /**
@@ -101,6 +109,18 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     public function compatibility() : array
     {
         return $this->estimator->compatibility();
+    }
+
+    /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return ($this->estimator instanceof Learner
+            and $this->estimator->trained() and $this->fitted)
+            or $this->fitted;
     }
 
     /**
@@ -127,6 +147,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
         if ($this->estimator instanceof Learner) {
             $this->estimator->train($dataset);
         }
+
+        $this->fitted = true;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\DataFrame;
@@ -28,7 +29,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Online, Persistable
+class LocalOutlierFactor implements Learner, Online, Persistable
 {
     const THRESHOLD = 1.5;
 
@@ -139,6 +140,16 @@ class LocalOutlierFactor implements Online, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->offset and $this->samples;
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -196,11 +207,12 @@ class LocalOutlierFactor implements Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        if (empty($this->samples)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+        
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
-
-        if (is_null($this->offset)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
 
         $predictions = [];
 

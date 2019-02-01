@@ -44,7 +44,7 @@ class RobustZScore implements Learner, Persistable
     /**
      * The threshold z score of a individual feature to consider the entire
      * sample an outlier.
-     *
+     * 
      * @var float
      */
     protected $threshold;
@@ -108,6 +108,16 @@ class RobustZScore implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->medians and $this->mads;
+    }
+
+    /**
      * Return the array of computed feature column medians.
      *
      * @return array|null
@@ -160,9 +170,10 @@ class RobustZScore implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->medians) or empty($this->mads)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        if (is_null($this->medians) or is_null($this->mads)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

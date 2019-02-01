@@ -199,6 +199,16 @@ class GradientBoost implements Learner, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->ensemble);
+    }
+
+    /**
      * Return the average cost at every epoch.
      *
      * @return array

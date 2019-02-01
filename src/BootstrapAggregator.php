@@ -108,6 +108,16 @@ class BootstrapAggregator implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->ensemble);
+    }
+
+    /**
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *

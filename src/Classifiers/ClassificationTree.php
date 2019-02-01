@@ -114,6 +114,16 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->bare();
+    }
+
+    /**
      * Train the binary tree by learning the most optimal splits in the
      * training set.
      *
@@ -152,8 +162,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     public function predict(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -181,8 +192,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     public function proba(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

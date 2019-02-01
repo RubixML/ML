@@ -54,12 +54,12 @@ class Filesystem implements Persister
     public function __construct(string $path, int $history = 2, ?Serializer $serializer = null)
     {
         if (!is_writable(dirname($path))) {
-            throw new InvalidArgumentException('Folder does not exist or is not'
-                . ' writable, check path and permissions.');
+            throw new InvalidArgumentException('Folder does not exist or'
+                . ' is not writable, check path and permissions.');
         }
 
         if ($history < 0) {
-            throw new InvalidArgumentException("The number of backups to keep"
+            throw new InvalidArgumentException('The number of backups'
                 . " cannot be less than 0, $history given.");
         }
 
@@ -85,9 +85,7 @@ class Filesystem implements Persister
         if ($this->history > 0 and is_file($this->path)) {
             $filename = $this->path . '.' . (string) time() . self::BACKUP_EXT;
 
-            $success = rename($this->path, $filename);
-
-            if (!$success) {
+            if (!rename($this->path, $filename)) {
                 throw new RuntimeException('Failed to save backup, check path'
                  . ' and permissions.');
             }
@@ -101,9 +99,9 @@ class Filesystem implements Persister
             if (count($backups) > $this->history) {
                 arsort($backups);
 
-                $old = array_slice(array_keys($backups), $this->history);
+                $remove = array_slice(array_keys($backups), $this->history);
 
-                foreach ($old as $filename) {
+                foreach ($remove as $filename) {
                     unlink($filename);
                 }
             }
@@ -111,9 +109,7 @@ class Filesystem implements Persister
 
         $data = $this->serializer->serialize($persistable);
 
-        $success = file_put_contents($this->path, $data, LOCK_EX);
-
-        if (!$success) {
+        if (!file_put_contents($this->path, $data, LOCK_EX)) {
             throw new RuntimeException('Failed to save model to the'
                 . ' filesystem, check path and permissions.');
         }
@@ -129,7 +125,7 @@ class Filesystem implements Persister
     {
         if (!is_file($this->path)) {
             throw new RuntimeException('File ' . basename($this->path)
-                . ' does not exist or is a folder, check the path'
+                . ' does not exist or is a folder, check path'
                 . ' and permissions.');
         }
             
@@ -142,17 +138,5 @@ class Filesystem implements Persister
         }
 
         return $persistable;
-    }
-
-    /**
-     * Remove all backups from storage.
-     * 
-     * @return void
-     */
-    public function flush() : void
-    {
-        foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
-            unlink($filename);
-        }
     }
 }

@@ -108,6 +108,16 @@ class RegressionTree extends CART implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->bare();
+    }
+
+    /**
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
@@ -209,11 +219,9 @@ class RegressionTree extends CART implements Learner, Persistable
      */
     protected function terminate(Labeled $dataset) : BinaryNode
     {
-        $n = $dataset->numRows();
-        
         list($mean, $variance) = Stats::meanVar($dataset->labels());
 
-        return new Average($mean, $variance, $n);
+        return new Average($mean, $variance, $dataset->numRows());
     }
 
     /**

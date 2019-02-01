@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Specifications\LearnerIsTrained;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -33,6 +34,13 @@ class DummyClassifier implements Learner, Persistable
     protected $strategy;
 
     /**
+     * Has the learner been trained?
+     * 
+     * @var bool
+     */
+    protected $trained;
+
+    /**
      * @param  \Rubix\ML\Other\Strategies\Categorical|null  $strategy
      * @return void
      */
@@ -43,6 +51,7 @@ class DummyClassifier implements Learner, Persistable
         }
 
         $this->strategy = $strategy;
+        $this->trained = false;
     }
 
     /**
@@ -53,6 +62,16 @@ class DummyClassifier implements Learner, Persistable
     public function type() : int
     {
         return self::CLASSIFIER;
+    }
+
+    /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->trained;
     }
 
     /**
@@ -84,6 +103,8 @@ class DummyClassifier implements Learner, Persistable
         }
 
         $this->strategy->fit($dataset->labels());
+
+        $this->trained = true;
     }
 
     /**
@@ -94,6 +115,11 @@ class DummyClassifier implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        if (!$this->trained) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+        
         $n = $dataset->numRows();
 
         $predictions = [];

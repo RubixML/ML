@@ -11,7 +11,7 @@ use RuntimeException;
 /**
  * Min Max Normalizer
  *
- * The Min Max Normalization scales the input features to a value between
+ * The *Min Max* Normalizer scales the input features to a value between
  * a user-specified range (default 0 to 1).
  *
  * @category    Machine Learning
@@ -129,6 +129,7 @@ class MinMaxNormalizer implements Elastic
     {
         if (is_null($this->minimums) or is_null($this->maximums)) {
             $this->fit($dataset);
+            
             return;
         }
 
@@ -141,7 +142,7 @@ class MinMaxNormalizer implements Elastic
             $max = max($max, $this->maximums[$column]);
 
             $scale = ($this->max - $this->min)
-                / ($max - $min) ?: self::EPSILON;
+                / (($max - $min) ?: self::EPSILON);
 
             $minHat = $this->min - $min * $scale;
 

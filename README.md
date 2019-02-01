@@ -1055,6 +1055,11 @@ To train an learner pass it a training dataset:
 public train(Dataset $training) : void
 ```
 
+Return whether or not the learner has been trained:
+```php
+public trained() : bool
+```
+
 #### Example:
 ```php
 $estimator->train($dataset);
@@ -2523,7 +2528,7 @@ $transformer = new MaxAbsoluteScaler();
 ```
 
 ### Min Max Normalizer
-The Min Max Normalization scales the input features to a value between a user-specified range (*default* 0 to 1).
+The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
 ##### Continuous | Stateful | Elastic
 
@@ -4269,14 +4274,14 @@ var_dump($result);
 ```
 
 ### Generators
-Dataset generators allow you to produce synthetic data of a user-specified shape, dimensionality, and cardinality. This is useful for augmenting a dataset with extra data or for testing and demonstration purposes.
+Dataset generators produce synthetic data of a user-specified shape, dimensionality, and cardinality. Synthetic data is useful for augmenting a dataset or for quick testing and demonstration purposes.
 
 To generate a Dataset object with **n** samples (*rows*):
 ```php
-public generate(int $n = 100) : Dataset
+public generate(int $n) : Dataset
 ```
 
-Return the dimensionality of the samples produced:
+Return the dimensionality of the samples produced by the generator:
 ```php
 public dimensions() : int
 ```
@@ -4323,13 +4328,14 @@ object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
 ### Agglomerate
 An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
 
-##### Labeled
+##### Data: Continuous
+##### Label: Categorical
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | generators | None | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
-| 2 | weights | 1 / n | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
+| 1 | generators | | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
+| 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
 
 #### Additional Methods:
 
@@ -4347,14 +4353,15 @@ $generator = new Agglomerate([
 	new HalfMoon([-3, 5], 1.5, 90.0, 0.1),
 	new Circle([2, -4], 2.0, 0.05),
 ], [
-	5, 6, 3, // Arbitrary weights
+	5, 6, 3, // An arbitrary set of weights
 ]);
 ```
 
 ### Blob
 A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
 
-##### Unlabeled
+##### Data: Continuous
+##### Label: None
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4373,9 +4380,10 @@ $generator = new Blob([-1.2, -5.0, 2.6, 0.8], 0.25);
 ```
 
 ### Circle
-Create a circle made of sample data points in 2 dimensions.
+Creates a circle of points in 2 dimensions.
 
-##### Unlabeled
+##### Data: Continuous
+##### Label: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4396,9 +4404,10 @@ $generator = new Circle(0.0, 0.0, 100, 0.1);
 ```
 
 ### Half Moon
-Generate a dataset consisting of 2-d samples that form a half moon shape.
+Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted.
 
-##### Unlabeled
+##### Data: Continuous
+##### Label: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4422,7 +4431,8 @@ $generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
 ### Swiss Roll
 Generate a 3-dimensional swiss roll dataset with continuous valued labels. The labels are the inputs to the swiss roll transformation and are suitable for non-linear regression problems.
 
-##### Labeled
+##### Data: Continuous
+##### Label: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4446,7 +4456,7 @@ $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 
 ---
 ### Other
-This section includes broader functioning classes that do not fall under a specific category.
+This section includes all classes that do not fall under a specific category.
 
 ### Guessing Strategies
 Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).
@@ -4718,10 +4728,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 | 3 | serializer | Native | object | The serializer used to convert to and from serial format. |
 
 #### Additional Methods:
-Delete all backups from the filesystem:
-```php
-public flush() : void
-```
+This persister does not have any additional methods.
 
 #### Example:
 ```php
@@ -4737,14 +4744,14 @@ Redis is a high performance in-memory key value store that can be used to persis
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | key | None | string | The key of the object in the database. |
+| 1 | key | | string | The key of the object in the database. |
 | 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
 | 3 | port | 6379 | int | The port of the Redis server. |
 | 4 | db | 0 | int | The database number. |
-| 5 | password | null | string | The password to access the database. |
+| 5 | password | | string | An optional password to access the database server. |
 | 6 | history | 2 | int | The number of backups to keep. |
 | 7 | serializer | Native | object | The serializer used to convert to and from serial format. |
-| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from  the server before timing out. |
+| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
 
 #### Additional Methods:
 Return an associative array of info from the Redis server:
@@ -4762,7 +4769,7 @@ $persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, n
 
 ---
 ### Serializers
-Serializers take persistable objects and convert between object and serial (text, binary, etc.) representations of them. They are responsible for making persistable objects savable to a backend system such as a database or filesystem. Note that serializers should **never** be given data from userland in a live system as this is a security issue.
+Serializers take persistable objects and convert between object and serial (text, binary, etc.) representations of them. They are responsible for making persistable objects savable to a backend system such as a database or filesystem.
 
 To serialize a persistable object:
 ```php
@@ -4775,7 +4782,7 @@ public unserialize(string $data) : Persistable
 ```
 
 ### Binary Serializer
-Converts persistable object to and from a binary encoding. Binary format is smaller and typically faster than plain text serializers.
+Converts persistable object to and from a binary encoding. Binary format is *usually* smaller and faster than plain text serializers.
 
 #### Parameters:
 This serializer does not have any parameters.
@@ -4788,7 +4795,7 @@ $serializer = new Binary();
 ```
 
 ### Native
-The native PHP plain text serialization format.
+The native PHP plain text serialization format used to encode persistable objects.
 
 #### Parameters:
 This serializer does not have any parameters.
@@ -4802,9 +4809,9 @@ $serializer = new Native();
 
 ---
 ### Tokenizers
-Tokenizers take a body of text and converts it to an array of string tokens. Tokenizers are used by various algorithms in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to encode text into word counts.
+Tokenizers take a body of text and convert the words to an array of string *tokens*. Tokens can represent a single word or multiple words such as in [NGram](#n-gram) and [SkipGram](#skip-gram). Tokenizers are used by various transformers in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to represent blobs of text as token counts.
 
-To tokenize a body of text:
+To tokenize a blob of text:
 ```php
 public tokenize(string $text) : array
 ```
@@ -4837,7 +4844,7 @@ var_dump($tokenizer->tokenize($text));
 ```
 
 ### N-Gram
-N-Grams are sequences of n-words of a given string. For example, if *n* is 2 then the tokenizer will generate tokens consisting of 2 contiguous words.
+N-Grams are sequences of n-words of a given string where n is a user-defined parameter. For example, if *n* is 2 then the tokenizer will generate tokens consisting of 2 contiguous words.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4852,13 +4859,13 @@ $tokenizer = new NGram(3);
 ```
 
 ### Skip-Gram
-Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be skipped forming n-grams of the new forward looking sequences.
+Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be *skipped* forming n-grams of the new forward looking sequences.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | n | 2 | int | The number of contiguous words to a single token. |
-| 2 | skip | 2 | int | The number of words to skip over to form new sequences. |
+| 2 | skip | 2 | int | The number of words to skip over to form new n-gram sequences. |
 
 #### Example:
 ```php
@@ -4883,7 +4890,7 @@ $tokenizer = new Whitespace(',');
 ```
 
 ### Word Tokenizer
-The Word tokenizer uses regular expressions to pluck words from a blob of text.
+The Word tokenizer uses a regular expression to tokenize the words in a blob of text.
 
 #### Parameters:
 This tokenizer does not have any parameters.
@@ -4897,15 +4904,19 @@ $tokenizer = new Word();
 
 ---
 ## FAQ
-Here you can find answers to the most frequently asked questions.
+Here you can find answers to the most frequently asked Rubix ML questions.
 
 ### What environment should I run Rubix in?
-Typically, there are two different types of *environments* that a PHP program can run in - on the command line in a terminal window or on a web server such as Nginx via the FPM module. Most of the time you will only be running on the command line in Rubix. In the case where you want to serve predictions, we recommend running your models as background services and serving the requests from a cache. If you need real-time prediction capabilities then you can train the model in a terminal and serve the model via the FPM module in your server side code. For more information regarding the environments in which PHP can run in you can refer to the [general installation considerations](http://php.net/manual/en/install.general.php) on the PHP website.
+All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance.
 
-To run a program on the command line, make sure the PHP binary is in your default PATH and enter:
+If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run a standalone model server that implements its own networking (HTTP, TCP, ZMQ, etc.) layer and runs from the CLI instead of Apache server or NGINX via FPM which is much slower.
+
+To run a program using the command line interface (CLI), open a terminal and enter:
 ```sh
 $ php example.php
 ```
+
+> **Note**: The PHP interpreter must be in your default PATH for the above syntax to work.
 
 ### What is a Tuple?
 A *tuple* is simply a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
@@ -4919,7 +4930,7 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
-Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input data such as edges and textures in computer vision. A number of learners in Rubix support Deep *Representation* Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
+Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input data such as edges and textures in an image. A number of learners in Rubix support Deep *Representation* Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
 ### What is the difference between categorical and continuous data types?
 There are 2 classes of data types that Rubix distinguishes by convention.
@@ -4929,7 +4940,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of sample such as *height* or *age* and can be any number within the set of infinite *real* numbers. Continuous features are represented as either *float* or *int* types.
 
 ### Does Rubix support Reinforcement Learning?
-We do not. Rubix only supports *supervised* and *unsupervised* learning.
+We do not. Rubix is only designed for *supervised* and *unsupervised* learning.
 
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.

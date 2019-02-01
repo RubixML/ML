@@ -163,6 +163,16 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->centroids);
+    }
+
+    /**
      * Return the computed cluster centroids of the training data.
      *
      * @return array
@@ -286,7 +296,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         return array_map([self::class, 'calculateMembership'], $dataset->samples());
     }
 
-        /**
+    /**
      * Initialize the cluster centroids using the k-means++ method.
      * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

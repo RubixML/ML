@@ -153,6 +153,16 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->means and $this->variances;
+    }
+
+    /**
      * Return the cluster prior probabilities.
      *
      * @return float[]

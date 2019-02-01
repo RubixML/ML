@@ -96,7 +96,7 @@ class RedisDB implements Persister
         };
 
         if ($history < 0) {
-            throw new InvalidArgumentException("The number of backups to keep"
+            throw new InvalidArgumentException('The number of backups'
                 . " cannot be less than 0, $history given.");
         }
 
@@ -138,17 +138,13 @@ class RedisDB implements Persister
                 . ' model to the database.');
         };
 
-        $diff = $length - ($this->history + 1);
+        $remove = $length - ($this->history + 1);
 
-        if ($diff > 0) {
-            for ($i = 0; $i < $diff; $i++) {
-                $success = $this->connector->lPop($this->key);
-
-                if (!$success) {
-                    throw new RuntimeException('There was an error'
-                        . ' deleting a backup from the database.');
-                };
-            }
+        for ($i = 0; $i < $remove; $i++) {
+            if (!$this->connector->lPop($this->key)) {
+                throw new RuntimeException('There was an error'
+                    . ' deleting an old backup from the database.');
+            };
         }
     }
 
@@ -161,11 +157,6 @@ class RedisDB implements Persister
     public function load() : Persistable
     {
         $data = $this->connector->lGet($this->key, -1) ?: '';
-
-        if (empty($data)) {
-            throw new RuntimeException('Model could not be retrieved from'
-                . ' database.');
-        }
 
         $persistable = $this->serializer->unserialize($data);
 

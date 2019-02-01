@@ -259,6 +259,16 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return isset($this->network);
+    }
+
+    /**
      * Return the validation scores at each epoch.
      *
      * @return array
@@ -450,8 +460,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
     public function proba(Dataset $dataset) : array
     {
         if (is_null($this->network)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

@@ -118,7 +118,7 @@ class GridSearch implements Learner, Persistable, Verbose
     /**
      * The instance of the estimator with the best parameters.
      *
-     * @var \Rubix\ML\Estimator
+     * @var \Rubix\ML\Learner
      */
     protected $estimator;
 
@@ -212,6 +212,16 @@ class GridSearch implements Learner, Persistable, Verbose
     public function compatibility() : array
     {
         return $this->estimator->compatibility();
+    }
+
+        /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->estimator->trained();
     }
 
     /**

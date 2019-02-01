@@ -97,7 +97,7 @@ class Blob implements Generator
      * @param  int  $n
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n = 100) : Dataset
+    public function generate(int $n) : Dataset
     {
         $samples = Matrix::gaussian($n, $this->dimensions())
             ->multiply($this->stddev)

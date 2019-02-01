@@ -14,8 +14,8 @@ use RuntimeException;
  *
  * This transformer creates an equi-width histogram for each continuous
  * feature column and encodes a discrete category with an automatic bin
- * label. The Interval Discretizer is helpful when converting continuous
- * features to categorical features so they can be learned by an
+ * label (a, b, c...n). The Interval Discretizer is helpful when converting
+ * continuous features to categorical features so they can be learned by an
  * estimator that supports categorical features natively.
  *
  * @category    Machine Learning

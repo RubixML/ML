@@ -11,7 +11,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Other\Specifications\DatasetIsLabeled;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -109,6 +108,16 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->bare();
+    }
+
+    /**
      * Train the learner with a dataset.
      * 
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -139,9 +148,10 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->classes)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        if ($this->bare()) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -177,8 +187,9 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     public function proba(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('Estimator has not been trainied.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

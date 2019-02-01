@@ -140,6 +140,16 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->conductor->trained();
+    }
+
+    /**
      * Return the estimators that comprise the orchestra part of the
      * ensemble.
      *

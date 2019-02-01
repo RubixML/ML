@@ -64,9 +64,7 @@ class IsolationForest implements Learner, Persistable
      *
      * @var array
      */
-    protected $forest = [
-        //
-    ];
+    protected $forest;
 
     /**
      * The isolation score offset used by the decision function.
@@ -85,13 +83,13 @@ class IsolationForest implements Learner, Persistable
     public function __construct(int $estimators = 300, float $contamination = 0.1, float $ratio = 0.2)
     {
         if ($estimators < 1) {
-            throw new InvalidArgumentException('The number of estimators in the'
-                . " ensemble cannot be less than 1, $estimators given.");
+            throw new InvalidArgumentException('The number of estimators'
+                . " cannot be less than 1, $estimators given.");
         }
 
         if ($contamination < 0.) {
-            throw new InvalidArgumentException('Contamination cannot be less'
-                . " than 0, $contamination given.");
+            throw new InvalidArgumentException('Contamination cannot be'
+                . " less than 0, $contamination given.");
         }
 
         if ($ratio < 0.01 or $ratio > 0.99) {
@@ -128,6 +126,16 @@ class IsolationForest implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->offset and $this->forest;
+    }
+
+    /**
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
@@ -145,8 +153,6 @@ class IsolationForest implements Learner, Persistable
 
         $p = (int) round($this->ratio * $n);
 
-        $this->pHat = $this->c($p);
-
         $this->forest = [];
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
@@ -158,6 +164,8 @@ class IsolationForest implements Learner, Persistable
 
             $this->forest[] = $tree;
         }
+
+        $this->pHat = $this->c($p);
 
         $scores = [];
 
@@ -180,10 +188,11 @@ class IsolationForest implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->offset)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
+        if (empty($this->forest) or is_null($this->offset)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
+        
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $predictions = [];

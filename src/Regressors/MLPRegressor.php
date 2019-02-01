@@ -248,6 +248,16 @@ class MLPRegressor implements Online, Verbose, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return isset($this->network);
+    }
+
+    /**
      * Return the validation scores at each epoch.
      *
      * @return array
@@ -423,7 +433,8 @@ class MLPRegressor implements Online, Verbose, Persistable
     public function predict(Dataset $dataset) : array
     {
         if (is_null($this->network)) {
-            throw new RuntimeException('Estimator has not been trained.');
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

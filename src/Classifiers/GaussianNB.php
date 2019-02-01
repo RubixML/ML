@@ -146,6 +146,16 @@ class GaussianNB implements Online, Probabilistic, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->means and $this->variances;
+    }
+
+    /**
      * Return the class prior probabilities.
      *
      * @return float[]
@@ -312,8 +322,9 @@ class GaussianNB implements Online, Probabilistic, Persistable
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->means) or empty($this->variances)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -339,8 +350,9 @@ class GaussianNB implements Online, Probabilistic, Persistable
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->means) or empty($this->variances)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

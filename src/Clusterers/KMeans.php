@@ -109,6 +109,16 @@ class KMeans implements Online, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->centroids);
+    }
+
+    /**
      * Return the computed cluster centroids of the training data.
      *
      * @return array

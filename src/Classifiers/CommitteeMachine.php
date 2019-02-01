@@ -148,6 +148,16 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !empty($this->classes);
+    }
+
+    /**
      * Return the normalized influence values for each expert in the committee.
      *
      * @return array
@@ -196,10 +206,6 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->experts)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
-
         $probabilities = array_fill(0, $dataset->numRows(),
             array_fill_keys($this->classes, 0.));
 

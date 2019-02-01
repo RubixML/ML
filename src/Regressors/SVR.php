@@ -132,6 +132,16 @@ class SVR implements Learner, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return isset($this->model);
+    }
+
+    /**
      * Train the learner with a dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

@@ -96,7 +96,7 @@ class HalfMoon implements Generator
      * @param  int  $n
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n = 100) : Dataset
+    public function generate(int $n) : Dataset
     {
         $r = Vector::rand($n)->multiply(180)
             ->add($this->rotation)

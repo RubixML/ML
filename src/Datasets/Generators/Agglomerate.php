@@ -9,9 +9,10 @@ use InvalidArgumentException;
 /**
  * Agglomerate
  *
- * An Agglomerate is a collection of other generators each assigned a label.
- * Agglomerates are useful for classification, clustering, and anomaly detection
- * problems where the label is a discrete value.
+ * An Agglomerate is a collection of other generators each assigned with a
+ * user-definable label. Agglomerates are useful for classification,
+ * clustering, and anomaly detection problems where the label is a discrete
+ * value.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -22,7 +23,7 @@ class Agglomerate implements Generator
     /**
      * An array of generators.
      *
-     * @var array
+     * @var \Rubix\ML\Datasets\Generators\Generator[]
      */
     protected $generators;
 
@@ -30,12 +31,12 @@ class Agglomerate implements Generator
      * The normalized weights of each generator i.e. the probability that a
      * sample from a particular generator shows up in the dataset.
      *
-     * @var array
+     * @var float[]
      */
     protected $weights;
 
     /**
-     * The number of dimensions of the agglomerate.
+     * The dimensionality of the agglomerate.
      *
      * @var int
      */
@@ -52,25 +53,25 @@ class Agglomerate implements Generator
         $k = count($generators);
 
         if ($k < 1) {
-            throw new InvalidArgumentException('Must provide at least one'
-                . ' generator to agglomerate.');
+            throw new InvalidArgumentException('Agglomerate must consist'
+                . ' of at least 1 generator.');
         }
 
         foreach ($generators as $generator) {
             if (!$generator instanceof Generator) {
                 throw new InvalidArgumentException('Cannot add a non generator'
                     . ' to the agglomerate, ' . gettype($generator)
-                    . ' found.');
+                    . ' given.');
             }
         }
 
-        $d = reset($generators)->dimensions(); 
+        $dimensions = reset($generators)->dimensions(); 
 
         foreach ($generators as $generator) {
-            if ($generator->dimensions() !== $d) {
+            if ($generator->dimensions() !== $dimensions) {
                 throw new InvalidArgumentException('Generators must have the'
-                    . " same dimensionality, $d needed but found"
-                    . " {$generator->dimensions()}.");
+                    . " same dimensionality, $dimensions needed but "
+                    . " {$generator->dimensions()} given.");
             }
         }
 
@@ -104,7 +105,7 @@ class Agglomerate implements Generator
 
         $this->generators = $generators;
         $this->weights = array_combine(array_keys($generators), $weights) ?: [];
-        $this->dimensions = $d;
+        $this->dimensions = $dimensions;
     }
 
     /**
@@ -133,7 +134,7 @@ class Agglomerate implements Generator
      * @param  int  $n
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function generate(int $n = 100) : Dataset
+    public function generate(int $n) : Dataset
     {
         $dataset = Labeled::quick();
 
@@ -148,7 +149,9 @@ class Agglomerate implements Generator
 
             $labels = array_fill(0, $p, $label);
 
-            $dataset = $dataset->append(Labeled::quick($samples, $labels));
+            $stratum = Labeled::quick($samples, $labels);
+
+            $dataset = $dataset->append($stratum);
         }
 
         return $dataset;

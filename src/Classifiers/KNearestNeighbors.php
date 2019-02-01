@@ -122,6 +122,16 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     }
 
     /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return $this->samples and $this->labels;
+    }
+
+    /**
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @return void
      */
@@ -164,9 +174,10 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->classes)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        if (empty($this->samples) or empty($this->labels)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -201,9 +212,10 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->classes)) {
-            throw new RuntimeException('Estimator has not been trained.');
-        }
+        if (empty($this->samples) or empty($this->labels)) {
+            throw new RuntimeException('The learner has not'
+                . ' not been trained.');
+        };
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

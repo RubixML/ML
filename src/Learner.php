@@ -13,4 +13,11 @@ interface Learner extends Estimator
      * @return void
      */
     public function train(Dataset $dataset) : void;
+
+    /**
+     * Has the learner been trained?
+     * 
+     * @return bool
+     */
+    public function trained() : bool;
 }
