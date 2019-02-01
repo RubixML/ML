@@ -8,6 +8,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\Other\Loggers\BlackHole;
@@ -59,11 +60,11 @@ class MLPRegressorTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+
+        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_partial_predict_proba()
@@ -82,6 +83,8 @@ class MLPRegressorTest extends TestCase
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

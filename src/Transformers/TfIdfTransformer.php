@@ -47,6 +47,16 @@ class TfIdfTransformer implements Elastic
     protected $n;
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->idfs);
+    }
+
+    /**
      * Return the inverse document frequencies calculated during fitting.
      *
      * @return float[]|null

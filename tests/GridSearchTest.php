@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -51,10 +52,7 @@ class GridSearchTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
     }
 
@@ -65,6 +63,8 @@ class GridSearchTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

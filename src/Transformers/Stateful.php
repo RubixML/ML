@@ -13,4 +13,11 @@ interface Stateful extends Transformer
      * @return void
      */
     public function fit(Dataset $dataset) : void;
+
+    /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool;
 }

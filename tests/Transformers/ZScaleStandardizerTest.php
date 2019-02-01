@@ -37,6 +37,8 @@ class ZScaleStandardizerTest extends TestCase
 
         $this->transformer->update($this->generator->generate(30));
 
+        $this->assertTrue($this->transformer->fitted());
+
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
             ->row(0);

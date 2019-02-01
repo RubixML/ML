@@ -80,6 +80,16 @@ class MissingDataImputer implements Stateful
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->strategies);
+    }
+
+    /**
      * Fit the transformer to the dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset

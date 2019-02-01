@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -42,11 +43,11 @@ class RegressionTreeTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+
+        $this->assertContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_predict_importances()
@@ -56,6 +57,8 @@ class RegressionTreeTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

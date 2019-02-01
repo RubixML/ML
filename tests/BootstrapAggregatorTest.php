@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
@@ -38,11 +39,11 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+
+        $this->assertContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
 
@@ -53,6 +54,8 @@ class BootstrapAggregatorTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

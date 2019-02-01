@@ -35,13 +35,6 @@ class PrincipalComponentAnalysis implements Stateful
     protected $dimensions;
 
     /**
-     * The eigenvalues computed during fitting.
-     * 
-     * @var array|null
-     */
-    protected $eigenvalues;
-
-    /**
      * The matrix of eigenvectors computed at fitting.
      *
      * @var \Rubix\Tensor\Matrix|null
@@ -89,6 +82,16 @@ class PrincipalComponentAnalysis implements Stateful
         }
 
         $this->dimensions = $dimensions;
+    }
+
+    /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return $this->mean and $this->eigenvectors;
     }
 
     /**
@@ -160,7 +163,6 @@ class PrincipalComponentAnalysis implements Stateful
 
         $this->mean = $xT->mean()->transpose();
 
-        $this->eigenvalues = $eigenvalues;
         $this->eigenvectors = $eigenvectors;
     }
 

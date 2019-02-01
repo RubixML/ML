@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Clusterers;
 use Rubix\ML\Estimator;
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -40,11 +41,11 @@ class DBSCANTest extends TestCase
     {
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
+
+        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_predict()

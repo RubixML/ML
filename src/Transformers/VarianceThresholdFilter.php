@@ -52,6 +52,16 @@ class VarianceThresholdFilter implements Stateful
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->selected);
+    }
+
+    /**
      * Return the column indexes that have been selected during fitting.
      * 
      * @return array

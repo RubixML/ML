@@ -7,6 +7,7 @@
     - Added compatibility method to validation metrics
     - Added estimator compatibility to reports
     - Added trained method to learner API
+    - Added fitted method to stateful transformer API
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

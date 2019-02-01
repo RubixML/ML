@@ -10,6 +10,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -21,7 +22,7 @@ use RuntimeException;
 
 class PipelineTest extends TestCase
 {
-    const TRAIN_SIZE = 250;
+    const TRAIN_SIZE = 300;
     const TEST_SIZE = 10;
     const MIN_SCORE = 0.8;
 
@@ -55,11 +56,11 @@ class PipelineTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+
+        $this->assertContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertNotContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_partial_predict()
@@ -68,10 +69,13 @@ class PipelineTest extends TestCase
 
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $folds = $training->stratifiedFold(2);
+        $folds = $training->stratifiedFold(3);
 
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

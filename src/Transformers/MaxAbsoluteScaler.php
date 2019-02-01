@@ -26,6 +26,16 @@ class MaxAbsoluteScaler implements Elastic
     protected $maxabs;
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->maxabs);
+    }
+
+    /**
      * Return the maximum absolute values for each feature column.
      * 
      * @return array|null

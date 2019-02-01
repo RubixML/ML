@@ -68,6 +68,16 @@ class ZScaleStandardizer implements Elastic
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return $this->means and $this->variances;
+    }
+
+    /**
      * Return the means calculated by fitting the training set.
      *
      * @return array|null

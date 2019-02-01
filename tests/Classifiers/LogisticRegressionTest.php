@@ -9,6 +9,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -56,11 +57,11 @@ class LogisticRegressionTest extends TestCase
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+
+        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_partial_predict()
@@ -79,6 +80,8 @@ class LogisticRegressionTest extends TestCase
         $this->estimator->train($folds[0]);
         $this->estimator->partial($folds[1]);
         $this->estimator->partial($folds[2]);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

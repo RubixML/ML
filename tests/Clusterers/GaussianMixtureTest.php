@@ -8,6 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\GaussianMixture;
@@ -66,6 +67,8 @@ class GaussianMixtureTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

@@ -2253,8 +2253,14 @@ public transform(array &$samples, ?array &$labels = null) : void
 ### Stateful
 For stateful transformers, the `fit()` method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* a learner.
 
+To fit the transformer to a training set:
 ```php
 public fit(Dataset $dataset) : void
+```
+
+Check if the transformer has been fitted:
+```php
+public fitted() : bool
 ```
 
 #### Example

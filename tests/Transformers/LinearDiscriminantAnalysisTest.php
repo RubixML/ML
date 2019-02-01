@@ -40,6 +40,8 @@ class LinearDiscriminantAnalysisTest extends TestCase
 
         $this->transformer->fit($this->generator->generate(30));
 
+        $this->assertTrue($this->transformer->fitted());
+
         $sample = $this->generator->generate(3)
             ->apply($this->transformer)
             ->row(0);

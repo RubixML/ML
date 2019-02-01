@@ -80,6 +80,16 @@ class MinMaxNormalizer implements Elastic
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return $this->mins and $this->scales;
+    }
+
+    /**
      * Return the minmums of each feature column.
      * 
      * @return array|null

@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -43,16 +44,18 @@ class RidgeTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+
+        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_make_prediction()
     {
         $this->estimator->train($this->training);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($this->testing);
 

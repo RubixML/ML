@@ -66,6 +66,16 @@ class IntervalDiscretizer implements Stateful
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->intervals);
+    }
+
+    /**
      * Return the possible categories of each feature column.
      * 
      * @return array

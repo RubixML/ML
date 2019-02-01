@@ -32,13 +32,6 @@ class LinearDiscriminantAnalysis implements Stateful
     protected $dimensions;
 
     /**
-     * The eigenvalues computed during fitting.
-     * 
-     * @var array|null
-     */
-    protected $eigenvalues;
-
-    /**
      * The matrix of eigenvectors computed at fitting.
      *
      * @var \Rubix\Tensor\Matrix|null
@@ -79,6 +72,16 @@ class LinearDiscriminantAnalysis implements Stateful
         }
 
         $this->dimensions = $dimensions;
+    }
+
+    /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->eigenvectors);
     }
 
     /**
@@ -173,7 +176,6 @@ class LinearDiscriminantAnalysis implements Stateful
         $this->noiseVar = $noiseVar;
         $this->lossiness = $noiseVar / ($totalVar ?: self::EPSILON);
 
-        $this->eigenvalues = $eigenvalues;
         $this->eigenvectors = $eigenvectors;
     }
 

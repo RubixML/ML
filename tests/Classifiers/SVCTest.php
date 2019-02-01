@@ -9,6 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -47,11 +48,11 @@ class SVCTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+
+        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_predict()
@@ -66,6 +67,8 @@ class SVCTest extends TestCase
         $testing = $dataset->randomize()->take(self::TEST_SIZE);
 
         $this->estimator->train($dataset);
+
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 

@@ -84,6 +84,16 @@ class WordCountVectorizer implements Stateful
     }
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->vocabulary);
+    }
+
+    /**
      * Return an array of words in the vocabulary.
      *
      * @return array

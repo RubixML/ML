@@ -39,6 +39,8 @@ class TfIdfTransformerTest extends TestCase
     {
         $this->transformer->fit($this->dataset);
 
+        $this->assertTrue($this->transformer->fitted());
+
         $this->dataset->apply($this->transformer);
 
         $outcome = [

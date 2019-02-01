@@ -28,6 +28,16 @@ class OneHotEncoder implements Stateful
     protected $categories;
 
     /**
+     * Is the transformer fitted?
+     * 
+     * @return bool
+     */
+    public function fitted() : bool
+    {
+        return isset($this->categories);
+    }
+
+    /**
      * Fit the transformer to the dataset.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
