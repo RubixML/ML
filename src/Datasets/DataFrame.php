@@ -11,14 +11,14 @@ use Countable;
 
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
-    const CATEGORICAL = 1;
-    const CONTINUOUS = 2;
+    const CONTINUOUS = 1;
+    const CATEGORICAL = 2;
     const RESOURCE = 3;
 
     const TYPES = [
-        1 => 'Categorical',
-        2 => 'Continuous',
-        3 => 'Resource',
+        1 => 'continuous',
+        2 => 'categorical',
+        3 => 'resource',
     ];
 
     /**
@@ -182,8 +182,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         }
 
         if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException("Column $index does not"
-             . 'exist.');
+            throw new InvalidArgumentException("Column $index does"
+             . ' not exist.');
         }
 
         $feature = $this->samples[0][$index];
@@ -199,7 +199,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 return self::RESOURCE;
 
             default:
-                throw new RuntimeException('Data type could not be '
+                throw new RuntimeException('Data type could not be'
                     . ' determined.');
         }
     }
