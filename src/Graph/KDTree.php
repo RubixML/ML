@@ -100,7 +100,7 @@ class KDTree implements Tree
                 continue 1;
             }
 
-            list($left, $right) = $current->groups();
+            [$left, $right] = $current->groups();
 
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = $this->findBestSplit($left);
@@ -201,7 +201,7 @@ class KDTree implements Tree
 
         $visited->attach($neighborhood);
 
-        list($samples, $labels) = $neighborhood->neighbors();
+        [$samples, $labels] = $neighborhood->neighbors();
 
         $distances = [];
 
@@ -220,7 +220,7 @@ class KDTree implements Tree
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    list($sHat, $lHat) = $current->neighbors();
+                    [$sHat, $lHat] = $current->neighbors();
 
                     foreach ($sHat as $neighbor) {
                         $distances[] = $this->kernel->compute($sample, $neighbor);

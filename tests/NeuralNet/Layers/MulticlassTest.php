@@ -54,7 +54,7 @@ class MulticlassTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals([3, 3], $forward->shape());
 
-        list($back, $loss) = $this->layer->back($this->labels, $this->optimizer);
+        [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
         $this->assertInternalType('float', $loss);

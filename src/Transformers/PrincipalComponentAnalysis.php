@@ -141,7 +141,7 @@ class PrincipalComponentAnalysis implements Stateful
 
         $xT = Matrix::build($dataset->samples())->transpose();
 
-        list($eigenvalues, $eigenvectors) = $xT->covariance()->eig(true);
+        [$eigenvalues, $eigenvectors] = $xT->covariance()->eig(true);
 
         $totalVar = array_sum($eigenvalues);
 

@@ -139,7 +139,7 @@ class LinearDiscriminantAnalysis implements Stateful
                 . ' with categorical labels.');
         }
 
-        list($n, $d) = $dataset->shape();
+        [$n, $d] = $dataset->shape();
 
         $sW = Matrix::zeros($d, $d);
 
@@ -156,7 +156,7 @@ class LinearDiscriminantAnalysis implements Stateful
             ->covariance()
             ->subtract($sW);
 
-        list($eigenvalues, $eigenvectors) = $sB->eig(true);
+        [$eigenvalues, $eigenvectors] = $sB->eig(true);
 
         $totalVar = array_sum($eigenvalues);
 

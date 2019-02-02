@@ -521,10 +521,10 @@ public batch(int $n = 50) : array
 $subset = $dataset->take(5);
 
 // Split the dataset into left and right subsets
-list($left, $right) = $dataset->split(0.5);
+[$left, $right] = $dataset->split(0.5);
 
 // Partition the dataset by the feature column at index 4 by value '50'
-list($left, $right) = $dataset->partition(4, 50);
+[$left, $right] = $dataset->partition(4, 50);
 
 // Fold the dataset into 8 equal size datasets
 $folds = $dataset->fold(8);
@@ -550,7 +550,7 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 #### Example:
 ```php
 // Randomize and split the dataset into two subsets
-list($left, $right) = $dataset->randomize()->split(0.8);
+[$left, $right] = $dataset->randomize()->split(0.8);
 
 // Generate a bootstrap dataset of 500 random samples
 $subset = $dataset->randomSubsetWithReplacement(500);
@@ -785,7 +785,7 @@ array(2) {
 $folds = $dataset->stratifiedFold(5);
 
 // Split the dataset into two stratified subsets
-list($left, $right) = $dataset->stratifiedSplit(0.8);
+[$left, $right] = $dataset->stratifiedSplit(0.8);
 
 // Put each sample with label x into its own dataset
 $strata = $dataset->stratify();

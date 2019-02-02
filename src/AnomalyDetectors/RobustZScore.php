@@ -152,7 +152,7 @@ class RobustZScore implements Learner, Persistable
         $this->medians = $this->mads = [];
 
         foreach ($dataset->columns() as $column => $values) {
-            list($median, $mad) = Stats::medMad($values);
+            [$median, $mad] = Stats::medMad($values);
 
             $this->medians[$column] = $median;
             $this->mads[$column] = $mad;

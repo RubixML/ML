@@ -152,7 +152,7 @@ class BatchNorm implements Hidden, Parametric
        $newMeans = $newVars = $stddevs = $stdInv = $xHat = $out = [];
 
         foreach ($input as $i => $row) {
-            list($mean, $variance) = Stats::meanVar($row);
+            [$mean, $variance] = Stats::meanVar($row);
 
             $oldMean = $oldMeans[$i];
 
@@ -273,7 +273,7 @@ class BatchNorm implements Hidden, Parametric
         unset($this->stdInv, $this->xHat);
 
         return function () use ($dOut, $gamma, $stdInv, $xHat) {
-            list($m, $n) = $dOut->shape();
+            [$m, $n] = $dOut->shape();
 
             $dXHat = $dOut->multiply($gamma);
 

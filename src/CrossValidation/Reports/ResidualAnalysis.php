@@ -63,7 +63,7 @@ class ResidualAnalysis implements Report
             $sst += ($label - $muHat) ** 2;
         }
 
-        list($mean, $variance) = Stats::meanVar($errors);
+        [$mean, $variance] = Stats::meanVar($errors);
 
         $mse = Stats::mean($l2);
 

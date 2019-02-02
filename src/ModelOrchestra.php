@@ -193,9 +193,9 @@ class ModelOrchestra implements Learner, Persistable, Verbose
             ]));
 
         if ($this->type() === self::CLASSIFIER) {
-            list($left, $right) = $dataset->stratifiedSplit($this->ratio);
+            [$left, $right] = $dataset->stratifiedSplit($this->ratio);
         } else {
-            list($left, $right) = $dataset->randomize()->split($this->ratio);
+            [$left, $right] = $dataset->randomize()->split($this->ratio);
         }
 
         foreach ($this->orchestra as $estimator) {

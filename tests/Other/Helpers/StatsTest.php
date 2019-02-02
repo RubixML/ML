@@ -78,7 +78,7 @@ class StatsTest extends TestCase
 
     public function test_mean_var()
     {
-        list($mean, $variance) = Stats::meanVar($this->values);
+        [$mean, $variance] = Stats::meanVar($this->values);
 
         $this->assertEquals(8.75, $mean);
         $this->assertEquals(21.1125, $variance);
@@ -86,7 +86,7 @@ class StatsTest extends TestCase
 
     public function test_med_mad()
     {
-        list($median, $mad) = Stats::medMad($this->values);
+        [$median, $mad] = Stats::medMad($this->values);
 
         $this->assertEquals(9.75, $median);
         $this->assertEquals(3.5, $mad);

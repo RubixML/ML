@@ -135,9 +135,9 @@ abstract class CART implements Tree
         $stack = [[$this->root, $depth]];
 
         while ($stack) {
-            list($current, $depth) = array_pop($stack) ?? [];
+            [$current, $depth] = array_pop($stack) ?? [];
 
-            list($left, $right) = $current->groups();
+            [$left, $right] = $current->groups();
 
             $depth++;
 

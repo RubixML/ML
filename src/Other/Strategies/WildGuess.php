@@ -69,7 +69,7 @@ class WildGuess implements Continuous
                 . ' at least 1 value.');
         }
 
-        list($this->min, $this->max) = Stats::range($values);
+        [$this->min, $this->max] = Stats::range($values);
     }
 
     /**

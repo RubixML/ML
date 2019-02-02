@@ -362,9 +362,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
         $n = $dataset->numRows();
 
-        list($testing, $training) = $dataset->stratifiedSplit($this->holdout);
+        [$testing, $training] = $dataset->stratifiedSplit($this->holdout);
 
-        list($min, $max) = $this->metric->range();
+        [$min, $max] = $this->metric->range();
 
         $bestScore = $min;
         $bestSnapshot = null;

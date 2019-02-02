@@ -110,7 +110,7 @@ class IntervalDiscretizer implements Stateful
         $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
 
         foreach ($columns as $column => $values) {
-            list($min, $max) = Stats::range($values);
+            [$min, $max] = Stats::range($values);
 
             $edges = Vector::linspace($min, $max, $this->bins + 1)
                 ->asArray();

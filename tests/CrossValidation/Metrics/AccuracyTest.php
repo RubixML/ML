@@ -32,7 +32,7 @@ class AccuracyTest extends TestCase
 
         $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
 
-        list($min, $max) = $this->metric->range();
+        [$min, $max] = $this->metric->range();
 
         $score = $this->metric->score($predictions, $labels);
 

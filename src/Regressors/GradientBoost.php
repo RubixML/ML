@@ -263,8 +263,9 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         $residuals = Labeled::quick($dataset->samples(), $yHat);
 
-        if ($this->logger) $this->logger->info('Attempting to correct residuals'
-            . " w/ $this->estimators " . Params::shortName($this->booster)
+        if ($this->logger) $this->logger->info('Attempting to correct'
+            . " error residuals with $this->estimators "
+            . Params::shortName($this->booster)
             . ($this->estimators > 1 ? 's' : ''));
 
         $this->ensemble = $this->steps = [];

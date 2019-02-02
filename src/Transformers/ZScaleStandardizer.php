@@ -120,7 +120,7 @@ class ZScaleStandardizer implements Elastic
         $this->means = $this->variances = $this->stddevs = [];
 
         foreach ($columns as $column => $values) {
-            list($mean, $variance) = Stats::meanVar($values);
+            [$mean, $variance] = Stats::meanVar($values);
 
             $this->means[$column] = $mean;
             $this->variances[$column] = $variance;
@@ -150,7 +150,7 @@ class ZScaleStandardizer implements Elastic
 
             $values = $dataset->column($column);
 
-            list($mean, $variance) = Stats::meanVar($values);
+            [$mean, $variance] = Stats::meanVar($values);
 
             $this->means[$column] = (($n * $mean)
                 + ($this->n * $oldMean))

@@ -40,7 +40,7 @@ class SoftmaxTest extends TestCase
 
     public function test_compute()
     {
-        list($min, $max) = $this->activationFunction->range();
+        [$min, $max] = $this->activationFunction->range();
 
         $activations = $this->activationFunction->compute($this->input);
 

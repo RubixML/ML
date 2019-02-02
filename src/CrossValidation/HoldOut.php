@@ -67,7 +67,7 @@ class HoldOut implements Validator
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
-        list($testing, $training) = $this->stratify
+        [$testing, $training] = $this->stratify
             ? $dataset->stratifiedSplit($this->ratio)
             : $dataset->split($this->ratio);
 

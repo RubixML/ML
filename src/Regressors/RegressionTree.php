@@ -219,7 +219,7 @@ class RegressionTree extends CART implements Learner, Persistable
      */
     protected function terminate(Labeled $dataset) : BinaryNode
     {
-        list($mean, $variance) = Stats::meanVar($dataset->labels());
+        [$mean, $variance] = Stats::meanVar($dataset->labels());
 
         return new Average($mean, $variance, $dataset->numRows());
     }

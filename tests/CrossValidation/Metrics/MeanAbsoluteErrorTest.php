@@ -32,7 +32,7 @@ class MeanAbsoluteErrorTest extends TestCase
 
         $labels = [10, 10, 6, 14, 8];
 
-        list($min, $max) = $this->metric->range();
+        [$min, $max] = $this->metric->range();
 
         $score = $this->metric->score($predictions, $labels);
 

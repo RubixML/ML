@@ -146,7 +146,7 @@ class MinMaxNormalizer implements Elastic
         $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
 
         foreach ($columns as $column => $values) {
-            list($min, $max) = Stats::range($values);
+            [$min, $max] = Stats::range($values);
 
             $min = min($min, $this->minimums[$column]);
             $max = max($max, $this->maximums[$column]);

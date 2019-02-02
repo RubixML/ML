@@ -40,6 +40,6 @@ class LambdaFunction implements Transformer
      */
     public function transform(array &$samples, ?array &$labels = null) : void
     {
-        list($samples, $labels) = call_user_func($this->lambda, $samples, $labels);
+        [$samples, $labels] = call_user_func($this->lambda, $samples, $labels);
     }
 }

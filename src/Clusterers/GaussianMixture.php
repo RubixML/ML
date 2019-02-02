@@ -235,7 +235,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
         if ($this->logger) $this->logger->info("Initializing $this->k"
             . ' gaussian components');
 
-        list($means, $variances) = $this->initializeComponents($dataset);
+        [$means, $variances] = $this->initializeComponents($dataset);
 
         $this->means = $means;
         $this->variances = $variances;
@@ -399,7 +399,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $mHat = $vHat = [];
 
             foreach ($stratum->columns() as $values) {
-                list($mean, $variance) = Stats::meanVar($values);
+                [$mean, $variance] = Stats::meanVar($values);
 
                 $mHat[] = $mean;
                 $vHat[] = $variance;

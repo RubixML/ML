@@ -265,7 +265,7 @@ class LabeledTest extends TestCase
 
     public function test_split_dataset()
     {
-        list($left, $right) = $this->dataset->split(0.5);
+        [$left, $right] = $this->dataset->split(0.5);
 
         $this->assertCount(3, $left);
         $this->assertCount(3, $right);
@@ -273,7 +273,7 @@ class LabeledTest extends TestCase
 
     public function test_stratified_split()
     {
-        list($left, $right) = $this->dataset->split(0.5);
+        [$left, $right] = $this->dataset->split(0.5);
 
         $this->assertCount(3, $left);
         $this->assertCount(3, $right);
