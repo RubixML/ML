@@ -22,7 +22,7 @@ class Parameter
      *
      * @var \Rubix\Tensor\Matrix
      */
-    protected $w;
+    public $w;
 
     /**
      * @param  \Rubix\Tensor\Matrix  $w
@@ -31,25 +31,6 @@ class Parameter
     public function __construct(Matrix $w)
     {
         $this->w = $w;
-    }
-
-    /**
-     * @return \Rubix\Tensor\Matrix
-     */
-    public function w() : Matrix
-    {
-        return $this->w;
-    }
-
-    /**
-     * Mutate the parameter Matrix.
-     *
-     * @param  \Rubix\Tensor\Matrix  $step
-     * @return void
-     */
-    public function update(Matrix $step) : void
-    {
-        $this->w = $this->w->subtract($step);
     }
 
     /**

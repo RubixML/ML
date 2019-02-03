@@ -10,8 +10,13 @@ use SplObjectStorage;
 /**
  * Adam
  *
- * Short for Adaptive Momentum Estimation, the Adam Optimizer uses both Momentum
- * and RMS properties to achieve a balance of speed and stability.
+ * Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both
+ * Momentum and RMS prop to achieve a balance of velocity and stability. In
+ * addition to storing an exponentially decaying average of past squared
+ * gradients like RMSprop, Adam also keeps an exponentially decaying average
+ * of past gradients, similar to Momentum. Whereas Momentum can be seen as a
+ * ball running down a slope, Adam behaves like a heavy ball with friction,
+ * which thus prefers flat minima in the error surface.
  *
  * References:
  * [1] D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
@@ -20,8 +25,10 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Adam implements Optimizer
+class Adam implements Optimizer, Adaptive
 {
+    const WARM_UP_STEPS = 50;
+
     /**
      * The learning rate. i.e. the master step size.
      *
@@ -44,21 +51,14 @@ class Adam implements Optimizer
     protected $rmsDecay;
 
     /**
-     * The memoized velocity matrices.
-     *
-     * @var \SplObjectStorage
-     */
-    protected $velocities;
-
-    /**
-     * The rolling sum of squared gradient matrices.
+     * The per parameter velocity and squared gradient cache.
      *
      * @var \SplObjectStorage
      */
     protected $cache;
 
     /**
-     * The number of steps taken since instantiation.
+     * The number of steps taken since initialization.
      *
      * @var int
      */
@@ -91,9 +91,22 @@ class Adam implements Optimizer
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
-        $this->velocities = new SplObjectStorage();
         $this->cache = new SplObjectStorage();
         $this->t = 0;
+    }
+
+    /**
+     * Initialize a parameter.
+     * 
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
+     * @return void
+     */
+    public function initialize(Parameter $param) : void
+    {
+        $velocity = Matrix::zeros(...$param->w->shape());
+        $g2 = Matrix::zeros(...$param->w->shape());
+
+        $this->cache->attach($param, [$velocity, $g2]);
     }
 
     /**
@@ -105,33 +118,25 @@ class Adam implements Optimizer
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->velocities->contains($param)) {
-            $velocities = $this->velocities[$param];
-            $cache = $this->cache[$param];
-        } else {
-            $velocities = Matrix::zeros(...$param->w()->shape());
-            $cache = Matrix::zeros(...$param->w()->shape());
+        [$velocity, $g2] = $this->cache[$param];
 
-            $this->velocities->attach($param, $velocities);
-            $this->cache->attach($param, $cache);
-        }
-
-        $this->velocities[$param] = $velocities = $velocities
-            ->multiply($this->momentumDecay)
+        $velocity = $velocity->multiply($this->momentumDecay)
             ->add($gradient->multiply(1. - $this->momentumDecay));
 
-        $this->cache[$param] = $cache = $cache
-            ->multiply($this->rmsDecay)
+        $g2 = $g2->multiply($this->rmsDecay)
             ->add($gradient->square()->multiply(1. - $this->rmsDecay));
 
-        $this->t++;
+        $this->cache[$param] = [$velocity, $g2];
 
-        $vHat = $velocities->divide(1. - $this->momentumDecay ** $this->t);
+        if ($this->t < self::WARM_UP_STEPS) {
+            $this->t++;
+            
+            $velocity = $velocity->divide(1. - $this->momentumDecay ** $this->t);
 
-        $rHat = $cache->divide(1. - $this->rmsDecay ** $this->t);
+            $g2 = $g2->divide(1. - $this->rmsDecay ** $this->t);
+        }
 
-        return $vHat->multiply($this->rate)
-            ->divide($rHat->sqrt()->clipLower(self::EPSILON));
-
+        return $velocity->multiply($this->rate)
+            ->divide($g2->sqrt()->clipLower(self::EPSILON));
     }
 }

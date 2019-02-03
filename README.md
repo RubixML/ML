@@ -3186,6 +3186,11 @@ $costFunction = new RelativeEntropy();
 ### Initializers
 Initializers are responsible for setting the initial weight parameters of the weight layers of a neural network. Certain activation functions respond differently when given inputs from weight layers with different initializations.
 
+To initialize a random weight matrix:
+```php
+public initialize(int $fanIn, int $fanOut) : Matrix
+```
+
 ### He
 The He initializer was designed for hidden layers that feed into rectified linear unit layers such as [ReLU](#relu), [Leaky ReLU](#leaky-relu), and [ELU](#elu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
 
@@ -3479,7 +3484,7 @@ $optimizer = new AdaGrad(0.125);
 ```
 
 ### Adam
-Short for *Adaptive Momentum Estimation*, the Adam Optimizer uses both Momentum and RMS properties to achieve a balance of velocity and stability.
+Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction, which thus prefers flat minima in the error surface.
 
 #### Parameters:
 | # | Param | Default | Type | Description |

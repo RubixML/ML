@@ -18,7 +18,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Momentum implements Optimizer
+class Momentum implements Optimizer, Adaptive
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -35,11 +35,11 @@ class Momentum implements Optimizer
     protected $decay;
 
     /**
-     * The memoized velocity matrices.
+     * The per parameter velocity matrices.
      *
      * @var \SplObjectStorage
      */
-    protected $velocities;
+    protected $cache;
 
     /**
      * @param  float  $rate
@@ -61,7 +61,20 @@ class Momentum implements Optimizer
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->velocities = new SplObjectStorage();
+        $this->cache = new SplObjectStorage();
+    }
+
+    /**
+     * Initialize a parameter.
+     * 
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
+     * @return void
+     */
+    public function initialize(Parameter $param) : void
+    {
+        $velocity = Matrix::zeros(...$param->w->shape());
+
+        $this->cache->attach($param, $velocity);
     }
 
     /**
@@ -73,18 +86,13 @@ class Momentum implements Optimizer
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->velocities->contains($param)) {
-            $velocities = $this->velocities[$param];
-        } else {
-            $velocities = Matrix::zeros(...$param->w()->shape());
+        $velocity = $this->cache[$param];
 
-            $this->velocities->attach($param, $velocities);
-        }
+         $velocity = $gradient->multiply($this->rate)
+            ->add($velocity->multiply(1. - $this->decay));
 
-        $this->velocities[$param] = $step = $gradient
-            ->multiply($this->rate)
-            ->add($velocities->multiply(1. - $this->decay));
+        $this->cache[$param] = $velocity;
 
-        return $step;
+        return $velocity;
     }
 }

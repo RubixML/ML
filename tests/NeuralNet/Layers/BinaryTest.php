@@ -39,7 +39,7 @@ class BinaryTest extends TestCase
 
         $this->layer = new Binary(['hot', 'cold'], 1e-4, new CrossEntropy());
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

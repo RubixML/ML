@@ -44,7 +44,7 @@ class PReLU implements Hidden, Parametric
      *
      * @var \Rubix\ML\NeuralNet\Parameter|null
      */
-    protected $alphas;
+    protected $alpha;
 
     /**
      * The memoized input matrix.
@@ -84,19 +84,34 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
+     * Return the parameters of the layer.
+     * 
+     * @throws \RuntimeException
+     * @return \Rubix\ML\NeuralNet\Parameter[]
+     */
+    public function parameters() : array
+    {
+        if (is_null($this->alpha)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+
+        return [$this->alpha];
+    }
+
+    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
         $a = Matrix::fill($this->initial, $fanOut, 1);
 
-        $this->alphas = new Parameter($a);
+        $this->alpha = new Parameter($a);
 
         $this->width = $fanOut;
 
@@ -139,7 +154,7 @@ class PReLU implements Hidden, Parametric
      */
     public function back(callable $prevGradient, Optimizer $optimizer) : callable
     {
-        if (is_null($this->alphas)) {
+        if (is_null($this->alpha)) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
@@ -154,7 +169,8 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
 
-        $this->alphas->update($optimizer->step($this->alphas, $dAlpha));
+        $this->alpha->w = $this->alpha->w
+            ->subtract($optimizer->step($this->alpha, $dAlpha));
 
         $z = $this->input;
         $computed = $this->computed;
@@ -176,23 +192,23 @@ class PReLU implements Hidden, Parametric
      */
     protected function rectify(Matrix $z) : Matrix
     {
-        if (is_null($this->alphas)) {
+        if (is_null($this->alpha)) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alphas = $this->alphas->w()->column(0);
+        $alpha = $this->alpha->w->column(0);
 
         $computed = [];
 
         foreach ($z as $i => $row) {
-            $alpha = $alphas[$i];
+            $temp = $alpha[$i];
 
             $activations = [];
 
             foreach ($row as $value) {
                 $activations[] = $value > 0.
                     ? $value
-                    : $alpha * $value;
+                    : $temp * $value;
             }
 
             $computed[] = $activations;
@@ -211,21 +227,21 @@ class PReLU implements Hidden, Parametric
      */
     protected function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        if (is_null($this->alphas)) {
+        if (is_null($this->alpha)) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alphas = $this->alphas->w()->column(0);
+        $alpha = $this->alpha->w->column(0);
 
         $gradients = [];
 
         foreach ($z as $i => $row) {
-            $alpha = $alphas[$i];
+            $temp = $alpha[$i];
 
             $gradient = [];
 
             foreach ($row as $value) {
-                $gradient[] = $value > 0. ? 1. : $alpha;
+                $gradient[] = $value > 0. ? 1. : $temp;
             }
 
             $gradients[] = $gradient;
@@ -242,12 +258,12 @@ class PReLU implements Hidden, Parametric
      */
     public function read() : array
     {
-        if (is_null($this->alphas)) {
+        if (is_null($this->alpha)) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
         
         return [
-            'alphas' => clone $this->alphas,
+            'alpha' => clone $this->alpha->w,
         ];
     }
 
@@ -255,10 +271,15 @@ class PReLU implements Hidden, Parametric
      * Restore the parameters in the layer from an associative array.
      *
      * @param  array  $parameters
+     * @throws \RuntimeException
      * @return void
      */
     public function restore(array $parameters) : void
     {
-        $this->alphas = $parameters['alphas'];
+        if (is_null($this->alpha)) {
+            throw new RuntimeException('Layer has not been initlaized.');
+        }
+        
+        $this->alpha->w = $parameters['alpha'];
     }
 }

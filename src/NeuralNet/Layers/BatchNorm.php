@@ -105,13 +105,28 @@ class BatchNorm implements Hidden, Parametric
     }
 
     /**
+     * Return the parameters of the layer.
+     * 
+     * @throws \RuntimeException
+     * @return \Rubix\ML\NeuralNet\Parameter[]
+     */
+    public function parameters() : array
+    {
+        if (is_null($this->beta) or is_null($this->gamma)) {
+            throw new RuntimeException('Layer has not been initilaized.');
+        }
+
+        return [$this->beta, $this->gamma];
+    }
+
+    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $fanIn;
 
@@ -140,8 +155,8 @@ class BatchNorm implements Hidden, Parametric
                 throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $beta = $this->beta->w()->column(0);
-        $gamma = $this->gamma->w()->column(0);
+        $beta = $this->beta->w->column(0);
+        $gamma = $this->gamma->w->column(0);
 
         $n = $input->n();
 
@@ -214,8 +229,8 @@ class BatchNorm implements Hidden, Parametric
                 throw new RuntimeException('Layer has not been initilaized.');
         }
         
-        $beta = $this->beta->w()->column(0);
-        $gamma = $this->gamma->w()->column(0);
+        $beta = $this->beta->w->column(0);
+        $gamma = $this->gamma->w->column(0);
 
         $out = [];
 
@@ -262,13 +277,16 @@ class BatchNorm implements Hidden, Parametric
         $dBeta = $dOut->sum()->asColumnMatrix();
         $dGamma = $dOut->multiply($this->xHat)->sum()->asColumnMatrix();
 
-        $this->beta->update($optimizer->step($this->beta, $dBeta));
-        $this->gamma->update($optimizer->step($this->gamma, $dGamma));
+        $this->beta->w = $this->beta->w
+            ->subtract($optimizer->step($this->beta, $dBeta));
+
+        $this->gamma->w = $this->gamma->w
+            ->subtract($optimizer->step($this->gamma, $dGamma));
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
-        $gamma = $this->gamma->w()->columnAsVector(0);
+        $gamma = $this->gamma->w->columnAsVector(0);
 
         unset($this->stdInv, $this->xHat);
 
@@ -301,8 +319,8 @@ class BatchNorm implements Hidden, Parametric
         }
 
         return [
-            'beta' => clone $this->beta,
-            'gamma' => clone $this->gamma,
+            'beta' => clone $this->beta->w,
+            'gamma' => clone $this->gamma->w,
         ];
     }
 
@@ -310,11 +328,16 @@ class BatchNorm implements Hidden, Parametric
      * Restore the parameters in the layer from an associative array.
      *
      * @param  array  $parameters
+     * @throws \RuntimeException
      * @return void
      */
     public function restore(array $parameters) : void
     {
-        $this->beta = $parameters['beta'];
-        $this->gamma = $parameters['gamma'];
+        if (is_null($this->beta) or is_null($this->gamma)) {
+            throw new RuntimeException('Layer has not been initilaized.');
+        }
+
+        $this->beta->w = $parameters['beta'];
+        $this->gamma->w = $parameters['gamma'];
     }
 }

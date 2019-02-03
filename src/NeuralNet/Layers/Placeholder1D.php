@@ -54,7 +54,7 @@ class Placeholder1D implements Input
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int
+    public function initialize(int $fanIn) : int
     {
         return $this->inputs;
     }

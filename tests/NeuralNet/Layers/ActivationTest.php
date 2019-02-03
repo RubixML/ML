@@ -45,7 +45,7 @@ class ActivationTest extends TestCase
 
         $this->layer = new Activation(new ReLU());
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

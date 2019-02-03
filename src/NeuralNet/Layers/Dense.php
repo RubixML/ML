@@ -89,17 +89,32 @@ class Dense implements Hidden, Parametric
     }
 
     /**
+     * Return the parameters of the layer.
+     * 
+     * @throws \RuntimeException
+     * @return \Rubix\ML\NeuralNet\Parameter[]
+     */
+    public function parameters() : array
+    {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
+        return [$this->weights, $this->biases];
+    }
+
+    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = $this->neurons;
 
-        $w = $this->initializer->init($fanIn, $fanOut);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
         $this->weights = new Parameter($w);
         $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
@@ -122,8 +137,8 @@ class Dense implements Hidden, Parametric
 
         $this->input = $input;
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+        return $this->weights->w->matmul($input)
+            ->add($this->biases->w->columnAsVector(0));
     }
 
     /**
@@ -139,8 +154,8 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+        return $this->weights->w->matmul($input)
+            ->add($this->biases->w->columnAsVector(0));
     }
 
     /**
@@ -167,10 +182,13 @@ class Dense implements Hidden, Parametric
         $dW = $dOut->matmul($this->input->transpose());
         $dB = $dOut->sum()->asColumnMatrix();
 
-        $w = $this->weights->w();
+        $w = $this->weights->w;
 
-        $this->weights->update($optimizer->step($this->weights, $dW));
-        $this->biases->update($optimizer->step($this->biases, $dB));
+        $this->weights->w = $this->weights->w
+            ->subtract($optimizer->step($this->weights, $dW));
+
+        $this->biases->w = $this->biases->w
+            ->subtract($optimizer->step($this->biases, $dB));
 
         unset($this->input);
 
@@ -192,8 +210,8 @@ class Dense implements Hidden, Parametric
         }
 
         return [
-            'weights' => clone $this->weights,
-            'biases' => clone $this->biases,
+            'weights' => clone $this->weights->w,
+            'biases' => clone $this->biases->w,
         ];
     }
 
@@ -201,11 +219,16 @@ class Dense implements Hidden, Parametric
      * Restore the parameters in the layer from an associative array.
      *
      * @param  array  $parameters
+     * @throws \RuntimeException
      * @return void
      */
     public function restore(array $parameters) : void
     {
-        $this->weights = $parameters['weights'];
-        $this->biases = $parameters['biases'];
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+        
+        $this->weights->w = $parameters['weights'];
+        $this->biases->w = $parameters['biases'];
     }
 }

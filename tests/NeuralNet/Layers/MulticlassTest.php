@@ -39,7 +39,7 @@ class MulticlassTest extends TestCase
 
         $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], 1e-4, new CrossEntropy());
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_width()

@@ -45,7 +45,7 @@ class DenseTest extends TestCase
 
         $this->layer = new Dense(3, new He());
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

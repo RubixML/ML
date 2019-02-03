@@ -24,7 +24,7 @@ class HeTest extends TestCase
 
     public function test_initialize()
     {
-        $w = $this->initializer->init(4, 3);
+        $w = $this->initializer->initialize(4, 3);
 
         $this->assertInstanceOf(Matrix::class, $w);
         $this->assertEquals([3, 4], $w->shape());

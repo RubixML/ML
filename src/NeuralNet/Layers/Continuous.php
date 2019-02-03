@@ -105,17 +105,32 @@ class Continuous implements Output
     }
 
     /**
+     * Return the parameters of the layer.
+     * 
+     * @throws \RuntimeException
+     * @return \Rubix\ML\NeuralNet\Parameter[]
+     */
+    public function parameters() : array
+    {
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
+        return [$this->weights, $this->biases];
+    }
+
+    /**
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int
+    public function initialize(int $fanIn) : int
     {
         $fanOut = 1;
 
-        $w = $this->initializer->init($fanIn, $fanOut);
+        $w = $this->initializer->initialize($fanIn, $fanOut);
 
         $this->weights = new Parameter($w);
         $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
@@ -138,8 +153,8 @@ class Continuous implements Output
 
         $this->input = $input;
 
-        $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+        $this->z = $this->weights->w->matmul($input)
+            ->add($this->biases->w->columnAsVector(0));
 
         return $this->z;
     }
@@ -157,8 +172,8 @@ class Continuous implements Output
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+        return $this->weights->w->matmul($input)
+            ->add($this->biases->w->columnAsVector(0));
     }
 
     /**
@@ -185,7 +200,7 @@ class Continuous implements Output
         $delta = $this->costFunction
             ->compute($expected, $this->z);
 
-        $penalties = $this->weights->w()->sum()
+        $penalties = $this->weights->w->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFunction
@@ -196,10 +211,13 @@ class Continuous implements Output
         $dW = $dL->matmul($this->input->transpose());
         $dB = $dL->sum()->asColumnMatrix();
 
-        $w = $this->weights->w();
+        $w = $this->weights->w;
 
-        $this->weights->update($optimizer->step($this->weights, $dW));
-        $this->biases->update($optimizer->step($this->biases, $dB));
+        $this->weights->w = $this->weights->w
+            ->subtract($optimizer->step($this->weights, $dW));
+
+        $this->biases->w = $this->biases->w
+            ->subtract($optimizer->step($this->biases, $dB));
 
         $loss = $delta->sum()->mean();
 
@@ -223,8 +241,8 @@ class Continuous implements Output
         }
 
         return [
-            'weights' => clone $this->weights,
-            'biases' => clone $this->biases,
+            'weights' => clone $this->weights->w,
+            'biases' => clone $this->biases->w,
         ];
     }
 
@@ -232,11 +250,16 @@ class Continuous implements Output
      * Restore the parameters of the layer.
      *
      * @param  array  $parameters
+     * @throws \RuntimeException
      * @return void
      */
     public function restore(array $parameters) : void
     {
-        $this->weights = $parameters['weights'];
-        $this->biases = $parameters['biases'];
+        if (is_null($this->weights) or is_null($this->biases)) {
+            throw new RuntimeException('Layer has not been initialized');
+        }
+
+        $this->weights->w = $parameters['weights'];
+        $this->biases->w = $parameters['biases'];
     }
 }

@@ -44,7 +44,7 @@ class AlphaDropoutTest extends TestCase
 
         $this->layer = new AlphaDropout(0.1);
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

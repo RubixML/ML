@@ -28,7 +28,7 @@ class LeCun implements Initializer
      * @param  int  $fanOut
      * @return \Rubix\Tensor\Matrix
      */
-    public function init(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut) : Matrix
     {
         $scale = sqrt(3 / $fanIn);
 

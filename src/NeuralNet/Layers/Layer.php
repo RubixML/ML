@@ -20,5 +20,5 @@ interface Layer
      * @param  int  $fanIn
      * @return int
      */
-    public function init(int $fanIn) : int;
+    public function initialize(int $fanIn) : int;
 }

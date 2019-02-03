@@ -21,7 +21,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RMSProp implements Optimizer
+class RMSProp implements Optimizer, Adaptive
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -68,6 +68,20 @@ class RMSProp implements Optimizer
     }
 
     /**
+     * Initialize a parameter.
+     * 
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
+     * @return void
+     */
+    public function initialize(Parameter $param) : void
+    {
+        $g2 = Matrix::zeros(...$param->w->shape());
+
+        $this->cache->attach($param, $g2);
+    }
+    
+
+    /**
      * Calculate a gradient descent step for a given parameter.
      *
      * @param  \Rubix\ML\NeuralNet\Parameter  $param
@@ -76,19 +90,14 @@ class RMSProp implements Optimizer
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->cache->contains($param)) {
-            $cache = $this->cache[$param];
-        } else {
-            $cache = Matrix::zeros(...$param->w()->shape());
+        $g2 = $this->cache[$param];
 
-            $this->cache->attach($param, $cache);
-        }
-
-        $this->cache[$param] = $cache = $cache
-            ->multiply($this->decay)
+        $g2 = $g2->multiply($this->decay)
             ->add($gradient->square()->multiply(1. - $this->decay));
 
+        $this->cache[$param] = $g2;
+
         return $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->clipLower(self::EPSILON));
+            ->divide($g2->sqrt()->clipLower(self::EPSILON));
     }
 }

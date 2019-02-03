@@ -44,7 +44,7 @@ class BatchNormTest extends TestCase
 
         $this->layer = new BatchNorm();
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

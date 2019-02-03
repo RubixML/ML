@@ -22,7 +22,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaGrad implements Optimizer
+class AdaGrad implements Optimizer, Adaptive
 {
     /**
      * The learning rate. i.e. the master step size.
@@ -53,6 +53,18 @@ class AdaGrad implements Optimizer
         $this->rate = $rate;
         $this->cache = new SplObjectStorage();
     }
+    /**
+     * Initialize a parameter.
+     * 
+     * @param  \Rubix\ML\NeuralNet\Parameter  $param
+     * @return void
+     */
+    public function initialize(Parameter $param) : void
+    {        
+        $g2 = Matrix::zeros(...$param->w->shape());
+
+        $this->cache->attach($param, $g2);
+    }
 
     /**
      * Calculate a gradient descent step for a given parameter.
@@ -63,19 +75,13 @@ class AdaGrad implements Optimizer
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix
     {
-        if ($this->cache->contains($param)) {
-            $cache = $this->cache[$param];
-        } else {
-            $cache = Matrix::zeros(...$param->w()->shape());
+        $g2 = $this->cache[$param];
 
-            $this->cache->attach($param, $cache);
-        }
+        $g2 = $g2->add($gradient->square());
 
-        $this->cache[$param] = $cache = $cache->add($gradient->square());
+        $this->cache[$param] = $g2;
 
-        $step = $gradient->multiply($this->rate)
-            ->divide($cache->sqrt()->clipLower(self::EPSILON));
-
-        return $step;
+        return  $gradient->multiply($this->rate)
+            ->divide($g2->sqrt()->clipLower(self::EPSILON));
     }
 }

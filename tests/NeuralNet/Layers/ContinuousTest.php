@@ -39,7 +39,7 @@ class ContinuousTest extends TestCase
 
         $this->layer = new Continuous(1e-4, new LeastSquares());
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

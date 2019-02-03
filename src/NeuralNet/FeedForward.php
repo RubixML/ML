@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
+use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
@@ -73,10 +74,24 @@ class FeedForward implements Network
 
         $this->layers[] = $output;
 
+        $fanIn = 0;
+
+        foreach ($this->layers as $layer) {
+            $fanIn = $layer->initialize($fanIn);
+        }
+
+        if ($optimizer instanceof Adaptive) {
+            foreach ($this->layers as $layer) {
+                if ($layer instanceof Parametric) {
+                    foreach ($layer->parameters() as $param) {
+                        $optimizer->initialize($param);
+                    }
+                }
+            }
+        }
+
         $this->optimizer = $optimizer;
         $this->backPass = array_reverse($this->hidden());
-
-        $this->initialize();
     }
 
     /**
@@ -139,20 +154,6 @@ class FeedForward implements Network
     public function depth() : int
     {
         return count($this->layers);
-    }
-
-    /**
-     * Initialize the layers in the network.
-     *
-     * @return void
-     */
-    public function initialize() : void
-    {
-        $fanIn = 0;
-
-        foreach ($this->layers as $layer) {
-            $fanIn = $layer->init($fanIn);
-        }
     }
 
     /**

@@ -44,7 +44,7 @@ class NoiseTest extends TestCase
 
         $this->layer = new Noise(0.1);
 
-        $this->layer->init($this->fanIn);
+        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()

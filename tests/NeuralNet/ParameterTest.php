@@ -22,16 +22,7 @@ class ParameterTest extends TestCase
 
     public function test_get_w()
     {
-        $this->assertInstanceOf(Matrix::class, $this->parameter->w());
-        $this->assertEquals(5, $this->parameter->w()[0][0]);
-    }
-
-    public function test_update()
-    {
-        $this->assertEquals(5, $this->parameter->w()[0][0]);
-
-        $this->parameter->update(Matrix::quick([[-1]]));
-
-        $this->assertEquals(6, $this->parameter->w()[0][0]);
+        $this->assertInstanceOf(Matrix::class, $this->parameter->w);
+        $this->assertEquals(5, $this->parameter->w[0][0]);
     }
 }

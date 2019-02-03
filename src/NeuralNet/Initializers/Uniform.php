@@ -46,7 +46,7 @@ class Uniform implements Initializer
      * @param  int  $fanOut
      * @return \Rubix\Tensor\Matrix
      */
-    public function init(int $fanIn, int $fanOut) : Matrix
+    public function initialize(int $fanIn, int $fanOut) : Matrix
     {
         return Matrix::uniform($fanOut, $fanIn)
             ->multiply($this->beta);
