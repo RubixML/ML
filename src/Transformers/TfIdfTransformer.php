@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -89,7 +89,7 @@ class TfIdfTransformer implements Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataFrame::CONTINUOUS) {
+        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CONTINUOUS) {
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
@@ -122,11 +122,10 @@ class TfIdfTransformer implements Elastic
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->idfs)) {
             throw new RuntimeException('Transformer has not been fitted.');

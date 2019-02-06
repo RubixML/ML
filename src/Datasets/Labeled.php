@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -119,7 +118,7 @@ class Labeled extends DataFrame implements Dataset
         if ($validate) {
             $labels = array_values($labels);
 
-            foreach ($labels as &$label) {
+            foreach ($labels as $label) {
                 if (!is_string($label) and !is_numeric($label)) {
                     throw new InvalidArgumentException('Label must be a string'
                         . ' or numeric type, ' . gettype($label) . ' found.');
@@ -186,9 +185,28 @@ class Labeled extends DataFrame implements Dataset
             return null;
         }
 
-        return is_string($this->labels[0])
-            ? DataFrame::CATEGORICAL
-            : DataFrame::CONTINUOUS;
+        return DataType::determine($this->labels[0]);
+    }
+
+    /**
+     * Map labels to their new values.
+     * 
+     * @param  callable  $fn
+     * @throws \RuntimeException
+     * @return void
+     */
+    public function transformLabels(callable $fn) : void
+    {
+        $labels = array_map($fn, $this->labels);
+
+        foreach ($labels as $label) {
+            if (!is_string($label) and !is_numeric($label)) {
+                throw new RuntimeException('Label must be a string or'
+                    . ' numeric type, ' . gettype($label) . ' found.');
+            }
+        }
+
+        $this->labels = $labels;
     }
 
     /**
@@ -199,19 +217,6 @@ class Labeled extends DataFrame implements Dataset
     public function possibleOutcomes() : array
     {
         return array_values(array_unique($this->labels, SORT_REGULAR));
-    }
-
-    /**
-     * Apply a transformation to the dataset and return for chaining.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        $transformer->transform($this->samples, $this->labels);
-
-        return $this;
     }
 
     /**
@@ -623,7 +628,7 @@ class Labeled extends DataFrame implements Dataset
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
 
-        if ($this->columnType($index) === DataFrame::CATEGORICAL) {
+        if ($this->columnType($index) === DataType::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] === $value) {
                     $leftSamples[] = $sample;

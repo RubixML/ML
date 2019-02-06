@@ -80,23 +80,23 @@ class Cyclical implements Optimizer
                                 float $decay = 0.99994)
     {
         if ($lower <= 0.) {
-            throw new InvalidArgumentException('The lower bound must be'
-                . " greater than 0, $lower given.");
+            throw new InvalidArgumentException('The lower bound must'
+                . " be greater than 0, $lower given.");
         }
 
         if ($lower > $upper) {
-            throw new InvalidArgumentException('The lower bound cannot be'
-                . ' greater than the upper bound.');
+            throw new InvalidArgumentException('The lower bound cannot'
+                . ' be greater than the upper bound.');
         }
 
         if ($steps < 1) {
-            throw new InvalidArgumentException("The number of steps per cycle"
-                . " must be greater than 0, $steps given.");
+            throw new InvalidArgumentException('The number of steps per'
+                . " cycle must be greater than 0, $steps given.");
         }
 
         if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException("Decay must be between 0 and"
-                . " 1, $decay given.");
+            throw new InvalidArgumentException('Decay must be between 0'
+                . " and 1, $decay given.");
         }
 
         $this->lower = $lower;

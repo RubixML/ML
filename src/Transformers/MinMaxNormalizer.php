@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
@@ -120,7 +120,7 @@ class MinMaxNormalizer implements Elastic
         $this->minimums = $this->maximums = $this->scales = $this->mins = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
+            if ($type === DataType::CONTINUOUS) {
                 $this->minimums[$column] = INF;
                 $this->maximums[$column] = -INF;
             }
@@ -143,7 +143,7 @@ class MinMaxNormalizer implements Elastic
             return;
         }
 
-        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
+        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
 
         foreach ($columns as $column => $values) {
             [$min, $max] = Stats::range($values);
@@ -167,11 +167,10 @@ class MinMaxNormalizer implements Elastic
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->mins) or is_null($this->scales)) {
             throw new RuntimeException('Transformer has not been fitted.');

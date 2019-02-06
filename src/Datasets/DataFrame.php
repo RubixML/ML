@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -11,15 +12,7 @@ use Countable;
 
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
-    const CONTINUOUS = 1;
-    const CATEGORICAL = 2;
-    const RESOURCE = 3;
-
-    const TYPES = [
-        1 => 'continuous',
-        2 => 'categorical',
-        3 => 'resource',
-    ];
+    const VALIDATION_RATIO = 0.2;
 
     /**
      * The feature vectors of the dataset. i.e the data table.
@@ -55,16 +48,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                     throw new InvalidArgumentException('The number of feature'
                         . " columns must be equal for all samples, $n needed "
                         . count($sample) . ' given.');
-                }
-
-                foreach ($sample as $feature) {
-                    if (is_string($feature) or is_numeric($feature) or is_resource($feature)) {
-                        continue 1;
-                    }
-
-                    throw new InvalidArgumentException('Feature must be a'
-                        . ' resource, string or numeric type, '
-                        . gettype($feature) . ' given.');
                 }
             }
         }
@@ -137,13 +120,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function types() : array
     {
-        $types = [];
-
-        for ($i = 0; $i < $this->numColumns(); $i++) {
-            $types[] = $this->columnType($i);
-        }
-
-        return $types;
+        return array_map([DataType::class, 'determine'], reset($this->samples));
     }
 
     /**
@@ -178,7 +155,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     {
         if ($this->empty()) {
             throw new RuntimeException('Cannot determine data type'
-                . ' of an empty dataframe.');
+                . ' of an empty data frame.');
         }
 
         if (!isset($this->samples[0][$index])) {
@@ -188,20 +165,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
         $feature = $this->samples[0][$index];
 
-        switch (true) {
-            case is_string($feature):
-                return self::CATEGORICAL;
-
-            case is_numeric($feature):
-                return self::CONTINUOUS;
-
-            case is_resource($feature):
-                return self::RESOURCE;
-
-            default:
-                throw new RuntimeException('Data type could not be'
-                    . ' determined.');
-        }
+        return DataType::determine($feature);
     }
 
     /**
@@ -267,6 +231,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $columns;
+    }
+
+    /**
+     * Apply a transformation to the dataset and return for chaining.
+     *
+     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @return self
+     */
+    public function apply(Transformer $transformer) : self
+    {
+        $transformer->transform($this->samples);
+
+        return $this;
     }
 
     /**

@@ -6,7 +6,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -225,9 +224,7 @@ class TSNE implements Estimator, Verbose
      */
     public function compatibility() : array
     {
-        return [
-            DataFrame::CONTINUOUS,
-        ];
+        return $this->kernel->compatibility();
     }
 
     /**

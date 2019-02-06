@@ -9,7 +9,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
@@ -108,8 +108,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     public function compatibility() : array
     {
         return [
-            DataFrame::CATEGORICAL,
-            DataFrame::CONTINUOUS,
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
         ];
     }
 

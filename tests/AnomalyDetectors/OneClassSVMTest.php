@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
@@ -50,8 +50,8 @@ class OneClassSVMTest extends TestCase
 
         $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
 
-        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_predict()

@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use Rubix\ML\Other\Specifications\LearnerIsTrained;
@@ -82,9 +82,9 @@ class DummyClassifier implements Learner, Persistable
     public function compatibility() : array
     {
         return [
-            DataFrame::CATEGORICAL,
-            DataFrame::CONTINUOUS,
-            DataFrame::RESOURCE,
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+            DataType::RESOURCE,
         ];
     }
 

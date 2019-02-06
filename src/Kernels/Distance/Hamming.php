@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 
 /**
  * Hamming
@@ -26,7 +26,7 @@ class Hamming implements Distance
     public function compatibility() : array
     {
         return [
-            DataFrame::CATEGORICAL,
+            DataType::CATEGORICAL,
         ];
     }
 

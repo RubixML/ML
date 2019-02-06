@@ -707,6 +707,19 @@ Return all of the possible outcomes i.e. the unique labels:
 public possibleOutcomes() : array
 ```
 
+Transform the labels in the dataset using a function:
+```php
+public transformLabels(callable $fn) : void
+```
+
+The function is given a label as its only argument and should return the new label as a continuous or categorical value.
+
+```php
+$dataset->transformLabels(function ($label) {
+	return $label === 1 ? 'female' : 'male';
+});
+```
+
 Filter the dataset by label:
 ```php
 public filterByLabel(callable $fn) : self
@@ -736,7 +749,8 @@ public stratifiedFold($k = 10) : array
 ```php
 use Rubix\ML\Datasets\Labeled;
 
-...
+// Import samples and labels
+
 $dataset = Labeled::build($samples, $labels);  // Build a new dataset with validation
 
 // or ...
@@ -746,6 +760,20 @@ $dataset = Labeled::quick($samples, $labels);  // Build a new dataset without va
 // or ...
 
 $dataset = new Labeled($samples, $labels, true);  // Use the full constructor
+
+// Transform integer encoded labels to strings
+$dataset->transformLabels(function ($label) {
+	switch ($label) {
+		case 1:
+			return 'male';
+		
+		case 2:
+			return 'female';
+
+		default:
+			return 'unknown';
+	}
+});
 
 // Return all the labels in the dataset
 $labels = $dataset->labels();

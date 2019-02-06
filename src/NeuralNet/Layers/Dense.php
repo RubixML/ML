@@ -9,6 +9,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
+use Closure;
 
 /**
  * Dense
@@ -161,12 +162,12 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  callable  $prevGradient
+     * @param  Closure  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return callable
+     * @return Closure
      */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
+    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         if (is_null($this->weights) or is_null($this->biases)) {
             throw new RuntimeException('Layer has not been initialized');

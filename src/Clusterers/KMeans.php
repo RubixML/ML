@@ -5,7 +5,6 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Online;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;

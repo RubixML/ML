@@ -18,11 +18,9 @@ class HTMLStripper implements Transformer
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
-     * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
             foreach ($sample as &$feature) {

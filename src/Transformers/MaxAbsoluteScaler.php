@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use RuntimeException;
 
 /**
@@ -56,7 +56,7 @@ class MaxAbsoluteScaler implements Elastic
         $this->maxabs = [];
 
         foreach ($dataset->types() as $column => $type) {
-            if ($type === DataFrame::CONTINUOUS) {
+            if ($type === DataType::CONTINUOUS) {
                 $this->maxabs[$column] = -INF;
             }
         }
@@ -92,11 +92,10 @@ class MaxAbsoluteScaler implements Elastic
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->maxabs)) {
             throw new RuntimeException('Transformer has not been fitted.');

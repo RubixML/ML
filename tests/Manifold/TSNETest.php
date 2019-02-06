@@ -6,7 +6,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Manifold\TSNE;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -43,8 +43,8 @@ class TSNETest extends TestCase
 
         $this->assertEquals(Estimator::EMBEDDER, $this->estimator->type());
 
-        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_predict()

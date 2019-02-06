@@ -1,4 +1,6 @@
 - Unreleased
+    - Added transform labels method to Labeled Dataset
+    - Added Data Type helper
     - Pipeline and Persistent Model are now Probabilistic
     - Added stack method to dataset API
     - Changed merge method on dataset to append and prepend
@@ -10,6 +12,7 @@
     - Added fitted method to stateful transformer API
     - Changed ordinal of integer encoded data types
     - Added Adaptive optimizer interface
+    - Changed Transformer transform API
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

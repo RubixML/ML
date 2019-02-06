@@ -7,6 +7,7 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
+use Closure;
 
 /**
  * PReLU
@@ -128,7 +129,7 @@ class PReLU implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->computed = $this->rectify($input);
+        $this->computed = $this->compute($input);
 
         return $this->computed;
     }
@@ -141,18 +142,18 @@ class PReLU implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {   
-        return $this->rectify($input);
+        return $this->compute($input);
     }
 
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  callable  $prevGradient
+     * @param  Closure  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return callable
+     * @return Closure
      */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
+    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         if (is_null($this->alpha)) {
             throw new RuntimeException('Layer has not been initlaized.');
@@ -190,25 +191,25 @@ class PReLU implements Hidden, Parametric
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
-    protected function rectify(Matrix $z) : Matrix
+    protected function compute(Matrix $z) : Matrix
     {
         if (is_null($this->alpha)) {
-            throw new RuntimeException('Layer has not been initlaized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alpha = $this->alpha->w->column(0);
+        $alphas = $this->alpha->w->column(0);
 
         $computed = [];
 
         foreach ($z as $i => $row) {
-            $temp = $alpha[$i];
+            $alpha = $alphas[$i];
 
             $activations = [];
 
             foreach ($row as $value) {
                 $activations[] = $value > 0.
                     ? $value
-                    : $temp * $value;
+                    : $alpha * $value;
             }
 
             $computed[] = $activations;

@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
@@ -44,8 +44,8 @@ class DummyRegressorTest extends TestCase
 
         $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
 
-        $this->assertContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_predict()

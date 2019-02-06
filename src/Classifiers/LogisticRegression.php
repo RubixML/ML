@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Functions\Argmax;
@@ -175,7 +175,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 

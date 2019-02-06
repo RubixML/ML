@@ -8,7 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -52,8 +52,8 @@ class KMeansTest extends TestCase
 
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
 
-        $this->assertNotContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_partial_predict()

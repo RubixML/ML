@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 
 /**
  * Euclidean
@@ -24,7 +24,7 @@ class Euclidean implements Distance
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 

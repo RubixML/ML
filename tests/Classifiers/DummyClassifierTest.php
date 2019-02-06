@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -50,8 +50,8 @@ class DummyClassifierTest extends TestCase
 
         $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
 
-        $this->assertContains(DataFrame::CATEGORICAL, $this->estimator->compatibility());
-        $this->assertContains(DataFrame::CONTINUOUS, $this->estimator->compatibility());
+        $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
     public function test_train_predict()

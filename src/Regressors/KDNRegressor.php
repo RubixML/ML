@@ -7,7 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;

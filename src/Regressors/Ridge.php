@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -81,7 +81,7 @@ class Ridge implements Learner, Persistable
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 

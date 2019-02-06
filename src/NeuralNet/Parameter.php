@@ -32,16 +32,4 @@ class Parameter
     {
         $this->w = $w;
     }
-
-    /**
-     * Allow methods to be called on the parameter matrix from the wrapper.
-     *
-     * @param  string  $name
-     * @param  array  $arguments
-     * @return mixed
-     */
-    public function __call(string $name, array $arguments)
-    {
-        return $this->w->$name(...$arguments);
-    }
 }

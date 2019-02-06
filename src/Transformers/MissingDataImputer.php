@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
@@ -109,18 +109,18 @@ class MissingDataImputer implements Stateful
             }
 
             switch ($type) {
-                case DataFrame::CATEGORICAL:
+                case DataType::CATEGORICAL:
                     $strategy = clone $this->categorical;
                     break 1;
 
-                case DataFrame::CONTINUOUS:
+                case DataType::CONTINUOUS:
                     $strategy = clone $this->continuous;
                     break 1;
 
                 default:
                     throw new InvalidArgumentException('This transformer'
                         . ' only handles categorical and continuous'
-                        . ' features, ' . DataFrame::TYPES[$type]
+                        . ' features, ' . DataType::TYPES[$type]
                         . ' found.');
             }
 
@@ -134,10 +134,9 @@ class MissingDataImputer implements Stateful
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->strategies)) {
             throw new RuntimeException('Transformer has not been fitted.');

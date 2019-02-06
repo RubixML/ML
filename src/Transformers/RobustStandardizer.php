@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
 
@@ -90,7 +90,7 @@ class RobustStandardizer implements Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        $columns = $dataset->columnsByType(DataFrame::CONTINUOUS);
+        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
 
         $this->medians = $this->mads = [];
 
@@ -106,11 +106,10 @@ class RobustStandardizer implements Stateful
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->medians) or is_null($this->mads)) {
             throw new RuntimeException('Transformer has not been fitted.');

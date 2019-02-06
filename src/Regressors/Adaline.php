@@ -8,7 +8,7 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -168,7 +168,7 @@ class Adaline implements Online, Verbose, Persistable
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 

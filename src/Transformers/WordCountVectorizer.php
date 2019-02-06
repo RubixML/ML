@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
 use InvalidArgumentException;
@@ -121,7 +121,7 @@ class WordCountVectorizer implements Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        $columns = $dataset->columnsByType(DataFrame::CATEGORICAL);
+        $columns = $dataset->columnsByType(DataType::CATEGORICAL);
 
         $this->vocabulary = [];
 
@@ -167,11 +167,10 @@ class WordCountVectorizer implements Stateful
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @throws \RuntimeException
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
         if (is_null($this->vocabulary)) {
             throw new RuntimeException('Transformer is not fitted.');

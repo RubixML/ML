@@ -55,8 +55,8 @@ class Momentum implements Optimizer, Adaptive
         }
 
         if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException('Momentum decay must be between'
-                . ' 0 and 1.');
+            throw new InvalidArgumentException('Momentum decay must be'
+                . " between 0 and 1, $decay given.");
         }
 
         $this->rate = $rate;

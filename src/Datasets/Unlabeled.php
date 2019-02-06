@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Datasets;
 
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -78,19 +77,6 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return self::quick($samples);
-    }
-
-    /**
-     * Apply a transformation to the dataset and return for chaining.
-     *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        $transformer->transform($this->samples);
-
-        return $this;
     }
 
     /**
@@ -313,7 +299,7 @@ class Unlabeled extends DataFrame implements Dataset
 
         $left = $right = [];
 
-        if ($this->columnType($index) === DataFrame::CATEGORICAL) {
+        if ($this->columnType($index) === DataType::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
                 if ($sample[$index] === $value) {
                     $left[] = $sample;

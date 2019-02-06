@@ -6,6 +6,7 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
+use Closure;
 
 /**
  * Dropout
@@ -123,12 +124,12 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradient
+     * @param  Closure  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return callable
+     * @return Closure
      */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
+    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         if (is_null($this->mask)) {
             throw new RuntimeException('Must perform forward pass before'

@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\Datasets;
 
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -64,7 +65,7 @@ class DataFrameTest extends TestCase
     public function test_column_types()
     {
         $outcome = [
-            DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL,
+            DataType::CATEGORICAL, DataType::CATEGORICAL, DataType::CATEGORICAL,
         ];
 
         $this->assertEquals($outcome, $this->dataframe->types());
@@ -77,6 +78,6 @@ class DataFrameTest extends TestCase
 
     public function test_column_type()
     {
-        $this->assertEquals(DataFrame::CATEGORICAL, $this->dataframe->columnType(2));
+        $this->assertEquals(DataType::CATEGORICAL, $this->dataframe->columnType(2));
     }
 }

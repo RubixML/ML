@@ -64,8 +64,8 @@ class StepDecay implements Optimizer
         }
 
         if ($steps < 1) {
-            throw new InvalidArgumentException('The number of steps per floor'
-                . " must be greater than 0, $steps given.");
+            throw new InvalidArgumentException('The number of steps per'
+                . "floor must be greater than 0, $steps given.");
         }
 
         if ($decay < 0.) {

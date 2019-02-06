@@ -11,6 +11,7 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 use InvalidArgumentException;
 use RuntimeException;
+use Closure;
 
 /**
  * Multiclass

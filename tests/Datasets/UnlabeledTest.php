@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,7 @@ class UnlabeledTest extends TestCase
             ['nice', 'furry', 'loner'],
         ];
 
-        $this->types = [DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL];
+        $this->types = [DataType::CATEGORICAL, DataType::CATEGORICAL, DataType::CATEGORICAL];
 
         $this->weights = [
             1, 1, 2, 1, 2, 3,
@@ -58,34 +59,6 @@ class UnlabeledTest extends TestCase
 
         $this->assertEquals(3, $dataset->numRows());
         $this->assertEquals(1, $dataset->numColumns());
-    }
-
-    public function test_bad_data_bool()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Unlabeled([['nice', true, 13]], true);
-    }
-
-    public function test_bad_data_array()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Unlabeled([['nice', ['bad'], 13]], true);
-    }
-
-    public function test_bad_data_null()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Unlabeled([['nice', null, 13]], true);
-    }
-
-    public function test_bad_data_object()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Unlabeled([['nice', (object) ['bad'], 13]], true);
     }
 
     public function test_from_iterator()

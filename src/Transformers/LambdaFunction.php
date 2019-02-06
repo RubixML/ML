@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use Closure;
+
 /**
  * Lambda Function
  *
@@ -18,15 +20,15 @@ class LambdaFunction implements Transformer
     /**
      * The user specified lambda function.
      *
-     * @var callable
+     * @var Closure
      */
     protected $lambda;
 
     /**
-     * @param  callable  $lambda
+     * @param  Closure  $lambda
      * @return void
      */
-    public function __construct(callable $lambda)
+    public function __construct(Closure $lambda)
     {
         $this->lambda = $lambda;
     }
@@ -35,11 +37,10 @@ class LambdaFunction implements Transformer
      * Transform the dataset in place.
      *
      * @param  array  $samples
-     * @param  array|null  $labels
      * @return void
      */
-    public function transform(array &$samples, ?array &$labels = null) : void
+    public function transform(array &$samples) : void
     {
-        [$samples, $labels] = call_user_func($this->lambda, $samples, $labels);
+        $samples = call_user_func($this->lambda, $samples);
     }
 }

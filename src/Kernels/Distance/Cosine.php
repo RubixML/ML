@@ -3,7 +3,7 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\Tensor\Vector;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 
 /**
  * Cosine
@@ -31,7 +31,7 @@ class Cosine implements Distance
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 

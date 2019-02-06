@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use Closure;
 
 /**
  * Noise
@@ -104,11 +105,11 @@ class Noise implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradient
+     * @param  Closure  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
-     * @return callable
+     * @return Closure
      */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
+    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         return $prevGradient;
     }

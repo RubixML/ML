@@ -9,6 +9,7 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
+use Closure;
 
 /**
  * Batch Norm
@@ -256,12 +257,12 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param  callable  $prevGradient
+     * @param  Closure  $prevGradient
      * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
      * @throws \RuntimeException
-     * @return callable
+     * @return Closure
      */
-    public function back(callable $prevGradient, Optimizer $optimizer) : callable
+    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         if (is_null($this->n) or is_null($this->mean) or is_null($this->stddev) or is_null($this->beta) or is_null($this->gamma)) {
                 throw new RuntimeException('Layer has not been initilaized.');

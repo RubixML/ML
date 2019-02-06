@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -37,7 +38,7 @@ class LabeledTest extends TestCase
             'monster', 'not monster', 'not monster',
         ];
 
-        $this->types = [DataFrame::CATEGORICAL, DataFrame::CATEGORICAL, DataFrame::CATEGORICAL];
+        $this->types = [DataType::CATEGORICAL, DataType::CATEGORICAL, DataType::CATEGORICAL];
 
         $this->weights = [
             1, 1, 2, 1, 2, 3,
@@ -65,34 +66,6 @@ class LabeledTest extends TestCase
 
         $this->assertEquals(3, $dataset->numRows());
         $this->assertEquals(1, $dataset->numColumns());
-    }
-
-    public function test_bad_data_bool()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Labeled([['nice', true, 13]], ['not monster'], true);
-    }
-
-    public function test_bad_data_array()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Labeled([['nice', ['bad'], 13]], ['not monster'], true);
-    }
-
-    public function test_bad_data_null()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Labeled([['nice', null, 13]], ['not monster'], true);
-    }
-
-    public function test_bad_data_object()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Labeled([['nice', (object) ['bad'], 13]], ['not monster'], true);
     }
 
     public function test_from_iterator()
@@ -127,6 +100,19 @@ class LabeledTest extends TestCase
         $this->assertEquals($outcome, $this->dataset->zip());
     }
 
+    public function test_transform_labels()
+    {
+        $this->dataset->transformLabels(function ($label) {
+            return $label === 'not monster' ? 0 : 1;
+        });
+
+        $expected = [
+            0, 1, 0, 1, 0, 0,
+        ];
+
+        $this->assertEquals($expected, $this->dataset->labels());
+    }
+
     public function test_get_label()
     {
         $this->assertEquals('not monster', $this->dataset->label(0));
@@ -135,7 +121,7 @@ class LabeledTest extends TestCase
 
     public function test_label_type()
     {
-        $this->assertEquals(DataFrame::CATEGORICAL, $this->dataset->labelType());
+        $this->assertEquals(DataType::CATEGORICAL, $this->dataset->labelType());
     }
 
     public function test_possible_outcomes()

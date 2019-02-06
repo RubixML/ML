@@ -5,7 +5,7 @@ namespace Rubix\ML\AnomalyDetectors;
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -103,7 +103,7 @@ class RobustZScore implements Learner, Persistable
     public function compatibility() : array
     {
         return [
-            DataFrame::CONTINUOUS,
+            DataType::CONTINUOUS,
         ];
     }
 
