@@ -52,15 +52,14 @@ class KDTree implements Tree
     protected $kernel;
 
     /**
-     * @param  int  $maxLeafSize
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param int $maxLeafSize
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $maxLeafSize = 20, ?Distance $kernel = null)
     {
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException("At least one sample is required"
+            throw new InvalidArgumentException('At least one sample is required'
                 . " to form a neighborhood, $maxLeafSize given.");
         }
 
@@ -84,8 +83,7 @@ class KDTree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function grow(Labeled $dataset) : void
     {
@@ -129,7 +127,7 @@ class KDTree implements Tree
     /**
      * Find the best split of a given subset of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Coordinate
      */
     protected function findBestSplit(Labeled $dataset) : Coordinate
@@ -149,7 +147,7 @@ class KDTree implements Tree
      * Search the tree for a neighborhood and return an array of samples and
      * labels.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
      */
     public function search(array $sample) : ?Neighborhood
@@ -179,8 +177,8 @@ class KDTree implements Tree
      * Run a k nearest neighbors search of every neighborhood and return
      * the labels and distances in a tuple.
      *
-     * @param  array  $sample
-     * @param  int  $k
+     * @param array $sample
+     * @param int $k
      * @throws \InvalidArgumentException
      * @return array[]
      */

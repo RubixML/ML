@@ -43,8 +43,7 @@ class AlphaDropout extends Dropout
     protected $beta;
 
     /**
-     * @param  float  $ratio
-     * @return void
+     * @param float $ratio
      */
     public function __construct(float $ratio = 0.1)
     {
@@ -57,7 +56,7 @@ class AlphaDropout extends Dropout
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -78,7 +77,7 @@ class AlphaDropout extends Dropout
     /**
      * Boost dropped neurons by a factor of alpha p.
      *
-     * @param  float  $value
+     * @param float $value
      * @return float
      */
     public function saturate(float $value) : float

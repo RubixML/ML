@@ -50,12 +50,11 @@ class ImageVectorizer implements Transformer
     protected $intervention;
 
     /**
-     * @param  array  $size
-     * @param  bool  $rgb
-     * @param  string  $driver
+     * @param array $size
+     * @param bool $rgb
+     * @param string $driver
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct(array $size = [32, 32], bool $rgb = true, string $driver = 'gd')
     {
@@ -73,7 +72,7 @@ class ImageVectorizer implements Transformer
 
         if (!is_int($size[0]) and !is_int($size[1])) {
             throw new InvalidArgumentException('Width and height must be'
-                . ' integers, ' .  gettype($size[0])  . ' and '
+                . ' integers, ' . gettype($size[0]) . ' and '
                 . gettype($size[1]) . ' given.');
         }
 
@@ -101,8 +100,7 @@ class ImageVectorizer implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {
@@ -139,7 +137,7 @@ class ImageVectorizer implements Transformer
     /**
      * Convert an image into a vector of raw color channel data.
      *
-     * @param  mixed  $image
+     * @param mixed $image
      * @throws \InvalidArgumentException
      * @return array
      */

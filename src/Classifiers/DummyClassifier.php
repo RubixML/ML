@@ -41,8 +41,7 @@ class DummyClassifier implements Learner, Persistable
     protected $trained;
 
     /**
-     * @param  \Rubix\ML\Other\Strategies\Categorical|null  $strategy
-     * @return void
+     * @param \Rubix\ML\Other\Strategies\Categorical|null $strategy
      */
     public function __construct(?Categorical $strategy = null)
     {
@@ -87,9 +86,8 @@ class DummyClassifier implements Learner, Persistable
     /**
      * Fit the training set to the given guessing strategy.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -106,7 +104,7 @@ class DummyClassifier implements Learner, Persistable
     /**
      * Make a prediction of a given sample dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array

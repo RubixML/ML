@@ -74,10 +74,9 @@ class Continuous implements Output
     protected $z;
 
     /**
-     * @param  float  $alpha
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction  $costFunction
+     * @param float $alpha
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFunction
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $alpha = 1e-4, ?CostFunction $costFunction = null)
     {
@@ -124,7 +123,7 @@ class Continuous implements Output
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -142,7 +141,7 @@ class Continuous implements Output
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -163,7 +162,7 @@ class Continuous implements Output
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -180,8 +179,8 @@ class Continuous implements Output
     /**
      * Calculate the gradients for each output neuron and update.
      *
-     * @param  array  $labels
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param array $labels
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return array
      */
@@ -250,9 +249,8 @@ class Continuous implements Output
     /**
      * Restore the parameters of the layer.
      *
-     * @param  array  $parameters
+     * @param array $parameters
      * @throws \RuntimeException
-     * @return void
      */
     public function restore(array $parameters) : void
     {

@@ -55,9 +55,8 @@ class Dropout implements Hidden, Nonparametric
     protected $mask;
 
     /**
-     * @param  float  $ratio
+     * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $ratio = 0.5)
     {
@@ -84,7 +83,7 @@ class Dropout implements Hidden, Nonparametric
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -99,7 +98,7 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -113,7 +112,7 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -124,8 +123,8 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return Closure
      */
@@ -148,7 +147,7 @@ class Dropout implements Hidden, Nonparametric
     /**
      * Indicator function for dropped out neurons.
      *
-     * @param  float  $value
+     * @param float $value
      * @return float
      */
     public function drop(float $value) : float

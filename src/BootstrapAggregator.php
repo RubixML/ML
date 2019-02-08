@@ -56,11 +56,10 @@ class BootstrapAggregator implements Learner, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Learner  $base
-     * @param  int  $estimators
-     * @param  float  $ratio
+     * @param \Rubix\ML\Learner $base
+     * @param int $estimators
+     * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
@@ -121,9 +120,8 @@ class BootstrapAggregator implements Learner, Persistable
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -145,7 +143,7 @@ class BootstrapAggregator implements Learner, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */

@@ -32,10 +32,9 @@ class Coordinate extends Split implements Spatial
     protected $max;
 
     /**
-     * @param  int  $column
-     * @param  mixed  $value
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param int $column
+     * @param mixed $value
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function __construct(int $column, $value, Dataset $dataset)
     {

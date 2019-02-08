@@ -32,9 +32,8 @@ class Screen extends Logger
     protected $timestamps;
 
     /**
-     * @param  string  $channel
-     * @param  bool  $timestamps
-     * @return void
+     * @param string $channel
+     * @param bool $timestamps
      */
     public function __construct(string $channel = 'default', bool $timestamps = true)
     {
@@ -45,10 +44,9 @@ class Screen extends Logger
     /**
      * Logs with an arbitrary level.
      *
-     * @param  mixed  $level
-     * @param  string  $message
-     * @param  array  $context
-     * @return void
+     * @param mixed $level
+     * @param string $message
+     * @param array $context
      */
     public function log($level, $message, array $context = []) : void
     {

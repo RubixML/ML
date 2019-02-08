@@ -21,7 +21,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Build a new unlabeled dataset with validation.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @return self
      */
     public static function build(array $samples = []) : self
@@ -32,7 +32,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Build a new unlabeled dataset foregoing validation.
      *
-     * @param  array[]  $samples
+     * @param array[] $samples
      * @return self
      */
     public static function quick(array $samples = []) : self
@@ -43,7 +43,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Build a dataset from an iterator.
      *
-     * @param  iterable  $samples
+     * @param iterable $samples
      * @return self
      */
     public static function fromIterator(iterable $samples) : self
@@ -59,7 +59,7 @@ class Unlabeled extends DataFrame implements Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param  array  $datasets
+     * @param array $datasets
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -83,7 +83,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Return a dataset containing only the first n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function head(int $n = 10) : self
@@ -94,7 +94,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Return a dataset containing only the last n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function tail(int $n = 10) : self
@@ -105,7 +105,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Take n samples from this dataset and return them in a new dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function take(int $n = 1) : self
@@ -116,7 +116,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Leave n samples on this dataset and return the rest in a new dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function leave(int $n = 1) : self
@@ -127,7 +127,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Prepend this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function prepend(Dataset $dataset) : Dataset
@@ -138,7 +138,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Append this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function append(Dataset $dataset) : Dataset
@@ -150,8 +150,8 @@ class Unlabeled extends DataFrame implements Dataset
      * Remove a size n chunk of the dataset starting at offset and return it in
      * a new dataset.
      *
-     * @param  int  $offset
-     * @param  int  $n
+     * @param int $offset
+     * @param int $n
      * @return self
      */
     public function splice(int $offset, int $n) : self
@@ -174,8 +174,8 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Run a filter over the dataset using the values of a given column.
      *
-     * @param  int  $index
-     * @param  callable  $fn
+     * @param int $index
+     * @param callable $fn
      * @return self
      */
     public function filterByColumn(int $index, callable $fn) : self
@@ -194,8 +194,8 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Sort the dataset in place by a column in the sample matrix.
      *
-     * @param  int  $index
-     * @param  bool  $descending
+     * @param int $index
+     * @param bool $descending
      * @return self
      */
     public function sortByColumn(int $index, bool $descending = false)
@@ -210,7 +210,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
-     * @param  float  $ratio
+     * @param float $ratio
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -232,7 +232,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
-     * @param  int  $k
+     * @param int $k
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -261,7 +261,7 @@ class Unlabeled extends DataFrame implements Dataset
      * not enough samples to fill an entire batch, then the dataset will contain
      * as many samples as possible.
      *
-     * @param  int  $n
+     * @param int $n
      * @return array
      */
     public function batch(int $n = 50) : array
@@ -286,8 +286,8 @@ class Unlabeled extends DataFrame implements Dataset
      * right side contains the samples that are greater than or equal to the
      * value.
      *
-     * @param  int  $index
-     * @param  mixed  $value
+     * @param int $index
+     * @param mixed $value
      * @throws \InvalidArgumentException
      * @return self[]
      */
@@ -324,7 +324,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Generate a random subset with replacement.
      *
-     * @param  int  $n
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -349,8 +349,8 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Generate a random weighted subset with replacement.
      *
-     * @param  int  $n
-     * @param  array  $weights
+     * @param int $n
+     * @param array $weights
      * @throws \InvalidArgumentException
      * @return self
      */

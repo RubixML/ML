@@ -6,6 +6,10 @@ use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function round;
+use function rand;
+use function is_null;
+
 /**
  * Wild Guess
  *
@@ -41,9 +45,8 @@ class WildGuess implements Continuous
     protected $max;
 
     /**
-     * @param  int  $precision
+     * @param int $precision
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $precision = 2)
     {
@@ -58,9 +61,8 @@ class WildGuess implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(array $values) : void
     {

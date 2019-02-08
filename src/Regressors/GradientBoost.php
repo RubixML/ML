@@ -112,24 +112,23 @@ class GradientBoost implements Learner, Verbose, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Learner|null  $booster
-     * @param  float  $rate
-     * @param  int  $estimators
-     * @param  float  $ratio
-     * @param  float  $minChange
-     * @param  float  $tolerance
-     * @param  \Rubix\ML\Learner|null  $base
+     * @param \Rubix\ML\Learner|null $booster
+     * @param float $rate
+     * @param int $estimators
+     * @param float $ratio
+     * @param float $minChange
+     * @param float $tolerance
+     * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         ?Learner $booster = null,
         float $rate = 0.1,
         int $estimators = 100,
-                                float $ratio = 0.8,
+        float $ratio = 0.8,
         float $minChange = 1e-4,
         float $tolerance = 1e-3,
-                                ?Learner $base = null
+        ?Learner $base = null
     ) {
         if (is_null($booster)) {
             $booster = new RegressionTree(3);
@@ -226,9 +225,8 @@ class GradientBoost implements Learner, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -337,7 +335,7 @@ class GradientBoost implements Learner, Verbose, Persistable
     /**
      * Make a prediction from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array

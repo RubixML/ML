@@ -28,9 +28,8 @@ class PolynomialExpander implements Transformer
     protected $degree;
 
     /**
-     * @param  int  $degree
+     * @param int $degree
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $degree = 2)
     {
@@ -45,8 +44,7 @@ class PolynomialExpander implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {

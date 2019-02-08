@@ -25,9 +25,8 @@ class RBF implements Kernel
     protected $gamma;
 
     /**
-     * @param  float|null  $gamma
+     * @param float|null $gamma
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct(?float $gamma = null)
     {

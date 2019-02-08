@@ -11,7 +11,7 @@ trait WrapsProbabilistic
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */

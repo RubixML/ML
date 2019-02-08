@@ -9,7 +9,7 @@ interface Nonparametric extends Layer
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix;
@@ -17,7 +17,7 @@ interface Nonparametric extends Layer
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix;

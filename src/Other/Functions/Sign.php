@@ -16,7 +16,7 @@ class Sign
     /**
      * Compute the sign indication of a number.
      *
-     * @param  int|float  $number
+     * @param int|float $number
      * @return int
      */
     public static function compute($number) : int

@@ -43,10 +43,9 @@ class Agglomerate implements Generator
     protected $dimensions;
 
     /**
-     * @param  array  $generators
-     * @param  array|null  $weights
+     * @param array $generators
+     * @param array|null $weights
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $generators = [], ?array $weights = null)
     {
@@ -79,7 +78,7 @@ class Agglomerate implements Generator
             if (count($weights) !== $k) {
                 throw new InvalidArgumentException('The number of weights must'
                     . " equal the number of generators, $k needed but found "
-                    . count($weights) . ".");
+                    . count($weights) . '.');
             }
 
             foreach ($weights as $weight) {
@@ -131,7 +130,7 @@ class Agglomerate implements Generator
     /**
      * Generate n data points.
      *
-     * @param  int  $n
+     * @param int $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset

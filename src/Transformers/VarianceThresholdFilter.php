@@ -37,9 +37,8 @@ class VarianceThresholdFilter implements Stateful
     protected $selected;
 
     /**
-     * @param  float  $threshold
+     * @param float $threshold
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $threshold = 0.)
     {
@@ -74,8 +73,7 @@ class VarianceThresholdFilter implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -95,9 +93,8 @@ class VarianceThresholdFilter implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

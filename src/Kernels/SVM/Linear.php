@@ -18,7 +18,6 @@ class Linear implements Kernel
 {
     /**
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct()
     {

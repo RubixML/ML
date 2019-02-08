@@ -4,6 +4,11 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
+use function preg_split;
+use function preg_match_all;
+use function array_slice;
+use function implode;
+
 /**
  * Skip Gram
  *
@@ -40,10 +45,9 @@ class SkipGram implements Tokenizer
     protected $skip;
 
     /**
-     * @param  int  $n
-     * @param  int  $skip
+     * @param int $n
+     * @param int $skip
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $n = 2, int $skip = 2)
     {
@@ -64,7 +68,7 @@ class SkipGram implements Tokenizer
     /**
      * Tokenize a block of text.
      *
-     * @param  string  $string
+     * @param string $string
      * @return array
      */
     public function tokenize(string $string) : array

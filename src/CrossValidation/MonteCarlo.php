@@ -46,11 +46,10 @@ class MonteCarlo implements Validator
     protected $stratify;
 
     /**
-     * @param  int  $simulations
-     * @param  float  $ratio
-     * @param  bool  $stratify
+     * @param int $simulations
+     * @param float $ratio
+     * @param bool $stratify
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $simulations = 10, float $ratio = 0.2, bool $stratify = false)
     {
@@ -72,9 +71,9 @@ class MonteCarlo implements Validator
     /**
      * Test the estimator with the supplied dataset and return a score.
      *
-     * @param  \Rubix\ML\Learner  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @throws \InvalidArgumentException
      * @return float
      */

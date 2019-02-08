@@ -49,9 +49,8 @@ class Minkowski implements Distance
     protected $inverse;
 
     /**
-     * @param  float  $lambda
+     * @param float $lambda
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $lambda = 3.)
     {
@@ -67,8 +66,8 @@ class Minkowski implements Distance
     /**
      * Compute the distance given two vectors.
      *
-     * @param  array  $a
-     * @param  array  $b
+     * @param array $a
+     * @param array $b
      * @return float
      */
     public function compute(array $a, array $b) : float

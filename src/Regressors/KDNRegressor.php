@@ -48,12 +48,11 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     protected $weighted;
 
     /**
-     * @param  int  $k
-     * @param  int  $maxLeafSize
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  bool  $weighted
+     * @param int $k
+     * @param int $maxLeafSize
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param bool $weighted
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null, bool $weighted = true)
     {
@@ -104,9 +103,8 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -123,7 +121,7 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     /**
      * Make a prediction based on the nearest neighbors.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

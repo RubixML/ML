@@ -5,6 +5,11 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function array_values;
+use function array_unique;
+use function rand;
+use function count;
+
 /**
  * Lottery
  *
@@ -28,9 +33,8 @@ class Lottery implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \RuntimeException
-     * @return void
      */
     public function fit(array $values) : void
     {

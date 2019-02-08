@@ -23,10 +23,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     ];
 
     /**
-     * @param  array  $samples
-     * @param  bool  $validate
+     * @param array $samples
+     * @param bool $validate
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $samples = [], bool $validate = true)
     {
@@ -67,7 +66,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample at the given row index.
      *
-     * @param  int  $index
+     * @param int $index
      * @return array
      */
     public function row(int $index) : array
@@ -88,7 +87,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the feature column at the given index.
      *
-     * @param  int  $index
+     * @param int $index
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -145,7 +144,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Get the datatype for a feature column given a column index.
      *
-     * @param  int  $index
+     * @param int $index
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return int
@@ -214,7 +213,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the columns that match a given data type.
      *
-     * @param  int  $type
+     * @param int $type
      * @return array
      */
     public function columnsByType(int $type) : array
@@ -235,7 +234,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Apply a transformation to the dataset and return for chaining.
      *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @param \Rubix\ML\Transformers\Transformer $transformer
      * @return self
      */
     public function apply(Transformer $transformer) : self
@@ -264,10 +263,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * @param  mixed  $index
-     * @param  array  $values
+     * @param mixed $index
+     * @param array $values
      * @throws \RuntimeException
-     * @return void
      */
     public function offsetSet($index, $values) : void
     {
@@ -277,7 +275,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Does a given column exist in the dataset.
      *
-     * @param  mixed  $index
+     * @param mixed $index
      * @return bool
      */
     public function offsetExists($index) : bool
@@ -286,9 +284,8 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * @param  mixed  $index
+     * @param mixed $index
      * @throws \RuntimeException
-     * @return void
      */
     public function offsetUnset($index) : void
     {
@@ -298,7 +295,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return a column from the dataframe given by index.
      *
-     * @param  mixed  $index
+     * @param mixed $index
      * @throws \InvalidArgumentException
      * @return array
      */

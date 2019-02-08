@@ -31,10 +31,9 @@ class Sigmoidal implements Kernel
     protected $coef0;
 
     /**
-     * @param  float  $gamma
-     * @param  float  $coef0
+     * @param float $gamma
+     * @param float $coef0
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct(?float $gamma = null, float $coef0 = 0.)
     {

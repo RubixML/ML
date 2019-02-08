@@ -45,10 +45,9 @@ class KFold implements Validator
     protected $stratify;
 
     /**
-     * @param  int  $k
-     * @param  bool  $stratify
+     * @param int $k
+     * @param bool $stratify
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k = 10, bool $stratify = false)
     {
@@ -64,9 +63,9 @@ class KFold implements Validator
     /**
      * Test the estimator with the supplied dataset and return a score.
      *
-     * @param  \Rubix\ML\Learner  $estimator
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @throws \InvalidArgumentException
      * @return float
      */

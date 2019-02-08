@@ -2,6 +2,13 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+use function gettype;
+use function is_string;
+use function is_int;
+use function is_float;
+use function is_numeric;
+use function is_resource;
+
 class DataType
 {
     const OTHER = 0;
@@ -26,7 +33,7 @@ class DataType
     /**
      * Return the integer encoded data type.
      *
-     * @param  mixed  $data
+     * @param mixed $data
      * @return int
      */
     public static function determine($data) : int
@@ -52,7 +59,7 @@ class DataType
     /**
      * Is the data categorical?
      *
-     * @param  mixed  $data
+     * @param mixed $data
      * @return bool
      */
     public static function isCategorical($data) : bool
@@ -63,7 +70,7 @@ class DataType
     /**
      * Is the data continuous?
      *
-     * @param  mixed  $data
+     * @param mixed $data
      * @return bool
      */
     public static function isContinuous($data) : bool
@@ -74,7 +81,7 @@ class DataType
     /**
      * Is the data a resource?
      *
-     * @param  mixed  $data
+     * @param mixed $data
      * @return bool
      */
     public static function isResource($data) : bool
@@ -85,7 +92,7 @@ class DataType
     /**
      * Does the data not belong to any type?
      *
-     * @param  mixed  $data
+     * @param mixed $data
      * @return bool
      */
     public static function isOther($data) : bool

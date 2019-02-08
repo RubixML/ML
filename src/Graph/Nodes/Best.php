@@ -45,12 +45,11 @@ class Best extends BinaryNode implements Decision, Leaf
     protected $n;
     
     /**
-     * @param  int|string  $outcome
-     * @param  array  $probabilities
-     * @param  float  $impurity
-     * @param  int  $n
+     * @param int|string $outcome
+     * @param array $probabilities
+     * @param float $impurity
+     * @param int $n
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct($outcome, array $probabilities, float $impurity, int $n)
     {

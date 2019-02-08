@@ -91,10 +91,9 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  float  $alpha
-     * @param  array|null  $priors
+     * @param float $alpha
+     * @param array|null $priors
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $alpha = 1.0, ?array $priors = null)
     {
@@ -201,9 +200,8 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -228,9 +226,8 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * Compute the rolling counts and conditional probabilities.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -300,7 +297,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -328,7 +325,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -364,7 +361,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
     /**
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return array
      */
     protected function jointLogLikelihood(array $sample) : array

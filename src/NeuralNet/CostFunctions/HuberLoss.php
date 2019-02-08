@@ -35,9 +35,8 @@ class HuberLoss implements CostFunction
     protected $beta;
 
     /**
-     * @param  float  $delta
+     * @param float $delta
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $delta = 1.)
     {
@@ -63,8 +62,8 @@ class HuberLoss implements CostFunction
     /**
      * Compute the loss matrix.
      *
-     * @param  \Rubix\Tensor\Matrix  $expected
-     * @param  \Rubix\Tensor\Matrix  $activations
+     * @param \Rubix\Tensor\Matrix $expected
+     * @param \Rubix\Tensor\Matrix $activations
      * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
@@ -77,9 +76,9 @@ class HuberLoss implements CostFunction
      * Calculate the gradient of the cost function with respect to the
      * activation.
      *
-     * @param  \Rubix\Tensor\Matrix  $expected
-     * @param  \Rubix\Tensor\Matrix  $activations
-     * @param  \Rubix\Tensor\Matrix  $delta
+     * @param \Rubix\Tensor\Matrix $expected
+     * @param \Rubix\Tensor\Matrix $activations
+     * @param \Rubix\Tensor\Matrix $delta
      * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
@@ -93,7 +92,7 @@ class HuberLoss implements CostFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _compute(float $z) : float

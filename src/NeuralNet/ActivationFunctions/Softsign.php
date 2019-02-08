@@ -36,7 +36,7 @@ class Softsign implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
+     * @param \Rubix\Tensor\Matrix $z
      * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
@@ -47,8 +47,8 @@ class Softsign implements ActivationFunction
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
-     * @param  \Rubix\Tensor\Matrix  $computed
+     * @param \Rubix\Tensor\Matrix $z
+     * @param \Rubix\Tensor\Matrix $computed
      * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
@@ -57,7 +57,7 @@ class Softsign implements ActivationFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _compute(float $z) : float
@@ -66,7 +66,7 @@ class Softsign implements ActivationFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _differentiate(float $z) : float

@@ -5,6 +5,16 @@ namespace Rubix\ML\Other\Helpers;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 
+use function array_count_values;
+use function array_map;
+use function array_sum;
+use function array_slice;
+use function count;
+use function sort;
+use function intdiv;
+use function min;
+use function max;
+
 /**
  * Stats
  *
@@ -21,8 +31,8 @@ class Stats
     /**
      * Compute the population mean of a set of values.
      *
-     * @param  array  $values
-     * @param  int|null  $n
+     * @param array $values
+     * @param int|null $n
      * @return float
      */
     public static function mean(array $values, ?int $n = null) : float
@@ -40,9 +50,9 @@ class Stats
     /**
      * Compute the weighted mean of a set of values.
      *
-     * @param  array  $values
-     * @param  array  $weights
-     * @param  int|null  $n
+     * @param array $values
+     * @param array $weights
+     * @param int|null $n
      * @return float
      */
     public static function weightedMean(array $values, array $weights, ?int $n = null) : float
@@ -73,7 +83,7 @@ class Stats
     /**
      * Return the midrange of a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @return float
      */
     public static function midrange(array $values) : float
@@ -85,7 +95,7 @@ class Stats
      * Find a mode of a set of values i.e a value that appears most often in the
      * set.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -105,9 +115,9 @@ class Stats
      * Compute the variance of a set of values given a mean and n degrees of
      * freedom.
      *
-     * @param  array  $values
-     * @param  float|null  $mean
-     * @param  int|null  $n
+     * @param array $values
+     * @param float|null $mean
+     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -134,7 +144,7 @@ class Stats
     /**
      * Calculate the median of a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -163,8 +173,8 @@ class Stats
     /**
      * Calculate the pth percentile of a given set of values.
      *
-     * @param  array  $values
-     * @param  float  $p
+     * @param array $values
+     * @param float $p
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -176,7 +186,7 @@ class Stats
         }
 
         if ($p < 0. or $p > 100.) {
-            throw new InvalidArgumentException("P must be between 0 and 1"
+            throw new InvalidArgumentException('P must be between 0 and 1'
                 . "$p given.");
         }
 
@@ -199,7 +209,7 @@ class Stats
     /**
      * Compute the interquartile range of a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -230,8 +240,8 @@ class Stats
     /**
      * Calculate the median absolute deviation of a set of values given a median.
      *
-     * @param  array  $values
-     * @param  float|null  $median
+     * @param array $values
+     * @param float|null $median
      * @return float
      */
     public static function mad(array $values, ?float $median = null) : float
@@ -250,10 +260,10 @@ class Stats
     /**
      * Compute the n-th central moment of a set of values.
      *
-     * @param  array  $values
-     * @param  int  $moment
-     * @param  float|null  $mean
-     * @param  int|null  $n
+     * @param array $values
+     * @param int $moment
+     * @param float|null $mean
+     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -281,9 +291,9 @@ class Stats
      * Compute the skewness of a set of values given a mean and n degrees of
      * freedom.
      *
-     * @param  array  $values
-     * @param  float|null  $mean
-     * @param  int|null  $n
+     * @param array $values
+     * @param float|null $mean
+     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -307,9 +317,9 @@ class Stats
     /**
      * Compute the kurtosis of a set of values.
      *
-     * @param  array  $values
-     * @param  float|null  $mean
-     * @param  int|null  $n
+     * @param array $values
+     * @param float|null $mean
+     * @param int|null $n
      * @throws \InvalidArgumentException
      * @return float
      */
@@ -333,7 +343,7 @@ class Stats
     /**
      * Return the minimum and maximum values of a set in a tuple.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -350,7 +360,7 @@ class Stats
     /**
      * Compute the population mean and variance and return them in a 2-tuple.
      *
-     * @param  array  $values
+     * @param array $values
      * @return array
      */
     public static function meanVar(array $values) : array
@@ -365,7 +375,7 @@ class Stats
      * Compute the population median and median absolute deviation and return
      * them in a 2-tuple.
      *
-     * @param  array  $values
+     * @param array $values
      * @return array
      */
     public static function medMad(array $values) : array

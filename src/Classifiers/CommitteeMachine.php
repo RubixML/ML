@@ -60,10 +60,9 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     ];
 
     /**
-     * @param  array  $experts
-     * @param  array|null  $influences
+     * @param array $experts
+     * @param array|null $influences
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $experts, ?array $influences = null)
     {
@@ -170,8 +169,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Train all the experts with the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -190,7 +188,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -201,7 +199,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function proba(Dataset $dataset) : array

@@ -2,6 +2,11 @@
 
 namespace Rubix\ML\Other\Functions;
 
+use function array_sum;
+use function array_map;
+use function log;
+use function exp;
+
 /**
  * LogSumExp
  *
@@ -18,7 +23,7 @@ class LogSumExp
     /**
      * Compute the log of the sum of exponential values.
      *
-     * @param  array  $values
+     * @param array $values
      * @return float|null
      */
     public static function compute(array $values) : ?float

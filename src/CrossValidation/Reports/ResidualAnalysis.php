@@ -33,8 +33,8 @@ class ResidualAnalysis implements Report
     /**
      * Generate the report.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param array $predictions
+     * @param array $labels
      * @throws \InvalidArgumentException
      * @return array
      */

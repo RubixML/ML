@@ -23,9 +23,8 @@ class StopWordFilter implements Transformer
     protected $stopWords;
 
     /**
-     * @param  array  $stopWords
+     * @param array $stopWords
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $stopWords = [])
     {
@@ -46,8 +45,7 @@ class StopWordFilter implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {

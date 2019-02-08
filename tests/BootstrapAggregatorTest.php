@@ -46,7 +46,6 @@ class BootstrapAggregatorTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
     }
 
-
     public function test_train_predict()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);

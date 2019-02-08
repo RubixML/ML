@@ -50,8 +50,7 @@ class Activation implements Hidden, Nonparametric
     protected $computed;
 
     /**
-     * @param  \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction  $activationFunction
-     * @return void
+     * @param \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFunction
      */
     public function __construct(ActivationFunction $activationFunction)
     {
@@ -70,7 +69,7 @@ class Activation implements Hidden, Nonparametric
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -85,7 +84,7 @@ class Activation implements Hidden, Nonparametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -100,7 +99,7 @@ class Activation implements Hidden, Nonparametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -111,8 +110,8 @@ class Activation implements Hidden, Nonparametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return Closure
      */

@@ -7,15 +7,16 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
+use function in_array;
+
 class EstimatorIsCompatibleWithMetric
 {
     /**
      * Perform a check.
      *
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
+     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @throws \InvalidArgumentException
-     * @return void
      */
     public static function check(Estimator $estimator, Metric $metric) : void
     {

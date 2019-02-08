@@ -24,14 +24,13 @@ class Cell extends BinaryNode implements Leaf
     protected $depth;
 
     /**
-     * @param  float  $depth
+     * @param float $depth
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $depth)
     {
         if ($depth < 0.) {
-            throw new InvalidArgumentException("Depth cannot be less"
+            throw new InvalidArgumentException('Depth cannot be less'
                 . " than 0, $depth given.");
         }
 

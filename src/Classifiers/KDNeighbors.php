@@ -60,18 +60,17 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     ];
 
     /**
-     * @param  int  $k
-     * @param  int  $maxLeafSize
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  bool  $weighted
+     * @param int $k
+     * @param int $maxLeafSize
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param bool $weighted
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $k = 3,
         int $maxLeafSize = 20,
         ?Distance $kernel = null,
-                                bool $weighted = true
+        bool $weighted = true
     ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -122,9 +121,8 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -143,7 +141,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -181,7 +179,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

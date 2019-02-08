@@ -120,19 +120,18 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Learner|null  $base
-     * @param  int  $estimators
-     * @param  float  $rate
-     * @param  float  $ratio
-     * @param  float  $tolerance
+     * @param \Rubix\ML\Learner|null $base
+     * @param int $estimators
+     * @param float $rate
+     * @param float $ratio
+     * @param float $tolerance
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         ?Learner $base = null,
         int $estimators = 100,
         float $rate = 1.,
-                                float $ratio = 0.8,
+        float $ratio = 0.8,
         float $tolerance = 1e-3
     ) {
         if (is_null($base)) {
@@ -236,9 +235,8 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      * to each one and re-weighting the training data accordingly to reflect how
      * difficult a particular sample is to classify.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -335,7 +333,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -352,7 +350,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -385,7 +383,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Return the influence scores for each sample in the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array

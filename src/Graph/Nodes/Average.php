@@ -40,11 +40,10 @@ class Average extends BinaryNode implements Decision, Leaf
     protected $n;
     
     /**
-     * @param  mixed  $outcome
-     * @param  float  $impurity
-     * @param  int  $n
+     * @param mixed $outcome
+     * @param float $impurity
+     * @param int $n
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct($outcome, float $impurity, int $n)
     {

@@ -12,8 +12,8 @@ interface Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @param  \Rubix\Tensor\Matrix  $gradient
+     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\Tensor\Matrix $gradient
      * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix;

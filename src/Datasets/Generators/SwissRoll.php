@@ -54,14 +54,13 @@ class SwissRoll implements Generator
     protected $noise;
 
     /**
-     * @param  float  $x
-     * @param  float  $y
-     * @param  float  $z
-     * @param  float  $scale
-     * @param  float  $depth
-     * @param  float  $noise
+     * @param float $x
+     * @param float $y
+     * @param float $z
+     * @param float $scale
+     * @param float $depth
+     * @param float $noise
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         float $x = 0.0,
@@ -105,7 +104,7 @@ class SwissRoll implements Generator
     /**
      * Generate n data points.
      *
-     * @param  int  $n
+     * @param int $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset

@@ -34,9 +34,8 @@ class ISRU implements ActivationFunction
     protected $alpha;
 
     /**
-     * @param  float  $alpha
+     * @param float $alpha
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $alpha = 1.)
     {
@@ -64,7 +63,7 @@ class ISRU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
+     * @param \Rubix\Tensor\Matrix $z
      * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
@@ -75,8 +74,8 @@ class ISRU implements ActivationFunction
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
-     * @param  \Rubix\Tensor\Matrix  $computed
+     * @param \Rubix\Tensor\Matrix $z
+     * @param \Rubix\Tensor\Matrix $computed
      * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
@@ -85,7 +84,7 @@ class ISRU implements ActivationFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _compute(float $z) : float
@@ -94,7 +93,7 @@ class ISRU implements ActivationFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _differentiate(float $z) : float

@@ -56,10 +56,9 @@ class WordCountVectorizer implements Stateful
     protected $vocabulary;
 
     /**
-     * @param  int  $maxVocabulary
-     * @param  int  $minDocumentFrequency
-     * @param  \Rubix\ML\Other\Tokenizers\Tokenizer|null  $tokenizer
-     * @return void
+     * @param int $maxVocabulary
+     * @param int $minDocumentFrequency
+     * @param \Rubix\ML\Other\Tokenizers\Tokenizer|null $tokenizer
      */
     public function __construct(
         int $maxVocabulary = PHP_INT_MAX,
@@ -118,8 +117,7 @@ class WordCountVectorizer implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -170,9 +168,8 @@ class WordCountVectorizer implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

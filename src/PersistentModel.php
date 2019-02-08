@@ -41,7 +41,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     /**
      * Factory method to restore the model from persistence.
      *
-     * @param  \Rubix\ML\Persisters\Persister  $persister
+     * @param \Rubix\ML\Persisters\Persister $persister
      * @return self
      */
     public static function load(Persister $persister) : self
@@ -50,9 +50,8 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     }
 
     /**
-     * @param  \Rubix\ML\Persistable  $base
-     * @param  \Rubix\ML\Persisters\Persister  $persister
-     * @return void
+     * @param \Rubix\ML\Persistable $base
+     * @param \Rubix\ML\Persisters\Persister $persister
      */
     public function __construct(Persistable $base, Persister $persister)
     {
@@ -103,8 +102,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     /**
      * Train the underlying estimator.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -114,7 +112,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     /**
      * Make a prediction on a given sample dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -125,7 +123,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -143,8 +141,6 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 
     /**
      * Save the model using the user-provided persister.
-     *
-     * @return void
      */
     public function save() : void
     {
@@ -157,8 +153,6 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 
     /**
      * Prompt the user to save this model or not.
-     *
-     * @return void
      */
     public function prompt() : void
     {
@@ -170,8 +164,8 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     /**
      * Allow methods to be called on the model from the wrapper.
      *
-     * @param  string  $name
-     * @param  array  $arguments
+     * @param string $name
+     * @param array $arguments
      * @return mixed
      */
     public function __call(string $name, array $arguments)

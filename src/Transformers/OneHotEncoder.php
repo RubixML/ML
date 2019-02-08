@@ -40,8 +40,7 @@ class OneHotEncoder implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -59,9 +58,8 @@ class OneHotEncoder implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

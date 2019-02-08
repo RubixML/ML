@@ -33,8 +33,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Build a new labeled dataset with validation.
      *
-     * @param  array  $samples
-     * @param  array  $labels
+     * @param array $samples
+     * @param array $labels
      * @return self
      */
     public static function build(array $samples = [], array $labels = []) : self
@@ -45,8 +45,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Build a new labeled dataset foregoing validation.
      *
-     * @param  array[]  $samples
-     * @param  (int|float|string)[]  $labels
+     * @param array[] $samples
+     * @param (int|float|string)[] $labels
      * @return self
      */
     public static function quick(array $samples = [], array $labels = []) : self
@@ -57,8 +57,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Build a dataset from an iterator.
      *
-     * @param  iterable  $samples
-     * @param  iterable  $labels
+     * @param iterable $samples
+     * @param iterable $labels
      * @return self
      */
     public static function fromIterator(iterable $samples, iterable $labels) : self
@@ -66,7 +66,6 @@ class Labeled extends DataFrame implements Dataset
         $samples = is_array($samples)
             ? $samples
             : iterator_to_array($samples, false);
-
 
         $labels = is_array($labels)
             ? $labels
@@ -79,7 +78,7 @@ class Labeled extends DataFrame implements Dataset
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param  array  $datasets
+     * @param array $datasets
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -102,11 +101,10 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * @param  array  $samples
-     * @param  array  $labels
-     * @param  bool  $validate
+     * @param array $samples
+     * @param array $labels
+     * @param bool $validate
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $samples = [], array $labels = [], bool $validate = true)
     {
@@ -161,7 +159,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Return a label given by row index.
      *
-     * @param  int  $index
+     * @param int $index
      * @throws \InvalidArgumentException
      * @return int|float|string
      */
@@ -192,9 +190,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Map labels to their new values.
      *
-     * @param  callable  $fn
+     * @param callable $fn
      * @throws \RuntimeException
-     * @return void
      */
     public function transformLabels(callable $fn) : void
     {
@@ -223,7 +220,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Return a dataset containing only the first n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function head(int $n = 10) : self
@@ -237,7 +234,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Return a dataset containing only the last n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function tail(int $n = 10) : self
@@ -252,7 +249,7 @@ class Labeled extends DataFrame implements Dataset
      * Take n samples and labels from this dataset and return them in a new
      * dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -269,7 +266,7 @@ class Labeled extends DataFrame implements Dataset
      * Leave n samples and labels on this dataset and return the rest in a new
      * dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -285,7 +282,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Prepend this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return \Rubix\ML\Datasets\Dataset
      */
@@ -305,7 +302,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Append this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return \Rubix\ML\Datasets\Dataset
      */
@@ -326,8 +323,8 @@ class Labeled extends DataFrame implements Dataset
      * Remove a size n chunk of the dataset starting at offset and return it in
      * a new dataset.
      *
-     * @param  int  $offset
-     * @param  int  $n
+     * @param int $offset
+     * @param int $n
      * @return self
      */
     public function splice(int $offset, int $n) : self
@@ -357,8 +354,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Run a filter over the dataset using the values of a given column.
      *
-     * @param  int  $index
-     * @param  callable  $fn
+     * @param int $index
+     * @param callable $fn
      * @return self
      */
     public function filterByColumn(int $index, callable $fn) : self
@@ -378,7 +375,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Run a filter over the dataset using the labels for comparison.
      *
-     * @param  callable  $fn
+     * @param callable $fn
      * @return self
      */
     public function filterByLabel(callable $fn) : self
@@ -398,8 +395,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Sort the dataset in place by a column in the sample matrix.
      *
-     * @param  int  $index
-     * @param  bool  $descending
+     * @param int $index
+     * @param bool $descending
      * @return self
      */
     public function sortByColumn(int $index, bool $descending = false)
@@ -419,7 +416,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Sort the dataset in place by its labels.
      *
-     * @param  bool  $descending
+     * @param bool $descending
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function sortByLabel(bool $descending = false) : Dataset
@@ -456,7 +453,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
-     * @param  float  $ratio
+     * @param float $ratio
      * @throws \InvalidArgumentException
      * @return self[]
      */
@@ -484,7 +481,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Split the dataset into two stratified subsets with a given ratio of samples.
      *
-     * @param  float  $ratio
+     * @param float $ratio
      * @throws \InvalidArgumentException
      * @return self[]
      */
@@ -516,7 +513,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
-     * @param  int  $k
+     * @param int $k
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -546,7 +543,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Fold the dataset into k equal sized stratified datasets.
      *
-     * @param  int  $k
+     * @param int $k
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -596,7 +593,7 @@ class Labeled extends DataFrame implements Dataset
      * not enough samples to fill an entire batch, then the dataset will contain
      * as many samples and labels as possible.
      *
-     * @param  int  $n
+     * @param int $n
      * @return array
      */
     public function batch(int $n = 50) : array
@@ -622,8 +619,8 @@ class Labeled extends DataFrame implements Dataset
      * right side contains the samples that are greater than or equal to the
      * value.
      *
-     * @param  int  $index
-     * @param  mixed  $value
+     * @param int $index
+     * @param mixed $value
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -667,7 +664,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Generate a random subset with replacement.
      *
-     * @param  int  $n
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return self
      */
@@ -695,8 +692,8 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Generate a random weighted subset with replacement.
      *
-     * @param  int  $n
-     * @param  (int|float)[]  $weights
+     * @param int $n
+     * @param (int|float)[] $weights
      * @throws \InvalidArgumentException
      * @return self
      */

@@ -59,8 +59,7 @@ class ZScaleStandardizer implements Elastic
     protected $stddevs;
 
     /**
-     * @param  bool  $center
-     * @return void
+     * @param bool $center
      */
     public function __construct(bool $center = true)
     {
@@ -110,8 +109,7 @@ class ZScaleStandardizer implements Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -133,8 +131,7 @@ class ZScaleStandardizer implements Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -172,9 +169,8 @@ class ZScaleStandardizer implements Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

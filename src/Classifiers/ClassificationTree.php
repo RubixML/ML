@@ -63,19 +63,18 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     ];
 
     /**
-     * @param  int  $maxDepth
-     * @param  int  $maxLeafSize
-     * @param  float  $minImpurityIncrease
-     * @param  int|null  $maxFeatures
-     * @param  float  $tolerance
+     * @param int $maxDepth
+     * @param int $maxLeafSize
+     * @param float $minImpurityIncrease
+     * @param int|null $maxFeatures
+     * @param float $tolerance
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $maxDepth = PHP_INT_MAX,
         int $maxLeafSize = 3,
         float $minImpurityIncrease = 0.,
-                                ?int $maxFeatures = null,
+        ?int $maxFeatures = null,
         float $tolerance = 1e-3
     ) {
         if (isset($maxFeatures) and $maxFeatures < 1) {
@@ -131,9 +130,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * Train the binary tree by learning the most optimal splits in the
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -158,7 +156,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -188,7 +186,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -220,7 +218,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     /**
      * Greedy algorithm to choose the best split point for a given dataset.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
@@ -259,7 +257,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * Terminate the branch by selecting the class outcome with the highest
      * probability.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
     protected function terminate(Labeled $dataset) : BinaryNode
@@ -284,7 +282,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     /**
      * Calculate the Gini impurity index for a given split.
      *
-     * @param  array  $groups
+     * @param array $groups
      * @return float
      */
     protected function gini(array $groups) : float

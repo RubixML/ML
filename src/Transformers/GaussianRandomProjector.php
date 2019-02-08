@@ -42,8 +42,8 @@ class GaussianRandomProjector implements Stateful
      * Calculate the minimum number of dimensions for n total samples with a
      * given maximum distortion using the Johnson-Lindenstrauss lemma.
      *
-     * @param  int  $n
-     * @param  float  $maxDistortion
+     * @param int $n
+     * @param float $maxDistortion
      * @return int
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
@@ -53,9 +53,8 @@ class GaussianRandomProjector implements Stateful
     }
 
     /**
-     * @param  int  $dimensions
+     * @param int $dimensions
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $dimensions)
     {
@@ -80,9 +79,8 @@ class GaussianRandomProjector implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(Dataset $dataset) : void
     {
@@ -97,9 +95,8 @@ class GaussianRandomProjector implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

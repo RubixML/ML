@@ -25,9 +25,8 @@ class ContingencyTable implements Report
     protected $classes;
 
     /**
-     * @param  array|null  $classes
+     * @param array|null $classes
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(?array $classes = null)
     {
@@ -60,8 +59,8 @@ class ContingencyTable implements Report
     /**
      * Generate the report.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param array $predictions
+     * @param array $labels
      * @throws \InvalidArgumentException
      * @return array
      */

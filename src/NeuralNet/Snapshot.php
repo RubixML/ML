@@ -11,7 +11,7 @@ class Snapshot extends SplObjectStorage
     /**
      * Take a snapshot.
      *
-     * @param  \Rubix\ML\NeuralNet\Network  $network
+     * @param \Rubix\ML\NeuralNet\Network $network
      * @return self
      */
     public static function take(Network $network) : self

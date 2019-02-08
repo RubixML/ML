@@ -109,20 +109,19 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     ];
 
     /**
-     * @param  int  $batchSize
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
-     * @param  float  $alpha
-     * @param  int  $epochs
-     * @param  float  $minChange
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFn
+     * @param int $batchSize
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param float $alpha
+     * @param int $epochs
+     * @param float $minChange
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $batchSize = 100,
         ?Optimizer $optimizer = null,
         float $alpha = 1e-4,
-                            int $epochs = 1000,
+        int $epochs = 1000,
         float $minChange = 1e-4,
         ?CostFunction $costFn = null
     ) {
@@ -217,7 +216,6 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     /**
     * @param  \Rubix\ML\Datasets\Dataset  $dataset
     * @throws \InvalidArgumentException
-    * @return void
     */
     public function train(Dataset $dataset) : void
     {
@@ -244,9 +242,8 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
      * Perform mini-batch gradient descent with given optimizer over the training
      * set and update the input weights accordingly.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -316,7 +313,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -327,7 +324,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

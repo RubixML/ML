@@ -10,8 +10,8 @@ interface Hidden extends Layer
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @return Closure
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure;

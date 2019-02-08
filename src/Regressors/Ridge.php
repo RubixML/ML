@@ -49,9 +49,8 @@ class Ridge implements Learner, Persistable
     protected $weights;
 
     /**
-     * @param  float  $alpha
+     * @param float $alpha
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $alpha = 1.)
     {
@@ -119,9 +118,8 @@ class Ridge implements Learner, Persistable
      * Calculate the coefficients of the training data. i.e. compute the line
      * that best fits the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -159,7 +157,7 @@ class Ridge implements Learner, Persistable
     /**
      * Make a prediction based on the line calculated from the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

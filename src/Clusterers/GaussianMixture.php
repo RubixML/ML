@@ -102,11 +102,10 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     ];
 
     /**
-     * @param  int  $k
-     * @param  int  $epochs
-     * @param  float  $minChange
+     * @param int $k
+     * @param int $epochs
+     * @param float $minChange
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k, int $epochs = 100, float $minChange = 1e-3)
     {
@@ -213,9 +212,8 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -325,7 +323,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -352,7 +350,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -387,7 +385,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Initialize the gaussian components using K Means.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array[]
      */
@@ -424,7 +422,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      * Calculate the joint log likelihood of a sample being a member
      * of each of the gaussian components.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return array
      */
     protected function jointLogLikelihood(array $sample) : array

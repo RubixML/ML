@@ -48,9 +48,8 @@ class IntervalDiscretizer implements Stateful
     protected $intervals;
 
     /**
-     * @param  int  $bins
+     * @param int $bins
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $bins = 5)
     {
@@ -99,9 +98,8 @@ class IntervalDiscretizer implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(Dataset $dataset) : void
     {
@@ -124,9 +122,8 @@ class IntervalDiscretizer implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

@@ -25,8 +25,7 @@ class TextNormalizer implements Transformer
     protected $trim;
 
     /**
-     * @param  bool  $trim
-     * @return void
+     * @param bool $trim
      */
     public function __construct(bool $trim = false)
     {
@@ -36,8 +35,7 @@ class TextNormalizer implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {

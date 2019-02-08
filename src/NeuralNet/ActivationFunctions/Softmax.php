@@ -19,7 +19,7 @@ class Softmax extends Sigmoid
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
+     * @param \Rubix\Tensor\Matrix $z
      * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix

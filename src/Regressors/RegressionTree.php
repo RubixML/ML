@@ -32,7 +32,6 @@ use RuntimeException;
  */
 class RegressionTree extends CART implements Learner, Persistable
 {
-   
     /**
      * The maximum number of features to consider when determining a split.
      *
@@ -57,19 +56,18 @@ class RegressionTree extends CART implements Learner, Persistable
     ];
 
     /**
-     * @param  int  $maxDepth
-     * @param  int  $maxLeafSize
-     * @param  float  $minPurityIncrease
-     * @param  int|null  $maxFeatures
-     * @param  float  $tolerance
+     * @param int $maxDepth
+     * @param int $maxLeafSize
+     * @param float $minPurityIncrease
+     * @param int|null $maxFeatures
+     * @param float $tolerance
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $maxDepth = PHP_INT_MAX,
         int $maxLeafSize = 3,
         float $minPurityIncrease = 0.,
-                                ?int $maxFeatures = null,
+        ?int $maxFeatures = null,
         float $tolerance = 1e-4
     ) {
         if (isset($maxFeatures) and $maxFeatures < 1) {
@@ -125,9 +123,8 @@ class RegressionTree extends CART implements Learner, Persistable
      * Train the regression tree by learning the optimal splits in the
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -151,7 +148,7 @@ class RegressionTree extends CART implements Learner, Persistable
     /**
      * Make a prediction based on the value of a terminal node in the tree.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -180,7 +177,7 @@ class RegressionTree extends CART implements Learner, Persistable
      * Greedy algorithm to chose the best split for a given dataset as
      * determined by the variance of the split.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
     protected function findBestSplit(Labeled $dataset) : Comparison
@@ -218,7 +215,7 @@ class RegressionTree extends CART implements Learner, Persistable
     /**
      * Terminate the branch with the most likely outcome.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
     protected function terminate(Labeled $dataset) : BinaryNode
@@ -231,7 +228,7 @@ class RegressionTree extends CART implements Learner, Persistable
     /**
      * Calculate the mean squared error for each group in a split.
      *
-     * @param  array  $groups
+     * @param array $groups
      * @return float
      */
     protected function variance(array $groups) : float

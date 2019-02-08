@@ -8,6 +8,21 @@ use Rubix\ML\Persisters\Serializers\Serializer;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function arsort;
+use function array_slice;
+use function array_keys;
+use function count;
+use function is_null;
+use function is_file;
+use function is_writeable;
+use function glob;
+use function dirname;
+use function filemtime;
+use function basename;
+use function file_get_contents;
+use function file_put_contents;
+use function unlink;
+
 /**
  * Filesystem
  *
@@ -45,11 +60,10 @@ class Filesystem implements Persister
     protected $serializer;
 
     /**
-     * @param  string  $path
-     * @param  int  $history
-     * @param  \Rubix\ML\Persisters\Serializers\Serializer|null  $serializer
+     * @param string $path
+     * @param int $history
+     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(string $path, int $history = 2, ?Serializer $serializer = null)
     {
@@ -75,10 +89,9 @@ class Filesystem implements Persister
     /**
      * Save the persitable model.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
+     * @param \Rubix\ML\Persistable $persistable
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void
      */
     public function save(Persistable $persistable) : void
     {

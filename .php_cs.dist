@@ -1,10 +1,27 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()->in(__DIR__);
+use PhpCsFixer\Finder;
+use PhpCsFixer\Config;
 
-return PhpCsFixer\Config::create()
-    ->setRules([
-        '@PSR2' => true,
-        'array_syntax' => ['syntax' => 'short'],
-    ])
-    ->setFinder($finder);
+return Config::create()->setRules([
+    '@PSR2' => true,
+    'array_syntax' => ['syntax' => 'short'],
+    'blank_line_after_opening_tag' => true,
+    'combine_consecutive_issets' => true,
+    'combine_consecutive_unsets' => true,
+    'concat_space' => ['spacing' => 'one'],
+    'declare_equal_normalize' => ['space' => 'single'],
+    'no_blank_lines_after_class_opening' => true,
+    'no_blank_lines_after_phpdoc' => true,
+    'no_extra_blank_lines' => true,
+    'object_operator_without_whitespace' => true,
+    'phpdoc_align' => ['align' => 'left'],
+    'phpdoc_no_empty_return' => true,
+    'phpdoc_order' => true,
+    'phpdoc_scalar' => true,
+    'phpdoc_single_line_var_spacing' => true,
+    'phpdoc_trim' => true,
+    'phpdoc_var_without_name' => true,
+    'return_type_declaration' => ['space_before' => 'one'],
+    'single_quote' => true,
+])->setFinder(Finder::create()->in(__DIR__));

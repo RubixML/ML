@@ -114,8 +114,7 @@ class BinaryNode implements Node
     /**
      * Set the parent of this node.
      *
-     * @param  self|null  $node
-     * @return void
+     * @param self|null $node
      */
     public function setParent(?self $node = null) : void
     {
@@ -125,8 +124,7 @@ class BinaryNode implements Node
     /**
      * Set the left child node.
      *
-     * @param  self  $node
-     * @return void
+     * @param self $node
      */
     public function attachLeft(self $node) : void
     {
@@ -138,8 +136,7 @@ class BinaryNode implements Node
     /**
      * Set the right child node.
      *
-     * @param  self  $node
-     * @return void
+     * @param self $node
      */
     public function attachRight(self $node) : void
     {
@@ -150,8 +147,6 @@ class BinaryNode implements Node
 
     /**
      * Detach the left child node.
-     *
-     * @return void
      */
     public function detachLeft() : void
     {
@@ -164,8 +159,6 @@ class BinaryNode implements Node
 
     /**
      * Detach the right child node.
-     *
-     * @return void
      */
     public function detachRight() : void
     {

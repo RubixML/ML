@@ -16,7 +16,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
      * Stack a number of datasets on top of each other to form a single
      * dataset.
      *
-     * @param  array  $datasets
+     * @param array $datasets
      * @return self
      */
     public static function stack(array $datasets);
@@ -31,7 +31,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Return the sample at the given row index.
      *
-     * @param  int  $index
+     * @param int $index
      * @return array
      */
     public function row(int $index) : array;
@@ -46,7 +46,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Return the feature column at the given index.
      *
-     * @param  int  $index
+     * @param int $index
      * @return array
      */
     public function column(int $index) : array;
@@ -76,7 +76,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Get the datatype for a feature column given a column index.
      *
-     * @param  int  $index
+     * @param int $index
      * @return int|null
      */
     public function columnType(int $index) : ?int;
@@ -106,7 +106,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Apply a tranformation to the sample matrix.
      *
-     * @param  \Rubix\ML\Transformers\Transformer  $transformer
+     * @param \Rubix\ML\Transformers\Transformer $transformer
      * @return self
      */
     public function apply(Transformer $transformer);
@@ -122,7 +122,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Return the columns that match a given data type.
      *
-     * @param  int  $type
+     * @param int $type
      * @return array
      */
     public function columnsByType(int $type) : array;
@@ -130,7 +130,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Return a dataset containing only the first n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function head(int $n = 10);
@@ -138,7 +138,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Return a dataset containing only the last n samples.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function tail(int $n = 10);
@@ -146,7 +146,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Take n samples from the dataset and return them in a new dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function take(int $n = 1);
@@ -154,7 +154,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Leave n samples on the dataset and return the rest in a new dataset.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function leave(int $n = 1);
@@ -163,8 +163,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
      * Remove a size n chunk of the dataset starting at offset and return it in
      * a new dataset.
      *
-     * @param  int  $offset
-     * @param  int  $n
+     * @param int $offset
+     * @param int $n
      * @return self
      */
     public function splice(int $offset, int $n);
@@ -179,8 +179,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Run a filter over the dataset using the values of a given column.
      *
-     * @param  int  $index
-     * @param  callable  $fn
+     * @param int $index
+     * @param callable $fn
      * @return self
      */
     public function filterByColumn(int $index, callable $fn);
@@ -188,8 +188,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Sort the dataset by a column in the sample matrix.
      *
-     * @param  int  $index
-     * @param  bool  $descending
+     * @param int $index
+     * @param bool $descending
      * @return self
      */
     public function sortByColumn(int $index, bool $descending = false);
@@ -197,7 +197,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Split the dataset into two subsets with a given ratio of samples.
      *
-     * @param  float  $ratio
+     * @param float $ratio
      * @return array
      */
     public function split(float $ratio = 0.5) : array;
@@ -205,7 +205,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Fold the dataset k - 1 times to form k equal size datasets.
      *
-     * @param  int  $k
+     * @param int $k
      * @return array
      */
     public function fold(int $k = 10) : array;
@@ -215,7 +215,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
      * not enough samples to fill an entire batch, then the dataset will contain
      * as many samples as possible.
      *
-     * @param  int  $n
+     * @param int $n
      * @return array
      */
     public function batch(int $n = 50) : array;
@@ -224,8 +224,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
      * Partition the dataset into left and right subsets by a specified feature
      * column.
      *
-     * @param  int  $index
-     * @param  mixed  $value
+     * @param int $index
+     * @param mixed $value
      * @return array
      */
     public function partition(int $index, $value) : array;
@@ -233,7 +233,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Generate a random subset of n samples with replacement.
      *
-     * @param  int  $n
+     * @param int $n
      * @return self
      */
     public function randomSubsetWithReplacement(int $n);
@@ -241,8 +241,8 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Generate a random weighted subset with replacement.
      *
-     * @param  int  $n
-     * @param  array  $weights
+     * @param int $n
+     * @param array $weights
      * @return self
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights);
@@ -250,7 +250,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Prepend this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function prepend(Dataset $dataset) : Dataset;
@@ -258,7 +258,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Append this dataset with another dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function append(Dataset $dataset) : Dataset;

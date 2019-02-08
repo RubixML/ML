@@ -21,8 +21,7 @@ interface Parametric extends Nonparametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param  array  $parameters
-     * @return void
+     * @param array $parameters
      */
     public function restore(array $parameters) : void;
 }

@@ -9,8 +9,8 @@ interface Output extends Parametric
     /**
      * Calculate the gradients for each output neuron and update.
      *
-     * @param  array  $labels
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param array $labels
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return array
      */

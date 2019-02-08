@@ -88,9 +88,8 @@ class GaussianNB implements Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  array|null  $priors
+     * @param array|null $priors
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(?array $priors = null)
     {
@@ -199,9 +198,8 @@ class GaussianNB implements Online, Probabilistic, Persistable
      * Compute the necessary statistics to estimate a probability density for
      * each feature column.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -250,9 +248,8 @@ class GaussianNB implements Online, Probabilistic, Persistable
      * Uupdate the rolling means and variances of each feature column using an
      * online updating algorithm.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -314,7 +311,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     * Calculate the likelihood of the sample being a member of a class and
     * choose the class with the highest likelihood as the prediction.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -342,7 +339,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -378,7 +375,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
     /**
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return array
      */
     protected function jointLogLikelihood(array $sample) : array

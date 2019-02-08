@@ -63,11 +63,10 @@ abstract class CART implements Tree
     protected $featureCount;
 
     /**
-     * @param  int  $maxDepth
-     * @param  int  $maxLeafSize
-     * @param  float  $minPurityIncrease
+     * @param int $maxDepth
+     * @param int $maxLeafSize
+     * @param float $minPurityIncrease
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minPurityIncrease = 0.)
     {
@@ -94,7 +93,7 @@ abstract class CART implements Tree
     /**
      * Choose the best split for a given dataset.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
     abstract protected function findBestSplit(Labeled $dataset) : Comparison;
@@ -102,7 +101,7 @@ abstract class CART implements Tree
     /**
      * Terminate the branch.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\BinaryNode
      */
     abstract protected function terminate(Labeled $dataset) : BinaryNode;
@@ -121,8 +120,7 @@ abstract class CART implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function grow(Labeled $dataset) : void
     {
@@ -192,7 +190,7 @@ abstract class CART implements Tree
     /**
      * Search the tree for a leaf node.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function search(array $sample) : ?BinaryNode

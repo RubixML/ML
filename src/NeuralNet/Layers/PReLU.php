@@ -62,9 +62,8 @@ class PReLU implements Hidden, Parametric
     protected $computed;
 
     /**
-     * @param  float  $initial
+     * @param float $initial
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $initial = 0.25)
     {
@@ -103,7 +102,7 @@ class PReLU implements Hidden, Parametric
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -122,7 +121,7 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -137,7 +136,7 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -148,8 +147,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return Closure
      */
@@ -187,7 +186,7 @@ class PReLU implements Hidden, Parametric
     /**
      * Compute the leaky ReLU activation function and return a matrix.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
+     * @param \Rubix\Tensor\Matrix $z
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -221,8 +220,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the derivatives of the activation function.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
-     * @param  \Rubix\Tensor\Matrix  $computed
+     * @param \Rubix\Tensor\Matrix $z
+     * @param \Rubix\Tensor\Matrix $computed
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -271,9 +270,8 @@ class PReLU implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param  array  $parameters
+     * @param array $parameters
      * @throws \RuntimeException
-     * @return void
      */
     public function restore(array $parameters) : void
     {

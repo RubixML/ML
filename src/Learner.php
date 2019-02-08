@@ -9,8 +9,7 @@ interface Learner extends Estimator
     /**
      * Train the learner with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void;
 

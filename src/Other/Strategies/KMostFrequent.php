@@ -5,6 +5,11 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function arsort;
+use function array_count_values;
+use function array_slice;
+use function array_keys;
+
 /**
  * K Most Frequent
  *
@@ -24,9 +29,8 @@ class KMostFrequent extends Lottery
     protected $k;
 
     /**
-     * @param  int  $k
+     * @param int $k
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k = 1)
     {
@@ -41,9 +45,8 @@ class KMostFrequent extends Lottery
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException;
-     * @return void
      */
     public function fit(array $values) : void
     {

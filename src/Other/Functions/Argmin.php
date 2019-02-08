@@ -2,6 +2,9 @@
 
 namespace Rubix\ML\Other\Functions;
 
+use function array_search;
+use function min;
+
 /**
  * Argmax
  *
@@ -16,7 +19,7 @@ class Argmin
     /**
      * Compute the argmax of the given values.
      *
-     * @param  array  $values
+     * @param array $values
      * @return mixed
      */
     public static function compute(array $values)

@@ -5,6 +5,10 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Persistable;
 use RuntimeException;
 
+use function extension_loaded;
+use function igbinary_serialize;
+use function igbinary_unserialize;
+
 /**
  * Binary
  *
@@ -19,7 +23,6 @@ class Binary implements Serializer
 {
     /**
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct()
     {
@@ -32,7 +35,7 @@ class Binary implements Serializer
     /**
      * Serialize a persistable object and return the data.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
+     * @param \Rubix\ML\Persistable $persistable
      * @return string
      */
     public function serialize(Persistable $persistable) : string
@@ -43,7 +46,7 @@ class Binary implements Serializer
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param string  $data
+     * @param string $data
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(string $data) : Persistable

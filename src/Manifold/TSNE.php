@@ -140,25 +140,24 @@ class TSNE implements Estimator, Verbose
     ];
 
     /**
-     * @param  int  $dimensions
-     * @param  int  $perplexity
-     * @param  float  $exaggeration
-     * @param  float  $rate
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  int  $epochs
-     * @param  float  $minGradient
-     * @param  int  $window
+     * @param int $dimensions
+     * @param int $perplexity
+     * @param float $exaggeration
+     * @param float $rate
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $epochs
+     * @param float $minGradient
+     * @param int $window
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $dimensions = 2,
         int $perplexity = 30,
         float $exaggeration = 12.,
-                                float $rate = 100.,
+        float $rate = 100.,
         ?Distance $kernel = null,
         int $epochs = 1000,
-                                float $minGradient = 1e-8,
+        float $minGradient = 1e-8,
         int $window = 3
     ) {
         if ($dimensions < 1) {
@@ -247,7 +246,7 @@ class TSNE implements Estimator, Verbose
     /**
      * Embed a high dimensional sample matrix into a lower dimensional one.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return array[]
      */
@@ -368,7 +367,7 @@ class TSNE implements Estimator, Verbose
     /**
      * Calculate the pairwise distances for each sample.
      *
-     * @param  \Rubix\Tensor\Matrix  $samples
+     * @param \Rubix\Tensor\Matrix $samples
      * @return \Rubix\Tensor\Matrix
      */
     protected function pairwiseDistances(Matrix $samples) : Matrix
@@ -392,7 +391,7 @@ class TSNE implements Estimator, Verbose
      * Calculate the joint likelihood of each sample in the high dimensional
      * space as being nearest neighbor to each other sample.
      *
-     * @param  \Rubix\Tensor\Matrix  $distances
+     * @param \Rubix\Tensor\Matrix $distances
      * @return \Rubix\Tensor\Matrix
      */
     protected function highAffinities(Matrix $distances) : Matrix
@@ -476,9 +475,9 @@ class TSNE implements Estimator, Verbose
      * Compute the gradient of the KL Divergence cost function with respect to
      * the embedding.
      *
-     * @param  \Rubix\Tensor\Matrix  $p
-     * @param  \Rubix\Tensor\Matrix  $y
-     * @param  \Rubix\Tensor\Matrix  $distances
+     * @param \Rubix\Tensor\Matrix $p
+     * @param \Rubix\Tensor\Matrix $y
+     * @param \Rubix\Tensor\Matrix $distances
      * @return \Rubix\Tensor\Matrix
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix

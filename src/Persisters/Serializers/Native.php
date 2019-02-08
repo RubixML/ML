@@ -4,6 +4,9 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
 
+use function serialize;
+use function unserialize;
+
 /**
  * Native
  *
@@ -18,7 +21,7 @@ class Native implements Serializer
     /**
      * Serialize a persistable object and return the data.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
+     * @param \Rubix\ML\Persistable $persistable
      * @return string
      */
     public function serialize(Persistable $persistable) : string
@@ -29,7 +32,7 @@ class Native implements Serializer
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param string  $data
+     * @param string $data
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(string $data) : Persistable

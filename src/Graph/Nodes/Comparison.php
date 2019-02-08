@@ -31,12 +31,11 @@ class Comparison extends Split implements Decision
     protected $n;
 
     /**
-     * @param  int  $column
-     * @param  mixed  $value
-     * @param  array  $groups
-     * @param  float  $impurity
+     * @param int $column
+     * @param mixed $value
+     * @param array $groups
+     * @param float $impurity
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $column, $value, array $groups, float $impurity)
     {

@@ -151,30 +151,29 @@ class MLPRegressor implements Online, Verbose, Persistable
     ];
 
     /**
-     * @param  array  $hidden
-     * @param  int  $batchSize
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer|null  $optimizer
-     * @param  float  $alpha
-     * @param  int  $epochs
-     * @param  float  $minChange
-     * @param  \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null  $costFn
-     * @param  float $holdout
-     * @param  \Rubix\ML\CrossValidation\Metrics\Metric|null  $metric
-     * @param  int  $window
+     * @param array $hidden
+     * @param int $batchSize
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer|null $optimizer
+     * @param float $alpha
+     * @param int $epochs
+     * @param float $minChange
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param float $holdout
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
+     * @param int $window
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         array $hidden = [],
         int $batchSize = 100,
         ?Optimizer $optimizer = null,
-                            float $alpha = 1e-4,
+        float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-                            ?CostFunction $costFn = null,
+        ?CostFunction $costFn = null,
         float $holdout = 0.1,
         ?Metric $metric = null,
-                            int $window = 3
+        int $window = 3
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -297,9 +296,8 @@ class MLPRegressor implements Online, Verbose, Persistable
     /**
      * Train the estimator with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -323,9 +321,8 @@ class MLPRegressor implements Online, Verbose, Persistable
     /**
      * Train the network using mini-batch gradient descent with backpropagation.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -438,7 +435,7 @@ class MLPRegressor implements Online, Verbose, Persistable
      * Feed a sample through the network and make a prediction based on the
      * activation of the output neuron.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

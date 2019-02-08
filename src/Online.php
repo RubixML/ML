@@ -9,8 +9,7 @@ interface Online extends Learner
     /**
      * Perform a partial train on the learner.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function partial(Dataset $dataset) : void;
 }

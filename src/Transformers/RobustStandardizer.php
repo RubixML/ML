@@ -44,8 +44,7 @@ class RobustStandardizer implements Stateful
     protected $mads;
 
     /**
-     * @param  bool  $center
-     * @return void
+     * @param bool $center
      */
     public function __construct(bool $center = true)
     {
@@ -85,8 +84,7 @@ class RobustStandardizer implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -105,9 +103,8 @@ class RobustStandardizer implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

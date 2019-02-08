@@ -47,20 +47,19 @@ class OneClassSVM implements Learner, Persistable
     protected $model;
 
     /**
-     * @param  float  $nu
-     * @param  \Rubix\ML\Kernels\SVM\Kernel|null  $kernel
-     * @param  bool  $shrinking
-     * @param  float  $tolerance
-     * @param  float  $cacheSize
+     * @param float $nu
+     * @param \Rubix\ML\Kernels\SVM\Kernel|null $kernel
+     * @param bool $shrinking
+     * @param float $tolerance
+     * @param float $cacheSize
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         float $nu = 0.5,
         ?Kernel $kernel = null,
         bool $shrinking = true,
-                                float $tolerance = 1e-3,
+        float $tolerance = 1e-3,
         float $cacheSize = 100.
     ) {
         if (!extension_loaded('svm')) {
@@ -136,9 +135,8 @@ class OneClassSVM implements Learner, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -150,7 +148,7 @@ class OneClassSVM implements Learner, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

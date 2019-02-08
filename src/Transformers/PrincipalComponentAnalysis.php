@@ -70,9 +70,8 @@ class PrincipalComponentAnalysis implements Stateful
     protected $mean;
 
     /**
-     * @param  int  $dimensions
+     * @param int $dimensions
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $dimensions)
     {
@@ -128,9 +127,8 @@ class PrincipalComponentAnalysis implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(Dataset $dataset) : void
     {
@@ -169,9 +167,8 @@ class PrincipalComponentAnalysis implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

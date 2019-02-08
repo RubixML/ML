@@ -8,6 +8,11 @@ use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function rand;
+use function sqrt;
+use function log;
+use function cos;
+
 /**
  * Blurry Percentile
  *
@@ -52,10 +57,9 @@ class BlurryPercentile implements Continuous
     protected $mad;
 
     /**
-     * @param  float  $p
-     * @param  float  $blur
+     * @param float $p
+     * @param float $blur
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $p = 50.0, float $blur = 0.1)
     {
@@ -76,8 +80,7 @@ class BlurryPercentile implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array $values
-     * @return void
+     * @param array $values
      */
     public function fit(array $values) : void
     {

@@ -39,9 +39,8 @@ class Noise implements Hidden, Nonparametric
     protected $width;
 
     /**
-     * @param  float  $stddev
+     * @param float $stddev
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $stddev = 0.1)
     {
@@ -65,7 +64,7 @@ class Noise implements Hidden, Nonparametric
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -80,7 +79,7 @@ class Noise implements Hidden, Nonparametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function forward(Matrix $input) : Matrix
@@ -94,7 +93,7 @@ class Noise implements Hidden, Nonparametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -105,8 +104,8 @@ class Noise implements Hidden, Nonparametric
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @return Closure
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure

@@ -39,11 +39,10 @@ class Split extends BinaryNode
     protected $groups;
 
     /**
-     * @param  int  $column
-     * @param  mixed  $value
-     * @param  array  $groups
+     * @param int $column
+     * @param mixed $value
+     * @param array $groups
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $column, $value, array $groups)
     {
@@ -101,8 +100,6 @@ class Split extends BinaryNode
 
     /**
      * Remove the left and right splits of the training data.
-     *
-     * @return void
      */
     public function cleanup() : void
     {

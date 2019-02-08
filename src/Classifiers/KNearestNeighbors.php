@@ -78,11 +78,10 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     ];
 
     /**
-     * @param  int  $k
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  bool  $weighted
+     * @param int $k
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param bool $weighted
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k = 3, ?Distance $kernel = null, bool $weighted = true)
     {
@@ -131,8 +130,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -145,9 +143,8 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      * Store the sample and outcome arrays. No other work to be done as this is
      * a lazy learning algorithm.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -166,7 +163,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -204,7 +201,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -251,7 +248,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      * Find the K nearest neighbors to the given sample vector using
      * the brute force method.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return array[]
      */
     protected function neighbors(array $sample) : array

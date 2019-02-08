@@ -9,8 +9,7 @@ interface Persister
     /**
      * Save the persitable model.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
-     * @return void
+     * @param \Rubix\ML\Persistable $persistable
      */
     public function save(Persistable $persistable) : void;
 

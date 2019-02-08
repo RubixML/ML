@@ -9,6 +9,9 @@ use InvalidArgumentException;
 use RuntimeException;
 use Redis;
 
+use function extension_loaded;
+use function is_null;
+
 /**
  * Redis DB
  *
@@ -51,27 +54,26 @@ class RedisDB implements Persister
     protected $serializer;
 
     /**
-     * @param  string  $key
-     * @param  string  $host
-     * @param  int  $port
-     * @param  int  $db
-     * @param  string  $password
-     * @param  int  $history
-     * @param  \Rubix\ML\Persisters\Serializers\Serializer|null  $serializer
-     * @param  float  $timeout
+     * @param string $key
+     * @param string $host
+     * @param int $port
+     * @param int $db
+     * @param string $password
+     * @param int $history
+     * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
+     * @param float $timeout
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct(
         string $key,
         string $host = '127.0.0.1',
         int $port = 6379,
         int $db = 0,
-                                string $password = null,
+        string $password = null,
         int $history = 2,
         ?Serializer $serializer = null,
-                                float $timeout = 2.5
+        float $timeout = 2.5
     ) {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
@@ -129,9 +131,8 @@ class RedisDB implements Persister
     /**
      * Save the persitable object.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
+     * @param \Rubix\ML\Persistable $persistable
      * @throws \RuntimeException
-     * @return void
      */
     public function save(Persistable $persistable) : void
     {

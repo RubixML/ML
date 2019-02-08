@@ -30,7 +30,7 @@ class ExtraTreeRegressor extends RegressionTree
      * Randomized algorithm to that choses the split point with the lowest gini
      * impurity among a random selection of $maxFeatures features.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Comparison
      */
     protected function findBestSplit(Labeled $dataset) : Comparison

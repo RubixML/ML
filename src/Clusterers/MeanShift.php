@@ -88,18 +88,17 @@ class MeanShift implements Learner, Verbose, Persistable
     ];
 
     /**
-     * @param  float  $radius
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
-     * @param  int  $epochs
-     * @param  float  $minChange
+     * @param float $radius
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param int $epochs
+     * @param float $minChange
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         float $radius,
         ?Distance $kernel = null,
         int $epochs = 100,
-                                float $minChange = 1e-4
+        float $minChange = 1e-4
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
@@ -178,9 +177,8 @@ class MeanShift implements Learner, Verbose, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -259,7 +257,7 @@ class MeanShift implements Learner, Verbose, Persistable
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -278,7 +276,7 @@ class MeanShift implements Learner, Verbose, Persistable
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return int
      */
     protected function assignCluster(array $sample) : int
@@ -301,7 +299,7 @@ class MeanShift implements Learner, Verbose, Persistable
     /**
      * Calculate the magnitude (l1) of a centroid shift from the previous epoch.
      *
-     * @param  array  $previous
+     * @param array $previous
      * @return float
      */
     protected function centroidShift(array $previous) : float

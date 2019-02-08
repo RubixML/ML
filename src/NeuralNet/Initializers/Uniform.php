@@ -25,9 +25,8 @@ class Uniform implements Initializer
     protected $beta;
 
     /**
-     * @param  float  $beta
+     * @param float $beta
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $beta = 0.5)
     {
@@ -42,8 +41,8 @@ class Uniform implements Initializer
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
-     * @param  int  $fanIn
-     * @param  int  $fanOut
+     * @param int $fanIn
+     * @param int $fanOut
      * @return \Rubix\Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix

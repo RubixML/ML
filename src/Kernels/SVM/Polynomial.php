@@ -40,12 +40,11 @@ class Polynomial implements Kernel
     protected $coef0;
 
     /**
-     * @param  int  $degree
-     * @param  float  $gamma
-     * @param  float  $coef0
+     * @param int $degree
+     * @param float $gamma
+     * @param float $coef0
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void
      */
     public function __construct(int $degree = 3, ?float $gamma = null, float $coef0 = 0.)
     {

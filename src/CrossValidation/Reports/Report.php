@@ -16,8 +16,8 @@ interface Report
     /**
      * Generate the report.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param array $predictions
+     * @param array $labels
      * @return array
      */
     public function generate(array $predictions, array $labels) : array;

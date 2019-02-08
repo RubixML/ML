@@ -60,11 +60,10 @@ class KMeans implements Online, Persistable
     ];
 
     /**
-     * @param  int  $k
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  int  $epochs
+     * @param int $k
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $epochs
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k, ?Distance $kernel = null, int $epochs = 300)
     {
@@ -130,9 +129,8 @@ class KMeans implements Online, Persistable
     /**
      * Train the learner with a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -146,9 +144,8 @@ class KMeans implements Online, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -193,7 +190,7 @@ class KMeans implements Online, Persistable
     /**
      * Cluster the dataset by assigning a label to each sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -212,7 +209,7 @@ class KMeans implements Online, Persistable
     /**
      * Initialize the cluster centroids using the k-means++ method.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -265,7 +262,7 @@ class KMeans implements Online, Persistable
     /**
      * Label a given sample based on its distance from a particular centroid.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @throws \RuntimeException
      * @return int
      */

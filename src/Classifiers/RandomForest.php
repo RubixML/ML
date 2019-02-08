@@ -74,11 +74,10 @@ class RandomForest implements Learner, Probabilistic, Persistable
     ];
 
     /**
-     * @param  \Rubix\ML\Learner|null  $base
-     * @param  int  $estimators
-     * @param  float  $ratio
+     * @param \Rubix\ML\Learner|null $base
+     * @param int $estimators
+     * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
     {
@@ -174,9 +173,8 @@ class RandomForest implements Learner, Probabilistic, Persistable
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -205,7 +203,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -216,7 +214,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */

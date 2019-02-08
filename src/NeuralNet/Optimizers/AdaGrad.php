@@ -39,9 +39,8 @@ class AdaGrad implements Optimizer, Adaptive
     protected $cache;
 
     /**
-     * @param  float  $rate
+     * @param float $rate
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $rate = 0.01)
     {
@@ -56,8 +55,7 @@ class AdaGrad implements Optimizer, Adaptive
     /**
      * Initialize a parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @return void
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      */
     public function initialize(Parameter $param) : void
     {
@@ -69,8 +67,8 @@ class AdaGrad implements Optimizer, Adaptive
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @param  \Rubix\Tensor\Matrix  $gradient
+     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\Tensor\Matrix $gradient
      * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix

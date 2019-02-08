@@ -65,11 +65,10 @@ class Adam implements Optimizer, Adaptive
     protected $t;
 
     /**
-     * @param  float  $rate
-     * @param  float  $momentumDecay
-     * @param  float  $rmsDecay
+     * @param float $rate
+     * @param float $momentumDecay
+     * @param float $rmsDecay
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
@@ -98,8 +97,7 @@ class Adam implements Optimizer, Adaptive
     /**
      * Initialize a parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @return void
+     * @param \Rubix\ML\NeuralNet\Parameter $param
      */
     public function initialize(Parameter $param) : void
     {
@@ -112,8 +110,8 @@ class Adam implements Optimizer, Adaptive
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @param  \Rubix\Tensor\Matrix  $gradient
+     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\Tensor\Matrix $gradient
      * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix

@@ -34,9 +34,8 @@ class AggregateReport implements Report
     protected $compatibility;
 
     /**
-     * @param  array  $reports
+     * @param array $reports
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $reports)
     {
@@ -81,8 +80,8 @@ class AggregateReport implements Report
     /**
      * Generate the report.
      *
-     * @param  array  $predictions
-     * @param  array  $labels
+     * @param array $predictions
+     * @param array $labels
      * @return array
      */
     public function generate(array $predictions, array $labels) : array

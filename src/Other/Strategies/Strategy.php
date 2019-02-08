@@ -9,8 +9,7 @@ interface Strategy
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
-     * @return void
+     * @param array $values
      */
     public function fit(array $values) : void;
 }

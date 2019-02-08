@@ -69,11 +69,10 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     protected $fitted;
 
     /**
-     * @param  array  $transformers
-     * @param  \Rubix\ML\Estimator  $estimator
-     * @param  bool  $elastic
+     * @param array $transformers
+     * @param \Rubix\ML\Estimator $estimator
+     * @param bool $elastic
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $transformers, Estimator $estimator, bool $elastic = true)
     {
@@ -137,8 +136,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
      * Run the training dataset through all transformers in order and use the
      * transformed dataset to train the estimator.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
     {
@@ -154,8 +152,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Perform a partial train.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function partial(Dataset $dataset) : void
     {
@@ -171,7 +168,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Preprocess the dataset and return predictions from the estimator.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -184,7 +181,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -205,8 +202,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Fit the transformer middelware to a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     protected function fit(Dataset $dataset) : void
     {
@@ -227,8 +223,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Update the fitting of the transformer middleware.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     protected function update(Dataset $dataset) : void
     {
@@ -249,8 +244,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Apply the transformer middleware over a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     protected function preprocess(Dataset $dataset) : void
     {
@@ -262,8 +256,8 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     /**
      * Allow methods to be called on the estimator from the wrapper.
      *
-     * @param  string  $name
-     * @param  array  $arguments
+     * @param string $name
+     * @param array $arguments
      * @return mixed
      */
     public function __call(string $name, array $arguments)

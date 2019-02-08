@@ -5,6 +5,10 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function current;
+use function rand;
+use function is_null;
+
 /**
  * Popularity Contest
  *
@@ -34,9 +38,8 @@ class PopularityContest implements Categorical
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(array $values) : void
     {

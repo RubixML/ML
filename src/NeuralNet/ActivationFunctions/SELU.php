@@ -47,10 +47,9 @@ class SELU implements ActivationFunction
     protected $beta;
 
     /**
-     * @param  float  $scale
-     * @param  float  $alpha
+     * @param float $scale
+     * @param float $alpha
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $alpha = self::ALPHA, float $scale = self::SCALE)
     {
@@ -83,7 +82,7 @@ class SELU implements ActivationFunction
     /**
      * Compute the output value.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
+     * @param \Rubix\Tensor\Matrix $z
      * @return \Rubix\Tensor\Matrix
      */
     public function compute(Matrix $z) : Matrix
@@ -94,8 +93,8 @@ class SELU implements ActivationFunction
     /**
      * Calculate the derivative of the activation function at a given output.
      *
-     * @param  \Rubix\Tensor\Matrix  $z
-     * @param  \Rubix\Tensor\Matrix  $computed
+     * @param \Rubix\Tensor\Matrix $z
+     * @param \Rubix\Tensor\Matrix $computed
      * @return \Rubix\Tensor\Matrix
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
@@ -104,7 +103,7 @@ class SELU implements ActivationFunction
     }
 
     /**
-     * @param  float  $z
+     * @param float $z
      * @return float
      */
     public function _compute(float $z) : float
@@ -113,7 +112,7 @@ class SELU implements ActivationFunction
     }
 
     /**
-     * @param  float  $computed
+     * @param float $computed
      * @return float
      */
     public function _differentiate(float $computed) : float

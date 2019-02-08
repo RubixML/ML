@@ -69,11 +69,10 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     protected $compatibility;
 
     /**
-     * @param  array  $orchestra
-     * @param  \Rubix\ML\Learner  $conductor
-     * @param  float  $ratio
+     * @param array $orchestra
+     * @param \Rubix\ML\Learner $conductor
+     * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $orchestra, Learner $conductor, float $ratio = 0.8)
     {
@@ -174,9 +173,8 @@ class ModelOrchestra implements Learner, Persistable, Verbose
      * Instantiate and train each base estimator in the ensemble on a bootstrap
      * training set.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -228,7 +226,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -245,7 +243,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
      * Extract the features from the orchestra and return them in a
      * new dataset.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Datasets\Labeled
      */
     protected function extract(Labeled $dataset) : Labeled

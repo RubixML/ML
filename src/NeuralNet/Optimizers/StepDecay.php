@@ -50,11 +50,10 @@ class StepDecay implements Optimizer
     protected $n;
 
     /**
-     * @param  float  $rate
-     * @param  int  $steps
-     * @param  float  $decay
+     * @param float $rate
+     * @param int $steps
+     * @param float $decay
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $rate = 0.01, int $steps = 100, float $decay = 1e-3)
     {
@@ -82,8 +81,8 @@ class StepDecay implements Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @param  \Rubix\Tensor\Matrix  $gradient
+     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\Tensor\Matrix $gradient
      * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix

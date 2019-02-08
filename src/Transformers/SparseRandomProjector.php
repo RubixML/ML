@@ -26,9 +26,8 @@ class SparseRandomProjector extends GaussianRandomProjector
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(Dataset $dataset) : void
     {

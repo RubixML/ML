@@ -7,6 +7,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
+use function is_null;
+
 /**
  * Mean
  *
@@ -28,9 +30,8 @@ class Mean implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(array $values) : void
     {

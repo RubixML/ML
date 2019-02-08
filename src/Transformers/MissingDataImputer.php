@@ -53,11 +53,10 @@ class MissingDataImputer implements Stateful
     protected $strategies;
 
     /**
-     * @param  mixed  $placeholder
-     * @param  \Rubix\ML\Other\Strategies\Continuous|null  $continuous
-     * @param  \Rubix\ML\Other\Strategies\Categorical|null  $categorical
+     * @param mixed $placeholder
+     * @param \Rubix\ML\Other\Strategies\Continuous|null $continuous
+     * @param \Rubix\ML\Other\Strategies\Categorical|null $categorical
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct($placeholder = '?', ?Continuous $continuous = null, ?Categorical $categorical = null)
     {
@@ -92,8 +91,7 @@ class MissingDataImputer implements Stateful
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -133,8 +131,7 @@ class MissingDataImputer implements Stateful
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {

@@ -44,10 +44,9 @@ class ITree implements Tree
     protected $maxLeafSize;
 
     /**
-     * @param  int  $maxDepth
-     * @param  int  $maxLeafSize
+     * @param int $maxDepth
+     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
     {
@@ -79,8 +78,7 @@ class ITree implements Tree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function grow(Dataset $dataset) : void
     {
@@ -131,7 +129,7 @@ class ITree implements Tree
     /**
      * Search the tree for a terminal node.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return \Rubix\ML\Graph\Nodes\Cell|null
      */
     public function search(array $sample) : ?Cell
@@ -170,7 +168,7 @@ class ITree implements Tree
     /**
      * Randomized algorithm to find a split point in the data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Graph\Nodes\Isolator
      */
     protected function chooseRandomSplit(Dataset $dataset) : Isolator
@@ -189,8 +187,8 @@ class ITree implements Tree
     /**
      * Terminate the branch.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @param  int  $depth
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param int $depth
      * @return \Rubix\ML\Graph\Nodes\Cell
      */
     protected function terminate(Dataset $dataset, int $depth) : Cell
@@ -203,7 +201,7 @@ class ITree implements Tree
     /**
      * Calculate the average path length of an unsuccessful search for n nodes.
      *
-     * @param  int  $n
+     * @param int $n
      * @return float
      */
     protected function c(int $n) : float

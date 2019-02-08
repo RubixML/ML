@@ -53,11 +53,10 @@ class DBSCAN implements Estimator
     protected $kernel;
 
     /**
-     * @param  float  $radius
-     * @param  int  $minDensity
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
+     * @param float $radius
+     * @param int $minDensity
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $radius = 0.5, int $minDensity = 5, ?Distance $kernel = null)
     {
@@ -101,7 +100,7 @@ class DBSCAN implements Estimator
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -159,8 +158,8 @@ class DBSCAN implements Estimator
      * Group the samples that are within a given radius of the center into a
      * neighborhood and return the indices.
      *
-     * @param  array  $center
-     * @param  array  $samples
+     * @param array $center
+     * @param array $samples
      * @return array
      */
     protected function groupNeighbors(array $center, array $samples) : array

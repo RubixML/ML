@@ -25,8 +25,7 @@ class LambdaFunction implements Transformer
     protected $lambda;
 
     /**
-     * @param  Closure  $lambda
-     * @return void
+     * @param Closure $lambda
      */
     public function __construct(Closure $lambda)
     {
@@ -36,8 +35,7 @@ class LambdaFunction implements Transformer
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
-     * @return void
+     * @param array $samples
      */
     public function transform(array &$samples) : void
     {

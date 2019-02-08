@@ -37,10 +37,9 @@ class Blob implements Generator
     protected $stddev;
 
     /**
-     * @param  array  $center
-     * @param  mixed  $stddev
+     * @param array $center
+     * @param mixed $stddev
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(array $center = [0.0, 0.0], $stddev = 1.)
     {
@@ -68,7 +67,7 @@ class Blob implements Generator
 
             if (!is_int($stddev[$column]) and !is_float($stddev[$column])) {
                 throw new InvalidArgumentException('Standard deviation must be'
-                    . ' an integer or float, '. gettype($mean) . ' found.');
+                    . ' an integer or float, ' . gettype($mean) . ' found.');
             }
 
             if ($stddev[$column] <= 0) {
@@ -94,7 +93,7 @@ class Blob implements Generator
     /**
      * Generate n data points.
      *
-     * @param  int  $n
+     * @param int $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset

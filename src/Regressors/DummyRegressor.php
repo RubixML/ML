@@ -40,8 +40,7 @@ class DummyRegressor implements Learner, Persistable
     protected $trained;
 
     /**
-     * @param  \Rubix\ML\Other\Strategies\Continuous|null  $strategy
-     * @return void
+     * @param \Rubix\ML\Other\Strategies\Continuous|null $strategy
      */
     public function __construct(?Continuous $strategy = null)
     {
@@ -86,9 +85,8 @@ class DummyRegressor implements Learner, Persistable
     /**
      * Fit the training set to the given guessing strategy.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -105,7 +103,7 @@ class DummyRegressor implements Learner, Persistable
     /**
      * Make a prediction of a given sample dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */

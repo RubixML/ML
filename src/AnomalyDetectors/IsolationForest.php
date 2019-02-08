@@ -74,11 +74,10 @@ class IsolationForest implements Learner, Persistable
     protected $offset;
 
     /**
-     * @param  int  $estimators
-     * @param  float  $contamination
-     * @param  float  $ratio
+     * @param int $estimators
+     * @param float $contamination
+     * @param float $ratio
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $estimators = 300, float $contamination = 0.1, float $ratio = 0.2)
     {
@@ -139,9 +138,8 @@ class IsolationForest implements Learner, Persistable
      * Train a Random Forest by training an ensemble of decision trees on random
      * subsets of the training data.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -181,7 +179,7 @@ class IsolationForest implements Learner, Persistable
     /**
      * Output a vector of class probabilities per sample.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @return array
@@ -211,7 +209,7 @@ class IsolationForest implements Learner, Persistable
     /**
      * Return the isolation score of a sample.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return float
      */
     protected function isolationScore(array $sample) : float
@@ -234,7 +232,7 @@ class IsolationForest implements Learner, Persistable
     /**
      * Calculate the average path length of an unsuccessful search for n nodes.
      *
-     * @param  int  $n
+     * @param int $n
      * @return float
      */
     protected function c(int $n) : float

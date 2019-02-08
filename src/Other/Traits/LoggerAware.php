@@ -29,8 +29,7 @@ trait LoggerAware
     /**
      * Sets a logger instance on the object.
      *
-     * @param  \Psr\Log\LoggerInterface  $logger
-     * @return void
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger) : void
     {

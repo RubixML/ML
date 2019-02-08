@@ -4,6 +4,10 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
+use function preg_split;
+use function preg_match_all;
+use function count;
+
 /**
  * N-Gram
  *
@@ -30,9 +34,8 @@ class NGram implements Tokenizer
     protected $n;
 
     /**
-     * @param  int  $n
+     * @param int $n
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $n = 2)
     {
@@ -47,7 +50,7 @@ class NGram implements Tokenizer
     /**
      * Tokenize a block of text.
      *
-     * @param  string  $string
+     * @param string $string
      * @return array
      */
     public function tokenize(string $string) : array

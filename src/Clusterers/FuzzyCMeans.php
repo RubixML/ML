@@ -98,19 +98,18 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     ];
 
     /**
-     * @param  int  $c
-     * @param  float  $fuzz
-     * @param  \Rubix\ML\Kernels\Distance\Distance|null  $kernel
-     * @param  int  $epochs
-     * @param  float  $minChange
+     * @param int $c
+     * @param float $fuzz
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $epochs
+     * @param float $minChange
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         int $c,
         float $fuzz = 2.0,
         ?Distance $kernel = null,
-                                int $epochs = 300,
+        int $epochs = 300,
         float $minChange = 1e-4
     ) {
         if ($c < 1) {
@@ -201,9 +200,8 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * from one of the C centroids, then recompute the centroid coordinate as the
      * mean of the new cluster.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -280,7 +278,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -291,7 +289,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Estimate probabilities for each possible outcome.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -310,7 +308,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     /**
      * Initialize the cluster centroids using the k-means++ method.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \RuntimeException
      * @return array
      */
@@ -364,7 +362,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * Return an vector of membership probability score of each cluster for a
      * given sample.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @return array
      */
     protected function calculateMembership(array $sample) : array
@@ -392,7 +390,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * Calculate the inter-cluster distance between each training sample and
      * each cluster centroid.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return float
      */
     protected function interClusterDistance(Dataset $dataset, array $memberships) : float

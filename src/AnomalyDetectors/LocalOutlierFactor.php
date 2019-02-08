@@ -92,11 +92,10 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     protected $offset;
 
     /**
-     * @param  int  $k
-     * @param  float  $contamination
-     * @param  \Rubix\ML\Kernels\Distance\Distance  $kernel
+     * @param int $k
+     * @param float $contamination
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $k = 20, float $contamination = 0.1, ?Distance $kernel = null)
     {
@@ -150,9 +149,8 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     }
 
     /**
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -164,9 +162,8 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     /**
      * Perform a partial train on the learner.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function partial(Dataset $dataset) : void
     {
@@ -200,7 +197,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     /**
      * Make predictions from a dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
@@ -228,7 +225,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     /**
      * Calculate the local outlier factor of a given sample.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @throws \RuntimeException
      * @return float
      */
@@ -258,7 +255,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
      * Calculate the local reachability density of a sample given its
      * distances to its k nearest neighbors.
      *
-     * @param  array  $distances
+     * @param array $distances
      * @throws \RuntimeException
      * @return float
      */
@@ -282,7 +279,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
      * Find the K nearest neighbors to the given sample vector using the
      * brute force method.
      *
-     * @param  array  $sample
+     * @param array $sample
      * @throws \RuntimeException
      * @return array
      */

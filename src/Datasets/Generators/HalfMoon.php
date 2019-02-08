@@ -48,13 +48,12 @@ class HalfMoon implements Generator
     protected $noise;
 
     /**
-     * @param  float  $x
-     * @param  float  $y
-     * @param  float  $scale
-     * @param  float  $rotation
-     * @param  float  $noise
+     * @param float $x
+     * @param float $y
+     * @param float $scale
+     * @param float $rotation
+     * @param float $noise
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         float $x = 0.0,
@@ -97,7 +96,7 @@ class HalfMoon implements Generator
     /**
      * Generate n data points.
      *
-     * @param  int  $n
+     * @param int $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset

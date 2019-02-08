@@ -64,10 +64,9 @@ class RobustZScore implements Learner, Persistable
     protected $mads;
 
     /**
-     * @param  float  $tolerance
-     * @param  float  $threshold
+     * @param float $tolerance
+     * @param float $threshold
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
     {
@@ -141,9 +140,8 @@ class RobustZScore implements Learner, Persistable
      * Compute the median and median absolute deviations of each feature in
      * the training set.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function train(Dataset $dataset) : void
     {
@@ -163,7 +161,7 @@ class RobustZScore implements Learner, Persistable
      * Compute the per feature z score and compare the average and max values
      * to a tolerance and threshold respectively.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array

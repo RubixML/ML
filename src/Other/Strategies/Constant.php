@@ -24,8 +24,7 @@ class Constant implements Continuous
     protected $value;
 
     /**
-     * @param  float  $value
-     * @return void
+     * @param float $value
      */
     public function __construct(float $value)
     {
@@ -35,9 +34,8 @@ class Constant implements Continuous
     /**
      * Fit the guessing strategy to a set of values.
      *
-     * @param  array  $values
+     * @param array $values
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function fit(array $values) : void
     {

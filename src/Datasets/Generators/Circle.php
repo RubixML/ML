@@ -43,12 +43,11 @@ class Circle implements Generator
     protected $noise;
 
     /**
-     * @param  float  $x
-     * @param  float  $y
-     * @param  float  $scale
-     * @param  float  $noise
+     * @param float $x
+     * @param float $y
+     * @param float $scale
+     * @param float $noise
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $x = 0.0, float $y = 0.0, float $scale = 1.0, float $noise = 0.1)
     {
@@ -80,7 +79,7 @@ class Circle implements Generator
     /**
      * Generate n data points.
      *
-     * @param  int  $n
+     * @param int $n
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset

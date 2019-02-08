@@ -59,10 +59,9 @@ class Dense implements Hidden, Parametric
     protected $input;
 
     /**
-     * @param  int  $neurons
-     * @param  \Rubix\ML\NeuralNet\Initializers\Initializer  $initializer
+     * @param int $neurons
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer $initializer
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $neurons, Initializer $initializer = null)
     {
@@ -108,7 +107,7 @@ class Dense implements Hidden, Parametric
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -126,7 +125,7 @@ class Dense implements Hidden, Parametric
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -145,7 +144,7 @@ class Dense implements Hidden, Parametric
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
@@ -162,8 +161,8 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradients and update the parameters of the layer.
      *
-     * @param  Closure  $prevGradient
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
+     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
      * @return Closure
      */
@@ -219,9 +218,8 @@ class Dense implements Hidden, Parametric
     /**
      * Restore the parameters in the layer from an associative array.
      *
-     * @param  array  $parameters
+     * @param array $parameters
      * @throws \RuntimeException
-     * @return void
      */
     public function restore(array $parameters) : void
     {

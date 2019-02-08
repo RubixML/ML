@@ -25,9 +25,8 @@ class Normal implements Initializer
     protected $stddev;
 
     /**
-     * @param  float  $stddev
+     * @param float $stddev
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $stddev = 0.05)
     {
@@ -42,8 +41,8 @@ class Normal implements Initializer
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.
      *
-     * @param  int  $fanIn
-     * @param  int  $fanOut
+     * @param int $fanIn
+     * @param int $fanOut
      * @return \Rubix\Tensor\Matrix
      */
     public function initialize(int $fanIn, int $fanOut) : Matrix

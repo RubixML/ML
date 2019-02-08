@@ -25,9 +25,8 @@ class Placeholder1D implements Input
     protected $inputs;
 
     /**
-     * @param  int  $inputs
+     * @param int $inputs
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(int $inputs)
     {
@@ -51,7 +50,7 @@ class Placeholder1D implements Input
      * Initialize the layer with the fan in from the previous layer and return
      * the fan out for this layer.
      *
-     * @param  int  $fanIn
+     * @param int $fanIn
      * @return int
      */
     public function initialize(int $fanIn) : int
@@ -62,7 +61,7 @@ class Placeholder1D implements Input
     /**
      * Compute a forward pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @throws \InvalidArgumentException
      * @return \Rubix\Tensor\Matrix
      */
@@ -80,7 +79,7 @@ class Placeholder1D implements Input
     /**
      * Compute an inferential pass through the layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix

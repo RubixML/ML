@@ -9,7 +9,7 @@ interface Serializer
     /**
      * Serialize a persistable object and return the data.
      *
-     * @param  \Rubix\ML\Persistable  $persistable
+     * @param \Rubix\ML\Persistable $persistable
      * @return string
      */
     public function serialize(Persistable $persistable) : string;
@@ -17,7 +17,7 @@ interface Serializer
     /**
      * Unserialize a persistable object and return it.
      *
-     * @param string  $data
+     * @param string $data
      * @return \Rubix\ML\Persistable
      */
     public function unserialize(string $data) : Persistable;

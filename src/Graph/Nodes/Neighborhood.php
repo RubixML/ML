@@ -47,8 +47,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     protected $max;
 
     /**
-     * @param  \Rubix\ML\Datasets\Labeled  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      */
     public function __construct(Labeled $dataset)
     {

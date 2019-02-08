@@ -63,10 +63,9 @@ class MinMaxNormalizer implements Elastic
     protected $mins;
 
     /**
-     * @param  float  $min
-     * @param  float  $max
+     * @param float $min
+     * @param float $max
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(float $min = 0., float $max = 1.)
     {
@@ -112,8 +111,7 @@ class MinMaxNormalizer implements Elastic
     /**
      * Fit the transformer to the dataset.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function fit(Dataset $dataset) : void
     {
@@ -132,8 +130,7 @@ class MinMaxNormalizer implements Elastic
     /**
      * Update the fitting of the transformer.
      *
-     * @param  \Rubix\ML\Datasets\Dataset  $dataset
-     * @return void
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function update(Dataset $dataset) : void
     {
@@ -166,9 +163,8 @@ class MinMaxNormalizer implements Elastic
     /**
      * Transform the dataset in place.
      *
-     * @param  array  $samples
+     * @param array $samples
      * @throws \RuntimeException
-     * @return void
      */
     public function transform(array &$samples) : void
     {

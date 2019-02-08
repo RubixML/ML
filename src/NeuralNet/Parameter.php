@@ -25,8 +25,7 @@ class Parameter
     public $w;
 
     /**
-     * @param  \Rubix\Tensor\Matrix  $w
-     * @return void
+     * @param \Rubix\Tensor\Matrix $w
      */
     public function __construct(Matrix $w)
     {

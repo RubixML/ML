@@ -4,6 +4,9 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
+use function strlen;
+use function explode;
+
 /**
  * Whitespace
  *
@@ -24,9 +27,8 @@ class Whitespace implements Tokenizer
     protected $delimiter;
 
     /**
-     * @param  string  $delimiter
+     * @param string $delimiter
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(string $delimiter = ' ')
     {
@@ -41,7 +43,7 @@ class Whitespace implements Tokenizer
     /**
      * Tokenize a block of text.
      *
-     * @param  string  $string
+     * @param string $string
      * @return array
      */
     public function tokenize(string $string) : array

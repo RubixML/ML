@@ -6,6 +6,22 @@ use InvalidArgumentException;
 use ReflectionMethod;
 use ReflectionClass;
 
+use function get_class;
+use function gettype;
+use function array_combine;
+use function array_keys;
+use function array_column;
+use function in_array;
+use function count;
+use function rand;
+use function round;
+use function range;
+use function is_object;
+use function is_array;
+use function implode;
+use function substr;
+use function strrchr;
+
 /**
  * Params
  *
@@ -23,9 +39,9 @@ class Params
     /**
      * Generate a random unique integer distribution.
      *
-     * @param  int  $min
-     * @param  int  $max
-     * @param  int  $n
+     * @param int $min
+     * @param int $max
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return int[]
      */
@@ -62,9 +78,9 @@ class Params
     /**
      * Generate a random distribution of floating point parameters.
      *
-     * @param  float  $min
-     * @param  float  $max
-     * @param  int  $n
+     * @param float $min
+     * @param float $max
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return float[]
      */
@@ -95,9 +111,9 @@ class Params
     /**
      * Generate a grid of evenly distributed parameters.
      *
-     * @param  float  $min
-     * @param  float  $max
-     * @param  int  $n
+     * @param float $min
+     * @param float $max
+     * @param int $n
      * @throws \InvalidArgumentException
      * @return float[]
      */
@@ -121,11 +137,17 @@ class Params
     /**
      * Extract the arguments from the model constructor for display.
      *
-     * @param  object  $object
+     * @param object $object
+     * @throws \InvalidArgumentException
      * @return string[]
      */
-    public static function args(object $object) : array
+    public static function args($object) : array
     {
+        if (!is_object($object)) {
+            throw new InvalidArgumentException('Argument must be'
+                . ' an object ' . gettype($object) . ' found.');
+        }
+
         $reflector = new ReflectionClass($object);
 
         $constructor = $reflector->getConstructor();
@@ -143,9 +165,9 @@ class Params
      * Return a string representation of the constructor arguments from
      * an associative constructor array.
      *
-     * @param  array  $constructor
-     * @param  string  $equator
-     * @param  string  $separator
+     * @param array $constructor
+     * @param string $equator
+     * @param string $separator
      * @return string
      */
     public static function stringify(array $constructor, string $equator = '=', string $separator = ' ') : string
@@ -173,7 +195,7 @@ class Params
      * Return the short class name from a fully qualified class name
      * (fqcn).
      *
-     * @param  mixed  $object
+     * @param mixed $object
      * @throws \InvalidArgumentException
      * @return string
      */

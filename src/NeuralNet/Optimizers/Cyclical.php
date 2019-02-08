@@ -72,12 +72,11 @@ class Cyclical implements Optimizer
     protected $n;
 
     /**
-     * @param  float  $lower
-     * @param  float  $upper
-     * @param  int  $steps
-     * @param  float  $decay
+     * @param float $lower
+     * @param float $upper
+     * @param int $steps
+     * @param float $decay
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function __construct(
         float $lower = 0.001,
@@ -116,8 +115,8 @@ class Cyclical implements Optimizer
     /**
      * Calculate a gradient descent step for a given parameter.
      *
-     * @param  \Rubix\ML\NeuralNet\Parameter  $param
-     * @param  \Rubix\Tensor\Matrix  $gradient
+     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\Tensor\Matrix $gradient
      * @return \Rubix\Tensor\Matrix
      */
     public function step(Parameter $param, Matrix $gradient) : Matrix

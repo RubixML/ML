@@ -56,11 +56,10 @@ class FeedForward implements Network
     ];
 
     /**
-     * @param  \Rubix\ML\NeuralNet\Layers\Input  $input
-     * @param  array  $hidden
-     * @param  \Rubix\ML\NeuralNet\Layers\Output  $output
-     * @param  \Rubix\ML\NeuralNet\Optimizers\Optimizer  $optimizer
-     * @return void
+     * @param \Rubix\ML\NeuralNet\Layers\Input $input
+     * @param array $hidden
+     * @param \Rubix\ML\NeuralNet\Layers\Output $output
+     * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
@@ -163,7 +162,7 @@ class FeedForward implements Network
      * Do a forward and backward pass of the network in one call. Returns the
      * loss.
      *
-     * @param  \Rubix\ML\Datasets\Labeled  $batch
+     * @param \Rubix\ML\Datasets\Labeled $batch
      * @return float
      */
     public function roundtrip(Labeled $batch) : float
@@ -178,7 +177,7 @@ class FeedForward implements Network
     /**
      * Feed a batch through the network and return a matrix of activations.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function feed(Matrix $input) : Matrix
@@ -193,7 +192,7 @@ class FeedForward implements Network
     /**
      * Run an inference pass and return the activations at the output layer.
      *
-     * @param  \Rubix\Tensor\Matrix  $input
+     * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
@@ -209,7 +208,7 @@ class FeedForward implements Network
      * Backpropagate the gradient produced by the cost function and return the
      * loss.
      *
-     * @param  array  $labels
+     * @param array $labels
      * @return float
      */
     public function backpropagate(array $labels) : float
@@ -227,8 +226,7 @@ class FeedForward implements Network
     /**
      * Restore the network parameters from a snapshot.
      *
-     * @param  \Rubix\ML\NeuralNet\Snapshot  $snapshot
-     * @return void
+     * @param \Rubix\ML\NeuralNet\Snapshot $snapshot
      */
     public function restore(Snapshot $snapshot) : void
     {
