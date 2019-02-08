@@ -6,7 +6,7 @@ interface Decision extends Node
 {
     /**
      * Return the impurity score of the node.
-     * 
+     *
      * @return float
      */
     public function impurity() : float;
@@ -14,7 +14,7 @@ interface Decision extends Node
     /**
      * Return the number of samples from the training set this node is
      * responsible for.
-     * 
+     *
      * @return int
      */
     public function n() : int;

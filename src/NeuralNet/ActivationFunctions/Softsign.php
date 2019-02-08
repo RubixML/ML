@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
+use function abs;
 
 /**
  * Softsign
@@ -55,7 +56,7 @@ class Softsign implements ActivationFunction
         return $z->map([$this, '_differentiate']);
     }
 
-        /**
+    /**
      * @param  float  $z
      * @return float
      */

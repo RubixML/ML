@@ -52,24 +52,44 @@ class GaussianTest extends TestCase
         $this->assertEquals($this->activations[3][0], $activations[3][0], '', self::TOLERANCE);
         $this->assertEquals($this->activations[4][0], $activations[4][0], '', self::TOLERANCE);
 
-        $this->assertThat($activations[0][0], $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $activations[0][0],
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
 
-        $this->assertThat($activations[1][0], $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $activations[1][0],
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
 
-        $this->assertThat($activations[2][0], $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $activations[2][0],
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
 
-        $this->assertThat($activations[3][0], $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $activations[3][0],
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
 
-        $this->assertThat($activations[4][0], $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $activations[4][0],
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 

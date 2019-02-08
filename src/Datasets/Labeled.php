@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -31,7 +32,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Build a new labeled dataset with validation.
-     * 
+     *
      * @param  array  $samples
      * @param  array  $labels
      * @return self
@@ -43,7 +44,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Build a new labeled dataset foregoing validation.
-     * 
+     *
      * @param  array[]  $samples
      * @param  (int|float|string)[]  $labels
      * @return self
@@ -55,7 +56,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Build a dataset from an iterator.
-     * 
+     *
      * @param  iterable  $samples
      * @param  iterable  $labels
      * @return self
@@ -77,7 +78,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
-     * 
+     *
      * @param  array  $datasets
      * @throws \InvalidArgumentException
      * @return self
@@ -143,7 +144,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Return the samples and labels in a single array.
-     * 
+     *
      * @return array[]
      */
     public function zip() : array
@@ -190,7 +191,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Map labels to their new values.
-     * 
+     *
      * @param  callable  $fn
      * @throws \RuntimeException
      * @return void
@@ -405,8 +406,12 @@ class Labeled extends DataFrame implements Dataset
     {
         $order = $this->column($index);
 
-        array_multisort($order, $this->samples, $this->labels,
-            $descending ? SORT_DESC : SORT_ASC);
+        array_multisort(
+            $order,
+            $this->samples,
+            $this->labels,
+            $descending ? SORT_DESC : SORT_ASC
+        );
 
         return $this;
     }
@@ -419,8 +424,11 @@ class Labeled extends DataFrame implements Dataset
      */
     public function sortByLabel(bool $descending = false) : Dataset
     {
-        array_multisort($this->labels, $this->samples,
-            $descending ? SORT_DESC : SORT_ASC);
+        array_multisort(
+            $this->labels,
+            $this->samples,
+            $descending ? SORT_DESC : SORT_ASC
+        );
 
         return $this;
     }
@@ -726,7 +734,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Specify data which should be serialized to JSON.
-     * 
+     *
      * @return mixed
      */
     public function jsonSerialize()

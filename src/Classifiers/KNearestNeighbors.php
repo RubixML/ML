@@ -45,7 +45,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
-     * 
+     *
      * @var bool
      */
     protected $weighted;
@@ -112,7 +112,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -122,7 +122,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

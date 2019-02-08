@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -41,14 +41,14 @@ class TfIdfTransformer implements Elastic
 
     /**
      * The number of documents (samples) that have been fitted so far.
-     * 
+     *
      * @var int|null
      */
     protected $n;
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool

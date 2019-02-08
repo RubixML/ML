@@ -47,7 +47,7 @@ class KNNRegressor implements Online, Persistable
     /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
-     * 
+     *
      * @var bool
      */
     protected $weighted;
@@ -105,7 +105,7 @@ class KNNRegressor implements Online, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -115,7 +115,7 @@ class KNNRegressor implements Online, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -180,7 +180,7 @@ class KNNRegressor implements Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            list ($distances, $labels) = $this->neighbors($sample);
+            list($distances, $labels) = $this->neighbors($sample);
 
             if ($this->weighted) {
                 $weights = [];

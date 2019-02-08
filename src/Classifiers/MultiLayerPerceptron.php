@@ -9,10 +9,10 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -41,7 +41,7 @@ use RuntimeException;
  * no longer make progress. It also utilizes [snapshotting](#snapshots) to make sure
  * that it always uses the best parameters even if progress may have declined during
  * training.
- * 
+ *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.
  *
@@ -175,11 +175,18 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(array $hidden = [], int $batchSize = 100, ?Optimizer $optimizer = null,
-                            float $alpha = 1e-4, int $epochs = 1000, float $minChange = 1e-4,
-                            ?CostFunction $costFn = null, float $holdout = 0.1, ?Metric $metric = null,
-                            int $window = 3)
-    {
+    public function __construct(
+        array $hidden = [],
+        int $batchSize = 100,
+        ?Optimizer $optimizer = null,
+                            float $alpha = 1e-4,
+        int $epochs = 1000,
+        float $minChange = 1e-4,
+                            ?CostFunction $costFn = null,
+        float $holdout = 0.1,
+        ?Metric $metric = null,
+                            int $window = 3
+    ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
                 . " per batch, $batchSize given.");
@@ -248,7 +255,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -260,7 +267,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -346,7 +353,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'hidden' => $this->hidden,
                 'batch_size' => $this->batchSize,
@@ -359,6 +367,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 'metric' => $this->metric,
                 'window' => $this->window,
             ]));
+        }
 
         $n = $dataset->numRows();
 
@@ -393,8 +402,10 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 $bestSnapshot = Snapshot::take($this->network);
             }
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, score=$score loss=$loss");
+            }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
@@ -426,8 +437,10 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
 
-                if ($this->logger) $this->logger->info('Network restored'
+                if ($this->logger) {
+                    $this->logger->info('Network restored'
                     . ' from previous snapshot');
+                }
             }
         }
 

@@ -11,7 +11,7 @@ class EstimatorIsCompatibleWithMetric
 {
     /**
      * Perform a check.
-     * 
+     *
      * @param  \Rubix\ML\Estimator  $estimator
      * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
      * @throws \InvalidArgumentException

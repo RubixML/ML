@@ -86,7 +86,7 @@ class PReLU implements Hidden, Parametric
 
     /**
      * Return the parameters of the layer.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\NeuralNet\Parameter[]
      */
@@ -141,7 +141,7 @@ class PReLU implements Hidden, Parametric
      * @return \Rubix\Tensor\Matrix
      */
     public function infer(Matrix $input) : Matrix
-    {   
+    {
         return $this->compute($input);
     }
 

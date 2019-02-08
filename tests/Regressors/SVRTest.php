@@ -7,7 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;

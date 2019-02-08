@@ -7,7 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;

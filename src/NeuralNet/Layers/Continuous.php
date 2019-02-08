@@ -97,7 +97,7 @@ class Continuous implements Output
 
     /**
      * Return the width of the layer.
-     * 
+     *
      * @return int|null
      */
     public function width() : ?int
@@ -107,7 +107,7 @@ class Continuous implements Output
 
     /**
      * Return the parameters of the layer.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\NeuralNet\Parameter[]
      */

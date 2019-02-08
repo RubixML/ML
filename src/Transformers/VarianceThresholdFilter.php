@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
@@ -53,7 +53,7 @@ class VarianceThresholdFilter implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -63,7 +63,7 @@ class VarianceThresholdFilter implements Stateful
 
     /**
      * Return the column indexes that have been selected during fitting.
-     * 
+     *
      * @return array
      */
     public function selected() : array

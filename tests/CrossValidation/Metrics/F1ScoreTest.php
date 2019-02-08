@@ -38,8 +38,12 @@ class F1ScoreTest extends TestCase
 
         $this->assertEquals(0.5833333333423611, $score);
 
-        $this->assertThat($score, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 }

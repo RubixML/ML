@@ -15,7 +15,7 @@ use RuntimeException;
  * technique designed to improve the stability and performance of a
  * user-specified base estimator by training a number of them on a unique
  * *bootstrapped* training set sampled at random with replacement.
- * 
+ *
  * References:
  * [1] L. Breiman. (1996). Bagging Predictors.
  *
@@ -99,7 +99,7 @@ class BootstrapAggregator implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -109,7 +109,7 @@ class BootstrapAggregator implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -170,7 +170,7 @@ class BootstrapAggregator implements Learner, Persistable
         foreach ($aggregate as $outcomes) {
             if ($type === self::CLASSIFIER) {
                 $predictions[] = Argmax::compute(array_count_values($outcomes));
-            } else if ($type === self::DETECTOR) {
+            } elseif ($type === self::DETECTOR) {
                 $predictions[] = Stats::mean($outcomes) > 0.5 ? 1 : 0;
             } else {
                 $predictions[] = Stats::mean($outcomes);

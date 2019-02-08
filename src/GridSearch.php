@@ -57,7 +57,7 @@ class GridSearch implements Learner, Persistable, Verbose
      *
      * @var \Rubix\ML\CrossValidation\Metrics\Metric
      */
-     protected $metric;
+    protected $metric;
 
     /**
      * The validator used to test the estimator.
@@ -68,7 +68,7 @@ class GridSearch implements Learner, Persistable, Verbose
 
     /**
      * Should we retrain the best estimator using the whole dataset?
-     * 
+     *
      * @var bool
      */
     protected $retrain;
@@ -131,9 +131,13 @@ class GridSearch implements Learner, Persistable, Verbose
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(string $base, array $grid, ?Metric $metric = null,
-                                ?Validator $validator = null, bool $retrain = true)
-    {
+    public function __construct(
+        string $base,
+        array $grid,
+        ?Metric $metric = null,
+                                ?Validator $validator = null,
+        bool $retrain = true
+    ) {
         $reflector = new ReflectionClass($base);
 
         $proxy = $reflector->newInstanceWithoutConstructor();
@@ -143,7 +147,7 @@ class GridSearch implements Learner, Persistable, Verbose
                 . ' of a learner.');
         }
 
-        $args = Params::args($base);
+        $args = Params::args($proxy);
 
         if (count($grid) > count($args)) {
             throw new InvalidArgumentException('Too many arguments supplied.'
@@ -206,7 +210,7 @@ class GridSearch implements Learner, Persistable, Verbose
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -214,9 +218,9 @@ class GridSearch implements Learner, Persistable, Verbose
         return $this->estimator->compatibility();
     }
 
-        /**
+    /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -279,7 +283,8 @@ class GridSearch implements Learner, Persistable, Verbose
                 . ' Labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Search initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Search initialized w/ '
             . Params::stringify([
                 'base' => $this->base,
                 'grid' => $this->grid,
@@ -287,6 +292,7 @@ class GridSearch implements Learner, Persistable, Verbose
                 'validator' => $this->validator,
                 'retrain' => $this->retrain,
             ]));
+        }
 
         $this->params = $this->scores = $this->best = [];
 
@@ -299,8 +305,10 @@ class GridSearch implements Learner, Persistable, Verbose
 
             $constructor = array_combine($this->args, $params) ?: [];
 
-            if ($this->logger) $this->logger->info('Testing parameters '
+            if ($this->logger) {
+                $this->logger->info('Testing parameters '
                 . Params::stringify($constructor));
+            }
 
             $score = $this->validator->test($estimator, $dataset, $this->metric);
 
@@ -313,7 +321,9 @@ class GridSearch implements Learner, Persistable, Verbose
             $this->params[] = $constructor;
             $this->scores[] = $score;
 
-            if ($this->logger) $this->logger->info("Test complete, score=$score");
+            if ($this->logger) {
+                $this->logger->info("Test complete, score=$score");
+            }
         }
 
         $this->best = ['score' => $bestScore, 'params' => $bestParams];
@@ -325,15 +335,19 @@ class GridSearch implements Learner, Persistable, Verbose
         }
 
         if ($this->retrain) {
-            if ($this->logger) $this->logger->info('Retraining base'
+            if ($this->logger) {
+                $this->logger->info('Retraining base'
                 . ' estimator on full dataset');
+            }
 
             $bestEstimator->train($dataset);
         }
 
         $this->estimator = $bestEstimator;
 
-        if ($this->logger) $this->logger->info('Search complete');
+        if ($this->logger) {
+            $this->logger->info('Search complete');
+        }
     }
 
     /**

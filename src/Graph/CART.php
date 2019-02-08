@@ -50,14 +50,14 @@ abstract class CART implements Tree
 
     /**
      * The minimum increase in purity necessary for a node not to be post pruned.
-     * 
+     *
      * @var float
      */
     protected $minPurityIncrease;
 
     /**
      * The number of feature columns in the training set.
-     * 
+     *
      * @var int
      */
     protected $featureCount;
@@ -109,7 +109,7 @@ abstract class CART implements Tree
 
     /**
      * Return the root node of the tree.
-     * 
+     *
      * @return \Rubix\ML\Graph\Nodes\Comparison|null
      */
     public function root() : ?Comparison

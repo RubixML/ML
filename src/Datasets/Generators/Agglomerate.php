@@ -65,7 +65,7 @@ class Agglomerate implements Generator
             }
         }
 
-        $dimensions = reset($generators)->dimensions(); 
+        $dimensions = reset($generators)->dimensions();
 
         foreach ($generators as $generator) {
             if ($generator->dimensions() !== $dimensions) {

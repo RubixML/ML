@@ -56,9 +56,13 @@ class HalfMoon implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0.0, float $y = 0.0, float $scale = 1., float $rotation = 90.0,
-                                float $noise = 0.1)
-    {
+    public function __construct(
+        float $x = 0.0,
+        float $y = 0.0,
+        float $scale = 1.,
+        float $rotation = 90.0,
+                                float $noise = 0.1
+    ) {
         if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . " than 0, $scale given.");
@@ -119,5 +123,4 @@ class HalfMoon implements Generator
 
         return Labeled::quick($samples, $labels);
     }
-
 }

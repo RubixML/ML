@@ -38,8 +38,12 @@ class VMeasureTest extends TestCase
 
         $this->assertEquals(0.5833333333513888, $score);
 
-        $this->assertThat($score, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 }

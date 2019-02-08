@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use RuntimeException;
 
@@ -12,7 +12,7 @@ use RuntimeException;
  *
  * A method of centering and scaling a dataset such that it has 0 mean and unit
  * variance (Z Score).
- * 
+ *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
  * Computing Sample Variances.
@@ -46,7 +46,7 @@ class ZScaleStandardizer implements Elastic
 
     /**
      *  The number of samples that this tranformer has fitted.
-     * 
+     *
      * @var int|null
      */
     protected $n;
@@ -69,7 +69,7 @@ class ZScaleStandardizer implements Elastic
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool

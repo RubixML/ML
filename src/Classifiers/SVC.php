@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Kernels\SVM\Kernel;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -16,14 +16,14 @@ use svm;
 
 /**
  * SVC
- * 
+ *
  * The multiclass Support Vector Machine Classifier is a maximum margin classifier
  * that can efficiently perform non-linear classification by implicitly mapping
  * feature vectors into high dimensional feature space.
- * 
+ *
  * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
  * engine written in C++ under the hood.
- * 
+ *
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
  * [2] C. Cortes et al. (1995). Support-Vector Networks.
@@ -36,21 +36,21 @@ class SVC implements Learner, Persistable
 {
     /**
      * The support vector machine instance.
-     * 
+     *
      * @var \svm
      */
     protected $svm;
 
     /**
      * The trained model instance.
-     * 
+     *
      * @var \svmmodel|null
      */
     protected $model;
 
     /**
      * The mappings from integer to class label.
-     * 
+     *
      * @var string[]
      */
     protected $classes =[
@@ -67,9 +67,13 @@ class SVC implements Learner, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $c = 1.0, ?Kernel $kernel = null, bool $shrinking = true,
-                                float $tolerance = 1e-3, float $cacheSize = 100.)
-    {
+    public function __construct(
+        float $c = 1.0,
+        ?Kernel $kernel = null,
+        bool $shrinking = true,
+                                float $tolerance = 1e-3,
+        float $cacheSize = 100.
+    ) {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'
                 . ' PHP configuration.');
@@ -120,7 +124,7 @@ class SVC implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -132,7 +136,7 @@ class SVC implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

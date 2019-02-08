@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -46,7 +46,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
 
     /**
      * Should we compute the prior probabilities from the training set?
-     * 
+     *
      * @var bool
      */
     protected $fitPriors;
@@ -135,7 +135,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -147,7 +147,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

@@ -38,8 +38,12 @@ class MeanSquaredErrorTest extends TestCase
 
         $this->assertEquals(-7.8, $score);
 
-        $this->assertThat($score, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 }

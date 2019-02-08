@@ -38,8 +38,12 @@ class RMSErrorTest extends TestCase
 
         $this->assertEquals(-2.792848008753788, $score);
 
-        $this->assertThat($score, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 }

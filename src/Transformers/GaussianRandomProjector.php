@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -69,7 +69,7 @@ class GaussianRandomProjector implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool

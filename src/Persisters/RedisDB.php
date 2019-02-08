@@ -45,7 +45,7 @@ class RedisDB implements Persister
 
     /**
      * The serializer used to convert to and from serial format.
-     * 
+     *
      * @var \Rubix\ML\Persisters\Serializers\Serializer
      */
     protected $serializer;
@@ -63,10 +63,16 @@ class RedisDB implements Persister
      * @throws \RuntimeException
      * @return void
      */
-    public function __construct(string $key, string $host = '127.0.0.1', int $port = 6379, int $db = 0,
-                                string $password = null, int $history = 2, ?Serializer $serializer = null,
-                                float $timeout = 2.5)
-    {
+    public function __construct(
+        string $key,
+        string $host = '127.0.0.1',
+        int $port = 6379,
+        int $db = 0,
+                                string $password = null,
+        int $history = 2,
+        ?Serializer $serializer = null,
+                                float $timeout = 2.5
+    ) {
         if (!extension_loaded('redis')) {
             throw new RuntimeException('Redis extension is not loaded, check'
                 . ' PHP configuration.');
@@ -150,7 +156,7 @@ class RedisDB implements Persister
 
     /**
      * Load the last model that was saved.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */

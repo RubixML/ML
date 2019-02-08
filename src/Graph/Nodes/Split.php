@@ -71,7 +71,7 @@ class Split extends BinaryNode
 
     /**
      * Return the feature column (index) of the split value.
-     * 
+     *
      * @return int
      */
     public function column() : int
@@ -81,7 +81,7 @@ class Split extends BinaryNode
 
     /**
      * Return the split value.
-     * 
+     *
      * @return int|float|string
      */
     public function value()
@@ -91,7 +91,7 @@ class Split extends BinaryNode
 
     /**
      * Return the left and right splits of the training data.
-     * 
+     *
      * @return array
      */
     public function groups() : array

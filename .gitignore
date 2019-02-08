@@ -1,5 +1,6 @@
 /vendor
 composer.lock
 test.json
+.php_cs.cache
 .vscode
 .vs

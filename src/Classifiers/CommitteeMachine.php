@@ -45,7 +45,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
 
     /**
      * The data types that the committee is compatible with.
-     * 
+     *
      * @var int[]
      */
     protected $compatibility;
@@ -139,7 +139,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -149,7 +149,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -206,8 +206,11 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.));
+        $probabilities = array_fill(
+            0,
+            $dataset->numRows(),
+            array_fill_keys($this->classes, 0.)
+        );
 
         foreach ($this->experts as $i => $expert) {
             $influence = $this->influences[$i];

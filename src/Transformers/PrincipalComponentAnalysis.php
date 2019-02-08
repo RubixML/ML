@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -17,7 +17,7 @@ use RuntimeException;
  * specified by the user. PCA is used to compress high dimensional samples down to
  * lower dimensions such that would retain as much of the information within the data
  * as possible.
- * 
+ *
  * References:
  * [1] H. Abdi et al. (2010). Principal Component Analysis.
  *
@@ -43,28 +43,28 @@ class PrincipalComponentAnalysis implements Stateful
 
     /**
      * The amount of variance that is preserved by the transformation.
-     * 
+     *
      * @var float|null
      */
     protected $explainedVar;
 
     /**
      * The amount of variance lost by discarding the noise components.
-     * 
+     *
      * @var float|null
      */
     protected $noiseVar;
 
     /**
      * The percentage of information lost due to the transformation.
-     * 
+     *
      * @var float|null
      */
     protected $lossiness;
 
     /**
      * The centers (means) of the input feature columns.
-     * 
+     *
      * @var \Rubix\Tensor\Vector|null
      */
     protected $mean;
@@ -86,7 +86,7 @@ class PrincipalComponentAnalysis implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -97,7 +97,7 @@ class PrincipalComponentAnalysis implements Stateful
     /**
      * Return the amount of variance that has been preserved by the
      * transformation.
-     * 
+     *
      * @return float|null
      */
     public function explainedVar() : ?float
@@ -107,7 +107,7 @@ class PrincipalComponentAnalysis implements Stateful
 
     /**
      * Return the amount of variance lost by discarding the noise components.
-     * 
+     *
      * @return float|null
      */
     public function noiseVar() : ?float
@@ -117,7 +117,7 @@ class PrincipalComponentAnalysis implements Stateful
 
     /**
      * Return the percentage of information lost due to the transformation.
-     * 
+     *
      * @return float|null
      */
     public function lossiness() : ?float

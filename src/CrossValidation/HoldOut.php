@@ -10,14 +10,14 @@ use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 
-/** 
+/**
  * Hold Out
  *
  * In the holdout method, we randomly assign data points to two sets (training
  * and testing set). The size of each of the testing set is given by the holdout
  * ratio and is typically smaller than the training set.
  *
- * @category    Machine Learning 
+ * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */

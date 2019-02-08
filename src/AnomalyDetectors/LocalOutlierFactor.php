@@ -6,8 +6,8 @@ use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -43,7 +43,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     /**
      * The percentage of outliers that are assumed to be present in the
      * training set.
-     * 
+     *
      * @var float
      */
     protected $contamination;
@@ -58,7 +58,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * The training samples.
-     * 
+     *
      * @var array[]
      */
     protected $samples = [
@@ -77,7 +77,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
  
     /**
      * The precomputed local reachability densities of the training set.
-     * 
+     *
      * @var float[]
      */
     protected $lrds = [
@@ -86,7 +86,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * The local outlier factor offset used by the decision function.
-     * 
+     *
      * @var float|null
      */
     protected $offset;
@@ -131,7 +131,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -141,7 +141,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -199,7 +199,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * Make predictions from a dataset.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -227,7 +227,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
     /**
      * Calculate the local outlier factor of a given sample.
-     * 
+     *
      * @param  array  $sample
      * @throws \RuntimeException
      * @return float

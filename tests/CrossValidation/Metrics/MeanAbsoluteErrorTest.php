@@ -38,8 +38,12 @@ class MeanAbsoluteErrorTest extends TestCase
 
         $this->assertEquals(-2.2, $score);
 
-        $this->assertThat($score, $this->logicalAnd(
-            $this->greaterThanOrEqual($min), $this->lessThanOrEqual($max))
+        $this->assertThat(
+            $score,
+            $this->logicalAnd(
+            $this->greaterThanOrEqual($min),
+            $this->lessThanOrEqual($max)
+        )
         );
     }
 }

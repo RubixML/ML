@@ -45,7 +45,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
-     * 
+     *
      * @var bool
      */
     protected $weighted;
@@ -67,9 +67,12 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null,
-                                bool $weighted = true)
-    {
+    public function __construct(
+        int $k = 3,
+        int $maxLeafSize = 20,
+        ?Distance $kernel = null,
+                                bool $weighted = true
+    ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");
@@ -98,7 +101,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -108,7 +111,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -118,7 +121,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
     /**
      * Train the learner with a dataset.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void

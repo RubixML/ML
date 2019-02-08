@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -12,8 +13,6 @@ use Countable;
 
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
-    const VALIDATION_RATIO = 0.2;
-
     /**
      * The feature vectors of the dataset. i.e the data table.
      *
@@ -125,7 +124,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Return the unique data types.
-     * 
+     *
      * @return int[]
      */
     public function uniqueTypes() : array
@@ -135,7 +134,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Does the dataframe consist of data of a single type?
-     * 
+     *
      * @return bool
      */
     public function homogeneous() : bool
@@ -214,7 +213,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Return the columns that match a given data type.
-     * 
+     *
      * @param  int  $type
      * @return array
      */

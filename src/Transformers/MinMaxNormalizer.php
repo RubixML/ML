@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
@@ -22,14 +22,14 @@ class MinMaxNormalizer implements Elastic
 {
     /**
      * The minimum value of the transformed features.
-     * 
+     *
      * @var float
      */
     protected $min;
 
     /**
      * The maximum value of the transformed features.
-     * 
+     *
      * @var float
      */
     protected $max;
@@ -50,14 +50,14 @@ class MinMaxNormalizer implements Elastic
 
     /**
      * The scale of each feature column.
-     * 
+     *
      * @var array|null
      */
     protected $scales;
 
     /**
      * The scaled minimums of each feature column.
-     * 
+     *
      * @var array|null
      */
     protected $mins;
@@ -81,7 +81,7 @@ class MinMaxNormalizer implements Elastic
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -91,7 +91,7 @@ class MinMaxNormalizer implements Elastic
 
     /**
      * Return the minmums of each feature column.
-     * 
+     *
      * @return array|null
      */
     public function minimums() : ?array
@@ -101,7 +101,7 @@ class MinMaxNormalizer implements Elastic
 
     /**
      * Return the maximums of each feature column.
-     * 
+     *
      * @return array|null
      */
     public function maximums() : ?array

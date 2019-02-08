@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
 use InvalidArgumentException;
@@ -35,7 +35,7 @@ class WordCountVectorizer implements Stateful
     /**
      * The minimum number of documents a word must appear in to be added to
      * the vocabulary.
-     * 
+     *
      * @var int
      */
     protected $minDocumentFrequency;
@@ -61,9 +61,11 @@ class WordCountVectorizer implements Stateful
      * @param  \Rubix\ML\Other\Tokenizers\Tokenizer|null  $tokenizer
      * @return void
      */
-    public function __construct(int $maxVocabulary = PHP_INT_MAX, int $minDocumentFrequency = 1,
-                                ?Tokenizer $tokenizer = null)
-    {
+    public function __construct(
+        int $maxVocabulary = PHP_INT_MAX,
+        int $minDocumentFrequency = 1,
+                                ?Tokenizer $tokenizer = null
+    ) {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabular must'
                 . " be at least 1, $maxVocabulary given.");
@@ -85,7 +87,7 @@ class WordCountVectorizer implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -158,8 +160,10 @@ class WordCountVectorizer implements Stateful
                 $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
             }
     
-            $this->vocabulary[$column] = array_combine(array_keys($tfs),
-                range(0, count($tfs) - 1)) ?: [];
+            $this->vocabulary[$column] = array_combine(
+                array_keys($tfs),
+                range(0, count($tfs) - 1)
+            ) ?: [];
         }
     }
 

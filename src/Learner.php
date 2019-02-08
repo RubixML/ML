@@ -16,7 +16,7 @@ interface Learner extends Estimator
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool;

@@ -7,7 +7,7 @@ use svm;
 
 /**
  * Linear
- * 
+ *
  * A simple linear kernel computed by the dot product.
  *
  * @category    Machine Learning
@@ -30,7 +30,7 @@ class Linear implements Kernel
 
     /**
      * Return the options for the libsvm runtime.
-     * 
+     *
      * @return array
      */
     public function options() : array

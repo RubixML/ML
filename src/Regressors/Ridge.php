@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -75,7 +75,7 @@ class Ridge implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -85,9 +85,9 @@ class Ridge implements Learner, Persistable
         ];
     }
 
-        /**
+    /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -97,7 +97,7 @@ class Ridge implements Learner, Persistable
 
     /**
      * Return the weights of the model.
-     * 
+     *
      * @return array|null
      */
     public function weights() : ?array
@@ -107,7 +107,7 @@ class Ridge implements Learner, Persistable
 
     /**
      * Return the bias parameter of the regression line.
-     * 
+     *
      * @return float|null
      */
     public function bias() : ?float

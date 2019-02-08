@@ -7,7 +7,7 @@ use svm;
 
 /**
  * Sigmoidal
- * 
+ *
  * S shaped nonliearity kernel.
  *
  * @category    Machine Learning
@@ -18,14 +18,14 @@ class Sigmoidal implements Kernel
 {
     /**
      * The kernel coefficient.
-     * 
+     *
      * @var float|null
      */
     protected $gamma;
 
     /**
      * The independent term.
-     * 
+     *
      * @var float
      */
     protected $coef0;
@@ -49,7 +49,7 @@ class Sigmoidal implements Kernel
 
     /**
      * Return the options for the libsvm runtime.
-     * 
+     *
      * @return array
      */
     public function options() : array

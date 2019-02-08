@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * Generate a 3-dimensional swiss roll dataset with continuous valued labels.
  * The labels are the inputs to the swiss roll transformation and are suitable
  * for non-linear regression problems.
- * 
+ *
  * References:
  * [1] S. Marsland. (2009). Machine Learning: An Algorithmic Perspective,
  * Chapter 10.
@@ -41,7 +41,7 @@ class SwissRoll implements Generator
 
     /**
      * The depth of the swiss roll i.e the scale of the y dimension.
-     * 
+     *
      * @var float
      */
     protected $depth;
@@ -63,9 +63,14 @@ class SwissRoll implements Generator
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $x = 0.0, float $y = 0.0, float $z = 0.0, float $scale = 1.,
-                                float $depth = 21., float $noise = 0.3)
-    {
+    public function __construct(
+        float $x = 0.0,
+        float $y = 0.0,
+        float $z = 0.0,
+        float $scale = 1.,
+                                float $depth = 21.,
+        float $noise = 0.3
+    ) {
         if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'
                 . " than 0, $scale given.");
@@ -126,5 +131,4 @@ class SwissRoll implements Generator
 
         return Labeled::quick($samples, $labels);
     }
-
 }

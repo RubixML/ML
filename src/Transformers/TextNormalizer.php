@@ -19,7 +19,7 @@ class TextNormalizer implements Transformer
 
     /**
      * Should we trim excess whitespace?
-     * 
+     *
      * @var bool
      */
     protected $trim;

@@ -5,8 +5,8 @@ namespace Rubix\ML\AnomalyDetectors;
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,7 +44,7 @@ class RobustZScore implements Learner, Persistable
     /**
      * The threshold z score of a individual feature to consider the entire
      * sample an outlier.
-     * 
+     *
      * @var float
      */
     protected $threshold;
@@ -97,7 +97,7 @@ class RobustZScore implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -109,7 +109,7 @@ class RobustZScore implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

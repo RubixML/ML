@@ -6,7 +6,7 @@ use InvalidArgumentException;
 
 /**
  * N-Gram
- * 
+ *
  * N-Grams are sequences of n-words of a given string. For example, if *n*
  * is 2 then the tokenizer will generate tokens consisting of 2 contiguous
  * words.

@@ -10,7 +10,7 @@ class DatasetIsCompatibleWithEstimator
 {
     /**
      * Perform a check.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @param  \Rubix\ML\Estimator  $estimator
      * @throws \InvalidArgumentException

@@ -8,7 +8,7 @@ interface Adaptive extends Optimizer
 {
     /**
      * Initialize a parameter.
-     * 
+     *
      * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @return void
      */

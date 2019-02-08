@@ -6,8 +6,8 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Kernels\SVM\Kernel;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -15,14 +15,14 @@ use svm;
 
 /**
  * One Class SVM
- * 
+ *
  * An unsupervised Support Vector Machine used for anomaly detection. The One Class
  * SVM aims to find a maximum margin between a set of data points and the origin,
  * rather than between classes like the multiclass SVM.
- * 
+ *
  * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
  * engine written in C++ under the hood.
- * 
+ *
  * References:
  * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
  *
@@ -34,14 +34,14 @@ class OneClassSVM implements Learner, Persistable
 {
     /**
      * The support vector machine instance.
-     * 
+     *
      * @var \svm
      */
     protected $svm;
 
     /**
      * The trained model instance.
-     * 
+     *
      * @var \svmmodel|null
      */
     protected $model;
@@ -56,9 +56,13 @@ class OneClassSVM implements Learner, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $nu = 0.5, ?Kernel $kernel = null, bool $shrinking = true,
-                                float $tolerance = 1e-3, float $cacheSize = 100.)
-    {
+    public function __construct(
+        float $nu = 0.5,
+        ?Kernel $kernel = null,
+        bool $shrinking = true,
+                                float $tolerance = 1e-3,
+        float $cacheSize = 100.
+    ) {
         if (!extension_loaded('svm')) {
             throw new RuntimeException('SVM extension is not loaded, check'
                 . ' PHP configuration.');
@@ -109,7 +113,7 @@ class OneClassSVM implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -121,7 +125,7 @@ class OneClassSVM implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

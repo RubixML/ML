@@ -33,7 +33,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     /**
      * The multivariate minimum of the bounding box around the samples
      * in the neighborhood.
-     * 
+     *
      * @var array
      */
     protected $min;
@@ -41,7 +41,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     /**
      * The multivariate maximum of the bounding box around the samples
      * in the neighborhood.
-     * 
+     *
      * @var array
      */
     protected $max;
@@ -67,7 +67,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
 
     /**
      * Return the bounding box around this node.
-     * 
+     *
      * @return array[]
      */
     public function box() : array
@@ -77,7 +77,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
 
     /**
      * Return a tuple of the samples and labels stored in the neighborhood.
-     * 
+     *
      * @return array[]
      */
     public function neighbors() : array
@@ -87,7 +87,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
 
     /**
      * Return the samples in the neighborhood.
-     * 
+     *
      * @return array[]
      */
     public function samples() : array
@@ -97,7 +97,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
 
     /**
      * Return the labels cooresponding to the samples in the neighborhood.
-     * 
+     *
      * @return (int|float|string)[]
      */
     public function labels() : array
@@ -107,7 +107,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
 
     /**
      * Return the number of samples that this neighborhood holds.
-     * 
+     *
      * @return int
      */
     public function n() : int

@@ -99,7 +99,7 @@ class KMeans implements Online, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -109,7 +109,7 @@ class KMeans implements Online, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -129,7 +129,7 @@ class KMeans implements Online, Persistable
 
     /**
      * Train the learner with a dataset.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @return void
@@ -211,7 +211,7 @@ class KMeans implements Online, Persistable
 
     /**
      * Initialize the cluster centroids using the k-means++ method.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
      * @return array

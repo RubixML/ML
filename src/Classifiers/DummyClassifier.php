@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use Rubix\ML\Other\Specifications\LearnerIsTrained;
@@ -35,7 +35,7 @@ class DummyClassifier implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @var bool
      */
     protected $trained;
@@ -66,7 +66,7 @@ class DummyClassifier implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -76,16 +76,12 @@ class DummyClassifier implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
     {
-        return [
-            DataType::CATEGORICAL,
-            DataType::CONTINUOUS,
-            DataType::RESOURCE,
-        ];
+        return DataType::ALL;
     }
 
     /**

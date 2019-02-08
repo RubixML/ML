@@ -54,35 +54,35 @@ class TSNE implements Estimator, Verbose
      */
     protected $dimensions;
 
-     /**
-      * The number of degrees of freedom for the student t distribution.
-      *
-      * @var int
-      */
+    /**
+     * The number of degrees of freedom for the student t distribution.
+     *
+     * @var int
+     */
     protected $degrees;
 
     /**
      * The number of effective nearest neighbors to refer to when computing
      * the variance of the gaussian over that sample.
-     * 
+     *
      * @var float
      */
     protected $perplexity;
 
-     /**
-      * The desired entropy of the Gaussian over each sample i.e the log
-      * perplexity.
-      *
-      * @var float
-      */
+    /**
+     * The desired entropy of the Gaussian over each sample i.e the log
+     * perplexity.
+     *
+     * @var float
+     */
     protected $entropy;
 
-     /**
-      * The factor to exaggerate the distances between samples by during the
-      * early stage of fitting.
-      *
-      * @var float
-      */
+    /**
+     * The factor to exaggerate the distances between samples by during the
+     * early stage of fitting.
+     *
+     * @var float
+     */
     protected $exaggeration;
 
     /**
@@ -151,10 +151,16 @@ class TSNE implements Estimator, Verbose
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $dimensions = 2, int $perplexity = 30, float $exaggeration = 12.,
-                                float $rate = 100., ?Distance $kernel = null, int $epochs = 1000,
-                                float $minGradient = 1e-8, int $window = 3)
-    {
+    public function __construct(
+        int $dimensions = 2,
+        int $perplexity = 30,
+        float $exaggeration = 12.,
+                                float $rate = 100.,
+        ?Distance $kernel = null,
+        int $epochs = 1000,
+                                float $minGradient = 1e-8,
+        int $window = 3
+    ) {
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Cannot embed into less than 1'
                 . " dimension, $dimensions given.");
@@ -219,7 +225,7 @@ class TSNE implements Estimator, Verbose
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -249,7 +255,8 @@ class TSNE implements Estimator, Verbose
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Embedder initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Embedder initialized w/ '
             . Params::stringify([
                 'dimensions' => $this->dimensions,
                 'perplexity' => $this->perplexity,
@@ -260,13 +267,16 @@ class TSNE implements Estimator, Verbose
                 'min_gradient' => $this->minGradient,
                 'window' => $this->window,
             ]));
+        }
 
         $n = $dataset->numRows();
 
         $x = Matrix::build($dataset->samples());
 
-        if ($this->logger) $this->logger->info('Computing high dimensional'
+        if ($this->logger) {
+            $this->logger->info('Computing high dimensional'
             . ' affinities');
+        }
 
         $distances = $this->pairwiseDistances($x);
 
@@ -312,8 +322,10 @@ class TSNE implements Estimator, Verbose
 
             $this->steps[] = $magnitude;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, gradient=$magnitude");
+            }
 
             if (is_nan($magnitude)) {
                 break 1;
@@ -339,12 +351,16 @@ class TSNE implements Estimator, Verbose
 
                 $momentum += self::MOMENTUM_BOOST;
 
-                if ($this->logger) $this->logger->info('Early exaggeration'
+                if ($this->logger) {
+                    $this->logger->info('Early exaggeration'
                     . ' stage exhausted');
+                }
             }
         }
 
-        if ($this->logger) $this->logger->info('Embedding complete');
+        if ($this->logger) {
+            $this->logger->info('Embedding complete');
+        }
 
         return $y->asArray();
     }

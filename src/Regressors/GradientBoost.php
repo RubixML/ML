@@ -46,21 +46,21 @@ class GradientBoost implements Learner, Verbose, Persistable
     /**
      * The weak regressor that will fix up the error residuals of the base
      * learner.
-     * 
+     *
      * @var \Rubix\ML\Learner
      */
     protected $booster;
 
     /**
      *  The max number of estimators to train in the ensemble.
-     * 
+     *
      * @var int
      */
     protected $estimators;
 
     /**
      * The learning rate i.e the step size.
-     * 
+     *
      * @var float
      */
     protected $rate;
@@ -88,7 +88,7 @@ class GradientBoost implements Learner, Verbose, Persistable
 
     /**
      * The base regressor to be boosted.
-     * 
+     *
      * @var \Rubix\ML\Learner
      */
     protected $base;
@@ -122,10 +122,15 @@ class GradientBoost implements Learner, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $booster = null, float $rate = 0.1, int $estimators = 100,
-                                float $ratio = 0.8, float $minChange = 1e-4, float $tolerance = 1e-3,
-                                ?Learner $base = null)
-    {
+    public function __construct(
+        ?Learner $booster = null,
+        float $rate = 0.1,
+        int $estimators = 100,
+                                float $ratio = 0.8,
+        float $minChange = 1e-4,
+        float $tolerance = 1e-3,
+                                ?Learner $base = null
+    ) {
         if (is_null($booster)) {
             $booster = new RegressionTree(3);
         }
@@ -190,7 +195,7 @@ class GradientBoost implements Learner, Verbose, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -200,7 +205,7 @@ class GradientBoost implements Learner, Verbose, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -234,7 +239,8 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'booster' => $this->booster,
                 'rate' => $this->rate,
@@ -244,12 +250,15 @@ class GradientBoost implements Learner, Verbose, Persistable
                 'tolerance' => $this->tolerance,
                 'base' => $this->base,
             ]));
+        }
 
         $n = $dataset->numRows();
         $p = (int) round($this->ratio * $n);
 
-        if ($this->logger) $this->logger->info('Training '
+        if ($this->logger) {
+            $this->logger->info('Training '
             . Params::shortName($this->base) . ' base estimator');
+        }
 
         $this->base->train($dataset);
 
@@ -263,10 +272,12 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         $residuals = Labeled::quick($dataset->samples(), $yHat);
 
-        if ($this->logger) $this->logger->info('Attempting to correct'
+        if ($this->logger) {
+            $this->logger->info('Attempting to correct'
             . " error residuals with $this->estimators "
             . Params::shortName($this->booster)
             . ($this->estimators > 1 ? 's' : ''));
+        }
 
         $this->ensemble = $this->steps = [];
 
@@ -296,8 +307,10 @@ class GradientBoost implements Learner, Verbose, Persistable
             $this->ensemble[] = $booster;
             $this->steps[] = $loss;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
+            }
 
             if (is_nan($loss)) {
                 break 1;
@@ -316,7 +329,9 @@ class GradientBoost implements Learner, Verbose, Persistable
             $previous = $loss;
         }
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**

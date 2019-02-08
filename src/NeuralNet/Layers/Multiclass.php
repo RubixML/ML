@@ -131,7 +131,7 @@ class Multiclass implements Output
 
     /**
      * Return the width of the layer.
-     * 
+     *
      * @return int|null
      */
     public function width() : ?int
@@ -141,7 +141,7 @@ class Multiclass implements Output
 
     /**
      * Return the parameters of the layer.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\NeuralNet\Parameter[]
      */
@@ -285,7 +285,7 @@ class Multiclass implements Output
 
     /**
      * Return the parameters of the layer in an associative array.
-     * 
+     *
      * @throws \RuntimeException
      * @return array
      */

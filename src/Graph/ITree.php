@@ -207,7 +207,7 @@ class ITree implements Tree
      * @return float
      */
     protected function c(int $n) : float
-    {        
+    {
         return $n > 1 ? 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n : 1.;
     }
 

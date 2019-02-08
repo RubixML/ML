@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 /**
  * Average
- * 
+ *
  * A decision node whose outcome is the average of all the labels it is
  * responsible for.
  *
@@ -20,7 +20,7 @@ class Average extends BinaryNode implements Decision, Leaf
     /**
      * The outcome of the decision as an average of the labels
      * contained within.
-     * 
+     *
      * @var int|float
      */
     protected $outcome;
@@ -62,7 +62,7 @@ class Average extends BinaryNode implements Decision, Leaf
     /**
      * Return the outcome of the decision i.e the average of the
      * labels.
-     * 
+     *
      * @return int|float
      */
     public function outcome()

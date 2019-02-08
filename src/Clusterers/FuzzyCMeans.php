@@ -106,9 +106,13 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $c, float $fuzz = 2.0, ?Distance $kernel = null,
-                                int $epochs = 300, float $minChange = 1e-4)
-    {
+    public function __construct(
+        int $c,
+        float $fuzz = 2.0,
+        ?Distance $kernel = null,
+                                int $epochs = 300,
+        float $minChange = 1e-4
+    ) {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'
                 . " cluster, $c given.");
@@ -153,7 +157,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -163,7 +167,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -205,7 +209,8 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'c' => $this->c,
                 'fuzz' => $this->fuzz,
@@ -213,9 +218,12 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
             ]));
+        }
 
-        if ($this->logger) $this->logger->info("Initializing $this->c"
+        if ($this->logger) {
+            $this->logger->info("Initializing $this->c"
             . ' cluster centroids');
+        }
 
         $this->centroids = $this->initializeCentroids($dataset);
 
@@ -248,8 +256,10 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
             $this->steps[] = $loss;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
+            }
 
             if (is_nan($loss)) {
                 break 1;
@@ -262,7 +272,9 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             $previous = $loss;
         }
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**
@@ -297,7 +309,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Initialize the cluster centroids using the k-means++ method.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
      * @return array

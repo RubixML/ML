@@ -23,7 +23,7 @@ use RuntimeException;
  * methods, including `train()` and `predict()`. With the *elastic* mode
  * enabled, Pipeline can update the fitting of certain transformers during
  * online (*partial*) training.
- * 
+ *
  * > **Note**: Since transformations are applied to dataset objects in place
  * (without making a copy), using the dataset in a program after it has been
  * run through Pipeline may have unexpected results. If you need a *clean*
@@ -56,14 +56,14 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 
     /**
      * Should we update the elastic transformers during partial train?
-     * 
+     *
      * @var bool
      */
     protected $elastic;
 
     /**
      * Whether or not the transformers have been fitted.
-     * 
+     *
      * @var bool
      */
     protected $fitted;
@@ -103,7 +103,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -113,7 +113,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -212,8 +212,10 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     {
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Stateful) {
-                if ($this->logger) $this->logger->info('Fitting '
+                if ($this->logger) {
+                    $this->logger->info('Fitting '
                     . Params::shortName($transformer));
+                }
 
                 $transformer->fit($dataset);
             }
@@ -232,8 +234,10 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
     {
         foreach ($this->transformers as $transformer) {
             if ($transformer instanceof Elastic) {
-                if ($this->logger) $this->logger->info('Updating '
+                if ($this->logger) {
+                    $this->logger->info('Updating '
                     . Params::shortName($transformer));
+                }
 
                 $transformer->update($dataset);
             }

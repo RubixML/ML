@@ -145,7 +145,7 @@ class KDTree implements Tree
         return new Coordinate($column, $value, $dataset);
     }
 
-        /**
+    /**
      * Search the tree for a neighborhood and return an array of samples and
      * labels.
      *
@@ -178,7 +178,7 @@ class KDTree implements Tree
     /**
      * Run a k nearest neighbors search of every neighborhood and return
      * the labels and distances in a tuple.
-     * 
+     *
      * @param  array  $sample
      * @param  int  $k
      * @throws \InvalidArgumentException

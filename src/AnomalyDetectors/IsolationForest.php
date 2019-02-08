@@ -7,8 +7,8 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -54,7 +54,7 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * The average depth of an isolation tree.
-     * 
+     *
      * @var float|null
      */
     protected $pHat;
@@ -68,7 +68,7 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * The isolation score offset used by the decision function.
-     * 
+     *
      * @var float|null
      */
     protected $offset;
@@ -114,7 +114,7 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -127,7 +127,7 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -210,7 +210,7 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * Return the isolation score of a sample.
-     * 
+     *
      * @param  array  $sample
      * @return float
      */

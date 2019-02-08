@@ -13,20 +13,20 @@ use InvalidArgumentException;
 
 /**
  * Model Orchestra
- * 
+ *
  * A Model Orchestra is a stacked model ensemble comprised of an orchestra
  * of estimators (Classifiers or Regressors) and a conductor estimator. The
  * role of the conductor is to learn the influence scores of each estimator
  * in the orchestra while using their predictions as inputs to make a final
  * weighted prediction.
- * 
+ *
  * > **Note**: The features that each estimator passes on to the conductor
  * may vary depending on the type of estimator. For example, a Probabilistic
  * classifier will pass class probability scores while a regressor will pass
  * on a single real value. If a datatype is not compatible with the
  * conducting estimator, then wrap it in a Pipeline and use a transformer
  * such as One Hot Encoder or Interval Discretizer.
- * 
+ *
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -63,7 +63,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
 
     /**
      * The data types that the orchestra is compatible with.
-     * 
+     *
      * @var int[]
      */
     protected $compatibility;
@@ -131,7 +131,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -141,7 +141,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -185,12 +185,14 @@ class ModelOrchestra implements Learner, Persistable, Verbose
                 . ' labeled training set.');
         }
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'orchestra' => $this->orchestra,
                 'conductor' => $this->conductor,
                 'ratio' => $this->ratio,
             ]));
+        }
 
         if ($this->type() === self::CLASSIFIER) {
             [$left, $right] = $dataset->stratifiedSplit($this->ratio);
@@ -199,8 +201,10 @@ class ModelOrchestra implements Learner, Persistable, Verbose
         }
 
         foreach ($this->orchestra as $estimator) {
-            if ($this->logger) $this->logger->info('Training '
+            if ($this->logger) {
+                $this->logger->info('Training '
                 . Params::shortName($estimator));
+            }
 
             $estimator->train($left);
         }
@@ -209,12 +213,16 @@ class ModelOrchestra implements Learner, Persistable, Verbose
             $right = $this->extract($right);
         }
 
-        if ($this->logger) $this->logger->info('Training '
+        if ($this->logger) {
+            $this->logger->info('Training '
             . Params::shortName($this->conductor) . ' (conductor)');
+        }
 
         $this->conductor->train($right);
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**
@@ -236,7 +244,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     /**
      * Extract the features from the orchestra and return them in a
      * new dataset.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Labeled  $dataset
      * @return \Rubix\ML\Datasets\Labeled
      */

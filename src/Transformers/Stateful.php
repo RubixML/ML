@@ -16,7 +16,7 @@ interface Stateful extends Transformer
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool;

@@ -6,11 +6,11 @@ use InvalidArgumentException;
 
 /**
  * Skip Gram
- * 
+ *
  * Skip-grams are a technique similar to n-grams, whereby n-grams are formed but
  * in addition to allowing adjacent sequences of words, the next *k* words will
  * be skipped forming n-grams of the new forward looking sequences.
- * 
+ *
  * References:
  * [1] D. Guthrie et al. A Closer Look at Skip-gram Modelling.
  *
@@ -34,7 +34,7 @@ class SkipGram implements Tokenizer
 
     /**
      * The number of words to skip over to form new sequences.
-     * 
+     *
      * @var int
      */
     protected $skip;

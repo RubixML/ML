@@ -97,7 +97,7 @@ class BatchNorm implements Hidden, Parametric
 
     /**
      * Return the width of the layer.
-     * 
+     *
      * @return int|null
      */
     public function width() : ?int
@@ -107,7 +107,7 @@ class BatchNorm implements Hidden, Parametric
 
     /**
      * Return the parameters of the layer.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\NeuralNet\Parameter[]
      */
@@ -153,7 +153,7 @@ class BatchNorm implements Hidden, Parametric
     public function forward(Matrix $input) : Matrix
     {
         if (is_null($this->n) or empty($this->mean) or empty($this->variance) or is_null($this->beta) or is_null($this->gamma)) {
-                throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer has not been initialized.');
         }
 
         $beta = $this->beta->w->column(0);
@@ -165,7 +165,7 @@ class BatchNorm implements Hidden, Parametric
         $oldVariances = $this->variance->asArray();
         $oldWeight = $this->n;
 
-       $newMeans = $newVars = $stddevs = $stdInv = $xHat = $out = [];
+        $newMeans = $newVars = $stddevs = $stdInv = $xHat = $out = [];
 
         foreach ($input as $i => $row) {
             [$mean, $variance] = Stats::meanVar($row);
@@ -227,7 +227,7 @@ class BatchNorm implements Hidden, Parametric
     public function infer(Matrix $input) : Matrix
     {
         if (is_null($this->mean) or is_null($this->stddev) or is_null($this->beta) or is_null($this->gamma)) {
-                throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initilaized.');
         }
         
         $beta = $this->beta->w->column(0);
@@ -265,7 +265,7 @@ class BatchNorm implements Hidden, Parametric
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
         if (is_null($this->n) or is_null($this->mean) or is_null($this->stddev) or is_null($this->beta) or is_null($this->gamma)) {
-                throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initilaized.');
         }
 
         if (is_null($this->stdInv) or is_null($this->xHat)) {
@@ -316,7 +316,7 @@ class BatchNorm implements Hidden, Parametric
     public function read() : array
     {
         if (is_null($this->beta) or is_null($this->gamma)) {
-                throw new RuntimeException('Layer has not been initilaized.');
+            throw new RuntimeException('Layer has not been initilaized.');
         }
 
         return [

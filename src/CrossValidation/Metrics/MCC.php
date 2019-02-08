@@ -39,7 +39,7 @@ class MCC implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array

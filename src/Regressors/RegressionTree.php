@@ -7,12 +7,12 @@ use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -59,15 +59,19 @@ class RegressionTree extends CART implements Learner, Persistable
     /**
      * @param  int  $maxDepth
      * @param  int  $maxLeafSize
-     * @param  float  $minPurityIncrease 
+     * @param  float  $minPurityIncrease
      * @param  int|null  $maxFeatures
      * @param  float  $tolerance
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minPurityIncrease = 0.,
-                                ?int $maxFeatures = null, float $tolerance = 1e-4)
-    {
+    public function __construct(
+        int $maxDepth = PHP_INT_MAX,
+        int $maxLeafSize = 3,
+        float $minPurityIncrease = 0.,
+                                ?int $maxFeatures = null,
+        float $tolerance = 1e-4
+    ) {
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
@@ -96,7 +100,7 @@ class RegressionTree extends CART implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -109,7 +113,7 @@ class RegressionTree extends CART implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

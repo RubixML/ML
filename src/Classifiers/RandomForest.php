@@ -118,7 +118,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -128,7 +128,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -139,7 +139,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
     /**
      * Return the feature importances calculated during training keyed by
      * feature column.
-     * 
+     *
      * @throws \RuntimeException
      * @return array
      */
@@ -227,8 +227,11 @@ class RandomForest implements Learner, Probabilistic, Persistable
                 . ' not been trained.');
         };
 
-        $probabilities = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.));
+        $probabilities = array_fill(
+            0,
+            $dataset->numRows(),
+            array_fill_keys($this->classes, 0.)
+        );
 
         foreach ($this->forest as $tree) {
             foreach ($tree->proba($dataset) as $i => $joint) {

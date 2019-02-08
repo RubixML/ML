@@ -3,7 +3,7 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use RuntimeException;
 
 /**
@@ -29,7 +29,7 @@ class OneHotEncoder implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -52,7 +52,7 @@ class OneHotEncoder implements Stateful
         foreach ($columns as $column => $values) {
             $categories = array_values(array_unique($values));
 
-             $this->categories[$column] = array_flip($categories);
+            $this->categories[$column] = array_flip($categories);
         }
     }
 

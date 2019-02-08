@@ -18,7 +18,7 @@ class Coordinate extends Split implements Spatial
     /**
      * The multivariate minimum of the bounding box around the samples
      * in the neighborhood.
-     * 
+     *
      * @var array
      */
     protected $min;
@@ -26,7 +26,7 @@ class Coordinate extends Split implements Spatial
     /**
      * The multivariate maximum of the bounding box around the samples
      * in the neighborhood.
-     * 
+     *
      * @var array
      */
     protected $max;
@@ -56,7 +56,7 @@ class Coordinate extends Split implements Spatial
 
     /**
      * Return the bounding box around this node.
-     * 
+     *
      * @return array[]
      */
     public function box() : array

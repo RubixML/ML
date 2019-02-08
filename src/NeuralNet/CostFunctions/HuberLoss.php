@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 /**
  * Huber Loss
- * 
+ *
  * The pseudo Huber Loss function transitions between L1 and L2 (Least Squares)
  * loss at a given pivot point (*delta*) such that the function becomes more
  * quadratic as the loss decreases. The combination of L1 and L2 loss makes
@@ -22,14 +22,14 @@ class HuberLoss implements CostFunction
     /**
      * The pivot point i.e the point where numbers larger will be evalutated
      * with an L1 loss while number smaller will be evalutated with an L2 loss.
-     * 
+     *
      * @var float
      */
     protected $delta;
 
     /**
      * The square of delta.
-     * 
+     *
      * @var float
      */
     protected $beta;

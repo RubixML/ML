@@ -9,10 +9,10 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +39,7 @@ class KDNeighborsTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new KDNeighbors(3, 10, new Euclidean(), true);
+        $this->estimator = new KDNeighbors(3, 10, new Manhattan(), true);
 
         $this->metric = new Accuracy();
     }

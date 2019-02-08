@@ -54,7 +54,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * The learning rate i.e the step size.
-     * 
+     *
      * @var float
      */
     protected $rate;
@@ -128,9 +128,13 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $rate = 1.,
-                                float $ratio = 0.8, float $tolerance = 1e-3)
-    {
+    public function __construct(
+        ?Learner $base = null,
+        int $estimators = 100,
+        float $rate = 1.,
+                                float $ratio = 0.8,
+        float $tolerance = 1e-3
+    ) {
         if (is_null($base)) {
             $base = new ClassificationTree(1);
         }
@@ -179,7 +183,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -189,7 +193,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -245,7 +249,8 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'base' => $this->base,
                 'estimators' => $this->estimators,
@@ -253,6 +258,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
                 'ratio' => $this->ratio,
                 'tolerance' => $this->tolerance,
             ]));
+        }
 
         $this->classes = $dataset->possibleOutcomes();
 
@@ -295,8 +301,10 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
             $this->influences[] = $influence;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
+            }
 
             if (is_nan($loss) or $total <= 0) {
                 break 1;
@@ -319,7 +327,9 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
             }
         }
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**
@@ -374,7 +384,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Return the influence scores for each sample in the dataset.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -382,8 +392,11 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
      */
     protected function score(Dataset $dataset) : array
     {
-        $scores = array_fill(0, $dataset->numRows(),
-            array_fill_keys($this->classes, 0.));
+        $scores = array_fill(
+            0,
+            $dataset->numRows(),
+            array_fill_keys($this->classes, 0.)
+        );
 
         foreach ($this->ensemble as $i => $estimator) {
             $influence = $this->influences[$i];

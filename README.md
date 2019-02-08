@@ -4988,19 +4988,24 @@ Try adjusting the `memory_limit` option in your php.ini file to something more r
 
 ---
 ## Testing
-Rubix utilizes a combination of static analysis and unit tests for quality assurance and to reduce the number of bugs. Rubix provides two [Composer](https://getcomposer.org/) scripts that can be run from the root directory to automate the testing process.
-
-> **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.
+Rubix utilizes a combination of static code analysis and unit tests for quality assurance and to reduce the number of bugs. Rubix provides three [Composer](https://getcomposer.org/) scripts that can be run from the root directory to automate the testing process.
 
 To run static analysis:
 ```sh
 composer analyze
 ```
 
+To run the style checker:
+```sh
+composer check
+```
+
 To run the unit tests:
 ```sh
 composer test
 ```
+
+> **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.
 
 ---
 ## Contributing

@@ -55,12 +55,12 @@ class AdaGrad implements Optimizer, Adaptive
     }
     /**
      * Initialize a parameter.
-     * 
+     *
      * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @return void
      */
     public function initialize(Parameter $param) : void
-    {        
+    {
         $g2 = Matrix::zeros(...$param->w->shape());
 
         $this->cache->attach($param, $g2);

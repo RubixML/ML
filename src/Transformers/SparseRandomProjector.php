@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**
@@ -21,7 +21,7 @@ class SparseRandomProjector extends GaussianRandomProjector
 {
     const ROOT_3 = 1.73205080757;
     
-    const DISTRIBUTION = [-self::ROOT_3, 0.0, 0.0, 0.0, 0.0, self::ROOT_3];
+    const DISTRIBUTION = [-self::ROOT_3, 0., 0., 0., 0., self::ROOT_3];
 
     /**
      * Fit the transformer to the dataset.

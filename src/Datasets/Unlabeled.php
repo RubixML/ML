@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -19,7 +20,7 @@ class Unlabeled extends DataFrame implements Dataset
 {
     /**
      * Build a new unlabeled dataset with validation.
-     * 
+     *
      * @param  array  $samples
      * @return self
      */
@@ -30,7 +31,7 @@ class Unlabeled extends DataFrame implements Dataset
 
     /**
      * Build a new unlabeled dataset foregoing validation.
-     * 
+     *
      * @param  array[]  $samples
      * @return self
      */
@@ -41,7 +42,7 @@ class Unlabeled extends DataFrame implements Dataset
 
     /**
      * Build a dataset from an iterator.
-     * 
+     *
      * @param  iterable  $samples
      * @return self
      */
@@ -57,7 +58,7 @@ class Unlabeled extends DataFrame implements Dataset
     /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
-     * 
+     *
      * @param  array  $datasets
      * @throws \InvalidArgumentException
      * @return self
@@ -385,7 +386,7 @@ class Unlabeled extends DataFrame implements Dataset
 
     /**
      * Specify data which should be serialized to JSON.
-     * 
+     *
      * @return mixed
      */
     public function jsonSerialize()

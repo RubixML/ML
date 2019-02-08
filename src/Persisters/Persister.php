@@ -16,7 +16,7 @@ interface Persister
 
     /**
      * Load the last model that was saved.
-     * 
+     *
      * @return \Rubix\ML\Persistable
      */
     public function load() : Persistable;

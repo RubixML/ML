@@ -45,7 +45,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
      * @return self
      */
     public static function load(Persister $persister) : self
-    {    
+    {
         return new self($persister->load(), $persister);
     }
 
@@ -72,7 +72,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -82,7 +82,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -122,7 +122,7 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
         return $this->base->predict($dataset);
     }
 
-        /**
+    /**
      * Estimate probabilities for each possible outcome.
      *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
@@ -150,12 +150,14 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     {
         $this->persister->save($this->base);
 
-        if ($this->logger) $this->logger->info('Model saved successully');
+        if ($this->logger) {
+            $this->logger->info('Model saved successully');
+        }
     }
 
     /**
      * Prompt the user to save this model or not.
-     * 
+     *
      * @return void
      */
     public function prompt() : void

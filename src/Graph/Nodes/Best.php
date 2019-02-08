@@ -6,7 +6,7 @@ use InvalidArgumentException;
 
 /**
  * Best
- * 
+ *
  * A decision node whose outcome is the most probable class given a set
  * of class labels.
  *
@@ -18,14 +18,14 @@ class Best extends BinaryNode implements Decision, Leaf
 {
     /**
      * The outcome of the decision as the most probable i.e best.
-     * 
+     *
      * @var int|string
      */
     protected $outcome;
 
     /**
      * The probabilities of each discrete outcome.
-     * 
+     *
      * @var float[]
      */
     protected $probabilities;
@@ -67,7 +67,7 @@ class Best extends BinaryNode implements Decision, Leaf
 
     /**
      * Return the outcome of the decision i.e the most probable outcome.
-     * 
+     *
      * @return int|string
      */
     public function outcome()
@@ -77,7 +77,7 @@ class Best extends BinaryNode implements Decision, Leaf
 
     /**
      * Return the proababilities of each discrete outcome.
-     * 
+     *
      * @return float[]
      */
     public function probabilities() : array

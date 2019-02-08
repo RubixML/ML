@@ -7,7 +7,7 @@ use svm;
 
 /**
  * Linear
- * 
+ *
  * Non linear radias basis function computes the distance from a centroid
  * or origin.
  *
@@ -19,7 +19,7 @@ class RBF implements Kernel
 {
     /**
      * The kernel coefficient.
-     * 
+     *
      * @var float|null
      */
     protected $gamma;
@@ -41,7 +41,7 @@ class RBF implements Kernel
 
     /**
      * Return the options for the libsvm runtime.
-     * 
+     *
      * @return array
      */
     public function options() : array

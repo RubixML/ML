@@ -6,10 +6,13 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 use SplObjectStorage;
+use function floor;
+use function abs;
+use function max;
 
 /**
  * Cyclical
- * 
+ *
  * The Cyclical optimizer uses a global learning rate that cycles between the
  * lower and upper bound over a designated period while also decaying the
  * uppoer bound by a factor of decay each step. Cyclical learning rates
@@ -42,7 +45,7 @@ class Cyclical implements Optimizer
 
     /**
      * The range of the learning rate.
-     * 
+     *
      * @var float
      */
     protected $range;
@@ -56,7 +59,7 @@ class Cyclical implements Optimizer
 
     /**
      * The exponential scaling factor applied to each step as decay.
-     * 
+     *
      * @var float
      */
     protected $decay;
@@ -76,9 +79,12 @@ class Cyclical implements Optimizer
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $lower = 0.001, float $upper = 0.006, int $steps = 2000,
-                                float $decay = 0.99994)
-    {
+    public function __construct(
+        float $lower = 0.001,
+        float $upper = 0.006,
+        int $steps = 2000,
+                                float $decay = 0.99994
+    ) {
         if ($lower <= 0.) {
             throw new InvalidArgumentException('The lower bound must'
                 . " be greater than 0, $lower given.");

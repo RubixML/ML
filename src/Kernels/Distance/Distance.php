@@ -8,7 +8,7 @@ interface Distance
 
     /**
      * Return a list of data types distance is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array;

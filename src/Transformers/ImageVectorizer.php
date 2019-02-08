@@ -12,7 +12,7 @@ use RuntimeException;
  * Image Vectorizer takes images (as PHP Resources) and converts them into a
  * flat vector of raw color channel data. Scaling and cropping is handled
  * automatically by Intervention Image for PHP.
- * 
+ *
  * > **Note**: The GD extension is required to use this transformer.
  *
  * @category    Machine Learning

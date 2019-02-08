@@ -6,7 +6,7 @@ interface Parametric extends Nonparametric
 {
     /**
      * Return the parameters of the layer.
-     * 
+     *
      * @return \Rubix\ML\NeuralNet\Parameter[]
      */
     public function parameters() : array;

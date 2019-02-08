@@ -16,5 +16,5 @@ interface Validator
     * @param  \Rubix\ML\CrossValidation\Metrics\Metric  $metric
     * @return float
     */
-   public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float;
+    public function test(Learner $estimator, Labeled $dataset, Metric $metric) : float;
 }

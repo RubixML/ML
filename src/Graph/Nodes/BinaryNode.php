@@ -18,7 +18,7 @@ class BinaryNode implements Node
 {
     /**
      * The parent node.
-     * 
+     *
      * @var self|null
      */
     protected $parent;
@@ -49,15 +49,19 @@ class BinaryNode implements Node
 
     /**
      * Return the children of this node in an array.
-     * 
+     *
      * @return array
      */
     public function children() : array
     {
         $children = [];
 
-        if ($this->left) $children[] = $this->left;
-        if ($this->right) $children[] = $this->right;
+        if ($this->left) {
+            $children[] = $this->left;
+        }
+        if ($this->right) {
+            $children[] = $this->right;
+        }
 
         return $children;
     }
@@ -90,8 +94,10 @@ class BinaryNode implements Node
      */
     public function height() : int
     {
-        return 1 + max($this->left ? $this->left->height() : 0,
-            $this->right ? $this->right->height() : 0);
+        return 1 + max(
+            $this->left ? $this->left->height() : 0,
+            $this->right ? $this->right->height() : 0
+        );
     }
 
     /**
@@ -107,7 +113,7 @@ class BinaryNode implements Node
 
     /**
      * Set the parent of this node.
-     * 
+     *
      * @param  self|null  $node
      * @return void
      */

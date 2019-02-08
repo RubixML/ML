@@ -7,7 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -22,7 +22,7 @@ use RuntimeException;
  * part relates to the fact that it assumes that all features are independent. In
  * practice, the independent assumption tends to work out most of the time despite
  * most features being correlated in the real world.
- 
+
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
@@ -47,7 +47,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
     /**
      * Should we compute the prior probabilities from the training set?
-     * 
+     *
      * @var bool
      */
     protected $fitPriors;
@@ -145,7 +145,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -157,7 +157,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -217,8 +217,10 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         $this->classes = $classes;
         $this->weights = array_fill_keys($classes, 0);
 
-        $this->counts = $this->probs = array_fill_keys($classes,
-            array_fill(0, $dataset->numColumns(), []));
+        $this->counts = $this->probs = array_fill_keys(
+            $classes,
+            array_fill(0, $dataset->numColumns(), [])
+        );
 
         $this->partial($dataset);
     }
@@ -325,7 +327,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
 
     /**
      * Estimate probabilities for each possible outcome.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException

@@ -39,7 +39,7 @@ class Filesystem implements Persister
 
     /**
      * The serializer used to convert to and from serial format.
-     * 
+     *
      * @var \Rubix\ML\Persisters\Serializers\Serializer
      */
     protected $serializer;
@@ -78,7 +78,7 @@ class Filesystem implements Persister
      * @param  \Rubix\ML\Persistable  $persistable
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @return void 
+     * @return void
      */
     public function save(Persistable $persistable) : void
     {
@@ -117,7 +117,7 @@ class Filesystem implements Persister
 
     /**
      * Load the last model that was saved.
-     * 
+     *
      * @throws \RuntimeException
      * @return \Rubix\ML\Persistable
      */

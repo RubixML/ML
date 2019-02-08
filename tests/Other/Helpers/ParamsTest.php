@@ -3,16 +3,11 @@
 namespace Rubix\ML\Tests\Other\Helpers;
 
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Classifiers\DummyClassifier;
+use Rubix\ML\Classifiers\KNearestNeighbors;
 use PHPUnit\Framework\TestCase;
 
 class ParamsTest extends TestCase
 {
-    public function setUp()
-    {
-        //
-    }
-
     public function test_generate_ints()
     {
         $values = Params::ints(0, 100, 5);
@@ -44,5 +39,27 @@ class ParamsTest extends TestCase
         $this->assertEquals(50, $values[2]);
         $this->assertEquals(75, $values[3]);
         $this->assertEquals(100, $values[4]);
+    }
+
+    public function test_extract_args()
+    {
+        $expected = ['k', 'kernel', 'weighted'];
+
+        $this->assertEquals($expected, Params::args(new KNearestNeighbors()));
+    }
+
+    public function test_stringify()
+    {
+        $expected = 'learning_rate=0.1 alpha=0.0001';
+
+        $this->assertEquals($expected, Params::stringify([
+            'learning_rate' => 0.1,
+            'alpha' => 1e-4,
+        ]));
+    }
+
+    public function test_get_short_name()
+    {
+        $this->assertEquals('KNearestNeighbors', Params::shortName(new KNearestNeighbors()));
     }
 }

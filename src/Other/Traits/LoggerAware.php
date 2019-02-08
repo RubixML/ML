@@ -21,7 +21,7 @@ trait LoggerAware
 {
     /**
      * The PSR-3 logger instance.
-     * 
+     *
      * @var \Psr\Log\LoggerInterface|null
      */
     protected $logger;
@@ -47,7 +47,7 @@ trait LoggerAware
 
     /**
      * Return if the logger is logging or not.
-     * 
+     *
      * @var bool
      */
     public function logging() : bool

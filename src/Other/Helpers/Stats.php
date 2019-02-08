@@ -162,7 +162,7 @@ class Stats
 
     /**
      * Calculate the pth percentile of a given set of values.
-     * 
+     *
      * @param  array  $values
      * @param  float  $p
      * @throws \InvalidArgumentException

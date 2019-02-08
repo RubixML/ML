@@ -17,7 +17,7 @@ class StopWordFilter implements Transformer
 {
     /**
      * A list of stop words to filter out of each text feature.
-     * 
+     *
      * @var string[]
      */
     protected $stopWords;
@@ -33,8 +33,8 @@ class StopWordFilter implements Transformer
 
         foreach ($stopWords as $word) {
             if (!is_string($word)) {
-                throw new InvalidArgumentException('Stop word must be a string, '
-                    . gettype($word) . ' found.');
+                throw new InvalidArgumentException('Stop word must be a'
+                    . ' string, ' . gettype($word) . ' found.');
             }
 
             $regexs[] = '/\b' . preg_quote($word, '/') . '\b/';

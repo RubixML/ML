@@ -4,6 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
+use function count;
 
 /**
  * Accuracy
@@ -29,7 +30,7 @@ class Accuracy implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array

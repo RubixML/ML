@@ -17,7 +17,7 @@ class Native implements Serializer
 {
     /**
      * Serialize a persistable object and return the data.
-     * 
+     *
      * @param  \Rubix\ML\Persistable  $persistable
      * @return string
      */
@@ -28,7 +28,7 @@ class Native implements Serializer
 
     /**
      * Unserialize a persistable object and return it.
-     * 
+     *
      * @param string  $data
      * @return \Rubix\ML\Persistable
      */

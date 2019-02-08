@@ -15,7 +15,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
     /**
      * Stack a number of datasets on top of each other to form a single
      * dataset.
-     * 
+     *
      * @param  array  $datasets
      * @return self
      */
@@ -61,14 +61,14 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
 
     /**
      * Return the unique data types.
-     * 
+     *
      * @return int[]
      */
     public function uniqueTypes() : array;
 
     /**
      * Does the dataset consist of data of a single type?
-     * 
+     *
      * @return bool
      */
     public function homogeneous() : bool;
@@ -121,7 +121,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Coun
 
     /**
      * Return the columns that match a given data type.
-     * 
+     *
      * @param  int  $type
      * @return array
      */

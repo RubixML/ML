@@ -77,7 +77,7 @@ class AlphaDropout extends Dropout
 
     /**
      * Boost dropped neurons by a factor of alpha p.
-     * 
+     *
      * @param  float  $value
      * @return float
      */

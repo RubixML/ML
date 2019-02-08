@@ -48,7 +48,7 @@ class MulticlassBreakdown implements Report
 
     /**
      * The estimator types that this report is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array

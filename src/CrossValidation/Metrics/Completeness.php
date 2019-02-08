@@ -12,7 +12,7 @@ use InvalidArgumentException;
  * ratio of samples in a class that are also members of the same cluster.
  * A cluster is said to be *complete* when all the samples ina class are
  * contained in a cluster.
- * 
+ *
  * References:
  * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based
  * external cluster evaluation measure.
@@ -35,7 +35,7 @@ class Completeness implements Metric
 
     /**
      * The estimator types that this metric is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array

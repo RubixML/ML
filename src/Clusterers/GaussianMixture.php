@@ -8,9 +8,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Functions\LogSumExp;
@@ -142,7 +142,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -154,7 +154,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -221,19 +221,23 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'k' => $this->k,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
             ]));
+        }
 
         $n = $dataset->numRows();
 
         $columns = $dataset->columns();
 
-        if ($this->logger) $this->logger->info("Initializing $this->k"
+        if ($this->logger) {
+            $this->logger->info("Initializing $this->k"
             . ' gaussian components');
+        }
 
         [$means, $variances] = $this->initializeComponents($dataset);
 
@@ -257,7 +261,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
             $loss = 0.;
 
-            for ($cluster = 0; $cluster < $this->k; $cluster++) {                
+            for ($cluster = 0; $cluster < $this->k; $cluster++) {
                 $mHat = array_column($memberships, $cluster);
 
                 $means = $variances = [];
@@ -297,8 +301,10 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
             $this->steps[] = $loss;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, loss=$loss");
+            }
 
             if (is_nan($loss)) {
                 break 1;
@@ -311,7 +317,9 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $prevLoss = $loss;
         }
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**
@@ -378,7 +386,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
     /**
      * Initialize the gaussian components using K Means.
-     * 
+     *
      * @param  \Rubix\ML\Datasets\Dataset  $dataset
      * @throws \RuntimeException
      * @return array[]

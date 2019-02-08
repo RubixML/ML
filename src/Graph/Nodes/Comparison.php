@@ -53,7 +53,7 @@ class Comparison extends Split implements Decision
 
     /**
      * Return the impurity score of the node.
-     * 
+     *
      * @return float
      */
     public function impurity() : float
@@ -63,7 +63,7 @@ class Comparison extends Split implements Decision
 
     /**
      * Return the number of samples from the training set this node represents.
-     * 
+     *
      * @return int
      */
     public function n() : int

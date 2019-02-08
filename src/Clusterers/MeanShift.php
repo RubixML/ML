@@ -95,9 +95,12 @@ class MeanShift implements Learner, Verbose, Persistable
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(float $radius, ?Distance $kernel = null, int $epochs = 100,
-                                float $minChange = 1e-4)
-    {
+    public function __construct(
+        float $radius,
+        ?Distance $kernel = null,
+        int $epochs = 100,
+                                float $minChange = 1e-4
+    ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
@@ -136,7 +139,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -146,7 +149,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool
@@ -183,13 +186,15 @@ class MeanShift implements Learner, Verbose, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->logger) $this->logger->info('Learner initialized w/ '
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
             . Params::stringify([
                 'radius' => $this->radius,
                 'kernel' => $this->kernel,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
             ]));
+        }
 
         $this->centroids = $previous = $dataset->samples();
 
@@ -228,8 +233,10 @@ class MeanShift implements Learner, Verbose, Persistable
 
             $this->steps[] = $shift;
 
-            if ($this->logger) $this->logger->info("Epoch $epoch"
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch"
                 . " complete, shift=$shift");
+            }
 
             if (is_nan($shift)) {
                 break 1;
@@ -244,7 +251,9 @@ class MeanShift implements Learner, Verbose, Persistable
 
         $this->centroids = array_values($this->centroids);
 
-        if ($this->logger) $this->logger->info('Training complete');
+        if ($this->logger) {
+            $this->logger->info('Training complete');
+        }
     }
 
     /**

@@ -42,7 +42,7 @@ class KDNRegressor extends KDTree implements Learner, Persistable
     /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
-     * 
+     *
      * @var bool
      */
     protected $weighted;
@@ -85,7 +85,7 @@ class KDNRegressor extends KDTree implements Learner, Persistable
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -95,7 +95,7 @@ class KDNRegressor extends KDTree implements Learner, Persistable
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

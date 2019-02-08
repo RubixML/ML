@@ -24,7 +24,7 @@ class BlurryPercentile implements Continuous
 
     /**
      * The index of the percentile to predict where 50 is the median.
-     * 
+     *
      * @var float
      */
     protected $p;

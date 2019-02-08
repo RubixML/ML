@@ -66,7 +66,7 @@ class Momentum implements Optimizer, Adaptive
 
     /**
      * Initialize a parameter.
-     * 
+     *
      * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @return void
      */
@@ -88,7 +88,7 @@ class Momentum implements Optimizer, Adaptive
     {
         $velocity = $this->cache[$param];
 
-         $velocity = $gradient->multiply($this->rate)
+        $velocity = $gradient->multiply($this->rate)
             ->add($velocity->multiply(1. - $this->decay));
 
         $this->cache[$param] = $velocity;

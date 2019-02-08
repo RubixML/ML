@@ -9,10 +9,10 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Datasets\DataType;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -71,9 +71,13 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minImpurityIncrease = 0.,
-                                ?int $maxFeatures = null, float $tolerance = 1e-3)
-    {   
+    public function __construct(
+        int $maxDepth = PHP_INT_MAX,
+        int $maxLeafSize = 3,
+        float $minImpurityIncrease = 0.,
+                                ?int $maxFeatures = null,
+        float $tolerance = 1e-3
+    ) {
         if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
@@ -102,7 +106,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
@@ -115,7 +119,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
 
     /**
      * Has the learner been trained?
-     * 
+     *
      * @return bool
      */
     public function trained() : bool

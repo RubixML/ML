@@ -4,7 +4,7 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
@@ -28,21 +28,21 @@ class IntervalDiscretizer implements Stateful
 
     /**
      * The number of bins per feature column.
-     * 
+     *
      * @var int
      */
     protected $bins;
 
     /**
      * The categories available for each feature column.
-     * 
+     *
      * @var array
      */
     protected $categories;
 
     /**
      * The bin intervals of the fitted data.
-     * 
+     *
      * @var array[]|null
      */
     protected $intervals;
@@ -67,7 +67,7 @@ class IntervalDiscretizer implements Stateful
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -77,7 +77,7 @@ class IntervalDiscretizer implements Stateful
 
     /**
      * Return the possible categories of each feature column.
-     * 
+     *
      * @return array
      */
     public function categories() : array
@@ -88,7 +88,7 @@ class IntervalDiscretizer implements Stateful
     /**
      * Return the intervals of each continuous feature column
      * calculated during fitting.
-     * 
+     *
      * @return array|null
      */
     public function intervals() : ?array

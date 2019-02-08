@@ -84,7 +84,7 @@ class Circle implements Generator
      * @return \Rubix\ML\Datasets\Dataset
      */
     public function generate(int $n) : Dataset
-    { 
+    {
         $r = Vector::rand($n)->multiply(self::TWO_PI);
 
         $x = $r->cos();

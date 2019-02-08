@@ -4,6 +4,7 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
+use function exp;
 
 /**
  * SELU
@@ -40,7 +41,7 @@ class SELU implements ActivationFunction
 
     /**
      * The exponential leakage coefficient.
-     * 
+     *
      * @var float
      */
     protected $beta;

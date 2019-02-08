@@ -27,34 +27,32 @@ class Params
      * @param  int  $max
      * @param  int  $n
      * @throws \InvalidArgumentException
-     * @return array
+     * @return int[]
      */
     public static function ints(int $min, int $max, int $n = 10) : array
     {
         if (($max - $min) < 0) {
-            throw new InvalidArgumentException('Maximum cannot be less than'
-                . ' minimum.');
+            throw new InvalidArgumentException('Maximum cannot be'
+                . ' less than minimum.');
         }
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate less than 1'
-                . ' parameter.');
+            throw new InvalidArgumentException('Cannot generate less'
+                . ' than 1 parameter.');
         }
 
         if ($n > ($max - $min + 1)) {
-            throw new InvalidArgumentException('Cannot generate more unique'
-                . ' parameters than in range of.');
+            throw new InvalidArgumentException('Cannot generate more'
+                . ' unique integers than in range.');
         }
 
         $distribution = [];
 
-        for ($i = 0; $i < $n; $i++) {
+        while (count($distribution) < $n) {
             $r = rand($min, $max);
 
             if (!in_array($r, $distribution)) {
                 $distribution[] = $r;
-            } else {
-                $i--;
             }
         }
 
@@ -68,18 +66,18 @@ class Params
      * @param  float  $max
      * @param  int  $n
      * @throws \InvalidArgumentException
-     * @return array
+     * @return float[]
      */
     public static function floats(float $min, float $max, int $n = 10) : array
     {
         if (($max - $min) < 0.) {
-            throw new InvalidArgumentException('Maximum cannot be less than'
-                . ' minimum.');
+            throw new InvalidArgumentException('Maximum cannot be'
+                . ' less than minimum.');
         }
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate less than 1'
-                . ' parameter.');
+            throw new InvalidArgumentException('Cannot generate less'
+                . ' than 1 parameter.');
         }
 
         $min = (int) round($min * self::PHI);
@@ -101,18 +99,18 @@ class Params
      * @param  float  $max
      * @param  int  $n
      * @throws \InvalidArgumentException
-     * @return array
+     * @return float[]
      */
     public static function grid(float $min, float $max, int $n = 10) : array
     {
         if ($min > $max) {
-            throw new InvalidArgumentException('Max cannot be less than'
-                . ' min.');
+            throw new InvalidArgumentException('Max cannot be less'
+                . ' then min.');
         }
 
         if ($n < 2) {
-            throw new InvalidArgumentException('Cannot generate less than 2'
-                . ' parameters.');
+            throw new InvalidArgumentException('Cannot generate less'
+                . ' than 2 parameters.');
         }
 
         $interval = ($max - $min) / ($n - 1);
@@ -122,18 +120,12 @@ class Params
 
     /**
      * Extract the arguments from the model constructor for display.
-     * 
-     * @param  mixed  $object
-     * @throws \InvalidArgumentException
-     * @return array
+     *
+     * @param  object  $object
+     * @return string[]
      */
-    public static function args($object) : array
+    public static function args(object $object) : array
     {
-        if (!is_object($object) and !is_string($object)) {
-            throw new InvalidArgumentException('Must provide an object'
-                . ' or class name, ' . gettype($object) . ' given.');
-        }
-
         $reflector = new ReflectionClass($object);
 
         $constructor = $reflector->getConstructor();
@@ -150,12 +142,13 @@ class Params
     /**
      * Return a string representation of the constructor arguments from
      * an associative constructor array.
-     * 
+     *
      * @param  array  $constructor
+     * @param  string  $equator
      * @param  string  $separator
      * @return string
      */
-    public static function stringify(array $constructor, string $separator = '=') : string
+    public static function stringify(array $constructor, string $equator = '=', string $separator = ' ') : string
     {
         $strings = [];
 
@@ -170,16 +163,16 @@ class Params
                 $param = '[' . self::stringify($temp) . ']';
             }
 
-            $strings[] = (string) $arg . $separator . (string) $param;
+            $strings[] = (string) $arg . $equator . (string) $param;
         }
 
-        return implode(' ', $strings);
+        return implode($separator, $strings);
     }
 
     /**
      * Return the short class name from a fully qualified class name
      * (fqcn).
-     * 
+     *
      * @param  mixed  $object
      * @throws \InvalidArgumentException
      * @return string

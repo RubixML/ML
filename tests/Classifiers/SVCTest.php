@@ -9,7 +9,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;

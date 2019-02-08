@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -126,8 +126,10 @@ class LabeledTest extends TestCase
 
     public function test_possible_outcomes()
     {
-        $this->assertEquals(['not monster', 'monster'],
-            $this->dataset->possibleOutcomes());
+        $this->assertEquals(
+            ['not monster', 'monster'],
+            $this->dataset->possibleOutcomes()
+        );
     }
 
     public function test_get_column_types()
@@ -289,7 +291,6 @@ class LabeledTest extends TestCase
 
         $this->assertCount(2, $strata['monster']);
         $this->assertCount(4, $strata['not monster']);
-
     }
 
     public function test_batch_dataset()

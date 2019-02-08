@@ -8,7 +8,7 @@ use svm;
 
 /**
  * Polynomial
- * 
+ *
  * Operating in high dimensions, the polynomial to the pth degree of the
  * sample vector.
  *
@@ -20,21 +20,21 @@ class Polynomial implements Kernel
 {
     /**
      * The degree of the polynomial.
-     * 
+     *
      * @var int
      */
     protected $degree;
 
     /**
      * The kernel coefficient.
-     * 
+     *
      * @var float|null
      */
     protected $gamma;
 
     /**
      * The independent term.
-     * 
+     *
      * @var float
      */
     protected $coef0;
@@ -66,7 +66,7 @@ class Polynomial implements Kernel
 
     /**
      * Return the options for the libsvm runtime.
-     * 
+     *
      * @return array
      */
     public function options() : array

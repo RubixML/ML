@@ -97,7 +97,7 @@ class Adam implements Optimizer, Adaptive
 
     /**
      * Initialize a parameter.
-     * 
+     *
      * @param  \Rubix\ML\NeuralNet\Parameter  $param
      * @return void
      */

@@ -3,12 +3,12 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\DataType;
+use Rubix\ML\Other\Helpers\DataType;
 use RuntimeException;
 
 /**
  * Max Absolute Scaler
- * 
+ *
  * Scale the sample matrix by the maximum absolute value of each feature
  * column independently such that the feature will be between -1 and 1.
  *
@@ -20,14 +20,14 @@ class MaxAbsoluteScaler implements Elastic
 {
     /**
      * The maximum absolute values for each fitted feature column.
-     * 
+     *
      * @var array|null
      */
     protected $maxabs;
 
     /**
      * Is the transformer fitted?
-     * 
+     *
      * @return bool
      */
     public function fitted() : bool
@@ -37,7 +37,7 @@ class MaxAbsoluteScaler implements Elastic
 
     /**
      * Return the maximum absolute values for each feature column.
-     * 
+     *
      * @return array|null
      */
     public function maxabs() : ?array
@@ -78,13 +78,13 @@ class MaxAbsoluteScaler implements Elastic
         }
 
         foreach ($this->maxabs as $column => $oldMax) {
-             $values = $dataset->column($column);
+            $values = $dataset->column($column);
 
-             $max = max(array_map('abs', $values));
+            $max = max(array_map('abs', $values));
 
-             $max = max($oldMax, $max);
+            $max = max($oldMax, $max);
 
-             $this->maxabs[$column] = $max ?: self::EPSILON;
+            $this->maxabs[$column] = $max ?: self::EPSILON;
         }
     }
 

@@ -72,7 +72,7 @@ class Dropout implements Hidden, Nonparametric
 
     /**
      * Return the width of the layer.
-     * 
+     *
      * @return int|null
      */
     public function width() : ?int
@@ -147,7 +147,7 @@ class Dropout implements Hidden, Nonparametric
 
     /**
      * Indicator function for dropped out neurons.
-     * 
+     *
      * @param  float  $value
      * @return float
      */

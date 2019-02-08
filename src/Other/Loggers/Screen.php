@@ -19,14 +19,14 @@ class Screen extends Logger
     
     /**
      * The channel name that appears on each line.
-     * 
+     *
      * @var string
      */
     protected $channel;
 
     /**
      * Should we show timestamps?
-     * 
+     *
      * @var bool
      */
     protected $timestamps;

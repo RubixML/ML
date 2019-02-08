@@ -92,7 +92,7 @@ class DBSCAN implements Estimator
 
     /**
      * Return the data types that this estimator is compatible with.
-     * 
+     *
      * @return int[]
      */
     public function compatibility() : array
