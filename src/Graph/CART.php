@@ -71,18 +71,19 @@ abstract class CART implements Tree
     public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3, float $minPurityIncrease = 0.)
     {
         if ($maxDepth < 1) {
-            throw new InvalidArgumentException('A tree cannot have depth less'
-                . ' than 1.');
+            throw new InvalidArgumentException('A tree cannot have'
+                . ' depth less than 1.');
         }
 
         if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . ' to create a leaf.');
+            throw new InvalidArgumentException('At least one sample'
+                . ' is required to create a leaf node.');
         }
 
         if ($minPurityIncrease < 0.) {
-            throw new InvalidArgumentException('Min purity increase must be'
-                . " greater than or equal to 0, $minPurityIncrease given.");
+            throw new InvalidArgumentException('Min purity increase'
+                . ' must be greater than or equal to 0,'
+                . " $minPurityIncrease given.");
         }
 
         $this->maxDepth = $maxDepth;
@@ -219,11 +220,11 @@ abstract class CART implements Tree
             }
 
             if ($current instanceof Leaf) {
-                return $current;
+                break 1;
             }
         }
 
-        return null;
+        return $current;
     }
 
     /**

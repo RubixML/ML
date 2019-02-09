@@ -256,16 +256,16 @@ class TSNE implements Estimator, Verbose
 
         if ($this->logger) {
             $this->logger->info('Embedder initialized w/ '
-            . Params::stringify([
-                'dimensions' => $this->dimensions,
-                'perplexity' => $this->perplexity,
-                'exaggeration' => $this->exaggeration,
-                'rate' => $this->rate,
-                'kernel' => $this->kernel,
-                'epochs' => $this->epochs,
-                'min_gradient' => $this->minGradient,
-                'window' => $this->window,
-            ]));
+                . Params::stringify([
+                    'dimensions' => $this->dimensions,
+                    'perplexity' => $this->perplexity,
+                    'exaggeration' => $this->exaggeration,
+                    'rate' => $this->rate,
+                    'kernel' => $this->kernel,
+                    'epochs' => $this->epochs,
+                    'min_gradient' => $this->minGradient,
+                    'window' => $this->window,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -273,8 +273,7 @@ class TSNE implements Estimator, Verbose
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing high dimensional'
-            . ' affinities');
+            $this->logger->info('Computing high dimensional affinities');
         }
 
         $distances = $this->pairwiseDistances($x);
@@ -322,8 +321,7 @@ class TSNE implements Estimator, Verbose
             $this->steps[] = $magnitude;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, gradient=$magnitude");
+                $this->logger->info("Epoch $epoch complete, gradient=$magnitude");
             }
 
             if (is_nan($magnitude)) {
@@ -351,8 +349,7 @@ class TSNE implements Estimator, Verbose
                 $momentum += self::MOMENTUM_BOOST;
 
                 if ($this->logger) {
-                    $this->logger->info('Early exaggeration'
-                    . ' stage exhausted');
+                    $this->logger->info('Early exaggeration stage exhausted');
                 }
             }
         }

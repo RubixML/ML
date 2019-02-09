@@ -221,11 +221,11 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'k' => $this->k,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-            ]));
+                . Params::stringify([
+                    'k' => $this->k,
+                    'epochs' => $this->epochs,
+                    'min_change' => $this->minChange,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -234,7 +234,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info("Initializing $this->k"
-            . ' gaussian components');
+                . ' gaussian components');
         }
 
         [$means, $variances] = $this->initializeComponents($dataset);
@@ -300,8 +300,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, loss=$loss");
             }
 
             if (is_nan($loss)) {

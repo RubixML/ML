@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Tokenizers;
 
-use function preg_match_all;
-
 /**
  * Word
  *

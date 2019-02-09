@@ -2,9 +2,6 @@
 
 namespace Rubix\ML\Other\Functions;
 
-use function array_search;
-use function min;
-
 /**
  * Argmax
  *

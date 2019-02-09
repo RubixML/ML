@@ -3,8 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\Other\Helpers\DataType;
-use function min;
-use function max;
 
 /**
  * Jaccard

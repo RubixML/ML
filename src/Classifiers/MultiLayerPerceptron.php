@@ -352,18 +352,18 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'hidden' => $this->hidden,
-                'batch_size' => $this->batchSize,
-                'optimizer' => $this->optimizer,
-                'alpha' => $this->alpha,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'cost_fn' => $this->costFn,
-                'hold_out' => $this->holdout,
-                'metric' => $this->metric,
-                'window' => $this->window,
-            ]));
+                . Params::stringify([
+                    'hidden' => $this->hidden,
+                    'batch_size' => $this->batchSize,
+                    'optimizer' => $this->optimizer,
+                    'alpha' => $this->alpha,
+                    'epochs' => $this->epochs,
+                    'min_change' => $this->minChange,
+                    'cost_fn' => $this->costFn,
+                    'hold_out' => $this->holdout,
+                    'metric' => $this->metric,
+                    'window' => $this->window,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -400,8 +400,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch complete,"
+                    . " score=$score loss=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -436,15 +436,14 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
 
                 if ($this->logger) {
                     $this->logger->info('Network restored'
-                    . ' from previous snapshot');
+                        . ' from previous snapshot');
                 }
             }
         }
 
         if ($this->logger) {
-            $this->logger->info("Best validation score=$bestScore");
-
             $this->logger->info('Training complete');
+            $this->logger->info("Best validation score=$bestScore");
         }
     }
 

@@ -6,10 +6,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function round;
-use function rand;
-use function is_null;
-
 /**
  * Wild Guess
  *

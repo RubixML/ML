@@ -249,13 +249,13 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'base' => $this->base,
-                'estimators' => $this->estimators,
-                'rate' => $this->rate,
-                'ratio' => $this->ratio,
-                'tolerance' => $this->tolerance,
-            ]));
+                . Params::stringify([
+                    'base' => $this->base,
+                    'estimators' => $this->estimators,
+                    'rate' => $this->rate,
+                    'ratio' => $this->ratio,
+                    'tolerance' => $this->tolerance,
+                ]));
         }
 
         $this->classes = $dataset->possibleOutcomes();
@@ -300,8 +300,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
             $this->influences[] = $influence;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, loss=$loss");
             }
 
             if (is_nan($loss) or $total <= 0) {

@@ -5,10 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
-use SplObjectStorage;
-use function floor;
-use function abs;
-use function max;
 
 /**
  * Cyclical

@@ -9,9 +9,6 @@ use InvalidArgumentException;
 use RuntimeException;
 use Redis;
 
-use function extension_loaded;
-use function is_null;
-
 /**
  * Redis DB
  *

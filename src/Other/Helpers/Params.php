@@ -6,22 +6,6 @@ use InvalidArgumentException;
 use ReflectionMethod;
 use ReflectionClass;
 
-use function get_class;
-use function gettype;
-use function array_combine;
-use function array_keys;
-use function array_column;
-use function in_array;
-use function count;
-use function rand;
-use function round;
-use function range;
-use function is_object;
-use function is_array;
-use function implode;
-use function substr;
-use function strrchr;
-
 /**
  * Params
  *

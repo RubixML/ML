@@ -185,11 +185,11 @@ class ModelOrchestra implements Learner, Persistable, Verbose
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'orchestra' => $this->orchestra,
-                'conductor' => $this->conductor,
-                'ratio' => $this->ratio,
-            ]));
+                . Params::stringify([
+                    'orchestra' => $this->orchestra,
+                    'conductor' => $this->conductor,
+                    'ratio' => $this->ratio,
+                ]));
         }
 
         if ($this->type() === self::CLASSIFIER) {
@@ -201,7 +201,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
         foreach ($this->orchestra as $estimator) {
             if ($this->logger) {
                 $this->logger->info('Training '
-                . Params::shortName($estimator));
+                    . Params::shortName($estimator));
             }
 
             $estimator->train($left);
@@ -213,7 +213,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
 
         if ($this->logger) {
             $this->logger->info('Training '
-            . Params::shortName($this->conductor) . ' (conductor)');
+                . Params::shortName($this->conductor) . ' (conductor)');
         }
 
         $this->conductor->train($right);

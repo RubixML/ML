@@ -14,16 +14,16 @@ Here are some things to check off before sending in a pull request
 - Does the CHANGELOG need to be updated?
 
 ### Coding Style
-Rubix strictly follows the PSR-2 coding style. Here are a few of the guidelines, however, refer to the [style guide](https://www.php-fig.org/psr/psr-2/) for an exhaustive list. For any new object, please include a header that contains the name of the object, a short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
+Rubix follows the PSR-2 coding style. Here are a few of the guidelines, however, refer to the [style guide](https://www.php-fig.org/psr/psr-2/) for an exhaustive list. For any new file, include a header that contains a title, a short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
 
 To run the style checker:
 ```sh
-composer check
+$ composer check
 ```
 
 To run the style fixer:
 ```sh
-composer fix
+$ composer fix
 ```
 
 ### Static Analysis
@@ -31,7 +31,7 @@ Static analysis is a *crucial* component to our overall testing and quality assu
 
 To run static analysis:
 ```sh
-composer analyze
+$ composer analyze
 ```
   
 ### Unit Testing
@@ -39,7 +39,7 @@ Every change *requires* an accompanying test whether it be a new feature or a bu
 
 To run the unit tests:
 ```sh
-composer test
+$ composer test
 ```
 
 > **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.

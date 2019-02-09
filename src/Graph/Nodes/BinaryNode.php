@@ -170,6 +170,16 @@ class BinaryNode implements Node
     }
 
     /**
+     * Is this node an orphaned node?
+     *
+     * @return bool
+     */
+    public function orphan() : bool
+    {
+        return !$this->parent and $this->leaf();
+    }
+
+    /**
      * Is this a leaf node? i.e no children.
      *
      * @return bool

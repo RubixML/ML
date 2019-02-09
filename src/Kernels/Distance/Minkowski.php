@@ -4,7 +4,6 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
-use function abs;
 
 /**
  * Minkowski

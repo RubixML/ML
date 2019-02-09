@@ -4,9 +4,6 @@ namespace Rubix\ML\Persisters\Serializers;
 
 use Rubix\ML\Persistable;
 
-use function serialize;
-use function unserialize;
-
 /**
  * Native
  *

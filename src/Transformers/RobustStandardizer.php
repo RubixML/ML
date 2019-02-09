@@ -36,8 +36,8 @@ class RobustStandardizer implements Stateful
     protected $medians;
 
     /**
-     * The computed median absolute deviations of the fitted data indexed by
-     * column.
+     * The computed median absolute deviations of the fitted data
+     * indexed by column.
      *
      * @var array|null
      */

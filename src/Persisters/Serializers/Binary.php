@@ -5,10 +5,6 @@ namespace Rubix\ML\Persisters\Serializers;
 use Rubix\ML\Persistable;
 use RuntimeException;
 
-use function extension_loaded;
-use function igbinary_serialize;
-use function igbinary_unserialize;
-
 /**
  * Binary
  *

@@ -14,9 +14,6 @@ use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
-use function array_reverse;
-use function array_slice;
-use function array_filter;
 
 /**
  * Feed Forward

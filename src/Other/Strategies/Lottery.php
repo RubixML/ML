@@ -5,11 +5,6 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function array_values;
-use function array_unique;
-use function rand;
-use function count;
-
 /**
  * Lottery
  *

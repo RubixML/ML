@@ -3,7 +3,6 @@
 namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\ML\Other\Helpers\DataType;
-use function sqrt;
 
 /**
  * Euclidean

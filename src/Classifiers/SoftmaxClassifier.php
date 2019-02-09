@@ -262,14 +262,14 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'batch_size' => $this->batchSize,
-                'optimizer' => $this->optimizer,
-                'alpha' => $this->alpha,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'cost_fn' => $this->costFn,
-            ]));
+                . Params::stringify([
+                    'batch_size' => $this->batchSize,
+                    'optimizer' => $this->optimizer,
+                    'alpha' => $this->alpha,
+                    'epochs' => $this->epochs,
+                    'min_change' => $this->minChange,
+                    'cost_fn' => $this->costFn,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -290,8 +290,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-            . " complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, loss=$loss");
             }
 
             if (is_nan($loss)) {

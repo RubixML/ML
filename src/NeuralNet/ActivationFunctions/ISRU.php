@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
-use function sqrt;
 
 /**
  * ISRU

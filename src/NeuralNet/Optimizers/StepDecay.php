@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
-use function floor;
 
 /**
  * Step Decay

@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.9-beta
     - Added transform labels method to Labeled Dataset
     - Added Data Type helper
     - Pipeline and Persistent Model are now Probabilistic
@@ -13,6 +13,7 @@
     - Changed ordinal of integer encoded data types
     - Added Adaptive optimizer interface
     - Changed Transformer transform API
+    - Removed prompt method from Persistent Model
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

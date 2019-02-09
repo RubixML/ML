@@ -239,15 +239,15 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'booster' => $this->booster,
-                'rate' => $this->rate,
-                'estimators' => $this->estimators,
-                'ratio' => $this->ratio,
-                'min_change' => $this->minChange,
-                'tolerance' => $this->tolerance,
-                'base' => $this->base,
-            ]));
+                . Params::stringify([
+                    'booster' => $this->booster,
+                    'rate' => $this->rate,
+                    'estimators' => $this->estimators,
+                    'ratio' => $this->ratio,
+                    'min_change' => $this->minChange,
+                    'tolerance' => $this->tolerance,
+                    'base' => $this->base,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -255,7 +255,7 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Training '
-            . Params::shortName($this->base) . ' base estimator');
+                . Params::shortName($this->base) . ' base estimator');
         }
 
         $this->base->train($dataset);
@@ -272,9 +272,9 @@ class GradientBoost implements Learner, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Attempting to correct'
-            . " error residuals with $this->estimators "
-            . Params::shortName($this->booster)
-            . ($this->estimators > 1 ? 's' : ''));
+                . " error residuals with $this->estimators "
+                . Params::shortName($this->booster)
+                . ($this->estimators > 1 ? 's' : ''));
         }
 
         $this->ensemble = $this->steps = [];
@@ -306,8 +306,7 @@ class GradientBoost implements Learner, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, loss=$loss");
             }
 
             if (is_nan($loss)) {

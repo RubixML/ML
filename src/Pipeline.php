@@ -210,7 +210,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
             if ($transformer instanceof Stateful) {
                 if ($this->logger) {
                     $this->logger->info('Fitting '
-                    . Params::shortName($transformer));
+                        . Params::shortName($transformer));
                 }
 
                 $transformer->fit($dataset);
@@ -231,7 +231,7 @@ class Pipeline implements Online, Wrapper, Probabilistic, Persistable, Verbose
             if ($transformer instanceof Elastic) {
                 if ($this->logger) {
                     $this->logger->info('Updating '
-                    . Params::shortName($transformer));
+                        . Params::shortName($transformer));
                 }
 
                 $transformer->update($dataset);

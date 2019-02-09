@@ -152,16 +152,6 @@ class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
     }
 
     /**
-     * Prompt the user to save this model or not.
-     */
-    public function prompt() : void
-    {
-        if (strtolower(readline('Save this model? (y|[n]): ')) === 'y') {
-            $this->save();
-        }
-    }
-
-    /**
      * Allow methods to be called on the model from the wrapper.
      *
      * @param string $name

@@ -68,13 +68,13 @@ class KMeans implements Online, Persistable
     public function __construct(int $k, ?Distance $kernel = null, int $epochs = 300)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Must target at least one'
-                . " cluster, $k given.");
+            throw new InvalidArgumentException('Must target at least'
+                . " 1 cluster, $k given.");
         }
 
         if ($epochs < 1) {
-            throw new InvalidArgumentException('Estimator must train for at'
-                . " least 1 epoch, $epochs given.");
+            throw new InvalidArgumentException('Estimator must train'
+                . " for at least 1 epoch, $epochs given.");
         }
 
         if (is_null($kernel)) {
@@ -151,7 +151,6 @@ class KMeans implements Online, Persistable
     {
         if (empty($this->centroids)) {
             $this->train($dataset);
-
             return;
         }
 
@@ -160,7 +159,7 @@ class KMeans implements Online, Persistable
         $labels = array_fill(0, $dataset->numRows(), -1);
         $sizes = array_fill(0, $this->k, 0);
 
-        for ($epoch = 0; $epoch < $this->epochs; $epoch++) {
+        for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $changed = false;
 
             foreach ($dataset as $i => $sample) {
@@ -176,9 +175,13 @@ class KMeans implements Online, Persistable
 
                 $size = $sizes[$label] ?: self::EPSILON;
 
-                foreach ($this->centroids[$label] as $column => &$mean) {
+                $centroid = $this->centroids[$label];
+
+                foreach ($centroid as $column => &$mean) {
                     $mean = ($mean * ($size - 1) + $sample[$column]) / $size;
                 }
+
+                $this->centroids[$label] = $centroid;
             }
 
             if (!$changed) {

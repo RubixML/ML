@@ -5,10 +5,6 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function current;
-use function rand;
-use function is_null;
-
 /**
  * Popularity Contest
  *

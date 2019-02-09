@@ -283,13 +283,13 @@ class GridSearch implements Learner, Persistable, Verbose
 
         if ($this->logger) {
             $this->logger->info('Search initialized w/ '
-            . Params::stringify([
-                'base' => $this->base,
-                'grid' => $this->grid,
-                'metric' => $this->metric,
-                'validator' => $this->validator,
-                'retrain' => $this->retrain,
-            ]));
+                . Params::stringify([
+                    'base' => $this->base,
+                    'grid' => $this->grid,
+                    'metric' => $this->metric,
+                    'validator' => $this->validator,
+                    'retrain' => $this->retrain,
+                ]));
         }
 
         $this->params = $this->scores = $this->best = [];
@@ -305,7 +305,7 @@ class GridSearch implements Learner, Persistable, Verbose
 
             if ($this->logger) {
                 $this->logger->info('Testing parameters '
-                . Params::stringify($constructor));
+                    . Params::stringify($constructor));
             }
 
             $score = $this->validator->test($estimator, $dataset, $this->metric);
@@ -328,14 +328,13 @@ class GridSearch implements Learner, Persistable, Verbose
 
         if ($this->logger) {
             $this->logger->info('Best params ' . Params::stringify($bestParams));
-            
             $this->logger->info("Best score=$bestScore");
         }
 
         if ($this->retrain) {
             if ($this->logger) {
                 $this->logger->info('Retraining base'
-                . ' estimator on full dataset');
+                    . ' estimator on full dataset');
             }
 
             $bestEstimator->train($dataset);

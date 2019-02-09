@@ -36,9 +36,9 @@ class WildGuessTest extends TestCase
         $this->assertThat(
             $guess,
             $this->logicalAnd(
-            $this->greaterThanOrEqual(1),
-            $this->lessThanOrEqual(5)
-        )
+                $this->greaterThanOrEqual(1),
+                $this->lessThanOrEqual(5)
+            )
         );
     }
 }

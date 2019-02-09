@@ -4,8 +4,6 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
-use function exp;
-use function log;
 
 /**
  * Soft Plus

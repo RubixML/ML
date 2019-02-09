@@ -7,8 +7,6 @@ use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function is_null;
-
 /**
  * Mean
  *

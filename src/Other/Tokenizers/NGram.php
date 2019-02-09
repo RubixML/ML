@@ -4,10 +4,6 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
-use function preg_split;
-use function preg_match_all;
-use function count;
-
 /**
  * N-Gram
  *

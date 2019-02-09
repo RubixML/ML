@@ -209,18 +209,18 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'c' => $this->c,
-                'fuzz' => $this->fuzz,
-                'kernel' => $this->kernel,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-            ]));
+                . Params::stringify([
+                    'c' => $this->c,
+                    'fuzz' => $this->fuzz,
+                    'kernel' => $this->kernel,
+                    'epochs' => $this->epochs,
+                    'min_change' => $this->minChange,
+                ]));
         }
 
         if ($this->logger) {
             $this->logger->info("Initializing $this->c"
-            . ' cluster centroids');
+                . ' cluster centroids');
         }
 
         $this->centroids = $this->initializeCentroids($dataset);
@@ -255,8 +255,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, loss=$loss");
             }
 
             if (is_nan($loss)) {

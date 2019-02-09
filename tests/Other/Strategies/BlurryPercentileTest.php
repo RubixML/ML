@@ -36,9 +36,9 @@ class BlurryPercentileTest extends TestCase
         $this->assertThat(
             $guess,
             $this->logicalAnd(
-            $this->greaterThanOrEqual(0),
-            $this->lessThanOrEqual(6)
-        )
+                $this->greaterThanOrEqual(0),
+                $this->lessThanOrEqual(6)
+            )
         );
     }
 }

@@ -5,11 +5,6 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function arsort;
-use function array_count_values;
-use function array_slice;
-use function array_keys;
-
 /**
  * K Most Frequent
  *

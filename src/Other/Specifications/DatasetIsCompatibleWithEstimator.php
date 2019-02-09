@@ -6,9 +6,6 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
-use function count;
-use function array_intersect;
-
 class DatasetIsCompatibleWithEstimator
 {
     /**

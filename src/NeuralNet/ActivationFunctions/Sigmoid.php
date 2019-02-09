@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
-use function exp;
 
 /**
  * Sigmoid

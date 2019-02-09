@@ -4992,17 +4992,17 @@ Rubix utilizes a combination of static code analysis and unit tests for quality 
 
 To run static analysis:
 ```sh
-composer analyze
+$ composer analyze
 ```
 
 To run the style checker:
 ```sh
-composer check
+$ composer check
 ```
 
 To run the unit tests:
 ```sh
-composer test
+$ composer test
 ```
 
 > **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.

@@ -7,8 +7,6 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use InvalidArgumentException;
 
-use function in_array;
-
 class EstimatorIsCompatibleWithMetric
 {
     /**

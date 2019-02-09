@@ -341,14 +341,14 @@ class MLPRegressor implements Online, Verbose, Persistable
 
         if ($this->logger) {
             $this->logger->info('Learner initialized w/ '
-            . Params::stringify([
-                'batch_size' => $this->batchSize,
-                'optimizer' => $this->optimizer,
-                'alpha' => $this->alpha,
-                'epochs' => $this->epochs,
-                'min_change' => $this->minChange,
-                'cost_fn' => $this->costFn,
-            ]));
+                . Params::stringify([
+                    'batch_size' => $this->batchSize,
+                    'optimizer' => $this->optimizer,
+                    'alpha' => $this->alpha,
+                    'epochs' => $this->epochs,
+                    'min_change' => $this->minChange,
+                    'cost_fn' => $this->costFn,
+                ]));
         }
 
         $n = $dataset->numRows();
@@ -385,8 +385,8 @@ class MLPRegressor implements Online, Verbose, Persistable
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch"
-                . " complete, score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch complete,"
+                    . " score=$score loss=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -419,15 +419,14 @@ class MLPRegressor implements Online, Verbose, Persistable
 
                 if ($this->logger) {
                     $this->logger->info('Network restored'
-                    . ' from previous snapshot');
+                        . ' from previous snapshot');
                 }
             }
         }
 
         if ($this->logger) {
-            $this->logger->info("Best validation score=$bestScore");
-
             $this->logger->info('Training complete');
+            $this->logger->info("Best validation score=$bestScore");
         }
     }
 

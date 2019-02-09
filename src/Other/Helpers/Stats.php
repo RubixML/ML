@@ -5,16 +5,6 @@ namespace Rubix\ML\Other\Helpers;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 
-use function array_count_values;
-use function array_map;
-use function array_sum;
-use function array_slice;
-use function count;
-use function sort;
-use function intdiv;
-use function min;
-use function max;
-
 /**
  * Stats
  *

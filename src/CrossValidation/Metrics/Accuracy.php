@@ -4,7 +4,6 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
-use function count;
 
 /**
  * Accuracy

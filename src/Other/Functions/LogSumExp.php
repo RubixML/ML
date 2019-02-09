@@ -2,11 +2,6 @@
 
 namespace Rubix\ML\Other\Functions;
 
-use function array_sum;
-use function array_map;
-use function log;
-use function exp;
-
 /**
  * LogSumExp
  *

@@ -175,7 +175,7 @@ class KDTree implements Tree
 
     /**
      * Run a k nearest neighbors search of every neighborhood and return
-     * the labels and distances in a tuple.
+     * the labels and distances in a 2-tuple.
      *
      * @param array $sample
      * @param int $k
@@ -195,21 +195,11 @@ class KDTree implements Tree
             return [[], []];
         }
 
+        $distances = $labels = [];
+
         $visited = new SplObjectStorage();
 
-        $visited->attach($neighborhood);
-
-        [$samples, $labels] = $neighborhood->neighbors();
-
-        $distances = [];
-
-        foreach ($samples as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
-        }
-
-        array_multisort($distances, $labels);
-
-        $stack = [$neighborhood->parent()];
+        $stack = [$neighborhood];
 
         while ($stack) {
             $current = array_pop($stack);
@@ -218,9 +208,9 @@ class KDTree implements Tree
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    [$sHat, $lHat] = $current->neighbors();
+                    [$samples, $lHat] = $current->neighbors();
 
-                    foreach ($sHat as $neighbor) {
+                    foreach ($samples as $neighbor) {
                         $distances[] = $this->kernel->compute($sample, $neighbor);
                     }
 
@@ -229,13 +219,15 @@ class KDTree implements Tree
                     array_multisort($distances, $labels);
                 }
 
+                $target = $distances[$k - 1] ?? INF;
+
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
                         if ($child instanceof Spatial) {
                             foreach ($child->box() as $side) {
                                 $distance = $this->kernel->compute($sample, $side);
         
-                                if ($distance < ($distances[$k - 1] ?? INF)) {
+                                if ($distance < $target) {
                                     $stack[] = $child;
         
                                     continue 2;

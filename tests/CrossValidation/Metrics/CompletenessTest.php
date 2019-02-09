@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Completeness;
 use PHPUnit\Framework\TestCase;
@@ -19,11 +20,14 @@ class CompletenessTest extends TestCase
     {
         $this->assertInstanceOf(Completeness::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
-    }
 
-    public function test_get_range()
-    {
         $this->assertEquals([0, 1], $this->metric->range());
+
+        $this->assertNotContains(Estimator::CLASSIFIER, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::REGRESSOR, $this->metric->compatibility());
+        $this->assertContains(Estimator::CLUSTERER, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::DETECTOR, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::EMBEDDER, $this->metric->compatibility());
     }
 
     public function test_score_predictions()
@@ -41,9 +45,9 @@ class CompletenessTest extends TestCase
         $this->assertThat(
             $score,
             $this->logicalAnd(
-            $this->greaterThanOrEqual($min),
-            $this->lessThanOrEqual($max)
-        )
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
         );
     }
 }

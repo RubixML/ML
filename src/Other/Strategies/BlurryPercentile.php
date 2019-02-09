@@ -8,11 +8,6 @@ use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function rand;
-use function sqrt;
-use function log;
-use function cos;
-
 /**
  * Blurry Percentile
  *

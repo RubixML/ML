@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 use PHPUnit\Framework\TestCase;
@@ -19,11 +20,14 @@ class InformednessTest extends TestCase
     {
         $this->assertInstanceOf(Informedness::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
-    }
 
-    public function test_get_range()
-    {
         $this->assertEquals([0., 1.], $this->metric->range());
+
+        $this->assertContains(Estimator::CLASSIFIER, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::REGRESSOR, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::CLUSTERER, $this->metric->compatibility());
+        $this->assertContains(Estimator::DETECTOR, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::EMBEDDER, $this->metric->compatibility());
     }
 
     public function test_score_predictions()
@@ -41,9 +45,9 @@ class InformednessTest extends TestCase
         $this->assertThat(
             $score,
             $this->logicalAnd(
-            $this->greaterThanOrEqual($min),
-            $this->lessThanOrEqual($max)
-        )
+                $this->greaterThanOrEqual($min),
+                $this->lessThanOrEqual($max)
+            )
         );
     }
 }

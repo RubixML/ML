@@ -4,9 +4,6 @@ namespace Rubix\ML\Other\Tokenizers;
 
 use InvalidArgumentException;
 
-use function strlen;
-use function explode;
-
 /**
  * Whitespace
  *
