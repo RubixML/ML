@@ -60,7 +60,7 @@ class HalfMoon implements Generator
         float $y = 0.0,
         float $scale = 1.,
         float $rotation = 90.0,
-                                float $noise = 0.1
+        float $noise = 0.1
     ) {
         if ($scale < 0.) {
             throw new InvalidArgumentException('Scaling factor must be greater'

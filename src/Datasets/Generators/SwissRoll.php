@@ -67,7 +67,7 @@ class SwissRoll implements Generator
         float $y = 0.0,
         float $z = 0.0,
         float $scale = 1.,
-                                float $depth = 21.,
+        float $depth = 21.,
         float $noise = 0.3
     ) {
         if ($scale < 0.) {
