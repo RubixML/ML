@@ -63,7 +63,7 @@ class WordCountVectorizer implements Stateful
     public function __construct(
         int $maxVocabulary = PHP_INT_MAX,
         int $minDocumentFrequency = 1,
-                                ?Tokenizer $tokenizer = null
+        ?Tokenizer $tokenizer = null
     ) {
         if ($maxVocabulary < 1) {
             throw new InvalidArgumentException('The size of the vocabular must'
