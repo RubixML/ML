@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\CrossValidation;
 
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\LeavePOut;
 use Rubix\ML\CrossValidation\Validator;

@@ -15,8 +15,6 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
-use RuntimeException;
-use ReflectionMethod;
 use ReflectionClass;
 
 /**
@@ -159,7 +157,7 @@ class GridSearch implements Learner, Persistable, Verbose
             }
         }
 
-        if (isset($metric)) {
+        if ($metric) {
             EstimatorIsCompatibleWithMetric::check($proxy, $metric);
         } else {
             switch ($proxy->type()) {

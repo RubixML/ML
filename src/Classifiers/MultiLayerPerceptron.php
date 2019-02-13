@@ -471,7 +471,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
         if (is_null($this->network)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

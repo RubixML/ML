@@ -3,7 +3,6 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
-use InvalidArgumentException;
 
 /**
  * V Measure

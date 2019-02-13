@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Datasets;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 
 class DataFrameTest extends TestCase
 {

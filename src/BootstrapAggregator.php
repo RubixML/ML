@@ -25,6 +25,12 @@ use RuntimeException;
  */
 class BootstrapAggregator implements Learner, Persistable
 {
+    const COMPATIBLE_ESTIMATOR_TYPES = [
+        self::CLASSIFIER,
+        self::REGRESSOR,
+        self::DETECTOR,
+    ];
+
     /**
      * The base estimator instance.
      *
@@ -63,17 +69,15 @@ class BootstrapAggregator implements Learner, Persistable
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
-        $type = $base->type();
-
-        if ($type !== self::CLASSIFIER and $type !== self::REGRESSOR and $type !== self::DETECTOR) {
-            throw new InvalidArgumentException('This meta estimator only'
-                . ' supports classifiers, regressors, and anomaly detectors, '
-                . self::TYPES[$type] . ' given.');
+        if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
+            throw new InvalidArgumentException('This meta estimator'
+                . ' only supports classifiers, regressors, and anomaly'
+                . ' detectors, ' . self::TYPES[$base->type()] . ' given.');
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must train at least'
-                . " 1 estimator, $estimators given.");
+            throw new InvalidArgumentException('Ensemble must train at'
+                . " least 1 estimator, $estimators given.");
         }
 
         if ($ratio < 0.01 or $ratio > 0.99) {
@@ -160,21 +164,21 @@ class BootstrapAggregator implements Learner, Persistable
                 $aggregate[$i][] = $prediction;
             }
         }
+        
+        switch ($this->type()) {
+            case self::CLASSIFIER:
+                return array_map(function ($outcomes) {
+                    return Argmax::compute(array_count_values($outcomes));
+                }, $aggregate);
 
-        $type = $this->type();
+            case self::DETECTOR:
+                return array_map(function ($outcomes) {
+                    return Stats::mean($outcomes) > 0.5 ? 1 : 0;
+                }, $aggregate);
 
-        $predictions = [];
+            default:
+                return array_map([Stats::class, 'mean'], $aggregate);
 
-        foreach ($aggregate as $outcomes) {
-            if ($type === self::CLASSIFIER) {
-                $predictions[] = Argmax::compute(array_count_values($outcomes));
-            } elseif ($type === self::DETECTOR) {
-                $predictions[] = Stats::mean($outcomes) > 0.5 ? 1 : 0;
-            } else {
-                $predictions[] = Stats::mean($outcomes);
-            }
         }
-
-        return $predictions;
     }
 }

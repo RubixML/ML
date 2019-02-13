@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
-use Rubix\ML\AnomalyDetectors\IsolationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
@@ -51,6 +50,8 @@ class IsolationForestTest extends TestCase
 
         $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_predict()

@@ -53,7 +53,7 @@ class SVC implements Learner, Persistable
      *
      * @var string[]
      */
-    protected $classes =[
+    protected $classes = [
         //
     ];
 
@@ -186,7 +186,7 @@ class SVC implements Learner, Persistable
         if (is_null($this->model)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

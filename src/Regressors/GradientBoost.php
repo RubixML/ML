@@ -7,7 +7,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;

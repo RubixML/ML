@@ -177,7 +177,7 @@ class KNNRegressor implements Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            list($distances, $labels) = $this->neighbors($sample);
+            [$distances, $labels] = $this->neighbors($sample);
 
             if ($this->weighted) {
                 $weights = [];

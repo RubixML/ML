@@ -4,7 +4,6 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Unlabeled
@@ -382,17 +381,5 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         return self::quick($subset);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'samples' => $this->samples,
-        ];
     }
 }

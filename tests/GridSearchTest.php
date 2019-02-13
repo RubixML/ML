@@ -6,8 +6,6 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Datasets\DataFrame;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -16,8 +14,6 @@ use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 class GridSearchTest extends TestCase
 {

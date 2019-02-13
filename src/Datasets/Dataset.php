@@ -4,11 +4,10 @@ namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Transformers\Transformer;
 use IteratorAggregate;
-use JsonSerializable;
 use ArrayAccess;
 use Countable;
 
-interface Dataset extends ArrayAccess, IteratorAggregate, JsonSerializable, Countable
+interface Dataset extends ArrayAccess, IteratorAggregate, Countable
 {
     const PHI = 100000000;
 

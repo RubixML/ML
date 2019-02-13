@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
@@ -13,8 +12,6 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 
 class DummyClassifierTest extends TestCase
 {
@@ -52,6 +49,8 @@ class DummyClassifierTest extends TestCase
 
         $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_predict()

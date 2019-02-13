@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
-use Rubix\Tensor\ColumnVector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;

@@ -9,7 +9,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Helpers\DataType;
@@ -166,7 +165,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -196,7 +195,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

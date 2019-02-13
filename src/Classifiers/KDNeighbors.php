@@ -151,7 +151,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -189,7 +189,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

@@ -24,6 +24,6 @@ class DatasetIsCompatibleWithEstimator
         if (count($same) < count($types)) {
             throw new InvalidArgumentException('Estimator is not'
                 . ' compatible with the data types given.');
-        };
+        }
     }
 }

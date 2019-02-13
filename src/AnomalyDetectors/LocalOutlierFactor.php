@@ -7,7 +7,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -17,9 +16,10 @@ use RuntimeException;
 /**
  * Local Outlier Factor
  *
- * Local Outlier Factor (LOF) measures the local deviation of density of a given sample
- * with respect to its k nearest neighbors. As such, LOF only considers the local region
- * of a sample thus enabling it to detect anomalies within individual clusters of data.
+ * Local Outlier Factor (LOF) measures the local deviation of density
+ * of a given sample with respect to its k nearest neighbors. As such,
+ * LOF only considers the local region of a sample thus enabling it to
+ * detect anomalies within individual clusters of data.
  *
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local
@@ -207,7 +207,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
         if (empty($this->samples)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph;
 
-use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Leaf;

@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Wrapper;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Other\Helpers\DataType;

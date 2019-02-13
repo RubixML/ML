@@ -11,7 +11,6 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -50,6 +49,8 @@ class KNNRegressorTest extends TestCase
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
     
     public function test_train_partial_predict_proba()

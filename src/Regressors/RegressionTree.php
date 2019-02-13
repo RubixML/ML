@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Other\Helpers\DataType;

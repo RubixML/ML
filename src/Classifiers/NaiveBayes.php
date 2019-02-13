@@ -307,7 +307,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         if (empty($this->weights) or empty($this->probs)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -335,7 +335,7 @@ class NaiveBayes implements Online, Probabilistic, Persistable
         if (empty($this->weights) or empty($this->probs)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

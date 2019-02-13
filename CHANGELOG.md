@@ -5,15 +5,16 @@
     - Added stack method to dataset API
     - Changed merge method on dataset to append and prepend
     - Implemented specifications
-    - Added dataset compatibility for estimators
+    - Added data type compatibility for estimators
     - Added compatibility method to validation metrics
     - Added estimator compatibility to reports
     - Added trained method to learner API
-    - Added fitted method to stateful transformer API
+    - Added fitted method to Stateful transformer API
     - Changed ordinal of integer encoded data types
     - Added Adaptive optimizer interface
     - Changed Transformer transform API
     - Removed prompt method from Persistent Model
+    - Removed JsonSerializable from Dataset Interface
 
 - 0.0.8-alpha
     - Added Model Orchestra meta estimator

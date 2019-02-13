@@ -7,7 +7,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;
@@ -146,7 +145,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
     {
         if (empty($this->forest)) {
             return [];
-        };
+        }
 
         $k = count($this->forest);
 
@@ -223,7 +222,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
         if (empty($this->forest)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         $probabilities = array_fill(
             0,

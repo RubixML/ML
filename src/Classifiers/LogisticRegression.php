@@ -20,7 +20,6 @@ use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
-use Rubix\ML\Other\Specifications\LearnerIsTrained;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -333,7 +332,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
         if (is_null($this->network)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

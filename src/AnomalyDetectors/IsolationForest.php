@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -189,7 +188,7 @@ class IsolationForest implements Learner, Persistable
         if (empty($this->forest) or is_null($this->offset)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use InvalidArgumentException;
-
 /**
  * Binary Node
  *

@@ -3,7 +3,6 @@
 namespace Rubix\ML\Other\Strategies;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * K Most Frequent

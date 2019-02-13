@@ -488,8 +488,8 @@ class Labeled extends DataFrame implements Dataset
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
         if ($ratio <= 0. or $ratio >= 1.) {
-            throw new InvalidArgumentException('Split ratio must be strictly'
-            . " between 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Split ratio must be'
+            . " strictly between 0 and 1, $ratio given.");
         }
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
@@ -520,8 +520,8 @@ class Labeled extends DataFrame implements Dataset
     public function fold(int $k = 10) : array
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('Cannot create less than 2'
-                . " folds, $k given.");
+            throw new InvalidArgumentException('Cannot create less than'
+                . " 2 folds, $k given.");
         }
 
         $n = (int) floor($this->numRows() / $k);
@@ -550,8 +550,8 @@ class Labeled extends DataFrame implements Dataset
     public function stratifiedFold(int $k = 10) : array
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('Cannot create less than 2'
-                . " folds, $k given.");
+            throw new InvalidArgumentException('Cannot create less than'
+                . " 2 folds, $k given.");
         }
 
         $folds = [];
@@ -575,6 +575,7 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Stratifying subroutine groups samples by label.
      *
+     * @throws \RuntimeException
      * @return array[]
      */
     protected function _stratify() : array
@@ -671,8 +672,8 @@ class Labeled extends DataFrame implements Dataset
     public function randomSubsetWithReplacement(int $n) : self
     {
         if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate a subset of'
-                . " less than 1 sample, $n given.");
+            throw new InvalidArgumentException('Cannot generate a subset'
+                . " of less than 1 sample, $n given.");
         }
 
         $max = $this->numRows() - 1;
@@ -700,9 +701,9 @@ class Labeled extends DataFrame implements Dataset
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
         if (count($weights) !== count($this->samples)) {
-            throw new InvalidArgumentException('The number of weights must be'
-                . ' equal to the number of samples in the dataset, '
-                . count($this->samples) . ' needed, ' . count($weights)
+            throw new InvalidArgumentException('The number of weights must'
+                . ' be equal to the number of samples in the dataset, '
+                . count($this->samples) . ' needed, but ' . count($weights)
                 . ' given.');
         }
 
@@ -727,18 +728,5 @@ class Labeled extends DataFrame implements Dataset
         }
 
         return self::quick($samples, $labels);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'samples' => $this->samples,
-            'labels' => $this->labels,
-        ];
     }
 }

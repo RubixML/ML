@@ -171,7 +171,7 @@ class RobustZScore implements Learner, Persistable
         if (is_null($this->medians) or is_null($this->mads)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

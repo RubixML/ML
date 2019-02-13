@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Helpers\Stats;
 use InvalidArgumentException;
 
 /**

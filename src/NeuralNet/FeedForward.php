@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Input;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -12,7 +11,6 @@ use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 
 /**

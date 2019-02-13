@@ -16,15 +16,17 @@ use svm;
 /**
  * One Class SVM
  *
- * An unsupervised Support Vector Machine used for anomaly detection. The One Class
- * SVM aims to find a maximum margin between a set of data points and the origin,
- * rather than between classes like the multiclass SVM.
+ * An unsupervised Support Vector Machine used for anomaly detection.
+ * The One Class SVM aims to find a maximum margin between a set of
+ * data points and the origin, rather than between classes like the
+ * multiclass SVM.
  *
- * > **Note**: This estimator requires the SVM PHP extension which uses the LIBSVM
- * engine written in C++ under the hood.
+ * > **Note**: This estimator requires the SVM PHP extension which uses
+ * the LIBSVM engine written in C++ under the hood.
  *
  * References:
- * [1] C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+ * [1] C. Chang et al. (2011). LIBSVM: A library for support vector
+ * machines.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -158,7 +160,7 @@ class OneClassSVM implements Learner, Persistable
         if (is_null($this->model)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

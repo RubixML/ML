@@ -32,8 +32,11 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         if ($validate) {
             $samples = array_values($samples);
 
-            $n = is_array(current($samples)) ? count(current($samples)) : 1;
-            $n = empty($samples) ? 0 : $n;
+            if (empty($samples)) {
+                $n = 0;
+            } else {
+                $n = is_array($samples[0]) ? count($samples[0]) : 1;
+            }
 
             foreach ($samples as &$sample) {
                 if (is_array($sample)) {
@@ -88,15 +91,10 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * Return the feature column at the given index.
      *
      * @param int $index
-     * @throws \InvalidArgumentException
      * @return array
      */
     public function column(int $index) : array
     {
-        if (!isset($this->samples[0][$index])) {
-            throw new InvalidArgumentException("Column $index does not exist.");
-        }
-
         return array_column($this->samples, $index);
     }
 
@@ -107,7 +105,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function numColumns() : int
     {
-        return count($this->samples[0] ?? []);
+        return isset($this->samples[0]) ? count($this->samples[0]) : 0;
     }
 
     /**
@@ -224,7 +222,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 
         for ($i = 0; $i < $n; $i++) {
             if ($this->columnType($i) === $type) {
-                $columns[$i] = array_column($this->samples, $i);
+                $columns[$i] = $this->column($i);
             }
         }
 
@@ -273,7 +271,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Does a given column exist in the dataset.
+     * Does a given row exist in the dataset.
      *
      * @param mixed $index
      * @return bool
@@ -301,11 +299,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function offsetGet($index) : array
     {
-        if (!isset($this->samples[$index])) {
-            throw new InvalidArgumentException('Sample not found at index'
-                . (string) $index . '.');
-        }
-
         return $this->samples[$index];
     }
 

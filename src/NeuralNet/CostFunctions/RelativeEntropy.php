@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Rubix\Tensor\Matrix;
-use InvalidArgumentException;
 
 /**
  * Relative Entropy

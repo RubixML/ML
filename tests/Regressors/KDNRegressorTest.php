@@ -49,6 +49,8 @@ class KDNRegressorTest extends TestCase
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_predict()

@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Loggers;
 
-use Psr\Log\LogLevel;
-
 /**
  * Black Hole
  *

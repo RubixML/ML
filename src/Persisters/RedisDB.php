@@ -87,7 +87,7 @@ class RedisDB implements Persister
         if (!$connector->connect($host, $port, $timeout)) {
             throw new RuntimeException('Could not connect to Redis server'
                 . ' at host ' . $host . ' on port ' . (string) $port . '.');
-        };
+        }
 
         if (isset($password)) {
             if (!$connector->auth($password)) {
@@ -98,7 +98,7 @@ class RedisDB implements Persister
         if (!$connector->select($db)) {
             throw new RuntimeException('Could not select database number'
                 . (string) $db . '.');
-        };
+        }
 
         if ($history < 0) {
             throw new InvalidArgumentException('The number of backups'
@@ -140,7 +140,7 @@ class RedisDB implements Persister
         if (!$success) {
             throw new RuntimeException('There was an error saving the'
                 . ' model to the database.');
-        };
+        }
 
         $remove = $length - ($this->history + 1);
 
@@ -148,7 +148,7 @@ class RedisDB implements Persister
             if (!$this->connector->lPop($this->key)) {
                 throw new RuntimeException('There was an error'
                     . ' deleting an old backup from the database.');
-            };
+            }
         }
     }
 

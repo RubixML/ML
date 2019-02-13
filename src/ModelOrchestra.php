@@ -2,12 +2,9 @@
 
 namespace Rubix\ML;
 
-use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 
@@ -39,7 +36,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     /**
      * The estimators that comprise the orchestra.
      *
-     * @var array
+     * @var \Rubix\ML\Learner[]
      */
     protected $orchestra = [
         //
@@ -77,12 +74,22 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     public function __construct(array $orchestra, Learner $conductor, float $ratio = 0.8)
     {
         foreach ($orchestra as $estimator) {
+            if (!$estimator instanceof Learner) {
+                throw new InvalidArgumentException('Estimator must be an'
+                    . ' instance of a learner.');
+            }
+
             $type = $estimator->type();
 
             if ($type !== self::CLASSIFIER and $type !== self::REGRESSOR) {
                 throw new InvalidArgumentException('This meta estimator only'
                     . ' supports classifiers, and regressors, '
                     . self::TYPES[$type] . ' given.');
+            }
+
+            if ($estimator instanceof Wrapper) {
+                throw new InvalidArgumentException('Estimator must not'
+                    . ' be an instance of a wrapper.');
             }
 
             if ($type !== reset($orchestra)->type()) {
@@ -145,7 +152,11 @@ class ModelOrchestra implements Learner, Persistable, Verbose
      */
     public function trained() : bool
     {
-        return $this->conductor->trained();
+        $untrained = array_filter($this->orchestra, function ($learner) {
+            return !$learner->trained();
+        });
+
+        return $this->conductor->trained() and empty($untrained);
     }
 
     /**
@@ -208,7 +219,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
         }
 
         if ($right instanceof Labeled) {
-            $right = $this->extract($right);
+            $right = $this->process($right);
         }
 
         if ($this->logger) {
@@ -233,7 +244,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
     public function predict(Dataset $dataset) : array
     {
         if ($dataset instanceof Labeled) {
-            $dataset = $this->extract($dataset);
+            $dataset = $this->process($dataset);
         }
 
         return $this->conductor->predict($dataset);
@@ -246,7 +257,7 @@ class ModelOrchestra implements Learner, Persistable, Verbose
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Datasets\Labeled
      */
-    protected function extract(Labeled $dataset) : Labeled
+    protected function process(Labeled $dataset) : Labeled
     {
         $samples = array_fill(0, $dataset->numRows(), []);
 

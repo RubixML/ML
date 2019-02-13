@@ -3,17 +3,30 @@
 use PhpCsFixer\Finder;
 use PhpCsFixer\Config;
 
-return Config::create()->setRules([
+$rules = [
     '@PSR2' => true,
     'array_syntax' => ['syntax' => 'short'],
+    'binary_operator_spaces' => true,
     'blank_line_after_opening_tag' => true,
+    'cast_spaces' => ['space' => 'single'],
     'combine_consecutive_issets' => true,
     'combine_consecutive_unsets' => true,
+    'compact_nullable_typehint' => true,
     'concat_space' => ['spacing' => 'one'],
-    'declare_equal_normalize' => ['space' => 'single'],
+    'fully_qualified_strict_types' => true,
+    'function_typehint_space' => true,
+    'list_syntax' => ['syntax' => 'short'],
+    'lowercase_cast' => true,
+    'lowercase_static_reference' => true,
     'no_blank_lines_after_class_opening' => true,
     'no_blank_lines_after_phpdoc' => true,
+    'no_empty_statement' => true,
     'no_extra_blank_lines' => true,
+    'no_leading_import_slash' => true,
+    'no_leading_namespace_whitespace' => true,
+    'no_null_property_initialization' => true,
+    'no_spaces_around_offset' => true,
+    'no_unused_imports' => true,
     'object_operator_without_whitespace' => true,
     'phpdoc_align' => ['align' => 'left'],
     'phpdoc_no_empty_return' => true,
@@ -22,6 +35,12 @@ return Config::create()->setRules([
     'phpdoc_single_line_var_spacing' => true,
     'phpdoc_trim' => true,
     'phpdoc_var_without_name' => true,
+    'protected_to_private' => true,
     'return_type_declaration' => ['space_before' => 'one'],
+    'single_blank_line_before_namespace' => true,
     'single_quote' => true,
-])->setFinder(Finder::create()->in(__DIR__));
+    'single_line_comment_style' => true,
+];
+
+return Config::create()->setRules($rules)
+    ->setFinder(Finder::create()->in(__DIR__));

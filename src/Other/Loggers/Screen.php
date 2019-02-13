@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Other\Loggers;
 
-use Psr\Log\LogLevel;
-
 /**
  * Screen
  *
@@ -56,7 +54,7 @@ class Screen extends Logger
             $prefix .= '[' . date(self::TIMESTAMP_FORMAT) . '] ';
         }
 
-        $prefix .=  $this->channel . '.' . strtoupper((string) $level) . ': ';
+        $prefix .= $this->channel . '.' . strtoupper((string) $level) . ': ';
 
         echo $prefix . $message . PHP_EOL;
     }

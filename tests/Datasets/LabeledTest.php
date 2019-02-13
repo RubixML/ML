@@ -7,7 +7,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\DataFrame;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use ArrayIterator;
 
 class LabeledTest extends TestCase

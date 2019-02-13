@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
@@ -49,6 +48,8 @@ class RidgeTest extends TestCase
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_make_prediction()

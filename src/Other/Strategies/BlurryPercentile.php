@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;

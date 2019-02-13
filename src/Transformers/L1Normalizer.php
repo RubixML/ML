@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Transformers;
 
-use InvalidArgumentException;
-
 /**
  * L1 Normalizer
  *

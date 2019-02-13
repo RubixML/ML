@@ -5,8 +5,6 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;

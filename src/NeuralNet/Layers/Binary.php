@@ -11,7 +11,6 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use InvalidArgumentException;
 use RuntimeException;
-use Closure;
 
 /**
  * Binary

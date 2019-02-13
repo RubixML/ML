@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\Classifiers;
 
-use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -57,6 +56,8 @@ class KDNeighborsTest extends TestCase
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_predict()

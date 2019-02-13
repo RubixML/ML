@@ -5,8 +5,6 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -39,8 +37,8 @@ class LeavePOut implements Validator
     public function __construct(int $p = 10)
     {
         if ($p < 1) {
-            throw new InvalidArgumentException('P cannot be less than 1'
-                . ", $p given.");
+            throw new InvalidArgumentException('P cannot be less'
+                . "than 1, $p given.");
         }
 
         $this->p = $p;

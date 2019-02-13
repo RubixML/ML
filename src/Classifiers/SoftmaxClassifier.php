@@ -333,7 +333,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
         if (is_null($this->network)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

@@ -9,7 +9,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
-use Rubix\ML\Other\Specifications\LearnerIsTrained;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -112,7 +111,7 @@ class DummyClassifier implements Learner, Persistable
         if (!$this->trained) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
         
         $n = $dataset->numRows();
 

@@ -173,7 +173,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -211,7 +211,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

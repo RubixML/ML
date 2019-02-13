@@ -7,7 +7,6 @@ use Rubix\Tensor\Vector;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use InvalidArgumentException;
 use RuntimeException;
 use Closure;
 

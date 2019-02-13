@@ -19,7 +19,6 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
-use RuntimeException;
 
 class ModelOrchestraTest extends TestCase
 {

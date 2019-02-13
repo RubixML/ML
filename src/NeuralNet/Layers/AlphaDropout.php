@@ -3,7 +3,6 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Closure;
 
 /**
  * Alpha Dropout

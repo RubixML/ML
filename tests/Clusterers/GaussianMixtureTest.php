@@ -53,11 +53,13 @@ class GaussianMixtureTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
-    }
 
-    public function test_estimator_type()
-    {
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
+
+        $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
+        $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_predict()

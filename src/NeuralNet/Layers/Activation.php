@@ -3,10 +3,8 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
-use InvalidArgumentException;
 use RuntimeException;
 use Closure;
 

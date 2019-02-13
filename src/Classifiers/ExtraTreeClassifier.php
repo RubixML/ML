@@ -3,9 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Graph\Nodes\Comparison;
-use InvalidArgumentException;
 
 /**
  * Extra Tree Classifier

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Tests\NeuralNet;
 
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Network;
 use Rubix\ML\NeuralNet\FeedForward;

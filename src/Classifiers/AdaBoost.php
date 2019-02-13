@@ -341,7 +341,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
         if (empty($this->ensemble) or empty($this->influences)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
         
         return array_map([Argmax::class, 'compute'], $this->score($dataset));
     }
@@ -358,7 +358,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
         if (empty($this->ensemble) or empty($this->influences)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         $scores = $this->score($dataset);
 

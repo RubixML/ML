@@ -5,7 +5,6 @@ namespace Rubix\ML\Graph;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Graph\Nodes\Neighborhood;

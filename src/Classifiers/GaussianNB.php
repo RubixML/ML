@@ -321,7 +321,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
         if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
@@ -349,7 +349,7 @@ class GaussianNB implements Online, Probabilistic, Persistable
         if (empty($this->means) or empty($this->variances)) {
             throw new RuntimeException('The learner has not'
                 . ' not been trained.');
-        };
+        }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 

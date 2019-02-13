@@ -56,6 +56,8 @@ class NaiveBayesTest extends TestCase
 
         $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertNotContains(DataType::CONTINUOUS, $this->estimator->compatibility());
+
+        $this->assertFalse($this->estimator->trained());
     }
 
     public function test_train_partial_predict_proba()
