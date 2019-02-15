@@ -35,7 +35,7 @@ class GaussianRandomProjector implements Stateful
      * The random matrix.
      *
      * @var \Rubix\Tensor\Matrix|null
-    */
+     */
     protected $r;
 
     /**

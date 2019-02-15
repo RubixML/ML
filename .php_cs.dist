@@ -5,6 +5,7 @@ use PhpCsFixer\Config;
 
 $rules = [
     '@PSR2' => true,
+    'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
     'binary_operator_spaces' => true,
     'blank_line_after_opening_tag' => true,

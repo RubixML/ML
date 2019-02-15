@@ -305,9 +305,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
     }
 
     /**
-    * @param  \Rubix\ML\Datasets\Dataset  $dataset
-    * @throws \InvalidArgumentException
-    */
+     * @param  \Rubix\ML\Datasets\Dataset  $dataset
+     * @throws \InvalidArgumentException
+     */
     public function train(Dataset $dataset) : void
     {
         if (!$dataset instanceof Labeled) {

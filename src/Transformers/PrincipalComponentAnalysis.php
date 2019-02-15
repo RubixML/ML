@@ -38,7 +38,7 @@ class PrincipalComponentAnalysis implements Stateful
      * The matrix of eigenvectors computed at fitting.
      *
      * @var \Rubix\Tensor\Matrix|null
-    */
+     */
     protected $eigenvectors;
 
     /**

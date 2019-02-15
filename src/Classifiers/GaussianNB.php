@@ -308,8 +308,8 @@ class GaussianNB implements Online, Probabilistic, Persistable
     }
 
     /**
-    * Calculate the likelihood of the sample being a member of a class and
-    * choose the class with the highest likelihood as the prediction.
+     * Calculate the likelihood of the sample being a member of a class and
+     * choose the class with the highest likelihood as the prediction.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

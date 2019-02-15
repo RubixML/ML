@@ -22,7 +22,7 @@ use RuntimeException;
  * part relates to the fact that it assumes that all features are independent. In
  * practice, the independent assumption tends to work out most of the time despite
  * most features being correlated in the real world.
-
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
