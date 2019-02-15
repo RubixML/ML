@@ -258,7 +258,7 @@ Machine learning is the process by which a computer program is able to progressi
 	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of flower or predicting someone's MBTI personality type.
 	 - **Regression** aims at predicting *continuous* values such as the sale price of a house or the position (in degrees) of the steering wheel of an automobile. The major difference between classification and regression is that, while there are a *finite* number of classes that a sample can belong to, there are *infinitely* many real (continuous) values that are possible to predict.
 - **Unsupervised** learning by contrast does *not* use a labeled dataset. Instead, it focuses on finding patterns within the raw samples.
-	- **Clustering** is the grouping of data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating PET scan tissues or segementing a customer base.
+	- **Clustering** is the grouping of data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating PET scan tissues or segmenting a customer base.
 	- **Anomaly Detection** is the process of flagging samples that do not conform to the expected pattern of the training data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
 	- **Manifold Learning** is a dimensionality reduction method used in visualizing high dimensional datasets by producing a low (1 - 3) dimensional representation of the feature space.
 
@@ -3542,7 +3542,7 @@ $optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
 ### Cyclical
-The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus acheiving higher accuracy.
+The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus achieving higher accuracy.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3784,7 +3784,7 @@ $kernel = new Polynomial(3, null, 0.);
 ```
 
 ### RBF
-Non linear radias basis function computes the distance from a centroid or origin.
+Non linear radial basis function computes the distance from a centroid or origin.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3993,7 +3993,7 @@ $metric = new F1Score();
 ```
 
 ### Homogeneity
-A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogenous* when the entire cluster is comprised of a single class of samples.
+A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogeneous* when the entire cluster is comprised of a single class of samples.
 
 ##### Compatibility: Clustering
 
