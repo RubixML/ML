@@ -225,6 +225,7 @@ $ composer require rubix/ml
 			- [Popularity Contest](#popularity-contest)
 			- [Wild Guess](#wild-guess)
 		- [Helpers](#helpers)
+			- [Data Type](#data-type)
 			- [Params](#params)
 		- [Loggers](#loggers)
 			- [Screen](#screen)
@@ -2959,8 +2960,6 @@ Activation Functions can be broken down into three classes - Sigmoidal (or *S* s
 ### ELU
 *Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
 
-##### Rectifier
-
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -2976,8 +2975,6 @@ $activationFunction = new ELU(5.0);
 ### Gaussian
 The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
 
-##### Radial
-
 #### Parameters:
 This activation Function does not have any parameters.
 
@@ -2991,8 +2988,6 @@ $activationFunction = new Gaussian();
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
-##### Sigmoidal
-
 #### Parameters:
 This activation Function does not have any parameters.
 
@@ -3005,8 +3000,6 @@ $activationFunction = new HyperbolicTangent();
 
 ### ISRU
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
-
-##### Sigmoidal
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3022,8 +3015,6 @@ $activationFunction = new ISRU(2.0);
 
 ### Leaky ReLU
 Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
-
-##### Rectifier
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3042,8 +3033,6 @@ Rectified Linear Units output only the positive part of the inputs.
 
 > **Note**: ReLUs are analogous to half-wave rectifiers in electrical engineering.
 
-##### Retifier
-
 #### Parameters:
 This activation Function does not have any parameters.
 
@@ -3056,8 +3045,6 @@ $activationFunction = new ReLU();
 
 ### SELU
 Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
-
-##### Rectifier
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3075,8 +3062,6 @@ $activationFunction = new SELU(1.05070, 1.67326);
 ### Sigmoid
 A bounded S-shaped function (specifically the *Logistic* function) with an output value between 0 and 1.
 
-##### Sigmoidal
-
 #### Parameters:
 This activation Function does not have any parameters.
 
@@ -3089,8 +3074,6 @@ $activationFunction = new Sigmoid();
 
 ### Softmax
 The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1 *and* all activations together add up to exactly 1.
-
-##### Sigmoidal
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3107,8 +3090,6 @@ $activationFunction = new Softmax(1e-10);
 ### Soft Plus
 A smooth approximation of the ReLU function whose output is constrained to be positive.
 
-##### Rectifier
-
 #### Parameters:
 This activation function does not have any parameters.
 
@@ -3122,8 +3103,6 @@ $activationFunction = new SoftPlus();
 ### Softsign
 A function that squashes the input smoothly between -1 and 1.
 
-##### Sigmoidal
-
 #### Parameters:
 This activation function does not have any parameters.
 
@@ -3136,8 +3115,6 @@ $activationFunction = new Softsign();
 
 ### Thresholded ReLU
 Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
-
-##### Rectifier
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -4640,6 +4617,56 @@ $strategy = new WildGuess(5);
 ```
 
 ### Helpers
+
+### Data Type
+Determine the data type of a variable according to Rubix ML's type system.
+
+To determine the data type of a variable:
+```php
+public determine($variable) : int
+```
+
+> **Note**: The return value is an integer encoding of the datatype defined as constants on the DataType class.
+
+Return true if the variable is categorical:
+```php
+public isCategorical($variable) : bool
+```
+
+Return true if the variable is categorical:
+```php
+public isContinuous($variable) : bool
+```
+
+Return true if the variable is a PHP resource:
+```php
+public isResource($variable) : bool
+```
+
+Return true if the variable is an unrecognized data type:
+```php
+public isOther($variable) : bool
+```
+
+#### Example:
+
+```php
+use Rubix\ML\Other\Helpers\DataType;
+
+var_dump(DataType::determine('string'));
+
+var_dump(DataType::isContinuous(16));
+
+var_dump(DataType::isCategorical(18));
+```
+
+#### Output:
+
+```sh
+int(2) // Categorical
+bool(true)
+bool(false)
+```
 
 ### Params
 Generate distributions of values to use in conjunction with [Grid Search](#grid-search) or other forms of model selection and/or cross validation.

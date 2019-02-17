@@ -40,8 +40,8 @@ class TSNE implements Estimator, Verbose
     const INIT_MOMENTUM = 0.5;
     const MOMENTUM_BOOST = 0.3;
 
-    const INC_GAIN = 0.2;
-    const DEC_GAIN = 0.8;
+    const GAIN_ACCELERATE = 0.2;
+    const GAIN_BRAKE = 0.8;
     const MIN_GAIN = 0.01;
 
     const BINARY_PRECISION = 100;
@@ -304,8 +304,8 @@ class TSNE implements Estimator, Verbose
 
                 foreach ($row as $j => &$gain) {
                     $gain = $temp[$j] < 0.
-                        ? $gain + self::INC_GAIN
-                        : $gain * self::DEC_GAIN;
+                        ? $gain + self::GAIN_ACCELERATE
+                        : $gain * self::GAIN_BRAKE;
 
                     $gain = max(self::MIN_GAIN, $gain);
                 }

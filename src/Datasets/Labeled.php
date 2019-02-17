@@ -672,8 +672,8 @@ class Labeled extends DataFrame implements Dataset
     public function randomSubsetWithReplacement(int $n) : self
     {
         if ($n < 1) {
-            throw new InvalidArgumentException('Cannot generate a subset'
-                . " of less than 1 sample, $n given.");
+            throw new InvalidArgumentException('Cannot generate a'
+                . " subset of less than 1 sample, $n given.");
         }
 
         $max = $this->numRows() - 1;
@@ -700,11 +700,16 @@ class Labeled extends DataFrame implements Dataset
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
+        if ($n < 1) {
+            throw new InvalidArgumentException('Cannot generate a'
+                . " subset of less than 1 sample, $n given.");
+        }
+
         if (count($weights) !== count($this->samples)) {
-            throw new InvalidArgumentException('The number of weights must'
-                . ' be equal to the number of samples in the dataset, '
-                . count($this->samples) . ' needed, but ' . count($weights)
-                . ' given.');
+            throw new InvalidArgumentException('The number of weights'
+                . ' must be equal to the number of samples in the'
+                . ' dataset, ' . count($this->samples) . ' needed'
+                . ' but ' . count($weights) . ' given.');
         }
 
         $total = array_sum($weights);
@@ -715,12 +720,12 @@ class Labeled extends DataFrame implements Dataset
         for ($i = 0; $i < $n; $i++) {
             $delta = rand(0, $max) / self::PHI;
 
-            foreach ($weights as $row => $weight) {
+            foreach ($weights as $index => $weight) {
                 $delta -= $weight;
 
                 if ($delta <= 0.) {
-                    $samples[] = $this->samples[$row];
-                    $labels[] = $this->labels[$row];
+                    $samples[] = $this->samples[$index];
+                    $labels[] = $this->labels[$index];
 
                     break 1;
                 }
