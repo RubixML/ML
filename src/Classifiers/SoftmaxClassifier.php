@@ -145,20 +145,12 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
                 . " than 0, $minChange given.");
         }
 
-        if (is_null($optimizer)) {
-            $optimizer = new Adam();
-        }
-
-        if (is_null($costFn)) {
-            $costFn = new CrossEntropy();
-        }
-
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer;
+        $this->optimizer = $optimizer ?: new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn;
+        $this->costFn = $costFn ?: new CrossEntropy();
     }
 
     /**
@@ -247,7 +239,7 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (is_null($this->network)) {
+        if ($this->network == null) {
             $this->train($dataset);
             
             return;
@@ -330,9 +322,9 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (is_null($this->network)) {
+        if (!$this->network) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

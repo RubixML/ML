@@ -98,7 +98,7 @@ class VarianceThresholdFilter implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->selected)) {
+        if ($this->selected === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

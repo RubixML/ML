@@ -100,7 +100,7 @@ class Ridge implements Learner, Persistable
      */
     public function weights() : ?array
     {
-        return isset($this->weights) ? $this->weights->asArray() : null;
+        return $this->weights ? $this->weights->asArray() : null;
     }
 
     /**
@@ -163,7 +163,7 @@ class Ridge implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->weights) or is_null($this->bias)) {
+        if (!$this->weights or $this->bias === null) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 

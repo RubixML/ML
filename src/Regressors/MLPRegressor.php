@@ -200,10 +200,8 @@ class MLPRegressor implements Online, Verbose, Persistable
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if (isset($metric)) {
+        if ($metric) {
             EstimatorIsCompatibleWithMetric::check($this, $metric);
-        } else {
-            $metric = new MeanSquaredError();
         }
 
         if ($window < 2) {
@@ -211,23 +209,15 @@ class MLPRegressor implements Online, Verbose, Persistable
                 . " epochs, $window given.");
         }
 
-        if (is_null($optimizer)) {
-            $optimizer = new Adam();
-        }
-
-        if (is_null($costFn)) {
-            $costFn = new LeastSquares();
-        }
-
         $this->hidden = $hidden;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer;
+        $this->optimizer = $optimizer ?: new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn;
+        $this->costFn = $costFn ?: new LeastSquares();
         $this->holdout = $holdout;
-        $this->metric = $metric;
+        $this->metric = $metric ?: new MeanSquaredError();
         $this->window = $window;
     }
 
@@ -326,7 +316,7 @@ class MLPRegressor implements Online, Verbose, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (is_null($this->network)) {
+        if (!$this->network) {
             $this->train($dataset);
 
             return;
@@ -441,9 +431,9 @@ class MLPRegressor implements Online, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->network)) {
+        if (!$this->network) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

@@ -91,9 +91,10 @@ class TfIdfTransformer implements Elastic
             throw new InvalidArgumentException('This transformer only works'
                 . ' with continuous features.');
         }
-        
-        if (is_null($this->dfs) or is_null($this->n)) {
+
+        if ($this->dfs === null or $this->n === null) {
             $this->fit($dataset);
+            
             return;
         }
 
@@ -124,7 +125,7 @@ class TfIdfTransformer implements Elastic
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->idfs)) {
+        if ($this->idfs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

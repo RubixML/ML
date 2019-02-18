@@ -195,17 +195,13 @@ class TSNE implements Estimator, Verbose
                 . " monitoring must be greater than 1, $window given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->rate = $rate;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
         $this->epochs = $epochs;
         $this->early = (int) max(250, round($epochs / 4));
         $this->minGradient = $minGradient;

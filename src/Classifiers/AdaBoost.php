@@ -134,9 +134,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
         float $ratio = 0.8,
         float $tolerance = 1e-3
     ) {
-        if (is_null($base)) {
-            $base = new ClassificationTree(1);
-        }
+        $base = $base ?: new ClassificationTree(1);
 
         if ($base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
@@ -340,7 +338,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     {
         if (empty($this->ensemble) or empty($this->influences)) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
         
         return array_map([Argmax::class, 'compute'], $this->score($dataset));
@@ -357,7 +355,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
     {
         if (empty($this->ensemble) or empty($this->influences)) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         $scores = $this->score($dataset);

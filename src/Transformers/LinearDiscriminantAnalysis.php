@@ -185,7 +185,7 @@ class LinearDiscriminantAnalysis implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->eigenvectors)) {
+        if (!$this->eigenvectors) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

@@ -62,12 +62,8 @@ class KDTree implements Tree
                 . " to form a neighborhood, $maxLeafSize given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->maxLeafSize = $maxLeafSize;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
     }
 
     /**
@@ -190,7 +186,7 @@ class KDTree implements Tree
 
         $neighborhood = $this->search($sample);
 
-        if (is_null($neighborhood)) {
+        if (!$neighborhood) {
             return [[], []];
         }
 
@@ -259,6 +255,6 @@ class KDTree implements Tree
      */
     public function bare() : bool
     {
-        return is_null($this->root);
+        return !$this->root;
     }
 }

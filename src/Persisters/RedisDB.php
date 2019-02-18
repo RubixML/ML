@@ -55,7 +55,7 @@ class RedisDB implements Persister
      * @param string $host
      * @param int $port
      * @param int $db
-     * @param string $password
+     * @param string|null $password
      * @param int $history
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @param float $timeout
@@ -67,7 +67,7 @@ class RedisDB implements Persister
         string $host = '127.0.0.1',
         int $port = 6379,
         int $db = 0,
-        string $password = null,
+        ?string $password = null,
         int $history = 2,
         ?Serializer $serializer = null,
         float $timeout = 2.5
@@ -105,14 +105,10 @@ class RedisDB implements Persister
                 . " cannot be less than 0, $history given.");
         }
 
-        if (is_null($serializer)) {
-            $serializer = new Native();
-        }
-
         $this->key = $key;
         $this->history = $history;
         $this->connector = $connector;
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?: new Native();
     }
 
     /**

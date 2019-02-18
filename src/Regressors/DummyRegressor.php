@@ -44,11 +44,7 @@ class DummyRegressor implements Learner, Persistable
      */
     public function __construct(?Continuous $strategy = null)
     {
-        if (is_null($strategy)) {
-            $strategy = new Mean();
-        }
-
-        $this->strategy = $strategy;
+        $this->strategy = $strategy ?: new Mean();
         $this->trained = false;
     }
 
@@ -111,7 +107,7 @@ class DummyRegressor implements Learner, Persistable
     {
         if (!$this->trained) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         $n = $dataset->numRows();

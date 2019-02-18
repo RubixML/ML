@@ -48,7 +48,7 @@ class Mean implements Continuous
      */
     public function guess() : float
     {
-        if (is_null($this->mean)) {
+        if ($this->mean === null) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 

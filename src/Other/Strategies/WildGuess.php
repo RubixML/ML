@@ -78,7 +78,7 @@ class WildGuess implements Continuous
      */
     public function guess() : float
     {
-        if (is_null($this->min) or is_null($this->max)) {
+        if ($this->min === null or $this->max === null) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 

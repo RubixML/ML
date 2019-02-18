@@ -74,11 +74,7 @@ class ConfusionMatrix implements Report
                 . ' must equal the number of predictions.');
         }
         
-        if (is_null($this->classes)) {
-            $classes = array_unique(array_merge($predictions, $labels));
-        } else {
-            $classes = $this->classes;
-        }
+        $classes = $this->classes ?: array_unique(array_merge($predictions, $labels));
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 

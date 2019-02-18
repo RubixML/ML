@@ -108,7 +108,7 @@ class RobustStandardizer implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->medians) or is_null($this->mads)) {
+        if ($this->medians === null or $this->mads === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

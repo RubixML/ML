@@ -130,7 +130,7 @@ class Dropout implements Hidden, Nonparametric
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
-        if (is_null($this->mask)) {
+        if (!$this->mask) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }

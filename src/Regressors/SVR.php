@@ -84,9 +84,7 @@ class SVR implements Learner, Persistable
                 . " $epsilon given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new RBF();
-        }
+        $kernel = $kernel ?: new RBF();
 
         if ($tolerance < 0.) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'
@@ -181,7 +179,7 @@ class SVR implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->model)) {
+        if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 

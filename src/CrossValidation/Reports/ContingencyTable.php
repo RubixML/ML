@@ -71,11 +71,7 @@ class ContingencyTable implements Report
                 . ' must equal the number of predictions.');
         }
 
-        if (is_null($this->classes)) {
-            $classes = array_unique($labels);
-        } else {
-            $classes = $this->classes;
-        }
+        $classes = $this->classes ?: array_unique($labels);
 
         $clusters = array_unique($predictions);
 

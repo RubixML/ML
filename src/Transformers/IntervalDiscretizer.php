@@ -127,7 +127,7 @@ class IntervalDiscretizer implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->intervals)) {
+        if ($this->intervals === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

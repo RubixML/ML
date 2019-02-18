@@ -90,12 +90,8 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
                 . " to make a prediction, $k given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->k = $k;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
         $this->weighted = $weighted;
     }
 
@@ -172,7 +168,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     {
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -210,7 +206,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
     {
         if (empty($this->samples) or empty($this->labels)) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

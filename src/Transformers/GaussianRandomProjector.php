@@ -100,7 +100,7 @@ class GaussianRandomProjector implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->r)) {
+        if (!$this->r) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

@@ -70,13 +70,9 @@ class DBSCAN implements Estimator
                 . " greater than 0, $minDensity given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->radius = $radius;
         $this->minDensity = $minDensity;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
     }
 
     /**

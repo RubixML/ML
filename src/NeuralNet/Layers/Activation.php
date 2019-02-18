@@ -115,7 +115,7 @@ class Activation implements Hidden, Nonparametric
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
-        if (is_null($this->input) or is_null($this->computed)) {
+        if (!$this->input or !$this->computed) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }

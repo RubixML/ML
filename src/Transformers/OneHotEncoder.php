@@ -63,7 +63,7 @@ class OneHotEncoder implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->categories)) {
+        if ($this->categories === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

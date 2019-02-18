@@ -70,8 +70,9 @@ class MaxAbsoluteScaler implements Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        if (is_null($this->maxabs)) {
+        if ($this->maxabs === null) {
             $this->fit($dataset);
+            
             return;
         }
 
@@ -94,13 +95,13 @@ class MaxAbsoluteScaler implements Elastic
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->maxabs)) {
+        if ($this->maxabs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 
         foreach ($samples as &$sample) {
-            foreach ($sample as $column => &$feature) {
-                $feature /= $this->maxabs[$column];
+            foreach ($this->maxabs as $column => $maxabs) {
+                $sample[$column] /= $maxabs;
             }
         }
     }

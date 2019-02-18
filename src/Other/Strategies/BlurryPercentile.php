@@ -95,7 +95,7 @@ class BlurryPercentile implements Continuous
      */
     public function guess() : float
     {
-        if (is_null($this->percentile) or is_null($this->mad)) {
+        if ($this->percentile === null or $this->mad === null) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 

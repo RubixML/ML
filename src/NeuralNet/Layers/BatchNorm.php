@@ -112,7 +112,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function parameters() : array
     {
-        if (is_null($this->beta) or is_null($this->gamma)) {
+        if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
 
@@ -151,7 +151,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (is_null($this->n) or empty($this->mean) or empty($this->variance) or is_null($this->beta) or is_null($this->gamma)) {
+        if ($this->n === null or empty($this->mean) or empty($this->variance) or !$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
@@ -225,7 +225,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (is_null($this->mean) or is_null($this->stddev) or is_null($this->beta) or is_null($this->gamma)) {
+        if (!$this->mean or !$this->stddev or !$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
         
@@ -263,11 +263,11 @@ class BatchNorm implements Hidden, Parametric
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
-        if (is_null($this->n) or is_null($this->mean) or is_null($this->stddev) or is_null($this->beta) or is_null($this->gamma)) {
+        if ($this->n === null or !$this->mean or !$this->stddev or !$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
 
-        if (is_null($this->stdInv) or is_null($this->xHat)) {
+        if (!$this->stdInv or !$this->xHat) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
@@ -314,7 +314,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function read() : array
     {
-        if (is_null($this->beta) or is_null($this->gamma)) {
+        if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
 
@@ -332,7 +332,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (is_null($this->beta) or is_null($this->gamma)) {
+        if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
 

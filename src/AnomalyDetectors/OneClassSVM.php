@@ -74,9 +74,7 @@ class OneClassSVM implements Learner, Persistable
                 . ", $nu given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new RBF();
-        }
+        $kernel = $kernel ?: new RBF();
 
         if ($tolerance < 0.) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'
@@ -157,9 +155,9 @@ class OneClassSVM implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (is_null($this->model)) {
+        if (!$this->model) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

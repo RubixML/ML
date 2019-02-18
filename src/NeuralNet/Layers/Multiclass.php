@@ -45,7 +45,7 @@ class Multiclass implements Output
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
-    protected $costFunction;
+    protected $costFn;
 
     /**
      * The weight initializer.
@@ -59,7 +59,7 @@ class Multiclass implements Output
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
-    protected $activationFunction;
+    protected $activationFn;
 
     /**
      * The weights.
@@ -99,10 +99,10 @@ class Multiclass implements Output
     /**
      * @param array $classes
      * @param float $alpha
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFunction
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFn
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $classes, float $alpha = 1e-4, ?CostFunction $costFunction = null)
+    public function __construct(array $classes, float $alpha = 1e-4, ?CostFunction $costFn = null)
     {
         $classes = array_values(array_unique($classes));
 
@@ -116,15 +116,11 @@ class Multiclass implements Output
                 . " must be 0 or greater, $alpha given.");
         }
 
-        if (is_null($costFunction)) {
-            $costFunction = new CrossEntropy();
-        }
-
         $this->classes = $classes;
         $this->alpha = $alpha;
-        $this->costFunction = $costFunction;
+        $this->costFn = $costFn ?: new CrossEntropy();
         $this->initializer = new Xavier1();
-        $this->activationFunction = new Softmax();
+        $this->activationFn = new Softmax();
     }
 
     /**
@@ -145,7 +141,7 @@ class Multiclass implements Output
      */
     public function parameters() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -180,7 +176,7 @@ class Multiclass implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -189,7 +185,7 @@ class Multiclass implements Output
         $this->z = $this->weights->w->matmul($input)
             ->add($this->biases->w->columnAsVector(0));
 
-        $this->computed = $this->activationFunction->compute($this->z);
+        $this->computed = $this->activationFn->compute($this->z);
 
         return $this->computed;
     }
@@ -203,14 +199,14 @@ class Multiclass implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
         $z = $this->weights->w->matmul($input)
             ->add($this->biases->w->columnAsVector(0));
 
-        return $this->activationFunction->compute($z);
+        return $this->activationFn->compute($z);
     }
 
     /**
@@ -223,11 +219,11 @@ class Multiclass implements Output
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        if (is_null($this->input) or is_null($this->z) or is_null($this->computed)) {
+        if (!$this->input or !$this->z or !$this->computed) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
@@ -246,18 +242,18 @@ class Multiclass implements Output
 
         $expected = Matrix::quick($expected);
 
-        $delta = $this->costFunction
+        $delta = $this->costFn
             ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w->sum()
             ->multiply($this->alpha);
 
-        $dL = $this->costFunction
+        $dL = $this->costFn
             ->differentiate($expected, $this->computed, $delta)
             ->add($penalties)
             ->divide($this->computed->n());
 
-        $dA = $this->activationFunction
+        $dA = $this->activationFn
             ->differentiate($this->z, $this->computed)
             ->multiply($dL);
 
@@ -289,7 +285,7 @@ class Multiclass implements Output
      */
     public function read() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -307,7 +303,7 @@ class Multiclass implements Output
      */
     public function restore(array $parameters) : void
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
         

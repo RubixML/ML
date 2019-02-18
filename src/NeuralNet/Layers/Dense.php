@@ -70,12 +70,8 @@ class Dense implements Hidden, Parametric
                 . ' less than 1.');
         }
 
-        if (is_null($initializer)) {
-            $initializer = new He();
-        }
-
         $this->neurons = $neurons;
-        $this->initializer = $initializer;
+        $this->initializer = $initializer ?: new He();
     }
 
     /**
@@ -96,7 +92,7 @@ class Dense implements Hidden, Parametric
      */
     public function parameters() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -131,7 +127,7 @@ class Dense implements Hidden, Parametric
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -150,7 +146,7 @@ class Dense implements Hidden, Parametric
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -168,11 +164,11 @@ class Dense implements Hidden, Parametric
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        if (is_null($this->input)) {
+        if (!$this->input) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
@@ -205,7 +201,7 @@ class Dense implements Hidden, Parametric
      */
     public function read() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -223,7 +219,7 @@ class Dense implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
         

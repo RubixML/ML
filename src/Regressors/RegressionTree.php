@@ -69,7 +69,7 @@ class RegressionTree extends CART implements Learner, Persistable
         ?int $maxFeatures = null,
         float $tolerance = 1e-4
     ) {
-        if (isset($maxFeatures) and $maxFeatures < 1) {
+        if ($maxFeatures and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
         }

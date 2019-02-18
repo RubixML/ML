@@ -76,7 +76,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         ?int $maxFeatures = null,
         float $tolerance = 1e-3
     ) {
-        if (isset($maxFeatures) and $maxFeatures < 1) {
+        if ($maxFeatures and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
         }
@@ -164,7 +164,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     {
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -194,7 +194,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     {
         if ($this->bare()) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

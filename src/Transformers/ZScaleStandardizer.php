@@ -135,8 +135,9 @@ class ZScaleStandardizer implements Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        if (is_null($this->means) or is_null($this->variances)) {
+        if ($this->means === null or $this->variances === null) {
             $this->fit($dataset);
+
             return;
         }
 
@@ -174,7 +175,7 @@ class ZScaleStandardizer implements Elastic
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->means) or is_null($this->stddevs)) {
+        if ($this->means === null or $this->stddevs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

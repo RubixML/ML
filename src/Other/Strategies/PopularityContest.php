@@ -56,7 +56,7 @@ class PopularityContest implements Categorical
      */
     public function guess() : string
     {
-        if (is_null($this->n) or is_null($this->popularity)) {
+        if ($this->n === null or !$this->popularity) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 

@@ -65,17 +65,9 @@ class MissingDataImputer implements Stateful
                 . ' numeric type, ' . gettype($placeholder) . ' found.');
         }
 
-        if (is_null($continuous)) {
-            $continuous = new Mean();
-        }
-
-        if (is_null($categorical)) {
-            $categorical = new KMostFrequent();
-        }
-
         $this->placeholder = $placeholder;
-        $this->continuous = $continuous;
-        $this->categorical = $categorical;
+        $this->continuous = $continuous ?: new Mean();
+        $this->categorical = $categorical ?: new KMostFrequent();
     }
 
     /**
@@ -135,7 +127,7 @@ class MissingDataImputer implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->strategies)) {
+        if ($this->strategies === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

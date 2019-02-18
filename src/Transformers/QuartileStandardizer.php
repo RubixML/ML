@@ -107,7 +107,7 @@ class QuartileStandardizer implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->medians) or is_null($this->iqrs)) {
+        if ($this->medians === null or $this->iqrs === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

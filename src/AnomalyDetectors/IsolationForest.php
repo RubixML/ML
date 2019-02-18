@@ -185,9 +185,9 @@ class IsolationForest implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->forest) or is_null($this->offset)) {
+        if (empty($this->forest) or $this->offset === null) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

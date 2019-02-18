@@ -129,9 +129,7 @@ class GradientBoost implements Learner, Verbose, Persistable
         float $tolerance = 1e-3,
         ?Learner $base = null
     ) {
-        if (is_null($booster)) {
-            $booster = new RegressionTree(3);
-        }
+        $booster = $booster ?: new RegressionTree(3);
 
         if (!in_array(get_class($booster), self::AVAILABLE_BOOSTERS)) {
             throw new InvalidArgumentException('The estimator chosen as the'
@@ -163,9 +161,7 @@ class GradientBoost implements Learner, Verbose, Persistable
                 . " 0, $tolerance given.");
         }
 
-        if (is_null($base)) {
-            $base = new DummyRegressor(new Mean());
-        }
+        $base = $base ?: new DummyRegressor(new Mean());
 
         if ($base->type() !== self::REGRESSOR) {
             throw new InvalidArgumentException('Base estimator must be a'

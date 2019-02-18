@@ -211,10 +211,8 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if (isset($metric)) {
+        if ($metric) {
             EstimatorIsCompatibleWithMetric::check($this, $metric);
-        } else {
-            $metric = new F1Score();
         }
 
         if ($window < 2) {
@@ -222,23 +220,15 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 . " epochs, $window given.");
         }
 
-        if (is_null($optimizer)) {
-            $optimizer = new Adam();
-        }
-
-        if (is_null($costFn)) {
-            $costFn = new CrossEntropy();
-        }
-
         $this->hidden = $hidden;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer;
+        $this->optimizer = $optimizer ?: new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn;
+        $this->costFn = $costFn ?: new CrossEntropy();
         $this->holdout = $holdout;
-        $this->metric = $metric;
+        $this->metric = $metric ?: new F1Score();
         $this->window = $window;
     }
 
@@ -337,7 +327,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      */
     public function partial(Dataset $dataset) : void
     {
-        if (is_null($this->network)) {
+        if (!$this->network) {
             $this->train($dataset);
             
             return;
@@ -468,9 +458,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      */
     public function proba(Dataset $dataset) : array
     {
-        if (is_null($this->network)) {
+        if (!$this->network) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

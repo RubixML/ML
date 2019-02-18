@@ -62,13 +62,9 @@ class Filesystem implements Persister
                 . " cannot be less than 0, $history given.");
         }
 
-        if (is_null($serializer)) {
-            $serializer = new Native();
-        }
-
         $this->path = $path;
         $this->history = $history;
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?: new Native();
     }
 
     /**

@@ -75,13 +75,9 @@ class WordCountVectorizer implements Stateful
             . " be at least 1, $minDocumentFrequency given.");
         }
 
-        if (is_null($tokenizer)) {
-            $tokenizer = new Word();
-        }
-
         $this->maxVocabulary = $maxVocabulary;
         $this->minDocumentFrequency = $minDocumentFrequency;
-        $this->tokenizer = $tokenizer;
+        $this->tokenizer = $tokenizer ?: new Word();
     }
 
     /**
@@ -173,7 +169,7 @@ class WordCountVectorizer implements Stateful
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->vocabulary)) {
+        if ($this->vocabulary === null) {
             throw new RuntimeException('Transformer is not fitted.');
         }
 

@@ -109,13 +109,9 @@ class LocalOutlierFactor implements Learner, Online, Persistable
                 . " than 0, $contamination given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->k = $k;
         $this->contamination = $contamination;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
     }
 
     /**
@@ -206,7 +202,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     {
         if (empty($this->samples)) {
             throw new RuntimeException('The learner has not'
-                . ' not been trained.');
+                . ' been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);

@@ -134,7 +134,7 @@ class MinMaxNormalizer implements Elastic
      */
     public function update(Dataset $dataset) : void
     {
-        if (is_null($this->minimums) or is_null($this->maximums)) {
+        if ($this->minimums === null or $this->maximums === null) {
             $this->fit($dataset);
             
             return;
@@ -168,7 +168,7 @@ class MinMaxNormalizer implements Elastic
      */
     public function transform(array &$samples) : void
     {
-        if (is_null($this->mins) or is_null($this->scales)) {
+        if ($this->mins === null or $this->scales === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
 

@@ -77,12 +77,8 @@ class KMeans implements Online, Persistable
                 . " for at least 1 epoch, $epochs given.");
         }
 
-        if (is_null($kernel)) {
-            $kernel = new Euclidean();
-        }
-
         $this->k = $k;
-        $this->kernel = $kernel;
+        $this->kernel = $kernel ?: new Euclidean();
         $this->epochs = $epochs;
     }
 

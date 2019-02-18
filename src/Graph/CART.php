@@ -234,7 +234,7 @@ abstract class CART implements Tree
      */
     public function featureImportances() : array
     {
-        if (is_null($this->root)) {
+        if (!$this->root) {
             return [];
         }
 
@@ -291,6 +291,6 @@ abstract class CART implements Tree
      */
     public function bare() : bool
     {
-        return is_null($this->root);
+        return !$this->root;
     }
 }

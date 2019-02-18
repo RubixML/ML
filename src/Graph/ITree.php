@@ -216,6 +216,6 @@ class ITree implements Tree
      */
     public function bare() : bool
     {
-        return is_null($this->root);
+        return !$this->root;
     }
 }

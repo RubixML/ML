@@ -91,7 +91,7 @@ class PReLU implements Hidden, Parametric
      */
     public function parameters() : array
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
@@ -154,11 +154,11 @@ class PReLU implements Hidden, Parametric
      */
     public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        if (is_null($this->input) or is_null($this->computed)) {
+        if (!$this->input or !$this->computed) {
             throw new RuntimeException('Must perform a forward pass before'
                 . ' backpropagating.');
         }
@@ -192,7 +192,7 @@ class PReLU implements Hidden, Parametric
      */
     protected function compute(Matrix $z) : Matrix
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initialized.');
         }
 
@@ -227,7 +227,7 @@ class PReLU implements Hidden, Parametric
      */
     protected function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
@@ -258,7 +258,7 @@ class PReLU implements Hidden, Parametric
      */
     public function read() : array
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
         
@@ -275,7 +275,7 @@ class PReLU implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (is_null($this->alpha)) {
+        if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
         

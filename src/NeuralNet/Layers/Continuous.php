@@ -35,7 +35,7 @@ class Continuous implements Output
      *
      * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
      */
-    protected $costFunction;
+    protected $costFn;
 
     /**
      * The weight initializer.
@@ -74,22 +74,18 @@ class Continuous implements Output
 
     /**
      * @param float $alpha
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFunction
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 1e-4, ?CostFunction $costFunction = null)
+    public function __construct(float $alpha = 1e-4, ?CostFunction $costFn = null)
     {
         if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization amount'
                 . " must be 0 or greater, $alpha given.");
         }
 
-        if (is_null($costFunction)) {
-            $costFunction = new LeastSquares();
-        }
-
         $this->alpha = $alpha;
-        $this->costFunction = $costFunction;
+        $this->costFn = $costFn ?: new LeastSquares();
         $this->initializer = new Xavier2();
     }
 
@@ -111,7 +107,7 @@ class Continuous implements Output
      */
     public function parameters() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -146,7 +142,7 @@ class Continuous implements Output
      */
     public function forward(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -167,7 +163,7 @@ class Continuous implements Output
      */
     public function infer(Matrix $input) : Matrix
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -185,24 +181,24 @@ class Continuous implements Output
      */
     public function back(array $labels, Optimizer $optimizer) : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        if (is_null($this->input) or is_null($this->z)) {
+        if (!$this->input or !$this->z) {
             throw new RuntimeException('Must perform forward pass before'
                 . ' backpropagating.');
         }
 
         $expected = Matrix::quick([$labels]);
 
-        $delta = $this->costFunction
+        $delta = $this->costFn
             ->compute($expected, $this->z);
 
         $penalties = $this->weights->w->sum()
             ->multiply($this->alpha);
 
-        $dL = $this->costFunction
+        $dL = $this->costFn
             ->differentiate($expected, $this->z, $delta)
             ->add($penalties)
             ->divide($this->z->n());
@@ -235,7 +231,7 @@ class Continuous implements Output
      */
     public function read() : array
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
@@ -253,7 +249,7 @@ class Continuous implements Output
      */
     public function restore(array $parameters) : void
     {
-        if (is_null($this->weights) or is_null($this->biases)) {
+        if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
