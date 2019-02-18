@@ -1,3 +1,6 @@
+- Unreleased
+    - Optimized Interval Discretizer transformer
+
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset
     - Added Data Type helper

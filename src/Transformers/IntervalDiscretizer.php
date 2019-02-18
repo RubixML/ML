@@ -5,7 +5,6 @@ namespace Rubix\ML\Transformers;
 use Rubix\Tensor\Vector;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -108,10 +107,10 @@ class IntervalDiscretizer implements Stateful
         $columns = $dataset->columnsByType(DataType::CONTINUOUS);
 
         foreach ($columns as $column => $values) {
-            [$min, $max] = Stats::range($values);
+            $min = min($values);
+            $max = max($values);
 
-            $edges = Vector::linspace($min, $max, $this->bins + 1)
-                ->asArray();
+            $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
 
             array_shift($edges);
 
@@ -130,22 +129,22 @@ class IntervalDiscretizer implements Stateful
         if ($this->intervals === null) {
             throw new RuntimeException('Transformer has not been fitted.');
         }
+        
+        $last = end($this->categories);
 
         foreach ($samples as &$sample) {
             foreach ($this->intervals as $column => $interval) {
-                $category = end($this->categories);
-
-                $value = $sample[$column];
+                $value = &$sample[$column];
 
                 foreach ($interval as $i => $edge) {
                     if ($value < $edge) {
-                        $category = $this->categories[$i];
+                        $value = $this->categories[$i];
 
-                        break 1;
+                        continue 2;
                     }
                 }
 
-                $sample[$column] = $category;
+                $value = $last;
             }
         }
     }
