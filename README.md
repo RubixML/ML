@@ -1512,7 +1512,7 @@ $estimator = new KDNeighbors(3, 10, new Euclidean(), false);
 ### K Nearest Neighbors
 A distance-based algorithm that locates the K nearest neighbors from the training set and uses a weighted vote to classify the unknown sample.
 
-> **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#kd-neighbors).
+> **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 
 ##### Interfaces: Learner, Online, Probabilistic, Persistable
 ##### Compatibility: Variable
