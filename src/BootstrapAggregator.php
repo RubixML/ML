@@ -79,10 +79,10 @@ class BootstrapAggregator implements Learner, Persistable
             throw new InvalidArgumentException('Ensemble must train at'
                 . " least 1 estimator, $estimators given.");
         }
-
-        if ($ratio < 0.01 or $ratio > 0.99) {
+        
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 0.99, $ratio given.");
+                . " 0.01 and 1, $ratio given.");
         }
 
         $this->base = $base;

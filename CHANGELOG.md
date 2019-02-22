@@ -1,4 +1,6 @@
 - Unreleased
+    - Added upper bound to contamination hyperparameter
+    - Changed hyper-parameter order of Isolation Forest
     - Optimized Interval Discretizer transformer
 
 - 0.0.9-beta

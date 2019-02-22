@@ -34,7 +34,7 @@ class IsolationForestTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new IsolationForest(300, 0.1, 0.4);
+        $this->estimator = new IsolationForest(300, 0.4, 0.1);
 
         $this->metric = new F1Score();
     }

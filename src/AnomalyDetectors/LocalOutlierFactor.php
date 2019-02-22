@@ -104,9 +104,9 @@ class LocalOutlierFactor implements Learner, Online, Persistable
                 . " to form a local region, $k given.");
         }
 
-        if ($contamination < 0.) {
-            throw new InvalidArgumentException('Contamination cannot be less'
-                . " than 0, $contamination given.");
+        if ($contamination < 0. or $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be'
+                . " between 0 and 0.5, $contamination given.");
         }
 
         $this->k = $k;
@@ -145,6 +145,8 @@ class LocalOutlierFactor implements Learner, Online, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
@@ -266,9 +268,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
 
         $rds = array_map('max', $distances, $kdistances);
 
-        $mean = Stats::mean($rds);
-
-        return 1. / ($mean ?: self::EPSILON);
+        return 1. / (Stats::mean($rds) ?: self::EPSILON);
     }
 
     /**

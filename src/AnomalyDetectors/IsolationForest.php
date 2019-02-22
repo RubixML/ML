@@ -37,19 +37,19 @@ class IsolationForest implements Learner, Persistable
     protected $estimators;
 
     /**
+     * The ratio of training samples to train each estimator on.
+     *
+     * @var float
+     */
+    protected $ratio;
+
+    /**
      * The amount of contamination (outliers) that is presumed to be in
      * the training set as a percentage.
      *
      * @var float
      */
     protected $contamination;
-
-    /**
-     * The ratio of training samples to train each estimator on.
-     *
-     * @var float
-     */
-    protected $ratio;
 
     /**
      * The average depth of an isolation tree.
@@ -74,30 +74,30 @@ class IsolationForest implements Learner, Persistable
 
     /**
      * @param int $estimators
-     * @param float $contamination
      * @param float $ratio
+     * @param float $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 300, float $contamination = 0.1, float $ratio = 0.2)
+    public function __construct(int $estimators = 300, float $ratio = 0.2, float $contamination = 0.1)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
                 . " cannot be less than 1, $estimators given.");
         }
 
-        if ($contamination < 0.) {
-            throw new InvalidArgumentException('Contamination cannot be'
-                . " less than 0, $contamination given.");
+        if ($ratio < 0.01 or $ratio > 1.) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0.01 and 1, $ratio given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 0.99) {
-            throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 0.99, $ratio given.");
+        if ($contamination < 0. or $contamination > 0.5) {
+            throw new InvalidArgumentException('Contamination must be'
+                . " between 0 and 0.5, $contamination given.");
         }
 
         $this->estimators = $estimators;
-        $this->contamination = $contamination;
         $this->ratio = $ratio;
+        $this->contamination = $contamination;
     }
 
     /**
@@ -134,8 +134,7 @@ class IsolationForest implements Learner, Persistable
     }
 
     /**
-     * Train a Random Forest by training an ensemble of decision trees on random
-     * subsets of the training data.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -176,11 +175,11 @@ class IsolationForest implements Learner, Persistable
     }
 
     /**
-     * Output a vector of class probabilities per sample.
+     * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
     public function predict(Dataset $dataset) : array
@@ -197,9 +196,7 @@ class IsolationForest implements Learner, Persistable
         foreach ($dataset as $sample) {
             $score = $this->isolationScore($sample);
 
-            $score -= $this->offset;
-
-            $predictions[] = $score < 0. ? 1 : 0;
+            $predictions[] = $score < $this->offset ? 1 : 0;
         }
 
         return $predictions;
@@ -213,17 +210,17 @@ class IsolationForest implements Learner, Persistable
      */
     protected function isolationScore(array $sample) : float
     {
-        $depths = [];
+        $depth = 0.;
 
         foreach ($this->forest as $tree) {
             $node = $tree->search($sample);
 
-            $depths[] = $node ? $node->depth() : self::EPSILON;
+            $depth += $node ? $node->depth() : self::EPSILON;
         }
 
-        $mean = Stats::mean($depths);
+        $depth /= $this->estimators;
 
-        $score = 2. ** -($mean / $this->pHat);
+        $score = 2. ** -($depth / $this->pHat);
 
         return -$score;
     }
@@ -236,6 +233,9 @@ class IsolationForest implements Learner, Persistable
      */
     protected function c(int $n) : float
     {
-        return $n > 1 ? 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n : 1.;
+        if ($n < 1) {
+            return 1.;
+        }
+        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 }

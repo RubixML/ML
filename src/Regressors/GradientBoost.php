@@ -146,9 +146,9 @@ class GradientBoost implements Learner, Verbose, Persistable
                 . " 1 estimator, $estimators given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 0.99) {
+        if ($ratio < 0.01 or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 0.99, $ratio given.");
+                . " 0.01 and 1, $ratio given.");
         }
 
         if ($minChange < 0.) {

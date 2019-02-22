@@ -137,8 +137,7 @@ class RobustZScore implements Learner, Persistable
     }
 
     /**
-     * Compute the median and median absolute deviations of each feature in
-     * the training set.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -158,8 +157,7 @@ class RobustZScore implements Learner, Persistable
     }
 
     /**
-     * Compute the per feature z score and compare the average and max values
-     * to a tolerance and threshold respectively.
+     * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
