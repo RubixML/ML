@@ -15,7 +15,7 @@ Here are some things to check off before sending in a pull request
 > **Note**: New to pull requests? Read the Github [howto](https://help.github.com/articles/about-pull-requests/).
 
 ### Coding Style
-Rubix follows the PSR-2 coding style with additional rules. For any new file, include a header that contains a title, a short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
+Rubix follows the PSR-2 coding style with additional rules. For any new file, include a header that contains a title, a clear short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
 
 To run the style checker:
 ```sh

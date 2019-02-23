@@ -226,7 +226,9 @@ class IsolationForest implements Learner, Persistable
             $depth += $node ? $node->depth() : self::EPSILON;
         }
 
-        return 2. ** -($depth / $this->estimators / $this->pHat);
+        $depth /= $this->estimators;
+
+        return 2. ** -($depth / $this->pHat);
     }
 
     /**

@@ -172,6 +172,8 @@ class MeanShift implements Learner, Verbose, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
@@ -264,7 +266,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map([self::class, 'assignCluster'], $dataset->samples());
+        return array_map([self::class, 'assign'], $dataset->samples());
     }
 
     /**
@@ -273,7 +275,7 @@ class MeanShift implements Learner, Verbose, Persistable
      * @param array $sample
      * @return int
      */
-    protected function assignCluster(array $sample) : int
+    protected function assign(array $sample) : int
     {
         $bestDistance = INF;
         $bestCluster = -1;

@@ -61,7 +61,7 @@ class AlphaDropout extends Dropout
     public function forward(Matrix $input) : Matrix
     {
         $mask = Matrix::rand(...$input->shape())
-            ->map([$this, 'drop']);
+            ->greater($this->ratio);
 
         $saturation = $mask->map([$this, 'saturate']);
 

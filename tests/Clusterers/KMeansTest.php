@@ -2,12 +2,13 @@
 
 namespace Rubix\ML\Tests\Clusterers;
 
-use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -19,7 +20,7 @@ use RuntimeException;
 
 class KMeansTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
+    const TRAIN_SIZE = 400;
     const TEST_SIZE = 10;
     const MIN_SCORE = 0.9;
 
@@ -32,12 +33,14 @@ class KMeansTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 0, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 0, 255], 20.),
         ]);
 
-        $this->estimator = new KMeans(3, new Euclidean(), 1000);
+        $this->estimator = new KMeans(3, new Euclidean(), 300);
+
+        $this->estimator->setLogger(new BlackHole());
 
         $this->metric = new VMeasure();
     }
@@ -45,9 +48,9 @@ class KMeansTest extends TestCase
     public function test_build_clusterer()
     {
         $this->assertInstanceOf(KMeans::class, $this->estimator);
-        $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
         $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
@@ -64,11 +67,7 @@ class KMeansTest extends TestCase
         
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $folds = $training->stratifiedFold(3);
-
-        $this->estimator->train($folds[0]);
-        $this->estimator->partial($folds[1]);
-        $this->estimator->partial($folds[2]);
+        $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 

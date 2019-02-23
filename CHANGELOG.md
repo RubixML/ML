@@ -1,9 +1,11 @@
 - Unreleased
     - Added LODA online anomaly detector
     - Added scoring functions to Isolation Forest and LOF
+    - K Means is now Verbose
     - Added upper bound to contamination hyperparameter
     - Changed hyper-parameter order of Isolation Forest
     - Optimized Interval Discretizer transformer
+    - K Means is no longer Online
 
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset

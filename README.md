@@ -1896,7 +1896,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
-##### Interfaces: Learner, Online, Persistable
+##### Interfaces: Learner, Persistable, Verbose
 ##### Compatibility: Variable
 
 #### Parameters:
@@ -1907,7 +1907,6 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
 
 #### Additional Methods:
-
 Return the *k* computed centroids of the training set:
 ```php
 public centroids() : array

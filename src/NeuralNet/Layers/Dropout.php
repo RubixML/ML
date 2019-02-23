@@ -104,7 +104,7 @@ class Dropout implements Hidden, Nonparametric
     public function forward(Matrix $input) : Matrix
     {
         $this->mask = Matrix::rand(...$input->shape())
-            ->map([$this, 'drop']);
+            ->greater($this->ratio);
 
         return $this->mask->multiply($input);
     }
@@ -142,16 +142,5 @@ class Dropout implements Hidden, Nonparametric
         return function () use ($prevGradient, $mask) {
             return $prevGradient()->multiply($mask);
         };
-    }
-
-    /**
-     * Indicator function for dropped out neurons.
-     *
-     * @param float $value
-     * @return float
-     */
-    public function drop(float $value) : float
-    {
-        return $value > $this->ratio ? 1. : 0.;
     }
 }

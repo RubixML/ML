@@ -32,18 +32,14 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         if ($validate) {
             $samples = array_values($samples);
 
-            if (empty($samples)) {
-                $n = 0;
-            } else {
-                $n = is_array($samples[0]) ? count($samples[0]) : 1;
-            }
+            $n = !empty($samples)
+                ? is_array($samples[0]) ? count($samples[0]) : 1
+                : 0;
 
             foreach ($samples as &$sample) {
-                if (is_array($sample)) {
-                    $sample = array_values($sample);
-                } else {
-                    $sample = [$sample];
-                }
+                $sample = is_array($sample)
+                    ? array_values($sample)
+                    : [$sample];
 
                 if (count($sample) !== $n) {
                     throw new InvalidArgumentException('The number of feature'

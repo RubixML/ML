@@ -2,9 +2,12 @@
 
 namespace Rubix\ML\Clusterers;
 
-use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -19,16 +22,16 @@ use RuntimeException;
  * parameter K.
  *
  * References:
- * [1] T. Kanungo et al. (2002). An Efficient K-Means Clustering Algorithm:
- * Analysis and Implementation.
- * [2] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
+ * [1] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Online, Persistable
+class KMeans implements Learner, Persistable, Verbose
 {
+    use LoggerAware;
+
     /**
      * The target number of clusters.
      *
@@ -53,7 +56,7 @@ class KMeans implements Online, Persistable
     /**
      * The computed centroid vectors of the training data.
      *
-     * @var array
+     * @var array[]
      */
     protected $centroids = [
         //
@@ -132,41 +135,38 @@ class KMeans implements Online, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->centroids = $this->initializeCentroids($dataset);
-
-        $this->partial($dataset);
-    }
-
-    /**
-     * Perform a partial train on the learner.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     */
-    public function partial(Dataset $dataset) : void
-    {
-        if (empty($this->centroids)) {
-            $this->train($dataset);
-            return;
+        if ($this->logger) {
+            $this->logger->info('Learner initialized w/ '
+                . Params::stringify([
+                    'k' => $this->k,
+                    'kernel' => $this->kernel,
+                    'epochs' => $this->epochs,
+                ]));
         }
 
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        $this->centroids = $this->initialize($dataset);
 
-        $labels = array_fill(0, $dataset->numRows(), -1);
+        $labels = array_fill(0, $dataset->numRows(), null);
         $sizes = array_fill(0, $this->k, 0);
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $changed = false;
+            $changed = 0;
 
             foreach ($dataset as $i => $sample) {
-                $label = $this->assignCluster($sample);
+                $label = $this->assign($sample);
 
-                if ($label !== $labels[$i]) {
+                $expected = $labels[$i];
+
+                if ($label !== $expected) {
                     $labels[$i] = $label;
 
                     $sizes[$label]++;
 
-                    $changed = true;
+                    if (isset($expected)) {
+                        $sizes[$expected]--;
+                    }
+
+                    $changed++;
                 }
 
                 $size = $sizes[$label] ?: self::EPSILON;
@@ -180,9 +180,17 @@ class KMeans implements Online, Persistable
                 $this->centroids[$label] = $centroid;
             }
 
-            if (!$changed) {
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch complete, changed=$changed");
+            }
+
+            if ($changed === 0) {
                 break 1;
             }
+        }
+
+        if ($this->logger) {
+            $this->logger->info('Training complete');
         }
     }
 
@@ -196,13 +204,13 @@ class KMeans implements Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->centroids)) {
+        if (!$this->centroids) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map([self::class, 'assignCluster'], $dataset->samples());
+        return array_map([self::class, 'assign'], $dataset->samples());
     }
 
     /**
@@ -212,7 +220,7 @@ class KMeans implements Online, Persistable
      * @throws \RuntimeException
      * @return array
      */
-    protected function initializeCentroids(Dataset $dataset) : array
+    protected function initialize(Dataset $dataset) : array
     {
         $n = $dataset->numRows();
 
@@ -265,7 +273,7 @@ class KMeans implements Online, Persistable
      * @throws \RuntimeException
      * @return int
      */
-    protected function assignCluster(array $sample) : int
+    protected function assign(array $sample) : int
     {
         $bestDistance = INF;
         $bestCluster = -1;

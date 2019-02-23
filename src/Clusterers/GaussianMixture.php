@@ -212,6 +212,8 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
@@ -228,16 +230,12 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
                 ]));
         }
 
+        $samples = $dataset->samples();
+        $rotated = $dataset->columns();
+    
         $n = $dataset->numRows();
 
-        $columns = $dataset->columns();
-
-        if ($this->logger) {
-            $this->logger->info("Initializing $this->k"
-                . ' gaussian components');
-        }
-
-        [$means, $variances] = $this->initializeComponents($dataset);
+        [$means, $variances] = $this->initialize($dataset);
 
         $this->means = $means;
         $this->variances = $variances;
@@ -264,7 +262,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 
                 $means = $variances = [];
 
-                foreach ($columns as $values) {
+                foreach ($rotated as $values) {
                     $a = $b = $total = 0.;
 
                     foreach ($values as $i => $value) {
@@ -388,7 +386,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
      * @throws \RuntimeException
      * @return array[]
      */
-    protected function initializeComponents(Dataset $dataset) : array
+    protected function initialize(Dataset $dataset) : array
     {
         $clusterer = new KMeans($this->k);
 

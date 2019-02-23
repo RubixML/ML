@@ -214,22 +214,16 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 ]));
         }
 
-        if ($this->logger) {
-            $this->logger->info("Initializing $this->c"
-                . ' cluster centroids');
-        }
-
-        $this->centroids = $this->initializeCentroids($dataset);
+        $this->centroids = $this->initialize($dataset);
 
         $this->steps = $memberships = [];
 
+        $samples = $dataset->samples();
         $rotated = $dataset->columns();
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            foreach ($dataset as $i => $sample) {
-                $memberships[$i] = $this->calculateMembership($sample);
-            }
+            $memberships = array_map([self::class, 'calculateMembership'], $samples);
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 foreach ($rotated as $column => $values) {
@@ -307,7 +301,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * @throws \RuntimeException
      * @return array
      */
-    protected function initializeCentroids(Dataset $dataset) : array
+    protected function initialize(Dataset $dataset) : array
     {
         $n = $dataset->numRows();
 
@@ -390,17 +384,18 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     protected function interClusterDistance(Dataset $dataset, array $memberships) : float
     {
-        $distance = 0.;
+        $total = 0.;
 
         foreach ($dataset as $i => $sample) {
             $membership = $memberships[$i];
 
             foreach ($this->centroids as $cluster => $centroid) {
-                $distance += $membership[$cluster]
-                    * $this->kernel->compute($sample, $centroid);
+                $distance = $this->kernel->compute($sample, $centroid);
+
+                $total += $membership[$cluster] * $distance;
             }
         }
 
-        return $distance;
+        return $total;
     }
 }
