@@ -57,6 +57,7 @@ $ composer require rubix/ml
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
 			- [Local Outlier Factor](#local-outlier-factor)
+			- [LODA](#loda)
 			- [One Class SVM](#one-class-svm)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
@@ -1230,6 +1231,32 @@ use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
 $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
+```
+
+### LODA
+Lightweight Online Detector of Anomalies uses random projection vectors to generate an ensemble of unique histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
+
+##### Interfaces: Learner, Online, Persistable
+##### Compatibility: Continuous
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 100 | int | The number of projections and histograms. |
+| 2 | bins | 5 | int | The number of bins for each equi-width histogram. |
+| 3 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+
+#### Additional Methods:
+Return the anomaly score of each sample in a dataset:
+```php
+public score(Dataset $dataset) : array
+```
+
+#### Example:
+```php
+use Rubix\ML\AnomalyDetection\LODA;
+
+$estimator = new LODA(200, 8, 0.03);
 ```
 
 ### One Class SVM

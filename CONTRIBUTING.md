@@ -1,20 +1,21 @@
 # Contributing Guidelines
-We believe that our contributors play a meaningful role in bringing easy to use and powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can make sure our users continue to get the best we can offer.
-
-Never submitted a pull request before? Github has a great [howto](https://help.github.com/articles/about-pull-requests/).
+We believe that our contributors play an important and meaningful role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can ensure that our users continue to get the best experience.
 
 ### Pull Request Checklist
 Here are some things to check off before sending in a pull request
 
-- The change provides value to Rubix engineers
+- The change provides high value to Rubix engineers
+- The change does not introduce unnecessary complexity
 - Your changes are consistent with our [coding style](#coding-style)
 - Your changes pass [static analysis](#static-analysis)
 - All [unit tests](#unit-testing) pass
 - Does your change require updates to the documentation?
-- Does the CHANGELOG need to be updated?
+- Does an entry to the CHANGELOG need to be added?
+
+> **Note**: New to pull requests? Read the Github [howto](https://help.github.com/articles/about-pull-requests/).
 
 ### Coding Style
-Rubix follows the PSR-2 coding style. Here are a few of the guidelines, however, refer to the [style guide](https://www.php-fig.org/psr/psr-2/) for an exhaustive list. For any new file, include a header that contains a title, a short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
+Rubix follows the PSR-2 coding style with additional rules. For any new file, include a header that contains a title, a short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
 
 To run the style checker:
 ```sh
@@ -27,7 +28,7 @@ $ composer fix
 ```
 
 ### Static Analysis
-Static analysis is a *crucial* component to our overall testing and quality assurance strategy. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
+Static analysis is an important component to our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
 
 To run static analysis:
 ```sh
@@ -35,7 +36,7 @@ $ composer analyze
 ```
   
 ### Unit Testing
-Every change *requires* an accompanying test whether it be a new feature or a bug fix. What to test depends on the type of change you are making. See the individual testing guidlines below.
+All new code *requires* an accompanying unit test whether it be a new feature or a bug fix. Exactly what to test depends on the type of change you are making. See the individual unit testing guidlines below.
 
 To run the unit tests:
 ```sh

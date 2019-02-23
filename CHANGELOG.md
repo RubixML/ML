@@ -1,4 +1,5 @@
 - Unreleased
+    - Added LODA online anomaly detector
     - Added scoring functions to Isolation Forest and LOF
     - Added upper bound to contamination hyperparameter
     - Changed hyper-parameter order of Isolation Forest
