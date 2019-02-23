@@ -1193,7 +1193,10 @@ An ensemble detector comprised of Isolation Trees each trained on a different su
 | 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the isolation scores of each sample in a dataset:
+```php
+public score(Dataset $dataset) : array
+```
 
 #### Example:
 ```php
@@ -1206,7 +1209,7 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
 ##### Interfaces: Learner, Online, Persistable
-##### Compatibility: Variable
+##### Compatibility: Determined by distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1216,7 +1219,10 @@ Local Outlier Factor (LOF) measures the local deviation of density of a given sa
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the local outlier factors of each sample in a dataset:
+```php
+public score(Dataset $dataset) : array
+```
 
 #### Example:
 ```php

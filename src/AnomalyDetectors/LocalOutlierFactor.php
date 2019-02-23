@@ -181,11 +181,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
             $this->lrds[$i] = $this->localReachabilityDensity($row);
         }
 
-        $lofs = [];
-
-        foreach ($this->samples as $sample) {
-            $lofs[] = $this->localOutlierFactor($sample);
-        }
+        $lofs = $this->score($dataset);
 
         $shift = Stats::percentile($lofs, 100. * $this->contamination);
         
@@ -202,6 +198,19 @@ class LocalOutlierFactor implements Learner, Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        return array_map([self::class, 'decide'], $this->score($dataset));
+    }
+
+    /**
+     * Return the isolation scores of each sample in a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function score(Dataset $dataset) : array
+    {
         if (empty($this->samples)) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
@@ -209,15 +218,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $lof = $this->localOutlierFactor($sample);
-
-            $predictions[] = $lof > $this->offset ? 1 : 0;
-        }
-
-        return $predictions;
+        return array_map([self::class, 'localOutlierFactor'], $dataset->samples());
     }
 
     /**
@@ -290,5 +291,16 @@ class LocalOutlierFactor implements Learner, Online, Persistable
         asort($distances);
 
         return array_slice($distances, 0, $this->k, true);
+    }
+
+    /**
+     * The decision function.
+     *
+     * @param float $score
+     * @return int
+     */
+    protected function decide(float $score) : int
+    {
+        return $score > $this->offset ? 1 : 0;
     }
 }

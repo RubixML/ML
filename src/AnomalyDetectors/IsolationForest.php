@@ -163,13 +163,11 @@ class IsolationForest implements Learner, Persistable
 
         $this->pHat = $this->c($p);
 
-        $scores = [];
+        $scores = $this->score($dataset);
 
-        foreach ($dataset as $sample) {
-            $scores[] = $this->isolationScore($sample);
-        }
+        $p = 100. - (100. * $this->contamination);
 
-        $shift = Stats::percentile($scores, 100. * $this->contamination);
+        $shift = Stats::percentile($scores, $p);
 
         $this->offset = $shift;
     }
@@ -184,22 +182,32 @@ class IsolationForest implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->forest) or $this->offset === null) {
+        if ($this->offset === null) {
+            throw new RuntimeException('The learner has not'
+                . ' been trained.');
+        }
+
+        return array_map([self::class, 'decide'], $this->score($dataset));
+    }
+
+    /**
+     * Return the isolation scores of each sample in a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function score(Dataset $dataset) : array
+    {
+        if (empty($this->forest)) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
-
-        foreach ($dataset as $sample) {
-            $score = $this->isolationScore($sample);
-
-            $predictions[] = $score < $this->offset ? 1 : 0;
-        }
-
-        return $predictions;
+        return array_map([self::class, 'isolationScore'], $dataset->samples());
     }
 
     /**
@@ -218,11 +226,7 @@ class IsolationForest implements Learner, Persistable
             $depth += $node ? $node->depth() : self::EPSILON;
         }
 
-        $depth /= $this->estimators;
-
-        $score = 2. ** -($depth / $this->pHat);
-
-        return -$score;
+        return 2. ** -($depth / $this->estimators / $this->pHat);
     }
 
     /**
@@ -237,5 +241,16 @@ class IsolationForest implements Learner, Persistable
             return 1.;
         }
         return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
+    }
+
+    /**
+     * The decision function.
+     *
+     * @param float $score
+     * @return int
+     */
+    protected function decide(float $score) : int
+    {
+        return $score > $this->offset ? 1 : 0;
     }
 }
