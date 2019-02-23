@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IsolationForest implements Learner, Persistable
+class IsolationForest implements Learner, Ranking, Persistable
 {
     /**
      * The number of estimators to train in the ensemble.
@@ -163,7 +164,7 @@ class IsolationForest implements Learner, Persistable
 
         $this->pHat = $this->c($p);
 
-        $scores = $this->score($dataset);
+        $scores = $this->rank($dataset);
 
         $p = 100. - (100. * $this->contamination);
 
@@ -187,18 +188,18 @@ class IsolationForest implements Learner, Persistable
                 . ' been trained.');
         }
 
-        return array_map([self::class, 'decide'], $this->score($dataset));
+        return array_map([self::class, 'decide'], $this->rank($dataset));
     }
 
     /**
-     * Return the isolation scores of each sample in a dataset.
+     * Apply an arbitrary scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
-    public function score(Dataset $dataset) : array
+    public function rank(Dataset $dataset) : array
     {
         if (empty($this->forest)) {
             throw new RuntimeException('The learner has not'

@@ -4,6 +4,7 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
@@ -29,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Learner, Online, Persistable
+class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
 {
     const THRESHOLD = 1.5;
 
@@ -181,7 +182,7 @@ class LocalOutlierFactor implements Learner, Online, Persistable
             $this->lrds[$i] = $this->localReachabilityDensity($row);
         }
 
-        $lofs = $this->score($dataset);
+        $lofs = $this->rank($dataset);
 
         $shift = Stats::percentile($lofs, 100. * $this->contamination);
         
@@ -198,18 +199,18 @@ class LocalOutlierFactor implements Learner, Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([self::class, 'decide'], $this->score($dataset));
+        return array_map([self::class, 'decide'], $this->rank($dataset));
     }
 
     /**
-     * Return the isolation scores of each sample in a dataset.
+     * Apply an arbitrary scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @return array
      */
-    public function score(Dataset $dataset) : array
+    public function rank(Dataset $dataset) : array
     {
         if (empty($this->samples)) {
             throw new RuntimeException('The learner has not'

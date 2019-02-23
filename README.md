@@ -1,4 +1,4 @@
-<a href="https://rubixml.com" target="_blank"><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/images/rubix-ml-logo.svg?sanitize=true" width="350" alt="Rubix ML for PHP" /></a>
+<a href="https://rubixml.com" target="_blank"><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/images/rubix-ml-logo.svg?sanitize=true" width="250" alt="Rubix ML for PHP" /></a>
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
@@ -886,7 +886,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 > **Note**: Bootstrap Aggregator does not work with clusterers or manifold learners.
 
 ##### Interfaces: Learner | Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -912,7 +912,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 > **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
 
 ##### Interfaces: Learner, Persistable, Verbose
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -967,7 +967,7 @@ A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of est
 > **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
 
 ##### Interfaces: Learner, Probabilistic, Persistable, Verbose
-##### Compatibility: Variable
+##### Compatibility: Depends on base learners
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1006,7 +1006,7 @@ $estimator = new ModelOrchestra([
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
 
 ##### Interfaces: Learner, Probabilistic, Verbose
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1049,7 +1049,7 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 > **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
 
 ##### Interfaces: Learner, Online, Persistable, Verbose
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner and transformers
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1161,6 +1161,30 @@ array(2) {
 }
 ```
 
+### Ranking
+In the way that a Probabilistic estimator ranks the outcome of a particlar sample as a *normalized* (between 0 and 1) value, Ranking estimators rank the outcome by an *arbitrary* score. The purpose of a Ranking estimator is so that you are able to sort the samples by the output. This is useful in cases such as [Anomaly Detection](#anomaly-detectors) where an analyst can flag the top n outliers by rank for further investigation.
+
+To rank the dataset by an artitrary scoring function:
+```php
+public rank(Dataset $dataset) : array
+```
+
+#### Example:
+```php
+$scores = $estimator->rank($dataset);
+
+var_dump($scores);
+```
+
+#### Output:
+```sh
+array(3) {
+  [0]=> float(1.80)
+  [1]=> int(1.25)
+  [2]=> int(9.45)
+}
+```
+
 ### Verbose
 Verbose estimators are capable of logging errors and important training events to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the included [Screen Logger](#screen). Logging is especially useful for monitoring the progress of the underlying learning algorithm in real time.
 
@@ -1183,7 +1207,7 @@ Anomaly detection is the process of identifying samples that do not conform to a
 ### Isolation Forest
 An ensemble detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Interfaces: Learner, Persistable
+##### Interfaces: Learner, Ranking, Persistable
 ##### Compatibility: Categorical, Continuous
 
 #### Parameters:
@@ -1194,10 +1218,7 @@ An ensemble detector comprised of Isolation Trees each trained on a different su
 | 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
 
 #### Additional Methods:
-Return the isolation scores of each sample in a dataset:
-```php
-public score(Dataset $dataset) : array
-```
+This estimator does not have any additional methods.
 
 #### Example:
 ```php
@@ -1209,7 +1230,7 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
-##### Interfaces: Learner, Online, Persistable
+##### Interfaces: Learner, Online, Ranking, Persistable
 ##### Compatibility: Determined by distance kernel
 
 #### Parameters:
@@ -1220,10 +1241,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of a given sa
 | 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
 
 #### Additional Methods:
-Return the local outlier factors of each sample in a dataset:
-```php
-public score(Dataset $dataset) : array
-```
+This estimator does not have any additional methods.
 
 #### Example:
 ```php
@@ -1234,23 +1252,20 @@ $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 ```
 
 ### LODA
-Lightweight Online Detector of Anomalies uses random projection vectors to generate an ensemble of unique histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
+Lightweight Online Detector of Anomalies uses sparse random projection vectors to generate an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user through the *contamination* hyper-parameter.
 
-##### Interfaces: Learner, Online, Persistable
+##### Interfaces: Learner, Online, Ranking, Persistable
 ##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | k | 100 | int | The number of projections and histograms. |
+| 1 | k | 100 | int | The number of random projections and histograms. |
 | 2 | bins | 5 | int | The number of bins for each equi-width histogram. |
 | 3 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 
 #### Additional Methods:
-Return the anomaly score of each sample in a dataset:
-```php
-public score(Dataset $dataset) : array
-```
+This estimator does not have any additional methods.
 
 #### Example:
 ```php
@@ -1328,7 +1343,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
 ##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1395,7 +1410,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 > **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
 
 ##### Interfaces: Learner, Ensemble, Probabilistic, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on base learners
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1521,7 +1536,7 @@ $estimator = new GaussianNB([
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
 ##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1548,7 +1563,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 > **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 
 ##### Interfaces: Learner, Online, Probabilistic, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1572,7 +1587,7 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes.
 
 ##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
-##### Compatibility: Variable
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1800,7 +1815,7 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
 ##### Interfaces: None
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1824,7 +1839,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal());
 Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
 ##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1897,7 +1912,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
 ##### Interfaces: Learner, Persistable, Verbose
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1924,7 +1939,7 @@ $estimator = new KMeans(3, new Euclidean());
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
 ##### Interfaces: Learner, Verbose, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2088,7 +2103,7 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 > **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
 ##### Interfaces: Learner, Ensemble, Verbose, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on base learner
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2122,7 +2137,7 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3,
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
 ##### Interfaces: Learner, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2149,7 +2164,7 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
 ##### Interfaces: Learner, Online, Persistable
-##### Compatibility: Variable
+##### Compatibility: Depends on distance kernel
 
 #### Parameters:
 | # | Param | Default | Type | Description |

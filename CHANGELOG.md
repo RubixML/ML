@@ -1,6 +1,7 @@
 - Unreleased
     - Added LODA online anomaly detector
-    - Added scoring functions to Isolation Forest and LOF
+    - Added Ranking interface
+    - Isolation Forest and LOF are now Ranking
     - K Means is now Verbose
     - Added upper bound to contamination hyperparameter
     - Changed hyper-parameter order of Isolation Forest

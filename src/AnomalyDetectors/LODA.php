@@ -4,6 +4,7 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
@@ -17,11 +18,11 @@ use RuntimeException;
 /**
  * LODA
  *
- * Lightweight Online Detector of Anomalies uses random projection vectors
- * to generate an ensemble of unique histograms able to estimate the
- * probability density of an unknown sample. The anomaly score is given
- * by the negative log likelihood whose upper threshold can be set by the
- * user.
+ * Lightweight Online Detector of Anomalies uses sparse random projection vectors
+ * to generate an ensemble of unique one dimensional equi-width histograms able
+ * to estimate the probability density of an unknown sample. The anomaly score is
+ * given by the negative log likelihood whose upper threshold can be set by the
+ * user through the *contamination* hyper-parameter.
  *
  * References:
  * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
@@ -30,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LODA implements Learner, Online, Persistable
+class LODA implements Learner, Online, Ranking, Persistable
 {
     const MIN_SPARSE_DIMENSIONS = 3;
 
@@ -274,16 +275,18 @@ class LODA implements Learner, Online, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([$this, 'decide'], $this->score($dataset));
+        return array_map([$this, 'decide'], $this->rank($dataset));
     }
 
     /**
-     * Return the anomaly scores of each sample in a dataset.
+     * Apply an arbitrary scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      * @return array
      */
-    public function score(Dataset $dataset) : array
+    public function rank(Dataset $dataset) : array
     {
         if (!$this->r or $this->offset === null) {
             throw new RuntimeException('The learner has not'
