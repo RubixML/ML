@@ -1395,7 +1395,19 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the feature importances calculated during training indexed by feature column:
+```php
+public featureImportances() : array
+```
+
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public
 
 #### Example:
 ```php
@@ -1482,9 +1494,19 @@ An *Extremely Randomized* Classification Tree - these trees differ from standard
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 #### Additional Methods:
-Return the feature importances calculated during training keyed by feature column:
+Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
+```
+
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
 ```
 
 #### Example:
@@ -1547,7 +1569,15 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
 
 #### Example:
 ```php
@@ -2088,7 +2118,20 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the feature importances calculated during training indexed by feature column:
+```php
+public featureImportances() : array
+```
+
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
 
 #### Example:
 ```php
@@ -2148,7 +2191,15 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 | 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
 
 #### Example:
 ```php
@@ -2260,7 +2311,20 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 #### Additional Methods:
-This estimator does not have any additional methods.
+Return the feature importances calculated during training indexed by feature column:
+```php
+public featureImportances() : array
+```
+
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
 
 #### Example:
 ```php

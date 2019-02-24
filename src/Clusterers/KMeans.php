@@ -181,7 +181,8 @@ class KMeans implements Learner, Persistable, Verbose
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, changed=$changed");
+                $this->logger->info("Epoch $epoch complete,"
+                    . " changed=$changed");
             }
 
             if ($changed === 0) {

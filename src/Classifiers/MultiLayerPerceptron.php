@@ -130,11 +130,9 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
     /**
      * The unique class labels.
      *
-     * @var array
+     * @var array|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * The underlying computational graph.
@@ -261,7 +259,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      */
     public function trained() : bool
     {
-        return isset($this->network);
+        return $this->network and $this->classes;
     }
 
     /**
@@ -458,18 +456,20 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->network) {
+        if (!$this->network or !$this->classes) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $samples = Matrix::quick($dataset->samples())->transpose();
+        $xT = Matrix::quick($dataset->samples())->transpose();
+
+        $yT = $this->network->infer($xT)->transpose();
 
         $probabilities = [];
 
-        foreach ($this->network->infer($samples)->transpose() as $activations) {
+        foreach ($yT as $activations) {
             $probabilities[] = array_combine($this->classes, $activations);
         }
 

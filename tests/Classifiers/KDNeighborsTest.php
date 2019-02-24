@@ -58,6 +58,8 @@ class KDNeighborsTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
 
         $this->assertFalse($this->estimator->trained());
+
+        $this->assertEquals(0, $this->estimator->height());
     }
 
     public function test_train_predict()
@@ -69,6 +71,8 @@ class KDNeighborsTest extends TestCase
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
+
+        $this->assertGreaterThan(0, $this->estimator->height());
 
         $predictions = $this->estimator->predict($testing);
 

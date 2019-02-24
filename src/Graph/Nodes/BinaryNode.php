@@ -57,6 +57,7 @@ class BinaryNode implements Node
         if ($this->left) {
             $children[] = $this->left;
         }
+        
         if ($this->right) {
             $children[] = $this->right;
         }

@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ITree implements Tree
+class ITree implements BinaryTree
 {
     /**
      * The root node of the tree.
@@ -72,6 +72,36 @@ class ITree implements Tree
     public function root() : ?Isolator
     {
         return $this->root;
+    }
+
+    /**
+     * Return the height of the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return isset($this->root) ? $this->root->height() : 0;
+    }
+
+    /**
+     * Return the balance of the tree.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return isset($this->root) ? $this->root->balance() : 0;
+    }
+
+    /**
+     * Is the tree bare?
+     *
+     * @return bool
+     */
+    public function bare() : bool
+    {
+        return !$this->root;
     }
 
     /**
@@ -206,16 +236,10 @@ class ITree implements Tree
      */
     protected function c(int $n) : float
     {
-        return $n > 1 ? 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n : 1.;
-    }
-
-    /**
-     * Is the tree bare?
-     *
-     * @return bool
-     */
-    public function bare() : bool
-    {
-        return !$this->root;
+        if ($n <= 1) {
+            return 1.;
+        }
+        
+        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 }

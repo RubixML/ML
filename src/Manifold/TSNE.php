@@ -269,7 +269,8 @@ class TSNE implements Estimator, Verbose
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing high dimensional affinities');
+            $this->logger->info('Computing pairwise high'
+                . ' dimensional affinities');
         }
 
         $distances = $this->pairwiseDistances($x);
@@ -317,7 +318,8 @@ class TSNE implements Estimator, Verbose
             $this->steps[] = $magnitude;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, gradient=$magnitude");
+                $this->logger->info("Epoch $epoch complete,"
+                    . " gradient=$magnitude");
             }
 
             if (is_nan($magnitude)) {
@@ -345,7 +347,8 @@ class TSNE implements Estimator, Verbose
                 $momentum += self::MOMENTUM_BOOST;
 
                 if ($this->logger) {
-                    $this->logger->info('Early exaggeration stage exhausted');
+                    $this->logger->info('Early exaggeration'
+                        . ' stage exhausted');
                 }
             }
         }
@@ -459,7 +462,8 @@ class TSNE implements Estimator, Verbose
 
         $pHat = $p->add($p->transpose());
 
-        $sigma = $pHat->sum()->clipLower(self::EPSILON);
+        $sigma = $pHat->sum()
+            ->clipLower(self::EPSILON);
 
         return $pHat->divide($sigma);
     }
@@ -475,21 +479,26 @@ class TSNE implements Estimator, Verbose
      */
     protected function gradient(Matrix $p, Matrix $y, Matrix $distances) : Matrix
     {
-        $q = $distances->square()->divide($this->degrees)->add(1.)
+        $q = $distances->square()
+            ->divide($this->degrees)
+            ->add(1.)
             ->pow((1. + $this->degrees) / -2.);
 
         $qSigma = $q->sum()->multiply(2.);
 
-        $q = $q->divide($qSigma)->clipLower(self::EPSILON);
+        $q = $q->divide($qSigma)
+            ->clipLower(self::EPSILON);
 
-        $pqd = $p->subtract($q)->multiply($distances);
+        $pqd = $p->subtract($q)
+            ->multiply($distances);
 
         $c = 2. * (1. + $this->degrees) / $this->degrees;
 
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
-            $yHat = $y->rowAsVector($i)->subtract($y);
+            $yHat = $y->rowAsVector($i)
+                ->subtract($y);
             
             $gradient[] = $row->matmul($yHat)
                 ->multiply($c)

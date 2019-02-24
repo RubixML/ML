@@ -368,7 +368,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
             $dist = [];
 
             foreach ($scores as $class => $score) {
-                $dist[$class] = $score / $total ;
+                $dist[$class] = $score / $total;
             }
 
             $probabilities[] = $dist;

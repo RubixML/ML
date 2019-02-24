@@ -27,7 +27,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDTree implements Tree
+class KDTree implements BinaryTree
 {
     /**
      * The root node of the tree.
@@ -72,6 +72,36 @@ class KDTree implements Tree
     public function root() : ?Coordinate
     {
         return $this->root;
+    }
+
+    /**
+     * Return the height of the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return isset($this->root) ? $this->root->height() : 0;
+    }
+
+    /**
+     * Return the balance of the tree.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return isset($this->root) ? $this->root->balance() : 0;
+    }
+
+    /**
+     * Is the tree bare?
+     *
+     * @return bool
+     */
+    public function bare() : bool
+    {
+        return !$this->root;
     }
 
     /**
@@ -246,15 +276,5 @@ class KDTree implements Tree
         $labels = array_slice($labels, 0, $k);
 
         return [$labels, $distances];
-    }
-
-    /**
-     * Is the tree bare?
-     *
-     * @return bool
-     */
-    public function bare() : bool
-    {
-        return !$this->root;
     }
 }

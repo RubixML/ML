@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph;
 
 use Rubix\ML\Graph\Tree;
 use Rubix\ML\Graph\ITree;
+use Rubix\ML\Graph\BinaryTree;
 use PHPUnit\Framework\TestCase;
 
 class ITreeTest extends TestCase
@@ -18,6 +19,7 @@ class ITreeTest extends TestCase
     public function test_build_tree()
     {
         $this->assertInstanceOf(ITree::class, $this->tree);
+        $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
     }
 }

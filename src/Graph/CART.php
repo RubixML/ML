@@ -22,7 +22,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-abstract class CART implements Tree
+abstract class CART implements BinaryTree
 {
     const BETA = 1e-8;
 
@@ -114,6 +114,36 @@ abstract class CART implements Tree
     public function root() : ?Comparison
     {
         return $this->root;
+    }
+
+    /**
+     * Return the height of the tree.
+     *
+     * @return int
+     */
+    public function height() : int
+    {
+        return isset($this->root) ? $this->root->height() : 0;
+    }
+
+    /**
+     * Return the balance of the tree.
+     *
+     * @return int
+     */
+    public function balance() : int
+    {
+        return isset($this->root) ? $this->root->balance() : 0;
+    }
+
+    /**
+     * Is the tree bare?
+     *
+     * @return bool
+     */
+    public function bare() : bool
+    {
+        return !$this->root;
     }
 
     /**
@@ -282,15 +312,5 @@ abstract class CART implements Tree
         }
 
         return $nodes;
-    }
-
-    /**
-     * Is the tree bare?
-     *
-     * @return bool
-     */
-    public function bare() : bool
-    {
-        return !$this->root;
     }
 }

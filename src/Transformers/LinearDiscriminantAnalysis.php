@@ -137,15 +137,15 @@ class LinearDiscriminantAnalysis implements Stateful
                 . ' with categorical labels.');
         }
 
-        [$n, $d] = $dataset->shape();
+        [$m, $n] = $dataset->shape();
 
-        $sW = Matrix::zeros($d, $d);
+        $sW = Matrix::zeros($n, $n);
 
         foreach ($dataset->stratify() as $stratum) {
             $sW = Matrix::build($stratum->samples())
                 ->transpose()
                 ->covariance()
-                ->multiply($stratum->numRows() / $n)
+                ->multiply($stratum->numRows() / $m)
                 ->add($sW);
         }
 

@@ -7,6 +7,8 @@
     - Changed hyper-parameter order of Isolation Forest
     - Optimized Interval Discretizer transformer
     - K Means is no longer Online
+    - Removed Sign function
+    - Added Binary Tree interface
 
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset

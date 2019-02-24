@@ -85,11 +85,9 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
     /**
      * The unique class labels.
      *
-     * @var array
+     * @var array|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * The underlying neural network instance.
@@ -181,7 +179,7 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
      */
     public function trained() : bool
     {
-        return isset($this->network);
+        return $this->network and $this->classes;
     }
 
     /**
@@ -321,23 +319,25 @@ class LogisticRegression implements Online, Probabilistic, Verbose, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if (!$this->network) {
+        if (!$this->network or !$this->classes) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $samples = Matrix::quick($dataset->samples())->transpose();
+        $xT = Matrix::quick($dataset->samples())->transpose();
 
-        $activations = $this->network->infer($samples);
+        $y = $this->network->infer($xT)->row(0);
+
+        [$classA, $classB] = $this->classes;
 
         $probabilities = [];
 
-        foreach ($activations[0] as $activation) {
+        foreach ($y as $activation) {
             $probabilities[] = [
-                $this->classes[0] => 1. - $activation,
-                $this->classes[1] => $activation,
+                $classA => 1. - $activation,
+                $classB => $activation,
             ];
         }
 

@@ -438,8 +438,8 @@ class MLPRegressor implements Online, Verbose, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $samples = Matrix::quick($dataset->samples())->transpose();
+        $xT = Matrix::quick($dataset->samples())->transpose();
 
-        return $this->network->infer($samples)->row(0);
+        return $this->network->infer($xT)->row(0);
     }
 }
