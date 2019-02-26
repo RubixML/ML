@@ -4,19 +4,19 @@ namespace Rubix\ML\Other\Helpers;
 
 class DataType
 {
-    const OTHER = 0;
-    const CONTINUOUS = 1;
-    const CATEGORICAL = 2;
-    const RESOURCE = 3;
+    public const OTHER = 0;
+    public const CONTINUOUS = 1;
+    public const CATEGORICAL = 2;
+    public const RESOURCE = 3;
 
-    const TYPES = [
+    public const TYPES = [
         self::OTHER => 'other',
         self::CONTINUOUS => 'continuous',
         self::CATEGORICAL => 'categorical',
         self::RESOURCE => 'resource',
     ];
 
-    const ALL = [
+    public const ALL = [
         self::CONTINUOUS,
         self::CATEGORICAL,
         self::RESOURCE,

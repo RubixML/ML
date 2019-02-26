@@ -16,7 +16,7 @@ use InvalidArgumentException;
 
 class TSNETest extends TestCase
 {
-    const TRAIN_SIZE = 30;
+    protected const TRAIN_SIZE = 30;
 
     protected $estimator;
 

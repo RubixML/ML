@@ -21,7 +21,7 @@ use RuntimeException;
  */
 class Filesystem implements Persister
 {
-    const BACKUP_EXT = '.old';
+    public const BACKUP_EXT = '.old';
 
     /**
      * The path to the model file on the filesystem.

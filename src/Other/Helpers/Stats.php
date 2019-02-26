@@ -16,7 +16,7 @@ use InvalidArgumentException;
  */
 class Stats
 {
-    const EPSILON = 1e-8;
+    protected const EPSILON = 1e-8;
 
     /**
      * Compute the population mean of a set of values.

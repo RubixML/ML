@@ -20,8 +20,8 @@ use InvalidArgumentException;
  */
 class SELU implements ActivationFunction
 {
-    const ALPHA = 1.6732632423543772848170429916717;
-    const SCALE = 1.0507009873554804934193349852946;
+    protected const ALPHA = 1.6732632423543772848170429916717;
+    protected const SCALE = 1.0507009873554804934193349852946;
 
     /**
      * At which negative value the SELU will saturate. i.e. alpha = 1.means
@@ -46,8 +46,8 @@ class SELU implements ActivationFunction
     protected $beta;
 
     /**
-     * @param float $scale
      * @param float $alpha
+     * @param float $scale
      * @throws \InvalidArgumentException
      */
     public function __construct(float $alpha = self::ALPHA, float $scale = self::SCALE)

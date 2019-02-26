@@ -28,7 +28,7 @@ use InvalidArgumentException;
  */
 class DBSCAN implements Estimator
 {
-    const NOISE = -1;
+    protected const NOISE = -1;
 
     /**
      * The maximum distance between two points to be considered neighbors. The

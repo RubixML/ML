@@ -13,7 +13,7 @@ namespace Rubix\ML\Other\Loggers;
  */
 class Screen extends Logger
 {
-    const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    public const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
     
     /**
      * The channel name that appears on each line.

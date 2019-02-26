@@ -18,7 +18,7 @@ use ReflectionClass;
  */
 class Params
 {
-    const PHI = 100000000;
+    protected const PHI = 100000000;
 
     /**
      * Generate a random unique integer distribution.

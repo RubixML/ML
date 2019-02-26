@@ -23,6 +23,6 @@ class LogSumExp
      */
     public static function compute(array $values) : ?float
     {
-        return empty($values) ? null : log(array_sum(array_map('exp', $values)));
+        return $values ? log(array_sum(array_map('exp', $values))) : null;
     }
 }

@@ -25,7 +25,7 @@ use RuntimeException;
  */
 class BootstrapAggregator implements Learner, Persistable
 {
-    const COMPATIBLE_ESTIMATOR_TYPES = [
+    protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
         self::DETECTOR,

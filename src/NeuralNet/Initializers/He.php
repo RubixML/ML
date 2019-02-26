@@ -22,7 +22,7 @@ use Rubix\Tensor\Matrix;
  */
 class He implements Initializer
 {
-    const ETA = 0.70710678118;
+    protected const ETA = 0.70710678118;
     
     /**
      * Initialize a weight matrix W in the dimensions fan in x fan out.

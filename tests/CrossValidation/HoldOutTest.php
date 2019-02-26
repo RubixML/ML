@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class HoldOutTest extends TestCase
 {
-    const TRAIN_SIZE = 50;
+    protected const TRAIN_SIZE = 50;
 
     protected $generator;
 

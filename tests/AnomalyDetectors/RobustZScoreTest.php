@@ -18,9 +18,9 @@ use RuntimeException;
 
 class RobustZScoreTest extends TestCase
 {
-    const TRAIN_SIZE = 200;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = 0.8;
+    protected const TRAIN_SIZE = 200;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.8;
 
     protected $generator;
 

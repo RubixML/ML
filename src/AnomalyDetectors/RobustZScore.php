@@ -32,7 +32,7 @@ use RuntimeException;
  */
 class RobustZScore implements Learner, Persistable
 {
-    const LAMBDA = 0.6745;
+    protected const LAMBDA = 0.6745;
 
     /**
      * The average z score to tolerate before a sample is considered an outlier.

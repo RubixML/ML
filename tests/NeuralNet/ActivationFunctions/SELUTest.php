@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SELUTest extends TestCase
 {
-    const TOLERANCE = 1e-10;
+    protected const TOLERANCE = 1e-10;
 
     protected $input;
 

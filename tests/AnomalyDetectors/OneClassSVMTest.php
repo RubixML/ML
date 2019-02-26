@@ -19,9 +19,9 @@ use RuntimeException;
 
 class OneClassSVMTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = 0.6;
+    protected const TRAIN_SIZE = 300;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.6;
 
     protected $generator;
 

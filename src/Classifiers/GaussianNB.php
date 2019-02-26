@@ -33,9 +33,9 @@ use RuntimeException;
  */
 class GaussianNB implements Online, Probabilistic, Persistable
 {
-    const TWO_PI = 2. * M_PI;
+    protected const TWO_PI = 2. * M_PI;
 
-    const LOG_EPSILON = -18.420680744;
+    protected const LOG_EPSILON = -18.420680744;
 
     /**
      * The class prior probabilities.

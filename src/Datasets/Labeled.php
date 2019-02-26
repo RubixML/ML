@@ -21,6 +21,8 @@ use RuntimeException;
  */
 class Labeled extends DataFrame implements Dataset
 {
+    protected const PHI = 100000000;
+
     /**
      * The observed outcomes for each sample in the dataset.
      *

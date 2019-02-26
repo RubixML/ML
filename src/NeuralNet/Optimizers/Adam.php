@@ -27,7 +27,7 @@ use SplObjectStorage;
  */
 class Adam implements Optimizer, Adaptive
 {
-    const WARM_UP_STEPS = 50;
+    protected const WARM_UP_STEPS = 50;
 
     /**
      * The learning rate. i.e. the master step size.

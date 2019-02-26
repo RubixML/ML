@@ -35,17 +35,17 @@ class TSNE implements Estimator, Verbose
 {
     use LoggerAware;
 
-    const Y_INIT = 1e-4;
+    protected const Y_INIT = 1e-4;
 
-    const INIT_MOMENTUM = 0.5;
-    const MOMENTUM_BOOST = 0.3;
+    protected const INIT_MOMENTUM = 0.5;
+    protected const MOMENTUM_BOOST = 0.3;
 
-    const GAIN_ACCELERATE = 0.2;
-    const GAIN_BRAKE = 0.8;
-    const MIN_GAIN = 0.01;
+    protected const GAIN_ACCELERATE = 0.2;
+    protected const GAIN_BRAKE = 0.8;
+    protected const MIN_GAIN = 0.01;
 
-    const BINARY_PRECISION = 100;
-    const SEARCH_TOLERANCE = 1e-5;
+    protected const BINARY_PRECISION = 100;
+    protected const SEARCH_TOLERANCE = 1e-5;
 
     /**
      * The number of dimensions of the embedding.

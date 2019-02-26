@@ -41,7 +41,7 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
     
-    const TWO_PI = 2. * M_PI;
+    protected const TWO_PI = 2. * M_PI;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the

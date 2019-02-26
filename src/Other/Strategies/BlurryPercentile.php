@@ -19,7 +19,7 @@ use RuntimeException;
  */
 class BlurryPercentile implements Continuous
 {
-    const TWO_PI = 2. * M_PI;
+    protected const TWO_PI = 2. * M_PI;
 
     /**
      * The index of the percentile to predict where 50 is the median.
@@ -99,7 +99,10 @@ class BlurryPercentile implements Continuous
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        return $this->percentile + $this->blur * $this->gaussian() * $this->mad;
+        return $this->percentile
+            + $this->blur
+            * $this->gaussian()
+            * $this->mad;
     }
 
     /**

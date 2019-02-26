@@ -22,10 +22,10 @@ use Rubix\Tensor\Matrix;
  */
 class AlphaDropout extends Dropout
 {
-    const ALPHA = 1.6732632423543772848170429916717;
-    const SCALE = 1.0507009873554804934193349852946;
+    protected const ALPHA = 1.6732632423543772848170429916717;
+    protected const SCALE = 1.0507009873554804934193349852946;
 
-    const ALPHA_P = -self::ALPHA * self::SCALE;
+    protected const ALPHA_P = -self::ALPHA * self::SCALE;
 
     /**
      * The scaling coefficient.

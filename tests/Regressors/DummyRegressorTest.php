@@ -16,9 +16,9 @@ use InvalidArgumentException;
 
 class DummyRegressorTest extends TestCase
 {
-    const TRAIN_SIZE = 100;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = -INF;
+    protected const TRAIN_SIZE = 100;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = -INF;
 
     protected $generator;
 

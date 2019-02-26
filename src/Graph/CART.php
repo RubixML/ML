@@ -24,7 +24,7 @@ use InvalidArgumentException;
  */
 abstract class CART implements BinaryTree
 {
-    const BETA = 1e-8;
+    protected const BETA = 1e-8;
 
     /**
      * The root node of the tree.

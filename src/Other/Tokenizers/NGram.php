@@ -17,10 +17,10 @@ use InvalidArgumentException;
  */
 class NGram implements Tokenizer
 {
-    const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
-    const WORD_REGEX = '/\w+/u';
+    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
+    protected const WORD_REGEX = '/\w+/u';
 
-    const SEPARATOR = ' ';
+    protected const SEPARATOR = ' ';
 
     /**
      * The number of contiguous words to a single token.

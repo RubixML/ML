@@ -14,8 +14,8 @@ namespace Rubix\ML\Transformers;
  */
 class TextNormalizer implements Transformer
 {
-    const SPACES_REGEX = '/\s+/';
-    const SPACE = ' ';
+    protected const SPACES_REGEX = '/\s+/';
+    protected const SPACE = ' ';
 
     /**
      * Should we trim excess whitespace?

@@ -28,7 +28,7 @@ use RuntimeException;
  */
 class RandomForest implements Learner, Probabilistic, Persistable
 {
-    const AVAILABLE_TREES = [
+    protected const AVAILABLE_TREES = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
     ];

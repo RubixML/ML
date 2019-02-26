@@ -37,7 +37,7 @@ class GradientBoost implements Learner, Verbose, Persistable
 {
     use LoggerAware;
 
-    const AVAILABLE_BOOSTERS = [
+    public const AVAILABLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];

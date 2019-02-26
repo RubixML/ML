@@ -17,9 +17,9 @@ use RuntimeException;
 
 class SVRTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = -INF;
+    protected const TRAIN_SIZE = 300;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = -INF;
 
     protected $generator;
 

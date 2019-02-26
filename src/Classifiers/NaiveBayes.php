@@ -29,7 +29,7 @@ use RuntimeException;
  */
 class NaiveBayes implements Online, Probabilistic, Persistable
 {
-    const LOG_EPSILON = -18.420680744;
+    protected const LOG_EPSILON = -18.420680744;
 
     /**
      * The amount of additive (Laplace) smoothing to apply to the probabilities.

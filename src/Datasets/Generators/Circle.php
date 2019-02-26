@@ -19,7 +19,7 @@ use InvalidArgumentException;
  */
 class Circle implements Generator
 {
-    const TWO_PI = 2. * M_PI;
+    protected const TWO_PI = 2. * M_PI;
 
     /**
      * The center vector of the circle.

@@ -38,9 +38,7 @@ class Lottery implements Categorical
                 . ' at least 1 value.');
         }
 
-        $categories = array_values(array_unique($values));
-
-        $this->categories = $categories;
+        $this->categories = array_values(array_unique($values));
     }
 
     /**
@@ -51,7 +49,7 @@ class Lottery implements Categorical
      */
     public function guess() : string
     {
-        if (empty($this->categories)) {
+        if (!$this->categories) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 

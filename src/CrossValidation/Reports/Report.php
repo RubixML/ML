@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Reports;
 
 interface Report
 {
-    const EPSILON = 1e-8;
+    public const EPSILON = 1e-8;
 
     /**
      * The estimator types that this report is compatible with.

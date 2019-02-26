@@ -23,7 +23,7 @@ use RuntimeException;
  */
 class IntervalDiscretizer implements Stateful
 {
-    const START_CATEGORY = 'a';
+    protected const START_CATEGORY = 'a';
 
     /**
      * The number of bins per feature column.

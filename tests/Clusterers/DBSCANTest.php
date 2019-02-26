@@ -15,8 +15,8 @@ use InvalidArgumentException;
 
 class DBSCANTest extends TestCase
 {
-    const TEST_SIZE = 300;
-    const MIN_SCORE = 0.9;
+    protected const TEST_SIZE = 300;
+    protected const MIN_SCORE = 0.9;
 
     protected $generator;
 

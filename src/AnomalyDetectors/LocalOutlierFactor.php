@@ -32,7 +32,7 @@ use RuntimeException;
  */
 class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
 {
-    const THRESHOLD = 1.5;
+    protected const THRESHOLD = 1.5;
 
     /**
      * The number of nearest neighbors to consider a local region.

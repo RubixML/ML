@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 class ELUTest extends TestCase
 {
-    const TOLERANCE = 1e-10;
+    protected const TOLERANCE = 1e-10;
 
     protected $input;
 

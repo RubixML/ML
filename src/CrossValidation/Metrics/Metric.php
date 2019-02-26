@@ -4,7 +4,7 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 interface Metric
 {
-    const EPSILON = 1e-8;
+    public const EPSILON = 1e-8;
 
     /**
      * Return a tuple of the min and max output value for this metric.

@@ -20,8 +20,8 @@ use RuntimeException;
 
 class AdalineTest extends TestCase
 {
-    const TEST_SIZE = 5;
-    const MIN_SCORE = 0.6;
+    protected const TEST_SIZE = 5;
+    protected const MIN_SCORE = 0.6;
 
     protected $estimator;
 

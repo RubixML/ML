@@ -13,7 +13,7 @@ namespace Rubix\ML\Other\Tokenizers;
  */
 class Word implements Tokenizer
 {
-    const WORD_REGEX = '/\w+/u';
+    protected const WORD_REGEX = '/\w+/u';
 
     /**
      * Tokenize a block of text.

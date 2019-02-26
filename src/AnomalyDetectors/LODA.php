@@ -33,11 +33,11 @@ use RuntimeException;
  */
 class LODA implements Learner, Online, Ranking, Persistable
 {
-    const MIN_SPARSE_DIMENSIONS = 3;
+    protected const MIN_SPARSE_DIMENSIONS = 3;
 
-    const THRESHOLD = 5.5;
+    protected const THRESHOLD = 5.5;
 
-    const LOG_EPSILON = -16.118095651;
+    protected const LOG_EPSILON = -18.420680744;
 
     /**
      * The number of histograms in the ensemble.

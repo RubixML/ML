@@ -6,13 +6,13 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Estimator
 {
-    const CLASSIFIER = 1;
-    const REGRESSOR = 2;
-    const CLUSTERER = 3;
-    const DETECTOR = 4;
-    const EMBEDDER = 5;
+    public const CLASSIFIER = 1;
+    public const REGRESSOR = 2;
+    public const CLUSTERER = 3;
+    public const DETECTOR = 4;
+    public const EMBEDDER = 5;
 
-    const TYPES = [
+    public const TYPES = [
         self::CLASSIFIER => 'classifier',
         self::REGRESSOR => 'regressor',
         self::CLUSTERER => 'clusterer',
@@ -20,7 +20,7 @@ interface Estimator
         self::EMBEDDER => 'embedder',
     ];
 
-    const EPSILON = 1e-8;
+    public const EPSILON = 1e-8;
 
     /**
      * Return the integer encoded estimator type.

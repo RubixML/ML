@@ -18,9 +18,9 @@ use RuntimeException;
 
 class KNNRegressorTest extends TestCase
 {
-    const TRAIN_SIZE = 300;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = 0.9;
+    protected const TRAIN_SIZE = 300;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.9;
 
     protected $generator;
 

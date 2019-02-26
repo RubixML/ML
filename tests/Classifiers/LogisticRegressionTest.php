@@ -24,9 +24,9 @@ use RuntimeException;
 
 class LogisticRegressionTest extends TestCase
 {
-    const TRAIN_SIZE = 200;
-    const TEST_SIZE = 10;
-    const MIN_SCORE = 0.9;
+    protected const TRAIN_SIZE = 200;
+    protected const TEST_SIZE = 10;
+    protected const MIN_SCORE = 0.9;
 
     protected $generator;
 

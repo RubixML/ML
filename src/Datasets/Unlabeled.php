@@ -17,6 +17,8 @@ use InvalidArgumentException;
  */
 class Unlabeled extends DataFrame implements Dataset
 {
+    protected const PHI = 100000000;
+    
     /**
      * Build a new unlabeled dataset with validation.
      *

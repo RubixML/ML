@@ -15,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 
 class DummyClassifierTest extends TestCase
 {
-    const TRAIN_SIZE = 100;
-    const TEST_SIZE = 5;
-    const MIN_SCORE = 0.;
+    protected const TRAIN_SIZE = 100;
+    protected const TEST_SIZE = 5;
+    protected const MIN_SCORE = 0.;
 
     protected $estimator;
 
