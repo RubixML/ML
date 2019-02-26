@@ -1,6 +1,7 @@
 - Unreleased
     - Added LODA online anomaly detector
     - Added Ranking interface
+    - Changed Manifold namespace to Embedders
     - Isolation Forest and LOF are now Ranking
     - K Means is now Verbose
     - Added upper bound to contamination hyperparameter

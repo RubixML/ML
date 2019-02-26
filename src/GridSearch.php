@@ -173,7 +173,7 @@ class GridSearch implements Learner, Persistable, Verbose
                     $metric = new VMeasure();
                     break 1;
     
-                case self::DETECTOR:
+                case self::ANOMALY_DETECTOR:
                     $metric = new F1Score();
                     break 1;
     

@@ -26,7 +26,7 @@ class RSquaredTest extends TestCase
         $this->assertNotContains(Estimator::CLASSIFIER, $this->metric->compatibility());
         $this->assertContains(Estimator::REGRESSOR, $this->metric->compatibility());
         $this->assertNotContains(Estimator::CLUSTERER, $this->metric->compatibility());
-        $this->assertNotContains(Estimator::DETECTOR, $this->metric->compatibility());
+        $this->assertNotContains(Estimator::ANOMALY_DETECTOR, $this->metric->compatibility());
         $this->assertNotContains(Estimator::EMBEDDER, $this->metric->compatibility());
     }
 

@@ -261,8 +261,8 @@ Machine learning is the process by which a computer program is able to progressi
 	 - **Regression** aims at predicting *continuous* values such as the sale price of a house or the position (in degrees) of the steering wheel of an automobile. The major difference between classification and regression is that, while there are a *finite* number of classes that a sample can belong to, there are *infinitely* many real (continuous) values that are possible to predict.
 - **Unsupervised** learning by contrast does *not* use a labeled dataset. Instead, it focuses on finding patterns within the raw samples.
 	- **Clustering** is the grouping of data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating PET scan tissues or segmenting a customer base.
-	- **Anomaly Detection** is the process of flagging samples that do not conform to the expected pattern of the training data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
-	- **Manifold Learning** is a dimensionality reduction method used in visualizing high dimensional datasets by producing a low (1 - 3) dimensional representation of the feature space.
+	- **Anomaly Detection** is the process of flagging samples that appear to be generated from a mechanism other than one that produces nominal data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
+	- **Dimensionality Reduction** is used in visualizing high dimensional datasets, embedding sparse feature representations, and reducing model size by producing a low dimensional representation of the original feature space.
 
 ### Obtaining Data
 Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The goal is to engineer enough of the right features for the learner to be able to train effectively.
@@ -883,7 +883,7 @@ Meta-estimators enhance base estimators by adding additional functionality such 
 ### Bootstrap Aggregator
 Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. 
 
-> **Note**: Bootstrap Aggregator does not work with clusterers or manifold learners.
+> **Note**: Bootstrap Aggregator does not work with clusterers or embedders.
 
 ##### Interfaces: Learner | Persistable
 ##### Compatibility: Depends on base learner
@@ -2031,7 +2031,7 @@ public steps() : array
 
 #### Example:
 ```php
-use Rubi\ML\Manifold\TSNE;
+use Rubi\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
 $embedder = new TSNE(2, 30, 12., 10., new Manhattan(), 500, 1e-6, 5);

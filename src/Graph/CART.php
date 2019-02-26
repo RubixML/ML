@@ -123,7 +123,7 @@ abstract class CART implements BinaryTree
      */
     public function height() : int
     {
-        return isset($this->root) ? $this->root->height() : 0;
+        return $this->root ? $this->root->height() : 0;
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class CART implements BinaryTree
      */
     public function balance() : int
     {
-        return isset($this->root) ? $this->root->balance() : 0;
+        return $this->root ? $this->root->balance() : 0;
     }
 
     /**

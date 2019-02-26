@@ -31,7 +31,7 @@ class AggregateReportTest extends TestCase
     {
         $expected = [
             Estimator::CLASSIFIER,
-            ESTIMATOR::DETECTOR,
+            Estimator::ANOMALY_DETECTOR,
         ];
 
         $this->assertEquals($expected, $this->report->compatibility());

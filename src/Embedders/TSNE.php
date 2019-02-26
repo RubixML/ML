@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Manifold;
+namespace Rubix\ML\Embedders;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\Tests\Manifold;
+namespace Rubix\ML\Tests\Embedders;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
-use Rubix\ML\Manifold\TSNE;
+use Rubix\ML\Embedders\TSNE;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;

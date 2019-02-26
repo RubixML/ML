@@ -26,7 +26,7 @@ class F1ScoreTest extends TestCase
         $this->assertContains(Estimator::CLASSIFIER, $this->metric->compatibility());
         $this->assertNotContains(Estimator::REGRESSOR, $this->metric->compatibility());
         $this->assertNotContains(Estimator::CLUSTERER, $this->metric->compatibility());
-        $this->assertContains(Estimator::DETECTOR, $this->metric->compatibility());
+        $this->assertContains(Estimator::ANOMALY_DETECTOR, $this->metric->compatibility());
         $this->assertNotContains(Estimator::EMBEDDER, $this->metric->compatibility());
     }
 

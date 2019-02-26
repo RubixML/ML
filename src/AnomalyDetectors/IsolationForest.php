@@ -108,7 +108,7 @@ class IsolationForest implements Learner, Ranking, Persistable
      */
     public function type() : int
     {
-        return self::DETECTOR;
+        return self::ANOMALY_DETECTOR;
     }
 
     /**

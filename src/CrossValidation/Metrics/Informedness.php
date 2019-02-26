@@ -43,7 +43,7 @@ class Informedness implements Metric
     {
         return [
             Estimator::CLASSIFIER,
-            Estimator::DETECTOR,
+            Estimator::ANOMALY_DETECTOR,
         ];
     }
 

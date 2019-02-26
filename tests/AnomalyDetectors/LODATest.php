@@ -51,7 +51,7 @@ class LODATest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::DETECTOR, $this->estimator->type());
+        $this->assertEquals(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

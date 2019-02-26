@@ -54,7 +54,7 @@ class MulticlassBreakdown implements Report
     {
         return [
             Estimator::CLASSIFIER,
-            Estimator::DETECTOR,
+            Estimator::ANOMALY_DETECTOR,
         ];
     }
 

@@ -73,6 +73,13 @@ class RandomForest implements Learner, Probabilistic, Persistable
     ];
 
     /**
+     * The number of feature columns in the training set.
+     *
+     * @var int
+     */
+    protected $featureCount;
+
+    /**
      * @param \Rubix\ML\Learner|null $base
      * @param int $estimators
      * @param float $ratio
@@ -141,23 +148,19 @@ class RandomForest implements Learner, Probabilistic, Persistable
      */
     public function featureImportances() : array
     {
-        if (empty($this->forest)) {
+        if (!$this->forest or !$this->featureCount) {
             return [];
         }
 
-        $k = count($this->forest);
-
-        $importances = [];
+        $importances = array_fill(0, $this->featureCount, 0.);
 
         foreach ($this->forest as $tree) {
             foreach ($tree->featureImportances() as $column => $value) {
-                if (isset($importances[$column])) {
-                    $importances[$column] += $value;
-                } else {
-                    $importances[$column] = $value;
-                }
+                $importances[$column] += $value;
             }
         }
+
+        $k = count($this->forest);
 
         foreach ($importances as &$importance) {
             $importance /= $k;
@@ -181,6 +184,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
         }
 
         $this->classes = $dataset->possibleOutcomes();
+        $this->featureCount = $dataset->numColumns();
 
         $k = (int) round($this->ratio * $dataset->numRows());
 

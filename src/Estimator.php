@@ -9,14 +9,14 @@ interface Estimator
     public const CLASSIFIER = 1;
     public const REGRESSOR = 2;
     public const CLUSTERER = 3;
-    public const DETECTOR = 4;
+    public const ANOMALY_DETECTOR = 4;
     public const EMBEDDER = 5;
 
     public const TYPES = [
         self::CLASSIFIER => 'classifier',
         self::REGRESSOR => 'regressor',
         self::CLUSTERER => 'clusterer',
-        self::DETECTOR => 'anomaly detector',
+        self::ANOMALY_DETECTOR => 'anomaly detector',
         self::EMBEDDER => 'embedder',
     ];
 

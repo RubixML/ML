@@ -107,7 +107,7 @@ class OneClassSVM implements Learner, Persistable
      */
     public function type() : int
     {
-        return self::DETECTOR;
+        return self::ANOMALY_DETECTOR;
     }
 
     /**

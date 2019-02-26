@@ -28,7 +28,7 @@ class BootstrapAggregator implements Learner, Persistable
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
-        self::DETECTOR,
+        self::ANOMALY_DETECTOR,
     ];
 
     /**
@@ -171,7 +171,7 @@ class BootstrapAggregator implements Learner, Persistable
                     return Argmax::compute(array_count_values($outcomes));
                 }, $aggregate);
 
-            case self::DETECTOR:
+            case self::ANOMALY_DETECTOR:
                 return array_map(function ($outcomes) {
                     return Stats::mean($outcomes) > 0.5 ? 1 : 0;
                 }, $aggregate);
