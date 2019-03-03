@@ -75,16 +75,6 @@ class Neighborhood extends BinaryNode implements BoundingBox, Leaf
     }
 
     /**
-     * Return a tuple of the samples and labels stored in the neighborhood.
-     *
-     * @return array[]
-     */
-    public function neighbors() : array
-    {
-        return [$this->samples, $this->labels];
-    }
-
-    /**
      * Return the samples in the neighborhood.
      *
      * @return array[]

@@ -4,9 +4,7 @@ namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\BoundingBox;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Coordinate;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -112,7 +110,7 @@ class KDTree implements BinaryTree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->root = $this->findBestSplit($dataset);
+        $this->root = new Coordinate($dataset);
 
         $stack = [$this->root];
 
@@ -126,7 +124,7 @@ class KDTree implements BinaryTree
             [$left, $right] = $current->groups();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left);
+                $node = new Coordinate($left);
     
                 $current->attachLeft($node);
 
@@ -136,7 +134,7 @@ class KDTree implements BinaryTree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right);
+                $node = new Coordinate($right);
     
                 $current->attachRight($node);
 
@@ -147,25 +145,6 @@ class KDTree implements BinaryTree
 
             $current->cleanup();
         }
-    }
-
-    /**
-     * Find the best split of a given subset of the training data.
-     *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Coordinate
-     */
-    protected function findBestSplit(Labeled $dataset) : Coordinate
-    {
-        $columns = $dataset->columns();
-
-        $variances = array_map([Stats::class, 'variance'], $columns);
-
-        $column = Argmax::compute($variances);
-
-        $value = Stats::median($columns[$column]);
-
-        return new Coordinate($column, $value, $dataset);
     }
 
     /**
@@ -233,13 +212,11 @@ class KDTree implements BinaryTree
                 $visited->attach($current);
 
                 if ($current instanceof Neighborhood) {
-                    [$samples, $lHat] = $current->neighbors();
-
-                    foreach ($samples as $neighbor) {
+                    foreach ($current->samples() as $neighbor) {
                         $distances[] = $this->kernel->compute($sample, $neighbor);
                     }
 
-                    $labels = array_merge($labels, $lHat);
+                    $labels = array_merge($labels, $current->labels());
 
                     array_multisort($distances, $labels);
                 }

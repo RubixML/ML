@@ -10,6 +10,7 @@
     - K Means is no longer Online
     - Removed Sign function
     - Added Binary Tree interface
+    - Added bin count heuristic to LODA
 
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset

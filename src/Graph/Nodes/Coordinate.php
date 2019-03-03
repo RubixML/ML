@@ -3,6 +3,8 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Functions\Argmax;
 
 /**
  * Coordinate
@@ -32,15 +34,21 @@ class Coordinate extends Split implements BoundingBox
     protected $max;
 
     /**
-     * @param int $column
-     * @param mixed $value
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
-    public function __construct(int $column, $value, Dataset $dataset)
+    public function __construct(Dataset $dataset)
     {
+        $columns = $dataset->columns();
+
+        $variances = array_map([Stats::class, 'variance'], $columns);
+
+        $column = Argmax::compute($variances);
+
+        $value = Stats::median($columns[$column]);
+
         $min = $max = [];
 
-        foreach ($dataset->columns() as $values) {
+        foreach ($columns as $values) {
             $min[] = min($values);
             $max[] = max($values);
         }
