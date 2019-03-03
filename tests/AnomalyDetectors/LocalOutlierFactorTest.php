@@ -10,7 +10,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
@@ -38,7 +37,7 @@ class LocalOutlierFactorTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new LocalOutlierFactor(20, 0.1, new Euclidean());
+        $this->estimator = new LocalOutlierFactor(20, 0.1);
 
         $this->metric = new F1Score();
     }

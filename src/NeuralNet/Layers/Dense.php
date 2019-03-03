@@ -71,7 +71,7 @@ class Dense implements Hidden, Parametric
         }
 
         $this->neurons = $neurons;
-        $this->initializer = $initializer ?: new He();
+        $this->initializer = $initializer ?? new He();
     }
 
     /**

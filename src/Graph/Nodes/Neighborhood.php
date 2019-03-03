@@ -8,13 +8,13 @@ use Rubix\ML\Datasets\Labeled;
  * Neighborhood
  *
  * Neighborhoods represent a group of samples that are close to
- * each other in distsance but not necessarily the closest.
+ * each other in distance but not necessarily the closest.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood extends BinaryNode implements Spatial, Leaf
+class Neighborhood extends BinaryNode implements BoundingBox, Leaf
 {
     /**
      * The samples that make up the neighborhood.
@@ -65,7 +65,7 @@ class Neighborhood extends BinaryNode implements Spatial, Leaf
     }
 
     /**
-     * Return the bounding box around this node.
+     * Return the bounding box surrounding this node.
      *
      * @return array[]
      */

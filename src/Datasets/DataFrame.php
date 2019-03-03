@@ -14,13 +14,12 @@ use Countable;
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
-     * The feature vectors of the dataset. i.e the data table.
+     * The rows of samples and columns of features that make up the
+     * data table i.e. the fixed-length feature vectors.
      *
      * @var array
      */
-    protected $samples = [
-        //
-    ];
+    protected $samples;
 
     /**
      * @param array $samples
@@ -30,11 +29,11 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     public function __construct(array $samples = [], bool $validate = true)
     {
         if ($validate) {
-            $samples = array_values($samples);
-
             $n = !empty($samples)
-                ? is_array($samples[0]) ? count($samples[0]) : 1
+                ? is_array(reset($samples)) ? count(reset($samples)) : 1
                 : 0;
+
+            $samples = array_values($samples);
 
             foreach ($samples as &$sample) {
                 $sample = is_array($sample)
@@ -55,7 +54,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Return the sample matrix.
      *
-     * @return array
+     * @return array[]
      */
     public function samples() : array
     {
@@ -101,7 +100,9 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function numColumns() : int
     {
-        return isset($this->samples[0]) ? count($this->samples[0]) : 0;
+        $sample = reset($this->samples);
+
+        return $sample ? count($sample) : 0;
     }
 
     /**
@@ -145,19 +146,19 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function columnType(int $index) : int
     {
-        if ($this->empty()) {
+        if (empty($this->samples)) {
             throw new RuntimeException('Cannot determine data type'
                 . ' of an empty data frame.');
         }
 
-        if (!isset($this->samples[0][$index])) {
+        $sample = reset($this->samples);
+
+        if (!isset($sample[$index])) {
             throw new InvalidArgumentException("Column $index does"
              . ' not exist.');
         }
 
-        $feature = $this->samples[0][$index];
-
-        return DataType::determine($feature);
+        return DataType::determine($sample[$index]);
     }
 
     /**
@@ -267,7 +268,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
     }
 
     /**
-     * Does a given row exist in the dataset.
+     * Does a given row exist in the dataframe.
      *
      * @param mixed $index
      * @return bool

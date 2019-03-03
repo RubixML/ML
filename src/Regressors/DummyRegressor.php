@@ -44,7 +44,7 @@ class DummyRegressor implements Learner, Persistable
      */
     public function __construct(?Continuous $strategy = null)
     {
-        $this->strategy = $strategy ?: new Mean();
+        $this->strategy = $strategy ?? new Mean();
         $this->trained = false;
     }
 

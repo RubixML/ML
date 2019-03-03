@@ -85,7 +85,7 @@ class Continuous implements Output
         }
 
         $this->alpha = $alpha;
-        $this->costFn = $costFn ?: new LeastSquares();
+        $this->costFn = $costFn ?? new LeastSquares();
         $this->initializer = new Xavier2();
     }
 

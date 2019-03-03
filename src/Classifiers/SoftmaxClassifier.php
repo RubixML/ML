@@ -144,11 +144,11 @@ class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
         }
 
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?: new Adam();
+        $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?: new CrossEntropy();
+        $this->costFn = $costFn ?? new CrossEntropy();
     }
 
     /**

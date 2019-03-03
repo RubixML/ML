@@ -87,7 +87,7 @@ class RandomForest implements Learner, Probabilistic, Persistable
      */
     public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
     {
-        $base = $base ?: new ClassificationTree();
+        $base = $base ?? new ClassificationTree();
 
         if (!in_array(get_class($base), self::AVAILABLE_TREES)) {
             throw new InvalidArgumentException('Base estimator is not'

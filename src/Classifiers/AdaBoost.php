@@ -134,7 +134,7 @@ class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
         float $ratio = 0.8,
         float $tolerance = 1e-3
     ) {
-        $base = $base ?: new ClassificationTree(1);
+        $base = $base ?? new ClassificationTree(1);
 
         if ($base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'

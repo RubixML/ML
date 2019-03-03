@@ -112,7 +112,7 @@ class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
 
         $this->k = $k;
         $this->contamination = $contamination;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -203,7 +203,7 @@ class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
     }
 
     /**
-     * Apply an arbitrary scoring function over the dataset.
+     * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

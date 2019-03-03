@@ -201,7 +201,7 @@ class TSNE implements Estimator, Verbose
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->rate = $rate;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->early = (int) max(250, round($epochs / 4));
         $this->minGradient = $minGradient;

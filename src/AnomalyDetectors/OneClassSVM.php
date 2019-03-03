@@ -74,7 +74,7 @@ class OneClassSVM implements Learner, Persistable
                 . ", $nu given.");
         }
 
-        $kernel = $kernel ?: new RBF();
+        $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'

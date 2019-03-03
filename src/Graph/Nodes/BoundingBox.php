@@ -2,10 +2,10 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-interface Spatial extends Node
+interface BoundingBox extends Node
 {
     /**
-     * Return the bounding box around this node.
+     * Return the bounding box surrounding this node.
      *
      * @return array[]
      */

@@ -119,7 +119,7 @@ class Binary implements Output
 
         $this->classes = array_flip(array_values($classes));
         $this->alpha = $alpha;
-        $this->costFn = $costFn ?: new CrossEntropy();
+        $this->costFn = $costFn ?? new CrossEntropy();
         $this->initializer = new Xavier1();
         $this->activationFn = new Sigmoid();
     }

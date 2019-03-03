@@ -81,7 +81,7 @@ class KMeans implements Learner, Persistable, Verbose
         }
 
         $this->k = $k;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
     }
 

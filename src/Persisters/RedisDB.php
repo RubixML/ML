@@ -108,7 +108,7 @@ class RedisDB implements Persister
         $this->key = $key;
         $this->history = $history;
         $this->connector = $connector;
-        $this->serializer = $serializer ?: new Native();
+        $this->serializer = $serializer ?? new Native();
     }
 
     /**

@@ -84,7 +84,7 @@ class KNNRegressor implements Online, Persistable
         }
 
         $this->k = $k;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
         $this->weighted = $weighted;
     }
 

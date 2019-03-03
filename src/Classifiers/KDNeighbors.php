@@ -20,7 +20,7 @@ use RuntimeException;
  * A fast K Nearest Neighbors algorithm that uses a K-d tree to divide the
  * training set into neighborhoods whose max size are controlled by the max
  * leaf size parameter. K-d Neighbors does a binary search to locate the
- * nearest neighborhood and then prunes all neighborhood whose bounding box
+ * nearest neighborhood and then prunes all neighborhoods whose bounding box
  * is further than the kth nearest neighbor found so far. The main advantage
  * K-d Neighbors has over regular brute force KNN is that it is faster, however
  * it cannot be partially trained.

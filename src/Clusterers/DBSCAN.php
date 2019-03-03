@@ -28,7 +28,7 @@ use InvalidArgumentException;
  */
 class DBSCAN implements Estimator
 {
-    protected const NOISE = -1;
+    public const NOISE = -1;
 
     /**
      * The maximum distance between two points to be considered neighbors. The
@@ -65,14 +65,14 @@ class DBSCAN implements Estimator
                 . " greater than 0, $radius given.");
         }
 
-        if ($minDensity < 0) {
+        if ($minDensity <= 0) {
             throw new InvalidArgumentException('Minimum density must be'
                 . " greater than 0, $minDensity given.");
         }
 
         $this->radius = $radius;
         $this->minDensity = $minDensity;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**

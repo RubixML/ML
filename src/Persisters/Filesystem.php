@@ -64,7 +64,7 @@ class Filesystem implements Persister
 
         $this->path = $path;
         $this->history = $history;
-        $this->serializer = $serializer ?: new Native();
+        $this->serializer = $serializer ?? new Native();
     }
 
     /**

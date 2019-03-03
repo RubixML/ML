@@ -211,13 +211,13 @@ class MLPRegressor implements Online, Verbose, Persistable
 
         $this->hidden = $hidden;
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?: new Adam();
+        $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?: new LeastSquares();
+        $this->costFn = $costFn ?? new LeastSquares();
         $this->holdout = $holdout;
-        $this->metric = $metric ?: new MeanSquaredError();
+        $this->metric = $metric ?? new MeanSquaredError();
         $this->window = $window;
     }
 

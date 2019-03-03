@@ -135,7 +135,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         $this->c = $c;
         $this->fuzz = $fuzz;
         $this->lambda = 2. / ($fuzz - 1.);
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
     }

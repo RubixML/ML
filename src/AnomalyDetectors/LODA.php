@@ -9,7 +9,6 @@ use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -26,6 +25,7 @@ use RuntimeException;
  *
  * References:
  * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
+ * [2] L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -35,9 +35,14 @@ class LODA implements Learner, Online, Ranking, Persistable
 {
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
-    protected const THRESHOLD = 5.5;
-
     protected const LOG_EPSILON = -18.420680744;
+
+    /**
+     * The threshold anomaly score to be flagged as an outlier.
+     *
+     * @var float
+     */
+    protected $threshold;
 
     /**
      * The number of histograms in the ensemble.
@@ -49,17 +54,9 @@ class LODA implements Learner, Online, Ranking, Persistable
     /**
      * The number of bins in each equi-width histogram.
      *
-     * @var int
+     * @var int|null
      */
     protected $bins;
-
-    /**
-     * The amount of contamination (outliers) that is presumed to be in
-     * the training set as a percentage.
-     *
-     * @var float
-     */
-    protected $contamination;
 
     /**
      * The random projection matrix.
@@ -83,38 +80,31 @@ class LODA implements Learner, Online, Ranking, Persistable
     protected $n;
 
     /**
-     * The threshold likelihood to be considered an outlier.
-     *
-     * @var float|null
-     */
-    protected $offset;
-
-    /**
+     * @param float $threshold
      * @param int $k
-     * @param int $bins
-     * @param float $contamination
+     * @param int|null $bins
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 100, int $bins = 5, float $contamination = 0.1)
+    public function __construct(float $threshold = 5.5, int $k = 100, ?int $bins = null)
     {
+        if ($threshold < 0.) {
+            throw new InvalidArgumentException('Threshold must be'
+                . " greater than 0, $threshold given.");
+        }
+
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 histogram is'
                 . " requied to make a prediction, $k given.");
         }
 
-        if ($bins < 1) {
+        if (isset($bins) and $bins < 1) {
             throw new InvalidArgumentException('The number of bins cannot'
                 . " be less than 1, $bins given.");
         }
 
-        if ($contamination < 0. or $contamination > 0.5) {
-            throw new InvalidArgumentException('Contamination must be'
-                . " between 0 and 0.5, $contamination given.");
-        }
-
+        $this->threshold = $threshold;
         $this->k = $k;
         $this->bins = $bins;
-        $this->contamination = $contamination;
     }
 
     /**
@@ -146,7 +136,7 @@ class LODA implements Learner, Online, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return $this->r and $this->histograms and $this->offset;
+        return $this->r and $this->histograms;
     }
 
     /**
@@ -160,6 +150,8 @@ class LODA implements Learner, Online, Ranking, Persistable
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         [$m, $n] = $dataset->shape();
+
+        $this->bins = $this->bins ?: (int) round(log($m, 2)) + 1;
 
         $r = Matrix::gaussian($n, $this->k);
 
@@ -210,12 +202,6 @@ class LODA implements Learner, Online, Ranking, Persistable
         }
 
         $this->n = $m;
-
-        $likelihoods = $this->logLikelihood($z);
-
-        $shift = Stats::percentile($likelihoods, 100. * $this->contamination);
-        
-        $this->offset = self::THRESHOLD + $shift;
     }
 
     /**
@@ -279,7 +265,7 @@ class LODA implements Learner, Online, Ranking, Persistable
     }
 
     /**
-     * Apply an arbitrary scoring function over the dataset.
+     * Apply an arbitrary unnormalized scoring function over the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -288,7 +274,7 @@ class LODA implements Learner, Online, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if (!$this->r or $this->offset === null) {
+        if (!$this->r or !$this->histograms) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -358,6 +344,6 @@ class LODA implements Learner, Online, Ranking, Persistable
      */
     protected function decide(float $likelihood) : int
     {
-        return $likelihood > $this->offset ? 1 : 0;
+        return $likelihood > $this->threshold ? 1 : 0;
     }
 }

@@ -44,7 +44,7 @@ class DummyClassifier implements Learner, Persistable
      */
     public function __construct(?Categorical $strategy = null)
     {
-        $this->strategy = $strategy ?: new PopularityContest();
+        $this->strategy = $strategy ?? new PopularityContest();
         $this->trained = false;
     }
 

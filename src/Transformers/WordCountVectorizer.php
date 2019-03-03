@@ -77,7 +77,7 @@ class WordCountVectorizer implements Stateful
 
         $this->maxVocabulary = $maxVocabulary;
         $this->minDocumentFrequency = $minDocumentFrequency;
-        $this->tokenizer = $tokenizer ?: new Word();
+        $this->tokenizer = $tokenizer ?? new Word();
     }
 
     /**

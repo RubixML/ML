@@ -66,8 +66,8 @@ class MissingDataImputer implements Stateful
         }
 
         $this->placeholder = $placeholder;
-        $this->continuous = $continuous ?: new Mean();
-        $this->categorical = $categorical ?: new KMostFrequent();
+        $this->continuous = $continuous ?? new Mean();
+        $this->categorical = $categorical ?? new KMostFrequent();
     }
 
     /**

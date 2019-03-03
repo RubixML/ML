@@ -84,7 +84,7 @@ class SVR implements Learner, Persistable
                 . " $epsilon given.");
         }
 
-        $kernel = $kernel ?: new RBF();
+        $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.) {
             throw new InvalidArgumentException('Tolerance cannot be less than 0,'

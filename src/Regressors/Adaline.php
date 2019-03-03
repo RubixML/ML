@@ -139,11 +139,11 @@ class Adaline implements Online, Verbose, Persistable
         }
 
         $this->batchSize = $batchSize;
-        $this->optimizer = $optimizer ?: new Adam();
+        $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->costFn = $costFn ?: new LeastSquares();
+        $this->costFn = $costFn ?? new LeastSquares();
     }
 
     /**

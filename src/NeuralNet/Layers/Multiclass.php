@@ -118,7 +118,7 @@ class Multiclass implements Output
 
         $this->classes = $classes;
         $this->alpha = $alpha;
-        $this->costFn = $costFn ?: new CrossEntropy();
+        $this->costFn = $costFn ?? new CrossEntropy();
         $this->initializer = new Xavier1();
         $this->activationFn = new Softmax();
     }

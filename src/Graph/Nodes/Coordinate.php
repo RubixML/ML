@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Dataset;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Coordinate extends Split implements Spatial
+class Coordinate extends Split implements BoundingBox
 {
     /**
      * The multivariate minimum of the bounding box around the samples
@@ -54,7 +54,7 @@ class Coordinate extends Split implements Spatial
     }
 
     /**
-     * Return the bounding box around this node.
+     * Return the bounding box surrounding this node.
      *
      * @return array[]
      */

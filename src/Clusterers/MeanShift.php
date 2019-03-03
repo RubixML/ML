@@ -116,7 +116,7 @@ class MeanShift implements Learner, Verbose, Persistable
 
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
     }

@@ -186,7 +186,7 @@ class GridSearch implements Learner, Persistable, Verbose
         $this->grid = $grid;
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
-        $this->validator = $validator ?: new KFold(5);
+        $this->validator = $validator ?? new KFold(5);
         $this->retrain = $retrain;
         $this->estimator = $proxy;
     }

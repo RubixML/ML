@@ -3,7 +3,7 @@
 namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Spatial;
+use Rubix\ML\Graph\Nodes\BoundingBox;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Other\Functions\Argmax;
@@ -63,7 +63,7 @@ class KDTree implements BinaryTree
         }
 
         $this->maxLeafSize = $maxLeafSize;
-        $this->kernel = $kernel ?: new Euclidean();
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -81,7 +81,7 @@ class KDTree implements BinaryTree
      */
     public function height() : int
     {
-        return isset($this->root) ? $this->root->height() : 0;
+        return $this->root ? $this->root->height() : 0;
     }
 
     /**
@@ -91,7 +91,7 @@ class KDTree implements BinaryTree
      */
     public function balance() : int
     {
-        return isset($this->root) ? $this->root->balance() : 0;
+        return $this->root ? $this->root->balance() : 0;
     }
 
     /**
@@ -248,7 +248,7 @@ class KDTree implements BinaryTree
 
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
-                        if ($child instanceof Spatial) {
+                        if ($child instanceof BoundingBox) {
                             foreach ($child->box() as $side) {
                                 $distance = $this->kernel->compute($sample, $side);
         
