@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Average extends BinaryNode implements Decision, Leaf
+class Average extends BinaryNode implements Purity, Leaf
 {
     /**
      * The outcome of the decision as an average of the labels

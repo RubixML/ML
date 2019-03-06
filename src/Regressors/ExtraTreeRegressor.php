@@ -3,7 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Decision;
 
 /**
  * Extra Tree Regressor
@@ -29,9 +29,9 @@ class ExtraTreeRegressor extends RegressionTree
      * impurity among a random selection of $maxFeatures features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Decision
     {
         $bestVariance = INF;
         $bestColumn = $bestValue = null;
@@ -62,6 +62,6 @@ class ExtraTreeRegressor extends RegressionTree
             }
         }
 
-        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
 }

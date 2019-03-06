@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
+use InvalidArgumentException;
 
 /**
  * Neighborhood
@@ -47,10 +48,16 @@ class Neighborhood extends BinaryNode implements BoundingBox, Leaf
     protected $max;
 
     /**
+     * Terminate a branch with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return self
      */
-    public function __construct(Labeled $dataset)
+    public static function terminate(Labeled $dataset) : self
     {
+        $samples = $dataset->samples();
+        $labels = $dataset->labels();
+
         $min = $max = [];
 
         foreach ($dataset->columns() as $values) {
@@ -58,10 +65,40 @@ class Neighborhood extends BinaryNode implements BoundingBox, Leaf
             $max[] = max($values);
         }
 
+        return new self($samples, $labels, $min, $max);
+    }
+
+    /**
+     * @param array $samples
+     * @param array $labels
+     * @param array $min
+     * @param array $max
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $samples, array $labels, array $min, array $max)
+    {
+        if (empty($samples)) {
+            throw new InvalidArgumentException('Cluster cannot be empty');
+        }
+
+        if (count($samples) !== count($labels)) {
+            throw new InvalidArgumentException('The number of samples'
+                . ' must be equal to the number of labels.');
+        }
+
+        if (empty($min)) {
+            throw new InvalidArgumentException('Bounding box cannot be empty');
+        }
+
+        if (count($min) !== count($max)) {
+            throw new InvalidArgumentException('Min and max vectors must be'
+                . ' the same dimensionality.');
+        }
+
+        $this->samples = $samples;
+        $this->labels = $labels;
         $this->min = $min;
         $this->max = $max;
-        $this->samples = $dataset->samples();
-        $this->labels = $dataset->labels();
     }
 
     /**
@@ -92,15 +129,5 @@ class Neighborhood extends BinaryNode implements BoundingBox, Leaf
     public function labels() : array
     {
         return $this->labels;
-    }
-
-    /**
-     * Return the number of samples that this neighborhood holds.
-     *
-     * @return int
-     */
-    public function n() : int
-    {
-        return count($this->samples);
     }
 }

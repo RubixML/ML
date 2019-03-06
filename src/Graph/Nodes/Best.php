@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Best extends BinaryNode implements Decision, Leaf
+class Best extends BinaryNode implements Purity, Leaf
 {
     /**
      * The outcome of the decision as the most probable i.e best.

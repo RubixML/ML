@@ -2,9 +2,10 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
+use InvalidArgumentException;
 
 /**
  * Coordinate
@@ -15,28 +16,45 @@ use Rubix\ML\Other\Functions\Argmax;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Coordinate extends Split implements BoundingBox
+class Coordinate extends BinaryNode implements BoundingBox
 {
     /**
-     * The multivariate minimum of the bounding box around the samples
-     * in the neighborhood.
+     * The feature column (index) of the split value.
      *
-     * @var array
+     * @var int
      */
-    protected $min;
+    protected $column;
 
     /**
-     * The multivariate maximum of the bounding box around the samples
-     * in the neighborhood.
+     * The value that the node splits on.
      *
-     * @var array
+     * @var int|float|string
      */
-    protected $max;
+    protected $value;
 
     /**
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * The left and right splits of the training data.
+     *
+     * @var \Rubix\ML\Datasets\Labeled[]
      */
-    public function __construct(Dataset $dataset)
+    protected $groups;
+
+    /**
+     * The bounding box that surrounds the node.
+     *
+     * @var array[]
+     */
+    protected $box;
+
+    /**
+     * Factory method to build a coordinate node from a labeled dataset
+     * using the column with the highest variance as the column for the
+     * split.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return self
+     */
+    public static function split(Labeled $dataset) : self
     {
         $columns = $dataset->columns();
 
@@ -46,6 +64,8 @@ class Coordinate extends Split implements BoundingBox
 
         $value = Stats::median($columns[$column]);
 
+        $groups = $dataset->partition($column, $value);
+
         $min = $max = [];
 
         foreach ($columns as $values) {
@@ -53,12 +73,79 @@ class Coordinate extends Split implements BoundingBox
             $max[] = max($values);
         }
 
-        $groups = $dataset->partition($column, $value);
+        return new self($column, $value, $groups, $min, $max);
+    }
 
-        $this->min = $min;
-        $this->max = $max;
+    /**
+     * @param int $column
+     * @param mixed $value
+     * @param array $groups
+     * @param array $min
+     * @param array $max
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(int $column, $value, array $groups, array $min, array $max)
+    {
+        if (!is_string($value) and !is_numeric($value)) {
+            throw new InvalidArgumentException('Split value must be a string'
+                . ' or numeric type, ' . gettype($value) . ' given.');
+        }
 
-        parent::__construct($column, $value, $groups);
+        if (count($groups) !== 2) {
+            throw new InvalidArgumentException('The number of groups'
+                . ' must be exactly 2.');
+        }
+
+        foreach ($groups as $group) {
+            if (!$group instanceof Labeled) {
+                throw new InvalidArgumentException('Sample groups must be'
+                    . ' dataset objects, ' . gettype($group) . ' given.');
+            }
+        }
+
+        if (empty($min)) {
+            throw new InvalidArgumentException('Bounding box cannot be empty');
+        }
+
+        if (count($min) !== count($max)) {
+            throw new InvalidArgumentException('Min and max vectors must be'
+                . ' the same dimensionality.');
+        }
+
+        $this->column = $column;
+        $this->value = $value;
+        $this->groups = $groups;
+        $this->box = [$min, $max];
+    }
+
+    /**
+     * Return the feature column (index) of the split value.
+     *
+     * @return int
+     */
+    public function column() : int
+    {
+        return $this->column;
+    }
+
+    /**
+     * Return the split value.
+     *
+     * @return int|float|string
+     */
+    public function value()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Return the left and right splits of the training data.
+     *
+     * @return array
+     */
+    public function groups() : array
+    {
+        return $this->groups;
     }
 
     /**
@@ -68,6 +155,14 @@ class Coordinate extends Split implements BoundingBox
      */
     public function box() : array
     {
-        return [$this->min, $this->max];
+        return $this->box;
+    }
+
+    /**
+     * Remove the left and right splits of the training data.
+     */
+    public function cleanup() : void
+    {
+        unset($this->groups);
     }
 }

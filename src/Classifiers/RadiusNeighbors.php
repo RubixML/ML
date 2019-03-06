@@ -4,8 +4,8 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
@@ -16,28 +16,29 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * K-d Neighbors
+ * Radius Neighbors
  *
- * A fast K Nearest Neighbors algorithm that uses a K-d tree to divide the
- * training set into neighborhoods whose max size are controlled by the max
- * leaf size parameter. K-d Neighbors does a binary search to locate the
- * nearest neighborhood and then prunes all neighborhoods whose bounding box
- * is further than the kth nearest neighbor found so far. The main advantage
- * K-d Neighbors has over regular brute force KNN is that it is faster, however
- * it cannot be partially trained.
+ * Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
+ * of each neighbor within a fixed user-defined radius measured by a kernel distance
+ * function.
+ *
+ * > **Note**: Unknown samples that have 0 samples from the training set that are
+ * within radius will be labeled as outliers (-1).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
+class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persistable
 {
+    public const OUTLIER = -1;
+
     /**
-     * The number of neighbors to consider when making a prediction.
+     * The radius within which points are considered neighboors.
      *
-     * @var int
+     * @var float
      */
-    protected $k;
+    protected $radius;
 
     /**
      * Should we use the inverse distances as confidence scores when
@@ -57,29 +58,24 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     ];
 
     /**
-     * @param int $k
+     * @param float $radius
      * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        int $k = 3,
+        float $radius = 1.0,
         int $maxLeafSize = 20,
         ?Distance $kernel = null,
         bool $weighted = true
     ) {
-        if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 neighbor is required'
-                . " to make a prediction, $k given.");
+        if ($radius <= 0.) {
+            throw new InvalidArgumentException('Radius must be'
+                . " greater than 0, $radius given.");
         }
 
-        if ($k > $maxLeafSize) {
-            throw new InvalidArgumentException('K cannot be larger than the max'
-                . " leaf size, $k given but $maxLeafSize allowed.");
-        }
-
-        $this->k = $k;
+        $this->radius = $radius;
         $this->weighted = $weighted;
 
         parent::__construct($maxLeafSize, $kernel);
@@ -157,7 +153,13 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->neighbors($sample, $this->k);
+            [$labels, $distances] = $this->range($sample, $this->radius);
+
+            if (empty($labels)) {
+                $predictions[] = self::OUTLIER;
+
+                continue 1;
+            }
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -197,7 +199,13 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->neighbors($sample, $this->k);
+            [$labels, $distances] = $this->range($sample, $this->radius);
+
+            if (empty($labels)) {
+                $probabilities[] = null;
+
+                continue 1;
+            }
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);

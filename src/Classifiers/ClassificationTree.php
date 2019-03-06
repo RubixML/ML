@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -218,9 +218,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Decision
     {
         $bestGini = INF;
         $bestColumn = $bestValue = null;
@@ -249,7 +249,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             }
         }
 
-        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestGini);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestGini);
     }
 
     /**

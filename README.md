@@ -5,7 +5,7 @@
 A high-level machine learning library that allows you to build programs that learn from data using the [PHP](https://php.net) language.
 
 - **Easy** and fast prototyping with user-friendly API
-- **30+** modern *supervised* and *unsupervised* learners
+- **40+** modern *supervised* and *unsupervised* learners
 - **Modular** architecture combines power and flexibility
 - **Open source** and free to use commercially
 
@@ -47,12 +47,6 @@ $ composer require rubix/ml
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
-	- [Meta-Estimators](#meta-estimators)
-		- [Bootstrap Aggregator](#bootstrap-aggregator)
-		- [Grid Search](#grid-search)
-		- [Model Orchestra](#model-orchestra)
-		- [Persistent Model](#persistent-model)
-		- [Pipeline](#pipeline)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -72,6 +66,7 @@ $ composer require rubix/ml
 			- [Logistic Regression](#logistic-regression)
 			- [Multi Layer Perceptron](#multi-layer-perceptron)
 			- [Naive Bayes](#naive-bayes)
+			- [Radius Neighbors](#radius-neighbors)
 			- [Random Forest](#random-forest)
 			- [Softmax Classifier](#softmax-classifier)
 			- [SVC](#svc)
@@ -91,9 +86,16 @@ $ composer require rubix/ml
 			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
 			- [KNN Regressor](#knn-regressor)
 			- [MLP Regressor](#mlp-regressor)
+			- [Radius Neighbors Regressor](#radius-neighbors-regressor)
 			- [Regression Tree](#regression-tree)
 			- [Ridge](#ridge)
 			- [SVR](#svr)
+		- [Meta-Estimators](#meta-estimators)
+			- [Bootstrap Aggregator](#bootstrap-aggregator)
+			- [Grid Search](#grid-search)
+			- [Model Orchestra](#model-orchestra)
+			- [Persistent Model](#persistent-model)
+			- [Pipeline](#pipeline)
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
@@ -328,7 +330,6 @@ Training is the process of feeding the learning algorithm data so that it can bu
 
 Passing the Labeled dataset to the instantiated learner, we can train our K Nearest Neighbors classifier like so:
 ```php
-...
 $estimator->train($dataset);
 ```
 
@@ -383,7 +384,6 @@ To return a score from the Hold Out validator using the Accuracy metric just pas
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-...
 $validator = new HoldOut(0.2);
 
 $score = $validator->test($estimator, $dataset, new Accuracy());
@@ -594,7 +594,6 @@ public sortByColumn(int $index, bool $descending = false) : self
 
 #### Example:
 ```php
-...
 var_dump($dataset->samples());
 
 $dataset->sortByColumn(2, false);
@@ -663,7 +662,6 @@ public apply(Transformer $transformer) : void
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
-...
 $transformer = new OneHotEncoder();
 
 $transformer->fit($dataset);
@@ -823,7 +821,6 @@ array(2) {
 
 #### Example:
 ```php
-...
 // Fold the dataset into 5 equal size stratified subsets
 $folds = $dataset->stratifiedFold(5);
 
@@ -864,7 +861,6 @@ public static fromIterator(iterable $samples) : self
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-...
 $dataset = Unlabeled::build($samples);  // Build a new dataset with validation
 
 // or ...
@@ -874,209 +870,6 @@ $dataset = Unlabeled::quick($samples);  // Build a new dataset without validatio
 // or ...
 
 $dataset = new Unlabeled($samples, true);  // Use the full constructor
-```
-
----
-### Meta-Estimators
-Meta-estimators enhance base estimators by adding additional functionality such as [data preprocessing](#pipeline), [model persistence](#persistent-model), and [model averaging](#bootstrap-aggregator). Meta-estimators take on the type (*Classifier*, *Regressor*, etc.) of the base estimator they wrap and allow methods on the base estimator to be called from the parent.
-
-### Bootstrap Aggregator
-Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. 
-
-> **Note**: Bootstrap Aggregator does not work with clusterers or embedders.
-
-##### Interfaces: Learner | Persistable
-##### Compatibility: Depends on base learner
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | base | | object | The base estimator to be used in the ensemble. |
-| 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
-| 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
-
-#### Additional Methods:
-This meta estimator does not have any additional methods.
-
-#### Example:
-```php
-use Rubix\ML\BootstrapAggregator;
-use Rubix\ML\Regressors\RegressionTree;
-
-$estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
-```
-
-### Grid Search
-Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
-
-> **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
-
-##### Interfaces: Learner, Persistable, Verbose
-##### Compatibility: Depends on base learner
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | base | | string | The fully qualified class name of the base Estimator. |
-| 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
-| 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
-| 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
-| 5 | retrain | true | bool | Should we retrain using the best parameter combination and entire dataset? |
-
-#### Additional Methods:
-
-Return every parameter combination from the last grid search:
-```php
-public params() : array
-```
-
-The validation scores of the last search:
-```php
-public scores() : array
-```
-
-A [tuple](#what-is-a-tuple) containing the best parameters and their validation score:
-```php
-public best() : array
-```
-
-Return the underlying base estimator:
-```php
-public estimator() : Estimator
-```
-
-#### Example:
-```php
-use Rubix\ML\GridSearch;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Manhattan;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
-use Rubix\ML\CrossValidation\KFold;
-
-$grid = [
-	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
-];
-
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), true);
-```
-
-### Model Orchestra
-A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of estimators (Classifiers or Regressors) and a *conductor* estimator. The role of the conductor is to learn the influence scores of each estimator in the orchestra while using their predictions as inputs to make a final weighted prediction.
-
-> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
-
-##### Interfaces: Learner, Probabilistic, Persistable, Verbose
-##### Compatibility: Depends on base learners
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | orchestra | | array | The estimator instances that comprise the orchestra section of the ensemble. |
-| 2 | conductor | | object | The estimator that will weight each prediction and give the final output. |
-| 3 | ratio | 0.8 | float | The ratio of samples used to train the orchestra (the remaining are used to train the conductor).
-
-#### Additional Methods:
-Return an array of estimators comprising the orchestra part of the ensemble:
-```php
-public orchestra() : array
-```
-
-Return the conductor estimator:
-```php
-public conductor() : Estimator
-```
-
-#### Example:
-```php
-use Rubix\ML\ModelOrchestra;
-use Rubix\ML\Classifiers\GaussianNB;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Classifiers\ClassificationTree;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-
-$estimator = new ModelOrchestra([
-	new ClassificationTree(10, 3, 2),
-	new KNearestNeighbors(3, new Euclidean()),
-	new GaussianNB(),
-], new SoftmaxClassifier(10), 0.8);
-```
-
-### Persistent Model
-It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
-
-##### Interfaces: Learner, Probabilistic, Verbose
-##### Compatibility: Depends on base learner
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | base | | object | An instance of the base estimator to be persisted. |
-| 2 | persister | | object | The persister object used to store the model data. |
-
-#### Additional Methods:
-Save the persistent model to storage:
-```php
-public save() : void
-```
-
-Load the persistent model from storage given a persister:
-```php
-public static load(Persister $persister) : self
-```
-
-Prompt the user to save the model or not via stdout:
-```php
-public prompt() : void
-```
-
-#### Example:
-```php
-use Rubix\ML\PersistentModel;
-use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\Native;
-
-$persister = new Filesystem('/random_forest.model', 2, new Native());
-
-$estimator = new PersistentModel(new LogisticRegression(256, new Adam(0.001)), $persister);
-```
-
-### Pipeline
-Pipeline is a meta estimator responsible for transforming the input data by applying a series of [transformer](#transformers) middleware. Pipeline accepts a base estimator and a list of transformers to apply to the input data before it is fed to the estimator. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `train()` and `predict()`. With the *elastic* mode enabled, Pipeline can update the fitting of certain transformers during online (*partial*) training.
-
-> **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
-
-##### Interfaces: Learner, Online, Persistable, Verbose
-##### Compatibility: Depends on base learner and transformers
-
-#### Parameters:
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
-| 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
-| 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
-
-#### Additional Methods:
-This meta estimator does not have any additional methods.
-
-#### Example:
-```php
-use Rubix\ML\Pipeline;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\NeuralNet\Optimizer\Adam;
-use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Transformers\OneHotEncoder;
-use Rubix\ML\Transformers\PrincipalComponentAnalysis;
-use Rubix\ML\Transformers\ZScaleStandardizer;
-
-$estimator = new Pipeline([
-	new MissingDataImputer('?'),
-	new OneHotEncoder(),
-	new PrincipalComponentAnalysis(20),
-	new ZScaleStandardizer(true),
-], new SoftmaxClassifier(128, new Adam(0.001)), true);
 ```
 
 ---
@@ -1747,6 +1540,41 @@ $estimator = new NaiveBayes(2.5, [
 ]);
 ```
 
+### Radius Neighbors
+Radius Neighbors is a spatial tree-based classifier that takes the weighted vote of each neighbor within a fixed user-defined radius measured by a kernel distance function.
+
+> **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
+
+##### Interfaces: Learner, Probabilistic, Persistable
+##### Compatibility: Depends on distance kernel
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
+| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*ball*). |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+
+#### Additional Methods:
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
+
+#### Example:
+```php
+use Rubix\ML\Classifiers\RadiusNeighbors;
+use Rubix\ML\Kernels\Distance\Manhattan;
+
+$estimator = new RadiusNeighbors(50.0, 30, new Manhattan(), false);
+```
+
 ### Random Forest
 Ensemble classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap* set) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
 
@@ -2203,10 +2031,10 @@ public balance() : int
 
 #### Example:
 ```php
-use Rubix\ML\Regressors\KDNRegressor;
+use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KDNRegressor(5, 20, new Minkowski(4.0), true);
+$estimator = new KDNeighborsRegressor(5, 20, new Minkowski(4.0), true);
 ```
 
 ### KNN Regressor
@@ -2291,6 +2119,41 @@ $estimator = new MLPRegressor([
 	new Dense(50),
 	new Activation(new LeakyReLU(0.1)),
 ], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
+```
+
+### Radius Neighbors Regressor
+This is the regressor version of [Radius Neighbors](#radius-neighbors) classifier implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
+
+> **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
+
+##### Interfaces: Learner, Persistable
+##### Compatibility: Depends on distance kernel
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
+| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*ball*). |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+
+#### Additional Methods:
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
+
+#### Example:
+```php
+use Rubix\ML\Regressors\RadiusNeighborsRegressor;
+use Rubix\ML\Kernels\Distance\Diagonal;
+
+$estimator = new RadiusNeighborsRegressor(0.5, 20, new Diagonal(), true);
 ```
 
 ### Regression Tree
@@ -2390,6 +2253,209 @@ use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
 
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
+```
+
+---
+### Meta-Estimators
+Meta-estimators enhance base estimators by adding additional functionality such as [data preprocessing](#pipeline), [model persistence](#persistent-model), and [model averaging](#bootstrap-aggregator). Meta-estimators take on the type (*Classifier*, *Regressor*, etc.) of the base estimator they wrap and allow methods on the base estimator to be called from the parent.
+
+### Bootstrap Aggregator
+Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. 
+
+> **Note**: Bootstrap Aggregator does not work with clusterers or embedders.
+
+##### Interfaces: Learner | Persistable
+##### Compatibility: Depends on base learner
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | | object | The base estimator to be used in the ensemble. |
+| 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
+| 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
+
+#### Additional Methods:
+This meta estimator does not have any additional methods.
+
+#### Example:
+```php
+use Rubix\ML\BootstrapAggregator;
+use Rubix\ML\Regressors\RegressionTree;
+
+$estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
+```
+
+### Grid Search
+Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
+
+> **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
+
+##### Interfaces: Learner, Persistable, Verbose
+##### Compatibility: Depends on base learner
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | | string | The fully qualified class name of the base Estimator. |
+| 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
+| 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
+| 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
+| 5 | retrain | true | bool | Should we retrain using the best parameter combination and entire dataset? |
+
+#### Additional Methods:
+
+Return every parameter combination from the last grid search:
+```php
+public params() : array
+```
+
+The validation scores of the last search:
+```php
+public scores() : array
+```
+
+A [tuple](#what-is-a-tuple) containing the best parameters and their validation score:
+```php
+public best() : array
+```
+
+Return the underlying base estimator:
+```php
+public estimator() : Estimator
+```
+
+#### Example:
+```php
+use Rubix\ML\GridSearch;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\KFold;
+
+$grid = [
+	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
+];
+
+$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), true);
+```
+
+### Model Orchestra
+A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of estimators (Classifiers or Regressors) and a *conductor* estimator. The role of the conductor is to learn the influence scores of each estimator in the orchestra while using their predictions as inputs to make a final weighted prediction.
+
+> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
+
+##### Interfaces: Learner, Probabilistic, Persistable, Verbose
+##### Compatibility: Depends on base learners
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | orchestra | | array | The estimator instances that comprise the orchestra section of the ensemble. |
+| 2 | conductor | | object | The estimator that will weight each prediction and give the final output. |
+| 3 | ratio | 0.8 | float | The ratio of samples used to train the orchestra (the remaining are used to train the conductor).
+
+#### Additional Methods:
+Return an array of estimators comprising the orchestra part of the ensemble:
+```php
+public orchestra() : array
+```
+
+Return the conductor estimator:
+```php
+public conductor() : Estimator
+```
+
+#### Example:
+```php
+use Rubix\ML\ModelOrchestra;
+use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Classifiers\KNearestNeighbors;
+use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+
+$estimator = new ModelOrchestra([
+	new ClassificationTree(10, 3, 2),
+	new KNearestNeighbors(3, new Euclidean()),
+	new GaussianNB(),
+], new SoftmaxClassifier(10), 0.8);
+```
+
+### Persistent Model
+It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
+
+##### Interfaces: Learner, Probabilistic, Verbose
+##### Compatibility: Depends on base learner
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | base | | object | An instance of the base estimator to be persisted. |
+| 2 | persister | | object | The persister object used to store the model data. |
+
+#### Additional Methods:
+Save the persistent model to storage:
+```php
+public save() : void
+```
+
+Load the persistent model from storage given a persister:
+```php
+public static load(Persister $persister) : self
+```
+
+Prompt the user to save the model or not via stdout:
+```php
+public prompt() : void
+```
+
+#### Example:
+```php
+use Rubix\ML\PersistentModel;
+use Rubix\ML\Classifiers\LogisticRegression;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Persisters\Serializers\Native;
+
+$persister = new Filesystem('/random_forest.model', 2, new Native());
+
+$estimator = new PersistentModel(new LogisticRegression(256, new Adam(0.001)), $persister);
+```
+
+### Pipeline
+Pipeline is a meta estimator responsible for transforming the input data by applying a series of [transformer](#transformers) middleware. Pipeline accepts a base estimator and a list of transformers to apply to the input data before it is fed to the estimator. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `train()` and `predict()`. With the *elastic* mode enabled, Pipeline can update the fitting of certain transformers during online (*partial*) training.
+
+> **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
+
+##### Interfaces: Learner, Online, Persistable, Verbose
+##### Compatibility: Depends on base learner and transformers
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
+| 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
+| 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
+
+#### Additional Methods:
+This meta estimator does not have any additional methods.
+
+#### Example:
+```php
+use Rubix\ML\Pipeline;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizer\Adam;
+use Rubix\ML\Transformers\MissingDataImputer;
+use Rubix\ML\Transformers\OneHotEncoder;
+use Rubix\ML\Transformers\PrincipalComponentAnalysis;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+
+$estimator = new Pipeline([
+	new MissingDataImputer('?'),
+	new OneHotEncoder(),
+	new PrincipalComponentAnalysis(20),
+	new ZScaleStandardizer(true),
+], new SoftmaxClassifier(128, new Adam(0.001)), true);
 ```
 
 ---
@@ -3923,7 +3989,6 @@ public scores() : ?array
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
-...
 $validator = new KFold(10);
 
 $score = $validator->test($estimator, $dataset, new Accuracy());
@@ -4024,7 +4089,6 @@ public compatibility() : array
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 
-...
 $metric = new MeanAbsoluteError();
 
 $score = $metric->score($predictions, $labels);
@@ -4225,7 +4289,6 @@ use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
-...
 $report = new AggregateReport([
 	'breakdown' => new MulticlassBreakdown(),
 	'matrix1' => new ConfusionMatrix(['wolf', 'lamb']),
@@ -4249,7 +4312,6 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 ```php
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
-...
 $report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
 
 $result = $report->generate($estimator, $testing);
@@ -4292,7 +4354,6 @@ This report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
-...
 $report = new ContingencyTable();
 
 $result = $report->generate($estimator, $testing);
@@ -4338,7 +4399,6 @@ A report that drills down in to each unique class outcome. The report includes m
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
-...
 $report = new MulticlassBreakdown(['wolf', 'lamb']);
 
 $result = $report->generate($estimator, $testing);
@@ -4348,7 +4408,6 @@ var_dump($result);
 
 #### Output:
 ```sh
-...
 ["label"]=> array(2) {
 	["wolf"]=> array(19) {
       	["accuracy"]=> float(0.6)
@@ -4371,7 +4430,6 @@ var_dump($result);
       	["cardinality"]=> int(3)
       	["density"]=> float(0.6)
     }
-...
 ```
 
 ### Residual Analysis
@@ -4386,7 +4444,6 @@ This report does not have any parameters.
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 
-...
 $report = new ResidualAnalysis();
 
 $result = $report->generate($estimator, $testing);
@@ -4850,7 +4907,6 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\CrossValidation\KFold;
 use Rubix\CrossValidation\Metrics\VMeasure;
 
-...
 $params = [
 	Params::grid(1, 5, 5), Params::floats(1.0, 20.0, 20), [new Diagonal(), new Minkowski(3.0)],
 ];

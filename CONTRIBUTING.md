@@ -1,5 +1,5 @@
 # Contributing Guidelines
-We believe that our contributors play an important and meaningful role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can ensure that our users continue to get the best experience.
+We strongly believe that our contributors play an important and meaningful role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can continue to provide high quality software that users love.
 
 ### Pull Request Checklist
 Here are some things to check off before sending in a pull request

@@ -81,7 +81,7 @@ class ITree implements BinaryTree
      */
     public function height() : int
     {
-        return isset($this->root) ? $this->root->height() : 0;
+        return $this->root ? $this->root->height() : 0;
     }
 
     /**
@@ -91,7 +91,7 @@ class ITree implements BinaryTree
      */
     public function balance() : int
     {
-        return isset($this->root) ? $this->root->balance() : 0;
+        return $this->root ? $this->root->balance() : 0;
     }
 
     /**
@@ -114,7 +114,7 @@ class ITree implements BinaryTree
     {
         $depth = 1;
 
-        $this->root = $this->chooseRandomSplit($dataset);
+        $this->root = Isolator::split($dataset);
 
         $stack = [[$this->root, $depth]];
 
@@ -126,30 +126,30 @@ class ITree implements BinaryTree
             $depth++;
 
             if ($depth >= $this->maxDepth) {
-                $current->attachLeft($this->terminate($left, $depth));
-                $current->attachRight($this->terminate($right, $depth));
+                $current->attachLeft(Cell::terminate($left, $depth));
+                $current->attachRight(Cell::terminate($right, $depth));
     
                 continue 1;
             }
     
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->chooseRandomSplit($left);
+                $node = Isolator::split($left);
     
                 $current->attachLeft($node);
     
                 $stack[] = [$node, $depth];
             } else {
-                $current->attachLeft($this->terminate($left, $depth));
+                $current->attachLeft(Cell::terminate($left, $depth));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->chooseRandomSplit($right);
+                $node = Isolator::split($right);
     
                 $current->attachRight($node);
     
                 $stack[] = [$node, $depth];
             } else {
-                $current->attachRight($this->terminate($right, $depth));
+                $current->attachRight(Cell::terminate($right, $depth));
             }
 
             $current->cleanup();
@@ -193,53 +193,5 @@ class ITree implements BinaryTree
         }
 
         return null;
-    }
-
-    /**
-     * Randomized algorithm to find a split point in the data.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Graph\Nodes\Isolator
-     */
-    protected function chooseRandomSplit(Dataset $dataset) : Isolator
-    {
-        $column = rand(0, $dataset->numColumns() - 1);
-
-        $sample = $dataset[rand(0, count($dataset) - 1)];
-
-        $value = $sample[$column];
-
-        $groups = $dataset->partition($column, $value);
-
-        return new Isolator($column, $value, $groups);
-    }
-
-    /**
-     * Terminate the branch.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @param int $depth
-     * @return \Rubix\ML\Graph\Nodes\Cell
-     */
-    protected function terminate(Dataset $dataset, int $depth) : Cell
-    {
-        $depth += $this->c($dataset->numRows()) - 1.;
-
-        return new Cell($depth);
-    }
-
-    /**
-     * Calculate the average path length of an unsuccessful search for n nodes.
-     *
-     * @param int $n
-     * @return float
-     */
-    protected function c(int $n) : float
-    {
-        if ($n <= 1) {
-            return 1.;
-        }
-        
-        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 }

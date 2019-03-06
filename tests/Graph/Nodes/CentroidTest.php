@@ -4,11 +4,12 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Graph\Nodes\Centroid;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-class CoordinateTest extends TestCase
+class CentroidTest extends TestCase
 {
     protected const COLUMN = 1;
     protected const VALUE = 3.;
@@ -22,12 +23,8 @@ class CoordinateTest extends TestCase
         22, 13,
     ];
 
-    protected const MIN = [5., 2., -5];
-    protected const MAX = [6., 4., -3];
-
-    protected const BOX = [
-        self::MIN, self::MAX,
-    ];
+    protected const CENTER = [5.5, 3., -4];
+    protected const RADIUS = 1.5;
 
     public function test_build_node()
     {
@@ -36,19 +33,24 @@ class CoordinateTest extends TestCase
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Coordinate(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
+        $node = new Centroid(self::CENTER, self::RADIUS, $groups);
 
-        $this->assertInstanceOf(Coordinate::class, $node);
+        $this->assertInstanceOf(Centroid::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::CENTER, $node->center());
+        $this->assertEquals(self::RADIUS, $node->radius());
+        $this->assertEquals($groups, $node->groups());
     }
 
     public function test_split()
     {
-        $node = Coordinate::split(Labeled::quick(self::SAMPLES, self::LABELS));
+        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
-        $this->assertEquals(self::BOX, $node->box());
+        $node = Centroid::split($dataset, new Euclidean());
+
+        $this->assertEquals(self::CENTER, $node->center());
+        $this->assertEquals(self::RADIUS, $node->radius());
     }
 }

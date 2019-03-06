@@ -211,6 +211,8 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
+        $template = array_fill_keys($this->classes, 0.);
+
         $probabilities = [];
 
         foreach ($dataset as $sample) {
@@ -228,7 +230,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
             $total = array_sum($weights) ?: self::EPSILON;
 
-            $dist = array_fill_keys($this->classes, 0.);
+            $dist = $template;
 
             foreach ($weights as $class => $weight) {
                 $dist[$class] = $weight / $total;

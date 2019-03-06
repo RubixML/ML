@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
-class CoordinateTest extends TestCase
+class DecisionTest extends TestCase
 {
     protected const COLUMN = 1;
     protected const VALUE = 3.;
@@ -22,12 +22,8 @@ class CoordinateTest extends TestCase
         22, 13,
     ];
 
-    protected const MIN = [5., 2., -5];
-    protected const MAX = [6., 4., -3];
-
-    protected const BOX = [
-        self::MIN, self::MAX,
-    ];
+    protected const IMPURITY = 400.;
+    protected const N = 2;
 
     public function test_build_node()
     {
@@ -36,19 +32,16 @@ class CoordinateTest extends TestCase
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Coordinate(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
+        $node = new Decision(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
 
-        $this->assertInstanceOf(Coordinate::class, $node);
+        $this->assertInstanceOf(Decision::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 
-        $this->assertEquals(self::BOX, $node->box());
-    }
-
-    public function test_split()
-    {
-        $node = Coordinate::split(Labeled::quick(self::SAMPLES, self::LABELS));
-
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::COLUMN, $node->column());
+        $this->assertEquals(self::VALUE, $node->value());
+        $this->assertEquals($groups, $node->groups());
+        $this->assertEquals(self::IMPURITY, $node->impurity());
+        $this->assertEquals(self::N, $node->n());
     }
 }

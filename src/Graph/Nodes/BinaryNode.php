@@ -2,11 +2,13 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Generator;
+
 /**
  * Binary Node
  *
- * A node of a binary tree i.e a tree whose parents have a maximum of
- * two immediate children per node.
+ * A node of a binary tree i.e a tree whose nodes have a maximum of
+ * two immediate children and one parent.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -17,28 +19,28 @@ class BinaryNode implements Node
     /**
      * The parent node.
      *
-     * @var self|null
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     protected $parent;
 
     /**
      * The left child node.
      *
-     * @var self|null
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     protected $left;
 
     /**
      * The right child node.
      *
-     * @var self|null
+     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     protected $right;
 
     /**
      * Return the parent node.
      *
-     * @return self|null
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function parent() : ?self
     {
@@ -48,27 +50,23 @@ class BinaryNode implements Node
     /**
      * Return the children of this node in an array.
      *
-     * @return array
+     * @return \Generator
      */
-    public function children() : array
+    public function children() : Generator
     {
-        $children = [];
-
         if ($this->left) {
-            $children[] = $this->left;
+            yield $this->left;
         }
         
         if ($this->right) {
-            $children[] = $this->right;
+            yield $this->right;
         }
-
-        return $children;
     }
 
     /**
      * Return the left child node.
      *
-     * @return self|null
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function left() : ?self
     {
@@ -79,7 +77,7 @@ class BinaryNode implements Node
      * Return the right child node.
      *
      *
-     * @return self|null
+     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
     public function right() : ?self
     {
@@ -100,14 +98,16 @@ class BinaryNode implements Node
     }
 
     /**
-     * The balance factor of the node.
+     * The balance factor of the node. Negative numbers indicate a
+     * lean to the left, positive to the right, and 0 is perfectly
+     * balanced.
      *
      * @return int
      */
     public function balance() : int
     {
-        return ($this->left ? $this->left->height() : 0)
-            - ($this->right ? $this->right->height() : 0);
+        return ($this->right ? $this->right->height() : 0)
+            - ($this->left ? $this->left->height() : 0);
     }
 
     /**
@@ -115,7 +115,7 @@ class BinaryNode implements Node
      *
      * @param self|null $node
      */
-    public function setParent(?self $node = null) : void
+    public function setParent(?BinaryNode $node = null) : void
     {
         $this->parent = $node;
     }
@@ -125,7 +125,7 @@ class BinaryNode implements Node
      *
      * @param self $node
      */
-    public function attachLeft(self $node) : void
+    public function attachLeft(BinaryNode $node) : void
     {
         $node->setParent($this);
 
@@ -137,7 +137,7 @@ class BinaryNode implements Node
      *
      * @param self $node
      */
-    public function attachRight(self $node) : void
+    public function attachRight(BinaryNode $node) : void
     {
         $node->setParent($this);
 

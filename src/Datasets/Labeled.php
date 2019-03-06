@@ -375,7 +375,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Run a filter over the dataset using the labels for comparison.
+     * Run a filter over the dataset using the labels for Decision.
      *
      * @param callable $fn
      * @return self

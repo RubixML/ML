@@ -3,7 +3,6 @@
 namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Split;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Isolator;
 use Rubix\ML\Graph\Nodes\BinaryNode;
@@ -11,22 +10,34 @@ use PHPUnit\Framework\TestCase;
 
 class IsolatorTest extends TestCase
 {
-    protected $node;
+    protected const COLUMN = 1;
+    protected const VALUE = 3.;
 
-    protected $groups;
-
-    public function setUp()
-    {
-        $this->groups = [Unlabeled::quick(), Unlabeled::quick()];
-
-        $this->node = new Isolator(4, 32, $this->groups);
-    }
+    protected const SAMPLES = [
+        [5., 2., -3],
+        [6., 4., -5],
+    ];
 
     public function test_build_node()
     {
-        $this->assertInstanceOf(Isolator::class, $this->node);
-        $this->assertInstanceOf(Split::class, $this->node);
-        $this->assertInstanceOf(BinaryNode::class, $this->node);
-        $this->assertInstanceOf(Node::class, $this->node);
+        $groups = [
+            Unlabeled::quick([self::SAMPLES[0]]),
+            Unlabeled::quick([self::SAMPLES[1]]),
+        ];
+        
+        $node = new Isolator(self::COLUMN, self::VALUE, $groups);
+
+        $this->assertInstanceOf(Isolator::class, $node);
+        $this->assertInstanceOf(BinaryNode::class, $node);
+        $this->assertInstanceOf(Node::class, $node);
+    }
+
+    public function test_split()
+    {
+        $dataset = Unlabeled::quick(self::SAMPLES);
+
+        $node = Isolator::split($dataset);
+
+        $this->assertInstanceOf(Isolator::class, $node);
     }
 }

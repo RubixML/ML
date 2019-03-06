@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -177,9 +177,9 @@ class RegressionTree extends CART implements Learner, Persistable
      * determined by the variance of the split.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Comparison
+    protected function findBestSplit(Labeled $dataset) : Decision
     {
         $bestVariance = INF;
         $bestColumn = $bestValue = null;
@@ -208,7 +208,7 @@ class RegressionTree extends CART implements Learner, Persistable
             }
         }
 
-        return new Comparison($bestColumn, $bestValue, $bestGroups, $bestVariance);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestVariance);
     }
 
     /**

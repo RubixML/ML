@@ -8,6 +8,7 @@ use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -22,15 +23,11 @@ use RuntimeException;
  * advantage of K-d Neighbors over brute force KNN is speed, however you no longer
  * have the ability to partially train.
  *
- * References:
- * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
- * Associative Searching.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNRegressor extends KDTree implements Learner, Persistable
+class KDNeighborsRegressor extends KDTree implements Learner, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -89,7 +86,9 @@ class KDNRegressor extends KDTree implements Learner, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**
@@ -142,16 +141,14 @@ class KDNRegressor extends KDTree implements Learner, Persistable
             if ($this->weighted) {
                 $weights = [];
 
-                foreach ($distances as $i => $distance) {
+                foreach ($distances as $distance) {
                     $weights[] = 1. / (1. + $distance);
                 }
 
-                $outcome = Stats::weightedMean($labels, $weights);
+                $predictions[] = Stats::weightedMean($labels, $weights);
             } else {
-                $outcome = Stats::mean($labels);
+                $predictions[] = Stats::mean($labels);
             }
-
-            $predictions[] = $outcome;
         }
 
         return $predictions;

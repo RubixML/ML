@@ -18,7 +18,7 @@ use InvalidArgumentException;
  * and observation.
  *
  * References:
- * [1] B. W. Matthews. (1975). Comparison of the Predicted and Observed Secondary
+ * [1] B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary
  * Structure of T4 Phage Lysozyme.
  *
  * @category    Machine Learning

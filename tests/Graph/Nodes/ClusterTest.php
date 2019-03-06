@@ -5,11 +5,12 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
+use Rubix\ML\Graph\Nodes\Cluster;
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use Rubix\ML\Graph\Nodes\Neighborhood;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-class NeighborhoodTest extends TestCase
+class ClusterTest extends TestCase
 {
     protected const SAMPLES = [
         [5., 2., -3],
@@ -20,33 +21,33 @@ class NeighborhoodTest extends TestCase
         22, 13,
     ];
 
-    protected const MIN = [5., 2., -5];
-    protected const MAX = [6., 4., -3];
-
-    protected const BOX = [
-        self::MIN, self::MAX,
-    ];
+    protected const CENTER = [5.5, 3., -4];
+    protected const RADIUS = 1.5;
 
     public function test_build_node()
     {
-        $node = new Neighborhood(self::SAMPLES, self::LABELS, self::MIN, self::MAX);
+        $node = new Cluster(self::SAMPLES, self::LABELS, self::CENTER, self::RADIUS);
 
-        $this->assertInstanceOf(Neighborhood::class, $node);
+        $this->assertInstanceOf(Cluster::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Leaf::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 
         $this->assertEquals(self::SAMPLES, $node->samples());
         $this->assertEquals(self::LABELS, $node->labels());
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::CENTER, $node->center());
+        $this->assertEquals(self::RADIUS, $node->radius());
     }
 
     public function test_terminate()
     {
-        $node = Neighborhood::terminate(Labeled::quick(self::SAMPLES, self::LABELS));
+        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
+
+        $node = Cluster::terminate($dataset, new Euclidean());
 
         $this->assertEquals(self::SAMPLES, $node->samples());
         $this->assertEquals(self::LABELS, $node->labels());
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::CENTER, $node->center());
+        $this->assertEquals(self::RADIUS, $node->radius());
     }
 }

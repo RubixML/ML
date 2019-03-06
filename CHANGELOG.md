@@ -1,5 +1,7 @@
 - Unreleased
     - Added LODA online anomaly detector
+    - Added Radius Neighbors classifier and Regressor
+    - Added base Ball Tree implementation
     - Added Ranking interface
     - Changed Manifold namespace to Embedders
     - Isolation Forest and LOF are now Ranking

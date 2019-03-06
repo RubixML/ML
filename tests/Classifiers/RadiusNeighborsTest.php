@@ -1,51 +1,58 @@
 <?php
 
-namespace Rubix\ML\Tests\Regressors;
+namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\KDTree;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Regressors\KDNRegressor;
-use Rubix\ML\Kernels\Distance\Minkowski;
-use Rubix\ML\Datasets\Generators\HalfMoon;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Classifiers\RadiusNeighbors;
+use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KDNRegressorTest extends TestCase
+class RadiusNeighborsTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.9;
-
-    protected $generator;
+    protected const MIN_SCORE = 0.8;
 
     protected $estimator;
+
+    protected $generator;
 
     protected $metric;
 
     public function setUp()
     {
-        $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 3.),
+            'green' => new Blob([0, 128, 0], 1.),
+            'blue' => new Blob([0, 0, 255], 2.),
+        ], [3, 4, 3]);
 
-        $this->estimator = new KDNRegressor(3, 10, new Minkowski(3.0), true);
-        
-        $this->metric = new RSquared();
+        $this->estimator = new RadiusNeighbors(3.5, 20, new Manhattan(), true);
+
+        $this->metric = new Accuracy();
     }
 
-    public function test_build_regressor()
+    public function test_build_classifier()
     {
-        $this->assertInstanceOf(KDNRegressor::class, $this->estimator);
-        $this->assertInstanceOf(KDTree::class, $this->estimator);
+        $this->assertInstanceOf(RadiusNeighbors::class, $this->estimator);
+        $this->assertInstanceOf(BallTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
@@ -58,9 +65,9 @@ class KDNRegressorTest extends TestCase
     public function test_train_predict()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
         
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());

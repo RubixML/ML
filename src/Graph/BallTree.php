@@ -3,40 +3,42 @@
 namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Graph\Nodes\Ball;
+use Rubix\ML\Graph\Nodes\Cluster;
+use Rubix\ML\Graph\Nodes\Centroid;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Graph\Nodes\BoundingBox;
-use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 use SplObjectStorage;
 
 /**
- * K-d Tree
+ * Ball Tree
  *
- * A multi-dimensional binary search tree for fast nearest neighbor queries.
- * Each node maintains its own *bounding box* that is used to prune off leaf
- * nodes during search.
+ * A binary spatial tree with *ball* nodes whose boundary is defined by a
+ * centroid and radius.
  *
- * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
- * Associative Searching.
+ * References:
+ * [1] S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
+ * [2] M. Dolatshah et al. (2015). Ball*-tree: Efficient spatial indexing for
+ * constrained nearest-neighbor search in metric spaces
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDTree implements BinaryTree
+class BallTree implements BinaryTree
 {
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Coordinate|null
+     * @var \Rubix\ML\Graph\Nodes\Centroid|null
      */
     protected $root;
 
     /**
-     * The maximum number of samples that each neighborhood node can contain.
+     * The maximum number of samples that each ball node can contain.
      *
      * @var int
      */
@@ -71,9 +73,9 @@ class KDTree implements BinaryTree
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Coordinate|null
+     * @return \Rubix\ML\Graph\Nodes\Centroid|null
      */
-    public function root() : ?Coordinate
+    public function root() : ?Centroid
     {
         return $this->root;
     }
@@ -116,37 +118,41 @@ class KDTree implements BinaryTree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->root = Coordinate::split($dataset);
+        $this->root = Centroid::split($dataset, $this->kernel);
 
         $stack = [$this->root];
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if (!$current instanceof Coordinate) {
+            if (!$current instanceof Centroid) {
                 continue 1;
             }
 
             [$left, $right] = $current->groups();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = Coordinate::split($left);
+                $node = Centroid::split($left, $this->kernel);
     
                 $current->attachLeft($node);
 
                 $stack[] = $node;
             } else {
-                $current->attachLeft(Neighborhood::terminate($left));
+                $node = Cluster::terminate($left, $this->kernel);
+
+                $current->attachLeft($node);
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = Coordinate::split($right);
+                $node = Centroid::split($right, $this->kernel);
     
                 $current->attachRight($node);
 
                 $stack[] = $node;
             } else {
-                $current->attachRight(Neighborhood::terminate($right));
+                $node = Cluster::terminate($right, $this->kernel);
+
+                $current->attachRight($node);
             }
 
             $current->cleanup();
@@ -154,115 +160,71 @@ class KDTree implements BinaryTree
     }
 
     /**
-     * Search the tree for a neighborhood and return an array of samples and
-     * labels.
-     *
-     * @param array $sample
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
-     */
-    public function search(array $sample) : ?Neighborhood
-    {
-        $current = $this->root;
-
-        while ($current) {
-            if ($current instanceof Coordinate) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Neighborhood) {
-                return $current;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Run a k nearest neighbors search of every neighborhood and return
+     * Run a range search over every cluster within radius and return
      * the labels and distances in a 2-tuple.
      *
      * @param array $sample
-     * @param int $k
+     * @param float $radius
      * @throws \InvalidArgumentException
      * @return array[]
      */
-    public function neighbors(array $sample, int $k = 1) : array
+    public function range(array $sample, float $radius = 1.0) : array
     {
-        if ($k < 1) {
-            throw new InvalidArgumentException('The number of nearest'
-                . " neighbors must be greater than 0, $k given.");
-        }
-
-        $neighborhood = $this->search($sample);
-
-        if (!$neighborhood) {
-            return [[], []];
+        if ($radius <= 0.) {
+            throw new InvalidArgumentException('Radius must be'
+                . " greater than 0, $radius given.");
         }
 
         $distances = $labels = [];
 
         $visited = new SplObjectStorage();
 
-        $stack = [$neighborhood];
+        $stack = [$this->root];
 
         while ($stack) {
             $current = array_pop($stack);
 
+            if (!$current instanceof BinaryNode) {
+                continue 1;
+            }
+
             if ($visited->contains($current)) {
                 continue 1;
             }
-
+            
             $visited->attach($current);
 
-            $parent = $current->parent();
+            if ($current instanceof Cluster) {
+                foreach ($current->samples() as $i => $neighbor) {
+                    $distance = $this->kernel->compute($sample, $neighbor);
 
-            if ($parent) {
-                $stack[] = $parent;
-            }
-
-            if ($current instanceof Neighborhood) {
-                foreach ($current->samples() as $neighbor) {
-                    $distances[] = $this->kernel->compute($sample, $neighbor);
+                    if ($distance <= $radius) {
+                        $distances[] = $distance;
+                        $labels[] = $current->label($i);
+                    }
                 }
-
-                $labels = array_merge($labels, $current->labels());
-
-                array_multisort($distances, $labels);
 
                 continue 1;
             }
-
-            $target = $distances[$k - 1] ?? INF;
 
             foreach ($current->children() as $child) {
                 if ($visited->contains($child)) {
                     continue 1;
                 }
 
-                if ($child instanceof BoundingBox) {
-                    foreach ($child->box() as $side) {
-                        $distance = $this->kernel->compute($sample, $side);
+                if ($child instanceof Ball) {
+                    $distance = $this->kernel->compute($sample, $child->center());
 
-                        if ($distance < $target) {
-                            $stack[] = $child;
+                    if ($distance <= $child->radius()) {
+                        $stack[] = $child;
 
-                            continue 2;
-                        }
+                        continue 1;
                     }
                 }
 
                 $visited->attach($child);
             }
         }
-
-        $distances = array_slice($distances, 0, $k);
-        $labels = array_slice($labels, 0, $k);
 
         return [$labels, $distances];
     }
