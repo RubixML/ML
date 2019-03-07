@@ -77,15 +77,15 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
     /**
      * @param int $k
      * @param float $contamination
-     * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $k = 20,
         float $contamination = 0.1,
-        int $maxLeafSize = 20,
-        ?Distance $kernel = null
+        ?Distance $kernel = null,
+        int $maxLeafSize = 30
     ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'

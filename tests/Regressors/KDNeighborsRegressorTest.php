@@ -32,7 +32,7 @@ class KDNeighborsRegressorTest extends TestCase
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
-        $this->estimator = new KDNeighborsRegressor(3, 10, new Minkowski(3.0), true);
+        $this->estimator = new KDNeighborsRegressor(3, new Minkowski(3.0), true, 20);
         
         $this->metric = new RSquared();
     }

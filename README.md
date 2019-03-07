@@ -1032,8 +1032,8 @@ A k-d tree accelerated version of Local Outlier Factor which benefits from fast 
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
-| 4 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 #### Additional Methods:
 Return the height of the tree:
@@ -1051,7 +1051,7 @@ public balance() : int
 use Rubix\ML\AnomalyDetection\KDLOF;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KDLOF(20, 0.1, 30, new Euclidean());
+$estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 ```
 
 ### Local Outlier Factor
@@ -1391,9 +1391,9 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 #### Additional Methods:
 Return the height of the tree:
@@ -1411,7 +1411,7 @@ public balance() : int
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KDNeighbors(3, 10, new Euclidean(), false);
+$estimator = new KDNeighbors(3, new Euclidean(), false, 10);
 ```
 
 ### K Nearest Neighbors
@@ -1586,9 +1586,9 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*ball*). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
 #### Additional Methods:
 Return the height of the tree:
@@ -1606,7 +1606,7 @@ public balance() : int
 use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new RadiusNeighbors(50.0, 30, new Manhattan(), false);
+$estimator = new RadiusNeighbors(50.0, new Manhattan(), false, 30);
 ```
 
 ### Random Forest
@@ -1714,7 +1714,9 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 |--|--|--|--|--|
 | 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points.
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
+
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -1724,7 +1726,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new DBSCAN(4.0, 5, new Diagonal());
+$estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 ```
 
 ### Fuzzy C Means
@@ -2048,9 +2050,9 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 #### Additional Methods:
 Return the height of the tree:
@@ -2068,7 +2070,7 @@ public balance() : int
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KDNeighborsRegressor(5, 20, new Minkowski(4.0), true);
+$estimator = new KDNeighborsRegressor(5, new Minkowski(4.0), true, 30);
 ```
 
 ### KNN Regressor
@@ -2167,9 +2169,9 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | max leaf size | 20 | int | The max number of samples in a leaf node (*ball*). |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 4 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
 #### Additional Methods:
 Return the height of the tree:
@@ -2187,7 +2189,7 @@ public balance() : int
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new RadiusNeighborsRegressor(0.5, 20, new Diagonal(), true);
+$estimator = new RadiusNeighborsRegressor(0.5, new Diagonal(), true, 20);
 ```
 
 ### Regression Tree

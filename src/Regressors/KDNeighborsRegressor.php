@@ -46,13 +46,17 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
 
     /**
      * @param int $k
-     * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
+     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 3, int $maxLeafSize = 20, ?Distance $kernel = null, bool $weighted = true)
-    {
+    public function __construct(
+        int $k = 3,
+        ?Distance $kernel = null,
+        bool $weighted = true,
+        int $maxLeafSize = 30
+    ) {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");

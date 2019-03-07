@@ -36,7 +36,7 @@ class KDLOFTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new KDLOF(20, 0.1, 20, new Euclidean());
+        $this->estimator = new KDLOF(20, 0.1, new Euclidean(), 20);
 
         $this->metric = new F1Score();
     }

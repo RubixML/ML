@@ -73,7 +73,7 @@ class DBSCAN implements Estimator
         float $radius = 0.5,
         int $minDensity = 5,
         ?Distance $kernel = null,
-        int $maxLeafSize = 20
+        int $maxLeafSize = 30
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
@@ -83,6 +83,11 @@ class DBSCAN implements Estimator
         if ($minDensity <= 0) {
             throw new InvalidArgumentException('Minimum density must be'
                 . " greater than 0, $minDensity given.");
+        }
+
+        if ($maxLeafSize < 1) {
+            throw new InvalidArgumentException('Max leaf size cannot be'
+                . " less than 1, $maxLeafSize given.");
         }
 
         $this->radius = $radius;

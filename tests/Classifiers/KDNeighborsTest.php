@@ -38,7 +38,7 @@ class KDNeighborsTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new KDNeighbors(3, 10, new Manhattan(), true);
+        $this->estimator = new KDNeighbors(3, new Manhattan(), true, 20);
 
         $this->metric = new Accuracy();
     }

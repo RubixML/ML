@@ -15,6 +15,7 @@
     - Removed Sign function
     - Added Binary Tree interface
     - Added bin count heuristic to LODA
+    - Changed order of k-d neighbors hyperparameters
 
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset

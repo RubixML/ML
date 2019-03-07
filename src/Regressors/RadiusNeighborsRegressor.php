@@ -50,16 +50,16 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
 
     /**
      * @param float $radius
-     * @param int $maxLeafSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
+     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius = 1.0,
-        int $maxLeafSize = 20,
         ?Distance $kernel = null,
-        bool $weighted = true
+        bool $weighted = true,
+        int $maxLeafSize = 30
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'

@@ -32,7 +32,7 @@ class DBSCANTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 3, 4]);
 
-        $this->estimator = new DBSCAN(10.0, 75, new Euclidean());
+        $this->estimator = new DBSCAN(10.0, 75, new Euclidean(), 20);
 
         $this->metric = new VMeasure();
     }
