@@ -1,6 +1,7 @@
 - Unreleased
     - Added LODA online anomaly detector
-    - Added Radius Neighbors classifier and Regressor
+    - Added Radius Neighbors classifier and regressor
+    - Added k-d LOF anomaly detector
     - Added base Ball Tree implementation
     - Added Ranking interface
     - Changed Manifold namespace to Embedders

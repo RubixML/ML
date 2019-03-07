@@ -157,7 +157,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->neighbors($sample, $this->k);
+            [$labels, $distances] = $this->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -197,7 +197,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->neighbors($sample, $this->k);
+            [$labels, $distances] = $this->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);

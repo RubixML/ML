@@ -30,7 +30,7 @@ class RidgeTest extends TestCase
     {
         $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
-        $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
+        $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator = new Ridge(1.0);
 

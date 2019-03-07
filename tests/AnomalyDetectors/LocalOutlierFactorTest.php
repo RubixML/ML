@@ -20,7 +20,7 @@ use RuntimeException;
 
 class LocalOutlierFactorTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 350;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 

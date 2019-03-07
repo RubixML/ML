@@ -26,7 +26,7 @@ use RuntimeException;
 
 class MLPRegressorTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 450;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.7;
 

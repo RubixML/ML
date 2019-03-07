@@ -176,7 +176,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$distances, $labels] = $this->neighbors($sample);
+            [$distances, $labels] = $this->nearest($sample);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -216,7 +216,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$distances, $labels] = $this->neighbors($sample);
+            [$distances, $labels] = $this->nearest($sample);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -249,7 +249,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      * @param array $sample
      * @return array[]
      */
-    protected function neighbors(array $sample) : array
+    protected function nearest(array $sample) : array
     {
         $distances = [];
 

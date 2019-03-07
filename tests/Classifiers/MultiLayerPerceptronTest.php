@@ -28,7 +28,7 @@ use RuntimeException;
 
 class MultiLayerPerceptronTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 450;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.8;
 

@@ -50,6 +50,7 @@ $ composer require rubix/ml
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
+			- [K-d LOF](#k-d-lof)
 			- [Local Outlier Factor](#local-outlier-factor)
 			- [LODA](#loda)
 			- [One Class SVM](#one-class-svm)
@@ -1020,6 +1021,39 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 $estimator = new IsolationForest(300, 0.01, 0.2);
 ```
 
+### K-d LOF
+A k-d tree accelerated version of Local Outlier Factor which benefits from fast nearest neighbors search.
+
+##### Interfaces: Learner, Ranking, Persistable
+##### Compatibility: Continuous
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
+| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | max leaf size | 20 | int | The max number of samples in a leaf node (*neighborhood*). |
+| 4 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+
+#### Additional Methods:
+Return the height of the tree:
+```php
+public height() : int
+```
+
+Return the balance of the tree:
+```php
+public balance() : int
+```
+
+#### Example:
+```php
+use Rubix\ML\AnomalyDetection\KDLOF;
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$estimator = new KDLOF(20, 0.1, 30, new Euclidean());
+```
+
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
@@ -1351,7 +1385,7 @@ $estimator = new GaussianNB([
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
 ##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1546,7 +1580,7 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
 
 ##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2008,7 +2042,7 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3,
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
 ##### Interfaces: Learner, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2127,7 +2161,7 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
 
 ##### Interfaces: Learner, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |

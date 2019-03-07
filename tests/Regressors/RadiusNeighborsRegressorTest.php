@@ -18,7 +18,7 @@ use RuntimeException;
 class RadiusNeighborsRegressorTest extends TestCase
 {
     protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.7;
 
     protected $training;
 
@@ -34,7 +34,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
 
-        $this->estimator = new RadiusNeighborsRegressor(1.5, 20, new Euclidean(), true);
+        $this->estimator = new RadiusNeighborsRegressor(2.0, 20, new Euclidean(), true);
         
         $this->metric = new RSquared();
     }

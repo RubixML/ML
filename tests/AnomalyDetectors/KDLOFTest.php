@@ -3,25 +3,25 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Kernels\SVM\Polynomial;
+use Rubix\ML\AnomalyDetectors\KDLOF;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
-use Rubix\ML\AnomalyDetectors\OneClassSVM;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 use RuntimeException;
 
-class OneClassSVMTest extends TestCase
+class KDLOFTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
-    protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.5;
+    const TRAIN_SIZE = 350;
+    const TEST_SIZE = 10;
+    const MIN_SCORE = 0.9;
 
     protected $generator;
 
@@ -36,15 +36,16 @@ class OneClassSVMTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new OneClassSVM(0.01, new Polynomial(4, 1e-3), true, 1e-4);
+        $this->estimator = new KDLOF(20, 0.1, 20, new Euclidean());
 
         $this->metric = new F1Score();
     }
 
     public function test_build_detector()
     {
-        $this->assertInstanceOf(OneClassSVM::class, $this->estimator);
+        $this->assertInstanceOf(KDLOF::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
@@ -73,17 +74,10 @@ class OneClassSVMTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    public function test_train_incompatible()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->train(Unlabeled::quick([['bad']]));
-    }
-
     public function test_predict_untrained()
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick([[1.5]]));
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

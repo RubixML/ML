@@ -35,7 +35,7 @@ class AdalineTest extends TestCase
     {
         $this->training = unserialize(file_get_contents(dirname(__DIR__) . '/mpg.dataset') ?: '');
 
-        $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
+        $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
 
         $this->estimator = new Adaline(1, new Adam(0.01), 1e-4, 100, 1e-3, new HuberLoss(1.));
 

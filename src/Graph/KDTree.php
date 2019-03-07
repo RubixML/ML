@@ -192,7 +192,7 @@ class KDTree implements BinaryTree
      * @throws \InvalidArgumentException
      * @return array[]
      */
-    public function neighbors(array $sample, int $k = 1) : array
+    public function nearest(array $sample, int $k = 1) : array
     {
         if ($k < 1) {
             throw new InvalidArgumentException('The number of nearest'

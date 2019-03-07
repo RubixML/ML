@@ -136,7 +136,7 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->neighbors($sample, $this->k);
+            [$labels, $distances] = $this->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = [];

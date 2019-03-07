@@ -22,7 +22,7 @@ class LODATest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.8;
 
     protected $generator;
 

@@ -10,7 +10,7 @@ use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Manhattan;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -38,7 +38,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new RadiusNeighbors(3.5, 20, new Manhattan(), true);
+        $this->estimator = new RadiusNeighbors(3.5, 20, new Euclidean(), true);
 
         $this->metric = new Accuracy();
     }
