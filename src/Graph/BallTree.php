@@ -11,7 +11,6 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 /**
  * Ball Tree
@@ -177,8 +176,6 @@ class BallTree implements BinaryTree
 
         $distances = $labels = [];
 
-        $visited = new SplObjectStorage();
-
         $stack = [$this->root];
 
         while ($stack) {
@@ -187,12 +184,6 @@ class BallTree implements BinaryTree
             if (!$current instanceof BinaryNode) {
                 continue 1;
             }
-
-            if ($visited->contains($current)) {
-                continue 1;
-            }
-            
-            $visited->attach($current);
 
             if ($current instanceof Cluster) {
                 foreach ($current->samples() as $i => $neighbor) {
@@ -208,21 +199,13 @@ class BallTree implements BinaryTree
             }
 
             foreach ($current->children() as $child) {
-                if ($visited->contains($child)) {
-                    continue 1;
-                }
-
                 if ($child instanceof Ball) {
                     $distance = $this->kernel->compute($sample, $child->center());
 
-                    if ($distance <= $child->radius()) {
+                    if ($distance <= ($child->radius() + $radius)) {
                         $stack[] = $child;
-
-                        continue 1;
                     }
                 }
-
-                $visited->attach($child);
             }
         }
 

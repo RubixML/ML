@@ -3,7 +3,10 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -53,13 +56,25 @@ class DBSCAN implements Estimator
     protected $kernel;
 
     /**
+     * The maximum number of samples that each ball node can contain.
+     *
+     * @var int
+     */
+    protected $maxLeafSize;
+
+    /**
      * @param float $radius
      * @param int $minDensity
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $radius = 0.5, int $minDensity = 5, ?Distance $kernel = null)
-    {
+    public function __construct(
+        float $radius = 0.5,
+        int $minDensity = 5,
+        ?Distance $kernel = null,
+        int $maxLeafSize = 20
+    ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
@@ -73,6 +88,7 @@ class DBSCAN implements Estimator
         $this->radius = $radius;
         $this->minDensity = $minDensity;
         $this->kernel = $kernel ?? new Euclidean();
+        $this->maxLeafSize = $maxLeafSize;
     }
 
     /**
@@ -92,7 +108,9 @@ class DBSCAN implements Estimator
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**
@@ -104,17 +122,24 @@ class DBSCAN implements Estimator
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
-        $cluster = 0;
+        $tree = new BallTree($this->maxLeafSize, $this->kernel);
 
         $samples = $dataset->samples();
+
+        $dataset = Labeled::quick($samples, array_keys($samples));
+
+        $tree->grow($dataset);
+        
+        $cluster = 0;
+
+        $predictions = [];
 
         foreach ($samples as $i => $sample) {
             if (isset($predictions[$i])) {
                 continue 1;
             }
 
-            $neighbors = $this->groupNeighbors($sample, $samples);
+            [$neighbors, $distances] = $tree->range($sample, $this->radius);
 
             if (count($neighbors) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
@@ -137,10 +162,10 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                $seeds = $this->groupNeighbors($samples[$index], $samples);
+                [$seeds, $distances] = $tree->range($samples[$index], $this->radius);
 
                 if (count($seeds) >= $this->minDensity) {
-                    $neighbors = array_unique(array_merge($neighbors, $seeds), SORT_REGULAR);
+                    $neighbors = array_unique(array_merge($neighbors, $seeds));
                 }
             }
 
@@ -148,28 +173,5 @@ class DBSCAN implements Estimator
         }
 
         return $predictions;
-    }
-
-    /**
-     * Group the samples that are within a given radius of the center into a
-     * neighborhood and return the indices.
-     *
-     * @param array $center
-     * @param array $samples
-     * @return array
-     */
-    protected function groupNeighbors(array $center, array $samples) : array
-    {
-        $neighborhood = [];
-
-        foreach ($samples as $index => $sample) {
-            $distance = $this->kernel->compute($center, $sample);
-
-            if ($distance <= $this->radius) {
-                $neighborhood[] = $index;
-            }
-        }
-
-        return $neighborhood;
     }
 }

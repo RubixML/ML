@@ -7,6 +7,7 @@
     - Changed Manifold namespace to Embedders
     - Isolation Forest and LOF are now Ranking
     - K Means is now Verbose
+    - Accelerated DBSCAN with Ball Tree
     - Added upper bound to contamination hyperparameter
     - Changed hyper-parameter order of Isolation Forest
     - Optimized Interval Discretizer transformer
