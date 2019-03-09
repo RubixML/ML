@@ -29,10 +29,6 @@ use RuntimeException;
  * with a linear output neuron. Training is equivalent to solving Ridge regression
  * iteratively using mini batch Gradient Descent.
  *
- * References:
- * [1] B. Widrow. (1960). An Adaptive "Adaline" Neuron Using Chemical
- * "Memistors".
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

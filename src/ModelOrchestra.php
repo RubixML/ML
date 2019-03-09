@@ -24,7 +24,6 @@ use InvalidArgumentException;
  * conducting estimator, then wrap it in a Pipeline and use a transformer
  * such as One Hot Encoder or Interval Discretizer.
  *
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

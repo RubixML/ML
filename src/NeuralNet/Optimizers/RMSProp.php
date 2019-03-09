@@ -14,7 +14,7 @@ use SplObjectStorage;
  * rolling window of magnitudes of recent gradients.
  *
  * References:
- * [1] T. Tieleman and G. E. Hinton. (2012). Lecture 6e rmsprop: Divide the
+ * [1] T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the
  * gradient by a running average of its recent magnitude.
  *
  * @category    Machine Learning

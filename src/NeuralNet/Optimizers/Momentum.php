@@ -14,6 +14,10 @@ use SplObjectStorage;
  * momentum from past updates and adding a factor of the previous velocity to the
  * current step.
  *
+ * References:
+ * [1] D. E. Rumelhart et al. (1988). Learning representations by back-propagating
+ * errors.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

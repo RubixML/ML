@@ -17,7 +17,6 @@ use RuntimeException;
  * LDA finds a linear combination of features that characterizes or separates
  * two or more classes.
  *
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

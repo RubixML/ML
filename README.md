@@ -1020,6 +1020,10 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 $estimator = new IsolationForest(300, 0.01, 0.2);
 ```
 
+#### References:
+>- F. T. Liu et al. (2008). Isolation Forest.
+>- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
+
 ### K-d LOF
 A k-d tree accelerated version of Local Outlier Factor which benefits from fast nearest neighbors search.
 
@@ -1053,6 +1057,9 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 ```
 
+#### References:
+>- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
+
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
 
@@ -1077,6 +1084,9 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 ```
 
+#### References:
+>- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
+
 ### LODA
 Lightweight Online Detector of Anomalies uses sparse random projection vectors to generate an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user through the *contamination* hyper-parameter.
 
@@ -1099,6 +1109,10 @@ use Rubix\ML\AnomalyDetection\LODA;
 
 $estimator = new LODA(3.5, 250, 6);
 ```
+
+#### References:
+>- T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
+>- L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
 
 ### One Class SVM
 An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with  multiclass SVM ([SVC](#svc)).
@@ -1127,6 +1141,9 @@ use Rubix\ML\Kernels\SVM\Polynomial;
 
 $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 ```
+
+#### References:
+>- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 
 ### Robust Z Score
 A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
@@ -1158,6 +1175,9 @@ use Rubix\ML\AnomalyDetection\RobustZScore;
 
 $estimator = new RobustZScore(1.5, 3.0);
 ```
+
+#### References:
+>- P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.
 
 ---
 ### Classifiers
@@ -1205,6 +1225,10 @@ use Rubix\ML\Classifiers\ExtraTreeClassifier;
 $estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-2);
 ```
 
+#### References:
+ >- Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line Learning and an Application to Boosting.
+ >- J. Zhu et al. (2006). Multi-class AdaBoost.
+
 ### Classification Tree
 A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
 
@@ -1234,6 +1258,7 @@ public height() : int
 Return the balance of the tree:
 ```php
 public
+```
 
 #### Example:
 ```php
@@ -1342,6 +1367,9 @@ use Rubix\ML\Classifiers\ExtraTreeClassifier;
 $estimator = new ExtraTreeClassifier(50, 3, 0.10, 4, 1e-3);
 ```
 
+#### References:
+>- P. Geurts et al. (2005). Extremely Randomized Trees.
+
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
 
@@ -1379,6 +1407,9 @@ $estimator = new GaussianNB([
 	'malignant' => 0.1,
 ]);
 ```
+
+#### References:
+>- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ### K-d Neighbors
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
@@ -1539,6 +1570,9 @@ $estimator = new MultiLayerPerceptron([
 ], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
+#### References:
+>- G. E. Hinton. (1989). Connectionist learning procedures.
+
 ### Naive Bayes
 Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated).
 
@@ -1632,6 +1666,10 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new RandomForest(ClassificationTree(10), 400, 0.1);
 ```
 
+#### References:
+>- L. Breiman. (2001). Random Forests.
+>- L. Breiman et al. (2005). Extremely Randomized Trees.
+
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a Softmax output layer.
 
@@ -1696,6 +1734,9 @@ use Rubix\ML\Kernels\SVM\Linear;
 $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
 ```
 
+#### References:
+>- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+
 ---
 ### Clusterers
 Clustering is a technique in machine learning that focuses on grouping samples in such a way that the groups are similar. Another way of looking at it is that clusterers take unlabeled data points and assign them a label (cluster number).
@@ -1727,6 +1768,9 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 
 $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 ```
+
+#### References:
+>- M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
 
 ### Fuzzy C Means
 Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
@@ -1762,6 +1806,10 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3);
 ```
+
+#### References:
+>- J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
+>- A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.
 
 ### Gaussian Mixture
 A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow the centers (*means*) *and* the radii (*variances*) to be learned as well.
@@ -1801,6 +1849,10 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 ```
 
+#### References:
+>- A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm.
+>- J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm for Gaussian Mixture Models.
+
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
@@ -1827,6 +1879,10 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new KMeans(3, new Euclidean());
 ```
+
+#### References:
+>- D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
+>- D. Sculley. (2010). Web-Scale K-Means Clustering.
 
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
@@ -1862,6 +1918,9 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 
 $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 ```
+
+#### References:
+>- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
 
 ---
 ### Embedders
@@ -1899,6 +1958,10 @@ use Rubix\ML\Kernels\Manhattan;
 
 $embedder = new TSNE(2, 30, 12., 10., new Manhattan(), 500, 1e-6, 5);
 ```
+
+#### References:
+>- L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
+>- L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving Local Structure.
 
 ---
 ### Regressors
@@ -1996,6 +2059,9 @@ Return the balance of the tree:
 public balance() : int
 ```
 
+#### References:
+>- P. Geurts et al. (2005). Extremely Randomized Trees.
+
 #### Example:
 ```php
 use Rubix\ML\Classifiers\ExtraTreeRegressor;
@@ -2038,6 +2104,9 @@ use Rubix\ML\Other\Strategies\Mean;
 
 $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3, new DummyRegressor(new Mean()));
 ```
+
+#### References:
+>- J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 
 ### K-d Neighbors Regressor
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
@@ -2155,6 +2224,9 @@ $estimator = new MLPRegressor([
 	new Activation(new LeakyReLU(0.1)),
 ], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
 ```
+
+#### References:
+>- G. E. Hinton. (1989). Connectionist learning procedures.
 
 ### Radius Neighbors Regressor
 This is the regressor version of [Radius Neighbors](#radius-neighbors) classifier implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
@@ -2290,6 +2362,10 @@ use Rubix\ML\Kernels\SVM\Linear;
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
 ```
 
+#### Refernces:
+>- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
+>- A. Smola et al. (2003). A Tutorial on Support Vector Regression.
+
 ---
 ### Meta-Estimators
 Meta-estimators enhance base estimators by adding additional functionality such as [data preprocessing](#pipeline), [model persistence](#persistent-model), and [model averaging](#bootstrap-aggregator). Meta-estimators take on the type (*Classifier*, *Regressor*, etc.) of the base estimator they wrap and allow methods on the base estimator to be called from the parent.
@@ -2319,6 +2395,9 @@ use Rubix\ML\Regressors\RegressionTree;
 
 $estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
 ```
+
+#### References:
+>- L. Breiman. (1996). Bagging Predictors.
 
 ### Grid Search
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
@@ -2929,6 +3008,9 @@ use Rubix\ML\Transformers\PrincipalComponentAnalysis;
 $transformer = new PrincipalComponentAnalysis(15);
 ```
 
+#### References:
+>- H. Abdi et al. (2010). Principal Component Analysis.
+
 ### Quartile Standardizer
 
 This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
@@ -3184,6 +3266,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 $activationFunction = new ELU(5.0);
 ```
 
+#### References:
+>- D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.
+
 ### Gaussian
 The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
 
@@ -3225,6 +3310,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
 $activationFunction = new ISRU(2.0);
 ```
 
+#### References:
+>- B. Carlile et al. (2017). Improving Deep Learning by Inverse Square RootvLinear Units.
+
 ### Leaky ReLU
 Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
 
@@ -3239,6 +3327,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 $activationFunction = new LeakyReLU(0.3);
 ```
+
+#### References:
+>- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
 
 ### ReLU
 Rectified Linear Units output only the positive part of the inputs.
@@ -3255,6 +3346,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 $activationFunction = new ReLU();
 ```
 
+#### References:
+>- V. Nair et al. (2011). Rectified Linear Units Improve RestrictedvBoltzmann Machines.
+
 ### SELU
 Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
 
@@ -3270,6 +3364,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 
 $activationFunction = new SELU(1.05070, 1.67326);
 ```
+
+#### References:
+>- G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
 
 ### Sigmoid
 A bounded S-shaped function (specifically the *Logistic* function) with an output value between 0 and 1.
@@ -3312,6 +3409,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 $activationFunction = new SoftPlus();
 ```
 
+#### References:
+>- X. Glorot et al. (2011). Deep Sparse Rectifier Neural Networks.
+
 ### Softsign
 A function that squashes the input smoothly between -1 and 1.
 
@@ -3324,6 +3424,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 
 $activationFunction = new Softsign();
 ```
+
+#### References:
+>- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks
 
 ### Thresholded ReLU
 Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
@@ -3339,6 +3442,9 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 
 $activationFunction = new ThresholdedReLU(0.5);
 ```
+
+#### References:
+>- K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of Co-adapting Features.
 
 ### Cost Functions
 In neural networks, the cost function is a function that the network tries to minimize during training. The cost of a particular activation is defined as the difference between the output of the network and what the correct output should be given the ground truth label. Different cost functions have different ways of punishing erroneous activations and thus produce differently shaped gradients when backpropagated.
@@ -3434,6 +3540,9 @@ use Rubix\ML\NeuralNet\Initializers\He;
 $initializer = new He();
 ```
 
+#### References:
+>- K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.
+
 ### Le Cun
 Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
 
@@ -3446,6 +3555,9 @@ use Rubix\ML\NeuralNet\Initializers\LeCun;
 
 $initializer = new LeCun();
 ```
+
+#### References:
+>- Y. Le Cun et al. (1998). Efficient Backprop.
 
 ### Normal
 Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
@@ -3490,6 +3602,9 @@ use Rubix\ML\NeuralNet\Initializers\Xavier1;
 $initializer = new Xavier1();
 ```
 
+#### References:
+>- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
+
 ### Xavier 2
 The Xavier 2 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to (6 / (fanIn + fanOut)) ** 0.25. This initializer is best suited for layers that feed into an activation layer that outputs values between -1 and 1 such as [Hyperbolic Tangent](#hyperbolic-tangent) and [Softsign](#softsign).
 
@@ -3502,6 +3617,9 @@ use Rubix\ML\NeuralNet\Initializers\Xavier2;
 
 $initializer = new Xavier2();
 ```
+
+#### References:
+>- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
 
 ---
 ### Layers
@@ -3563,6 +3681,9 @@ use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 $layer = new AlphaDropout(0.1);
 ```
 
+#### References:
+>- G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
+
 ### Batch Norm
 Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of *covariate shift* within the network making it possible to use higher learning rates and converge faster under some circumstances.
 
@@ -3575,6 +3696,10 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 
 $layer = new BatchNorm();
 ```
+
+#### References:
+>- S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.
+>- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ### Dense
 Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
@@ -3608,6 +3733,9 @@ use Rubix\ML\NeuralNet\Layers\Dropout;
 $layer = new Dropout(0.5);
 ```
 
+#### References:
+>- N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting.
+
 ### Noise
 This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
 
@@ -3623,6 +3751,9 @@ use Rubix\ML\NeuralNet\Layers\Noise;
 $layer = new Noise(2.0);
 ```
 
+#### References:
+>- C. Gulcehre et al. (2016). Noisy Activation Functions.
+
 ### PReLU
 The PReLU layer uses leaky ReLU activation functions whose leakage coefficients are parameterized and optimized on a per neuron basis during training.
 
@@ -3637,6 +3768,9 @@ use Rubix\ML\NeuralNet\Layers\PReLU;
 
 $layer = new PReLU(0.1);
 ```
+
+#### References:
+>- K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.
 
 ### Output Layers
 Activations are read directly from the Output layer when making predictions. The type of output layer will determine the type of Estimator the network can bestow (i.e Binary Classifier, Multiclass Classifier, or Regressor).
@@ -3713,6 +3847,9 @@ use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 $optimizer = new AdaGrad(0.125);
 ```
 
+#### References:
+>- J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.
+
 ### Adam
 Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction, which thus prefers flat minima in the error surface.
 
@@ -3730,6 +3867,9 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 $optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
+#### References:
+>- D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
+
 ### Cyclical
 The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus achieving higher accuracy.
 
@@ -3745,8 +3885,11 @@ The Cyclical optimizer uses a global learning rate that cycles between the lower
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 
-$optimizer = new StepDecay(0.001, 0.005, 1000);
+$optimizer = new Cyclical(0.001, 0.005, 1000);
 ```
+
+#### References:
+>- L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.
 
 ### Momentum
 Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor of the previous velocity to the current step.
@@ -3764,6 +3907,9 @@ use Rubix\ML\NeuralNet\Optimizers\Momentum;
 $optimizer = new Momentum(0.001, 0.925);
 ```
 
+#### References:
+>- D. E. Rumelhart et al. (1988). Learning representations by back-propagating errors.
+
 ### RMS Prop
 An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients.
 
@@ -3779,6 +3925,9 @@ use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
 $optimizer = new RMSProp(0.01, 0.9);
 ```
+
+#### References:
+>- T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the gradient by a running average of its recent magnitude.
 
 ### Step Decay
 A learning rate decay optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
@@ -4261,6 +4410,9 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 
 $metric = new VMeasure();
 ```
+
+#### References:
+>- A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.
 
 ---
 ### Reports
