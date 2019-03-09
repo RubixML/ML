@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -157,7 +158,9 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**

@@ -97,11 +97,6 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
                 . " than 0, $contamination given.");
         }
 
-        if ($k > $maxLeafSize) {
-            throw new InvalidArgumentException('K cannot be larger than the max'
-                . " leaf size, $k given but $maxLeafSize allowed.");
-        }
-
         $this->k = $k;
         $this->contamination = $contamination;
 

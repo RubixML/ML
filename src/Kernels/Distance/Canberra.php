@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Other\Helpers\DataType;
-
 /**
  * Canberra
  *
@@ -16,18 +14,6 @@ use Rubix\ML\Other\Helpers\DataType;
  */
 class Canberra implements Distance
 {
-    /**
-     * Return a list of data types distance is compatible with.
-     *
-     * @var int[]
-     */
-    public function compatibility() : array
-    {
-        return [
-            DataType::CONTINUOUS,
-        ];
-    }
-
     /**
      * Compute the distance between two vectors.
      *

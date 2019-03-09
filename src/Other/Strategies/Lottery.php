@@ -26,6 +26,13 @@ class Lottery implements Categorical
     ];
 
     /**
+     * The number of categories available to select.
+     *
+     * @var int|null
+     */
+    protected $k;
+
+    /**
      * Fit the guessing strategy to a set of values.
      *
      * @param array $values
@@ -38,7 +45,10 @@ class Lottery implements Categorical
                 . ' at least 1 value.');
         }
 
-        $this->categories = array_values(array_unique($values));
+        $categories = array_values(array_unique($values));
+
+        $this->categories = $categories;
+        $this->k = count($categories);
     }
 
     /**
@@ -49,11 +59,11 @@ class Lottery implements Categorical
      */
     public function guess() : string
     {
-        if (!$this->categories) {
+        if (!$this->categories or !$this->k) {
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        $index = rand(0, count($this->categories) - 1);
+        $index = rand(0, $this->k - 1);
 
         return $this->categories[$index];
     }

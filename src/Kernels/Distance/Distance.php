@@ -5,13 +5,6 @@ namespace Rubix\ML\Kernels\Distance;
 interface Distance
 {
     public const EPSILON = 1e-8;
-
-    /**
-     * Return a list of data types distance is compatible with.
-     *
-     * @return int[]
-     */
-    public function compatibility() : array;
     
     /**
      * Compute the distance between two vectors.

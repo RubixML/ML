@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -112,7 +113,9 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**
@@ -176,7 +179,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$distances, $labels] = $this->nearest($sample);
+            [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -216,7 +219,7 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$distances, $labels] = $this->nearest($sample);
+            [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -263,6 +266,6 @@ class KNearestNeighbors implements Online, Probabilistic, Persistable
 
         $labels = array_intersect_key($this->labels, $distances);
 
-        return [$distances, $labels];
+        return [$labels, $distances];
     }
 }

@@ -33,7 +33,7 @@ class Screen extends Logger
      * @param string $channel
      * @param bool $timestamps
      */
-    public function __construct(string $channel = 'default', bool $timestamps = true)
+    public function __construct(string $channel = 'model', bool $timestamps = true)
     {
         $this->channel = trim($channel);
         $this->timestamps = $timestamps;

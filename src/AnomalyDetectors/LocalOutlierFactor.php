@@ -8,6 +8,7 @@ use Rubix\ML\Ranking;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -132,7 +133,9 @@ class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**

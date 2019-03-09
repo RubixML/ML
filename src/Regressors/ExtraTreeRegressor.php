@@ -33,7 +33,7 @@ class ExtraTreeRegressor extends RegressionTree
      */
     protected function findBestSplit(Labeled $dataset) : Decision
     {
-        $bestVariance = INF;
+        $bestImpurity = INF;
         $bestColumn = $bestValue = null;
         $bestGroups = [];
 
@@ -48,20 +48,20 @@ class ExtraTreeRegressor extends RegressionTree
 
             $groups = $dataset->partition($column, $value);
 
-            $variance = $this->variance($groups);
+            $impurity = $this->impurity($groups);
 
-            if ($variance < $bestVariance) {
+            if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
                 $bestValue = $value;
                 $bestGroups = $groups;
-                $bestVariance = $variance;
+                $bestImpurity = $impurity;
             }
 
-            if ($variance < $this->tolerance) {
+            if ($impurity < $this->tolerance) {
                 break 1;
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestVariance);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestImpurity);
     }
 }

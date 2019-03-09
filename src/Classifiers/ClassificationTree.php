@@ -8,9 +8,9 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Best;
-use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -174,8 +174,8 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         foreach ($dataset as $sample) {
             $node = $this->search($sample);
 
-            $predictions[] = $node instanceof Best
-                ? $node->outcome()
+            $predictions[] = $node instanceof Outcome
+                ? $node->class()
                 : null;
         }
 
@@ -206,7 +206,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         foreach ($dataset as $sample) {
             $node = $this->search($sample);
 
-            $probabilities[] = $node instanceof Best
+            $probabilities[] = $node instanceof Outcome
                 ? array_replace($template, $node->probabilities())
                 : null;
         }
@@ -222,7 +222,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      */
     protected function findBestSplit(Labeled $dataset) : Decision
     {
-        $bestGini = INF;
+        $bestImpurity = INF;
         $bestColumn = $bestValue = null;
         $bestGroups = [];
 
@@ -234,22 +234,22 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);
 
-                $gini = $this->gini($groups);
+                $impurity = $this->impurity($groups);
 
-                if ($gini < $bestGini) {
+                if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
                     $bestValue = $value;
                     $bestGroups = $groups;
-                    $bestGini = $gini;
+                    $bestImpurity = $bestImpurity;
                 }
 
-                if ($gini < $this->tolerance) {
+                if ($impurity < $this->tolerance) {
                     break 2;
                 }
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestGini);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestImpurity);
     }
 
     /**
@@ -273,9 +273,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             $probabilities[$class] = $count / $n;
         }
     
-        $gini = $this->gini([$dataset]);
+        $gini = $this->gini($dataset->labels());
 
-        return new Best($outcome, $probabilities, $gini, $n);
+        return new Outcome($outcome, $probabilities, $gini, $n);
     }
 
     /**
@@ -284,30 +284,51 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * @param array $groups
      * @return float
      */
-    protected function gini(array $groups) : float
+    protected function impurity(array $groups) : float
     {
         $n = array_sum(array_map('count', $groups));
 
         $impurity = 0.;
 
-        foreach ($groups as $group) {
-            $k = $group->numRows();
+        foreach ($groups as $dataset) {
+            $k = $dataset->numRows();
 
             if ($k < 2) {
                 continue 1;
             }
 
-            $counts = array_count_values($group->labels());
+            $gini = $this->gini($dataset->labels());
 
-            $gini = 0;
+            $ratio = $k / $n;
 
-            foreach ($counts as $count) {
-                $gini += 1 - ($count / $n) ** 2;
-            }
-
-            $impurity += ($k / $n) * $gini;
+            $impurity += $ratio * $gini;
         }
 
         return $impurity;
+    }
+
+    /**
+     * Compute the gini impurity of the given values.
+     *
+     * @param array $values
+     * @return float
+     */
+    protected function gini(array $values) : float
+    {
+        $n = count($values);
+
+        if ($n < 2) {
+            return 0.;
+        }
+
+        $counts = array_count_values($values);
+
+        $score = 0.;
+
+        foreach ($counts as $count) {
+            $score += ($count / $n) ** 2;
+        }
+
+        return 1. - $score;
     }
 }

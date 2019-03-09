@@ -7,7 +7,6 @@ use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Cluster;
 use Rubix\ML\Graph\Nodes\Centroid;
 use Rubix\ML\Graph\Nodes\BinaryNode;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -60,11 +59,6 @@ class BallTree implements BinaryTree
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
                 . " to form a neighborhood, $maxLeafSize given.");
-        }
-
-        if ($kernel and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
-            throw new InvalidArgumentException('Distance kernel must be'
-                . ' compatible with continuous data types.');
         }
 
         $this->maxLeafSize = $maxLeafSize;

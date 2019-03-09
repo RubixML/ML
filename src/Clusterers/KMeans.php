@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -23,6 +24,7 @@ use RuntimeException;
  *
  * References:
  * [1] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
+ * [2] D. Sculley. (2010). Web-Scale K-Means Clustering.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -102,7 +104,9 @@ class KMeans implements Learner, Persistable, Verbose
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**
@@ -169,12 +173,12 @@ class KMeans implements Learner, Persistable, Verbose
                     $changed++;
                 }
 
-                $size = $sizes[$label] ?: self::EPSILON;
+                $rate = 1. / $sizes[$label];
 
                 $centroid = $this->centroids[$label];
 
                 foreach ($centroid as $column => &$mean) {
-                    $mean = ($mean * ($size - 1) + $sample[$column]) / $size;
+                    $mean = (1. - $rate) * $mean + $rate * $sample[$column];
                 }
 
                 $this->centroids[$label] = $centroid;

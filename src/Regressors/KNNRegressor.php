@@ -7,6 +7,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -105,7 +106,9 @@ class KNNRegressor implements Online, Persistable
      */
     public function compatibility() : array
     {
-        return $this->kernel->compatibility();
+        return [
+            DataType::CONTINUOUS,
+        ];
     }
 
     /**
@@ -173,7 +176,7 @@ class KNNRegressor implements Online, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$distances, $labels] = $this->nearest($sample);
+            [$labels, $distances] = $this->nearest($sample);
 
             if ($this->weighted) {
                 $weights = [];
@@ -214,6 +217,6 @@ class KNNRegressor implements Online, Persistable
 
         $labels = array_values(array_intersect_key($this->labels, $distances));
 
-        return [$distances, $labels];
+        return [$labels, $distances];
     }
 }

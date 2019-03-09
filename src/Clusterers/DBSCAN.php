@@ -31,6 +31,8 @@ use InvalidArgumentException;
  */
 class DBSCAN implements Estimator
 {
+    public const START_CLUSTER = 0;
+    
     public const NOISE = -1;
 
     /**
@@ -127,15 +129,15 @@ class DBSCAN implements Estimator
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $tree = new BallTree($this->maxLeafSize, $this->kernel);
-
         $samples = $dataset->samples();
 
         $dataset = Labeled::quick($samples, array_keys($samples));
 
+        $tree = new BallTree($this->maxLeafSize, $this->kernel);
+
         $tree->grow($dataset);
         
-        $cluster = 0;
+        $cluster = self::START_CLUSTER;
 
         $predictions = [];
 

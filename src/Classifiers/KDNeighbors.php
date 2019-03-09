@@ -74,11 +74,6 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
                 . " to make a prediction, $k given.");
         }
 
-        if ($k > $maxLeafSize) {
-            throw new InvalidArgumentException('K cannot be larger than the max'
-                . " leaf size, $k given but $maxLeafSize allowed.");
-        }
-
         $this->k = $k;
         $this->weighted = $weighted;
 

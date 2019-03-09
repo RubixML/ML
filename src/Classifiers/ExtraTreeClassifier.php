@@ -33,7 +33,7 @@ class ExtraTreeClassifier extends ClassificationTree
      */
     protected function findBestSplit(Labeled $dataset) : Decision
     {
-        $bestGini = INF;
+        $bestImpurity = INF;
         $bestColumn = $bestValue = null;
         $bestGroups = [];
 
@@ -48,20 +48,20 @@ class ExtraTreeClassifier extends ClassificationTree
 
             $groups = $dataset->partition($column, $value);
 
-            $gini = $this->gini($groups);
+            $impurity = $this->impurity($groups);
 
-            if ($gini < $bestGini) {
+            if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
                 $bestValue = $value;
                 $bestGroups = $groups;
-                $bestGini = $gini;
+                $bestImpurity = $impurity;
             }
 
-            if ($gini < $this->tolerance) {
+            if ($impurity < $this->tolerance) {
                 break 1;
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestGini);
+        return new Decision($bestColumn, $bestValue, $bestGroups, $bestImpurity);
     }
 }

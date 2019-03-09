@@ -179,7 +179,6 @@ $ composer require rubix/ml
 			- [Cosine](#cosine)
 			- [Diagonal](#diagonal)
 			- [Euclidean](#euclidean)
-			- [Hamming](#hamming)
 			- [Jaccard](#jaccard)
 			- [Manhattan](#manhattan)
 			- [Minkowski](#minkowski)
@@ -1420,7 +1419,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 > **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 
 ##### Interfaces: Learner, Online, Probabilistic, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1707,7 +1706,7 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
 ##### Interfaces: None
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1733,7 +1732,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
 ##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1806,7 +1805,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
 
 ##### Interfaces: Learner, Persistable, Verbose
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1833,7 +1832,7 @@ $estimator = new KMeans(3, new Euclidean());
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
 ##### Interfaces: Learner, Verbose, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2079,7 +2078,7 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
 ##### Interfaces: Learner, Online, Persistable
-##### Compatibility: Depends on distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2496,7 +2495,7 @@ $estimator = new Pipeline([
 
 ---
 ### Transformers
-Transformers take dataset objects and transform them in various ways. Examples of transformations that can be applied are scaling and centering, normalization, dimensionality reduction, and imputation.
+Transformers take [Dataset](#dataset-objects) objects and apply blanket transformations to the samples contained within them. They are often used as part of a [Pipeline](#pipeline) or they can be used by themselves. Examples of transformations are scaling, centering, normalization, dimensionality reduction, missing data imputation, and feature selection.
 
 The transformer directly transforms the data in place via the `transform()` method:
 ```php
@@ -3817,12 +3816,12 @@ $optimizer = new Stochastic(0.001);
 ### Kernels
 
 ### Distance
-Distance functions are a type of kernel that measure the distance between two coordinate vectors. They are used throughout Rubix in Estimators that employ the concept of *distance* to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
+Distance kernels measure the distance between points in vector space. They are used throughout Rubix in Estimators that employ the concept of *distance* to make predictions such as [K Nearest Neighbors](#k-nearest-neighbors), [K Means](#k-means), and [Local Outlier Factor](#local-outlier-factor).
+
+> **Note**: Distance is only defined for *continuous* data points in Rubix.
 
 ### Canberra
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
-
-##### Compatibility: Continuous
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3836,8 +3835,6 @@ $kernel = new Canberra();
 
 ### Cosine
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
-
-##### Compatibility: Continuous
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3865,8 +3862,6 @@ $kernel = new Diagonal();
 ### Euclidean
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
-##### Compatibility: Continuous
-
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3877,25 +3872,8 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $kernel = new Euclidean();
 ```
 
-### Hamming
-The Hamming distance is defined as the sum of all coordinates that are not exactly the same. Therefore, two coordinate vectors a and b would have a Hamming distance of 2 if only one of the three coordinates were equal between the vectors.
-
-##### Compatibility: Categorical
-
-#### Parameters:
-This kernel does not have any parameters.
-
-#### Example:
-```php
-use Rubix\ML\Kernels\Distance\Hamming;
-
-$kernel = new Hamming();
-```
-
 ### Jaccard
-The *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
-
-##### Compatibility: Continuous
+This *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
 
 #### Parameters:
 This kernel does not have any parameters.
@@ -3910,8 +3888,6 @@ $kernel = new Jaccard();
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
-##### Compatibility: Continuous
-
 #### Parameters:
 This kernel does not have any parameters.
 
@@ -3924,8 +3900,6 @@ $kernel = new Manhattan();
 
 ### Minkowski
 The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the *lambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
-
-##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
-use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 
 /**
@@ -19,18 +18,6 @@ use InvalidArgumentException;
  */
 class Minkowski implements Distance
 {
-    /**
-     * Return a list of data types distance is compatible with.
-     *
-     * @var int[]
-     */
-    public function compatibility() : array
-    {
-        return [
-            DataType::CONTINUOUS,
-        ];
-    }
-
     /**
      * This parameter controls the *roundedness* of the metric. There are
      * special cases when lambda = 1 then it is equivalent to manhattan

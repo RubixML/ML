@@ -147,13 +147,24 @@ class GridSearch implements Learner, Persistable, Verbose
         $args = Params::args($proxy);
 
         if (count($grid) > count($args)) {
-            throw new InvalidArgumentException('Too many arguments supplied.'
-                . count($grid) . ' given, only ' . count($args) . ' needed.');
+            throw new InvalidArgumentException('Too many arguments supplied'
+                . ' for learner, ' . count($grid) . ' given but only '
+                . count($args) . ' required.');
         }
 
-        foreach ($grid as &$options) {
+        $grid = array_values($grid);
+
+        foreach ($grid as $position => &$options) {
             if (!is_array($options)) {
                 $options = [$options];
+
+                continue 1;
+            }
+
+            $options = array_values($options);
+
+            if (is_string($options[0]) or is_numeric($options[0])) {
+                $options = array_unique($options);
             }
         }
 

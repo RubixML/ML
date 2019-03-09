@@ -193,7 +193,7 @@ class RegressionTree extends CART implements Learner, Persistable
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);
 
-                $variance = $this->variance($groups);
+                $variance = $this->impurity($groups);
 
                 if ($variance < $bestVariance) {
                     $bestColumn = $column;
@@ -230,22 +230,24 @@ class RegressionTree extends CART implements Learner, Persistable
      * @param array $groups
      * @return float
      */
-    protected function variance(array $groups) : float
+    protected function impurity(array $groups) : float
     {
         $n = array_sum(array_map('count', $groups));
 
         $impurity = 0.;
 
-        foreach ($groups as $group) {
-            $k = $group->numRows();
+        foreach ($groups as $dataset) {
+            $k = $dataset->numRows();
 
             if ($k < 2) {
                 continue 1;
             }
 
-            $variance = Stats::variance($group->labels());
+            $variance = Stats::variance($dataset->labels());
 
-            $impurity += ($k / $n) * $variance;
+            $ratio = $k / $n;
+
+            $impurity += $ratio * $variance;
         }
 
         return $impurity;

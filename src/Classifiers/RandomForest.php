@@ -240,11 +240,9 @@ class RandomForest implements Learner, Probabilistic, Persistable
             }
         }
 
-        $k = count($this->forest);
-
         foreach ($probabilities as &$joint) {
             foreach ($joint as &$probability) {
-                $probability /= $k;
+                $probability /= $this->estimators;
             }
         }
 

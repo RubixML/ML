@@ -16,6 +16,7 @@
     - Added Binary Tree interface
     - Added bin count heuristic to LODA
     - Changed order of k-d neighbors hyperparameters
+    - Removed Hamming distance kernel
 
 - 0.0.9-beta
     - Added transform labels method to Labeled Dataset

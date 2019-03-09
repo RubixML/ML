@@ -5,7 +5,7 @@ namespace Rubix\ML\Graph\Nodes;
 use InvalidArgumentException;
 
 /**
- * Best
+ * Outcome
  *
  * A decision node whose outcome is the most probable class given a set
  * of class labels.
@@ -14,24 +14,24 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Best extends BinaryNode implements Purity, Leaf
+class Outcome extends BinaryNode implements Purity, Leaf
 {
     /**
-     * The outcome of the decision as the most probable i.e best.
+     * The class outcome of a decision.
      *
      * @var int|string
      */
-    protected $outcome;
+    protected $class;
 
     /**
-     * The probabilities of each discrete outcome.
+     * The probabilities of each discrete class outcome.
      *
      * @var float[]
      */
     protected $probabilities;
 
     /**
-     * The amount of impurity within the node.
+     * The amount of impurity within the labels of the node.
      *
      * @var float
      */
@@ -45,20 +45,20 @@ class Best extends BinaryNode implements Purity, Leaf
     protected $n;
     
     /**
-     * @param int|string $outcome
+     * @param mixed $class
      * @param array $probabilities
      * @param float $impurity
      * @param int $n
      * @throws \InvalidArgumentException
      */
-    public function __construct($outcome, array $probabilities, float $impurity, int $n)
+    public function __construct($class, array $probabilities, float $impurity, int $n)
     {
-        if (!is_int($outcome) and !is_string($outcome)) {
-            throw new InvalidArgumentException('Outcome must be an integer or'
-                . ' string, ' . gettype($outcome) . ' given.');
+        if (!is_int($class) and !is_string($class)) {
+            throw new InvalidArgumentException('Class outcome must be an'
+                . ' integer or string, ' . gettype($class) . ' given.');
         }
 
-        $this->outcome = $outcome;
+        $this->class = $class;
         $this->probabilities = $probabilities;
         $this->impurity = $impurity;
         $this->n = $n;
@@ -69,9 +69,9 @@ class Best extends BinaryNode implements Purity, Leaf
      *
      * @return int|string
      */
-    public function outcome()
+    public function class()
     {
-        return $this->outcome;
+        return $this->class;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Coordinate;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Graph\Nodes\BoundingBox;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
@@ -59,11 +58,6 @@ class KDTree implements BinaryTree
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
                 . " to form a neighborhood, $maxLeafSize given.");
-        }
-
-        if ($kernel and !in_array(DataType::CONTINUOUS, $kernel->compatibility())) {
-            throw new InvalidArgumentException('Distance kernel must be'
-                . ' compatible with continuous data types.');
         }
 
         $this->maxLeafSize = $maxLeafSize;

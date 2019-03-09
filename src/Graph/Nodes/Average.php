@@ -17,15 +17,14 @@ use InvalidArgumentException;
 class Average extends BinaryNode implements Purity, Leaf
 {
     /**
-     * The outcome of the decision as an average of the labels
-     * contained within.
+     * The average of the labels contained within.
      *
      * @var int|float
      */
     protected $outcome;
 
     /**
-     * The amount of impurity within the node.
+     * The amount of impurity within the labels of the node.
      *
      * @var float
      */
