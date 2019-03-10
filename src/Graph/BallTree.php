@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * References:
  * [1] S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
  * [2] M. Dolatshah et al. (2015). Ball*-tree: Efficient spatial indexing for
- * constrained nearest-neighbor search in metric spaces
+ * constrained nearest-neighbor search in metric spaces.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

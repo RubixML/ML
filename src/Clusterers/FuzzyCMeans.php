@@ -364,15 +364,15 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         foreach ($this->centroids as $cluster => $centroid1) {
             $a = $this->kernel->compute($sample, $centroid1);
 
-            $total = 0.;
+            $sigma = 0.;
 
             foreach ($this->centroids as $centroid2) {
                 $b = $this->kernel->compute($sample, $centroid2);
 
-                $total += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
+                $sigma += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
             }
 
-            $membership[$cluster] = 1. / ($total ?: self::EPSILON);
+            $membership[$cluster] = 1. / ($sigma ?: self::EPSILON);
         }
 
         return $membership;
@@ -387,18 +387,17 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     protected function interClusterDistance(Dataset $dataset, array $memberships) : float
     {
-        $total = 0.;
+        $distance = 0.;
 
         foreach ($dataset as $i => $sample) {
             $membership = $memberships[$i];
 
             foreach ($this->centroids as $cluster => $centroid) {
-                $distance = $this->kernel->compute($sample, $centroid);
-
-                $total += $membership[$cluster] * $distance;
+                $distance += $membership[$cluster]
+                    * $this->kernel->compute($sample, $centroid);
             }
         }
 
-        return $total;
+        return $distance;
     }
 }

@@ -13,6 +13,10 @@ use InvalidArgumentException;
  * The Sparse Random Projector uses a random matrix sampled from a sparse uniform
  * distribution (mostly 0s) to project a sample matrix onto a target dimensionality.
  *
+ * References:
+ * [1] D. Achlioptas. (2003). Database-friendly random projections:
+ * Johnson-Lindenstrauss with binary coins.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino

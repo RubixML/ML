@@ -235,12 +235,9 @@ class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
     
         $n = $dataset->numRows();
 
-        [$means, $variances] = $this->initialize($dataset);
-
-        $this->means = $means;
-        $this->variances = $variances;
-
         $this->priors = array_fill(0, $this->k, log(1. / $this->k));
+
+        [$this->means, $this->variances] = $this->initialize($dataset);
 
         $this->steps = [];
 

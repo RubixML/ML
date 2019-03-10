@@ -194,12 +194,12 @@ class MeanShift implements Learner, Verbose, Persistable
                 ]));
         }
 
-        $this->centroids = $previous = $dataset->samples();
+        $centroids = $previous = $dataset->samples();
 
         $this->steps = [];
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            foreach ($this->centroids as $i => &$centroid) {
+            foreach ($centroids as $i => &$centroid) {
                 foreach ($dataset as $sample) {
                     $distance = $this->kernel->compute($sample, $centroid);
 
@@ -214,7 +214,7 @@ class MeanShift implements Learner, Verbose, Persistable
                     }
                 }
 
-                foreach ($this->centroids as $j => $neighbor) {
+                foreach ($centroids as $j => $neighbor) {
                     if ($i === $j) {
                         continue 1;
                     }
@@ -222,7 +222,7 @@ class MeanShift implements Learner, Verbose, Persistable
                     $distance = $this->kernel->compute($centroid, $neighbor);
 
                     if ($distance < $this->radius) {
-                        unset($this->centroids[$j]);
+                        unset($centroids[$j]);
                     }
                 }
             }
@@ -243,10 +243,10 @@ class MeanShift implements Learner, Verbose, Persistable
                 break 1;
             }
 
-            $previous = $this->centroids;
+            $previous = $centroids;
         }
 
-        $this->centroids = array_values($this->centroids);
+        $this->centroids = array_values($centroids);
 
         if ($this->logger) {
             $this->logger->info('Training complete');
@@ -296,7 +296,7 @@ class MeanShift implements Learner, Verbose, Persistable
     }
 
     /**
-     * Calculate the magnitude (l1) of a centroid shift from the previous epoch.
+     * Calculate the magnitude (l1) of centroid shift from the previous epoch.
      *
      * @param array $previous
      * @return float
@@ -306,10 +306,10 @@ class MeanShift implements Learner, Verbose, Persistable
         $shift = 0.;
 
         foreach ($this->centroids as $cluster => $centroid) {
-            $prevCluster = $previous[$cluster];
+            $prevCentroid = $previous[$cluster];
 
             foreach ($centroid as $column => $mean) {
-                $shift += abs($prevCluster[$column] - $mean);
+                $shift += abs($prevCentroid[$column] - $mean);
             }
         }
 

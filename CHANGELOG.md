@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.10-beta
     - Added LODA online anomaly detector
     - Added Radius Neighbors classifier and regressor
     - Added fast k-d LOF anomaly detector

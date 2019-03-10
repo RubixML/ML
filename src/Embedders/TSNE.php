@@ -272,8 +272,7 @@ class TSNE implements Estimator, Verbose
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing pairwise high'
-                . ' dimensional affinities');
+            $this->logger->info('Computing affinity matrix');
         }
 
         $distances = $this->pairwiseDistances($x);

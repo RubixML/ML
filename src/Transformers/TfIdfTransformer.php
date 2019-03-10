@@ -18,6 +18,10 @@ use RuntimeException;
  * > **Note**: This transformer assumes that its input is made up of word
  * frequency vectors such as those created by the Word Count Vectorizer.
  *
+ * References:
+ * [1] S. Robertson. (2003). Understanding Inverse Document Frequency: On
+ * theoretical arguments for IDF.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
