@@ -179,7 +179,7 @@ class RegressionTree extends CART implements Learner, Persistable
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Decision
     {
         $bestVariance = INF;
         $bestColumn = $bestValue = null;
@@ -193,7 +193,7 @@ class RegressionTree extends CART implements Learner, Persistable
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);
 
-                $variance = $this->impurity($groups);
+                $variance = $this->splitImpurity($groups);
 
                 if ($variance < $bestVariance) {
                     $bestColumn = $column;
@@ -202,7 +202,7 @@ class RegressionTree extends CART implements Learner, Persistable
                     $bestVariance = $variance;
                 }
 
-                if ($variance < $this->tolerance) {
+                if ($variance <= $this->tolerance) {
                     break 2;
                 }
             }
@@ -225,12 +225,12 @@ class RegressionTree extends CART implements Learner, Persistable
     }
 
     /**
-     * Calculate the mean squared error for each group in a split.
+     * Calculate the weighted variance for the split.
      *
      * @param array $groups
      * @return float
      */
-    protected function impurity(array $groups) : float
+    protected function splitImpurity(array $groups) : float
     {
         $n = array_sum(array_map('count', $groups));
 
@@ -245,9 +245,7 @@ class RegressionTree extends CART implements Learner, Persistable
 
             $variance = Stats::variance($dataset->labels());
 
-            $ratio = $k / $n;
-
-            $impurity += $ratio * $variance;
+            $impurity += ($k / $n) * $variance;
         }
 
         return $impurity;

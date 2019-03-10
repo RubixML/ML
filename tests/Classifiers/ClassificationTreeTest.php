@@ -19,7 +19,7 @@ use RuntimeException;
 
 class ClassificationTreeTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 250;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
     
@@ -37,7 +37,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ], [3, 4, 3]);
 
-        $this->estimator = new ClassificationTree(10, 3, 0., null, 1e-4);
+        $this->estimator = new ClassificationTree(10, 3, 0., 3, 1e-3);
 
         $this->metric = new Accuracy();
     }

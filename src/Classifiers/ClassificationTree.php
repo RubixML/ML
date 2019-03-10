@@ -220,7 +220,7 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Decision
     {
         $bestImpurity = INF;
         $bestColumn = $bestValue = null;
@@ -234,16 +234,16 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);
 
-                $impurity = $this->impurity($groups);
+                $impurity = $this->splitImpurity($groups);
 
                 if ($impurity < $bestImpurity) {
                     $bestColumn = $column;
                     $bestValue = $value;
                     $bestGroups = $groups;
-                    $bestImpurity = $bestImpurity;
+                    $bestImpurity = $impurity;
                 }
 
-                if ($impurity < $this->tolerance) {
+                if ($impurity <= $this->tolerance) {
                     break 2;
                 }
             }
@@ -263,7 +263,9 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
     {
         $n = $dataset->numRows();
 
-        $counts = array_count_values($dataset->labels());
+        $labels = $dataset->labels();
+
+        $counts = array_count_values($labels);
 
         $outcome = Argmax::compute($counts);
 
@@ -272,19 +274,19 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
         foreach ($counts as $class => $count) {
             $probabilities[$class] = $count / $n;
         }
-    
-        $gini = $this->gini($dataset->labels());
 
-        return new Outcome($outcome, $probabilities, $gini, $n);
+        $impurity = 1. - (max($counts) / $n) ** 2;
+
+        return new Outcome($outcome, $probabilities, $impurity, $n);
     }
 
     /**
-     * Calculate the Gini impurity index for a given split.
+     * Calculate the Gini impurity for a given split.
      *
      * @param array $groups
      * @return float
      */
-    protected function impurity(array $groups) : float
+    protected function splitImpurity(array $groups) : float
     {
         $n = array_sum(array_map('count', $groups));
 
@@ -297,38 +299,17 @@ class ClassificationTree extends CART implements Learner, Probabilistic, Persist
                 continue 1;
             }
 
-            $gini = $this->gini($dataset->labels());
+            $counts = array_count_values($dataset->labels());
 
-            $ratio = $k / $n;
+            $p = 0.;
+    
+            foreach ($counts as $count) {
+                $p += 1. - ($count / $n) ** 2;
+            }
 
-            $impurity += $ratio * $gini;
+            $impurity += ($k / $n) * $p;
         }
 
         return $impurity;
-    }
-
-    /**
-     * Compute the gini impurity of the given values.
-     *
-     * @param array $values
-     * @return float
-     */
-    protected function gini(array $values) : float
-    {
-        $n = count($values);
-
-        if ($n < 2) {
-            return 0.;
-        }
-
-        $counts = array_count_values($values);
-
-        $score = 0.;
-
-        foreach ($counts as $count) {
-            $score += ($count / $n) ** 2;
-        }
-
-        return 1. - $score;
     }
 }

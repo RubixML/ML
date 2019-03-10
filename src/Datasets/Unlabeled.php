@@ -287,12 +287,12 @@ class Unlabeled extends DataFrame implements Dataset
      * right side contains the samples that are greater than or equal to the
      * value.
      *
-     * @param int $index
+     * @param int $column
      * @param mixed $value
      * @throws \InvalidArgumentException
      * @return self[]
      */
-    public function partition(int $index, $value) : array
+    public function partition(int $column, $value) : array
     {
         if (!is_string($value) and !is_numeric($value)) {
             throw new InvalidArgumentException('Value must be a string or'
@@ -301,9 +301,9 @@ class Unlabeled extends DataFrame implements Dataset
 
         $left = $right = [];
 
-        if ($this->columnType($index) === DataType::CATEGORICAL) {
+        if ($this->columnType($column) === DataType::CATEGORICAL) {
             foreach ($this->samples as $i => $sample) {
-                if ($sample[$index] === $value) {
+                if ($sample[$column] === $value) {
                     $left[] = $sample;
                 } else {
                     $right[] = $sample;
@@ -311,7 +311,7 @@ class Unlabeled extends DataFrame implements Dataset
             }
         } else {
             foreach ($this->samples as $i => $sample) {
-                if ($sample[$index] < $value) {
+                if ($sample[$column] < $value) {
                     $left[] = $sample;
                 } else {
                     $right[] = $sample;

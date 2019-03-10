@@ -91,12 +91,12 @@ abstract class CART implements BinaryTree
     }
 
     /**
-     * Choose the best split for a given dataset.
+     * Choose a split for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    abstract protected function findBestSplit(Labeled $dataset) : Decision;
+    abstract protected function split(Labeled $dataset) : Decision;
 
     /**
      * Terminate the branch.
@@ -158,7 +158,7 @@ abstract class CART implements BinaryTree
 
         $depth = 1;
 
-        $this->root = $this->findBestSplit($dataset);
+        $this->root = $this->split($dataset);
 
         $stack = [[$this->root, $depth]];
 
@@ -166,6 +166,8 @@ abstract class CART implements BinaryTree
             [$current, $depth] = array_pop($stack) ?? [];
 
             [$left, $right] = $current->groups();
+
+            $current->cleanup();
 
             $depth++;
 
@@ -186,7 +188,7 @@ abstract class CART implements BinaryTree
             }
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($left);
+                $node = $this->split($left);
 
                 if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
                     $current->attachLeft($node);
@@ -200,7 +202,7 @@ abstract class CART implements BinaryTree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = $this->findBestSplit($right);
+                $node = $this->split($right);
     
                 if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
                     $current->attachRight($node);
@@ -212,8 +214,6 @@ abstract class CART implements BinaryTree
             } else {
                 $current->attachRight($this->terminate($right));
             }
-
-            $current->cleanup();
         }
     }
 

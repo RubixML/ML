@@ -31,7 +31,7 @@ class ExtraTreeClassifier extends ClassificationTree
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision
      */
-    protected function findBestSplit(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Decision
     {
         $bestImpurity = INF;
         $bestColumn = $bestValue = null;
@@ -48,7 +48,7 @@ class ExtraTreeClassifier extends ClassificationTree
 
             $groups = $dataset->partition($column, $value);
 
-            $impurity = $this->impurity($groups);
+            $impurity = $this->splitImpurity($groups);
 
             if ($impurity < $bestImpurity) {
                 $bestColumn = $column;
