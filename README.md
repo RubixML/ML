@@ -267,20 +267,20 @@ Machine learning is the process by which a computer program is able to progressi
 	- **Dimensionality Reduction** is used in visualizing high dimensional datasets, embedding sparse feature representations, and reducing model size by producing a low dimensional representation of the original feature space.
 
 ### Obtaining Data
-Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*. The goal is to engineer enough of the right features for the learner to be able to train effectively.
+Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*.
 
-An alternative to collecting data yourself can be to access one of the many public datasets that are free to use. The advantages of using a public dataset is that, usually, the data has already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) as a great place to get started using open source datasets.
+An alternative to collecting data yourself is to download one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that, usually, the data has already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.html) as a great place to get started with using open source datasets.
 
-Note that there are a number of PHP libraries that make extracting data from various sources such as CSV, database, and the cloud easy and intuitive, and we recommend checking those out as well as a good place to get started.
+There are many PHP libraries that help make extracting data from various sources such as CSV, database, and the cloud easy and intuitive, and we recommend checking those out as well.
 
-Here are a few libraries that we recommend for data extraction:
+Here are some libraries that we recommend for data extraction:
 
 - [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extractor
 - [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html) - SQL database abstraction layer
 - [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
 
 #### The Dataset Object
-Data is passed around in Rubix via specialized data containers called Datasets. [Dataset objects](#dataset-objects) properly handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for *supervised* learning and Unlabeled datasets are used for *unsupervised* learning and for making predictions (which we call *inference*). Dataset objects have a mutability policy of *generally* immutable except for performance reasons such as when applying a [Transformer](#transformers).
+In Rubix, data is passed around in specialized data containers called Datasets. [Dataset objects](#dataset-objects) internally handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for *supervised* learning and for providing the ground-truth during cross validation. Unlabeled datasets are used for *unsupervised* learning and for making predictions (which we call *inference*) on unknown samples.
 
 For the following example, suppose that you went out and asked 100 couples (50 married and 50 divorced) about their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled Dataset](#labeled) from this data like so:
 
@@ -415,10 +415,10 @@ The Rubix architecture is defined by a few key abstractions and their correspond
 
 ---
 ### API Reference
-This section breaks down the application programming interface (API) of each component in detail.
+This section breaks down the public application programming interface (API) of each Rubix ML component in detail.
 
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way.
+In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way. 
 
 > **Note**: There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
 
@@ -670,7 +670,7 @@ $dataset->apply($transformer);
 ```
 
 ### Labeled
-For *supervised* Estimators you will need to train it with a Labeled dataset consisting of samples with the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label.
+For *supervised* Estimators you will need to train it with a Labeled dataset consisting of samples with the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label as well.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1025,7 +1025,7 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 >- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
 
 ### K-d LOF
-A k-d tree accelerated version of Local Outlier Factor which benefits from fast nearest neighbors search.
+A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from fast nearest neighbors search.
 
 ##### Interfaces: Learner, Ranking, Persistable
 ##### Compatibility: Continuous
@@ -1061,10 +1061,10 @@ $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### Local Outlier Factor
-Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
+Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its *k* nearest neighbors. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
 
 ##### Interfaces: Learner, Online, Ranking, Persistable
-##### Compatibility: Determined by distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1088,7 +1088,7 @@ $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### LODA
-Lightweight Online Detector of Anomalies uses sparse random projection vectors to generate an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user through the *contamination* hyper-parameter.
+Lightweight Online Detector of Anomalies uses sparse random projection vectors to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
 
 ##### Interfaces: Learner, Online, Ranking, Persistable
 ##### Compatibility: Continuous
@@ -2630,7 +2630,8 @@ $transformer->update($folds[2]);
 ### Dense Random Projector
 The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to reduce the dimensionality of a dataset by projecting it onto a vector space of target dimensionality.
 
-##### Continuous *Only* | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2651,10 +2652,14 @@ use Rubix\ML\Transformers\DenseRandomProjector;
 $transformer = new DenseRandomProjector(50);
 ```
 
+#### References:
+>- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
+
 ### Gaussian Random Projector
 A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
-##### Continuous *Only* | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2678,7 +2683,8 @@ $transformer = new GaussianRandomProjector(100);
 ### HTML Stripper
 Removes any HTML tags that may be in the text of a categorical variable.
 
-##### Categorical
+##### Interfaces: None
+##### Compatibility: Categorical
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2698,7 +2704,8 @@ Image Vectorizer takes images (as PHP Resources) and converts them into a flat v
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-##### Resource (Images)
+##### Interfaces: None
+##### Compatibility: Resource (Images)
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2724,7 +2731,8 @@ $transformer = new ImageVectorizer([28, 28], true, 'gd');
 ### Interval Discretizer
 This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
 
-##### Continuous | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2753,7 +2761,8 @@ $transformer = new IntervalDiscretizer(10);
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only*
+##### Interfaces: None
+##### Compatibility: Continuous only
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2771,7 +2780,8 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-##### Continuous *Only*
+##### Interfaces: None
+##### Compatibility: Continuous only
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2789,7 +2799,8 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](#what-is-a-tuple).
 
-##### Categorical | Continuous
+##### Interfaces: None
+##### Compatiblity: Depends on function
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2815,7 +2826,8 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 ### Linear Discriminant Analysis
 A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or best separates two or more classes.
 
-##### Supervised | Continuous *Only* | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2848,7 +2860,8 @@ $transformer = new LinearDiscriminantAnalysis(20);
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-##### Continuous | Stateful | Elastic
+##### Interfaces: Stateful, Elastic
+##### Compatibility: Continuous
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2869,7 +2882,8 @@ $transformer = new MaxAbsoluteScaler();
 ### Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-##### Continuous | Stateful | Elastic
+##### Interfaces: Stateful, Elastic
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2898,7 +2912,8 @@ $transformer = new MinMaxNormalizer(-5., 5.);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
 
-##### Categorical | Continuous | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Categorical, Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2922,7 +2937,8 @@ $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new Popul
 ### Numeric String Converter
 Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
-##### Categorical
+##### Interfaces: None
+##### Compatibility: Categorical
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2940,7 +2956,8 @@ $transformer = new NumericStringConverter();
 ### One Hot Encoder
 The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
-##### Categorical | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Categorical
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -2958,7 +2975,8 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomials up to and including the specified *degree* of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
 
-##### Continuous *Only*
+##### Interfaces: None
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -2978,7 +2996,8 @@ $transformer = new PolynomialExpander(3);
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
 
-##### Unsupervised | Continuous *Only* | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3015,7 +3034,8 @@ $transformer = new PrincipalComponentAnalysis(15);
 
 This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
 
-##### Continuous | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3044,7 +3064,8 @@ $transformer = new QuartileStandardizer(true);
 ### Robust Standardizer
 This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
-##### Continuous | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3073,7 +3094,8 @@ $transformer = new RobustStandardizer(true);
 ### Sparse Random Projector
 The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
 
-##### Continuous *Only* | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous only
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3094,10 +3116,14 @@ use Rubix\ML\Transformers\SparseRandomProjector;
 $transformer = new SparseRandomProjector(30);
 ```
 
+#### References:
+>- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
+
 ### Stop Word Filter
 Removes user-specified words from any categorical feature column including blobs of text.
 
-##### Categorical
+##### Interfaces: None
+##### Compatiblity: Categorical
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3116,7 +3142,8 @@ $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ### Text Normalizer
 This transformer converts all text to lowercase and *optionally* removes extra whitespace.
 
-##### Categorical
+##### Interfaces: None
+##### Compatibility: Categorical
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3137,7 +3164,8 @@ $transformer = new TextNormalizer(true);
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
-##### Continuous *Only* | Stateful | Elastic
+##### Interfaces: Stateful, Elastic
+##### Compatiblity: Continuous only
 
 #### Parameters:
 This transformer does not have any parameters.
@@ -3155,10 +3183,14 @@ use Rubix\ML\Transformers\TfIdfTransformer;
 $transformer = new TfIdfTransformer();
 ```
 
+#### References:
+>- S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.
+
 ### Variance Threshold Filter
 A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold.
 
-##### Continuous | Categorical | Stateful
+##### Interfaces: Stateful
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3181,6 +3213,9 @@ $transformer = new VarianceThresholdFilter(50);
 
 ### Word Count Vectorizer
 The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given sample.
+
+##### Interfaces: Stateful
+##### Compatibility: Categorical
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3211,7 +3246,8 @@ $transformer = new WordCountVectorizer(10000, 3, new SkipGram());
 ### Z Scale Standardizer
 A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
 
-##### Continuous | Stateful | Elastic
+##### Interfaces: Stateful, Elastic
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -3241,6 +3277,9 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $transformer = new ZScaleStandardizer(true);
 ```
+
+#### References:
+>- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ---
 ### Neural Network
