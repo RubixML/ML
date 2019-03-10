@@ -20,6 +20,8 @@ class DummyRegressorTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = -INF;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -33,6 +35,8 @@ class DummyRegressorTest extends TestCase
         $this->estimator = new DummyRegressor(new Mean());
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

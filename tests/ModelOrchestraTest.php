@@ -26,6 +26,8 @@ class ModelOrchestraTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -49,6 +51,8 @@ class ModelOrchestraTest extends TestCase
         $this->metric = new F1Score();
 
         $this->estimator->setLogger(new BlackHole());
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

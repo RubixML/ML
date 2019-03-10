@@ -22,6 +22,8 @@ class ClassificationTreeTest extends TestCase
     protected const TRAIN_SIZE = 250;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
+
+    protected const RANDOM_SEED = 0;
     
     protected $generator;
 
@@ -40,6 +42,8 @@ class ClassificationTreeTest extends TestCase
         $this->estimator = new ClassificationTree(10, 3, 0., 3, 1e-3);
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

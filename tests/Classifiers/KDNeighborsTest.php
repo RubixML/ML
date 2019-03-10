@@ -24,6 +24,8 @@ class KDNeighborsTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $estimator;
 
     protected $generator;
@@ -41,6 +43,8 @@ class KDNeighborsTest extends TestCase
         $this->estimator = new KDNeighbors(3, new Manhattan(), true, 20);
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

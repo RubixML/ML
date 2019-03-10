@@ -22,6 +22,8 @@ class KDNeighborsRegressorTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -35,6 +37,8 @@ class KDNeighborsRegressorTest extends TestCase
         $this->estimator = new KDNeighborsRegressor(3, new Minkowski(3.0), true, 20);
         
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

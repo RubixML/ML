@@ -24,6 +24,8 @@ class KMeansTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.8;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -43,6 +45,8 @@ class KMeansTest extends TestCase
         $this->estimator->setLogger(new BlackHole());
 
         $this->metric = new VMeasure();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_clusterer()

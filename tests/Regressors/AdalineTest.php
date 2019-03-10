@@ -23,6 +23,8 @@ class AdalineTest extends TestCase
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.6;
 
+    protected const RANDOM_SEED = 0;
+
     protected $estimator;
 
     protected $training;
@@ -42,6 +44,8 @@ class AdalineTest extends TestCase
         $this->metric = new RSquared();
 
         $this->estimator->setLogger(new BlackHole());
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

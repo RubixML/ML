@@ -19,6 +19,8 @@ class BootstrapAggregatorTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.6;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -32,6 +34,8 @@ class BootstrapAggregatorTest extends TestCase
         $this->estimator = new BootstrapAggregator(new RegressionTree(5), 50, 0.4);
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_meta_estimator()

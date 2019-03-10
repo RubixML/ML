@@ -19,6 +19,8 @@ class ExtraTreeRegressorTest extends TestCase
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.6;
 
+    protected const RANDOM_SEED = 0;
+
     protected $estimator;
 
     protected $training;
@@ -36,6 +38,8 @@ class ExtraTreeRegressorTest extends TestCase
         $this->estimator = new ExtraTreeRegressor(30, 3, 0., null, 1e-4);
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

@@ -20,6 +20,8 @@ class RadiusNeighborsRegressorTest extends TestCase
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.8;
 
+    protected const RANDOM_SEED = 0;
+
     protected $training;
 
     protected $testing;
@@ -37,6 +39,8 @@ class RadiusNeighborsRegressorTest extends TestCase
         $this->estimator = new RadiusNeighborsRegressor(1.5, new Euclidean(), true, 20);
         
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

@@ -21,6 +21,8 @@ class RegressionTreeTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.7;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -34,6 +36,8 @@ class RegressionTreeTest extends TestCase
         $this->estimator = new RegressionTree(40, 2, 0., null, 1e-4);
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

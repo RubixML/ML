@@ -24,6 +24,8 @@ class LocalOutlierFactorTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -40,6 +42,8 @@ class LocalOutlierFactorTest extends TestCase
         $this->estimator = new LocalOutlierFactor(20, 0.1);
 
         $this->metric = new F1Score();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_detector()

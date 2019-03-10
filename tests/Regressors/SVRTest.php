@@ -21,6 +21,8 @@ class SVRTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = -INF;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -34,6 +36,8 @@ class SVRTest extends TestCase
         $this->estimator = new SVR(0.1, 1e-3, new Polynomial(4), false, 1e-3);
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

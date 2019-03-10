@@ -24,6 +24,8 @@ class GradientBoostTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.7;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -39,6 +41,8 @@ class GradientBoostTest extends TestCase
         $this->metric = new RSquared();
 
         $this->estimator->setLogger(new BlackHole());
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

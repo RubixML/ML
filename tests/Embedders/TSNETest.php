@@ -18,6 +18,8 @@ class TSNETest extends TestCase
 {
     protected const TRAIN_SIZE = 30;
 
+    protected const RANDOM_SEED = 0;
+
     protected $estimator;
 
     protected $generator;
@@ -33,6 +35,8 @@ class TSNETest extends TestCase
         $this->estimator = new TSNE(1, 10, 12., 10., new Euclidean(), 500, 1e-7, 5);
 
         $this->estimator->setLogger(new BlackHole());
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_embedder()

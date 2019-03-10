@@ -18,6 +18,8 @@ class DBSCANTest extends TestCase
     protected const TEST_SIZE = 300;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -35,6 +37,8 @@ class DBSCANTest extends TestCase
         $this->estimator = new DBSCAN(10.0, 75, new Euclidean(), 20);
 
         $this->metric = new VMeasure();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_clusterer()

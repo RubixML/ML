@@ -22,6 +22,8 @@ class GaussianNBTest extends TestCase
     protected const TRAIN_SIZE = 100;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
+
+    protected const RANDOM_SEED = 0;
     
     protected $generator;
 
@@ -40,6 +42,8 @@ class GaussianNBTest extends TestCase
         $this->estimator = new GaussianNB(null);
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

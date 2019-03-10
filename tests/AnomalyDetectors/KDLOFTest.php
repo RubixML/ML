@@ -23,6 +23,8 @@ class KDLOFTest extends TestCase
     const TEST_SIZE = 10;
     const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -39,6 +41,8 @@ class KDLOFTest extends TestCase
         $this->estimator = new KDLOF(20, 0.1, new Euclidean(), 20);
 
         $this->metric = new F1Score();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_detector()

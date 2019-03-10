@@ -19,6 +19,8 @@ class DummyClassifierTest extends TestCase
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.;
 
+    protected const RANDOM_SEED = 0;
+
     protected $estimator;
 
     protected $generator;
@@ -36,6 +38,8 @@ class DummyClassifierTest extends TestCase
         $this->estimator = new DummyClassifier(new PopularityContest());
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

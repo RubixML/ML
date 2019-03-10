@@ -23,6 +23,8 @@ class RandomForestTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -40,6 +42,8 @@ class RandomForestTest extends TestCase
         $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

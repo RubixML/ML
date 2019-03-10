@@ -26,6 +26,8 @@ class PipelineTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.8;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -45,6 +47,8 @@ class PipelineTest extends TestCase
         ], new NaiveBayes(1.0), true);
 
         $this->metric = new F1Score();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_meta_estimator()

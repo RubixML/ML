@@ -23,6 +23,8 @@ class SVCTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -39,6 +41,8 @@ class SVCTest extends TestCase
         $this->estimator = new SVC(1.0, new RBF(), true, 1e-3);
 
         $this->metric = new Accuracy();
+        
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

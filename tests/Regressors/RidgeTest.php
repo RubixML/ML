@@ -17,6 +17,8 @@ class RidgeTest extends TestCase
 {
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.9;
+
+    protected const RANDOM_SEED = 0;
     
     protected $estimator;
 
@@ -35,6 +37,8 @@ class RidgeTest extends TestCase
         $this->estimator = new Ridge(1.0);
 
         $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_regressor()

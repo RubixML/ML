@@ -24,6 +24,8 @@ class LODATest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.8;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -40,6 +42,8 @@ class LODATest extends TestCase
         $this->estimator = new LODA(5.5, 100, null);
 
         $this->metric = new F1Score();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_detector()

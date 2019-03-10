@@ -24,6 +24,8 @@ class NaiveBayesTest extends TestCase
     protected const TEST_SIZE = 5;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -41,6 +43,8 @@ class NaiveBayesTest extends TestCase
         $this->estimator = new NaiveBayes(1., null);
 
         $this->metric = new Accuracy();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_classifier()

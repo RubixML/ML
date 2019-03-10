@@ -21,6 +21,8 @@ class GridSearchTest extends TestCase
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
+    protected const RANDOM_SEED = 0;
+
     protected $generator;
 
     protected $estimator;
@@ -40,6 +42,8 @@ class GridSearchTest extends TestCase
         ], new F1Score(), new HoldOut(0.2));
 
         $this->metric = new F1Score();
+
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_meta_estimator()
