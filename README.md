@@ -1025,7 +1025,7 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 >- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
 
 ### K-d LOF
-A k-d tree accelerated version of Local Outlier Factor which benefits from fast nearest neighbors search.
+A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from fast nearest neighbors search.
 
 ##### Interfaces: Learner, Ranking, Persistable
 ##### Compatibility: Continuous
@@ -1061,10 +1061,10 @@ $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### Local Outlier Factor
-Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its k nearest neighbors. As such, LOF only considers the local region of a sample thus enabling it to detect anomalies within individual clusters of data.
+Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its *k* nearest neighbors. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
 
 ##### Interfaces: Learner, Online, Ranking, Persistable
-##### Compatibility: Determined by distance kernel
+##### Compatibility: Continuous
 
 #### Parameters:
 | # | Param | Default | Type | Description |
@@ -1088,7 +1088,7 @@ $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### LODA
-Lightweight Online Detector of Anomalies uses sparse random projection vectors to generate an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user through the *contamination* hyper-parameter.
+Lightweight Online Detector of Anomalies uses sparse random projection vectors to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
 
 ##### Interfaces: Learner, Online, Ranking, Persistable
 ##### Compatibility: Continuous
