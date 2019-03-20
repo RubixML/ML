@@ -1854,7 +1854,7 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
 >- J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm for Gaussian Mixture Models.
 
 ### K Means
-A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*).
+A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means is trained with mini batch gradient descent using the within cluster distance as a loss function.
 
 ##### Interfaces: Learner, Persistable, Verbose
 ##### Compatibility: Continuous
@@ -1863,8 +1863,10 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 3 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 2 | batch size | 100 | int | The size of each mini batch in samples. |
+| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 4 | min change | 1 | int | The minimum change in the size of each cluster for training to continue. |
+| 5 | epochs | 300 | int | The maximum number of training rounds to execute. |
 
 #### Additional Methods:
 Return the *k* computed centroids of the training set:
@@ -1877,7 +1879,7 @@ public centroids() : array
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KMeans(3, new Euclidean());
+$estimator = new KMeans(3, 100, new Euclidean(), 1, 300);
 ```
 
 #### References:

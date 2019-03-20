@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
@@ -20,7 +21,8 @@ use RuntimeException;
  *
  * A fast centroid-based hard clustering algorithm capable of clustering
  * linearly separable data points given a number of target clusters set by the
- * parameter K.
+ * parameter K. K Means is trained with mini batch gradient descent using the
+ * within cluster distance as a loss function.
  *
  * References:
  * [1] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
@@ -42,6 +44,13 @@ class KMeans implements Learner, Persistable, Verbose
     protected $k;
 
     /**
+     * The size of each mini batch in samples.
+     *
+     * @var int
+     */
+    protected $batchSize;
+
+    /**
      * The distance function to use when computing the distances.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
@@ -49,7 +58,16 @@ class KMeans implements Learner, Persistable, Verbose
     protected $kernel;
 
     /**
-     * The maximum number of iterations to run until the algorithm terminates.
+     * The minimum change in the size of each cluster for training
+     * to continue.
+     *
+     * @var int
+     */
+    protected $minChange;
+
+    /**
+     * The maximum number of iterations to run until the algorithm
+     * terminates.
      *
      * @var int
      */
@@ -66,15 +84,32 @@ class KMeans implements Learner, Persistable, Verbose
 
     /**
      * @param int $k
+     * @param int $batchSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $minChange
      * @param int $epochs
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k, ?Distance $kernel = null, int $epochs = 300)
-    {
+    public function __construct(
+        int $k,
+        int $batchSize = 100,
+        ?Distance $kernel = null,
+        int $minChange = 1,
+        int $epochs = 300
+    ) {
         if ($k < 1) {
             throw new InvalidArgumentException('Must target at least'
                 . " 1 cluster, $k given.");
+        }
+
+        if ($batchSize < 1) {
+            throw new InvalidArgumentException('Batch size must be greater'
+                . " than 0, $batchSize given.");
+        }
+
+        if ($minChange < 1) {
+            throw new InvalidArgumentException('Min change cannot be less'
+                . " than 1, $minChange given.");
         }
 
         if ($epochs < 1) {
@@ -83,7 +118,9 @@ class KMeans implements Learner, Persistable, Verbose
         }
 
         $this->k = $k;
+        $this->batchSize = $batchSize;
         $this->kernel = $kernel ?? new Euclidean();
+        $this->minChange = $minChange;
         $this->epochs = $epochs;
     }
 
@@ -150,38 +187,53 @@ class KMeans implements Learner, Persistable, Verbose
 
         $this->centroids = $this->initialize($dataset);
 
+        $samples = $dataset->samples();
         $labels = array_fill(0, $dataset->numRows(), null);
+
         $sizes = array_fill(0, $this->k, 0);
 
+        $order = range(0, $dataset->numRows() - 1);
+
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
+            shuffle($order);
+
+            array_multisort($order, $samples, $labels);
+
+            $sChunks = array_chunk($samples, $this->batchSize);
+            $lChunks = array_chunk($labels, $this->batchSize);
+
             $changed = 0;
 
-            foreach ($dataset as $i => $sample) {
-                $label = $this->assign($sample);
+            foreach ($sChunks as $i => $batch) {
+                $lHat = $lChunks[$i];
 
-                $expected = $labels[$i];
+                foreach ($batch as $j => $sample) {
+                    $label = $this->assign($sample);
 
-                if ($label !== $expected) {
-                    $labels[$i] = $label;
+                    $expected = $lHat[$j];
 
-                    $sizes[$label]++;
+                    if ($label !== $expected) {
+                        $labels[$i] = $label;
 
-                    if (isset($expected)) {
-                        $sizes[$expected]--;
+                        $sizes[$label]++;
+
+                        if (isset($expected)) {
+                            $sizes[$expected]--;
+                        }
+
+                        $changed++;
                     }
-
-                    $changed++;
                 }
 
-                $rate = 1. / $sizes[$label];
+                foreach ($this->centroids as $label => &$centroid) {
+                    $step = Matrix::quick($batch)->transpose()->mean();
 
-                $centroid = $this->centroids[$label];
+                    $rate = 1. / ($sizes[$label] ?: self::EPSILON);
 
-                foreach ($centroid as $column => &$mean) {
-                    $mean = (1. - $rate) * $mean + $rate * $sample[$column];
+                    foreach ($centroid as $column => &$mean) {
+                        $mean = (1. - $rate) * $mean + $rate * $step[$column];
+                    }
                 }
-
-                $this->centroids[$label] = $centroid;
             }
 
             if ($this->logger) {
@@ -189,7 +241,7 @@ class KMeans implements Learner, Persistable, Verbose
                     . " changed=$changed");
             }
 
-            if ($changed === 0) {
+            if ($changed < $this->minChange) {
                 break 1;
             }
         }
@@ -216,6 +268,30 @@ class KMeans implements Learner, Persistable, Verbose
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         return array_map([self::class, 'assign'], $dataset->samples());
+    }
+
+    /**
+     * Label a given sample based on its distance from a particular centroid.
+     *
+     * @param array $sample
+     * @throws \RuntimeException
+     * @return int
+     */
+    protected function assign(array $sample) : int
+    {
+        $bestDistance = INF;
+        $bestCluster = -1;
+
+        foreach ($this->centroids as $cluster => $centroid) {
+            $distance = $this->kernel->compute($sample, $centroid);
+
+            if ($distance < $bestDistance) {
+                $bestDistance = $distance;
+                $bestCluster = $cluster;
+            }
+        }
+
+        return (int) $bestCluster;
     }
 
     /**
@@ -269,29 +345,5 @@ class KMeans implements Learner, Persistable, Verbose
         }
 
         return $centroids;
-    }
-
-    /**
-     * Label a given sample based on its distance from a particular centroid.
-     *
-     * @param array $sample
-     * @throws \RuntimeException
-     * @return int
-     */
-    protected function assign(array $sample) : int
-    {
-        $bestDistance = INF;
-        $bestCluster = -1;
-
-        foreach ($this->centroids as $cluster => $centroid) {
-            $distance = $this->kernel->compute($sample, $centroid);
-
-            if ($distance < $bestDistance) {
-                $bestDistance = $distance;
-                $bestCluster = $cluster;
-            }
-        }
-
-        return (int) $bestCluster;
     }
 }

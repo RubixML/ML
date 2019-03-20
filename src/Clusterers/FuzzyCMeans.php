@@ -298,6 +298,57 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
+     * Return an vector of membership probability score of each cluster for a
+     * given sample.
+     *
+     * @param array $sample
+     * @return array
+     */
+    protected function calculateMembership(array $sample) : array
+    {
+        $membership = [];
+
+        foreach ($this->centroids as $cluster => $centroid1) {
+            $a = $this->kernel->compute($sample, $centroid1);
+
+            $sigma = 0.;
+
+            foreach ($this->centroids as $centroid2) {
+                $b = $this->kernel->compute($sample, $centroid2);
+
+                $sigma += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
+            }
+
+            $membership[$cluster] = 1. / ($sigma ?: self::EPSILON);
+        }
+
+        return $membership;
+    }
+
+    /**
+     * Calculate the inter-cluster distance between each training sample and
+     * each cluster centroid.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return float
+     */
+    protected function interClusterDistance(Dataset $dataset, array $memberships) : float
+    {
+        $distance = 0.;
+
+        foreach ($dataset as $i => $sample) {
+            $membership = $memberships[$i];
+
+            foreach ($this->centroids as $cluster => $centroid) {
+                $distance += $membership[$cluster]
+                    * $this->kernel->compute($sample, $centroid);
+            }
+        }
+
+        return $distance;
+    }
+
+    /**
      * Initialize the cluster centroids using the k-means++ method.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -348,56 +399,5 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         }
 
         return $centroids;
-    }
-
-    /**
-     * Return an vector of membership probability score of each cluster for a
-     * given sample.
-     *
-     * @param array $sample
-     * @return array
-     */
-    protected function calculateMembership(array $sample) : array
-    {
-        $membership = [];
-
-        foreach ($this->centroids as $cluster => $centroid1) {
-            $a = $this->kernel->compute($sample, $centroid1);
-
-            $sigma = 0.;
-
-            foreach ($this->centroids as $centroid2) {
-                $b = $this->kernel->compute($sample, $centroid2);
-
-                $sigma += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
-            }
-
-            $membership[$cluster] = 1. / ($sigma ?: self::EPSILON);
-        }
-
-        return $membership;
-    }
-
-    /**
-     * Calculate the inter-cluster distance between each training sample and
-     * each cluster centroid.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return float
-     */
-    protected function interClusterDistance(Dataset $dataset, array $memberships) : float
-    {
-        $distance = 0.;
-
-        foreach ($dataset as $i => $sample) {
-            $membership = $memberships[$i];
-
-            foreach ($this->centroids as $cluster => $centroid) {
-                $distance += $membership[$cluster]
-                    * $this->kernel->compute($sample, $centroid);
-            }
-        }
-
-        return $distance;
     }
 }

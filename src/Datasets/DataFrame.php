@@ -33,9 +33,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
                 ? is_array(reset($samples)) ? count(reset($samples)) : 1
                 : 0;
 
-            $samples = array_values($samples);
-
-            foreach ($samples as &$sample) {
+            foreach ($samples as $index => &$sample) {
                 $sample = is_array($sample)
                     ? array_values($sample)
                     : [$sample];

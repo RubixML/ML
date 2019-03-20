@@ -1,3 +1,6 @@
+- Unreleased
+    - K Means now uses mini batch GD instead of SGD
+
 - 0.0.10-beta
     - Added LODA online anomaly detector
     - Added Radius Neighbors classifier and regressor
