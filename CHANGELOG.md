@@ -1,5 +1,8 @@
 - Unreleased
+    - Added Seeder Interface
+    - Added Random and Plus Plus seeders
     - K Means now uses mini batch GD instead of SGD
+    - Changed order of K Means hyperparameters
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

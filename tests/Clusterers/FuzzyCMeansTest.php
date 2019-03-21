@@ -12,6 +12,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -41,7 +42,7 @@ class FuzzyCMeansTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 100, 1e-4);
+        $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 100, 1e-4, new Random());
 
         $this->metric = new VMeasure();
 

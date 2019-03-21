@@ -77,6 +77,9 @@ $ composer require rubix/ml
 			- [Gaussian Mixture](#gaussian-mixture)
 			- [K Means](#k-means)
 			- [Mean Shift](#mean-shift)
+			- [Seeders](#seeders)
+				- [Plus Plus](#plus-plus)
+				- [Random](#random)
 		- [Embedders](#embedders)
 			- [t-SNE](#t-sne)
 		- [Regressors](#regressors)
@@ -1035,7 +1038,7 @@ A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) 
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 #### Additional Methods:
@@ -1071,7 +1074,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of a given sa
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 
 #### Additional Methods:
 This estimator does not have any additional methods.
@@ -1421,7 +1424,7 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
@@ -1456,7 +1459,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -1619,7 +1622,7 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
@@ -1754,7 +1757,7 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 |--|--|--|--|--|
 | 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
 
@@ -1783,9 +1786,10 @@ Probabilistic distance-based clusterer that allows samples to belong to multiple
 |--|--|--|--|--|
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
 | 5 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
+| 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 #### Additional Methods:
 
@@ -1803,16 +1807,16 @@ public steps() : array
 ```php
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\Random;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3);
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3, new Random());
 ```
 
 #### References:
 >- J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
->- A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.
 
 ### Gaussian Mixture
-A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow the centers (*means*) *and* the radii (*variances*) to be learned as well.
+A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow both the centers (*means*) *and* the radii (*variances*) to be learned as well.
 
 ##### Interfaces: Learner, Probabilistic, Verbose, Persistable
 ##### Compatibility: Continuous
@@ -1845,8 +1849,9 @@ public variances() : array
 ```php
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000);
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000, new PlusPlus());
 ```
 
 #### References:
@@ -1864,9 +1869,10 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
 | 2 | batch size | 100 | int | The size of each mini batch in samples. |
-| 3 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
-| 4 | min change | 1 | int | The minimum change in the size of each cluster for training to continue. |
-| 5 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
+| 5 | min change | 1 | int | The minimum change in the size of each cluster for training to continue. |
+| 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 #### Additional Methods:
 Return the *k* computed centroids of the training set:
@@ -1879,11 +1885,10 @@ public centroids() : array
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KMeans(3, 100, new Euclidean(), 1, 300);
+$estimator = new KMeans(3, 100, new Euclidean(), 300, 1);
 ```
 
 #### References:
->- D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
 >- D. Sculley. (2010). Web-Scale K-Means Clustering.
 
 ### Mean Shift
@@ -1896,7 +1901,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | | float | The radius of each cluster centroid. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 | 3 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
 | 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
 
@@ -1923,6 +1928,42 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 
 #### References:
 >- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
+
+### Seeders
+Seeders are responsible for initializing the cluster centroids of certain learners.
+
+### Plus Plus
+ This seeder attempts to maximize the likelihood of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
+
+#### Example:
+```php
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Kernels\Distance\Minkowski;
+
+$seeder = new PlusPlus(new Minkowski(5.0));
+```
+
+#### References:
+>- D. Arthur et al. (2006). k-means++: The Advantages of PlusPlus Seeding.
+>- A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.
+
+### Random
+Completely random selection of k seeds from the given dataset.
+
+#### Parameters:
+This seeder does not have any parameters.
+
+#### Example:
+```php
+use Rubix\ML\Clusterers\Seeders\Random;
+
+$seeder = new Random();
+```
 
 ---
 ### Embedders
@@ -2120,7 +2161,7 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
@@ -2155,7 +2196,7 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
 #### Additional Methods:
@@ -2242,7 +2283,7 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | kernel | Euclidean | object | The distance kernel used to measure the distance between sample points. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
@@ -4417,7 +4458,7 @@ $metric = new MedianAbsoluteError();
 ```
 
 ### RMS Error
-Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to measure the residuals of a regression problem.
+Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to compute the residuals of a regression problem.
 
 ##### Compatibility: Regression
 

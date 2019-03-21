@@ -12,7 +12,9 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -26,8 +28,6 @@ use RuntimeException;
  *
  * References:
  * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
- * [2] A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective
- * seeding initialization.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -67,6 +67,13 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     protected $kernel;
 
     /**
+     * The maximum number of iterations to run until the algorithm terminates.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
      * The minimum change in the centroids necessary to continue training.
      *
      * @var float
@@ -74,11 +81,11 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     protected $minChange;
 
     /**
-     * The maximum number of iterations to run until the algorithm terminates.
+     * The cluster centroid seeder.
      *
-     * @var int
+     * @var \Rubix\ML\Clusterers\Seeders\Seeder
      */
-    protected $epochs;
+    protected $seeder;
 
     /**
      * The computed centroid vectors of the training data.
@@ -104,6 +111,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
+     * @param \Rubix\ML\Clusterers\Seeders\Seeder $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -111,7 +119,8 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         float $fuzz = 2.0,
         ?Distance $kernel = null,
         int $epochs = 300,
-        float $minChange = 1e-4
+        float $minChange = 1e-4,
+        ?Seeder $seeder = null
     ) {
         if ($c < 1) {
             throw new InvalidArgumentException('Must target at least one'
@@ -127,7 +136,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
             throw new InvalidArgumentException('Estimator must train for at'
                 . " least 1 epoch, $epochs given.");
         }
-
+        
         if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
@@ -139,6 +148,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->seeder = $seeder ?? new PlusPlus($kernel);
     }
 
     /**
@@ -214,10 +224,11 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                     'kernel' => $this->kernel,
                     'epochs' => $this->epochs,
                     'min_change' => $this->minChange,
+                    'seeder' => $this->seeder,
                 ]));
         }
 
-        $this->centroids = $this->initialize($dataset);
+        $this->centroids = $this->seeder->seed($dataset, $this->c);
 
         $this->steps = $memberships = [];
 
@@ -346,58 +357,5 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         }
 
         return $distance;
-    }
-
-    /**
-     * Initialize the cluster centroids using the k-means++ method.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
-     * @return array
-     */
-    protected function initialize(Dataset $dataset) : array
-    {
-        $n = $dataset->numRows();
-
-        if ($n < $this->c) {
-            throw new RuntimeException('The number of samples cannot be less'
-                . ' than the number of target clusters.');
-        }
-
-        $weights = array_fill(0, $n, 1. / $n);
-
-        $centroids = [];
-
-        for ($i = 0; $i < $this->c; $i++) {
-            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
-
-            $centroids[] = $subset[0];
-
-            if ($i === $this->c) {
-                break 1;
-            }
-
-            foreach ($dataset as $j => $sample) {
-                $closest = INF;
-
-                foreach ($centroids as $centroid) {
-                    $distance = $this->kernel->compute($sample, $centroid);
-
-                    if ($distance < $closest) {
-                        $closest = $distance;
-                    }
-                }
-
-                $weights[$j] = $closest ** 2;
-            }
-
-            $total = array_sum($weights) ?: self::EPSILON;
-
-            foreach ($weights as &$weight) {
-                $weight /= $total;
-            }
-        }
-
-        return $centroids;
     }
 }
