@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Coordinate;
-use Rubix\ML\Graph\Nodes\BoundingBox;
+use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -239,8 +239,8 @@ class KDTree implements BinaryTree
                     continue 1;
                 }
 
-                if ($child instanceof BoundingBox) {
-                    foreach ($child->box() as $side) {
+                if ($child instanceof Box) {
+                    foreach ($child->sides() as $side) {
                         $distance = $this->kernel->compute($sample, $side);
 
                         if ($distance < $target) {

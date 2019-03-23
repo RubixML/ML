@@ -77,8 +77,7 @@ class OneHotEncoder implements Stateful
             $vector = [];
 
             foreach ($this->categories as $column => $categories) {
-                $category = $sample[$column] ?? null;
-
+                $category = $sample[$column];
                 $features = $templates[$column];
 
                 if (isset($categories[$category])) {

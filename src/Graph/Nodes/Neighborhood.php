@@ -4,6 +4,7 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
+use Generator;
 
 /**
  * Neighborhood
@@ -15,7 +16,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood extends BinaryNode implements BoundingBox, Leaf
+class Neighborhood extends BinaryNode implements Box, Leaf
 {
     /**
      * The samples that make up the neighborhood.
@@ -104,11 +105,12 @@ class Neighborhood extends BinaryNode implements BoundingBox, Leaf
     /**
      * Return the bounding box surrounding this node.
      *
-     * @return array[]
+     * @return \Generator
      */
-    public function box() : array
+    public function sides() : Generator
     {
-        return [$this->min, $this->max];
+        yield $this->min;
+        yield $this->max;
     }
 
     /**

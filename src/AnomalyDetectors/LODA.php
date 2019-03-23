@@ -150,7 +150,7 @@ class LODA implements Learner, Online, Ranking, Persistable
 
         [$m, $n] = $dataset->shape();
 
-        $this->bins = $this->bins ?: (int) round(log($m, 2)) + 1;
+        $this->bins = $this->bins ?? (int) round(log($m, 2)) + 1;
 
         $r = Matrix::gaussian($n, $this->k);
 

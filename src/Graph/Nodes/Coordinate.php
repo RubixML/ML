@@ -6,6 +6,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
+use Generator;
 
 /**
  * Coordinate
@@ -16,7 +17,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Coordinate extends BinaryNode implements BoundingBox
+class Coordinate extends BinaryNode implements Box
 {
     /**
      * The feature column (index) of the split value.
@@ -40,11 +41,18 @@ class Coordinate extends BinaryNode implements BoundingBox
     protected $groups;
 
     /**
-     * The bounding box that surrounds the node.
+     * The minimum vector that encompasses all samples contained within.
      *
-     * @var array[]
+     * @var (int|float)[]
      */
-    protected $box;
+    protected $min;
+
+    /**
+     * The maximum vector that encompasses all samples contained within.
+     *
+     * @var (int|float)[]
+     */
+    protected $max;
 
     /**
      * Factory method to build a coordinate node from a labeled dataset
@@ -115,7 +123,8 @@ class Coordinate extends BinaryNode implements BoundingBox
         $this->column = $column;
         $this->value = $value;
         $this->groups = $groups;
-        $this->box = [$min, $max];
+        $this->min = $min;
+        $this->max = $max;
     }
 
     /**
@@ -151,11 +160,12 @@ class Coordinate extends BinaryNode implements BoundingBox
     /**
      * Return the bounding box surrounding this node.
      *
-     * @return array[]
+     * @return \Generator
      */
-    public function box() : array
+    public function sides() : Generator
     {
-        return $this->box;
+        yield $this->min;
+        yield $this->max;
     }
 
     /**

@@ -1950,7 +1950,7 @@ $seeder = new PlusPlus(new Minkowski(5.0));
 ```
 
 #### References:
->- D. Arthur et al. (2006). k-means++: The Advantages of PlusPlus Seeding.
+>- D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
 >- A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.
 
 ### Random

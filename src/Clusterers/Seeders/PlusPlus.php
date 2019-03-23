@@ -15,7 +15,7 @@ use RuntimeException;
  * samples weighted by their distance from the previous seed.
  *
  * References:
- * [1] D. Arthur et al. (2006). k-means++: The Advantages of PlusPlus Seeding.
+ * [1] D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
  * [2] A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective
  * seeding initialization.
  *

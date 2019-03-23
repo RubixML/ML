@@ -42,13 +42,13 @@ class CoordinateTest extends TestCase
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
     public function test_split()
     {
         $node = Coordinate::split(Labeled::quick(self::SAMPLES, self::LABELS));
 
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 }

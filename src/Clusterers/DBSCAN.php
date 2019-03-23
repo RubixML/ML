@@ -121,6 +121,8 @@ class DBSCAN implements Estimator
     }
 
     /**
+     * Make predictions from a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      * @return array

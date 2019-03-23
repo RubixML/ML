@@ -38,7 +38,7 @@ class NeighborhoodTest extends TestCase
 
         $this->assertEquals(self::SAMPLES, $node->samples());
         $this->assertEquals(self::LABELS, $node->labels());
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
     public function test_terminate()
@@ -47,6 +47,6 @@ class NeighborhoodTest extends TestCase
 
         $this->assertEquals(self::SAMPLES, $node->samples());
         $this->assertEquals(self::LABELS, $node->labels());
-        $this->assertEquals(self::BOX, $node->box());
+        $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 }
