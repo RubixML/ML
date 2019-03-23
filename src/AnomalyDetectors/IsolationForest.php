@@ -3,7 +3,6 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;

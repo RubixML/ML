@@ -4,6 +4,7 @@
     - K Means now uses mini batch GD instead of SGD
     - Added Adjusted Rand Index clustering metric
     - Changed order of K Means hyperparameters
+    - Moved Ranking interface to anomaly detector namespace
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

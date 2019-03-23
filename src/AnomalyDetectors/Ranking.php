@@ -1,7 +1,8 @@
 <?php
 
-namespace Rubix\ML;
+namespace Rubix\ML\AnomalyDetectors;
 
+use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Dataset;
 
 interface Ranking extends Estimator

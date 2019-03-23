@@ -3,12 +3,12 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\AnomalyDetectors\KDLOF;
+use Rubix\ML\AnomalyDetectors\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
