@@ -47,7 +47,6 @@ class VMeasure implements Metric
      *
      * @param array $predictions
      * @param array $labels
-     * @throws \InvalidArgumentException
      * @return float
      */
     public function score(array $predictions, array $labels) : float

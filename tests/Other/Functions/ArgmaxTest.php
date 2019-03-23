@@ -7,11 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class ArgmaxTest extends TestCase
 {
-    public function setUp()
-    {
-        //
-    }
-
     public function test_compute()
     {
         $value = Argmax::compute(['yes' => 0.8, 'no' => 0.2, 'maybe' => 0.0]);

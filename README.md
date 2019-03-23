@@ -206,6 +206,7 @@ $ composer require rubix/ml
 			- [Mean Absolute Error](#mean-absolute-error)
 			- [Mean Squared Error](#mean-squared-error)
 			- [Median Absolute Error](#median-absolute-error)
+			- [Rand Index](#rand-index)
 			- [RMS Error](#rms-error)
 			- [R Squared](#r-squared)
 			- [V Measure](#v-measure)
@@ -1776,7 +1777,7 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 >- M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
 
 ### Fuzzy C Means
-Probabilistic distance-based clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
+Distance-based soft clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
 ##### Interfaces: Learner, Probabilistic, Verbose, Persistable
 ##### Compatibility: Continuous
@@ -4353,6 +4354,7 @@ float(-0.99846070553066)
 Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
 ##### Compatibility: Classification, Anomaly Detection
+##### Range: 0 to 1
 
 #### Example:
 ```php
@@ -4365,6 +4367,7 @@ $metric = new Accuracy();
 A ground truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
 
 ##### Compatibility: Clustering
+##### Range: 0 to 1
 
 #### Example:
 ```php
@@ -4377,6 +4380,7 @@ $metric = new Completeness();
 A weighted average of precision and recall with equal relative contribution.
 
 ##### Compatibility: Classification, Anomaly Detection
+##### Range: 0 to 1
 
 #### Example:
 ```php
@@ -4389,6 +4393,7 @@ $metric = new F1Score();
 A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogeneous* when the entire cluster is comprised of a single class of samples.
 
 ##### Compatibility: Clustering
+##### Range: 0 to 1
 
 #### Example:
 ```php
@@ -4401,6 +4406,7 @@ $metric = new Homogeneity();
 Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
 
 ##### Compatibility: Classification, Anomaly Detection
+##### Range: 0 to 1
 
 #### Example:
 ```php
@@ -4413,6 +4419,7 @@ $metric = new Informedness();
 Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
 
 ##### Compatibility: Classification, Anomaly Detection
+##### Range: -1 to 1
 
 #### Example:
 ```php
@@ -4425,6 +4432,7 @@ $metric = new MCC();
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
 ##### Compatibility: Regression
+##### Range: -∞ to 0
 
 #### Example:
 ```php
@@ -4437,6 +4445,7 @@ $metric = new MeanAbsoluteError();
 A regression metric that punishes bad predictions the worse they get by averaging the *squared* error  over the testing set.
 
 ##### Compatibility: Regression
+##### Range: -∞ to 0
 
 #### Example:
 ```php
@@ -4449,6 +4458,7 @@ $metric = new MeanSquaredError();
 Median Absolute Error (MAE) is a robust measure of the error that ignores highly erroneous predictions.
 
 ##### Compatibility: Regression
+##### Range: -∞ to 0
 
 #### Example:
 ```php
@@ -4457,10 +4467,27 @@ use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
 $metric = new MedianAbsoluteError();
 ```
 
+### Rand Index
+The Adjusted Rand Index is a measure of similarity between the clustering and some ground truth that is adjusted for chance. It considers all pairs of samples that are assigned in the same or different clusters in the predicted and empirical clusterings.
+
+##### Compatibility: Regression
+##### Range: -1 to 1
+
+#### Example:
+```php
+use Rubix\ML\CrossValidation\Metrics\RandIndex;
+
+$metric = new RandIndex();
+```
+
+#### References:
+>- W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.
+
 ### RMS Error
 Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to compute the residuals of a regression problem.
 
 ##### Compatibility: Regression
+##### Range: -∞ to 0
 
 #### Example:
 ```php
@@ -4473,6 +4500,7 @@ $metric = new RMSError();
 The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
 
 ##### Compatibility: Regression
+##### Range: -∞ to 1
 
 #### Example:
 ```php
@@ -4485,6 +4513,7 @@ $metric = new RSquared();
 V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
 
 ##### Compatibility: Clustering
+##### Range: 0 to 1
 
 #### Example:
 ```php

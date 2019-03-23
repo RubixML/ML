@@ -41,12 +41,12 @@ class GridSearch implements Learner, Persistable, Verbose
     protected $base;
 
     /**
-     * The grid of hyperparameters i.e. constructor arguments of the base
-     * estimator.
+     * The combinations of hyperparameters i.e. constructor arguments to be
+     * used to instantiate and train a base learner.
      *
      * @var array
      */
-    protected $grid = [
+    protected $combinations = [
         //
     ];
 
@@ -194,7 +194,7 @@ class GridSearch implements Learner, Persistable, Verbose
         }
 
         $this->base = $base;
-        $this->grid = $grid;
+        $this->combinations = $this->combineGrid($grid);
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
@@ -233,13 +233,13 @@ class GridSearch implements Learner, Persistable, Verbose
     }
 
     /**
-     * The combination of parameters from the last grid search.
+     * The combinations of parameters from the grid.
      *
      * @return array
      */
-    public function params() : array
+    public function combinations() : array
     {
-        return $this->params;
+        return $this->combinations;
     }
 
     /**
@@ -287,14 +287,8 @@ class GridSearch implements Learner, Persistable, Verbose
         }
 
         if ($this->logger) {
-            $this->logger->info('Search initialized w/ '
-                . Params::stringify([
-                    'base' => $this->base,
-                    'grid' => $this->grid,
-                    'metric' => $this->metric,
-                    'validator' => $this->validator,
-                    'retrain' => $this->retrain,
-                ]));
+            $this->logger->info('Searching ' . count($this->combinations)
+                . ' combinations of hyper-parameters');
         }
 
         $this->params = $this->scores = $this->best = [];
@@ -303,12 +297,12 @@ class GridSearch implements Learner, Persistable, Verbose
         $bestParams = [];
         $bestEstimator = null;
 
-        foreach ($this->combineGrid($this->grid) as $params) {
+        foreach ($this->combinations as $params) {
             $estimator = new $this->base(...$params);
 
-            $constructor = array_combine($this->args, $params) ?: [];
-
             if ($this->logger) {
+                $constructor = array_combine($this->args, $params) ?: [];
+                
                 $this->logger->info('Testing parameters '
                     . Params::stringify($constructor));
             }
@@ -317,11 +311,10 @@ class GridSearch implements Learner, Persistable, Verbose
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestParams = $constructor;
+                $bestParams = $params;
                 $bestEstimator = $estimator;
             }
 
-            $this->params[] = $constructor;
             $this->scores[] = $score;
 
             if ($this->logger) {
@@ -332,14 +325,13 @@ class GridSearch implements Learner, Persistable, Verbose
         $this->best = ['score' => $bestScore, 'params' => $bestParams];
 
         if ($this->logger) {
-            $this->logger->info('Best params ' . Params::stringify($bestParams));
+            $this->logger->info('Best combination: ' . Params::stringify($bestParams));
             $this->logger->info("Best score=$bestScore");
         }
 
         if ($this->retrain) {
             if ($this->logger) {
-                $this->logger->info('Retraining base'
-                    . ' estimator on full dataset');
+                $this->logger->info('Retraining base estimator on full dataset');
             }
 
             $bestEstimator->train($dataset);

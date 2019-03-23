@@ -96,7 +96,7 @@ class KMeans implements Learner, Persistable, Verbose
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param int $minChange
-     * @param \Rubix\ML\Clusterers\Seeders\Seeder $seeder
+     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(

@@ -2,6 +2,7 @@
     - Added Seeder Interface
     - Added Random and Plus Plus seeders
     - K Means now uses mini batch GD instead of SGD
+    - Added Adjusted Rand Index clustering metric
     - Changed order of K Means hyperparameters
 
 - 0.0.10-beta

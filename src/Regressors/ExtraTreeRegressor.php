@@ -25,8 +25,8 @@ use Rubix\ML\Graph\Nodes\Decision;
 class ExtraTreeRegressor extends RegressionTree
 {
     /**
-     * Randomized algorithm to that choses the split point with the lowest gini
-     * impurity among a random selection of $maxFeatures features.
+     * Randomized algorithm that chooses the split point with the lowest
+     * variance among a random assortment of features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return \Rubix\ML\Graph\Nodes\Decision

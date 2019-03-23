@@ -22,9 +22,8 @@ use RuntimeException;
 /**
  * Fuzzy C Means
  *
- * Clusterer that allows data points to belong to multiple clusters if they fall
- * within a fuzzy region and thus is able to output probabilities for each
- * cluster via the Probabilistic interface.
+ * Distance-based soft clusterer that allows samples to belong to multiple clusters
+ * if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
  *
  * References:
  * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
@@ -52,15 +51,14 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     protected $fuzz;
 
     /**
-     * The memoized exponent of the membership calculation.
+     * The precomputed exponent of the membership calculation.
      *
      * @var float
      */
     protected $lambda;
 
     /**
-     * The distance kernel to use when computing the distances between
-     * samples.
+     * The distance kernel to use when computing the distances between samples.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
@@ -74,7 +72,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     protected $epochs;
 
     /**
-     * The minimum change in the centroids necessary to continue training.
+     * The minimum change in inertia to continue training.
      *
      * @var float
      */
@@ -97,7 +95,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     ];
 
     /**
-     * The inter cluster distances at each epoch of training.
+     * The inertia at each epoch of training.
      *
      * @var array
      */
@@ -111,7 +109,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\Clusterers\Seeders\Seeder $seeder
+     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -204,10 +202,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Pick C random samples and assign them as centroids. Compute the coordinates
-     * of the centroids by clustering the points based on each sample's distance
-     * from one of the C centroids, then recompute the centroid coordinate as the
-     * mean of the new cluster.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -254,7 +249,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 }
             }
 
-            $loss = $this->interClusterDistance($dataset, $memberships);
+            $loss = $this->inertia($dataset, $memberships);
 
             $this->steps[] = $loss;
 
@@ -337,25 +332,25 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Calculate the inter-cluster distance between each training sample and
-     * each cluster centroid.
+     * Calculate the within-cluster distance.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param array $memberships
      * @return float
      */
-    protected function interClusterDistance(Dataset $dataset, array $memberships) : float
+    protected function inertia(Dataset $dataset, array $memberships) : float
     {
-        $distance = 0.;
+        $inertia = 0.;
 
         foreach ($dataset as $i => $sample) {
             $membership = $memberships[$i];
 
             foreach ($this->centroids as $cluster => $centroid) {
-                $distance += $membership[$cluster]
+                $inertia += $membership[$cluster]
                     * $this->kernel->compute($sample, $centroid);
             }
         }
 
-        return $distance;
+        return $inertia;
     }
 }

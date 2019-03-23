@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
 /**
@@ -64,18 +65,7 @@ class Homogeneity implements Metric
                 . ' must equal the number of predictions.');
         }
 
-        $clusters = array_unique($predictions);
-        $classes = array_unique($labels);
-
-        $table = [];
-
-        foreach ($clusters as $cluster) {
-            $table[$cluster] = array_fill_keys($classes, 0);
-        }
-
-        foreach ($predictions as $i => $prediction) {
-            $table[$prediction][$labels[$i]] += 1;
-        }
+        $table = (new ContingencyTable())->generate($predictions, $labels);
 
         $score = 0.;
 

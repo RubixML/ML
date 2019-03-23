@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
 /**
@@ -64,18 +65,7 @@ class Completeness implements Metric
                 . ' must equal the number of predictions.');
         }
 
-        $clusters = array_unique($predictions);
-        $classes = array_unique($labels);
-
-        $table = [];
-
-        foreach ($classes as $class) {
-            $table[$class] = array_fill_keys($clusters, 0);
-        }
-
-        foreach ($labels as $i => $label) {
-            $table[$label][$predictions[$i]] += 1;
-        }
+        $table = (new ContingencyTable())->generate($labels, $predictions);
 
         $score = 0.;
 
