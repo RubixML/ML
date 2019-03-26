@@ -74,15 +74,24 @@ class F1Score implements Metric
             }
         }
 
-        $score = 0.;
+        return array_sum(array_map(
+            [$this, 'compute'],
+            $truePositives,
+            $falsePositives,
+            $falseNegatives
+        )) / count($classes);
+    }
 
-        foreach ($truePositives as $class => $tp) {
-            $fp = $falsePositives[$class];
-            $fn = $falseNegatives[$class];
-
-            $score += (2 * $tp) / ((2 * $tp + $fp + $fn) ?: self::EPSILON);
-        }
-
-        return $score / count($classes);
+    /**
+     * Compute the class f1 score.
+     *
+     * @param int $tp
+     * @param int $fp
+     * @param int $fn
+     * @return float
+     */
+    public function compute(int $tp, int $fp, int $fn) : float
+    {
+        return (2 * $tp) / ((2 * $tp + $fp + $fn) ?: self::EPSILON);
     }
 }

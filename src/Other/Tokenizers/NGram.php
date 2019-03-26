@@ -5,11 +5,10 @@ namespace Rubix\ML\Other\Tokenizers;
 use InvalidArgumentException;
 
 /**
- * N-Gram
+ * N-gram
  *
- * N-Grams are sequences of n-words of a given string. For example, if *n*
- * is 2 then the tokenizer will generate tokens consisting of 2 contiguous
- * words.
+ * N-grams are sequences of n-words of a given string. The N-gram tokenizer
+ * outputs tokens of contiguous words ranging from *min* to *max*.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -17,30 +16,45 @@ use InvalidArgumentException;
  */
 class NGram implements Tokenizer
 {
-    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
     protected const WORD_REGEX = '/\w+/u';
+
+    protected const SENTENCE_REGEX = '/(?<=[.?!])\s+(?=[a-z])/i';
 
     protected const SEPARATOR = ' ';
 
     /**
-     * The number of contiguous words to a single token.
+     * The minimum number of contiguous words to a single token.
      *
      * @var int
      */
-    protected $n;
+    protected $min;
 
     /**
-     * @param int $n
+     * The maximum number of contiguous words to a single token.
+     *
+     * @var int
+     */
+    protected $max;
+
+    /**
+     * @param int $min
+     * @param int $max
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $n = 2)
+    public function __construct(int $min = 2, int $max = 2)
     {
-        if ($n < 2) {
-            throw new InvalidArgumentException('The number of words'
-                . " per token must be greater than 1, $n given.");
+        if ($min < 1) {
+            throw new InvalidArgumentException('Minimum cannot be less'
+                . ' than minimum.');
         }
 
-        $this->n = $n;
+        if ($min > $max) {
+            throw new InvalidArgumentException('Minimum cannot be greater'
+                . ' than maximum.');
+        }
+
+        $this->min = $min;
+        $this->max = $max;
     }
 
     /**
@@ -62,16 +76,20 @@ class NGram implements Tokenizer
 
             $words = $words[0];
 
-            $p = count($words) - $this->n;
+            $p = count($words) - $this->max;
 
             for ($i = 0; $i <= $p; $i++) {
-                $nGram = $words[$i];
+                $first = $words[$i];
 
-                for ($j = 1; $j < $this->n; $j++) {
-                    $nGram .= self::SEPARATOR . $words[$i + $j];
+                for ($j = $this->min; $j <= $this->max; $j++) {
+                    $nGram = $first;
+
+                    for ($k = 1; $k < $j; $k++) {
+                        $nGram .= self::SEPARATOR . $words[$i + $k];
+                    }
+
+                    $nGrams[] = $nGram;
                 }
-
-                $nGrams[] = $nGram;
             }
         }
 

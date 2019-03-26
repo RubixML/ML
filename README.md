@@ -5362,19 +5362,20 @@ var_dump($tokenizer->tokenize($text));
   }
 ```
 
-### N-Gram
-N-Grams are sequences of n-words of a given string where n is a user-defined parameter. For example, if *n* is 2 then the tokenizer will generate tokens consisting of 2 contiguous words.
+### N-gram
+N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max*.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | n | 2 | int | The number of contiguous words to a single token. |
+| 1 | min | 2 | int | The minimum number of contiguous words to a single token. |
+| 2 | max | 2 | int | The maximum number of contiguous words to a single token. |
 
 #### Example:
 ```php
 use Rubix\ML\Extractors\Tokenizers\NGram;
 
-$tokenizer = new NGram(3);
+$tokenizer = new NGram(1, 3);
 ```
 
 ### Skip-Gram

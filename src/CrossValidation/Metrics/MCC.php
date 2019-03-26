@@ -91,17 +91,29 @@ class MCC implements Metric
             }
         }
 
-        $score = 0.;
+        return array_sum(array_map(
+            [$this, 'compute'],
+            $truePositives,
+            $trueNegatives,
+            $falsePositives,
+            $falseNegatives
+        ))
+            / count($classes);
+    }
 
-        foreach ($truePositives as $class => $tp) {
-            $tn = $trueNegatives[$class];
-            $fp = $falsePositives[$class];
-            $fn = $falseNegatives[$class];
-
-            $score += ($tp * $tn - $fp * $fn)
-                / sqrt((($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
-        }
-
-        return $score / count($classes);
+    /**
+     * Compute the class mcc score.
+     *
+     * @param int $tp
+     * @param int $tn
+     * @param int $fp
+     * @param int $fn
+     * @return float
+     */
+    public function compute(int $tp, int $tn, int $fp, int $fn) : float
+    {
+        return ($tp * $tn - $fp * $fn)
+            / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
+            ?: self::EPSILON);
     }
 }

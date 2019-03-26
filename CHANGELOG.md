@@ -5,6 +5,7 @@
     - Added Adjusted Rand Index clustering metric
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace
+    - N-Gram Tokenizer now outputs ranges of word tokens
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

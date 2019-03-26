@@ -12,7 +12,7 @@ class NGramTest extends TestCase
 
     public function setUp()
     {
-        $this->tokenizer = new NGram(2);
+        $this->tokenizer = new NGram(2, 2);
     }
 
     public function test_build_tokenizer()
