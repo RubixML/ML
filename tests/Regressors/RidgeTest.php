@@ -48,7 +48,7 @@ class RidgeTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

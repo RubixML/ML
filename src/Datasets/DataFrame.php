@@ -163,7 +163,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * Return a tuple containing the shape of the dataframe i.e the number of
      * rows and columns.
      *
-     * @var array
+     * @var int[]
      */
     public function shape() : array
     {

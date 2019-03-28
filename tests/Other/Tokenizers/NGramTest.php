@@ -8,11 +8,19 @@ use PHPUnit\Framework\TestCase;
 
 class NGramTest extends TestCase
 {
+    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
+
+    protected const TOKENS = [
+        'I', 'I would', 'would', 'would like', 'like', 'like to', 'to', 'to die', 'die',
+        'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
+        'on', 'on impact', 'The', 'The end',
+    ];
+
     protected $tokenizer;
 
     public function setUp()
     {
-        $this->tokenizer = new NGram(2, 2);
+        $this->tokenizer = new NGram(1, 2);
     }
 
     public function test_build_tokenizer()
@@ -23,13 +31,10 @@ class NGramTest extends TestCase
 
     public function test_tokenize()
     {
-        $data = 'I would like to die on Mars, just not on impact.';
+        $tokens = $this->tokenizer->tokenize(self::TEXT);
 
-        $tokens = $this->tokenizer->tokenize($data);
+        $this->assertCount(22, $tokens);
 
-        $this->assertCount(10, $tokens);
-
-        $this->assertEquals(['I would', 'would like', 'like to', 'to die', 'die on', 'on Mars', 'Mars just',
-            'just not', 'not on', 'on impact'], $tokens);
+        $this->assertEquals(self::TOKENS, $tokens);
     }
 }

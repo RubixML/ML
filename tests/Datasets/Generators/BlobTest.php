@@ -21,6 +21,8 @@ class BlobTest extends TestCase
     {
         $this->assertInstanceOf(Blob::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
+
+        $this->assertEquals(2, $this->generator->dimensions());
     }
 
     public function test_generate_dataset()

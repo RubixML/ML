@@ -4,46 +4,46 @@ namespace Rubix\ML\Tests\Datasets;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\DataFrame;
+use Rubix\ML\Other\Helpers\DataType;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
 
 class LabeledTest extends TestCase
 {
+    protected const SAMPLES = [
+        ['nice', 'furry', 'friendly'],
+        ['mean', 'furry', 'loner'],
+        ['nice', 'rough', 'friendly'],
+        ['mean', 'rough', 'friendly'],
+        ['nice', 'rough', 'friendly'],
+        ['nice', 'furry', 'loner'],
+    ];
+
+    protected const LABELS = [
+        'not monster', 'monster', 'not monster',
+        'monster', 'not monster', 'not monster',
+    ];
+
+    protected const TYPES = [
+        DataType::CATEGORICAL,
+        DataType::CATEGORICAL,
+        DataType::CATEGORICAL,
+    ];
+
+    protected const WEIGHTS = [
+        1, 1, 2, 1, 2, 3,
+    ];
+
+    protected const RANDOM_SEED = 1;
+
     protected $dataset;
-
-    protected $samples;
-
-    protected $labels;
-
-    protected $types;
-
-    protected $weights;
 
     public function setUp()
     {
-        $this->samples = [
-            ['nice', 'furry', 'friendly'],
-            ['mean', 'furry', 'loner'],
-            ['nice', 'rough', 'friendly'],
-            ['mean', 'rough', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['nice', 'furry', 'loner'],
-        ];
+        $this->dataset = new Labeled(self::SAMPLES, self::LABELS, false);
 
-        $this->labels = [
-            'not monster', 'monster', 'not monster',
-            'monster', 'not monster', 'not monster',
-        ];
-
-        $this->types = [DataType::CATEGORICAL, DataType::CATEGORICAL, DataType::CATEGORICAL];
-
-        $this->weights = [
-            1, 1, 2, 1, 2, 3,
-        ];
-
-        $this->dataset = new Labeled($this->samples, $this->labels, false);
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_dataset()
@@ -69,20 +69,20 @@ class LabeledTest extends TestCase
 
     public function test_from_iterator()
     {
-        $samples = new ArrayIterator($this->samples);
-        $labels = new ArrayIterator($this->labels);
+        $samples = new ArrayIterator(self::SAMPLES);
+        $labels = new ArrayIterator(self::LABELS);
 
         $dataset = Labeled::fromIterator($samples, $labels);
 
         $this->assertInstanceOf(Labeled::class, $dataset);
 
-        $this->assertEquals($this->samples, $dataset->samples());
-        $this->assertEquals($this->labels, $dataset->labels());
+        $this->assertEquals(self::SAMPLES, $dataset->samples());
+        $this->assertEquals(self::LABELS, $dataset->labels());
     }
 
     public function test_get_labels()
     {
-        $this->assertEquals($this->labels, $this->dataset->labels());
+        $this->assertEquals(self::LABELS, $this->dataset->labels());
     }
 
     public function test_zip()
@@ -101,9 +101,11 @@ class LabeledTest extends TestCase
 
     public function test_transform_labels()
     {
-        $this->dataset->transformLabels(function ($label) {
+        $transformer = function ($label) {
             return $label === 'not monster' ? 0 : 1;
-        });
+        };
+
+        $this->dataset->transformLabels($transformer);
 
         $expected = [
             0, 1, 0, 1, 0, 0,
@@ -131,32 +133,26 @@ class LabeledTest extends TestCase
         );
     }
 
-    public function test_get_column_types()
-    {
-        $this->assertEquals($this->types, $this->dataset->types());
-    }
-
-    public function test_get_column_type()
-    {
-        $this->assertEquals($this->types[0], $this->dataset->columnType(0));
-        $this->assertEquals($this->types[1], $this->dataset->columnType(1));
-        $this->assertEquals($this->types[2], $this->dataset->columnType(2));
-    }
-
     public function test_randomize()
     {
+        $samples = $this->dataset->samples();
+        $labels = $this->dataset->labels();
+
         $this->dataset->randomize();
 
-        $this->assertTrue(true);
+        $this->assertNotEquals($samples, $this->dataset->samples());
+        $this->assertNotEquals($labels, $this->dataset->labels());
     }
 
     public function test_filter_by_column()
     {
-        $filtered = $this->dataset->filterByColumn(2, function ($value) {
+        $isFriendly = function ($value) {
             return $value === 'friendly';
-        });
+        };
 
-        $outcome = [
+        $filtered = $this->dataset->filterByColumn(2, $isFriendly);
+
+        $samples = [
             ['nice', 'furry', 'friendly'],
             ['nice', 'rough', 'friendly'],
             ['mean', 'rough', 'friendly'],
@@ -165,17 +161,19 @@ class LabeledTest extends TestCase
 
         $labels = ['not monster', 'not monster', 'monster', 'not monster'];
 
-        $this->assertEquals($outcome, $filtered->samples());
+        $this->assertEquals($samples, $filtered->samples());
         $this->assertEquals($labels, $filtered->labels());
     }
 
     public function test_filter_by_label()
     {
-        $filtered = $this->dataset->filterByLabel(function ($label) {
+        $notMonster = function ($label) {
             return $label === 'not monster';
-        });
+        };
 
-        $outcome = [
+        $filtered = $this->dataset->filterByLabel($notMonster);
+
+        $samples = [
             ['nice', 'furry', 'friendly'],
             ['nice', 'rough', 'friendly'],
             ['nice', 'rough', 'friendly'],
@@ -184,7 +182,7 @@ class LabeledTest extends TestCase
 
         $labels = ['not monster', 'not monster', 'not monster', 'not monster'];
 
-        $this->assertEquals($outcome, $filtered->samples());
+        $this->assertEquals($samples, $filtered->samples());
         $this->assertEquals($labels, $filtered->labels());
     }
 
@@ -192,51 +190,62 @@ class LabeledTest extends TestCase
     {
         $this->dataset->sortByColumn(1);
 
-        $sorted = array_column($this->samples, 1);
+        $sorted = array_column(self::SAMPLES, 1);
 
-        array_multisort($sorted, $this->labels, SORT_ASC);
+        $labels = self::LABELS;
+
+        array_multisort($sorted, $labels, SORT_ASC);
 
         $this->assertEquals($sorted, $this->dataset->column(1));
-        $this->assertEquals($this->labels, $this->dataset->labels());
+        $this->assertEquals($labels, $this->dataset->labels());
     }
 
     public function test_sort_by_label()
     {
         $this->dataset->sortByLabel();
 
-        array_multisort($this->labels, $this->samples, SORT_ASC);
+        $samples = self::SAMPLES;
+        $labels = self::LABELS;
 
-        $this->assertEquals($this->samples, $this->dataset->samples());
-        $this->assertEquals($this->labels, $this->dataset->labels());
+        array_multisort($labels, $samples, SORT_ASC);
+
+        $this->assertEquals($samples, $this->dataset->samples());
+        $this->assertEquals($labels, $this->dataset->labels());
     }
 
     public function test_head()
     {
-        $this->assertCount(3, $this->dataset->head(3));
+        $subset = $this->dataset->head(3);
+
+        $this->assertInstanceOf(Labeled::class, $subset);
+        $this->assertCount(3, $subset);
     }
 
     public function test_tail()
     {
-        $this->assertCount(3, $this->dataset->tail(3));
+        $subset = $this->dataset->tail(3);
+
+        $this->assertInstanceOf(Labeled::class, $subset);
+        $this->assertCount(3, $subset);
     }
 
-    public function test_take_samples_from_dataset()
+    public function test_take()
     {
         $this->assertCount(6, $this->dataset);
 
-        $dataset = $this->dataset->take(3);
+        $subset = $this->dataset->take(3);
 
-        $this->assertCount(3, $dataset);
+        $this->assertCount(3, $subset);
         $this->assertCount(3, $this->dataset);
     }
 
-    public function test_leave_samples_in_dataset()
+    public function test_leave()
     {
         $this->assertCount(6, $this->dataset);
 
-        $dataset = $this->dataset->leave(1);
+        $subset = $this->dataset->leave(1);
 
-        $this->assertCount(5, $dataset);
+        $this->assertCount(5, $subset);
         $this->assertCount(1, $this->dataset);
     }
 
@@ -244,9 +253,9 @@ class LabeledTest extends TestCase
     {
         $this->assertCount(6, $this->dataset);
 
-        $dataset = $this->dataset->splice(2, 2);
+        $subset = $this->dataset->splice(2, 2);
 
-        $this->assertCount(2, $dataset);
+        $this->assertCount(2, $subset);
         $this->assertCount(4, $this->dataset);
     }
 
@@ -311,20 +320,20 @@ class LabeledTest extends TestCase
 
     public function test_random_weighted_subset_with_replacement()
     {
-        $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, $this->weights);
+        $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, self::WEIGHTS);
 
         $this->assertCount(3, $subset);
     }
 
     public function test_prepend_dataset()
     {
-        $this->assertCount(count($this->samples), $this->dataset);
+        $this->assertCount(count(self::SAMPLES), $this->dataset);
 
         $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
 
         $merged = $this->dataset->prepend($dataset);
 
-        $this->assertCount(count($this->samples) + 1, $merged);
+        $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(0));
         $this->assertEquals('not monster', $merged->label(6));
@@ -332,13 +341,13 @@ class LabeledTest extends TestCase
 
     public function test_append_dataset()
     {
-        $this->assertCount(count($this->samples), $this->dataset);
+        $this->assertCount(count(self::SAMPLES), $this->dataset);
 
         $dataset = new Labeled([['nice', 'furry', 'friendly']], ['not monster']);
 
         $merged = $this->dataset->append($dataset);
 
-        $this->assertCount(count($this->samples) + 1, $merged);
+        $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
         $this->assertEquals(['nice', 'furry', 'friendly'], $merged->row(6));
         $this->assertEquals('not monster', $merged->label(6));

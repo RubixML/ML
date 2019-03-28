@@ -6,8 +6,8 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -46,7 +46,7 @@ class DummyRegressorTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::REGRESSOR, $this->estimator->type());
+        $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());
 
         $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

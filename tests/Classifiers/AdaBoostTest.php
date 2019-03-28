@@ -59,7 +59,7 @@ class AdaBoostTest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
 
-        $this->assertEquals(Estimator::CLASSIFIER, $this->estimator->type());
+        $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());
 
         $this->assertContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

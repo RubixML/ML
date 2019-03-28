@@ -45,7 +45,7 @@ class TSNETest extends TestCase
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::EMBEDDER, $this->estimator->type());
+        $this->assertSame(Estimator::EMBEDDER, $this->estimator->type());
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

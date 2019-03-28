@@ -8,24 +8,26 @@ use PHPUnit\Framework\TestCase;
 
 class DataFrameTest extends TestCase
 {
+    protected const SAMPLES = [
+        ['nice', 0.5, 'friendly'],
+        ['mean', 9.9, 'loner'],
+        ['nice', -2.6, 'friendly'],
+        ['mean', 3.5, 'friendly'],
+        ['nice', 4.9, 'friendly'],
+        ['nice', 2.1, 'loner'],
+    ];
+
+    protected const TYPES = [
+        DataType::CATEGORICAL,
+        DataType::CONTINUOUS,
+        DataType::CATEGORICAL,
+    ];
+
     protected $dataframe;
-
-    protected $samples;
-
-    protected $headers;
 
     public function setUp()
     {
-        $this->samples = [
-            ['nice', 'furry', 'friendly'],
-            ['mean', 'furry', 'loner'],
-            ['nice', 'rough', 'friendly'],
-            ['mean', 'rough', 'friendly'],
-            ['nice', 'rough', 'friendly'],
-            ['nice', 'furry', 'loner'],
-        ];
-
-        $this->dataframe = new DataFrame($this->samples, true);
+        $this->dataframe = new DataFrame(self::SAMPLES, true);
     }
 
     public function test_build_dataframe()
@@ -35,13 +37,13 @@ class DataFrameTest extends TestCase
 
     public function test_get_samples()
     {
-        $this->assertEquals($this->samples, $this->dataframe->samples());
+        $this->assertEquals(self::SAMPLES, $this->dataframe->samples());
     }
 
     public function test_get_row()
     {
-        $this->assertEquals($this->samples[2], $this->dataframe->row(2));
-        $this->assertEquals($this->samples[5], $this->dataframe->row(5));
+        $this->assertEquals(self::SAMPLES[2], $this->dataframe->row(2));
+        $this->assertEquals(self::SAMPLES[5], $this->dataframe->row(5));
     }
 
     public function test_num_rows()
@@ -51,9 +53,9 @@ class DataFrameTest extends TestCase
 
     public function test_get_column()
     {
-        $outcome = ['friendly', 'loner', 'friendly', 'friendly', 'friendly', 'loner'];
+        $expected = array_column(self::SAMPLES, 2);
 
-        $this->assertEquals($outcome, $this->dataframe->column(2));
+        $this->assertEquals($expected, $this->dataframe->column(2));
     }
 
     public function test_get_num_columns()
@@ -63,20 +65,59 @@ class DataFrameTest extends TestCase
 
     public function test_column_types()
     {
-        $outcome = [
-            DataType::CATEGORICAL, DataType::CATEGORICAL, DataType::CATEGORICAL,
-        ];
+        $this->assertEquals(self::TYPES, $this->dataframe->types());
+    }
 
-        $this->assertEquals($outcome, $this->dataframe->types());
+    public function test_unique_types()
+    {
+        $this->assertCount(2, $this->dataframe->uniqueTypes());
     }
 
     public function test_homogeneous()
     {
-        $this->assertTrue($this->dataframe->homogeneous());
+        $this->assertFalse($this->dataframe->homogeneous());
+    }
+
+    public function test_shape()
+    {
+        $this->assertEquals([6, 3], $this->dataframe->shape());
+    }
+
+    public function test_size()
+    {
+        $this->assertEquals(18, $this->dataframe->size());
     }
 
     public function test_column_type()
     {
-        $this->assertEquals(DataType::CATEGORICAL, $this->dataframe->columnType(2));
+        $this->assertEquals(self::TYPES[0], $this->dataframe->columnType(0));
+        $this->assertEquals(self::TYPES[1], $this->dataframe->columnType(1));
+        $this->assertEquals(self::TYPES[2], $this->dataframe->columnType(2));
+    }
+
+    public function test_columns()
+    {
+        $expected = array_map(null, ...self::SAMPLES);
+
+        $this->assertEquals($expected, $this->dataframe->columns());
+    }
+
+    public function test_column_by_type()
+    {
+        $expected = [1 => array_column(self::SAMPLES, 1)];
+
+        $columns = $this->dataframe->columnsByType(DataType::CONTINUOUS);
+
+        $this->assertEquals($expected, $columns);
+    }
+
+    public function test_empty()
+    {
+        $this->assertFalse($this->dataframe->empty());
+    }
+
+    public function test_count()
+    {
+        $this->assertEquals(6, $this->dataframe->count());
     }
 }

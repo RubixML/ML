@@ -21,6 +21,8 @@ class SwissRollTest extends TestCase
     {
         $this->assertInstanceOf(SwissRoll::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
+
+        $this->assertEquals(3, $this->generator->dimensions());
     }
 
     public function test_generate_dataset()

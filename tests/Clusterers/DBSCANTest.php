@@ -46,7 +46,7 @@ class DBSCANTest extends TestCase
         $this->assertInstanceOf(DBSCAN::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
-        $this->assertEquals(Estimator::CLUSTERER, $this->estimator->type());
+        $this->assertSame(Estimator::CLUSTERER, $this->estimator->type());
 
         $this->assertNotContains(DataType::CATEGORICAL, $this->estimator->compatibility());
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());

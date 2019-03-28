@@ -25,6 +25,8 @@ class AgglomerateTest extends TestCase
     {
         $this->assertInstanceOf(Agglomerate::class, $this->generator);
         $this->assertInstanceOf(Generator::class, $this->generator);
+
+        $this->assertEquals(2, $this->generator->dimensions());
     }
 
     public function test_generate_dataset()
