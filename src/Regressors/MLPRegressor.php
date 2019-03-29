@@ -347,12 +347,18 @@ class MLPRegressor implements Online, Verbose, Persistable
 
         [$min, $max] = $this->metric->range();
 
+        $randomize = $n > $this->batchSize ? true : false;
+
         $bestScore = $min;
         $bestSnapshot = null;
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $batches = $training->randomize()->batch($this->batchSize);
+            if ($randomize) {
+                $training->randomize();
+            }
+
+            $batches = $training->batch($this->batchSize);
 
             $loss = 0.;
 

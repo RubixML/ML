@@ -199,19 +199,24 @@ class KMeans implements Learner, Persistable, Verbose
                 ]));
         }
 
-        $this->centroids = $this->seeder->seed($dataset, $this->k);
+        $n = $dataset->numRows();
 
         $samples = $dataset->samples();
-        $labels = array_fill(0, $dataset->numRows(), null);
+        $labels = array_fill(0, $n, null);
+
+        $this->centroids = $this->seeder->seed($dataset, $this->k);
+
+        $randomize = $n > $this->batchSize ? true : false;
 
         $sizes = array_fill(0, $this->k, 0);
-
-        $order = range(0, $dataset->numRows() - 1);
+        $order = range(0, $n - 1);
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            shuffle($order);
+            if ($randomize) {
+                shuffle($order);
 
-            array_multisort($order, $samples, $labels);
+                array_multisort($order, $samples, $labels);
+            }
 
             $sChunks = array_chunk($samples, $this->batchSize);
             $lChunks = array_chunk($labels, $this->batchSize);

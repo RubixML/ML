@@ -254,11 +254,17 @@ class Adaline implements Online, Verbose, Persistable
         }
 
         $n = $dataset->numRows();
+
+        $randomize = $n > $this->batchSize ? true : false;
         
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $batches = $dataset->randomize()->batch($this->batchSize);
+            if ($randomize) {
+                $dataset->randomize();
+            }
+            
+            $batches = $dataset->batch($this->batchSize);
 
             $loss = 0.;
 
