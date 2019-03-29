@@ -5350,26 +5350,26 @@ var_dump($tokenizer->tokenize($text));
 ```sh
   array(10) {
     [0]=> string(5) "would"
-	[1]=> string(4) "like"
-	[2]=> string(2) "to"
-	[3]=> string(3) "die"
-	[4]=> string(2) "on"
-	[5]=> string(4) "Mars"
-	[6]=> string(4) "just"
-	[7]=> string(3) "not"
-	[8]=> string(2) "on"
-	[9]=> string(6) "impact"
+		[1]=> string(4) "like"
+		[2]=> string(2) "to"
+		[3]=> string(3) "die"
+		[4]=> string(2) "on"
+		[5]=> string(4) "Mars"
+		[6]=> string(4) "just"
+		[7]=> string(3) "not"
+		[8]=> string(2) "on"
+		[9]=> string(6) "impact"
   }
 ```
 
 ### N-gram
-N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max*.
+N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max* number of words per token.
 
 #### Parameters:
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | min | 2 | int | The minimum number of contiguous words to a single token. |
-| 2 | max | 2 | int | The maximum number of contiguous words to a single token. |
+| 1 | min | 2 | int | The minimum number of contiguous words to a token. |
+| 2 | max | 2 | int | The maximum number of contiguous words to a token. |
 
 #### Example:
 ```php

@@ -8,7 +8,8 @@ use InvalidArgumentException;
  * N-gram
  *
  * N-grams are sequences of n-words of a given string. The N-gram tokenizer
- * outputs tokens of contiguous words ranging from *min* to *max*.
+ * outputs tokens of contiguous words ranging from *min* to *max* number of
+ * words per token.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -76,13 +77,13 @@ class NGram implements Tokenizer
 
             $words = $words[0];
 
-            $p = count($words) - $this->max;
+            $n = count($words);
 
-            for ($i = 0; $i <= $p; $i++) {
-                $first = $words[$i];
+            foreach ($words as $i => $word) {
+                $p = min($n - $i, $this->max);
 
-                for ($j = $this->min; $j <= $this->max; $j++) {
-                    $nGram = $first;
+                for ($j = $this->min; $j <= $p; $j++) {
+                    $nGram = $word;
 
                     for ($k = 1; $k < $j; $k++) {
                         $nGram .= self::SEPARATOR . $words[$i + $k];

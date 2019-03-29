@@ -8,6 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class WhitespaceTest extends TestCase
 {
+    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
+
+    protected const TOKENS = [
+        'I', 'would', 'like', 'to', 'die', 'on', 'Mars,', 'just', 'not', 'on', 'impact.',
+        'The', 'end.',
+    ];
+    
     protected $tokenizer;
 
     public function setUp()
@@ -23,13 +30,10 @@ class WhitespaceTest extends TestCase
 
     public function test_tokenize()
     {
-        $data = 'I would like to die on Mars, just not on impact.';
+        $tokens = $this->tokenizer->tokenize(self::TEXT);
 
-        $tokens = $this->tokenizer->tokenize($data);
+        $this->assertCount(13, $tokens);
 
-        $this->assertCount(11, $tokens);
-
-        $this->assertEquals(['I', 'would', 'like', 'to', 'die', 'on',
-            'Mars,', 'just', 'not', 'on', 'impact.'], $tokens);
+        $this->assertEquals(self::TOKENS, $tokens);
     }
 }

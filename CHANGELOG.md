@@ -1,11 +1,11 @@
 - Unreleased
-    - Added Seeder Interface
-    - Added Random and Plus Plus seeders
     - K Means now uses mini batch GD instead of SGD
     - Added Adjusted Rand Index clustering metric
+    - Added Seeder Interface
+    - Added Random and Plus Plus seeders
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace
-    - N-Gram Tokenizer now outputs ranges of word tokens
+    - N-gram Tokenizer now outputs ranges of word tokens
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

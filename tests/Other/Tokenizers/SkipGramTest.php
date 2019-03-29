@@ -8,6 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class SkipGramTest extends TestCase
 {
+    protected const TEXT = 'I would like to die on Mars, just not on impact. The end.';
+
+    protected const TOKENS = ['I would', 'I like', 'I to', 'would like', 'would to', 'would die',
+    'like to', 'like die', 'like on', 'to die', 'to on', 'to Mars', 'die on', 'die Mars',
+    'die just', 'on Mars', 'on just', 'on not', 'Mars just', 'Mars not', 'Mars on',
+    'just not', 'just on', 'just impact', 'on impact', 'The end'];
+
     protected $tokenizer;
 
     public function setUp()
@@ -23,15 +30,10 @@ class SkipGramTest extends TestCase
 
     public function test_tokenize()
     {
-        $data = 'I would like to die on Mars, just not on impact.';
+        $tokens = $this->tokenizer->tokenize(self::TEXT);
 
-        $tokens = $this->tokenizer->tokenize($data);
+        $this->assertCount(26, $tokens);
 
-        $this->assertCount(25, $tokens);
-
-        $this->assertEquals(['I would', 'I like', 'I to', 'would like', 'would to', 'would die',
-            'like to', 'like die', 'like on', 'to die', 'to on', 'to Mars', 'die on', 'die Mars',
-            'die just', 'on Mars', 'on just', 'on not', 'Mars just', 'Mars not', 'Mars on',
-            'just not', 'just on', 'just impact', 'on impact'], $tokens);
+        $this->assertEquals(self::TOKENS, $tokens);
     }
 }

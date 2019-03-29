@@ -13,7 +13,7 @@ class NGramTest extends TestCase
     protected const TOKENS = [
         'I', 'I would', 'would', 'would like', 'like', 'like to', 'to', 'to die', 'die',
         'die on', 'on', 'on Mars', 'Mars', 'Mars just', 'just', 'just not', 'not', 'not on',
-        'on', 'on impact', 'The', 'The end',
+        'on', 'on impact', 'impact', 'The', 'The end', 'end',
     ];
 
     protected $tokenizer;
@@ -33,7 +33,7 @@ class NGramTest extends TestCase
     {
         $tokens = $this->tokenizer->tokenize(self::TEXT);
 
-        $this->assertCount(22, $tokens);
+        $this->assertCount(24, $tokens);
 
         $this->assertEquals(self::TOKENS, $tokens);
     }
