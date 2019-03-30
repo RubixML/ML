@@ -21,9 +21,9 @@ use RuntimeException;
 
 class KMeansTest extends TestCase
 {
-    protected const TRAIN_SIZE = 350;
+    protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -36,12 +36,12 @@ class KMeansTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 30.),
-            'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 0, 255], 20.),
+            'red' => new Blob([255, 50, 0], 50.),
+            'green' => new Blob([10, 128, 30], 40.),
+            'blue' => new Blob([0, 50, 255], 30.),
         ]);
 
-        $this->estimator = new KMeans(3, 100, new Euclidean(), 100, 1, new PlusPlus(new Euclidean()));
+        $this->estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus(new Euclidean()));
 
         $this->estimator->setLogger(new BlackHole());
 
@@ -72,7 +72,11 @@ class KMeansTest extends TestCase
         
         $testing = $this->generator->generate(self::TEST_SIZE);
 
-        $this->estimator->train($training);
+        $folds = $training->stratifiedFold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
 
         $this->assertTrue($this->estimator->trained());
 

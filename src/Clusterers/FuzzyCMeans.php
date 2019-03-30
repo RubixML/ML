@@ -117,7 +117,7 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
         float $fuzz = 2.0,
         ?Distance $kernel = null,
         int $epochs = 300,
-        float $minChange = 1e-4,
+        float $minChange = 10.,
         ?Seeder $seeder = null
     ) {
         if ($c < 1) {
@@ -229,10 +229,11 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
         $samples = $dataset->samples();
         $rotated = $dataset->columns();
+
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $memberships = array_map([self::class, 'calculateMembership'], $samples);
+            $memberships = array_map([self::class, 'membership'], $samples);
 
             foreach ($this->centroids as $cluster => &$centroid) {
                 foreach ($rotated as $column => $values) {
@@ -249,23 +250,23 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
                 }
             }
 
-            $loss = $this->inertia($dataset, $memberships);
+            $inertia = $this->inertia($dataset, $memberships);
 
-            $this->steps[] = $loss;
+            $this->steps[] = $inertia;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, loss=$loss");
+                $this->logger->info("Epoch $epoch complete, inertia=$inertia");
             }
 
-            if (is_nan($loss)) {
+            if (is_nan($inertia)) {
                 break 1;
             }
 
-            if (abs($previous - $loss) < $this->minChange) {
+            if (abs($previous - $inertia) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $loss;
+            $previous = $inertia;
         }
 
         if ($this->logger) {
@@ -300,17 +301,16 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        return array_map([self::class, 'calculateMembership'], $dataset->samples());
+        return array_map([self::class, 'membership'], $dataset->samples());
     }
 
     /**
-     * Return an vector of membership probability score of each cluster for a
-     * given sample.
+     * Return the membership of a sample to each of the c centroids.
      *
      * @param array $sample
      * @return array
      */
-    protected function calculateMembership(array $sample) : array
+    protected function membership(array $sample) : array
     {
         $membership = [];
 
@@ -332,7 +332,8 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
     }
 
     /**
-     * Calculate the within-cluster distance.
+     * Calculate the sum of distances between all samples and their closest
+     * centroid.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param array $memberships

@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
@@ -21,10 +22,12 @@ use RuntimeException;
 /**
  * K Means
  *
- * A fast centroid-based hard clustering algorithm capable of clustering
- * linearly separable data points given a number of target clusters set by the
- * parameter K. K Means is trained with mini batch gradient descent using the
- * within cluster distance as a loss function.
+ * A fast online centroid-based hard clustering algorithm capable of clustering
+ * linearly separable data points given some prior knowledge of the target number
+ * of clusters (defined by *k*). K Means with inertia is trained using adaptive
+ * mini batch gradient descent and minimizes the inertial cost function. Inertia
+ * is defined as the sum of the distances between each sample and its nearest
+ * cluster centroid.
  *
  * References:
  * [1] D. Sculley. (2010). Web-Scale K-Means Clustering.
@@ -67,10 +70,9 @@ class KMeans implements Learner, Persistable, Verbose
     protected $epochs;
 
     /**
-     * The minimum change in the size of each cluster for training
-     * to continue.
+     * The minimum change in the inertia for training to continue.
      *
-     * @var int
+     * @var float
      */
     protected $minChange;
 
@@ -91,11 +93,30 @@ class KMeans implements Learner, Persistable, Verbose
     ];
 
     /**
+     * The number of training samples contained within each cluster
+     * centroid.
+     *
+     * @var int[]
+     */
+    protected $sizes = [
+        //
+    ];
+
+    /**
+     * The inertia at each epoch from the last round of training.
+     *
+     * @var float[]
+     */
+    protected $steps = [
+        //
+    ];
+
+    /**
      * @param int $k
      * @param int $batchSize
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
-     * @param int $minChange
+     * @param float $minChange
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
@@ -104,12 +125,12 @@ class KMeans implements Learner, Persistable, Verbose
         int $batchSize = 100,
         ?Distance $kernel = null,
         int $epochs = 300,
-        int $minChange = 1,
+        float $minChange = 10.,
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
-            throw new InvalidArgumentException('Must target at least'
-                . " 1 cluster, $k given.");
+            throw new InvalidArgumentException('Must target at least 1'
+                . " cluster, $k given.");
         }
 
         if ($batchSize < 1) {
@@ -122,7 +143,7 @@ class KMeans implements Learner, Persistable, Verbose
                 . " for at least 1 epoch, $epochs given.");
         }
 
-        if ($minChange < 1) {
+        if ($minChange < 0.) {
             throw new InvalidArgumentException('Min change cannot be less'
                 . " than 1, $minChange given.");
         }
@@ -170,11 +191,32 @@ class KMeans implements Learner, Persistable, Verbose
     /**
      * Return the computed cluster centroids of the training data.
      *
-     * @return array
+     * @return array[]
      */
     public function centroids() : array
     {
         return $this->centroids;
+    }
+
+    /**
+     * Return the number of training samples each centroid is responsible for.
+     *
+     * @return int[]
+     */
+    public function sizes() : array
+    {
+        return $this->sizes;
+    }
+
+    /**
+     * Return the value of the inertial function at each epoch from the last
+     * round of training.
+     *
+     * @return float[]
+     */
+    public function steps() : array
+    {
+        return $this->steps;
     }
 
     /**
@@ -185,6 +227,34 @@ class KMeans implements Learner, Persistable, Verbose
      */
     public function train(Dataset $dataset) : void
     {
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        $this->centroids = $this->seeder->seed($dataset, $this->k);
+
+        $sizes = array_fill(1, $this->k, 0);
+        $sizes[0] = $dataset->numRows();
+
+        $this->sizes = $sizes;
+
+        $this->steps = [];
+
+        $this->partial($dataset);
+    }
+
+    /**
+     * Perform a partial train on the learner.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     */
+    public function partial(Dataset $dataset) : void
+    {
+        if (empty($this->centroids) or empty($this->sizes)) {
+            $this->train($dataset);
+
+            return;
+        }
+
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
@@ -202,14 +272,13 @@ class KMeans implements Learner, Persistable, Verbose
         $n = $dataset->numRows();
 
         $samples = $dataset->samples();
-        $labels = array_fill(0, $n, null);
+        $labels = array_fill(0, $n, 0);
 
-        $this->centroids = $this->seeder->seed($dataset, $this->k);
+        $order = range(0, $n - 1);
 
         $randomize = $n > $this->batchSize ? true : false;
 
-        $sizes = array_fill(0, $this->k, 0);
-        $order = range(0, $n - 1);
+        $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             if ($randomize) {
@@ -218,51 +287,63 @@ class KMeans implements Learner, Persistable, Verbose
                 array_multisort($order, $samples, $labels);
             }
 
-            $sChunks = array_chunk($samples, $this->batchSize);
-            $lChunks = array_chunk($labels, $this->batchSize);
+            $sBatches = array_chunk($samples, $this->batchSize, true);
+            $lBatches = array_chunk($labels, $this->batchSize, true);
 
-            $changed = 0;
+            foreach ($sBatches as $i => $batch) {
+                $assignments = array_map([self::class, 'assign'], $batch);
 
-            foreach ($sChunks as $i => $batch) {
-                $lHat = $lChunks[$i];
+                $lHat = $lBatches[$i];
 
-                foreach ($batch as $j => $sample) {
-                    $label = $this->assign($sample);
-
+                foreach ($assignments as $j => $cluster) {
                     $expected = $lHat[$j];
 
-                    if ($label !== $expected) {
-                        $labels[$i] = $label;
+                    if ($cluster !== $expected) {
+                        $labels[$j] = $cluster;
 
-                        $sizes[$label]++;
-
-                        if (isset($expected)) {
-                            $sizes[$expected]--;
-                        }
-
-                        $changed++;
+                        $this->sizes[$expected]--;
+                        $this->sizes[$cluster]++;
                     }
                 }
 
-                foreach ($this->centroids as $label => &$centroid) {
-                    $step = Matrix::quick($batch)->transpose()->mean();
+                $strata = Labeled::quick($batch, $lHat)->stratify();
 
-                    $rate = 1. / ($sizes[$label] ?: self::EPSILON);
+                foreach ($strata as $cluster => $stratum) {
+                    $centroid = $this->centroids[$cluster];
+                    $size = $this->sizes[$cluster];
 
-                    foreach ($centroid as $column => &$mean) {
-                        $mean = (1. - $rate) * $mean + $rate * $step[$column];
+                    $step = Matrix::quick($stratum->samples())
+                        ->transpose()
+                        ->mean()
+                        ->asArray();
+
+                    $damper = 1. / ($size ?: self::EPSILON);
+
+                    foreach ($centroid as $i => &$mean) {
+                        $mean = (1. - $damper) * $mean + $damper * $step[$i];
                     }
+
+                    $this->centroids[$cluster] = $centroid;
                 }
             }
+
+            $inertia = $this->inertia($samples, $labels);
+
+            $this->steps[] = $inertia;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete,"
-                    . " changed=$changed");
+                $this->logger->info("Epoch $epoch complete, inertia=$inertia");
             }
 
-            if ($changed < $this->minChange) {
+            if (is_nan($inertia)) {
                 break 1;
             }
+
+            if (abs($previous - $inertia) < $this->minChange) {
+                break 1;
+            }
+
+            $previous = $inertia;
         }
 
         if ($this->logger) {
@@ -310,5 +391,25 @@ class KMeans implements Learner, Persistable, Verbose
         }
 
         return (int) $bestCluster;
+    }
+
+    /**
+     * Calculate the sum of distances between all samples and their closest
+     * centroid.
+     *
+     * @param array $samples
+     * @return float
+     */
+    protected function inertia(array $samples) : float
+    {
+        $inertia = 0.;
+
+        foreach ($samples as $sample) {
+            foreach ($this->centroids as $centroid) {
+                $inertia += $this->kernel->compute($sample, $centroid);
+            }
+        }
+
+        return $inertia;
     }
 }

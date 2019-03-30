@@ -42,7 +42,7 @@ class FuzzyCMeansTest extends TestCase
             'blue' => new Blob([0, 0, 255], 2.),
         ]);
 
-        $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 100, 1e-4, new Random());
+        $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 300, 10., new Random());
 
         $this->metric = new RandIndex();
 

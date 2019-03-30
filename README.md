@@ -35,7 +35,7 @@ $ composer require rubix/ml
 	- [Training and Prediction](#training-and-prediction)
 	- [Evaluation](#evaluating-model-performance)
 	- [Visualization](#visualization)
-    - [Next Steps](#next-steps)
+  - [Next Steps](#next-steps)
 - [System Architecture](#system-architecture)
 - Tutorials & Examples
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
@@ -157,13 +157,13 @@ $ composer require rubix/ml
 			- [Input Layers](#input-layers)
 				- [Placeholder 1D](#placeholder-1d)
 			- [Hidden Layers](#hidden-layers)
-                - [Activation](#activation)
+      	- [Activation](#activation)
 				- [Alpha Dropout](#alpha-dropout)
 				- [Batch Norm](#batch-norm)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 				- [Noise](#noise)
-                - [PReLU](#prelu)
+        - [PReLU](#prelu)
 			- [Output Layers](#output-layers)
 				- [Binary](#Binary)
 				- [Continuous](#continuous)
@@ -260,7 +260,7 @@ $ composer require rubix/ml
 
 ---
 ### Basic Introduction
-Machine learning is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of machine learning that Rubix supports out of the box - *Supervised* and *Unsupervised*.
+Machine learning (ML) is the process by which a computer program is able to progressively improve performance on a certain task through training and data without explicitly being programmed. There are two types of machine learning that Rubix supports out of the box - *Supervised* and *Unsupervised*.
 
  - **Supervised** learning is a technique that uses a labeled dataset in which the outcome of each sample has been *labeled* by a human expert prior to training. There are two types of supervised learning to consider in Rubix:
 	 - **Classification** is the problem of identifying which *class* a particular sample belongs to. For example, one task may be in determining a particular species of flower or predicting someone's MBTI personality type.
@@ -268,7 +268,7 @@ Machine learning is the process by which a computer program is able to progressi
 - **Unsupervised** learning by contrast does *not* use a labeled dataset. Instead, it focuses on finding patterns within the raw samples.
 	- **Clustering** is the grouping of data points in such a way that members of the same group are more similar (homogeneous) than the rest of the samples. You can think of clustering as assigning a class label to an otherwise unlabeled sample. An example where clustering is used is in differentiating PET scan tissues or segmenting a customer base.
 	- **Anomaly Detection** is the process of flagging samples that appear to be generated from a mechanism other than one that produces nominal data. Anomalous samples can indicate adversarial activity or exceptional circumstances such as fraud or a cyber attack.
-	- **Dimensionality Reduction** is used in visualizing high dimensional datasets, embedding sparse feature representations, and reducing model size by producing a low dimensional representation of the original feature space.
+	- **Manifold Learning** is used in visualizing high dimensional datasets, embedding sparse feature representations, and reducing model size by producing a low dimensional representation of the original feature space.
 
 ### Obtaining Data
 Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*.
@@ -500,7 +500,6 @@ Return the range of a feature column. The range for a continuous column is defin
 ```php
 public columnRange(int $index) : array
 ```
-
 
 #### Splitting, Folding, and Batching
 
@@ -1789,7 +1788,7 @@ Distance-based soft clusterer that allows samples to belong to multiple clusters
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 5 | min change | 1e-4 | float | The minimum change in inter cluster distance necessary for the algorithm to continue training. |
+| 5 | min change | 10. | float | The minimum change in the inertia for the algorithm to continue training. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 #### Additional Methods:
@@ -1799,7 +1798,7 @@ Return the *c* computed centroids of the training set:
 public centroids() : array
 ```
 
-Returns the inter-cluster distances at each epoch of training:
+Returns the inertia at each epoch from  the last round of training:
 ```php
 public steps() : array
 ```
@@ -1810,7 +1809,7 @@ use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\Random;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 300, 1e-3, new Random());
+$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 400, 1., new Random());
 ```
 
 #### References:
@@ -1848,11 +1847,9 @@ public variances() : array
 
 #### Example:
 ```php
-use Rubix\ML\Clusterers\FuzzyCMeans;
-use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Clusterers\GaussianMixture;
 
-$estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000, new PlusPlus());
+$estimator = new GaussianMixture(5, 1e-4, 100);
 ```
 
 #### References:
@@ -1860,9 +1857,9 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 1e-3, 1000, new PlusPlus()
 >- J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm for Gaussian Mixture Models.
 
 ### K Means
-A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means is trained with mini batch gradient descent using the within cluster distance as a loss function.
+A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
 
-##### Interfaces: Learner, Persistable, Verbose
+##### Interfaces: Learner, Online, Persistable, Verbose
 ##### Compatibility: Continuous
 
 #### Parameters:
@@ -1872,7 +1869,7 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | 2 | batch size | 100 | int | The size of each mini batch in samples. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | epochs | 300 | int | The maximum number of training rounds to execute. |
-| 5 | min change | 1 | int | The minimum change in the size of each cluster for training to continue. |
+| 5 | min change | 10. | float | The minimum change in the inertia for training to continue. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
 #### Additional Methods:
@@ -1881,12 +1878,23 @@ Return the *k* computed centroids of the training set:
 public centroids() : array
 ```
 
+Return the number of training samples that each centroid is responsible for:
+```php
+public sizes() : array
+```
+
+Return the value of the inertial function at each epoch from the last round of training:
+```php
+public steps() : array
+```
+
 #### Example:
 ```php
 use Rubix\ML\Clusterers\KMeans;
+use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
-$estimator = new KMeans(3, 100, new Euclidean(), 300, 1);
+$estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus());
 ```
 
 #### References:
