@@ -4,6 +4,7 @@
     - Added Adjusted Rand Index clustering metric
     - Added Seeder Interface
     - Added Random, K-MC2, and Plus Plus seeders
+    - Gaussian Mixture now supports seeders
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace
     - N-gram Tokenizer now outputs ranges of word tokens

@@ -10,6 +10,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -20,7 +21,7 @@ use RuntimeException;
 
 class GaussianMixtureTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 350;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
@@ -35,12 +36,12 @@ class GaussianMixtureTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 28, 32], 30.),
+            'green' => new Blob([64, 128, 0], 40.),
+            'blue' => new Blob([16, 0, 255], 50.),
         ]);
 
-        $this->estimator = new GaussianMixture(3, 100, 1e-3);
+        $this->estimator = new GaussianMixture(3, 100, 1e-3, new KMC2(50));
 
         $this->metric = new VMeasure();
 

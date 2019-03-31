@@ -10,10 +10,5 @@ before_install:
     - pecl install -f svm
     - pecl install -f igbinary
 
-install:
-    - composer install
-
 script:
-    - composer analyze
-    - composer check
-    - composer test
+    - composer build
