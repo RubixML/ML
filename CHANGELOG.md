@@ -3,7 +3,7 @@
     - K Means in now an Online learner
     - Added Adjusted Rand Index clustering metric
     - Added Seeder Interface
-    - Added Random and Plus Plus seeders
+    - Added Random, K-MC2, and Plus Plus seeders
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace
     - N-gram Tokenizer now outputs ranges of word tokens

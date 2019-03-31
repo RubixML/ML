@@ -12,7 +12,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Clusterers\Seeders\PlusPlus;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
@@ -36,12 +36,12 @@ class KMeansTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 50, 0], 50.),
-            'green' => new Blob([10, 128, 30], 40.),
-            'blue' => new Blob([0, 50, 255], 30.),
+            'red' => new Blob([255, 32, 0], 40.),
+            'green' => new Blob([16, 128, 28], 20.),
+            'blue' => new Blob([64, 0, 255], 30.),
         ]);
 
-        $this->estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus(new Euclidean()));
+        $this->estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new KMC2(10, new Euclidean()));
 
         $this->estimator->setLogger(new BlackHole());
 

@@ -5,7 +5,6 @@ namespace Rubix\ML\Clusterers\Seeders;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use RuntimeException;
 
 /**
  * Plus Plus
@@ -45,32 +44,16 @@ class PlusPlus implements Seeder
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param int $k
-     * @throws \RuntimeException
-     * @return array
+     * @return array[]
      */
     public function seed(Dataset $dataset, int $k) : array
     {
-        $n = $dataset->numRows();
+        $centroids = $dataset->randomSubsetWithReplacement(1)->samples();
 
-        if ($n < $k) {
-            throw new RuntimeException('The number of samples cannot be less'
-                . ' than the number of target clusters.');
-        }
+        for ($i = 1; $i < $k; $i++) {
+            $weights = [];
 
-        $weights = array_fill(0, $n, 1. / $n);
-
-        $centroids = [];
-
-        for ($i = 0; $i < $k; $i++) {
-            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
-
-            $centroids[] = $subset[0];
-
-            if ($i === $k) {
-                break 1;
-            }
-
-            foreach ($dataset as $j => $sample) {
+            foreach ($dataset as $sample) {
                 $closest = INF;
 
                 foreach ($centroids as $centroid) {
@@ -81,14 +64,12 @@ class PlusPlus implements Seeder
                     }
                 }
 
-                $weights[$j] = $closest ** 2;
+                $weights[] = $closest ** 2;
             }
 
-            $total = array_sum($weights) ?: self::EPSILON;
+            $subset = $dataset->randomWeightedSubsetWithReplacement(1, $weights);
 
-            foreach ($weights as &$weight) {
-                $weight /= $total;
-            }
+            $centroids[] = $subset[0];
         }
 
         return $centroids;

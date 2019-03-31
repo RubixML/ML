@@ -37,11 +37,12 @@ $ composer require rubix/ml
 	- [Visualization](#visualization)
   - [Next Steps](#next-steps)
 - [System Architecture](#system-architecture)
-- Tutorials & Examples
+- [Tutorials & Examples](https://github.com/RubixML)
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
 	- [Housing Price Predictor](https://github.com/RubixML/Housing)
+	- [Iris Flower Classifier](https://github.com/RubixML/Iris)
 	- [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 - [API Reference](#api-reference)
 	- [Dataset Objects](#dataset-objects)
@@ -78,6 +79,7 @@ $ composer require rubix/ml
 			- [K Means](#k-means)
 			- [Mean Shift](#mean-shift)
 			- [Seeders](#seeders)
+				- [K-MC2](#k-mc2)
 				- [Plus Plus](#plus-plus)
 				- [Random](#random)
 		- [Embedders](#embedders)
@@ -1940,6 +1942,26 @@ $estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
 
 ### Seeders
 Seeders are responsible for initializing the cluster centroids of certain learners.
+
+### K-MC2
+This is a fast [Plus Plus](#plus-plus) approximator that replaces the brute force method with substantially faster Markov Chain Monte Carlo (MCMC) sampling with comparable performance.
+
+#### Parameters:
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | m | 50 | int | The number of candidate nodes in the Markov Chain. |
+| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
+
+#### Example:
+```php
+use Rubix\ML\Clusterers\Seeders\KMC2
+use Rubix\ML\Kernels\Distance\Euclidean;
+
+$seeder = new KMC2(200, new Euclidean());
+```
+
+#### References:
+>- O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.
 
 ### Plus Plus
  This seeder attempts to maximize the likelihood of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
