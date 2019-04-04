@@ -7,8 +7,8 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -20,7 +20,7 @@ use RuntimeException;
 
 class MeanShiftTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
@@ -35,12 +35,12 @@ class MeanShiftTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 32, 64], 20.),
+            'green' => new Blob([0, 128, 0], 40.),
+            'blue' => new Blob([64, 0, 255], 30.),
         ]);
 
-        $this->estimator = new MeanShift(10.0, new Euclidean(), 100, 1e-4);
+        $this->estimator = new MeanShift(50.0, new Euclidean(), 100, 1e-4);
 
         $this->metric = new VMeasure();
 

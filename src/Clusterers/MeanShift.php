@@ -4,12 +4,15 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -56,6 +59,13 @@ class MeanShift implements Learner, Verbose, Persistable
     protected $kernel;
 
     /**
+     * The maximum number of iterations to run until the algorithm terminates.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
      * The minimum change in the centroids necessary to continue training.
      *
      * @var float
@@ -63,11 +73,11 @@ class MeanShift implements Learner, Verbose, Persistable
     protected $minChange;
 
     /**
-     * The maximum number of iterations to run until the algorithm terminates.
+     * The cluster centroid seeder.
      *
-     * @var int
+     * @var \Rubix\ML\Clusterers\Seeders\Seeder|null
      */
-    protected $epochs;
+    protected $seeder;
 
     /**
      * The computed centroid vectors of the training data.
@@ -89,16 +99,18 @@ class MeanShift implements Learner, Verbose, Persistable
 
     /**
      * @param float $radius
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
+     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius,
         ?Distance $kernel = null,
         int $epochs = 100,
-        float $minChange = 1e-4
+        float $minChange = 1e-4,
+        ?Seeder $seeder = null
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
@@ -120,6 +132,7 @@ class MeanShift implements Learner, Verbose, Persistable
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->seeder = $seeder;
     }
 
     /**
@@ -191,27 +204,39 @@ class MeanShift implements Learner, Verbose, Persistable
                     'kernel' => $this->kernel,
                     'epochs' => $this->epochs,
                     'min_change' => $this->minChange,
+                    'seeder' => $this->seeder,
                 ]));
         }
 
-        $centroids = $previous = $dataset->samples();
+        $samples = $dataset->samples();
+
+        if ($this->seeder) {
+            $k = (int) round(0.5 * $dataset->numRows());
+
+            $centroids = $this->seeder->seed($dataset, $k);
+        } else {
+            $centroids = $samples;
+        }
+
+        $previous = $centroids;
 
         $this->steps = [];
-
+ 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($centroids as $i => &$centroid) {
-                foreach ($dataset as $sample) {
-                    $distance = $this->kernel->compute($sample, $centroid);
+                [$neighbors, $distances] = $this->range($centroid, $samples, $this->radius);
 
-                    if ($distance > $this->radius) {
-                        continue 1;
-                    }
+                $step = Matrix::quick($neighbors)
+                    ->transpose()
+                    ->mean()
+                    ->asArray();
 
-                    foreach ($centroid as $column => &$mean) {
-                        $weight = exp(-($distance ** 2 / $this->delta));
+                $mu2 = Stats::mean($distances) ** 2;
 
-                        $mean = ($weight * $sample[$column]) / $weight;
-                    }
+                $weight = exp(-$mu2 / $this->delta);
+
+                foreach ($centroid as $column => &$mean) {
+                    $mean = ($weight * $step[$column]) / $weight;
                 }
 
                 foreach ($centroids as $j => $neighbor) {
@@ -227,7 +252,7 @@ class MeanShift implements Learner, Verbose, Persistable
                 }
             }
 
-            $shift = $this->centroidShift($previous);
+            $shift = $this->centroidShift($centroids, $previous);
 
             $this->steps[] = $shift;
 
@@ -296,16 +321,41 @@ class MeanShift implements Learner, Verbose, Persistable
     }
 
     /**
+     * The the neighbors within range of a sample.
+     *
+     * @param array $sample
+     * @param array $samples
+     * @param float $radius
+     * @return array
+     */
+    protected function range(array $sample, array $samples, float $radius) : array
+    {
+        $neighbors = $distances = [];
+
+        foreach ($samples as $neighbor) {
+            $distance = $this->kernel->compute($sample, $neighbor);
+
+            if ($distance <= $this->radius) {
+                $neighbors[] = $neighbor;
+                $distances[] = $distance;
+            }
+        }
+
+        return [$neighbors, $distances];
+    }
+
+    /**
      * Calculate the magnitude (l1) of centroid shift from the previous epoch.
      *
+     * @param array $current
      * @param array $previous
      * @return float
      */
-    protected function centroidShift(array $previous) : float
+    protected function centroidShift(array $current, array $previous) : float
     {
         $shift = 0.;
 
-        foreach ($this->centroids as $cluster => $centroid) {
+        foreach ($current as $cluster => $centroid) {
             $prevCentroid = $previous[$cluster];
 
             foreach ($centroid as $column => $mean) {
