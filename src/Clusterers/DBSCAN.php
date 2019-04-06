@@ -78,7 +78,7 @@ class DBSCAN implements Estimator
         int $maxLeafSize = 30
     ) {
         if ($radius <= 0.) {
-            throw new InvalidArgumentException('Cluster radius must be'
+            throw new InvalidArgumentException('Neighbor radius must be'
                 . " greater than 0, $radius given.");
         }
 

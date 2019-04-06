@@ -10,7 +10,7 @@ A high-level machine learning library that allows you to build programs that lea
 - **Open source** and free to use commercially
 
 ## Installation
-Install Rubix ML using Composer:
+Install Rubix ML using [Composer](https://getcomposer.org/):
 ```sh
 $ composer require rubix/ml
 ```
@@ -21,7 +21,7 @@ $ composer require rubix/ml
 #### Optional
 
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
-- [GD extension](https://php.net/manual/en/book.image.php) for image vectorization
+- [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting models to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
@@ -106,6 +106,7 @@ $ composer require rubix/ml
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
 		- [HTML Stripper](#html-stripper)
+		- [Image Resizer](#image-resizer)
 		- [Image Vectorizer](#image-vectorizer)
 		- [Interval Discretizer](#interval-discretizer)
 		- [L1 Normalizer](#l1-normalizer)
@@ -148,24 +149,24 @@ $ composer require rubix/ml
 			- [Huber Loss](#huber-loss)
 			- [Least Squares](#least-squares)
 			- [Relative Entropy](#relative-entropy)
-        - [Initializers](#initializers)
-            - [He](#he)
-            - [Le Cun](#le-cun)
-            - [Normal](#normal)
+	    - [Initializers](#initializers)
+			- [He](#he)
+			- [Le Cun](#le-cun)
+		    - [Normal](#normal)
 			- [Uniform](#uniform)
-            - [Xavier 1](#xavier-1)
-            - [Xavier 2](#xavier-2)
+		    - [Xavier 1](#xavier-1)
+		     - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
 				- [Placeholder 1D](#placeholder-1d)
 			- [Hidden Layers](#hidden-layers)
-      	- [Activation](#activation)
+		      	- [Activation](#activation)
 				- [Alpha Dropout](#alpha-dropout)
 				- [Batch Norm](#batch-norm)
 				- [Dense](#dense)
 				- [Dropout](#dropout)
 				- [Noise](#noise)
-        - [PReLU](#prelu)
+		        - [PReLU](#prelu)
 			- [Output Layers](#output-layers)
 				- [Binary](#Binary)
 				- [Continuous](#continuous)
@@ -252,7 +253,7 @@ $ composer require rubix/ml
 - [FAQ](#faq)
 	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
 	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
-    - [What is a Tuple?](#what-is-a-tuple)
+	- [What is a Tuple?](#what-is-a-tuple)
 	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
 	- [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
@@ -344,7 +345,7 @@ We can verify that the learner has been trained by calling the `trained()` metho
 var_dump($estimator->trained());
 ```
 
-#### Output:
+**Output:**
 
 ```sh
 bool(true)
@@ -367,7 +368,7 @@ $predictions = $estimator->predict($dataset);
 var_dump($predictions);
 ```
 
-#### Output:
+**Output:**
 
 ```sh
 array(5) {
@@ -397,7 +398,7 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 var_dump($score);
 ```
 
-#### Output:
+**Output:**
 
 ```sh
 float(0.945)
@@ -462,7 +463,7 @@ Return the *last* **n** rows of data in a new dataset object:
 public tail(int $n = 10) : self
 ```
 
-#### Example:
+**Example:**
 ```php
 // Return the sample matrix
 $samples = $dataset->samples();
@@ -535,7 +536,7 @@ Batch the dataset into subsets of **n** rows per batch:
 public batch(int $n = 50) : array
 ```
 
-#### Example:
+**Example:**
 ```php
 // Remove the first 5 rows and return them in a new dataset
 $subset = $dataset->take(5);
@@ -567,7 +568,7 @@ Generate a random *weighted* subset with replacement of size **n**:
 public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```
 
-#### Example:
+**Example:**
 ```php
 // Randomize and split the dataset into two subsets
 [$left, $right] = $dataset->randomize()->split(0.8);
@@ -583,7 +584,7 @@ To filter a Dataset by a feature column:
 public filterByColumn(int $index, callable $fn) : self
 ```
 
-#### Example:
+**Example:**
 ```php
 $tallPeople = $dataset->filterByColumn(2, function ($value) {
 	return $value > 178.5;
@@ -597,7 +598,7 @@ To sort a dataset in place by a specific feature column:
 public sortByColumn(int $index, bool $descending = false) : self
 ```
 
-#### Example:
+**Example:**
 ```php
 var_dump($dataset->samples());
 
@@ -606,7 +607,7 @@ $dataset->sortByColumn(2, false);
 var_dump($dataset->samples());
 ```
 
-#### Output:
+**Output:**
 ```sh
 array(3) {
     [0]=> array(3) {
@@ -663,7 +664,7 @@ You can apply a fitted [Transformer](#transformers) to a Dataset directly passin
 public apply(Transformer $transformer) : void
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
@@ -677,14 +678,14 @@ $dataset->apply($transformer);
 ### Labeled
 For *supervised* Estimators you will need to train it with a Labeled dataset consisting of samples with the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label as well.
 
-#### Parameters:
+**Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
 
-#### Additional Methods:
+**Additional Methods:**
 Build a new labeled dataset with validation:
 ```php
 public static build(array $samples = [], array $labels = []) : self
@@ -763,7 +764,7 @@ Return *k* equal size subsets of the dataset:
 public stratifiedFold($k = 10) : array
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Datasets\Labeled;
 
@@ -807,7 +808,7 @@ var_dump($label);
 var_dump($outcomes);
 ```
 
-#### Output:
+**Output:**
 ```sh
 array(4) {
     [0]=> string(5) "female"
@@ -824,7 +825,7 @@ array(2) {
 }
 ```
 
-#### Example:
+**Example:**
 ```php
 // Fold the dataset into 5 equal size stratified subsets
 $folds = $dataset->stratifiedFold(5);
@@ -839,14 +840,14 @@ $strata = $dataset->stratify();
 ### Unlabeled
 Unlabeled datasets can be used to train *unsupervised* Estimators and for feeding data into an Estimator to make predictions.
 
-#### Parameters:
+**Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | validate | true | bool | Should we validate the input? |
 
 
-#### Additional Methods:
+**Additional Methods:**
 Build a new unlabeled dataset with validation:
 ```php
 public static build(array $samples = []) : self
@@ -862,7 +863,7 @@ Build a dataset with an iterator:
 public static fromIterator(iterable $samples) : self
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
@@ -879,7 +880,7 @@ $dataset = new Unlabeled($samples, true);  // Use the full constructor
 
 ---
 ### Estimators
-Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on their training. Estimators that can be trained using data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
+Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on data. Estimators that can be trained with data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
 
 To make predictions, pass the estimator a dataset object filled with samples you'd like to predict:
 ```php
@@ -901,7 +902,7 @@ Return whether or not the learner has been trained:
 public trained() : bool
 ```
 
-#### Example:
+**Example:**
 ```php
 $estimator->train($dataset);
 ```
@@ -916,7 +917,7 @@ You can partially train an online estimator by:
 public partial(Dataset $dataset) : void
 ```
 
-#### Example:
+**Example:**
 ```php
 $folds = $dataset->fold(3);
 
@@ -938,14 +939,14 @@ Return the probability estimates of a prediction:
 public proba(Dataset $dataset) : array
 ```
 
-#### Example:
+**Example:**
 ```php
 $probabilities = $estimator->proba($dataset);  
 
 var_dump($probabilities);
 ```
 
-#### Output:
+**Output:**
 ```sh
 array(2) {
 	[0] => array(2) {
@@ -967,14 +968,14 @@ To rank the dataset by an artitrary scoring function:
 public rank(Dataset $dataset) : array
 ```
 
-#### Example:
+**Example:**
 ```php
 $scores = $estimator->rank($dataset);
 
 var_dump($scores);
 ```
 
-#### Output:
+**Output:**
 ```sh
 array(3) {
   [0]=> float(1.80)
@@ -991,12 +992,15 @@ To set the logger pass in any PSR-3 compatible logger instance:
 public setLogger(LoggerInterface $logger) : void
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Other\Loggers\Screen;
 
 $estimator->setLogger(new Screen('sentiment'));
 ```
+
+### Persistable
+If an estimator implements Persistable then it can be saved and loaded via any one of the [Persisters](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
 
 ---
 ### Anomaly Detectors
@@ -1005,37 +1009,43 @@ Anomaly detection is the process of identifying samples that do not conform to a
 ### Isolation Forest
 An ensemble detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
-##### Interfaces: Learner, Ranking, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | estimators | 300 | int | The number of estimators to train in the ensemble. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\IsolationForest;
 
 $estimator = new IsolationForest(300, 0.01, 0.2);
 ```
 
-#### References:
+**References:**
 >- F. T. Liu et al. (2008). Isolation Forest.
 >- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
 
 ### K-d LOF
 A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from fast nearest neighbors search.
 
-##### Interfaces: Learner, Ranking, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
@@ -1043,7 +1053,8 @@ A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) 
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the height of the tree:
 ```php
 public height() : int
@@ -1054,7 +1065,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\KDLOF;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -1062,26 +1074,31 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 ```
 
-#### References:
+**References:**
+
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### Local Outlier Factor
 Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its *k* nearest neighbors. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
 
-##### Interfaces: Learner, Online, Ranking, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -1089,33 +1106,39 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
 ```
 
-#### References:
+**References:**
+
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
 ### LODA
 Lightweight Online Detector of Anomalies uses sparse random projection vectors to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
 
-##### Interfaces: Learner, Online, Ranking, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | threshold | 5.5 | float | The threshold anomaly score to be flagged as an outlier. |
 | 2 | k | 100 | int | The number of random projections and histograms. |
 | 3 | bins | Auto | int | The number of bins for each equi-width histogram. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\LODA;
 
 $estimator = new LODA(3.5, 250, 6);
 ```
 
-#### References:
+**References:**
+
 >- T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
 >- L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
 
@@ -1124,10 +1147,12 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | nu | 0.1 | float | An upper bound on the percentage of margin errors and a lower bound on the percentage of support vectors. |
@@ -1136,10 +1161,12 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 5 | cache size | 100. | float | The size of the kernel cache in MB. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\OneClassSVM;
 use Rubix\ML\Kernels\SVM\Polynomial;
@@ -1147,22 +1174,25 @@ use Rubix\ML\Kernels\SVM\Polynomial;
 $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 ```
 
-#### References:
+**References:**
+
 >- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 
 ### Robust Z Score
 A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
 | 2 | threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the median of each feature column in the training set:
 ```php
@@ -1174,14 +1204,16 @@ Return the median absolute deviation (MAD) of each feature column in the trainin
 public mads() : ?array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\AnomalyDetection\RobustZScore;
 
 $estimator = new RobustZScore(1.5, 3.0);
 ```
 
-#### References:
+**References:**
+
 >- P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.
 
 ---
@@ -1193,10 +1225,12 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Depends on base learner
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Depends on base learner
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
@@ -1205,7 +1239,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
 | 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the calculated weight values of the last trained dataset:
 ```php
@@ -1222,7 +1256,8 @@ Return the training error at each epoch:
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
@@ -1230,17 +1265,20 @@ use Rubix\ML\Classifiers\ExtraTreeClassifier;
 $estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-2);
 ```
 
-#### References:
+**References:**
+
  >- Y. Freund et al. (1996). A Decision-theoretic Generalization of On-line Learning and an Application to Boosting.
  >- J. Zhu et al. (2006). Multi-class AdaBoost.
 
 ### Classification Tree
 A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
 
-##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
@@ -1249,7 +1287,8 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -1262,10 +1301,11 @@ public height() : int
 
 Return the balance of the tree:
 ```php
-public
+public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
 
@@ -1277,23 +1317,27 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
 
-##### Interfaces: Learner, Ensemble, Probabilistic, Persistable
-##### Compatibility: Depends on base learners
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Depends on the base learners
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | experts | | array | An array of classifier instances that comprise the committee. |
 | 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
 
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the normalized influence scores of each estimator in the committee:
 ```php
 public influences() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\CommitteeMachine;
 use Rubix\ML\Classifiers\RandomForest;
@@ -1314,18 +1358,22 @@ $estimator = new CommitteeMachine([
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Categorical, Continuous, Resource
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous, Resource
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | strategy | Popularity Contest | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Other\Strategies\PopularityContest;
@@ -1337,10 +1385,12 @@ $estimator = new DummyClassifier(new PopularityContest());
 An *Extremely Randomized* Classification Tree - these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
 
-##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
@@ -1349,7 +1399,8 @@ An *Extremely Randomized* Classification Tree - these trees differ from standard
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -1365,28 +1416,32 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
 $estimator = new ExtraTreeClassifier(50, 3, 0.10, 4, 1e-3);
 ```
 
-#### References:
+**References:**
+
 >- P. Geurts et al. (2005). Extremely Randomized Trees.
 
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
 
-##### Interfaces: Learner, Online, Probabilistic, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | priors | Auto | array | The user-defined class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the class prior probabilities:
 ```php
@@ -1403,7 +1458,8 @@ Return the running variance of each feature column for each class:
 public variances() : ?array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\GaussianNB;
 
@@ -1413,16 +1469,19 @@ $estimator = new GaussianNB([
 ]);
 ```
 
-#### References:
+**References:**
+
 >- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ### K-d Neighbors
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
-##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
@@ -1430,7 +1489,8 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the height of the tree:
 ```php
 public height() : int
@@ -1441,7 +1501,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -1454,20 +1515,24 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 
-##### Interfaces: Learner, Online, Probabilistic, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -1478,10 +1543,12 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 ### Logistic Regression
 A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes.
 
-##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
@@ -1491,7 +1558,7 @@ A type of linear classifier that uses the logistic (*sigmoid*) function to estim
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the average loss of a sample at each epoch of training:
 ```php
@@ -1503,7 +1570,8 @@ Return the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifers\LogisticRegression;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -1517,10 +1585,12 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
@@ -1534,7 +1604,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 9 | metric | F1 Score | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the average loss of a sample at each epoch of training:
 ```php
@@ -1551,7 +1621,8 @@ Returns the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -1575,22 +1646,25 @@ $estimator = new MultiLayerPerceptron([
 ], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
-#### References:
+**References:**
+
 >- G. E. Hinton. (1989). Connectionist learning procedures.
 
 ### Naive Bayes
 Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated).
 
-##### Interfaces: Learner, Online, Probabilistic, Persistable
-##### Compatibility: Categorical
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing to apply to the probabilities. |
 | 2 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the class prior probabilities:
 ```php
@@ -1602,7 +1676,8 @@ Return the negative log probabilities of each feature given each class label:
 public probabilities() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\NaiveBayes;
 
@@ -1617,10 +1692,12 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
 
-##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
@@ -1628,7 +1705,8 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the height of the tree:
 ```php
 public height() : int
@@ -1639,7 +1717,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\RadiusNeighbors;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -1650,20 +1729,24 @@ $estimator = new RadiusNeighbors(50.0, new Manhattan(), false, 30);
 ### Random Forest
 Ensemble classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap* set) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
 
-##### Interfaces: Learner, Probabilistic, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | Classification Tree | object | The base tree estimator. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
@@ -1671,17 +1754,20 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new RandomForest(ClassificationTree(10), 400, 0.1);
 ```
 
-#### References:
+**References:**
+
 >- L. Breiman. (2001). Random Forests.
 >- L. Breiman et al. (2005). Extremely Randomized Trees.
 
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a Softmax output layer.
 
-##### Interfaces: Learner, Online, Probabilistic, Verbose, Persistable
-##### Compatibility: Continous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
@@ -1691,7 +1777,8 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -1702,7 +1789,8 @@ Return the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
@@ -1716,10 +1804,12 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
@@ -1728,10 +1818,12 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 | 4 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 5 | cache size | 100. | float | The size of the kernel cache in MB. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
@@ -1739,7 +1831,8 @@ use Rubix\ML\Kernels\SVM\Linear;
 $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
 ```
 
-#### References:
+**References:**
+
 >- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 
 ---
@@ -1751,22 +1844,27 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
-##### Interfaces: None
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | radius | 0.5 | float | The maximum radius between two points for them to be considered in the same cluster. |
+| 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
+> **Note**: The smaller the radius, the tighter the clusters will be.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Kernels\Distance\Diagonal;
@@ -1774,16 +1872,19 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 ```
 
-#### References:
+**References:**
+
 >- M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.
 
 ### Fuzzy C Means
 Distance-based soft clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
-##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | c | | int | The number of target clusters. |
@@ -1793,7 +1894,7 @@ Distance-based soft clusterer that allows samples to belong to multiple clusters
 | 5 | min change | 10. | float | The minimum change in the inertia for the algorithm to continue training. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the *c* computed centroids of the training set:
 ```php
@@ -1805,7 +1906,8 @@ Returns the inertia at each epoch from  the last round of training:
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -1814,16 +1916,19 @@ use Rubix\ML\Clusterers\Seeders\Random;
 $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 400, 1., new Random());
 ```
 
-#### References:
+**References:**
+
 >- J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.
 
 ### Gaussian Mixture
 A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow both the centers (*means*) *and* the radii (*variances*) to be learned as well.
 
-##### Interfaces: Learner, Probabilistic, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
@@ -1831,7 +1936,7 @@ A Gaussian Mixture model (GMM) is a probabilistic model for representing the pre
 | 3 | min change | 1e-3 | float | The minimum change in the components necessary for the algorithm to continue training. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the Guassian components. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the cluster prior probabilities based on their representation over all training samples:
 ```php
@@ -1848,7 +1953,8 @@ Return the variance of each feature column for each cluster:
 public variances() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Clusterers\Seeders\KMC2;
@@ -1856,17 +1962,20 @@ use Rubix\ML\Clusterers\Seeders\KMC2;
 $estimator = new GaussianMixture(5, 1e-4, 100, new KMC2(50));
 ```
 
-#### References:
+**References:**
+
 >- A. P. Dempster et al. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm.
 >- J. Blomer et al. (2016). Simple Methods for Initializing the EM Algorithm for Gaussian Mixture Models.
 
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
 
-##### Interfaces: Learner, Online, Persistable, Verbose
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Persistable](#persistable), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | | int | The number of target clusters. |
@@ -1876,7 +1985,8 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | 5 | min change | 10. | float | The minimum change in the inertia for training to continue. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the *k* computed centroids of the training set:
 ```php
 public centroids() : array
@@ -1892,7 +2002,8 @@ Return the value of the inertial function at each epoch from the last round of t
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
@@ -1901,26 +2012,31 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus());
 ```
 
-#### References:
+**References:**
+
 >- D. Sculley. (2010). Web-Scale K-Means Clustering.
 
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
-##### Interfaces: Learner, Verbose, Persistable
-##### Compatibility: Continuous
+> **Note**: Seeding Mean Shift using a [Seeder](#seeders) can often speed up convergence of large datasets. The default is to initialize all training samples as seeds.
 
-#### Parameters:
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
+
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | | float | The radius of each cluster centroid. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 | 3 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
-| 4 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| 5 | epochs | 100 | int | The maximum number of training rounds to execute. |
+| 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
+| 5 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
+| 6 | seeder | None | object | The seeder used to initialize the cluster centroids. |
 
-
-#### Additional Methods:
+**Additional Methods:**
 
 Return the centroids computed from the training set:
 ```php
@@ -1932,49 +2048,57 @@ Returns the amount of centroid shift during each epoch of training:
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 
-$estimator = new MeanShift(3.0, new Diagonal(), 30, 1e-6, 2000);
+$estimator = new MeanShift(3.0, new Diagonal(), 30, 2000, 1e-6, new KMC2());
 ```
 
-#### References:
+**References:**
+
 >- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
 
 ### Seeders
-Seeders are responsible for initializing the cluster centroids of certain learners.
+Seeders are responsible for initializing k starting clusters used by certain learners such as [KMeans](#k-means), [Mean Shift](#mean-shift), and [Gaussian Mixture](#gaussian-mixture).
 
 ### K-MC2
-This is a fast [Plus Plus](#plus-plus) approximator that replaces the brute force method with substantially faster Markov Chain Monte Carlo (MCMC) sampling with comparable performance.
+This is a fast [Plus Plus](#plus-plus) approximator that replaces the brute force method with a substantially faster Markov Chain Monte Carlo (MCMC) sampling method with comparable performance.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | m | 50 | int | The number of candidate nodes in the Markov Chain. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 
-#### Example:
+**Example:**
+
 ```php
-use Rubix\ML\Clusterers\Seeders\KMC2
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Kernels\Distance\Euclidean;
 
 $seeder = new KMC2(200, new Euclidean());
 ```
 
-#### References:
+**References:**
+
 >- O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.
 
 ### Plus Plus
  This seeder attempts to maximize the likelihood of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -1982,17 +2106,20 @@ use Rubix\ML\Kernels\Distance\Minkowski;
 $seeder = new PlusPlus(new Minkowski(5.0));
 ```
 
-#### References:
+**References:**
+
 >- D. Arthur et al. (2006). k-means++: The Advantages of Careful Seeding.
 >- A. Stetco et al. (2015). Fuzzy C-means++: Fuzzy C-means with effective seeding initialization.
 
 ### Random
 Completely random selection of k seeds from the given dataset.
 
-#### Parameters:
+**Parameters:**
+
 This seeder does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Clusterers\Seeders\Random;
 
@@ -2006,10 +2133,12 @@ Manifold learning is a type of non-linear dimensionality reduction used primaril
 ### t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
-##### Interfaces: Verbose
-##### Compatibility: Continous
+**Interfaces:** [Estimator](#estimators), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Continous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
@@ -2021,14 +2150,15 @@ Manifold learning is a type of non-linear dimensionality reduction used primaril
 | 7 | min gradient | 1e-8 | float | The minimum gradient necessary to continue embedding. |
 | 8 | window | 3 | int | The number of most recent epochs to consider when determining an early stop. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the magnitudes of the gradient at each epoch from the last embedding:
 ```php
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubi\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;
@@ -2036,21 +2166,24 @@ use Rubix\ML\Kernels\Manhattan;
 $embedder = new TSNE(2, 30, 12., 10., new Manhattan(), 500, 1e-6, 5);
 ```
 
-#### References:
+**References:**
+
 >- L. van der Maaten et al. (2008). Visualizing Data using t-SNE.
 >- L. van der Maaten. (2009). Learning a Parametric Embedding by Preserving Local Structure.
 
 ---
 ### Regressors
-Regressors are used to predict continuous real-valued outcomes.
+Regressors predict continuous (*real-valued*) outcomes. In contrast to a [Classifier](#classifiers), which predicts one of *k* discrete outcomes, regressors output a single numerical value which has the potential to range from -∞ to ∞ but will often fall within the range of the training labels.
 
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
 
-##### Interfaces: Learner, Online, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
@@ -2060,7 +2193,7 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network]
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the average loss of a sample at each epoch of training:
 ```php
@@ -2072,7 +2205,8 @@ Return the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -2084,18 +2218,22 @@ $estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5));
 ### Dummy Regressor
 Regressor that guesses output values based on a user-defined [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Categorical, Continuous, Resource
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous, Resource
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | strategy | Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\BlurryPercentile;
@@ -2108,10 +2246,12 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-##### Interfaces: Learner, Verbose, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
@@ -2120,7 +2260,8 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 | 4 | max features | Auto | int | The number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -2136,25 +2277,29 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### References:
->- P. Geurts et al. (2005). Extremely Randomized Trees.
+**Example:**
 
-#### Example:
 ```php
 use Rubix\ML\Classifiers\ExtraTreeRegressor;
 
 $estimator = new ExtraTreeRegressor(30, 3, 0.05, 20, 1e-4);
 ```
 
+**References:**
+
+>- P. Geurts et al. (2005). Extremely Randomized Trees.
+
 ### Gradient Boost
 Gradient Boost is a stage-wise additive model that uses a Gradient Descent boosting paradigm for training  boosters (Regression Trees) to correct the error residuals of a *weak* base learner.
 
 > **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
-##### Interfaces: Learner, Ensemble, Verbose, Persistable
-##### Compatibility: Depends on base learner
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ensemble](#ensemble), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Depends on base learner
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | booster | Regression Tree | object | The regressor that will fix up the error residuals of the base learner. |
@@ -2165,14 +2310,15 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 | 6 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before early stopping. |
 | 7 | base | Dummy Regressor | object | The *weak* learner to be boosted. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the training error at each epoch:
 ```php
 public steps() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\GradientBoost;
 use Rubix\ML\Regressors\DummyRegressor;
@@ -2182,16 +2328,19 @@ use Rubix\ML\Other\Strategies\Mean;
 $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3, new DummyRegressor(new Mean()));
 ```
 
-#### References:
+**References:**
+
 >- J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 
 ### K-d Neighbors Regressor
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
@@ -2199,7 +2348,8 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the height of the tree:
 ```php
 public height() : int
@@ -2210,7 +2360,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -2223,20 +2374,24 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
-##### Interfaces: Learner, Online, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
@@ -2249,10 +2404,12 @@ A multi layer feedforward [Neural Network](#neural-network) with a continuous ou
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-##### Interfaces: Learner, Online, Verbose, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
@@ -2266,7 +2423,7 @@ A multi layer feedforward [Neural Network](#neural-network) with a continuous ou
 | 9 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the average loss of a sample at each epoch of training:
 ```php
@@ -2283,7 +2440,8 @@ Returns the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -2302,7 +2460,8 @@ $estimator = new MLPRegressor([
 ], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
 ```
 
-#### References:
+**References:**
+
 >- G. E. Hinton. (1989). Connectionist learning procedures.
 
 ### Radius Neighbors Regressor
@@ -2310,10 +2469,12 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
@@ -2321,7 +2482,8 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the height of the tree:
 ```php
 public height() : int
@@ -2332,7 +2494,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\Kernels\Distance\Diagonal;
@@ -2345,10 +2508,12 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-##### Interfaces: Learner, Verbose, Persistable
-##### Compatibility: Categorical, Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
@@ -2357,7 +2522,8 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 4 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -2373,7 +2539,8 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
@@ -2383,15 +2550,17 @@ $estimator = new RegressionTree(30, 2, 35., null, 1e-4);
 ### Ridge
 L2 penalized least squares linear regression solved using closed-form equation.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continuous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1.0 | float | The L2 regularization penalty amount to be added to the weight coefficients. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the weights of the model:
 ```php
@@ -2403,7 +2572,7 @@ Return the bias parameter:
 public bias() : float|null
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Regressors\Ridge;
 
@@ -2415,10 +2584,12 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-##### Interfaces: Learner, Persistable
-##### Compatibility: Continous
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Continous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
@@ -2428,10 +2599,12 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 | 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cache size | 100. | float | The size of the kernel cache in MB. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
@@ -2439,7 +2612,8 @@ use Rubix\ML\Kernels\SVM\Linear;
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
 ```
 
-#### Refernces:
+**References**
+
 >- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 >- A. Smola et al. (2003). A Tutorial on Support Vector Regression.
 
@@ -2452,20 +2626,24 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 
 > **Note**: Bootstrap Aggregator does not work with clusterers or embedders.
 
-##### Interfaces: Learner | Persistable
-##### Compatibility: Depends on base learner
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
-#### Parameters:
+**Compatibility:** Depends on base learner
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | | object | The base estimator to be used in the ensemble. |
 | 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
 | 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This meta estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
@@ -2473,7 +2651,8 @@ use Rubix\ML\Regressors\RegressionTree;
 $estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
 ```
 
-#### References:
+**References:**
+
 >- L. Breiman. (1996). Bagging Predictors.
 
 ### Grid Search
@@ -2481,10 +2660,12 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 > **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
 
-##### Interfaces: Learner, Persistable, Verbose
-##### Compatibility: Depends on base learner
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Depends on the base learner
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | | string | The fully qualified class name of the base Estimator. |
@@ -2493,7 +2674,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
 | 5 | retrain | true | bool | Should we retrain using the best parameter combination and entire dataset? |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return every parameter combination from the last grid search:
 ```php
@@ -2515,7 +2696,8 @@ Return the underlying base estimator:
 public estimator() : Estimator
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -2536,17 +2718,20 @@ A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of est
 
 > **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
 
-##### Interfaces: Learner, Probabilistic, Persistable, Verbose
-##### Compatibility: Depends on base learners
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Depends on the base learners
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | orchestra | | array | The estimator instances that comprise the orchestra section of the ensemble. |
 | 2 | conductor | | object | The estimator that will weight each prediction and give the final output. |
 | 3 | ratio | 0.8 | float | The ratio of samples used to train the orchestra (the remaining are used to train the conductor).
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return an array of estimators comprising the orchestra part of the ensemble:
 ```php
 public orchestra() : array
@@ -2557,7 +2742,8 @@ Return the conductor estimator:
 public conductor() : Estimator
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\ModelOrchestra;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -2575,16 +2761,19 @@ $estimator = new ModelOrchestra([
 ### Persistent Model
 It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
 
-##### Interfaces: Learner, Probabilistic, Verbose
-##### Compatibility: Depends on base learner
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Depends on the base learner
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | base | | object | An instance of the base estimator to be persisted. |
 | 2 | persister | | object | The persister object used to store the model data. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Save the persistent model to storage:
 ```php
 public save() : void
@@ -2600,7 +2789,8 @@ Prompt the user to save the model or not via stdout:
 public prompt() : void
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\LogisticRegression;
@@ -2618,20 +2808,24 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 
 > **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
 
-##### Interfaces: Learner, Online, Persistable, Verbose
-##### Compatibility: Depends on base learner and transformers
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
-#### Parameters:
+**Compatibility:** Depends on base learner and transformers
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
 | 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
 | 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This meta estimator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Pipeline;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
@@ -2707,50 +2901,56 @@ $transformer->update($folds[2]);
 ### Dense Random Projector
 The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to reduce the dimensionality of a dataset by projecting it onto a vector space of target dimensionality.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous only
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Transformers\DenseRandomProjector;
 
 $transformer = new DenseRandomProjector(50);
 ```
 
-#### References:
+**References:**
+
 >- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
 
 ### Gaussian Random Projector
 A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous only
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\GaussianRandomProjector;
 
@@ -2760,63 +2960,97 @@ $transformer = new GaussianRandomProjector(100);
 ### HTML Stripper
 Removes any HTML tags that may be in the text of a categorical variable.
 
-##### Interfaces: None
-##### Compatibility: Categorical
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\HTMLStripper;
 
 $transformer = new HTMLStripper();
 ```
 
-### Image Vectorizer
-Image Vectorizer takes images (as PHP Resources) and converts them into a flat vector of raw color channel data. Scaling and cropping is handled automatically by [Intervention Image](http://image.intervention.io/) for PHP.
+### Image Resizer
+The Image Resizer scales and crops images to a user specified width, height, and color depth.
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-##### Interfaces: None
-##### Compatibility: Resource (Images)
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Resource (GD Image)
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | size | [32, 32] | array | A tuple of width and height values denoting the resolution of the encoding. |
-| 2 | rgb | true | bool | True to use RGB color channel data and false to use greyscale. |
-| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+| 1 | width | 32 | int | The width of the transformed image. |
+| 2 | heights | 32 | int | The height of the transformed image. |
+| 3 | greyscale | false | bool | Should the image be converted to greyscale? |
+| 4 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
-#### Additional Methods:
+**Additional Methods:**
 
-Return the dimensionality of the vector that gets encoded:
+This transformer does not have any additional methods.
+
+**Example:**
+
 ```php
-public dimensions() : int
+use Rubix\ML\Transformers\ImageResizer;
+
+$transformer = new ImageResizer(28, 28, false, 'gd');
 ```
 
-#### Example:
+### Image Vectorizer
+Image Vectorizer takes images (as PHP Resources) and converts them into a flat vector of raw color channel data.
+
+> **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+
+**Interfaces:** Transformer
+
+**Compatibility:** Resource (Images)
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | channels | 3 | int | The channel depth i.e the number of rgba channels to encode starting with red. |
+
+**Additional Methods:**
+
+This transformer does not have any additional methods.
+
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\ImageVectorizer;
 
-$transformer = new ImageVectorizer([28, 28], true, 'gd');
+$transformer = new ImageVectorizer(3);
 ```
 
 ### Interval Discretizer
 This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | bins | 5 | int | The number of bins (discrete features) per continuous feature column. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the possible categories of each feature column:
 ```php
@@ -2828,7 +3062,8 @@ Return the intervals of each continuous feature column calculated during fitting
 public intervals() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\IntervalDiscretizer;
 
@@ -2838,16 +3073,20 @@ $transformer = new IntervalDiscretizer(10);
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-##### Interfaces: None
-##### Compatibility: Continuous only
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\L1Normalizer;
 
@@ -2857,16 +3096,20 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-##### Interfaces: None
-##### Compatibility: Continuous only
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\L2Normalizer;
 
@@ -2876,18 +3119,22 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](#what-is-a-tuple).
 
-##### Interfaces: None
-##### Compatiblity: Depends on function
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility** Depends on user function
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | lambda | | callable | The lambda function to run over the sample matrix. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\LambdaFunction;
 
@@ -2903,15 +3150,18 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 ### Linear Discriminant Analysis
 A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or best separates two or more classes.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous only
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the amount of variance that has been preserved by the transformation:
 ```php
 public explainedVar() : ?float
@@ -2927,7 +3177,8 @@ Return the percentage of information lost due to the transformation:
 public lossiness() : ?float
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\LinearDiscriminantAnalysis;
 
@@ -2937,19 +3188,23 @@ $transformer = new LinearDiscriminantAnalysis(20);
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-##### Interfaces: Stateful, Elastic
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful, Elastic
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the maximum absolute values for each feature column:
 ```php
 public maxabs() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\MaxAbsoluteScaler;
 
@@ -2959,16 +3214,19 @@ $transformer = new MaxAbsoluteScaler();
 ### Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-##### Interfaces: Stateful, Elastic
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful, Elastic
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | min | 0. | float | The minimum value of the transformed features. |
 | 2 | max | 1. | float | The maximum value of the transformed features. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the minimum values for each fitted feature column:
 ```php
 public minimums() : ?array
@@ -2979,7 +3237,8 @@ Return the maximum values for each fitted feature column:
 public maximums() : ?array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\MinMaxNormalizer;
 
@@ -2989,20 +3248,24 @@ $transformer = new MinMaxNormalizer(-5., 5.);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
 
-##### Interfaces: Stateful
-##### Compatibility: Categorical, Continuous
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Categorical, Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | placeholder | '?' | string or numeric | The placeholder value that denotes a missing value. |
 | 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
 | 3 | categorical strategy | K Most Frequent | object | The guessing strategy to employ for categorical feature columns. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Other\Strategies\BlurryPercentile;
@@ -3014,16 +3277,20 @@ $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new Popul
 ### Numeric String Converter
 Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
-##### Interfaces: None
-##### Compatibility: Categorical
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\NumericStringConverter;
 
@@ -3033,16 +3300,20 @@ $transformer = new NumericStringConverter();
 ### One Hot Encoder
 The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
-##### Interfaces: Stateful
-##### Compatibility: Categorical
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
@@ -3052,18 +3323,22 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomials up to and including the specified *degree* of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
 
-##### Interfaces: None
-##### Compatibility: Continuous only
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\PolynomialExpander;
 
@@ -3073,15 +3348,18 @@ $transformer = new PolynomialExpander(3);
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous only
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | None | int | The target number of dimensions to project onto. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the amount of variance that has been preserved by the transformation:
 ```php
 public explainedVar() : ?float
@@ -3097,29 +3375,33 @@ Return the percentage of information lost due to the transformation:
 public lossiness() : ?float
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\PrincipalComponentAnalysis;
 
 $transformer = new PrincipalComponentAnalysis(15);
 ```
 
-#### References:
+**References:**
+
 >- H. Abdi et al. (2010). Principal Component Analysis.
 
 ### Quartile Standardizer
 
 This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the medians calculated by fitting the training set:
 ```php
@@ -3131,7 +3413,8 @@ Return the interquartile ranges calculated during fitting:
 public iqrs() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\QuartileStandardizer;
 
@@ -3141,15 +3424,17 @@ $transformer = new QuartileStandardizer(true);
 ### Robust Standardizer
 This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the medians calculated by fitting the training set:
 ```php
@@ -3161,7 +3446,8 @@ Return the median absolute deviations calculated during fitting:
 public mads() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\RobustStandardizer;
 
@@ -3171,43 +3457,50 @@ $transformer = new RobustStandardizer(true);
 ### Sparse Random Projector
 The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous only
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Calculate the minimum dimensionality needed given total sample size and max distortion using the Johnson-Lindenstrauss lemma:
 ```php
 public static minDimensions(int $n, float $maxDistortion = 0.1) : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\SparseRandomProjector;
 
 $transformer = new SparseRandomProjector(30);
 ```
 
-#### References:
+**References:**
+
 >- D. Achlioptas. (2003). Database-friendly random projections: Johnson-Lindenstrauss with binary coins.
 
 ### Stop Word Filter
 Removes user-specified words from any categorical feature column including blobs of text.
 
-##### Interfaces: None
-##### Compatiblity: Categorical
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | stop words | | array | A list of stop words to filter out of each text feature. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
 ```php
@@ -3219,15 +3512,18 @@ $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ### Text Normalizer
 This transformer converts all text to lowercase and *optionally* removes extra whitespace.
 
-##### Interfaces: None
-##### Compatibility: Categorical
+**Interfaces:** Transformer
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | trim | false | bool | Should we trim excess whitespace? |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This transformer does not have any additional methods.
 
 ```php
@@ -3241,47 +3537,54 @@ $transformer = new TextNormalizer(true);
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
-##### Interfaces: Stateful, Elastic
-##### Compatiblity: Continuous only
+**Interfaces:** Transformer, Stateful, Elastic
 
-#### Parameters:
+**Compatibility:** Continuous only
+
+**Parameters:**
 This transformer does not have any parameters.
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the inverse document frequencies calculated during fitting:
 ```php
 public idfs() : ?array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\TfIdfTransformer;
 
 $transformer = new TfIdfTransformer();
 ```
 
-#### References:
+**References:**
+
 >- S. Robertson. (2003). Understanding Inverse Document Frequency: On theoretical arguments for IDF.
 
 ### Variance Threshold Filter
 A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold.
 
-##### Interfaces: Stateful
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | threshold | 0. | float | Feature columns with a variance greater than this threshold will be selected. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the columns that were selected during fitting:
 ```php
 public selected() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\VarianceThresholdFilter;
 
@@ -3291,17 +3594,19 @@ $transformer = new VarianceThresholdFilter(50);
 ### Word Count Vectorizer
 The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
-##### Interfaces: Stateful
-##### Compatibility: Categorical
+**Interfaces:** Transformer, Stateful
 
-#### Parameters:
+**Compatibility:** Categorical
+
+**Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
 | 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
 | 3 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return the fitted vocabulary i.e. the words that will be vectorized:
 ```php
 public vocabulary() : array
@@ -3312,7 +3617,8 @@ Return the size of the vocabulary:
 public size() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\WordCountVectorizer;
 use Rubix\ML\Other\Tokenizers\SkipGram;
@@ -3323,15 +3629,16 @@ $transformer = new WordCountVectorizer(10000, 3, new SkipGram());
 ### Z Scale Standardizer
 A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
 
-##### Interfaces: Stateful, Elastic
-##### Compatibility: Continuous
+**Interfaces:** Transformer, Stateful, Elastic
 
-#### Parameters:
+**Compatibility:** Continuous
+
+**Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the means calculated by fitting the training set:
 ```php
@@ -3348,14 +3655,16 @@ Return the standard deviations calculated during fitting:
 public stddevs() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $transformer = new ZScaleStandardizer(true);
 ```
 
-#### References:
+**References:**
+
 >- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ---
@@ -3370,28 +3679,33 @@ Activation Functions can be broken down into three classes - Sigmoidal (or *S* s
 ### ELU
 *Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be less than -1.0 when inactivated. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
 $activationFunction = new ELU(5.0);
 ```
 
-#### References:
+**References:**
+
 >- D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.
 
 ### Gaussian
 The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
 
-#### Parameters:
+**Parameters:**
+
 This activation Function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
 
@@ -3401,10 +3715,12 @@ $activationFunction = new Gaussian();
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
-#### Parameters:
+**Parameters:**
+
 This activation Function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 
@@ -3414,37 +3730,43 @@ $activationFunction = new HyperbolicTangent();
 ### ISRU
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1.0 | float | The parameter that controls the range of activation. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
 
 $activationFunction = new ISRU(2.0);
 ```
 
-#### References:
+**References:**
+
 >- B. Carlile et al. (2017). Improving Deep Learning by Inverse Square RootvLinear Units.
 
 ### Leaky ReLU
 Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | leakage | 0.1 | float | The amount of leakage as a ratio of the input value. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 
 $activationFunction = new LeakyReLU(0.3);
 ```
 
-#### References:
+**References:**
+
 >- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
 
 ### ReLU
@@ -3452,45 +3774,53 @@ Rectified Linear Units output only the positive part of the inputs.
 
 > **Note**: ReLUs are analogous to half-wave rectifiers in electrical engineering.
 
-#### Parameters:
+**Parameters:**
+
 This activation Function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
 $activationFunction = new ReLU();
 ```
 
-#### References:
+**References:**
+
 >- V. Nair et al. (2011). Rectified Linear Units Improve RestrictedvBoltzmann Machines.
 
 ### SELU
 Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | scale | 1.05070 | float | The factor to scale the output by. |
 | 2 | alpha | 1.67326 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 
 $activationFunction = new SELU(1.05070, 1.67326);
 ```
 
-#### References:
+**References:**
+
 >- G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
 
 ### Sigmoid
 A bounded S-shaped function (specifically the *Logistic* function) with an output value between 0 and 1.
 
-#### Parameters:
+**Parameters:**
+
 This activation Function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 
@@ -3500,12 +3830,14 @@ $activationFunction = new Sigmoid();
 ### Softmax
 The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1 *and* all activations together add up to exactly 1.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | epsilon | 1e-8 | float | The smoothing parameter i.e a small value to add to the denominator for numerical stability. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 
@@ -3515,51 +3847,60 @@ $activationFunction = new Softmax(1e-10);
 ### Soft Plus
 A smooth approximation of the ReLU function whose output is constrained to be positive.
 
-#### Parameters:
+**Parameters:**
+
 This activation function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 
 $activationFunction = new SoftPlus();
 ```
 
-#### References:
+**References:**
+
 >- X. Glorot et al. (2011). Deep Sparse Rectifier Neural Networks.
 
 ### Softsign
 A function that squashes the input smoothly between -1 and 1.
 
-#### Parameters:
+**Parameters:**
+
 This activation function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 
 $activationFunction = new Softsign();
 ```
 
-#### References:
+**References:**
+
 >- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks
 
 ### Thresholded ReLU
 Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 
 $activationFunction = new ThresholdedReLU(0.5);
 ```
 
-#### References:
+**References:**
+
 >- K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of Co-adapting Features.
 
 ### Cost Functions
@@ -3568,10 +3909,12 @@ In neural networks, the cost function is a function that the network tries to mi
 ### Cross Entropy
 Cross Entropy, or *log loss*, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
 
-#### Parameters:
+**Parameters:**
+
 This cost function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
@@ -3581,12 +3924,13 @@ $costFunction = new CrossEntropy();
 ### Exponential
 This cost function calculates the exponential of a prediction's squared error thus applying a large penalty to wrong predictions. The resulting gradient of the Exponential loss tends to be steeper than most other cost functions. The magnitude of the error can be scaled by the parameter *tau*.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | tau | 1.0 | float | The scaling parameter i.e. the magnitude of the error to return. |
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\Exponential;
 
@@ -3596,12 +3940,14 @@ $costFunction = new Exponential(0.5);
 ### Huber Loss
 The *pseudo* Huber Loss function transitions between L1 and L2 (Least Squares) loss at a given pivot point (*delta*) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 loss makes Huber Loss robust to outliers while maintaining smoothness near the minimum.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | delta | 1. | float | The pivot point i.e the point where numbers larger will be evaluated with an L1 loss while number smaller will be evaluated with an L2 loss. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
@@ -3611,10 +3957,12 @@ $costFunction = new HuberLoss(0.5);
 ### Least Squares
 Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of the network.
 
-#### Parameters:
+**Parameters:**
+
 This cost function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 
@@ -3624,10 +3972,12 @@ $costFunction = new LeastSquares();
 ### Relative Entropy
 Relative Entropy or *Kullback-Leibler divergence* is a measure of how the expectation and activation of the network diverge.
 
-#### Parameters:
+**Parameters:**
+
 This cost function does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
 
@@ -3646,44 +3996,52 @@ public initialize(int $fanIn, int $fanOut) : Matrix
 ### He
 The He initializer was designed for hidden layers that feed into rectified linear unit layers such as [ReLU](#relu), [Leaky ReLU](#leaky-relu), and [ELU](#elu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
 
-#### Parameters:
+**Parameters:**
+
 This initializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\He;
 
 $initializer = new He();
 ```
 
-#### References:
+**References:**
+
 >- K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.
 
 ### Le Cun
 Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
 
-#### Parameters:
+**Parameters:**
+
 This initializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\LeCun;
 
 $initializer = new LeCun();
 ```
 
-#### References:
+**References:**
+
 >- Y. Le Cun et al. (1998). Efficient Backprop.
 
 ### Normal
 Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
@@ -3693,12 +4051,14 @@ $initializer = new Normal(0.1);
 ### Uniform
 Generates a random uniform distribution centered at 0 and bounded at both ends by the parameter beta.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | beta | 0.05 | float | The minimum and maximum bound on the random distribution. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\Uniform;
 
@@ -3708,33 +4068,39 @@ $initializer = new Uniform(1e-3);
 ### Xavier 1
 The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is equal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
 
-#### Parameters:
+**Parameters:**
+
 This initializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 
 $initializer = new Xavier1();
 ```
 
-#### References:
+**References:**
+
 >- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
 
 ### Xavier 2
 The Xavier 2 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to (6 / (fanIn + fanOut)) ** 0.25. This initializer is best suited for layers that feed into an activation layer that outputs values between -1 and 1 such as [Hyperbolic Tangent](#hyperbolic-tangent) and [Softsign](#softsign).
 
-#### Parameters:
+**Parameters:**
+
 This initializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 
 $initializer = new Xavier2();
 ```
 
-#### References:
+**References:**
+
 >- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks.
 
 ---
@@ -3749,12 +4115,14 @@ The entry point for data into a neural network is the input layer which is the f
 ### Placeholder 1D
 The Placeholder 1D input layer represents the *future* input values of a mini batch (matrix) of single dimensional tensors (vectors) to the neural network.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | inputs | None | int | The number of inputs to the neural network. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 
@@ -3767,12 +4135,14 @@ In multilayer networks, hidden layers are responsible for transforming the input
 ### Activation
 Activation layers apply a nonlinear activation function to their inputs.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | activation fn | None | object | The function computes the activation of the layer. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
@@ -3785,48 +4155,56 @@ Alpha Dropout is a type of dropout layer that maintains the mean and variance of
 
 > **Note**: Alpha Dropout is generally only used in the context of SELU networks. Use regular [Dropout](#dropout) for other types of neural nets.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | ratio | 0.1 | float | The ratio of neurons that are dropped during each training pass. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
 
 $layer = new AlphaDropout(0.1);
 ```
 
-#### References:
+**References:**
+
 >- G. Klambauer et al. (2017). Self-Normalizing Neural Networks.
 
 ### Batch Norm
 Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of *covariate shift* within the network making it possible to use higher learning rates and converge faster under some circumstances.
 
-#### Parameters:
+**Parameters:**
+
 This layer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
 
 $layer = new BatchNorm();
 ```
 
-#### References:
+**References:**
+
 >- S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.
 >- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ### Dense
 Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | neurons | None | int | The number of neurons in the layer. |
 | 2 | initializer | He | object | The random weight initializer to use. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
@@ -3837,55 +4215,64 @@ $layer = new Dense(100, new He());
 ### Dropout
 Dropout layers temporarily disable neurons during each training pass. Dropout is a regularization and model averaging technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | ratio | 0.5 | float | The ratio of neurons that are dropped during each training pass. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Dropout;
 
 $layer = new Dropout(0.5);
 ```
 
-#### References:
+**References:**
+
 >- N. Srivastava et al. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting.
 
 ### Noise
 This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | stddev | 0.1 | float | The standard deviation of the gaussian noise to add to the inputs. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Noise;
 
 $layer = new Noise(2.0);
 ```
 
-#### References:
+**References:**
+
 >- C. Gulcehre et al. (2016). Noisy Activation Functions.
 
 ### PReLU
 The PReLU layer uses leaky ReLU activation functions whose leakage coefficients are parameterized and optimized on a per neuron basis during training.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | initial | 0.25 | float | The value to initialize the alpha (leakage) parameters with. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\PReLU;
 
 $layer = new PReLU(0.1);
 ```
 
-#### References:
+**References:**
+
 >- K. He et al. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.
 
 ### Output Layers
@@ -3894,14 +4281,16 @@ Activations are read directly from the Output layer when making predictions. The
 ### Binary
 The Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -3912,13 +4301,15 @@ $layer = new Binary(['yes', 'no'], 1e-3, new CrossEntropy());
 ### Continuous
 The Continuous output layer consists of a single linear neuron that outputs a scalar value useful for regression problems.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 2 | cost fn | Least Squares | object | The function that penalizes the activities of bad predictions. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
@@ -3929,14 +4320,16 @@ $layer = new Continuous(1e-5, new HuberLoss(3.0));
 ### Multiclass
 The Multiclass output layer gives a joint probability estimate of a multiclass classification problem using the [Softmax](#softmax) activation function.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\CostFunctions\RelativeEntropy;
@@ -3951,45 +4344,52 @@ Gradient Descent is an algorithm that takes iterative steps towards finding the 
 ### AdaGrad
 Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 
 $optimizer = new AdaGrad(0.125);
 ```
 
-#### References:
+**References:**
+
 >- J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.
 
 ### Adam
 Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction, which thus prefers flat minima in the error surface.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | momentum | 0.9 | float | The decay rate of the Momentum property. |
 | 3 | rms | 0.999 | float | The decay rate of the RMS property. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $optimizer = new Adam(0.0001, 0.9, 0.999);
 ```
 
-#### References:
+**References:**
+
 >- D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
 
 ### Cyclical
 The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus achieving higher accuracy.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | lower | 0.001 | float | The lower bound on the learning rate. |
@@ -3997,65 +4397,75 @@ The Cyclical optimizer uses a global learning rate that cycles between the lower
 | 3 | steps | 100 | int | The number of steps in every half cycle. |
 | 4 | decay | 0.99994 | float | The exponential decay factor to decrease the learning rate by every step. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 
 $optimizer = new Cyclical(0.001, 0.005, 1000);
 ```
 
-#### References:
+**References:**
+
 >- L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.
 
 ### Momentum
 Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor of the previous velocity to the current step.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | decay | 0.9 | float | The Momentum decay rate. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
 $optimizer = new Momentum(0.001, 0.925);
 ```
 
-#### References:
+**References:**
+
 >- D. E. Rumelhart et al. (1988). Learning representations by back-propagating errors.
 
 ### RMS Prop
 An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
 | 2 | decay | 0.9 | float | The RMS decay rate. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
 $optimizer = new RMSProp(0.01, 0.9);
 ```
 
-#### References:
+**References:**
+
 >- T. Tieleman et al. (2012). Lecture 6e rmsprop: Divide the gradient by a running average of its recent magnitude.
 
 ### Step Decay
 A learning rate decay optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
 | 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
 | 3 | decay | 1e-3 | float | The decay factor to decrease the learning rate by every floor. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\StepDecay;
 
@@ -4065,12 +4475,14 @@ $optimizer = new StepDecay(0.1, 50, 1e-3);
 ### Stochastic
 A constant learning rate optimizer based on the original Stochastic Gradient Descent paper.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the step size. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 
@@ -4088,10 +4500,12 @@ Distance kernels measure the distance between points in vector space. They are u
 ### Canberra
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Canberra;
 
@@ -4101,10 +4515,12 @@ $kernel = new Canberra();
 ### Cosine
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Cosine;
 
@@ -4114,10 +4530,12 @@ $kernel = new Cosine();
 ### Diagonal
 The Diagonal (sometimes called *Chebyshev*) distance is a measure that constrains movement to horizontal, vertical, and diagonal from a point. An example that uses Diagonal movement is a chess board.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Diagonal;
 
@@ -4127,10 +4545,12 @@ $kernel = new Diagonal();
 ### Euclidean
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Euclidean;
 
@@ -4140,10 +4560,12 @@ $kernel = new Euclidean();
 ### Jaccard
 This *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Jaccard;
 
@@ -4153,10 +4575,12 @@ $kernel = new Jaccard();
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Manhattan;
 
@@ -4166,12 +4590,14 @@ $kernel = new Manhattan();
 ### Minkowski
 The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the *lambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\Distance\Minkowski;
 
@@ -4185,10 +4611,12 @@ Support Vector Machine kernels are used in the context of SVM-based estimators t
 ### Linear
 A simple linear kernel computed by the dot product of two vectors.
 
-#### Parameters:
+**Parameters:**
+
 This kernel does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\SVM\Linear;
 
@@ -4198,14 +4626,16 @@ $kernel = new Linear();
 ### Polynomial
 This kernel projects a sample vector using polynomials of the p'th degree.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | degree | 3 | int | The degree of the polynomial. |
 | 2 | gamma | null | float | The kernel coefficient. |
 | 3 | coef0 | 0. | float | The independent term. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\SVM\Polynomial;
 
@@ -4215,12 +4645,14 @@ $kernel = new Polynomial(3, null, 0.);
 ### RBF
 Non linear radial basis function computes the distance from a centroid or origin.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | gamma | null | float | The kernel coefficient. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\SVM\RBF;
 
@@ -4230,13 +4662,15 @@ $kernel = new RBF(null);
 ### Sigmoidal
 S shaped nonliearity kernel with output values ranging from -1 to 1.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | gamma | null | float | The kernel coefficient. |
 | 2 | coef0 | 0. | float | The independent term. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Kernels\SVM\Sigmoidal;
 
@@ -4259,7 +4693,8 @@ Return the validation scores computed at last test time:
 public scores() : ?array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -4271,7 +4706,7 @@ $score = $validator->test($estimator, $dataset, new Accuracy());
 var_dump($score);
 ```
 
-#### Output:
+**Output:**
 ```sh
 float(0.869)
 ```
@@ -4279,13 +4714,15 @@ float(0.869)
 ### Hold Out
 Hold Out is a simple cross validation technique that uses a *hold out* validation set. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 | 2 | stratify | false | bool | Should we stratify the dataset before splitting? |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
 
@@ -4295,13 +4732,15 @@ $validator = new HoldOut(0.25, true);
 ### K Fold
 K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the validation performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 10 | int | The number of times to split the training set into equal sized folds. |
 | 2 | stratify | false | bool | Should we stratify the dataset before folding? |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\KFold;
 
@@ -4313,12 +4752,14 @@ Leave P Out tests the model with a unique holdout set of P samples for each roun
 
 > **Note**: Leave P Out can become slow with large datasets and small values of P.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | p | 10 | int | The number of samples to leave out each round for testing. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\LeavePOut;
 
@@ -4328,14 +4769,16 @@ $validator = new LeavePOut(50);
 ### Monte Carlo
 Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (randomized splits of the dataset).
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | simulations | 10 | int | The number of simulations to run i.e the number of tests to average. |
 | 2 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 | 3 | stratify | false | bool | Should we stratify the dataset before splitting? |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\MonteCarlo;
 
@@ -4360,7 +4803,8 @@ Return a list of estimators that metric is compatible with:
 public compatibility() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 
@@ -4373,7 +4817,7 @@ var_dump($metric->range());
 var_dump($score);
 ```
 
-#### Output:
+**Output:**
 ```sh
 array(2) {
   [0]=> float(-INF)
@@ -4386,10 +4830,12 @@ float(-0.99846070553066)
 ### Accuracy
 Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
-##### Compatibility: Classification, Anomaly Detection
-##### Range: 0 to 1
+**Compatibility:** Classification, Anomaly Detection
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 
@@ -4399,10 +4845,12 @@ $metric = new Accuracy();
 ### Completeness
 A ground truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
 
-##### Compatibility: Clustering
-##### Range: 0 to 1
+**Compatibility:** Clustering
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\Completeness;
 
@@ -4412,10 +4860,12 @@ $metric = new Completeness();
 ### F1 Score
 A weighted average of precision and recall with equal relative contribution.
 
-##### Compatibility: Classification, Anomaly Detection
-##### Range: 0 to 1
+**Compatibility:** Classification, Anomaly Detection
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 
@@ -4425,10 +4875,12 @@ $metric = new F1Score();
 ### Homogeneity
 A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogeneous* when the entire cluster is comprised of a single class of samples.
 
-##### Compatibility: Clustering
-##### Range: 0 to 1
+**Compatibility:** Clustering
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 
@@ -4438,10 +4890,11 @@ $metric = new Homogeneity();
 ### Informedness
 Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
 
-##### Compatibility: Classification, Anomaly Detection
-##### Range: 0 to 1
+**Compatibility:** Classification, Anomaly Detection
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
 ```php
 use Rubix\ML\CrossValidation\Metrics\Informedness;
 
@@ -4451,10 +4904,12 @@ $metric = new Informedness();
 ### MCC
 Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
 
-##### Compatibility: Classification, Anomaly Detection
-##### Range: -1 to 1
+**Compatibility:** Classification, Anomaly Detection
 
-#### Example:
+**Range:** -1 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
@@ -4464,10 +4919,12 @@ $metric = new MCC();
 ### Mean Absolute Error
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
-##### Compatibility: Regression
-##### Range: -∞ to 0
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -∞ to 0
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 
@@ -4477,10 +4934,12 @@ $metric = new MeanAbsoluteError();
 ### Mean Squared Error
 A regression metric that punishes bad predictions the worse they get by averaging the *squared* error  over the testing set.
 
-##### Compatibility: Regression
-##### Range: -∞ to 0
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -∞ to 0
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 
@@ -4490,10 +4949,12 @@ $metric = new MeanSquaredError();
 ### Median Absolute Error
 Median Absolute Error (MAE) is a robust measure of the error that ignores highly erroneous predictions.
 
-##### Compatibility: Regression
-##### Range: -∞ to 0
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -∞ to 0
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\MedianAbsoluteError;
 
@@ -4503,26 +4964,31 @@ $metric = new MedianAbsoluteError();
 ### Rand Index
 The Adjusted Rand Index is a measure of similarity between the clustering and some ground truth that is adjusted for chance. It considers all pairs of samples that are assigned in the same or different clusters in the predicted and empirical clusterings.
 
-##### Compatibility: Regression
-##### Range: -1 to 1
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -1 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\RandIndex;
 
 $metric = new RandIndex();
 ```
 
-#### References:
+**References:**
+
 >- W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.
 
 ### RMS Error
 Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to compute the residuals of a regression problem.
 
-##### Compatibility: Regression
-##### Range: -∞ to 0
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -∞ to 0
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\RMSError;
 
@@ -4532,10 +4998,12 @@ $metric = new RMSError();
 ### R Squared
 The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
 
-##### Compatibility: Regression
-##### Range: -∞ to 1
+**Compatibility:** Regression
 
-#### Example:
+**Range:** -∞ to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 
@@ -4545,17 +5013,20 @@ $metric = new RSquared();
 ### V Measure
 V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
 
-##### Compatibility: Clustering
-##### Range: 0 to 1
+**Compatibility:** Clustering
 
-#### Example:
+**Range:** 0 to 1
+
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 
 $metric = new VMeasure();
 ```
 
-#### References:
+**References:**
+
 >- A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based external cluster evaluation measure.
 
 ---
@@ -4572,7 +5043,8 @@ Return a list of estimators that report is compatible with:
 public compatibility() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
 
@@ -4584,12 +5056,14 @@ $result = $report->generate($predictions, $labels);
 ### Aggregate Report
 A report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | reports | | array | An array of report objects to aggregate. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
@@ -4607,14 +5081,16 @@ $result = $report->generate($estimator, $testing);
 ### Confusion Matrix
 A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
 
-##### Compatibility: Classification, Anomaly Detection
+**Compatibility:** Classification, Anomaly Detection
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | All | array | The classes to compare in the matrix. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
@@ -4625,7 +5101,7 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-#### Output:
+**Output:**
 ```sh
   array(3) {
     ["dog"]=> array(2) {
@@ -4651,12 +5127,14 @@ var_dump($result);
 ### Contingency Table
 A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
 
-##### Compatibility: Clustering
+**Compatibility:** Clustering
 
-#### Parameters:
+**Parameters:**
+
 This report does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 
@@ -4667,7 +5145,8 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-#### Output:
+**Output:**
+
 ```sh
 array(3) {
     [1]=>
@@ -4694,14 +5173,16 @@ array(3) {
 ### Multiclass Breakdown
 A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
 
-##### Compatibility: Classification, Anomaly Detection
+**Compatibility:** Classification, Anomaly Detection
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | classes | All | array | The classes to break down. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
@@ -4712,7 +5193,8 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-#### Output:
+**Output:**
+
 ```sh
 ["label"]=> array(2) {
 	["wolf"]=> array(19) {
@@ -4741,12 +5223,14 @@ var_dump($result);
 ### Residual Analysis
 Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
 
-##### Compatibility: Regression
+**Compatibility:** Regression
 
-#### Parameters:
+**Parameters:**
+
 This report does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 
@@ -4757,7 +5241,8 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-#### Output:
+**Output:**
+
 ```sh
   array(12) {
     ["mean_absolute_error"]=> float(0.44927554249285)
@@ -4789,7 +5274,8 @@ Return the dimensionality of the samples produced by the generator:
 public dimensions() : int
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
@@ -4802,7 +5288,8 @@ var_dump($generator->dimensions());
 var_dump($dataset->samples());
 ```
 
-#### Output:
+**Output:**
+
 ```sh
 int(2)
 
@@ -4831,23 +5318,26 @@ object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
 ### Agglomerate
 An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
 
-##### Data: Continuous
-##### Label: Categorical
+**Data Type:** Depends on agglomerated generators
 
-#### Parameters:
+**Label Type:** Categorical
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | generators | | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
 | 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
 
-#### Additional Methods:
+**Additional Methods:**
 
 Return the normalized weights of each generator in the agglomerate:
 ```php
 public weights() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\Agglomerate;
 
@@ -4863,19 +5353,23 @@ $generator = new Agglomerate([
 ### Blob
 A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
 
-##### Data: Continuous
-##### Label: None
+**Data Type:** Continuous
 
-#### Parameters:
+**Label Type:** None
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | center | [0.0, 0.0] | array | The coordinates of the center of the blob i.e. a centroid vector. |
 | 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the SD for each feature column. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This generator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\Blob;
 
@@ -4885,10 +5379,12 @@ $generator = new Blob([-1.2, -5.0, 2.6, 0.8], 0.25);
 ### Circle
 Creates a circle of points in 2 dimensions.
 
-##### Data: Continuous
-##### Label: Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Label Type:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | x | 0.0 | float | The x coordinate of the center of the circle. |
@@ -4896,10 +5392,12 @@ Creates a circle of points in 2 dimensions.
 | 3 | scale | 1.0 | float | The scaling factor of the circle. |
 | 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This generator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\Circle;
 
@@ -4909,10 +5407,12 @@ $generator = new Circle(0.0, 0.0, 100, 0.1);
 ### Half Moon
 Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted.
 
-##### Data: Continuous
-##### Label: Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Label Type:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | x | 0.0 | float | The x coordinate of the center of the half moon. |
@@ -4921,10 +5421,12 @@ Generate a dataset consisting of 2 dimensional samples that form a half moon sha
 | 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
 | 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This generator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\HalfMoon;
 
@@ -4934,10 +5436,12 @@ $generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
 ### Swiss Roll
 Generate a 3-dimensional swiss roll dataset with continuous valued labels. The labels are the inputs to the swiss roll transformation and are suitable for non-linear regression problems.
 
-##### Data: Continuous
-##### Label: Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Label Type:** Continuous
+
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | x | 0.0 | float | The x coordinate of the center of the swiss roll. |
@@ -4947,10 +5451,12 @@ Generate a 3-dimensional swiss roll dataset with continuous valued labels. The l
 | 5 | depth | 21.0 | float | The depth of the swiss roll i.e the scale of the y axis. |
 | 6 | noise | 0.3 | float | The standard deviation of the gaussian noise. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This generator does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Datasets\Generators\SwissRoll;
 
@@ -4979,15 +5485,17 @@ public guess() : mixed
 ### Blurry Percentile
 A strategy that guesses within the domain of the p-th percentile of the fitted data plus some gaussian noise.
 
-##### Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | p | 50.0 | float | The index of the percentile to predict where 50 is the median. |
 | 2 | blur | 0.1 | float | The amount of gaussian noise to add to the guess as a factor of the median absolute deviation (MAD). |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\BlurryPercentile;
 
@@ -4997,14 +5505,15 @@ $strategy = new BlurryPercentile(34.0, 0.2);
 ### Constant
 Always guess a constant value.
 
-##### Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | value | 0. | float | The value to guess. |
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Other\Strategies\Constant;
 
@@ -5014,14 +5523,16 @@ $strategy = new Constant(17.);
 ### K Most Frequent
 This strategy outputs one of K most frequent discrete values at random.
 
-##### Categorical
+**Data Type:** Categorical
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | k | 1 | int | The number of most frequency categories to consider when formulating a guess. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\KMostFrequent;
 
@@ -5031,12 +5542,14 @@ $strategy = new KMostFrequent(5);
 ### Lottery
 Hold a lottery in which each category has an equal chance of being picked.
 
-##### Categorical
+**Data Type:** Categorical
 
-#### Parameters:
+**Parameters:**
+
 This strategy does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\Lottery;
 
@@ -5046,12 +5559,14 @@ $strategy = new Lottery();
 ### Mean
 This strategy always predicts the mean of the fitted data.
 
-##### Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Parameters:**
+
 This strategy does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\Mean;
 
@@ -5061,12 +5576,14 @@ $strategy = new Mean();
 ### Popularity Contest
 Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.
 
-##### Categorical
+**Data Type:** Categorical
 
-#### Parameters:
+**Parameters:**
+
 This strategy does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\Lottery;
 
@@ -5076,14 +5593,16 @@ $strategy = new PopularityContest();
 ### Wild Guess
 It is what you think it is. Make a guess somewhere in between the minimum and maximum values observed during fitting with equal probability given to all values within range.
 
-##### Continuous
+**Data Type:** Continuous
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | precision | 2 | int | The number of decimal places of precision for each guess. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Strategies\WildGuess;
 
@@ -5122,7 +5641,7 @@ Return true if the variable is an unrecognized data type:
 public isOther($variable) : bool
 ```
 
-#### Example:
+**Example:**
 
 ```php
 use Rubix\ML\Other\Helpers\DataType;
@@ -5134,7 +5653,7 @@ var_dump(DataType::isContinuous(16));
 var_dump(DataType::isCategorical(18));
 ```
 
-#### Output:
+**Output:**
 
 ```sh
 int(2) // Categorical
@@ -5160,7 +5679,8 @@ To generate a uniformly spaced grid of parameters:
 public static grid(float $min, float $max, int $n = 10) : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Helpers\Params;
 
@@ -5175,7 +5695,8 @@ var_dump($floats);
 var_dump($grid);
 ```
 
-#### Output:
+**Output:**
+
 ```sh
 array(5) {
   [0]=> int(88)
@@ -5203,7 +5724,8 @@ array(5) {
 
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Other\Helpers\Params;
@@ -5224,7 +5746,7 @@ $estimator->train($dataset);
 var_dump($estimator->best());
 ```
 
-#### Output:
+**Output:**
 
 ```sh
 array(3) {
@@ -5242,13 +5764,15 @@ array(3) {
 ### Screen
 A logger that outputs to the php standard output.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | channel | 'default' | string | The channel name that appears on each line. |
 | 2 | timestamps | true | bool | Should we show timestamps? |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Other\Loggers\Screen;
 
@@ -5272,17 +5796,20 @@ public load() : Persistable
 ### Filesystem
 Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister saves models to a file at a user-specified path and automatically keeps backups of the latest versions of your models.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | path | None | string | The path to the file on the filesystem. |
 | 2 | history | 2 | int | The number of backups to keep. |
 | 3 | serializer | Native | object | The serializer used to convert to and from serial format. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 This persister does not have any additional methods.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Persisters\Serializers\Binary;
@@ -5293,7 +5820,8 @@ $persister = new Filesystem('/path/to/example.model', 1, new Binary());
 ### Redis DB
 Redis is a high performance in-memory key value store that can be used to persist models. The persiter requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | key | | string | The key of the object in the database. |
@@ -5305,13 +5833,15 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 7 | serializer | Native | object | The serializer used to convert to and from serial format. |
 | 8 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
 
-#### Additional Methods:
+**Additional Methods:**
+
 Return an associative array of info from the Redis server:
 ```php
 public info() : array
 ```
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Persisters\RedisDB;
 use Rubix\ML\Persisters\Serializers\Native;
@@ -5336,10 +5866,12 @@ public unserialize(string $data) : Persistable
 ### Binary Serializer
 Converts persistable object to and from a binary encoding. Binary format is *usually* smaller and faster than plain text serializers.
 
-#### Parameters:
+**Parameters:**
+
 This serializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Persisters\Serializers\Binary;
 
@@ -5349,10 +5881,12 @@ $serializer = new Binary();
 ### Native
 The native PHP plain text serialization format used to encode persistable objects.
 
-#### Parameters:
+**Parameters:**
+
 This serializer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Persisters\Serializers\Native;
 
@@ -5368,7 +5902,7 @@ To tokenize a blob of text:
 public tokenize(string $text) : array
 ```
 
-#### Example:
+**Example:**
 ```php
 use Rubix\ML\Extractors\Tokenizers\Word;
 
@@ -5379,7 +5913,8 @@ $tokenizer = new Word();
 var_dump($tokenizer->tokenize($text));
 ```
 
-#### Output:
+**Output:**
+
 ```sh
   array(10) {
     [0]=> string(5) "would"
@@ -5398,13 +5933,15 @@ var_dump($tokenizer->tokenize($text));
 ### N-gram
 N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max* number of words per token.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | min | 2 | int | The minimum number of contiguous words to a token. |
 | 2 | max | 2 | int | The maximum number of contiguous words to a token. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Extractors\Tokenizers\NGram;
 
@@ -5414,13 +5951,15 @@ $tokenizer = new NGram(1, 3);
 ### Skip-Gram
 Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be *skipped* forming n-grams of the new forward looking sequences.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | n | 2 | int | The number of contiguous words to a single token. |
 | 2 | skip | 2 | int | The number of words to skip over to form new n-gram sequences. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Extractors\Tokenizers\SkipGram;
 
@@ -5430,12 +5969,14 @@ $tokenizer = new SkipGram(2, 2);
 ### Whitespace
 Tokens are delimited by a user-specified whitespace character.
 
-#### Parameters:
+**Parameters:**
+
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Extractors\Tokenizers\Whitespace;
 
@@ -5445,10 +5986,12 @@ $tokenizer = new Whitespace(',');
 ### Word Tokenizer
 The Word tokenizer uses a regular expression to tokenize the words in a blob of text.
 
-#### Parameters:
+**Parameters:**
+
 This tokenizer does not have any parameters.
 
-#### Example:
+**Example:**
+
 ```php
 use Rubix\ML\Extractors\Tokenizers\Word;
 
@@ -5474,7 +6017,8 @@ $ php example.php
 ### What is a Tuple?
 A *tuple* is simply a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
 
-#### Example:
+**Example:**
+
 ```php
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```

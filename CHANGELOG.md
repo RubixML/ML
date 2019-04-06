@@ -11,6 +11,8 @@
     - N-gram Tokenizer now outputs ranges of word tokens
     - Changed default Fuzzy C Means hyper-parameters
     - Added spatial partitioning to Dataset API
+    - Added Image Resizer transformer
+    - Image Vectorizer no longer resizes images
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

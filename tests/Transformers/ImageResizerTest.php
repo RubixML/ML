@@ -5,10 +5,9 @@ namespace Rubix\ML\Tests\Transformers;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\ImageResizer;
-use Rubix\ML\Transformers\ImageVectorizer;
 use PHPUnit\Framework\TestCase;
 
-class ImageVectorizerTest extends TestCase
+class ImageResizerTest extends TestCase
 {
     protected $transformer;
 
@@ -20,26 +19,24 @@ class ImageVectorizerTest extends TestCase
             [imagecreatefromjpeg(__DIR__ . '/../space.jpg')],
         ]);
 
-        $this->transformer = new ImageVectorizer(3);
+        $this->transformer = new ImageResizer(32, 32, false, 'gd');
     }
 
     public function test_build_transformer()
     {
-        $this->assertInstanceOf(ImageVectorizer::class, $this->transformer);
+        $this->assertInstanceOf(ImageResizer::class, $this->transformer);
         $this->assertInstanceOf(Transformer::class, $this->transformer);
     }
 
     public function test_transform()
     {
-        $this->dataset->apply(new ImageResizer(3, 3));
-
         $this->dataset->apply($this->transformer);
+
+        $sample = $this->dataset->row(0);
     
-        $outcome = [
-            [22, 35, 60, 53, 66, 102, 29, 44, 73, 36, 49, 79, 45, 57, 89, 21,
-            32, 56, 44, 53, 85, 43, 49, 75, 12, 18, 34],
-        ];
-    
-        $this->assertEquals($outcome, $this->dataset->samples());
+        $image = $sample[0];
+
+        $this->assertEquals(32, imagesx($image));
+        $this->assertEquals(32, imagesy($image));
     }
 }

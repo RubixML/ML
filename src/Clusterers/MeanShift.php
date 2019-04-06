@@ -37,6 +37,10 @@ class MeanShift implements Learner, Verbose, Persistable
 {
     use LoggerAware;
 
+    protected const SEED_RATIO = 0.5;
+
+    protected const MIN_SEEDS = 100;
+
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum
      * distance between two points to be considered neighbors.
@@ -218,16 +222,19 @@ class MeanShift implements Learner, Verbose, Persistable
                 . Params::stringify([
                     'radius' => $this->radius,
                     'kernel' => $this->kernel,
+                    'max_leaf_size' => $this->maxLeafSize,
                     'epochs' => $this->epochs,
                     'min_change' => $this->minChange,
                     'seeder' => $this->seeder,
                 ]));
         }
 
+        $n = $dataset->numRows();
+
         $tree = new BallTree($this->maxLeafSize, $this->kernel);
 
         if ($this->seeder) {
-            $k = (int) round(0.5 * $dataset->numRows());
+            $k = max(self::MIN_SEEDS, (int) round(self::SEED_RATIO * $n));
 
             $centroids = $this->seeder->seed($dataset, $k);
         } else {
@@ -242,9 +249,9 @@ class MeanShift implements Learner, Verbose, Persistable
  
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($centroids as $i => &$centroid) {
-                [$neighbors, $labels, $distances] = $tree->range($centroid, $this->radius);
+                [$samples, $labels, $distances] = $tree->range($centroid, $this->radius);
 
-                $step = Matrix::quick($neighbors)
+                $step = Matrix::quick($samples)
                     ->transpose()
                     ->mean()
                     ->asArray();

@@ -194,7 +194,9 @@ class GradientBoost implements Learner, Verbose, Persistable
      */
     public function compatibility() : array
     {
-        return array_values(array_intersect($this->base->compatibility(), $this->booster->compatibility()));
+        $compatibility = array_intersect($this->base->compatibility(), $this->booster->compatibility());
+
+        return array_values($compatibility);
     }
 
     /**
