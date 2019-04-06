@@ -3,6 +3,7 @@
 namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 /**
@@ -319,7 +320,46 @@ class Unlabeled extends DataFrame implements Dataset
             }
         }
 
-        return [self::quick($left), self::quick($right)];
+        return [
+            self::quick($left),
+            self::quick($right),
+        ];
+    }
+
+    /**
+     * Partition the dataset into left and right subsets based on their distance
+     * between two centroids.
+     *
+     * @param array $leftCentroid
+     * @param array $rightCentroid
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel)
+    {
+        if (count($leftCentroid) !== count($rightCentroid)) {
+            throw new InvalidArgumentException('Dimensionality mismatch between'
+                . ' left and right centroids.');
+        }
+
+        $left = $right = [];
+
+        foreach ($this->samples as $i => $sample) {
+            $lHat = $kernel->compute($sample, $leftCentroid);
+            $rHat = $kernel->compute($sample, $rightCentroid);
+
+            if ($lHat < $rHat) {
+                $left[] = $sample;
+            } else {
+                $right[] = $sample;
+            }
+        }
+
+        return [
+            self::quick($left),
+            self::quick($right),
+        ];
     }
 
     /**

@@ -3,13 +3,14 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
 /**
- * Centroid
+ * Hypersphere
  *
  * Ball Tree split node that represents the centroid of a set of samples
  * and its radius.
@@ -18,12 +19,12 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Centroid extends BinaryNode implements Ball
+class Hypersphere extends BinaryNode implements Ball
 {
     /**
      * The center or multivariate mean of the centroid.
      *
-     * @var array
+     * @var (int|float)[]
      */
     protected $center;
 
@@ -46,54 +47,40 @@ class Centroid extends BinaryNode implements Ball
      * using the column with the highest variance as the column for the
      * split.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return self
      */
-    public static function split(Labeled $dataset, Distance $kernel) : self
+    public static function split(Dataset $dataset, Distance $kernel) : self
     {
-        $center = Matrix::quick($dataset->samples())
+        $samples = $dataset->samples();
+
+        $center = Matrix::quick($samples)
             ->transpose()
             ->mean()
             ->asArray();
             
         $distances = [];
 
-        foreach ($dataset as $sample) {
+        foreach ($samples as $sample) {
             $distances[] = $kernel->compute($sample, $center);
         }
 
         $radius = max($distances);
 
-        $left = $dataset->row(Argmax::compute($distances));
+        $leftCentroid = $dataset->row(Argmax::compute($distances));
 
         $distances = [];
 
-        foreach ($dataset as $sample) {
-            $distances[] = $kernel->compute($sample, $left);
+        foreach ($samples as $sample) {
+            $distances[] = $kernel->compute($sample, $leftCentroid);
         }
 
-        $right = $dataset->row(Argmax::compute($distances));
+        $rightCentroid = $dataset->row(Argmax::compute($distances));
+        
+        $subsets = $dataset->spatialPartition($leftCentroid, $rightCentroid, $kernel);
 
-        $leftSamples = $rightSamples = $leftLabels = $rightLabels = [];
-
-        foreach ($dataset as $i => $sample) {
-            $lHat = $kernel->compute($sample, $left);
-            $rHat = $kernel->compute($sample, $right);
-
-            if ($lHat < $rHat) {
-                $leftSamples[] = $sample;
-                $leftLabels[] = $dataset->label((int) $i);
-            } else {
-                $rightSamples[] = $sample;
-                $rightLabels[] = $dataset->label((int) $i);
-            }
-        }
-
-        return new self($center, $radius, [
-            Labeled::quick($leftSamples, $leftLabels),
-            Labeled::quick($rightSamples, $rightLabels),
-        ]);
+        return new self($center, $radius, $subsets);
     }
 
     /**
@@ -120,9 +107,9 @@ class Centroid extends BinaryNode implements Ball
         }
 
         foreach ($groups as $group) {
-            if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Groups must be'
-                    . ' labeled dataset objects, ' . gettype($group)
+            if (!$group instanceof Dataset) {
+                throw new InvalidArgumentException('Groups must contain'
+                    . ' dataset objects, ' . gettype($group)
                     . ' given.');
             }
         }

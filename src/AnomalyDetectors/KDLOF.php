@@ -159,6 +159,7 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
 
             $distances[] = $dHat;
             $indices[] = $iHat;
+            
             $this->kdistances[] = end($dHat);
         }
 

@@ -139,7 +139,7 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER;

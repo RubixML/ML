@@ -131,9 +131,9 @@ class DBSCAN implements Estimator
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $samples = $dataset->samples();
+        $n = $dataset->numRows();
 
-        $dataset = Labeled::quick($samples, array_keys($samples));
+        $dataset = Labeled::quick($dataset->samples(), range(0, $n - 1));
 
         $tree = new BallTree($this->maxLeafSize, $this->kernel);
 
@@ -143,12 +143,12 @@ class DBSCAN implements Estimator
 
         $predictions = [];
 
-        foreach ($samples as $i => $sample) {
+        foreach ($dataset->samples() as $i => $sample) {
             if (isset($predictions[$i])) {
                 continue 1;
             }
 
-            [$neighbors, $distances] = $tree->range($sample, $this->radius);
+            [$samples, $neighbors, $distances] = $tree->range($sample, $this->radius);
 
             if (count($neighbors) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
@@ -171,7 +171,7 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                [$seeds, $distances] = $tree->range($samples[$index], $this->radius);
+                [$samples, $seeds, $distances] = $tree->range($dataset->row($index), $this->radius);
 
                 if (count($seeds) >= $this->minDensity) {
                     $neighbors = array_unique(array_merge($neighbors, $seeds));

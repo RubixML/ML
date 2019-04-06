@@ -3,6 +3,7 @@
 namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -655,6 +656,44 @@ class Labeled extends DataFrame implements Dataset
                     $rightSamples[] = $sample;
                     $rightLabels[] = $this->labels[$i];
                 }
+            }
+        }
+
+        return [
+            self::quick($leftSamples, $leftLabels),
+            self::quick($rightSamples, $rightLabels),
+        ];
+    }
+
+    /**
+     * Partition the dataset into left and right subsets based on their distance
+     * between two centroids.
+     *
+     * @param array $leftCentroid
+     * @param array $rightCentroid
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel)
+    {
+        if (count($leftCentroid) !== count($rightCentroid)) {
+            throw new InvalidArgumentException('Dimensionality mismatch between'
+                . ' left and right centroids.');
+        }
+
+        $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
+
+        foreach ($this->samples as $i => $sample) {
+            $lHat = $kernel->compute($sample, $leftCentroid);
+            $rHat = $kernel->compute($sample, $rightCentroid);
+
+            if ($lHat < $rHat) {
+                $leftSamples[] = $sample;
+                $leftLabels[] = $this->labels[$i];
+            } else {
+                $rightSamples[] = $sample;
+                $rightLabels[] = $this->labels[$i];
             }
         }
 

@@ -6,7 +6,7 @@ use Rubix\ML\Graph\Tree;
 use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Graph\Nodes\Ball;
-use Rubix\ML\Graph\Nodes\Centroid;
+use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -46,7 +46,7 @@ class BallTreeTest extends TestCase
     {
         $this->tree->grow($this->generator->generate(50));
 
-        $this->assertInstanceOf(Centroid::class, $this->tree->root());
+        $this->assertInstanceOf(Hypersphere::class, $this->tree->root());
         $this->assertInstanceOf(Ball::class, $this->tree->root());
         $this->assertInstanceOf(BinaryNode::class, $this->tree->root());
 
@@ -54,7 +54,7 @@ class BallTreeTest extends TestCase
 
         $sample = $this->generator->generate(1)->row(0);
 
-        [$labels, $distances] = $this->tree->range($sample, 5.);
+        [$samples, $labels, $distances] = $this->tree->range($sample, 5.);
 
         $this->assertCount(25, $labels);
         $this->assertCount(25, $distances);

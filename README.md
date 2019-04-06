@@ -1915,8 +1915,9 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 |--|--|--|--|--|
 | 1 | radius | | float | The radius of each cluster centroid. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
-| 3 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
-| 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
+| 3 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
+| 4 | threshold | 1e-8 | float | The minimum change in centroid means necessary for the algorithm to continue training. |
+| 5 | epochs | 100 | int | The maximum number of training rounds to execute. |
 
 
 #### Additional Methods:
@@ -1936,7 +1937,7 @@ public steps() : array
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new MeanShift(3.0, new Diagonal(), 1e-6, 2000);
+$estimator = new MeanShift(3.0, new Diagonal(), 30, 1e-6, 2000);
 ```
 
 #### References:

@@ -187,6 +187,17 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
+    public function test_partition()
+    {
+        [$left, $right] = $this->dataset->partition(2, 'loner');
+
+        $this->assertInstanceOf(Unlabeled::class, $left);
+        $this->assertInstanceOf(Unlabeled::class, $right);
+
+        $this->assertCount(2, $left);
+        $this->assertCount(4, $right);
+    }
+
     public function test_random_subset_with_replacement()
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);

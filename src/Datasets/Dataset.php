@@ -3,6 +3,7 @@
 namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Transformers\Transformer;
+use Rubix\ML\Kernels\Distance\Distance;
 use IteratorAggregate;
 use ArrayAccess;
 use Countable;
@@ -226,6 +227,17 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @return array
      */
     public function partition(int $index, $value) : array;
+
+    /**
+     * Partition the dataset into left and right subsets based on their distance
+     * between two centroids.
+     *
+     * @param array $leftCentroid
+     * @param array $rightCentroid
+     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @return array
+     */
+    public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel);
 
     /**
      * Generate a random subset of n samples with replacement.

@@ -311,6 +311,17 @@ class LabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
+    public function test_partition()
+    {
+        [$left, $right] = $this->dataset->partition(1, 'rough');
+
+        $this->assertInstanceOf(Labeled::class, $left);
+        $this->assertInstanceOf(Labeled::class, $right);
+
+        $this->assertCount(3, $left);
+        $this->assertCount(3, $right);
+    }
+
     public function test_random_subset_with_replacement()
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);

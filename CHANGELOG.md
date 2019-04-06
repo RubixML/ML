@@ -4,11 +4,13 @@
     - Added Adjusted Rand Index clustering metric
     - Added Seeder Interface
     - Added Random, K-MC2, and Plus Plus seeders
+    - Accelerated Mean Shift with Ball Tree
     - Gaussian Mixture now supports seeders
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace
     - N-gram Tokenizer now outputs ranges of word tokens
     - Changed default Fuzzy C Means hyper-parameters
+    - Added spatial partitioning to Dataset API
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

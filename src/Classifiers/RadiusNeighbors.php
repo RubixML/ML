@@ -153,7 +153,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER;
@@ -199,7 +199,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $probabilities[] = null;

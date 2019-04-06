@@ -2,11 +2,11 @@
 
 namespace Rubix\ML\Graph;
 
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Cluster;
-use Rubix\ML\Graph\Nodes\Centroid;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
@@ -31,7 +31,7 @@ class BallTree implements BinaryTree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Centroid|null
+     * @var \Rubix\ML\Graph\Nodes\Hypersphere|null
      */
     protected $root;
 
@@ -66,9 +66,9 @@ class BallTree implements BinaryTree
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Centroid|null
+     * @return \Rubix\ML\Graph\Nodes\Hypersphere|null
      */
-    public function root() : ?Centroid
+    public function root() : ?Hypersphere
     {
         return $this->root;
     }
@@ -107,25 +107,25 @@ class BallTree implements BinaryTree
      * Insert a root node into the tree and recursively split the training data
      * until a terminating condition is met.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      */
-    public function grow(Labeled $dataset) : void
+    public function grow(Dataset $dataset) : void
     {
-        $this->root = Centroid::split($dataset, $this->kernel);
+        $this->root = Hypersphere::split($dataset, $this->kernel);
 
         $stack = [$this->root];
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if (!$current instanceof Centroid) {
+            if (!$current instanceof Hypersphere) {
                 continue 1;
             }
 
             [$left, $right] = $current->groups();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = Centroid::split($left, $this->kernel);
+                $node = Hypersphere::split($left, $this->kernel);
     
                 $current->attachLeft($node);
 
@@ -137,7 +137,7 @@ class BallTree implements BinaryTree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = Centroid::split($right, $this->kernel);
+                $node = Hypersphere::split($right, $this->kernel);
     
                 $current->attachRight($node);
 
@@ -161,14 +161,14 @@ class BallTree implements BinaryTree
      * @throws \InvalidArgumentException
      * @return array[]
      */
-    public function range(array $sample, float $radius = 1.0) : array
+    public function range(array $sample, float $radius) : array
     {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
-        $distances = $labels = [];
+        $samples = $labels = $distances = [];
 
         $stack = [$this->root];
 
@@ -184,8 +184,9 @@ class BallTree implements BinaryTree
                     $distance = $this->kernel->compute($sample, $neighbor);
 
                     if ($distance <= $radius) {
-                        $distances[] = $distance;
+                        $samples[] = $neighbor;
                         $labels[] = $current->label($i);
+                        $distances[] = $distance;
                     }
                 }
 
@@ -203,6 +204,6 @@ class BallTree implements BinaryTree
             }
         }
 
-        return [$labels, $distances];
+        return [$samples, $labels, $distances];
     }
 }

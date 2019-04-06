@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
@@ -59,6 +60,13 @@ class MeanShift implements Learner, Verbose, Persistable
     protected $kernel;
 
     /**
+     * The maximum number of samples that each ball node can contain.
+     *
+     * @var int
+     */
+    protected $maxLeafSize;
+
+    /**
      * The maximum number of iterations to run until the algorithm terminates.
      *
      * @var int
@@ -100,6 +108,7 @@ class MeanShift implements Learner, Verbose, Persistable
     /**
      * @param float $radius
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param int $maxLeafSize
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
@@ -108,6 +117,7 @@ class MeanShift implements Learner, Verbose, Persistable
     public function __construct(
         float $radius,
         ?Distance $kernel = null,
+        int $maxLeafSize = 30,
         int $epochs = 100,
         float $minChange = 1e-4,
         ?Seeder $seeder = null
@@ -115,6 +125,11 @@ class MeanShift implements Learner, Verbose, Persistable
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
+        }
+
+        if ($maxLeafSize < 1) {
+            throw new InvalidArgumentException('Max leaf size cannot be'
+                . " less than 1, $maxLeafSize given.");
         }
 
         if ($epochs < 1) {
@@ -130,6 +145,7 @@ class MeanShift implements Learner, Verbose, Persistable
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
         $this->kernel = $kernel ?? new Euclidean();
+        $this->maxLeafSize = $maxLeafSize;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->seeder = $seeder;
@@ -208,15 +224,17 @@ class MeanShift implements Learner, Verbose, Persistable
                 ]));
         }
 
-        $samples = $dataset->samples();
+        $tree = new BallTree($this->maxLeafSize, $this->kernel);
 
         if ($this->seeder) {
             $k = (int) round(0.5 * $dataset->numRows());
 
             $centroids = $this->seeder->seed($dataset, $k);
         } else {
-            $centroids = $samples;
+            $centroids = $dataset->samples();
         }
+
+        $tree->grow($dataset);
 
         $previous = $centroids;
 
@@ -224,7 +242,7 @@ class MeanShift implements Learner, Verbose, Persistable
  
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($centroids as $i => &$centroid) {
-                [$neighbors, $distances] = $this->range($centroid, $samples, $this->radius);
+                [$neighbors, $labels, $distances] = $tree->range($centroid, $this->radius);
 
                 $step = Matrix::quick($neighbors)
                     ->transpose()
@@ -318,30 +336,6 @@ class MeanShift implements Learner, Verbose, Persistable
         }
 
         return (int) $bestCluster;
-    }
-
-    /**
-     * The the neighbors within range of a sample.
-     *
-     * @param array $sample
-     * @param array $samples
-     * @param float $radius
-     * @return array
-     */
-    protected function range(array $sample, array $samples, float $radius) : array
-    {
-        $neighbors = $distances = [];
-
-        foreach ($samples as $neighbor) {
-            $distance = $this->kernel->compute($sample, $neighbor);
-
-            if ($distance <= $this->radius) {
-                $neighbors[] = $neighbor;
-                $distances[] = $distance;
-            }
-        }
-
-        return [$neighbors, $distances];
     }
 
     /**
