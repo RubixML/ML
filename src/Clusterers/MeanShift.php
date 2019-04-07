@@ -28,6 +28,8 @@ use RuntimeException;
  * References:
  * [1] M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms
  * for Clustering.
+ * [2] D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature
+ * Space Analysis.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -108,6 +110,40 @@ class MeanShift implements Learner, Verbose, Persistable
     protected $steps = [
         //
     ];
+
+    /**
+     * Estimate the radius of a cluster that encompasses a certain percentage of
+     * the total training samples.
+     *
+     * > **Note**: Since radius estimation scales quadratically in the number of
+     * samples, for large datasets you can speed up the process by running it on
+     * a sample subset of the training data.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param float $percentile
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @throws \InvalidArgumentException
+     * @return float
+     */
+    public static function estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $kernel = null) : float
+    {
+        if ($percentile < 0. or $percentile > 100.) {
+            throw new InvalidArgumentException('Percentile must be between'
+                . " 0 and 100, $percentile given.");
+        }
+
+        $kernel = $kernel ?? new Euclidean();
+
+        $distances = [];
+
+        foreach ($dataset as  $sampleA) {
+            foreach ($dataset as $sampleB) {
+                $distances[] = $kernel->compute($sampleA, $sampleB);
+            }
+        }
+
+        return Stats::percentile($distances, $percentile);
+    }
 
     /**
      * @param float $radius

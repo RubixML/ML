@@ -2029,7 +2029,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | radius | | float | The radius of each cluster centroid. |
+| 1 | radius | | float | The bandwidth of the radial basis function. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 | 3 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 | 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
@@ -2037,6 +2037,13 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | 6 | seeder | None | object | The seeder used to initialize the cluster centroids. |
 
 **Additional Methods:**
+
+Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
+```php
+public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $distance = null) : float
+```
+
+> **Note**: Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a sample subset of the training data.
 
 Return the centroids computed from the training set:
 ```php
@@ -2055,12 +2062,15 @@ use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 
-$estimator = new MeanShift(3.0, new Diagonal(), 30, 2000, 1e-6, new KMC2());
+$radius = MeanShift::estimateRadius($dataset, 30., new Diagonal()); // Automatically choose radius hyper-parameter
+
+$estimator = new MeanShift($radius, new Diagonal(), 30, 2000, 1e-6, new KMC2());
 ```
 
 **References:**
 
 >- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
+>- D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.
 
 ### Seeders
 Seeders are responsible for initializing k starting clusters used by certain learners such as [KMeans](#k-means), [Mean Shift](#mean-shift), and [Gaussian Mixture](#gaussian-mixture).

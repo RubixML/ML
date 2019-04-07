@@ -5,6 +5,7 @@
     - Added Seeder Interface
     - Added Random, K-MC2, and Plus Plus seeders
     - Accelerated Mean Shift with Ball Tree
+    - Added radius estimation to Mean Shift
     - Gaussian Mixture now supports seeders
     - Changed order of K Means hyperparameters
     - Moved Ranking interface to anomaly detector namespace

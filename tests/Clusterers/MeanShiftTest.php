@@ -40,7 +40,7 @@ class MeanShiftTest extends TestCase
             'blue' => new Blob([64, 0, 255], 30.),
         ]);
 
-        $this->estimator = new MeanShift(50.0, new Euclidean(), 30, 100, 1e-4);
+        $this->estimator = new MeanShift(120.443930031579, new Euclidean(), 30, 100, 1e-4);
 
         $this->metric = new VMeasure();
 
@@ -63,6 +63,15 @@ class MeanShiftTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
 
         $this->assertFalse($this->estimator->trained());
+    }
+
+    public function test_estimate_radius()
+    {
+        $subset = $this->generator->generate(0.5 * self::TRAIN_SIZE);
+
+        $radius = MeanShift::estimateRadius($subset, 30.);
+
+        $this->assertEquals(120.443930031579, $radius);
     }
 
     public function test_train_predict()

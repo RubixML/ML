@@ -176,8 +176,8 @@ class Stats
         }
 
         if ($p < 0. or $p > 100.) {
-            throw new InvalidArgumentException('P must be between 0 and 1'
-                . "$p given.");
+            throw new InvalidArgumentException('P must be between 0 and 1,'
+                . " $p given.");
         }
 
         $n = count($values);
