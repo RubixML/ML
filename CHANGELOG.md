@@ -14,6 +14,7 @@
     - Added spatial partitioning to Dataset API
     - Added Image Resizer transformer
     - Image Vectorizer no longer resizes images
+    - Fixed adaptive optimizer bug upon binary unserialization
 
 - 0.0.10-beta
     - Added LODA online anomaly detector
