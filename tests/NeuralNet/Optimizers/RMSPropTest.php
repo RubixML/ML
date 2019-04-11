@@ -27,23 +27,28 @@ class RMSPropTest extends TestCase
 
     public function test_initialize_step()
     {
-        $parameter = new Parameter(Matrix::quick([
+        $param = new Parameter(Matrix::quick([
             [0.1, 0.6, -0.4],
             [0.5, 0.6, -0.4],
             [0.1, 0.1, -0.7],
         ]));
 
-        $gradients = Matrix::quick([
+        $gradient = Matrix::quick([
             [0.01, 0.05, -0.02],
             [-0.01, 0.02, 0.03],
             [0.04, -0.01, -0.5],
         ]);
 
-        $this->optimizer->initialize($parameter);
-        
-        $step = $this->optimizer->step($parameter, $gradients);
+        $expected = [
+            [0.09683772233983162, 0.5968377223398316, -0.39683772233983167],
+            [0.5031622776601684, 0.5968377223398316, -0.4031622776601684],
+            [0.09683772233983162, 0.10316227766016839, -0.6968377223398315],
+        ];
 
-        $this->assertInstanceOf(Matrix::class, $step);
-        $this->assertEquals([3, 3], $step->shape());
+        $this->optimizer->initialize($param);
+        
+        $this->optimizer->step($param, $gradient);
+
+        $this->assertEquals($expected, $param->w()->asArray());
     }
 }

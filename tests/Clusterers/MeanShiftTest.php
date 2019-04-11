@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
+use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -40,7 +41,7 @@ class MeanShiftTest extends TestCase
             'blue' => new Blob([64, 0, 255], 30.),
         ]);
 
-        $this->estimator = new MeanShift(120.443930031579, new Euclidean(), 30, 100, 1e-4);
+        $this->estimator = new MeanShift(120.443930031579, new Euclidean(), 30, 100, 1e-4, new KMC2(50), 0.10);
 
         $this->metric = new VMeasure();
 

@@ -27,23 +27,28 @@ class AdamTest extends TestCase
 
     public function test_initialize_step()
     {
-        $parameter = new Parameter(Matrix::quick([
+        $param = new Parameter(Matrix::quick([
             [0.1, 0.6, -0.4],
             [0.5, 0.6, -0.4],
             [0.1, 0.1, -0.7],
         ]));
 
-        $gradients = Matrix::quick([
+        $gradient = Matrix::quick([
             [0.01, 0.05, -0.02],
             [-0.01, 0.02, 0.03],
             [0.04, -0.01, -0.5],
         ]);
 
-        $this->optimizer->initialize($parameter);
+        $expected = [
+            [0.099, 0.599, -0.399],
+            [0.501, 0.599, -0.401],
+            [0.099, 0.101, -0.699],
+        ];
 
-        $step = $this->optimizer->step($parameter, $gradients);
+        $this->optimizer->initialize($param);
 
-        $this->assertInstanceOf(Matrix::class, $step);
-        $this->assertEquals([3, 3], $step->shape());
+        $this->optimizer->step($param, $gradient);
+
+        $this->assertEquals($expected, $param->w()->asArray());
     }
 }

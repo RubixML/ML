@@ -317,10 +317,10 @@ class KMeans implements Learner, Persistable, Verbose
                         ->mean()
                         ->asArray();
 
-                    $damper = 1. / ($size ?: self::EPSILON);
+                    $weight = 1. / ($size ?: self::EPSILON);
 
                     foreach ($centroid as $i => &$mean) {
-                        $mean = (1. - $damper) * $mean + $damper * $step[$i];
+                        $mean = (1. - $weight) * $mean + $weight * $step[$i];
                     }
 
                     $this->centroids[$cluster] = $centroid;

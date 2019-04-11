@@ -169,8 +169,7 @@ class PReLU implements Hidden, Parametric
 
         $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
 
-        $this->alpha->w = $this->alpha->w
-            ->subtract($optimizer->step($this->alpha, $dAlpha));
+        $optimizer->step($this->alpha, $dAlpha);
 
         $z = $this->input;
         $computed = $this->computed;
@@ -196,7 +195,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w->column(0);
+        $alphas = $this->alpha->w()->column(0);
 
         $computed = [];
 
@@ -231,7 +230,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alpha = $this->alpha->w->column(0);
+        $alpha = $this->alpha->w()->column(0);
 
         $gradients = [];
 
@@ -263,7 +262,7 @@ class PReLU implements Hidden, Parametric
         }
         
         return [
-            'alpha' => clone $this->alpha->w,
+            'alpha' => clone $this->alpha,
         ];
     }
 
@@ -275,10 +274,6 @@ class PReLU implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initlaized.');
-        }
-        
-        $this->alpha->w = $parameters['alpha'];
+        $this->alpha = $parameters['alpha'];
     }
 }

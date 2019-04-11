@@ -39,14 +39,15 @@ class Stochastic implements Optimizer
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Rubix\Tensor\Matrix $gradient
-     * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $param, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : void
     {
-        return $gradient->multiply($this->rate);
+        $step = $gradient->multiply($this->rate);
+
+        $param->update($step);
     }
 }

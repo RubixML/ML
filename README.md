@@ -464,6 +464,7 @@ public tail(int $n = 10) : self
 ```
 
 **Example:**
+
 ```php
 // Return the sample matrix
 $samples = $dataset->samples();
@@ -537,6 +538,7 @@ public batch(int $n = 50) : array
 ```
 
 **Example:**
+
 ```php
 // Remove the first 5 rows and return them in a new dataset
 $subset = $dataset->take(5);
@@ -2035,6 +2037,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 5 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
 | 6 | seeder | None | object | The seeder used to initialize the cluster centroids. |
+| 7 | ratio | 0.2 | float | The ratio of samples from the training set to seed the algorithm with. |
 
 **Additional Methods:**
 
@@ -2062,9 +2065,9 @@ use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 
-$radius = MeanShift::estimateRadius($dataset, 30., new Diagonal()); // Automatically choose radius hyper-parameter
+$radius = MeanShift::estimateRadius($dataset, 30., new Diagonal()); // Automatically choose radius
 
-$estimator = new MeanShift($radius, new Diagonal(), 30, 2000, 1e-6, new KMC2());
+$estimator = new MeanShift($radius, new Diagonal(), 30, 2000, 1e-6, new KMC2(), 0.1);
 ```
 
 **References:**
@@ -2855,14 +2858,14 @@ $estimator = new Pipeline([
 
 ---
 ### Transformers
-Transformers take [Dataset](#dataset-objects) objects and apply blanket transformations to the samples contained within them. They are often used as part of a [Pipeline](#pipeline) or they can be used by themselves. Examples of transformations are scaling, centering, normalization, dimensionality reduction, missing data imputation, and feature selection.
+Transformers take [Dataset](#dataset-objects) objects and apply blanket transformations to the features contained within them. They are often used as part of a [Pipeline](#pipeline) or they can be used by themselves. Examples of transformations are scaling and centering, normalization, dimensionality reduction, missing data imputation, and feature selection.
 
-The transformer directly transforms the data in place via the `transform()` method:
+The transformer directly transforms the samples in place via the `transform()` method:
 ```php
-public transform(array &$samples, ?array &$labels = null) : void
+public transform(array &$samples) : void
 ```
 
-> **Note**: To transform a dataset without having to pass the raw samples and labels you can pass a transformer to the `apply()` method on a Dataset object.
+> **Note**: To transform a dataset without having to pass the raw sample, instead you can pass a transformer object to the `apply()` method on a Dataset object.
 
 ### Stateful
 For stateful transformers, the `fit()` method will allow the transformer to compute any necessary information from the training set in order to carry out its future transformations. You can think of *fitting* a transformer like *training* a learner.
@@ -2877,7 +2880,8 @@ Check if the transformer has been fitted:
 public fitted() : bool
 ```
 
-#### Example
+**Example**
+
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
@@ -2887,13 +2891,14 @@ $transformer->fit($dataset);
 ```
 
 ### Elastic
-Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer with new data even after it has previously been fitted. *Updating* is to transformer as *partially training* is to online learner.
+Some transformers are able to adapt to new training data. The `update()` method on transformers that implement the Elastic interface can be used to modify the fitting of the transformer with new data even after it has previously been fitted. *Updating* is the transformer equivalent to *partially training* an online learner.
 
 ```php
 public update(Dataset $dataset) : void
 ```
 
-#### Example
+**Example**
+
 ```php
 use Rubix\ML\Transformers\ZScaleStandardizer;
 
@@ -2911,7 +2916,7 @@ $transformer->update($folds[2]);
 ### Dense Random Projector
 The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to reduce the dimensionality of a dataset by projecting it onto a vector space of target dimensionality.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
 
@@ -2942,7 +2947,7 @@ $transformer = new DenseRandomProjector(50);
 ### Gaussian Random Projector
 A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
 
@@ -2970,7 +2975,7 @@ $transformer = new GaussianRandomProjector(100);
 ### HTML Stripper
 Removes any HTML tags that may be in the text of a categorical variable.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
 
@@ -2995,7 +3000,7 @@ The Image Resizer scales and crops images to a user specified width, height, and
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Resource (GD Image)
 
@@ -3025,7 +3030,7 @@ Image Vectorizer takes images (as PHP Resources) and converts them into a flat v
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Resource (Images)
 
@@ -3050,7 +3055,7 @@ $transformer = new ImageVectorizer(3);
 ### Interval Discretizer
 This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
 
@@ -3083,7 +3088,7 @@ $transformer = new IntervalDiscretizer(10);
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Continuous only
 
@@ -3106,7 +3111,7 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Continuous only
 
@@ -3129,7 +3134,7 @@ $transformer = new L2Normalizer();
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](#what-is-a-tuple).
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility** Depends on user function
 
@@ -3160,7 +3165,7 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 ### Linear Discriminant Analysis
 A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or best separates two or more classes.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
 
@@ -3198,7 +3203,7 @@ $transformer = new LinearDiscriminantAnalysis(20);
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-**Interfaces:** Transformer, Stateful, Elastic
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
 **Compatibility:** Continuous
 
@@ -3224,7 +3229,7 @@ $transformer = new MaxAbsoluteScaler();
 ### Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-**Interfaces:** Transformer, Stateful, Elastic
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
 **Compatibility:** Continuous
 
@@ -3258,7 +3263,7 @@ $transformer = new MinMaxNormalizer(-5., 5.);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Categorical, Continuous
 
@@ -3287,7 +3292,7 @@ $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new Popul
 ### Numeric String Converter
 Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
 
@@ -3310,7 +3315,7 @@ $transformer = new NumericStringConverter();
 ### One Hot Encoder
 The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Categorical
 
@@ -3333,7 +3338,7 @@ $transformer = new OneHotEncoder();
 ### Polynomial Expander
 This transformer will generate polynomials up to and including the specified *degree* of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Continuous only
 
@@ -3358,7 +3363,7 @@ $transformer = new PolynomialExpander(3);
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
 
@@ -3401,7 +3406,7 @@ $transformer = new PrincipalComponentAnalysis(15);
 
 This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
 
@@ -3434,7 +3439,7 @@ $transformer = new QuartileStandardizer(true);
 ### Robust Standardizer
 This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
 
@@ -3467,7 +3472,7 @@ $transformer = new RobustStandardizer(true);
 ### Sparse Random Projector
 The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
 
@@ -3499,7 +3504,7 @@ $transformer = new SparseRandomProjector(30);
 ### Stop Word Filter
 Removes user-specified words from any categorical feature column including blobs of text.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
 
@@ -3522,7 +3527,7 @@ $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 ### Text Normalizer
 This transformer converts all text to lowercase and *optionally* removes extra whitespace.
 
-**Interfaces:** Transformer
+**Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
 
@@ -3547,7 +3552,7 @@ $transformer = new TextNormalizer(true);
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
 
-**Interfaces:** Transformer, Stateful, Elastic
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
 **Compatibility:** Continuous only
 
@@ -3576,7 +3581,7 @@ $transformer = new TfIdfTransformer();
 ### Variance Threshold Filter
 A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
 
@@ -3604,7 +3609,7 @@ $transformer = new VarianceThresholdFilter(50);
 ### Word Count Vectorizer
 The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given sample.
 
-**Interfaces:** Transformer, Stateful
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Categorical
 
@@ -3639,7 +3644,7 @@ $transformer = new WordCountVectorizer(10000, 3, new SkipGram());
 ### Z Scale Standardizer
 A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
 
-**Interfaces:** Transformer, Stateful, Elastic
+**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
 **Compatibility:** Continuous
 

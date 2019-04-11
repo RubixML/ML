@@ -39,9 +39,7 @@ class MeanShift implements Learner, Verbose, Persistable
 {
     use LoggerAware;
 
-    protected const SEED_RATIO = 0.5;
-
-    protected const MIN_SEEDS = 100;
+    protected const MIN_SEEDS = 25;
 
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum
@@ -94,9 +92,16 @@ class MeanShift implements Learner, Verbose, Persistable
     protected $seeder;
 
     /**
+     * The ratio of samples from the training set to seed the algorithm with.
+     *
+     * @var float
+     */
+    protected $ratio;
+
+    /**
      * The computed centroid vectors of the training data.
      *
-     * @var array
+     * @var array[]
      */
     protected $centroids = [
         //
@@ -105,7 +110,7 @@ class MeanShift implements Learner, Verbose, Persistable
     /**
      * The amount of centroid shift during each epoch of training.
      *
-     * @var array
+     * @var float[]
      */
     protected $steps = [
         //
@@ -152,6 +157,7 @@ class MeanShift implements Learner, Verbose, Persistable
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
+     * @param float $ratio
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -160,7 +166,8 @@ class MeanShift implements Learner, Verbose, Persistable
         int $maxLeafSize = 30,
         int $epochs = 100,
         float $minChange = 1e-4,
-        ?Seeder $seeder = null
+        ?Seeder $seeder = null,
+        float $ratio = 0.20
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
@@ -182,6 +189,11 @@ class MeanShift implements Learner, Verbose, Persistable
                 . " than 0, $minChange given.");
         }
 
+        if ($ratio < 0.01 or $ratio > 1.) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0.01 and 1, $ratio given.");
+        }
+
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
         $this->kernel = $kernel ?? new Euclidean();
@@ -189,6 +201,7 @@ class MeanShift implements Learner, Verbose, Persistable
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->seeder = $seeder;
+        $this->ratio = $ratio;
     }
 
     /**
@@ -262,6 +275,7 @@ class MeanShift implements Learner, Verbose, Persistable
                     'epochs' => $this->epochs,
                     'min_change' => $this->minChange,
                     'seeder' => $this->seeder,
+                    'ratio' => $this->ratio,
                 ]));
         }
 
@@ -269,8 +283,8 @@ class MeanShift implements Learner, Verbose, Persistable
 
         $tree = new BallTree($this->maxLeafSize, $this->kernel);
 
-        if ($this->seeder) {
-            $k = max(self::MIN_SEEDS, (int) round(self::SEED_RATIO * $n));
+        if ($this->seeder and $n > self::MIN_SEEDS) {
+            $k = (int) round($this->ratio * $n);
 
             $centroids = $this->seeder->seed($dataset, $k);
         } else {

@@ -46,10 +46,10 @@ class AlphaDropout extends Dropout
      */
     public function __construct(float $ratio = 0.1)
     {
+        parent::__construct($ratio);
+
         $this->alpha = ((1. - $ratio) * (1. + $ratio * self::ALPHA_P ** 2)) ** -0.5;
         $this->beta = -$this->alpha * self::ALPHA_P * $ratio;
-
-        parent::__construct($ratio);
     }
 
     /**

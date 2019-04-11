@@ -12,24 +12,8 @@ class StochasticTest extends TestCase
 {
     protected $optimizer;
 
-    protected $gradients;
-
-    protected $parameter;
-
     public function setUp()
     {
-        $this->parameter = new Parameter(Matrix::quick([
-            [0.1, 0.6, -0.4],
-            [0.5, 0.6, -0.4],
-            [0.1, 0.1, -0.7],
-        ]));
-
-        $this->gradients = Matrix::quick([
-            [0.01, 0.05, -0.02],
-            [-0.01, 0.02, 0.03],
-            [0.04, -0.01, -0.5],
-        ]);
-
         $this->optimizer = new Stochastic(0.001);
     }
 
@@ -41,9 +25,26 @@ class StochasticTest extends TestCase
 
     public function test_step()
     {
-        $step = $this->optimizer->step($this->parameter, $this->gradients);
+        $param = new Parameter(Matrix::quick([
+            [0.1, 0.6, -0.4],
+            [0.5, 0.6, -0.4],
+            [0.1, 0.1, -0.7],
+        ]));
 
-        $this->assertInstanceOf(Matrix::class, $step);
-        $this->assertEquals([3, 3], $step->shape());
+        $gradient = Matrix::quick([
+            [0.01, 0.05, -0.02],
+            [-0.01, 0.02, 0.03],
+            [0.04, -0.01, -0.5],
+        ]);
+
+        $expected = [
+            [0.09999000000000001, 0.59995, -0.39998],
+            [0.50001, 0.59998, -0.40003],
+            [0.09996000000000001, 0.10001, -0.6995],
+        ];
+
+        $this->optimizer->step($param, $gradient);
+
+        $this->assertEquals($expected, $param->w()->asArray());
     }
 }

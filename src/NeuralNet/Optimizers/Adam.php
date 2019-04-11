@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 /**
  * Adam
@@ -53,16 +52,18 @@ class Adam implements Optimizer, Adaptive
     /**
      * The per parameter velocity and squared gradient cache.
      *
-     * @var \SplObjectStorage
+     * @var array[]
      */
-    protected $cache;
+    protected $cache = [
+        //
+    ];
 
     /**
      * The number of steps taken since initialization.
      *
      * @var int
      */
-    protected $t;
+    protected $t = 0;
 
     /**
      * @param float $rate
@@ -90,8 +91,6 @@ class Adam implements Optimizer, Adaptive
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
-        $this->cache = new SplObjectStorage();
-        $this->t = 0;
     }
 
     /**
@@ -101,10 +100,10 @@ class Adam implements Optimizer, Adaptive
      */
     public function initialize(Parameter $param) : void
     {
-        $velocity = Matrix::zeros(...$param->w->shape());
-        $g2 = Matrix::zeros(...$param->w->shape());
+        $velocity = Matrix::zeros(...$param->w()->shape());
+        $g2 = Matrix::zeros(...$param->w()->shape());
 
-        $this->cache->attach($param, [$velocity, $g2]);
+        $this->cache[$param->id()] = [$velocity, $g2];
     }
 
     /**
@@ -112,11 +111,10 @@ class Adam implements Optimizer, Adaptive
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Rubix\Tensor\Matrix $gradient
-     * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $param, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : void
     {
-        [$velocity, $g2] = $this->cache[$param];
+        [$velocity, $g2] = $this->cache[$param->id()];
 
         $velocity = $velocity->multiply($this->momentumDecay)
             ->add($gradient->multiply(1. - $this->momentumDecay));
@@ -124,7 +122,7 @@ class Adam implements Optimizer, Adaptive
         $g2 = $g2->multiply($this->rmsDecay)
             ->add($gradient->square()->multiply(1. - $this->rmsDecay));
 
-        $this->cache[$param] = [$velocity, $g2];
+        $this->cache[$param->id()] = [$velocity, $g2];
 
         if ($this->t < self::WARM_UP_STEPS) {
             $this->t++;
@@ -134,7 +132,9 @@ class Adam implements Optimizer, Adaptive
             $g2 = $g2->divide(1. - $this->rmsDecay ** $this->t);
         }
 
-        return $velocity->multiply($this->rate)
+        $step = $velocity->multiply($this->rate)
             ->divide($g2->sqrt()->clipLower(self::EPSILON));
+
+        $param->update($step);
     }
 }

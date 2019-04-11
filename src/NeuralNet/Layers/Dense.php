@@ -133,8 +133,8 @@ class Dense implements Hidden, Parametric
 
         $this->input = $input;
 
-        return $this->weights->w->matmul($input)
-            ->add($this->biases->w->columnAsVector(0));
+        return $this->weights->w()->matmul($input)
+            ->add($this->biases->w()->columnAsVector(0));
     }
 
     /**
@@ -150,8 +150,8 @@ class Dense implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return $this->weights->w->matmul($input)
-            ->add($this->biases->w->columnAsVector(0));
+        return $this->weights->w()->matmul($input)
+            ->add($this->biases->w()->columnAsVector(0));
     }
 
     /**
@@ -178,15 +178,12 @@ class Dense implements Hidden, Parametric
         $dW = $dOut->matmul($this->input->transpose());
         $dB = $dOut->sum()->asColumnMatrix();
 
-        $w = $this->weights->w;
-
-        $this->weights->w = $this->weights->w
-            ->subtract($optimizer->step($this->weights, $dW));
-
-        $this->biases->w = $this->biases->w
-            ->subtract($optimizer->step($this->biases, $dB));
+        $optimizer->step($this->weights, $dW);
+        $optimizer->step($this->biases, $dB);
 
         unset($this->input);
+
+        $w = $this->weights->w();
 
         return function () use ($w, $dOut) {
             return $w->transpose()->matmul($dOut);
@@ -206,8 +203,8 @@ class Dense implements Hidden, Parametric
         }
 
         return [
-            'weights' => clone $this->weights->w,
-            'biases' => clone $this->biases->w,
+            'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -219,11 +216,7 @@ class Dense implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
-        }
-        
-        $this->weights->w = $parameters['weights'];
-        $this->biases->w = $parameters['biases'];
+        $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

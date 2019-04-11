@@ -46,7 +46,7 @@ class StepDecay implements Optimizer
      *
      * @var int
      */
-    protected $n;
+    protected $n = 0;
 
     /**
      * @param float $rate
@@ -74,17 +74,15 @@ class StepDecay implements Optimizer
         $this->rate = $rate;
         $this->steps = $steps;
         $this->decay = $decay;
-        $this->n = 0;
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Rubix\Tensor\Matrix $gradient
-     * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $param, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : void
     {
         $f = floor($this->n / $this->steps);
 
@@ -92,6 +90,8 @@ class StepDecay implements Optimizer
 
         $this->n++;
 
-        return $gradient->multiply($rate);
+        $step = $gradient->multiply($rate);
+
+        $param->update($step);
     }
 }

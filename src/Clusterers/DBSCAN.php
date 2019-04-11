@@ -171,7 +171,9 @@ class DBSCAN implements Estimator
 
                 $predictions[$index] = $cluster;
 
-                [$samples, $seeds, $distances] = $tree->range($dataset->row($index), $this->radius);
+                $neighbor = $dataset[$index];
+
+                [$samples, $seeds, $distances] = $tree->range($neighbor, $this->radius);
 
                 if (count($seeds) >= $this->minDensity) {
                     $neighbors = array_unique(array_merge($neighbors, $seeds));

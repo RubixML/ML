@@ -183,8 +183,8 @@ class Binary implements Output
 
         $this->input = $input;
 
-        $this->z = $this->weights->w->matmul($input)
-            ->add($this->biases->w->columnAsVector(0));
+        $this->z = $this->weights->w()->matmul($input)
+            ->add($this->biases->w()->columnAsVector(0));
 
         $this->computed = $this->activationFn->compute($this->z);
 
@@ -204,8 +204,8 @@ class Binary implements Output
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        $z = $this->weights->w->matmul($input)
-            ->add($this->biases->w->columnAsVector(0));
+        $z = $this->weights->w()->matmul($input)
+            ->add($this->biases->w()->columnAsVector(0));
 
         return $this->activationFn->compute($z);
     }
@@ -240,7 +240,7 @@ class Binary implements Output
         $delta = $this->costFn
             ->compute($expected, $this->computed);
 
-        $penalties = $this->weights->w->sum()
+        $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn
@@ -255,17 +255,14 @@ class Binary implements Output
         $dW = $dA->matmul($this->input->transpose());
         $dB = $dA->sum()->asColumnMatrix();
 
-        $w = $this->weights->w;
-
-        $this->weights->w = $this->weights->w
-            ->subtract($optimizer->step($this->weights, $dW));
-
-        $this->biases->w = $this->biases->w
-            ->subtract($optimizer->step($this->biases, $dB));
+        $optimizer->step($this->weights, $dW);
+        $optimizer->step($this->biases, $dB);
 
         $loss = $delta->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
+
+        $w = $this->weights->w();
 
         return [function () use ($w, $dA) {
             return $w->transpose()->matmul($dA);
@@ -285,8 +282,8 @@ class Binary implements Output
         }
 
         return [
-            'weights' => clone $this->weights->w,
-            'biases' => clone $this->biases->w,
+            'weights' => clone $this->weights,
+            'biases' => clone $this->biases,
         ];
     }
 
@@ -298,11 +295,7 @@ class Binary implements Output
      */
     public function restore(array $parameters) : void
     {
-        if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
-        }
-        
-        $this->weights->w = $parameters['weights'];
-        $this->biases->w = $parameters['biases'];
+        $this->weights = $parameters['weights'];
+        $this->biases = $parameters['biases'];
     }
 }

@@ -18,17 +18,55 @@ use Rubix\Tensor\Matrix;
 class Parameter
 {
     /**
+     * The unique identifier of this parameter.
+     *
+     * @var string
+     */
+    protected $id;
+
+    /**
      * The parameter Matrix.
      *
      * @var \Rubix\Tensor\Matrix
      */
-    public $w;
+    protected $w;
 
     /**
      * @param \Rubix\Tensor\Matrix $w
      */
     public function __construct(Matrix $w)
     {
+        $this->id = uniqid();
         $this->w = $w;
+    }
+
+    /**
+     * Return the unique identifier of the parameter.
+     *
+     * @return string
+     */
+    public function id() : string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Return the parameter matrix.
+     *
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function w() : Matrix
+    {
+        return $this->w;
+    }
+
+    /**
+     * Update the parameter.
+     *
+     * @param \Rubix\Tensor\Matrix $step
+     */
+    public function update(Matrix $step) : void
+    {
+        $this->w = $this->w()->subtract($step);
     }
 }

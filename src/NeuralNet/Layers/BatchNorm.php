@@ -155,8 +155,8 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $beta = $this->beta->w->column(0);
-        $gamma = $this->gamma->w->column(0);
+        $beta = $this->beta->w()->column(0);
+        $gamma = $this->gamma->w()->column(0);
 
         $n = $input->n();
 
@@ -229,8 +229,8 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initilaized.');
         }
         
-        $beta = $this->beta->w->column(0);
-        $gamma = $this->gamma->w->column(0);
+        $beta = $this->beta->w()->column(0);
+        $gamma = $this->gamma->w()->column(0);
 
         $out = [];
 
@@ -277,16 +277,13 @@ class BatchNorm implements Hidden, Parametric
         $dBeta = $dOut->sum()->asColumnMatrix();
         $dGamma = $dOut->multiply($this->xHat)->sum()->asColumnMatrix();
 
-        $this->beta->w = $this->beta->w
-            ->subtract($optimizer->step($this->beta, $dBeta));
-
-        $this->gamma->w = $this->gamma->w
-            ->subtract($optimizer->step($this->gamma, $dGamma));
+        $optimizer->step($this->beta, $dBeta);
+        $optimizer->step($this->gamma, $dGamma);
 
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
-        $gamma = $this->gamma->w->columnAsVector(0);
+        $gamma = $this->gamma->w()->columnAsVector(0);
 
         unset($this->stdInv, $this->xHat);
 
@@ -319,8 +316,8 @@ class BatchNorm implements Hidden, Parametric
         }
 
         return [
-            'beta' => clone $this->beta->w,
-            'gamma' => clone $this->gamma->w,
+            'beta' => clone $this->beta,
+            'gamma' => clone $this->gamma,
         ];
     }
 
@@ -332,11 +329,7 @@ class BatchNorm implements Hidden, Parametric
      */
     public function restore(array $parameters) : void
     {
-        if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initilaized.');
-        }
-
-        $this->beta->w = $parameters['beta'];
-        $this->gamma->w = $parameters['gamma'];
+        $this->beta = $parameters['beta'];
+        $this->gamma = $parameters['gamma'];
     }
 }

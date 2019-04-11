@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
-use SplObjectStorage;
 
 /**
  * Momentum
@@ -41,9 +40,11 @@ class Momentum implements Optimizer, Adaptive
     /**
      * The per parameter velocity matrices.
      *
-     * @var \SplObjectStorage
+     * @var \Rubix\Tensor\Matrix[]
      */
-    protected $cache;
+    protected $cache = [
+        //
+    ];
 
     /**
      * @param float $rate
@@ -64,7 +65,6 @@ class Momentum implements Optimizer, Adaptive
 
         $this->rate = $rate;
         $this->decay = $decay;
-        $this->cache = new SplObjectStorage();
     }
 
     /**
@@ -74,27 +74,26 @@ class Momentum implements Optimizer, Adaptive
      */
     public function initialize(Parameter $param) : void
     {
-        $velocity = Matrix::zeros(...$param->w->shape());
+        $velocity = Matrix::zeros(...$param->w()->shape());
 
-        $this->cache->attach($param, $velocity);
+        $this->cache[$param->id()] = $velocity;
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Rubix\Tensor\Matrix $gradient
-     * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $param, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : void
     {
-        $velocity = $this->cache[$param];
+        $velocity = $this->cache[$param->id()];
 
         $velocity = $gradient->multiply($this->rate)
             ->add($velocity->multiply(1. - $this->decay));
 
-        $this->cache[$param] = $velocity;
+        $this->cache[$param->id()] = $velocity;
 
-        return $velocity;
+        $param->update($velocity);
     }
 }

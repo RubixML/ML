@@ -16,8 +16,7 @@ use InvalidArgumentException;
  * acheiving higher accuracy.
  *
  * References:
- * [1] L. N. Smith. (2017). Cyclical Learning Rates for Training Neural
- * Networks.
+ * [1] L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -109,13 +108,12 @@ class Cyclical implements Optimizer
     }
 
     /**
-     * Calculate a gradient descent step for a given parameter.
+     * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      * @param \Rubix\Tensor\Matrix $gradient
-     * @return \Rubix\Tensor\Matrix
      */
-    public function step(Parameter $param, Matrix $gradient) : Matrix
+    public function step(Parameter $param, Matrix $gradient) : void
     {
         $cycle = floor(1 + $this->n / (2 * $this->steps));
 
@@ -127,6 +125,8 @@ class Cyclical implements Optimizer
 
         $this->n++;
 
-        return $gradient->multiply($rate);
+        $step = $gradient->multiply($rate);
+
+        $param->update($step);
     }
 }
