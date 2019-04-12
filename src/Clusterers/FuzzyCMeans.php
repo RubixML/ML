@@ -312,17 +312,19 @@ class FuzzyCMeans implements Learner, Probabilistic, Verbose, Persistable
      */
     protected function membership(array $sample) : array
     {
-        $membership = [];
+        $membership = $deltas = [];
 
-        foreach ($this->centroids as $cluster => $centroid1) {
-            $a = $this->kernel->compute($sample, $centroid1);
+        foreach ($this->centroids as $centroid) {
+            $deltas[] = $this->kernel->compute($sample, $centroid);
+        }
+
+        foreach ($this->centroids as $cluster => $centroid) {
+            $alpha = $this->kernel->compute($sample, $centroid);
 
             $sigma = 0.;
 
-            foreach ($this->centroids as $centroid2) {
-                $b = $this->kernel->compute($sample, $centroid2);
-
-                $sigma += ($a / ($b ?: self::EPSILON)) ** $this->lambda;
+            foreach ($deltas as $delta) {
+                $sigma += ($alpha / ($delta ?: self::EPSILON)) ** $this->lambda;
             }
 
             $membership[$cluster] = 1. / ($sigma ?: self::EPSILON);
