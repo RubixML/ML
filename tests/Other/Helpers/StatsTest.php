@@ -38,7 +38,7 @@ class StatsTest extends TestCase
 
     public function test_range()
     {
-        $this->assertEquals([1.5, 15], Stats::range($this->values));
+        $this->assertEquals(13.5, Stats::range($this->values));
     }
 
     public function test_percentile()

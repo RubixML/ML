@@ -8,8 +8,8 @@ use RuntimeException;
 /**
  * Image Vectorizer
  *
- * Image Vectorizer takes images (as PHP Resources) and converts them into a
- * flat vector of raw color channel data.
+ * Image Vectorizer takes images and converts them into a flat vector
+ * of raw color channel data.
  *
  * > **Note**: The GD extension is required to use this transformer.
  *
@@ -27,6 +27,13 @@ class ImageVectorizer implements Transformer
     protected $channels;
 
     /**
+     * The the number of bits to encode after the first 8.
+     *
+     * @var int
+     */
+    protected $mu;
+
+    /**
      * @param int $channels
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
@@ -38,12 +45,13 @@ class ImageVectorizer implements Transformer
                 . ' PHP configuration.');
         }
 
-        if ($channels < 1 or $channels > 4) {
+        if ($channels < 1 or $channels > 3) {
             throw new InvalidArgumentException('The number of channels must'
-                . " be between 1 and 4, $channels given.");
+                . " be between 1 and 3, $channels given.");
         }
 
         $this->channels = $channels;
+        $this->mu = ($channels - 1) * 8;
     }
 
     /**
@@ -65,11 +73,13 @@ class ImageVectorizer implements Transformer
 
                     for ($x = 0; $x < $width; $x++) {
                         for ($y = 0; $y < $height; $y++) {
-                            $pixel = imagecolorsforindex($image, imagecolorat($image, $x, $y));
+                            $pixel = imagecolorat($image, $x, $y);
+
+                            $vector[] = $pixel & 0xFF;
             
-                            $features = array_slice($pixel, 0, $this->channels);
-            
-                            $vector = array_merge($vector, array_values($features));
+                            for ($i = 8; $i <= $this->mu; $i *= 2) {
+                                $vector[] = ($pixel >> $i) & 0xFF;
+                            }
                         }
                     }
 

@@ -4,7 +4,6 @@ namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -143,7 +142,8 @@ class MinMaxNormalizer implements Elastic
         $columns = $dataset->columnsByType(DataType::CONTINUOUS);
 
         foreach ($columns as $column => $values) {
-            [$min, $max] = Stats::range($values);
+            $min = min($values);
+            $max = max($values);
 
             $min = min($min, $this->minimums[$column]);
             $max = max($max, $this->maximums[$column]);

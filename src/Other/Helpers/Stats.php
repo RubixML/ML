@@ -78,7 +78,7 @@ class Stats
      */
     public static function midrange(array $values) : float
     {
-        return self::mean(self::range($values));
+        return self::mean([min($values), max($values)]);
     }
 
     /**
@@ -331,20 +331,21 @@ class Stats
     }
 
     /**
-     * Return the minimum and maximum values of a set in a tuple.
+     * Return the statistical range given by the maximum minus the minimum
+     * of a set of values.
      *
      * @param array $values
      * @throws \InvalidArgumentException
-     * @return array
+     * @return float
      */
-    public static function range(array $values) : array
+    public static function range(array $values) : float
     {
         if (empty($values)) {
             throw new InvalidArgumentException('Range is undefined for empty'
                 . ' set.');
         }
 
-        return [min($values), max($values)];
+        return (float) (max($values) - min($values));
     }
 
     /**
@@ -356,9 +357,8 @@ class Stats
     public static function meanVar(array $values) : array
     {
         $mean = self::mean($values);
-        $variance = self::variance($values, $mean);
 
-        return [$mean, $variance];
+        return [$mean, self::variance($values, $mean)];
     }
 
     /**
@@ -371,8 +371,7 @@ class Stats
     public static function medMad(array $values) : array
     {
         $median = self::median($values);
-        $mad = self::mad($values, $median);
 
-        return [$median, $mad];
+        return [$median, self::mad($values, $median)];
     }
 }

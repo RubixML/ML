@@ -33,13 +33,6 @@ class ImageResizer implements Transformer
     protected $height;
 
     /**
-     * Should the image be converted to greyscale?
-     *
-     * @var bool
-     */
-    protected $greyscale;
-
-    /**
      * The Intervention image manager instance.
      *
      * @var \Intervention\Image\ImageManager
@@ -49,14 +42,12 @@ class ImageResizer implements Transformer
     /**
      * @param int $width
      * @param int $height
-     * @param bool $greyscale
      * @param string $driver
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $width = 32,
         int $height = 32,
-        bool $greyscale = false,
         string $driver = 'gd'
     ) {
         if ($width < 1 or $height < 1) {
@@ -66,7 +57,6 @@ class ImageResizer implements Transformer
 
         $this->width = $width;
         $this->height = $height;
-        $this->greyscale = $greyscale;
         $this->intervention = new ImageManager(['driver' => $driver]);
     }
 
@@ -83,10 +73,6 @@ class ImageResizer implements Transformer
             foreach ($sample as $column => &$value) {
                 if (is_resource($value) ? get_resource_type($value) === 'gd' : false) {
                     $image = $this->intervention->make($value);
-
-                    if ($this->greyscale) {
-                        $image = $image->greyscale();
-                    }
 
                     $resize = $image->getWidth() !== $this->width
                         and $image->getHeight() !== $this->height;

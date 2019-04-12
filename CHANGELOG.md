@@ -15,6 +15,8 @@
     - Added Image Resizer transformer
     - Image Vectorizer no longer resizes images
     - Fixed adaptive optimizer bug upon binary unserialization
+    - Removed Quartile Standardizer
+    - Optimized Image Vectorizer using bitwise operations
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

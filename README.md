@@ -120,7 +120,6 @@ $ composer require rubix/ml
 		- [One Hot Encoder](#one-hot-encoder)
 		- [Polynomial Expander](#polynomial-expander)
 		- [Principal Component Analysis](#principal-component-analysis)
-		- [Quartile Standardizer](#quartile-standardizer)
 		- [Robust Standardizer](#robust-standardizer)
 		- [Sparse Random Projector](#sparse-random-projector)
 		- [Stop Word Filter](#stop-word-filter)
@@ -3010,8 +3009,7 @@ The Image Resizer scales and crops images to a user specified width, height, and
 |--|--|--|--|--|
 | 1 | width | 32 | int | The width of the transformed image. |
 | 2 | heights | 32 | int | The height of the transformed image. |
-| 3 | greyscale | false | bool | Should the image be converted to greyscale? |
-| 4 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
+| 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
 
 **Additional Methods:**
 
@@ -3022,11 +3020,11 @@ This transformer does not have any additional methods.
 ```php
 use Rubix\ML\Transformers\ImageResizer;
 
-$transformer = new ImageResizer(28, 28, false, 'gd');
+$transformer = new ImageResizer(28, 28, 'gd');
 ```
 
 ### Image Vectorizer
-Image Vectorizer takes images (as PHP Resources) and converts them into a flat vector of raw color channel data.
+Image Vectorizer takes images and converts them into a flat vector of raw color channel data.
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
@@ -3401,40 +3399,6 @@ $transformer = new PrincipalComponentAnalysis(15);
 **References:**
 
 >- H. Abdi et al. (2010). Principal Component Analysis.
-
-### Quartile Standardizer
-
-This standardizer centers the dataset around its median and scales each feature according to the interquartile range (*IQR*) of that column. The IQR is defined as the range between the 1st quartile (25th *quantile*) and the 3rd quartile (75th *quantile*) thus ignoring values near the extremities of the distribution.
-
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
-
-**Compatibility:** Continuous
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | center | true | bool | Should we center the sample dataset? |
-
-**Additional Methods:**
-
-Return the medians calculated by fitting the training set:
-```php
-public medians() : array
-```
-
-Return the interquartile ranges calculated during fitting:
-```php
-public iqrs() : array
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Transformers\QuartileStandardizer;
-
-$transformer = new QuartileStandardizer(true);
-```
 
 ### Robust Standardizer
 This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.

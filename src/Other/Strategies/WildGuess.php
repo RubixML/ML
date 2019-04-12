@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\Other\Strategies;
 
-use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -67,7 +66,8 @@ class WildGuess implements Continuous
                 . ' at least 1 value.');
         }
 
-        [$this->min, $this->max] = Stats::range($values);
+        $this->min = min($values);
+        $this->max = max($values);
     }
 
     /**

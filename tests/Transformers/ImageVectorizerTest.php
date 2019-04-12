@@ -36,8 +36,8 @@ class ImageVectorizerTest extends TestCase
         $this->dataset->apply($this->transformer);
     
         $outcome = [
-            [22, 35, 60, 53, 66, 102, 29, 44, 73, 36, 49, 79, 45, 57, 89, 21,
-            32, 56, 44, 53, 85, 43, 49, 75, 12, 18, 34],
+            [60, 35, 22, 102, 66, 53, 73, 44, 29, 79, 49, 36, 89, 57, 45, 56,
+                32, 21, 85, 53, 44, 75, 49, 43, 34, 18, 12],
         ];
     
         $this->assertEquals($outcome, $this->dataset->samples());

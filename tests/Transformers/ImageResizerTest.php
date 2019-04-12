@@ -19,7 +19,7 @@ class ImageResizerTest extends TestCase
             [imagecreatefromjpeg(__DIR__ . '/../space.jpg')],
         ]);
 
-        $this->transformer = new ImageResizer(32, 32, false, 'gd');
+        $this->transformer = new ImageResizer(32, 32, 'gd');
     }
 
     public function test_build_transformer()
