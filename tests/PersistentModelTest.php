@@ -7,8 +7,9 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\PersistentModel;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Classifiers\DummyClassifier;
 use PHPUnit\Framework\TestCase;
 
@@ -23,6 +24,8 @@ class PersistentModelTest extends TestCase
         $this->persister = $this->createMock(Filesystem::class);
 
         $this->estimator = new PersistentModel(new DummyClassifier(), $this->persister);
+
+        $this->estimator->setLogger(new BlackHole());
     }
 
     public function test_build_meta_estimator()

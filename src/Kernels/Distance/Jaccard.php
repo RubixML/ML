@@ -24,15 +24,15 @@ class Jaccard implements Distance
      */
     public function compute(array $a, array $b) : float
     {
-        $distance = $mins = $maxs = 0.;
+        $distance = $min = $max = 0.;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
 
-            $mins += min($valueA, $valueB);
-            $maxs += max($valueA, $valueB);
+            $min += min($valueA, $valueB);
+            $max += max($valueA, $valueB);
         }
 
-        return 1. - ($mins / ($maxs ?: self::EPSILON));
+        return 1. - ($min / ($max ?: self::EPSILON));
     }
 }

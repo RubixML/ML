@@ -48,9 +48,9 @@ class ModelOrchestraTest extends TestCase
             new GaussianNB(),
         ], new SoftmaxClassifier(10), 0.8);
 
-        $this->metric = new F1Score();
-
         $this->estimator->setLogger(new BlackHole());
+
+        $this->metric = new F1Score();
 
         srand(self::RANDOM_SEED);
     }

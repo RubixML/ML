@@ -6,6 +6,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
@@ -40,6 +41,8 @@ class GridSearchTest extends TestCase
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [new Euclidean(), new Manhattan()],
         ], new F1Score(), new HoldOut(0.2));
+
+        $this->estimator->setLogger(new BlackHole());
 
         $this->metric = new F1Score();
 

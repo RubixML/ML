@@ -177,8 +177,7 @@ class PReLU implements Hidden, Parametric
         unset($this->input, $this->computed);
 
         return function () use ($z, $computed, $dOut) {
-            return $this->differentiate($z, $computed)
-                ->multiply($dOut);
+            return $this->differentiate($z, $computed)->multiply($dOut);
         };
     }
 

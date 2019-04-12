@@ -15,7 +15,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\RandIndex;
+use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,7 +44,7 @@ class FuzzyCMeansTest extends TestCase
 
         $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 300, 10., new Random());
 
-        $this->metric = new RandIndex();
+        $this->metric = new VMeasure();
 
         $this->estimator->setLogger(new BlackHole());
 

@@ -178,12 +178,12 @@ class Dense implements Hidden, Parametric
         $dW = $dOut->matmul($this->input->transpose());
         $dB = $dOut->sum()->asColumnMatrix();
 
+        $w = $this->weights->w();
+
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
         unset($this->input);
-
-        $w = $this->weights->w();
 
         return function () use ($w, $dOut) {
             return $w->transpose()->matmul($dOut);

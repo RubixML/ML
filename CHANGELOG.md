@@ -17,6 +17,7 @@
     - Fixed adaptive optimizer bug upon binary unserialization
     - Removed Quartile Standardizer
     - Optimized Image Vectorizer using bitwise operations
+    - Pipeline is now more verbose
 
 - 0.0.10-beta
     - Added LODA online anomaly detector

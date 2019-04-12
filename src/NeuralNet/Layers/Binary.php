@@ -255,14 +255,14 @@ class Binary implements Output
         $dW = $dA->matmul($this->input->transpose());
         $dB = $dA->sum()->asColumnMatrix();
 
+        $w = $this->weights->w();
+
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
         $loss = $delta->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
-
-        $w = $this->weights->w();
 
         return [function () use ($w, $dA) {
             return $w->transpose()->matmul($dA);

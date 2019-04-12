@@ -206,14 +206,14 @@ class Continuous implements Output
         $dW = $dL->matmul($this->input->transpose());
         $dB = $dL->sum()->asColumnMatrix();
 
+        $w = $this->weights->w();
+
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
         $loss = $delta->sum()->mean();
 
         unset($this->input, $this->z);
-
-        $w = $this->weights->w();
 
         return [function () use ($w, $dL) {
             return $w->transpose()->matmul($dL);
