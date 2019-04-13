@@ -10,17 +10,14 @@ use RuntimeException;
 /**
  * Persistent Model
  *
- * It is possible to persist a model by wrapping the estimator instance
- * in a Persistent Model meta-estimator. The Persistent Model wrapper
- * gives the estimator three additional methods `save()`, `load()`, and
- * `prompt()` that allow the estimator to be saved and retrieved from
- * storage.
+ * The Persistent Model wrapper gives the estimator two additional methods (`save()`
+ * and `load()`) that allow the estimator to be saved and retrieved from storage.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Learner, Wrapper, Probabilistic, Verbose
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Verbose
 {
     use LoggerAware;
 

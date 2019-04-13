@@ -31,7 +31,7 @@ class Filesystem implements Persister
     protected $path;
 
     /**
-     * The number of backups to keep.
+     * The number of saves to remember.
      *
      * @var int
      */
@@ -76,11 +76,11 @@ class Filesystem implements Persister
      */
     public function save(Persistable $persistable) : void
     {
-        if ($this->history > 0 and is_file($this->path)) {
+        if (is_file($this->path)) {
             $filename = $this->path . '.' . (string) time() . self::BACKUP_EXT;
 
             if (!rename($this->path, $filename)) {
-                throw new RuntimeException('Failed to save backup, check path'
+                throw new RuntimeException('Failed to rename file, check path'
                  . ' and permissions.');
             }
 
@@ -90,12 +90,14 @@ class Filesystem implements Persister
                 $backups[$filename] = filemtime($filename);
             }
 
-            if (count($backups) > $this->history) {
-                arsort($backups);
+            $remove = count($backups) - ($this->history - 1);
 
-                $remove = array_slice(array_keys($backups), $this->history);
+            if ($remove > 0) {
+                asort($backups);
 
-                foreach ($remove as $filename) {
+                $paths = array_slice(array_keys($backups), 0, $remove);
+
+                foreach ($paths as $filename) {
                     unlink($filename);
                 }
             }

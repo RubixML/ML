@@ -10,7 +10,7 @@ A high-level machine learning library that allows you to build programs that lea
 - **Open source** and free to use commercially
 
 ## Installation
-Install Rubix ML using [Composer](https://getcomposer.org/):
+Install Rubix ML with [Composer](https://getcomposer.org/):
 ```sh
 $ composer require rubix/ml
 ```
@@ -35,7 +35,7 @@ $ composer require rubix/ml
 	- [Training and Prediction](#training-and-prediction)
 	- [Evaluation](#evaluating-model-performance)
 	- [Visualization](#visualization)
-  - [Next Steps](#next-steps)
+    - [Next Steps](#next-steps)
 - [System Architecture](#system-architecture)
 - [Tutorials & Examples](https://github.com/RubixML)
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
@@ -48,6 +48,12 @@ $ composer require rubix/ml
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
+        - [Generators](#generators)
+            - [Agglomerate](#agglomerate)
+            - [Blob](#blob)
+            - [Circle](#circle)
+            - [Half Moon](#half-moon)
+            - [Swiss Roll](#swiss-roll)
 	- [Estimators](#estimators)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
@@ -102,6 +108,12 @@ $ composer require rubix/ml
 			- [Model Orchestra](#model-orchestra)
 			- [Persistent Model](#persistent-model)
 			- [Pipeline](#pipeline)
+        - [Persisters](#persisters)
+			- [Filesystem](#filesystem)
+			- [Redis DB](#redis-db)
+            - [Serializers](#serializers)
+                - [Binary](#binary-serializer)
+                - [Native](#native)
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
@@ -154,12 +166,12 @@ $ composer require rubix/ml
 		    - [Normal](#normal)
 			- [Uniform](#uniform)
 		    - [Xavier 1](#xavier-1)
-		     - [Xavier 2](#xavier-2)
+		    - [Xavier 2](#xavier-2)
 		- [Layers](#layers)
 			- [Input Layers](#input-layers)
 				- [Placeholder 1D](#placeholder-1d)
 			- [Hidden Layers](#hidden-layers)
-		      	- [Activation](#activation)
+		        - [Activation](#activation)
 				- [Alpha Dropout](#alpha-dropout)
 				- [Batch Norm](#batch-norm)
 				- [Dense](#dense)
@@ -218,12 +230,6 @@ $ composer require rubix/ml
 			- [Contingency Table](#contingency-table)
 			- [Multiclass Breakdown](#multiclass-breakdown)
 			- [Residual Analysis](#residual-analysis)
-	- [Generators](#generators)
-		- [Agglomerate](#agglomerate)
-		- [Blob](#blob)
-		- [Circle](#circle)
-		- [Half Moon](#half-moon)
-		- [Swiss Roll](#swiss-roll)
 	- [Other](#other)
 		- [Guessing Strategies](#guessing-strategies)
 			- [Blurry Percentile](#blurry-percentile)
@@ -238,25 +244,19 @@ $ composer require rubix/ml
 			- [Params](#params)
 		- [Loggers](#loggers)
 			- [Screen](#screen)
-		- [Persisters](#persisters)
-			- [Filesystem](#filesystem)
-			- [Redis DB](#redis-db)
-		- [Serializers](#serializers)
-			- [Binary](#binary-serializer)
-			- [Native](#native)
 		- [Tokenizers](#tokenizers)
 			- [N-Gram](#n-gram)
 			- [Skip-Gram](#skip-gram)
 			- [Whitespace](#whitespace)
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
-	- [What environment should I run Rubix in?](#what-environment-should-i-run-rubix-in)
-	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
+	- [What environment (SAPI) should I run Rubix in?](#what-environment-sapi-should-i-run-rubix-in)
 	- [What is a Tuple?](#what-is-a-tuple)
+    - [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
 	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
-	- [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
 	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
+    - [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -273,7 +273,7 @@ Machine learning (ML) is the process by which a computer program is able to prog
 	- **Manifold Learning** is used in visualizing high dimensional datasets, embedding sparse feature representations, and reducing model size by producing a low dimensional representation of the original feature space.
 
 ### Obtaining Data
-Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their spouse?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*.
+Machine learning projects typically begin with a question. For example, you might want to answer the question "who of my friends are most likely to stay married to their partner?" One way to go about answering this question with machine learning would be to go out and ask a bunch of happily married and divorced couples the same set of questions about their partner and then use that data to build a model of what a successful marriage looks like. Later, you can use that model to make predictions based on the answers you get from your friends. Specifically, the answers you collect are called *features* and they constitute measurements of some phenomena being observed. The number of features in a sample is called the *dimensionality* of the sample. For example, a sample with 20 features is said to be *20 dimensional*.
 
 An alternative to collecting data yourself is to download one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that, usually, the data has already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open source datasets.
 
@@ -877,6 +877,208 @@ $dataset = Unlabeled::quick($samples);  // Build a new dataset without validatio
 // or ...
 
 $dataset = new Unlabeled($samples, true);  // Use the full constructor
+```
+
+### Generators
+Dataset generators produce synthetic datasets of a user-specified shape, dimensionality, and cardinality. Synthetic data is useful for a number of tasks including experimenting with data of various shapes, augmenting an already existing dataset with more data, or for testing and demonstration purposes.
+
+To generate a Dataset object with **n** samples (*rows*):
+```php
+public generate(int $n) : Dataset
+```
+
+Return the dimensionality of the samples produced by the generator:
+```php
+public dimensions() : int
+```
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\Blob;
+
+$generator = new Blob([0, 0], 1.0);
+
+$dataset = $generator->generate(3);
+
+var_dump($generator->dimensions());
+
+var_dump($dataset->samples());
+```
+
+**Output:**
+
+```sh
+int(2)
+
+object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
+  ["samples":protected]=>
+  array(3) {
+    [0]=>
+    array(2) {
+      [0]=> float(-0.2729673885539)
+      [1]=> float(0.43761840244204)
+    }
+    [1]=>
+    array(2) {
+      [0]=> float(-1.2718092282012)
+      [1]=> float(-1.9558245484829)
+    }
+    [2]=>
+    array(2) {
+      [0]=> float(1.1774185431405)
+      [1]=> float(0.05168623824664)
+    }
+  }
+}
+```
+
+### Agglomerate
+An Agglomerate is a collection of generators with each of them given a user-defined label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the target label is a discrete value.
+
+**Data Types:** Depends on agglomerated generators' types
+
+**Label Type:** Categorical
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | generators | | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
+| 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's proportion to the overall agglomeration. |
+
+**Additional Methods:**
+
+Return the normalized weight values of each generator in the agglomerate:
+```php
+public weights() : array
+```
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\Agglomerate;
+
+$generator = new Agglomerate([
+	new Blob([5, 2], 1.0),
+	new HalfMoon(-3, 5, 1.5, 90.0, 0.1),
+	new Circle(2, -4, 2.0, 0.05),
+], [
+	5, 6, 3, // Arbitrary weight values
+]);
+```
+
+### Blob
+A normally distributed (Gaussian) n-dimensional blob of samples centered at a given vector. The standard deviation can be set for the whole blob or for each feature column independently. When a global value is used, the resulting blob will be isotropic and will converge asypmtotically to a sphere.
+
+**Data Types:** Continuous
+
+**Label Type:** None
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | center | [0.0, 0.0] | array | The coordinates of the center of the blob. |
+| 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the standard deviation on a per feature column basis. |
+
+**Additional Methods:**
+
+This generator does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\Blob;
+
+$generator = new Blob([-1.2, -5., 2.6, 0.8, 10.], 0.25);
+```
+
+### Circle
+Creates a dataset of points forming a circle in 2 dimensions. The label of each sample is the random value used to generate the projection measured in degrees.
+
+**Data Types:** Continuous
+
+**Label Type:** Continuous
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | x | 0.0 | float | The *x* coordinate of the center of the circle. |
+| 2 | y | 0.0 | float | The *y* coordinate of the center of the circle. |
+| 3 | scale | 1.0 | float | The scaling factor of the circle. |
+| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
+
+**Additional Methods:**
+
+This generator does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\Circle;
+
+$generator = new Circle(0.0, 0.0, 100, 0.1);
+```
+
+### Half Moon
+Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted on a chart. The label for each sample is the value obtained by reversing the generative process for that particular sample.
+
+**Data Types:** Continuous
+
+**Label Type:** Continuous
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | x | 0.0 | float | The *x* coordinate of the center of the half moon. |
+| 2 | y | 0.0 | float | The *y* coordinate of the center of the half moon. |
+| 3 | scale | 1.0 | float | The scaling factor of the half moon. |
+| 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
+| 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
+
+**Additional Methods:**
+
+This generator does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\HalfMoon;
+
+$generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
+```
+
+### Swiss Roll
+Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral. The labels are the seeds to the swiss roll transformation.
+
+**Data Types:** Continuous
+
+**Label Type:** Continuous
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | x | 0.0 | float | The *x* coordinate of the center of the swiss roll. |
+| 2 | y | 0.0 | float | The *y* coordinate of the center of the swiss roll. |
+| 3 | z | 0.0 | float | The *z* coordinate of the center of the swiss roll. |
+| 4 | scale | 1.0 | float | The scaling factor of the swiss roll. |
+| 5 | depth | 21.0 | float | The depth of the swiss roll i.e the scale of the y axis. |
+| 6 | noise | 0.3 | float | The standard deviation of the gaussian noise. |
+
+**Additional Methods:**
+
+This generator does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Datasets\Generators\SwissRoll;
+
+$generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 ```
 
 ---
@@ -2771,7 +2973,7 @@ $estimator = new ModelOrchestra([
 ```
 
 ### Persistent Model
-It is possible to persist a model by wrapping the estimator instance in a Persistent Model meta-estimator. The Persistent Model wrapper gives the estimator three additional methods `save()`, `load()`, and `prompt()` that allow the estimator to be saved and retrieved from storage.
+The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow the estimator to be saved and retrieved from storage.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose)
 
@@ -2796,23 +2998,17 @@ Load the persistent model from storage given a persister:
 public static load(Persister $persister) : self
 ```
 
-Prompt the user to save the model or not via stdout:
-```php
-public prompt() : void
-```
-
 **Example:**
 
 ```php
 use Rubix\ML\PersistentModel;
-use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Persisters\Serializers\Native;
 
-$persister = new Filesystem('/random_forest.model', 2, new Native());
+$persister = new Filesystem('random_forest.model', 2, new Native());
 
-$estimator = new PersistentModel(new LogisticRegression(256, new Adam(0.001)), $persister);
+$estimator = new PersistentModel(new RandomForest(100), $persister);
 ```
 
 ### Pipeline
@@ -2849,10 +3045,128 @@ use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $estimator = new Pipeline([
 	new MissingDataImputer('?'),
-	new OneHotEncoder(),
+	new OneHotEncoder(), 
 	new PrincipalComponentAnalysis(20),
 	new ZScaleStandardizer(true),
 ], new SoftmaxClassifier(128, new Adam(0.001)), true);
+```
+
+### Persisters
+Persisters are responsible for persisting a *Persistable* estimator to storage and are also used by the [Persistent Model](#persistent-model) meta-estimator to save and restore models.
+
+To store a persistable estimator:
+```php
+public save(Persistable $persistable) : void
+```
+
+Load the saved model from persistence:
+```php
+public load() : Persistable
+```
+
+### Filesystem
+Filesystems are local or remote storage drives that are organized by files and folders. The Filesystem persister saves models to a file at a given path and automatically keeps backups of the latest versions of your models.
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | path | | string | The path to the model file on the filesystem. |
+| 2 | history | 2 | int | The number of saves to remember. |
+| 3 | serializer | Native | object | The serializer used to convert to and from storage format. |
+
+**Additional Methods:**
+
+This persister does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Persisters\Serializers\Binary;
+
+$persister = new Filesystem('/path/to/example.model', 3, new Binary());
+```
+
+### Redis DB
+Redis is a high performance in-memory key value store that can be used to persist your trained models over a network.
+
+> **Note**: The Redis persister requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | key | | string | The key of the object in the database. |
+| 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
+| 3 | port | 6379 | int | The port of the Redis server. |
+| 4 | db | 0 | int | The database number. |
+| 5 | password | None | string | An optional password to access a password-protected server. |
+| 6 | history | 2 | int | The number of saves to remember. |
+| 7 | serializer | Native | object | The serializer used to convert to and from storage format. |
+| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
+
+**Additional Methods:**
+
+Return an associative array of info from the Redis server:
+```php
+public info() : array
+```
+
+**Example:**
+
+```php
+use Rubix\ML\Persisters\RedisDB;
+use Rubix\ML\Persisters\Serializers\Native;
+
+$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, new Native(), 1.5);
+```
+
+### Serializers
+Serializers take Persistable estimators and convert them between their in-memory and storage representations.
+
+To serialize a Persistable estimator:
+```php
+public serialize(Persistable $persistable) : string
+```
+
+To unserialize a Persistable estimator:
+```php
+public unserialize(string $data) : Persistable
+```
+
+### Binary Serializer
+Converts Persistables to and from binary storage format.
+
+> **Note**: The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
+
+> **Note**: Binary format is *usually* smaller and faster than plain text format, although this is not always the case.
+
+**Parameters:**
+
+This serializer does not have any parameters.
+
+**Example:**
+
+```php
+use Rubix\ML\Persisters\Serializers\Binary;
+
+$serializer = new Binary();
+```
+
+### Native
+The native plain text serialization format that is bundled with PHP core.
+
+**Parameters:**
+
+This serializer does not have any parameters.
+
+**Example:**
+
+```php
+use Rubix\ML\Persisters\Serializers\Native;
+
+$serializer = new Native();
 ```
 
 ---
@@ -5240,208 +5554,6 @@ var_dump($result);
   }
 ```
 
-### Generators
-Dataset generators produce synthetic data of a user-specified shape, dimensionality, and cardinality. Synthetic data is useful for augmenting a dataset or for quick testing and demonstration purposes.
-
-To generate a Dataset object with **n** samples (*rows*):
-```php
-public generate(int $n) : Dataset
-```
-
-Return the dimensionality of the samples produced by the generator:
-```php
-public dimensions() : int
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\Blob;
-
-$generator = new Blob([0, 0], 1.0);
-
-$dataset = $generator->generate(3);
-
-var_dump($generator->dimensions());
-
-var_dump($dataset->samples());
-```
-
-**Output:**
-
-```sh
-int(2)
-
-object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
-  ["samples":protected]=>
-  array(3) {
-    [0]=>
-    array(2) {
-      [0]=> float(-0.2729673885539)
-      [1]=> float(0.43761840244204)
-    }
-    [1]=>
-    array(2) {
-      [0]=> float(-1.2718092282012)
-      [1]=> float(-1.9558245484829)
-    }
-    [2]=>
-    array(2) {
-      [0]=> float(1.1774185431405)
-      [1]=> float(0.05168623824664)
-    }
-  }
-}
-```
-
-### Agglomerate
-An Agglomerate is a collection of other generators each given a label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the label is a discrete value.
-
-**Data Type:** Depends on agglomerated generators
-
-**Label Type:** Categorical
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | generators | | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
-| 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's contribution to the agglomeration. |
-
-**Additional Methods:**
-
-Return the normalized weights of each generator in the agglomerate:
-```php
-public weights() : array
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\Agglomerate;
-
-$generator = new Agglomerate([
-	new Blob([5, 2], 1.0),
-	new HalfMoon([-3, 5], 1.5, 90.0, 0.1),
-	new Circle([2, -4], 2.0, 0.05),
-], [
-	5, 6, 3, // An arbitrary set of weights
-]);
-```
-
-### Blob
-A normally distributed n-dimensional blob of samples centered at a given mean vector. The standard deviation can be set for the whole blob or for each  feature column independently. When a global value is used, the resulting blob will be isotropic.
-
-**Data Type:** Continuous
-
-**Label Type:** None
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | center | [0.0, 0.0] | array | The coordinates of the center of the blob i.e. a centroid vector. |
-| 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the SD for each feature column. |
-
-**Additional Methods:**
-
-This generator does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\Blob;
-
-$generator = new Blob([-1.2, -5.0, 2.6, 0.8], 0.25);
-```
-
-### Circle
-Creates a circle of points in 2 dimensions.
-
-**Data Type:** Continuous
-
-**Label Type:** Continuous
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | x | 0.0 | float | The x coordinate of the center of the circle. |
-| 2 | y | 0.0 | float | The y coordinate of the center of the circle. |
-| 3 | scale | 1.0 | float | The scaling factor of the circle. |
-| 4 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a ratio of the scaling factor. |
-
-**Additional Methods:**
-
-This generator does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\Circle;
-
-$generator = new Circle(0.0, 0.0, 100, 0.1);
-```
-
-### Half Moon
-Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted.
-
-**Data Type:** Continuous
-
-**Label Type:** Continuous
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | x | 0.0 | float | The x coordinate of the center of the half moon. |
-| 2 | y | 0.0 | float | The y coordinate of the center of the half moon. |
-| 3 | scale | 1.0 | float | The scaling factor of the half moon. |
-| 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
-| 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
-
-**Additional Methods:**
-
-This generator does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\HalfMoon;
-
-$generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
-```
-
-### Swiss Roll
-Generate a 3-dimensional swiss roll dataset with continuous valued labels. The labels are the inputs to the swiss roll transformation and are suitable for non-linear regression problems.
-
-**Data Type:** Continuous
-
-**Label Type:** Continuous
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | x | 0.0 | float | The x coordinate of the center of the swiss roll. |
-| 2 | y | 0.0 | float | The y coordinate of the center of the swiss roll. |
-| 3 | z | 0.0 | float | The z coordinate of the center of the swiss roll. |
-| 4 | scale | 1.0 | float | The scaling factor of the swiss roll. |
-| 5 | depth | 21.0 | float | The depth of the swiss roll i.e the scale of the y axis. |
-| 6 | noise | 0.3 | float | The standard deviation of the gaussian noise. |
-
-**Additional Methods:**
-
-This generator does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\Datasets\Generators\SwissRoll;
-
-$generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
-```
-
 ---
 ### Other
 This section includes all classes that do not fall under a specific category.
@@ -5759,120 +5871,6 @@ $logger = new Screen('credit', true);
 ```
 
 ---
-### Persisters
-Persisters are responsible for persisting a *persistable* object and are used by the [Persistable Model](#persistable-model) meta-estimator to save and restore models.
-
-To store a persistable estimator:
-```php
-public save(Persistable $persistable) : void
-```
-
-Load the last model that was saved:
-```php
-public load() : Persistable
-```
-
-### Filesystem
-Filesystems are local or remote storage drives that are organized by files and folders. The filesystem persister saves models to a file at a user-specified path and automatically keeps backups of the latest versions of your models.
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | path | None | string | The path to the file on the filesystem. |
-| 2 | history | 2 | int | The number of backups to keep. |
-| 3 | serializer | Native | object | The serializer used to convert to and from serial format. |
-
-**Additional Methods:**
-
-This persister does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\Persisters\Filesystem;
-use Rubix\ML\Persisters\Serializers\Binary;
-
-$persister = new Filesystem('/path/to/example.model', 1, new Binary());
-```
-
-### Redis DB
-Redis is a high performance in-memory key value store that can be used to persist models. The persiter requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | key | | string | The key of the object in the database. |
-| 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
-| 3 | port | 6379 | int | The port of the Redis server. |
-| 4 | db | 0 | int | The database number. |
-| 5 | password | | string | An optional password to access the database server. |
-| 6 | history | 2 | int | The number of backups to keep. |
-| 7 | serializer | Native | object | The serializer used to convert to and from serial format. |
-| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
-
-**Additional Methods:**
-
-Return an associative array of info from the Redis server:
-```php
-public info() : array
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Persisters\RedisDB;
-use Rubix\ML\Persisters\Serializers\Native;
-
-$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, new Native(), 1.5);
-```
-
----
-### Serializers
-Serializers take persistable objects and convert between object and serial (text, binary, etc.) representations of them. They are responsible for making persistable objects savable to a backend system such as a database or filesystem.
-
-To serialize a persistable object:
-```php
-public serialize(Persistable $persistable) : string
-```
-
-To unserialize a persistable object:
-```php
-public unserialize(string $data) : Persistable
-```
-
-### Binary Serializer
-Converts persistable object to and from a binary encoding. Binary format is *usually* smaller and faster than plain text serializers.
-
-**Parameters:**
-
-This serializer does not have any parameters.
-
-**Example:**
-
-```php
-use Rubix\ML\Persisters\Serializers\Binary;
-
-$serializer = new Binary();
-```
-
-### Native
-The native PHP plain text serialization format used to encode persistable objects.
-
-**Parameters:**
-
-This serializer does not have any parameters.
-
-**Example:**
-
-```php
-use Rubix\ML\Persisters\Serializers\Native;
-
-$serializer = new Native();
-```
-
----
 ### Tokenizers
 Tokenizers take a body of text and convert the words to an array of string *tokens*. Tokens can represent a single word or multiple words such as in [NGram](#n-gram) and [SkipGram](#skip-gram). Tokenizers are used by various transformers in Rubix such as the [Word Count Vectorizer](#word-count-vectorizer) to represent blobs of text as token counts.
 
@@ -5981,12 +5979,12 @@ $tokenizer = new Word();
 ## FAQ
 Here you can find answers to the most frequently asked Rubix ML questions.
 
-### What environment should I run Rubix in?
-All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance.
+### What environment (SAPI) should I run Rubix in?
+All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
 
 If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run a standalone model server that implements its own networking (HTTP, TCP, ZMQ, etc.) layer and runs from the CLI instead of Apache server or NGINX via FPM which is much slower.
 
-To run a program using the command line interface (CLI), open a terminal and enter:
+To run a program using the PHP command line interface (CLI), open a terminal and enter:
 ```sh
 $ php example.php
 ```
@@ -5994,7 +5992,7 @@ $ php example.php
 > **Note**: The PHP interpreter must be in your default PATH for the above syntax to work.
 
 ### What is a Tuple?
-A *tuple* is simply a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, such as Python, tuples are a separate datatype and their properties such as immutability are enforced by the interpreter, unlike PHP arrays.
+A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
 
 **Example:**
 
@@ -6002,30 +6000,30 @@ A *tuple* is simply a way to denote an immutable sequential array with a predefi
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
+### What is the difference between categorical and continuous data types?
+There are generally 2 classes of data types that Rubix distinguishes by convention.
+
+Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *gender* or *city* and can be 1 of K possible values. Categorical feature types are always represented as a string internal type.
+
+Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
+
 ### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
-Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input data such as edges and textures in an image. A number of learners in Rubix support Deep *Representation* Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
-
-### What is the difference between categorical and continuous data types?
-There are 2 classes of data types that Rubix distinguishes by convention.
-
-Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *color* or *city* and can be 1 of K possible values. Categorical features are denoted as *string* types.
-
-Continuous data are *quantitative* properties of sample such as *height* or *age* and can be any number within the set of infinite *real* numbers. Continuous features are represented as either *float* or *int* types.
+Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
 ### Does Rubix support Reinforcement Learning?
 We do not. Rubix is only designed for *supervised* and *unsupervised* learning.
 
 ### I'm getting out of memory errors
-Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) unless you are running in production.
+Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) or slightly below your device's memory supply for best results.
 
-> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See [Online](#online) estimators for more information.
+> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](#online) estimators for more information.
 
 ---
 ## Testing
-Rubix utilizes a combination of static code analysis and unit tests for quality assurance and to reduce the number of bugs. Rubix provides three [Composer](https://getcomposer.org/) scripts that can be run from the root directory to automate the testing process.
+Rubix utilizes a combination of static code analysis and unit tests for quality assurance (QA) and to reduce the number of bugs. Rubix provides three [Composer](https://getcomposer.org/) scripts that can be run from the root directory to automate the testing process.
 
 To run static analysis:
 ```sh
@@ -6041,8 +6039,6 @@ To run the unit tests:
 ```sh
 $ composer test
 ```
-
-> **Note**: Due to the non-deterministic nature of many of the learning algorithms, it is normal for some tests to fail intermittently.
 
 ---
 ## Contributing

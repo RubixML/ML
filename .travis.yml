@@ -6,9 +6,9 @@ php:
     - '7.3'
 
 before_install:
-    - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - pecl install -f svm
+    - yes no | pecl install -f redis
     - pecl install -f igbinary
+    - pecl install -f svm
 
 script:
     - composer build

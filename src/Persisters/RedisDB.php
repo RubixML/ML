@@ -13,7 +13,9 @@ use Redis;
  * Redis DB
  *
  * Redis is a high performance in-memory key value store that can be used to
- * persist models. The persiter requires the PHP Redis extension and a properly
+ * persist models over a network.
+ *
+ * > **Note**: The persiter requires the PHP Redis extension and a properly
  * configured Redis server.
  *
  * @category    Machine Learning
@@ -30,7 +32,7 @@ class RedisDB implements Persister
     protected $key;
 
     /**
-     * The number of backups to keep.
+     * The number of saves to remember.
      *
      * @var int
      */
@@ -100,9 +102,9 @@ class RedisDB implements Persister
                 . (string) $db . '.');
         }
 
-        if ($history < 0) {
-            throw new InvalidArgumentException('The number of backups'
-                . " cannot be less than 0, $history given.");
+        if ($history < 1) {
+            throw new InvalidArgumentException('History cannot be less'
+                . " than 1, $history given.");
         }
 
         $this->key = $key;
@@ -131,20 +133,12 @@ class RedisDB implements Persister
     {
         $data = $this->serializer->serialize($persistable);
 
-        $success = $length = $this->connector->rPush($this->key, $data);
+        $length = $this->connector->lPush($this->key, $data);
 
-        if (!$success) {
-            throw new RuntimeException('There was an error saving the'
-                . ' model to the database.');
-        }
+        $remove = $length - $this->history;
 
-        $remove = $length - ($this->history + 1);
-
-        for ($i = 0; $i < $remove; $i++) {
-            if (!$this->connector->lPop($this->key)) {
-                throw new RuntimeException('There was an error'
-                    . ' deleting an old backup from the database.');
-            }
+        if ($remove > 0) {
+            $this->connector->lTrim($this->key, 0, $remove);
         }
     }
 
@@ -156,7 +150,7 @@ class RedisDB implements Persister
      */
     public function load() : Persistable
     {
-        $data = $this->connector->lGet($this->key, -1) ?: '';
+        $data = $this->connector->lGet($this->key, 0) ?: '';
 
         $persistable = $this->serializer->unserialize($data);
 
