@@ -17,7 +17,7 @@ use Closure;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Activation implements Hidden, Nonparametric
+class Activation implements Hidden
 {
     /**
      * The function computes the activation of the layer.

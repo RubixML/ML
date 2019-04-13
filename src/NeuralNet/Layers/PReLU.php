@@ -7,6 +7,7 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 use Closure;
 
 /**
@@ -87,15 +88,15 @@ class PReLU implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Generator
      */
-    public function parameters() : array
+    public function parameters() : Generator
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        return [$this->alpha];
+        yield $this->alpha;
     }
 
     /**
@@ -109,9 +110,9 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $a = Matrix::fill($this->initial, $fanOut, 1);
+        $alpha = Matrix::fill($this->initial, $fanOut, 1);
 
-        $this->alpha = new Parameter($a);
+        $this->alpha = new Parameter($alpha);
 
         $this->width = $fanOut;
 

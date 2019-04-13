@@ -4,6 +4,7 @@ namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
@@ -45,7 +46,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MLPRegressor implements Online, Verbose, Persistable
+class MLPRegressor implements Estimator, Online, Verbose, Persistable
 {
     use LoggerAware;
 

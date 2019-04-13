@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use RuntimeException;
+use Generator;
 use Closure;
 
 /**
@@ -108,15 +109,16 @@ class BatchNorm implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Generator
      */
-    public function parameters() : array
+    public function parameters() : Generator
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
         }
 
-        return [$this->beta, $this->gamma];
+        yield $this->beta;
+        yield $this->gamma;
     }
 
     /**

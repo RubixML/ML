@@ -9,6 +9,7 @@ use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 use Closure;
 
 /**
@@ -88,15 +89,16 @@ class Dense implements Hidden, Parametric
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Generator
      */
-    public function parameters() : array
+    public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return [$this->weights, $this->biases];
+        yield $this->weights;
+        yield $this->biases;
     }
 
     /**
@@ -138,7 +140,7 @@ class Dense implements Hidden, Parametric
     }
 
     /**
-     * Compute an inferential pass through the layer.
+     * Compute an inference pass through the layer.
      *
      * @param \Rubix\Tensor\Matrix $input
      * @throws \RuntimeException

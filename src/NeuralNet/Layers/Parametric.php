@@ -2,19 +2,21 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Generator;
+
 interface Parametric extends Nonparametric
 {
     /**
      * Return the parameters of the layer.
      *
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Generator
      */
-    public function parameters() : array;
+    public function parameters() : Generator;
 
     /**
      * Return the parameters of the layer in an associative array.
      *
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Parameter[]
      */
     public function read() : array;
 

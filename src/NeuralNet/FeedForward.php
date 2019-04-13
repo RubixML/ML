@@ -12,6 +12,7 @@ use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use Generator;
 
 /**
  * Feed Forward
@@ -26,13 +27,36 @@ use InvalidArgumentException;
 class FeedForward implements Network
 {
     /**
-     * The layers of the network.
+     * The input layer to the network.
      *
-     * @var array
+     * @var \Rubix\ML\NeuralNet\Layers\Input
      */
-    protected $layers = [
+    protected $input;
+
+    /**
+     * The hidden layers of the network.
+     *
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     */
+    protected $hidden = [
         //
     ];
+
+    /**
+     * The pathing of the backward pass through the hidden layers.
+     *
+     * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
+     */
+    protected $backPass = [
+        //
+    ];
+
+    /**
+     * The output layer of the network.
+     *
+     * @var \Rubix\ML\NeuralNet\Layers\Output
+     */
+    protected $output;
 
     /**
      * The gradient descent optimizer used to train the network.
@@ -42,15 +66,6 @@ class FeedForward implements Network
     protected $optimizer;
 
     /**
-     * The memoized pathing of the backward pass through the hidden layers.
-     *
-     * @var array
-     */
-    protected $backPass = [
-        //
-    ];
-
-    /**
      * @param \Rubix\ML\NeuralNet\Layers\Input $input
      * @param array $hidden
      * @param \Rubix\ML\NeuralNet\Layers\Output $output
@@ -58,27 +73,26 @@ class FeedForward implements Network
      */
     public function __construct(Input $input, array $hidden, Output $output, Optimizer $optimizer)
     {
-        $this->layers[] = $input;
-
         foreach ($hidden as $layer) {
             if (!$layer instanceof Hidden) {
                 throw new InvalidArgumentException('Cannot use '
                     . get_class($layer) . ' as a hidden layer.');
             }
-
-            $this->layers[] = $layer;
         }
 
-        $this->layers[] = $output;
+        $layers = [];
+        $layers[] = $input;
+        $layers = array_merge($layers, $hidden);
+        $layers[] = $output;
 
         $fanIn = 0;
 
-        foreach ($this->layers as $layer) {
+        foreach ($layers as $layer) {
             $fanIn = $layer->initialize($fanIn);
         }
 
         if ($optimizer instanceof Adaptive) {
-            foreach ($this->layers as $layer) {
+            foreach ($layers as $layer) {
                 if ($layer instanceof Parametric) {
                     foreach ($layer->parameters() as $param) {
                         $optimizer->initialize($param);
@@ -87,18 +101,11 @@ class FeedForward implements Network
             }
         }
 
+        $this->input = $input;
+        $this->hidden = $hidden;
+        $this->backPass = array_reverse($hidden);
+        $this->output = $output;
         $this->optimizer = $optimizer;
-        $this->backPass = array_reverse($this->hidden());
-    }
-
-    /**
-     * Return all the layers in the network.
-     *
-     * @return array
-     */
-    public function layers() : array
-    {
-        return $this->layers;
     }
 
     /**
@@ -108,7 +115,7 @@ class FeedForward implements Network
      */
     public function input() : Input
     {
-        return $this->layers[0];
+        return $this->input;
     }
 
     /**
@@ -118,7 +125,7 @@ class FeedForward implements Network
      */
     public function hidden() : array
     {
-        return array_slice($this->layers, 1, $this->depth() - 2, true);
+        return $this->hidden;
     }
 
     /**
@@ -128,19 +135,41 @@ class FeedForward implements Network
      */
     public function output() : Output
     {
-        return $this->layers[$this->depth() - 1];
+        return $this->output;
+    }
+
+    /**
+     * Return all the layers in the network.
+     *
+     * @return \Generator
+     */
+    public function layers() : Generator
+    {
+        yield $this->input;
+        
+        foreach ($this->hidden as $hidden) {
+            yield $hidden;
+        }
+
+        yield $this->output;
     }
 
     /**
      * The parametric layers of the network. i.e. the layers that have weights.
      *
-     * @return array
+     * @return \Generator
      */
-    public function parametric() : array
+    public function parametric() : Generator
     {
-        return array_filter($this->layers, function ($layer) {
-            return $layer instanceof Parametric;
-        });
+        foreach ($this->hidden as $layer) {
+            if ($layer instanceof Parametric) {
+                yield $layer;
+            }
+        }
+
+        if ($this->output instanceof Parametric) {
+            yield $this->output;
+        }
     }
 
     /**
@@ -150,21 +179,21 @@ class FeedForward implements Network
      */
     public function depth() : int
     {
-        return count($this->layers);
+        return count($this->hidden) + 2;
     }
 
     /**
-     * Do a forward and backward pass of the network in one call. Returns the
-     * loss.
+     * Do a forward and backward pass of the network in one call. Returns
+     * the loss from the backward pass.
      *
      * @param \Rubix\ML\Datasets\Labeled $batch
      * @return float
      */
     public function roundtrip(Labeled $batch) : float
     {
-        $samples = Matrix::quick($batch->samples())->transpose();
+        $input = Matrix::quick($batch->samples())->transpose();
 
-        $this->feed($samples);
+        $this->feed($input);
 
         return $this->backpropagate($batch->labels());
     }
@@ -177,11 +206,13 @@ class FeedForward implements Network
      */
     public function feed(Matrix $input) : Matrix
     {
-        foreach ($this->layers as $layer) {
-            $input = $layer->forward($input);
+        $input = $this->input->forward($input);
+
+        foreach ($this->hidden as $hidden) {
+            $input = $hidden->forward($input);
         }
 
-        return $input;
+        return $this->output->forward($input);
     }
 
     /**
@@ -192,24 +223,25 @@ class FeedForward implements Network
      */
     public function infer(Matrix $input) : Matrix
     {
-        foreach ($this->layers as $layer) {
-            $input = $layer->infer($input);
+        $input = $this->input->infer($input);
+
+        foreach ($this->hidden as $hidden) {
+            $input = $hidden->infer($input);
         }
 
-        return $input;
+        return $this->output->infer($input);
     }
 
     /**
-     * Backpropagate the gradient produced by the cost function and return the
-     * loss.
+     * Backpropagate the gradient produced by the cost function and return
+     * the loss calculated by the output layer's cost function.
      *
      * @param array $labels
      * @return float
      */
     public function backpropagate(array $labels) : float
     {
-        [$gradient, $loss] = $this->output()
-            ->back($labels, $this->optimizer);
+        [$gradient, $loss] = $this->output->back($labels, $this->optimizer);
 
         foreach ($this->backPass as $layer) {
             $gradient = $layer->back($gradient, $this->optimizer);

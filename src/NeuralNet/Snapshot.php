@@ -8,7 +8,7 @@ use SplObjectStorage;
 class Snapshot extends SplObjectStorage
 {
     /**
-     * Take a snapshot.
+     * Take a snapshot of a network.
      *
      * @param \Rubix\ML\NeuralNet\Network $network
      * @return self

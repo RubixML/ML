@@ -33,7 +33,6 @@ class Xavier1 implements Initializer
     {
         $scale = sqrt(6. / ($fanIn + $fanOut));
 
-        return Matrix::uniform($fanOut, $fanIn)
-            ->multiply($scale);
+        return Matrix::uniform($fanOut, $fanIn)->multiply($scale);
     }
 }

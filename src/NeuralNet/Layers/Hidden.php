@@ -5,7 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Closure;
 
-interface Hidden extends Layer
+interface Hidden extends Nonparametric
 {
     /**
      * Calculate the gradients and update the parameters of the layer.

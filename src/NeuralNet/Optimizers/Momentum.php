@@ -74,9 +74,7 @@ class Momentum implements Optimizer, Adaptive
      */
     public function initialize(Parameter $param) : void
     {
-        $velocity = Matrix::zeros(...$param->w()->shape());
-
-        $this->cache[$param->id()] = $velocity;
+        $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
     }
 
     /**

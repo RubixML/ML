@@ -101,7 +101,7 @@ class Adam implements Optimizer, Adaptive
     public function initialize(Parameter $param) : void
     {
         $velocity = Matrix::zeros(...$param->w()->shape());
-        $g2 = Matrix::zeros(...$param->w()->shape());
+        $g2 = clone $velocity;
 
         $this->cache[$param->id()] = [$velocity, $g2];
     }

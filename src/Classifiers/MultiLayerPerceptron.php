@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -49,7 +50,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistable
+class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
 
@@ -166,7 +167,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
      * @param float $holdout
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param int $window
@@ -394,8 +395,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete,"
-                    . " score=$score loss=$loss");
+                $this->logger->info("Epoch $epoch complete, score=$score loss=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -429,8 +429,7 @@ class MultiLayerPerceptron implements Online, Probabilistic, Verbose, Persistabl
                 $this->network->restore($bestSnapshot);
 
                 if ($this->logger) {
-                    $this->logger->info('Network restored'
-                        . ' from previous snapshot');
+                    $this->logger->info('Network restored from snapshot');
                 }
             }
         }

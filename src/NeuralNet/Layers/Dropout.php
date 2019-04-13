@@ -24,7 +24,7 @@ use Closure;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Dropout implements Hidden, Nonparametric
+class Dropout implements Hidden
 {
     /**
      * The ratio of neurons that are dropped during each training pass.

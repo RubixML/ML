@@ -2,45 +2,23 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Rubix\ML\NeuralNet\Layers\Input;
-use Rubix\ML\NeuralNet\Layers\Output;
+use Generator;
 
 interface Network
 {
     /**
      * Return all the layers in the network.
      *
-     * @return array
+     * @return \Generator
      */
-    public function layers() : array;
-
-    /**
-     * Return the input layer.
-     *
-     * @return \Rubix\ML\NeuralNet\Layers\Input
-     */
-    public function input() : Input;
-
-    /**
-     * Return an array of hidden layers indexed left to right.
-     *
-     * @return array
-     */
-    public function hidden() : array;
-
-    /**
-     * Return the output layer.
-     *
-     * @return \Rubix\ML\NeuralNet\Layers\Output
-     */
-    public function output() : Output;
+    public function layers() : Generator;
 
     /**
      * Return the parametric layers of the network.
      *
-     * @return array
+     * @return \Generator
      */
-    public function parametric() : array;
+    public function parametric() : Generator;
 
     /**
      * The depth of the network. i.e. the number of parametric layers.

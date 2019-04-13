@@ -22,7 +22,7 @@ class ParameterTest extends TestCase
 
     public function test_id()
     {
-        $this->assertInternalType('string', $this->param->id());
+        $this->assertInternalType('integer', $this->param->id());
     }
 
     public function test_w()

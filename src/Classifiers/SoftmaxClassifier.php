@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -34,7 +35,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SoftmaxClassifier implements Online, Probabilistic, Verbose, Persistable
+class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
     

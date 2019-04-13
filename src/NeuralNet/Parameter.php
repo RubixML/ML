@@ -20,7 +20,7 @@ class Parameter
     /**
      * The unique identifier of this parameter.
      *
-     * @var string
+     * @var int
      */
     protected $id;
 
@@ -32,20 +32,27 @@ class Parameter
     protected $w;
 
     /**
+     * A class counter.
+     *
+     * @var int
+     */
+    protected static $counter = 0;
+
+    /**
      * @param \Rubix\Tensor\Matrix $w
      */
     public function __construct(Matrix $w)
     {
-        $this->id = uniqid();
+        $this->id = self::$counter++;
         $this->w = $w;
     }
 
     /**
      * Return the unique identifier of the parameter.
      *
-     * @return string
+     * @return int
      */
-    public function id() : string
+    public function id() : int
     {
         return $this->id;
     }

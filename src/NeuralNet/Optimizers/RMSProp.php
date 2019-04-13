@@ -73,9 +73,7 @@ class RMSProp implements Optimizer, Adaptive
      */
     public function initialize(Parameter $param) : void
     {
-        $g2 = Matrix::zeros(...$param->w()->shape());
-
-        $this->cache[$param->id()] = $g2;
+        $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
     }
     
     /**

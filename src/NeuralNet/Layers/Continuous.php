@@ -10,6 +10,7 @@ use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 
 /**
  * Continuous
@@ -103,15 +104,16 @@ class Continuous implements Output
      * Return the parameters of the layer.
      *
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Generator
      */
-    public function parameters() : array
+    public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
             throw new RuntimeException('Layer has not been initialized');
         }
 
-        return [$this->weights, $this->biases];
+        yield $this->weights;
+        yield $this->biases;
     }
 
     /**

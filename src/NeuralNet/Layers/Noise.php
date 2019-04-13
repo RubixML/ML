@@ -22,7 +22,7 @@ use Closure;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Noise implements Hidden, Nonparametric
+class Noise implements Hidden
 {
     /**
      * The standard devaiation of the gaussian noise to add to the inputs.
