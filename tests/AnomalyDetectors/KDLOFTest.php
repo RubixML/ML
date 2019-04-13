@@ -59,6 +59,8 @@ class KDLOFTest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
 
         $this->assertFalse($this->estimator->trained());
+
+        $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
     public function test_train_predict()
@@ -68,6 +70,8 @@ class KDLOFTest extends TestCase
         $testing = $this->generator->generate(self::TEST_SIZE);
 
         $this->estimator->train($training);
+
+        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $this->assertTrue($this->estimator->trained());
 

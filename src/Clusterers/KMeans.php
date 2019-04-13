@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Labeled;
@@ -36,7 +37,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Learner, Persistable, Verbose
+class KMeans implements Estimator, Learner, Persistable, Verbose
 {
     use LoggerAware;
 

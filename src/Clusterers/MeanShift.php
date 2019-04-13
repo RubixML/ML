@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\BallTree;
@@ -35,7 +36,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Learner, Verbose, Persistable
+class MeanShift implements Estimator, Learner, Verbose, Persistable
 {
     use LoggerAware;
 

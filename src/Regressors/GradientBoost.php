@@ -4,6 +4,7 @@ namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -33,7 +34,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GradientBoost implements Learner, Verbose, Persistable
+class GradientBoost implements Estimator, Learner, Verbose, Persistable
 {
     use LoggerAware;
 

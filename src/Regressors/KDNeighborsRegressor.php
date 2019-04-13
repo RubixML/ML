@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +28,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighborsRegressor extends KDTree implements Learner, Persistable
+class KDNeighborsRegressor implements Estimator, Learner, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -43,6 +44,13 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
      * @var bool
      */
     protected $weighted;
+
+    /**
+     * The k-d tree used for nearest neighbor queries.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    protected $tree;
 
     /**
      * @param int $k
@@ -64,8 +72,7 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
 
         $this->k = $k;
         $this->weighted = $weighted;
-
-        parent::__construct($maxLeafSize, $kernel);
+        $this->tree = new KDTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -97,7 +104,17 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
      */
     public function trained() : bool
     {
-        return !$this->bare();
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Return the base k-d tree instance.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    public function tree() : KDTree
+    {
+        return $this->tree;
     }
 
     /**
@@ -113,7 +130,7 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->grow($dataset);
+        $this->tree->grow($dataset);
     }
 
     /**
@@ -126,7 +143,7 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('Estimator has not been trainied.');
         }
 
@@ -135,7 +152,7 @@ class KDNeighborsRegressor extends KDTree implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->nearest($sample, $this->k);
+            [$labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = [];

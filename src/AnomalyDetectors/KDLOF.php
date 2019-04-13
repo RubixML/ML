@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Datasets\Dataset;
@@ -28,7 +29,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDLOF extends KDTree implements Learner, Ranking, Persistable
+class KDLOF implements Estimator, Learner, Ranking, Persistable
 {
     protected const THRESHOLD = 1.5;
 
@@ -74,6 +75,13 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
     protected $offset;
 
     /**
+     * The k-d tree used for nearest neighbor queries.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    protected $tree;
+
+    /**
      * @param int $k
      * @param float $contamination
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
@@ -98,8 +106,7 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
 
         $this->k = $k;
         $this->contamination = $contamination;
-
-        parent::__construct($maxLeafSize, $kernel);
+        $this->tree = new KDTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -131,7 +138,17 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return !$this->bare() and $this->lrds;
+        return !$this->tree->bare() and $this->lrds;
+    }
+
+    /**
+     * Return the base k-d tree instance.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    public function tree() : KDTree
+    {
+        return $this->tree;
     }
 
     /**
@@ -148,14 +165,14 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
 
         $dataset = Labeled::quick($samples, array_keys($samples));
 
-        $this->grow($dataset);
+        $this->tree->grow($dataset);
 
         $this->kdistances = $this->lrds = [];
 
         $indices = $distances = [];
 
         foreach ($dataset as $sample) {
-            [$iHat, $dHat] = $this->nearest($sample, $this->k);
+            [$iHat, $dHat] = $this->tree->nearest($sample, $this->k);
 
             $distances[] = $dHat;
             $indices[] = $iHat;
@@ -201,7 +218,7 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -225,7 +242,7 @@ class KDLOF extends KDTree implements Learner, Ranking, Persistable
                 . ' not been computed, must train estimator first.');
         }
 
-        [$indices, $distances] = $this->nearest($sample, $this->k);
+        [$indices, $distances] = $this->tree->nearest($sample, $this->k);
 
         $lrd = $this->localReachabilityDensity($indices, $distances);
 

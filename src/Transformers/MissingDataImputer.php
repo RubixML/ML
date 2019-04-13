@@ -3,8 +3,8 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Mean;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Strategies\Continuous;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\KMostFrequent;

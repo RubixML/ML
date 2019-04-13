@@ -1,4 +1,6 @@
 - Unreleased
+
+- 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD
     - K Means in now an Online learner
     - Added Adjusted Rand Index clustering metric

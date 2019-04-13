@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -26,7 +27,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Learner, Probabilistic, Persistable
+class RandomForest implements Estimator, Learner, Probabilistic, Persistable
 {
     protected const AVAILABLE_TREES = [
         ClassificationTree::class,

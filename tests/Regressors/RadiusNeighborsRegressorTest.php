@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -46,7 +45,6 @@ class RadiusNeighborsRegressorTest extends TestCase
     public function test_build_regressor()
     {
         $this->assertInstanceOf(RadiusNeighborsRegressor::class, $this->estimator);
-        $this->assertInstanceOf(BallTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
@@ -58,7 +56,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $this->assertFalse($this->estimator->trained());
 
-        $this->assertEquals(0, $this->estimator->height());
+        $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
     public function test_train_predict()
@@ -67,7 +65,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertGreaterThan(0, $this->estimator->height());
+        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $predictions = $this->estimator->predict($this->testing);
 

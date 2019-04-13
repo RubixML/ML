@@ -4,6 +4,7 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
@@ -30,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LODA implements Learner, Online, Ranking, Persistable
+class LODA implements Estimator, Learner, Online, Ranking, Persistable
 {
     protected const MIN_SPARSE_DIMENSIONS = 3;
 

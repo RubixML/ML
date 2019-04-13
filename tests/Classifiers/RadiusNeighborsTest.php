@@ -6,7 +6,6 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -50,7 +49,6 @@ class RadiusNeighborsTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(RadiusNeighbors::class, $this->estimator);
-        $this->assertInstanceOf(BallTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
@@ -63,7 +61,7 @@ class RadiusNeighborsTest extends TestCase
 
         $this->assertFalse($this->estimator->trained());
 
-        $this->assertEquals(0, $this->estimator->height());
+        $this->assertEquals(0, $this->estimator->tree()->height());
     }
 
     public function test_train_predict()
@@ -76,7 +74,7 @@ class RadiusNeighborsTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
-        $this->assertGreaterThan(0, $this->estimator->height());
+        $this->assertGreaterThan(0, $this->estimator->tree()->height());
 
         $predictions = $this->estimator->predict($testing);
 

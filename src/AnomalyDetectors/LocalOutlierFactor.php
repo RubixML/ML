@@ -4,6 +4,7 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
@@ -30,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Learner, Online, Ranking, Persistable
+class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persistable
 {
     protected const THRESHOLD = 1.5;
 

@@ -4,6 +4,7 @@ namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -39,7 +40,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianMixture implements Learner, Probabilistic, Verbose, Persistable
+class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
     

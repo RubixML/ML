@@ -3,6 +3,7 @@
 namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
@@ -32,7 +33,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneClassSVM implements Learner, Persistable
+class OneClassSVM implements Estimator, Learner, Persistable
 {
     /**
      * The support vector machine instance.

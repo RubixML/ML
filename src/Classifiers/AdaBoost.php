@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -34,7 +35,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class AdaBoost implements Learner, Probabilistic, Verbose, Persistable
+class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
     

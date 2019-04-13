@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
@@ -29,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
+class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 {
     public const OUTLIER = NAN;
 
@@ -47,6 +48,13 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
      * @var bool
      */
     protected $weighted;
+
+    /**
+     * The ball tree used for radius queries.
+     *
+     * @var \Rubix\ML\Graph\BallTree
+     */
+    protected $tree;
 
     /**
      * @param float $radius
@@ -68,8 +76,7 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
 
         $this->radius = $radius;
         $this->weighted = $weighted;
-
-        parent::__construct($maxLeafSize, $kernel);
+        $this->tree = new BallTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -101,7 +108,17 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
      */
     public function trained() : bool
     {
-        return !$this->bare();
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Return the base ball tree instance.
+     *
+     * @return \Rubix\ML\Graph\BallTree
+     */
+    public function tree() : BallTree
+    {
+        return $this->tree;
     }
 
     /**
@@ -117,7 +134,7 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->grow($dataset);
+        $this->tree->grow($dataset);
     }
 
     /**
@@ -130,7 +147,7 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('Estimator has not been trainied.');
         }
 
@@ -139,7 +156,7 @@ class RadiusNeighborsRegressor extends BallTree implements Learner, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER;

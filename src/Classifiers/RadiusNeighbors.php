@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Graph\BallTree;
@@ -29,7 +30,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persistable
+class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     public const OUTLIER = -1;
 
@@ -58,6 +59,13 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
     ];
 
     /**
+     * The ball tree used for radius queries.
+     *
+     * @var \Rubix\ML\Graph\BallTree
+     */
+    protected $tree;
+
+    /**
      * @param float $radius
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
@@ -77,8 +85,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
 
         $this->radius = $radius;
         $this->weighted = $weighted;
-
-        parent::__construct($maxLeafSize, $kernel);
+        $this->tree = new BallTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -110,7 +117,17 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
      */
     public function trained() : bool
     {
-        return !$this->bare();
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Return the base ball tree instance.
+     *
+     * @return \Rubix\ML\Graph\BallTree
+     */
+    public function tree() : BallTree
+    {
+        return $this->tree;
     }
 
     /**
@@ -130,7 +147,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->grow($dataset);
+        $this->tree->grow($dataset);
     }
 
     /**
@@ -143,7 +160,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -153,7 +170,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $predictions[] = self::OUTLIER;
@@ -187,7 +204,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -199,7 +216,7 @@ class RadiusNeighbors extends BallTree implements Learner, Probabilistic, Persis
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$samples, $labels, $distances] = $this->range($sample, $this->radius);
+            [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
             if (empty($labels)) {
                 $probabilities[] = null;

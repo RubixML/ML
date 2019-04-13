@@ -3,6 +3,8 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
@@ -27,7 +29,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class NaiveBayes implements Online, Probabilistic, Persistable
+class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
     protected const LOG_EPSILON = -18.420680744;
 

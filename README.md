@@ -38,6 +38,7 @@ $ composer require rubix/ml
     - [Next Steps](#next-steps)
 - [System Architecture](#system-architecture)
 - [Tutorials & Examples](https://github.com/RubixML)
+    - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
@@ -1258,14 +1259,9 @@ A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) 
 
 **Additional Methods:**
 
-Return the height of the tree:
+Return the base k-d tree instance:
 ```php
-public height() : int
-```
-
-Return the balance of the tree:
-```php
-public balance() : int
+public tree() : KDTree
 ```
 
 **Example:**
@@ -1694,14 +1690,9 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 
 **Additional Methods:**
 
-Return the height of the tree:
+Return the base k-d tree instance:
 ```php
-public height() : int
-```
-
-Return the balance of the tree:
-```php
-public balance() : int
+public tree() : KDTree
 ```
 
 **Example:**
@@ -1910,14 +1901,9 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 
 **Additional Methods:**
 
-Return the height of the tree:
+Return the base ball tree instance:
 ```php
-public height() : int
-```
-
-Return the balance of the tree:
-```php
-public balance() : int
+public tree() : BallTree
 ```
 
 **Example:**
@@ -2564,14 +2550,9 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 
 **Additional Methods:**
 
-Return the height of the tree:
+Return the base k-d tree instance:
 ```php
-public height() : int
-```
-
-Return the balance of the tree:
-```php
-public balance() : int
+public tree() : KDTree
 ```
 
 **Example:**

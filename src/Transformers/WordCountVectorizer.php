@@ -3,8 +3,8 @@
 namespace Rubix\ML\Transformers;
 
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Tokenizers\Word;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Tokenizers\Tokenizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -48,7 +48,7 @@ class WordCountVectorizer implements Stateful
     protected $tokenizer;
 
     /**
-     * The vocabulary of the fitted training set per categorical  feature
+     * The vocabulary of the fitted training set per categorical feature
      * column.
      *
      * @var array|null

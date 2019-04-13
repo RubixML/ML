@@ -3,6 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
@@ -30,7 +31,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
+class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
      * The number of neighbors to consider when making a prediction.
@@ -57,6 +58,13 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
     ];
 
     /**
+     * The k-d tree used for nearest neighbor queries.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    protected $tree;
+
+    /**
      * @param int $k
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
@@ -76,8 +84,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
         $this->k = $k;
         $this->weighted = $weighted;
-
-        parent::__construct($maxLeafSize, $kernel);
+        $this->tree = new KDTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -109,7 +116,17 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function trained() : bool
     {
-        return !$this->bare();
+        return !$this->tree->bare();
+    }
+
+    /**
+     * Return the base k-d tree instance.
+     *
+     * @var \Rubix\ML\Graph\KDTree
+     */
+    public function tree() : KDTree
+    {
+        return $this->tree;
     }
 
     /**
@@ -129,7 +146,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
 
         $this->classes = $dataset->possibleOutcomes();
 
-        $this->grow($dataset);
+        $this->tree->grow($dataset);
     }
 
     /**
@@ -142,7 +159,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -152,7 +169,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->nearest($sample, $this->k);
+            [$labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -180,7 +197,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
      */
     public function proba(Dataset $dataset) : array
     {
-        if ($this->bare()) {
+        if ($this->tree->bare()) {
             throw new RuntimeException('The learner has not'
                 . ' been trained.');
         }
@@ -192,7 +209,7 @@ class KDNeighbors extends KDTree implements Learner, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->nearest($sample, $this->k);
+            [$labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);

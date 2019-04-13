@@ -3,6 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Labeled;
@@ -35,7 +36,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SVR implements Learner, Persistable
+class SVR implements Estimator, Learner, Persistable
 {
     /**
      * The support vector machine instance.
