@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
@@ -36,7 +37,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MeanShift implements Estimator, Learner, Verbose, Persistable
+class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
 
@@ -328,7 +329,7 @@ class MeanShift implements Estimator, Learner, Verbose, Persistable
                 }
             }
 
-            $shift = $this->centroidShift($centroids, $previous);
+            $shift = $this->shift($centroids, $previous);
 
             $this->steps[] = $shift;
 
@@ -374,6 +375,25 @@ class MeanShift implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        return array_map([self::class, 'membership'], $dataset->samples());
+    }
+
+    /**
      * Label a given sample based on its distance from a particular centroid.
      *
      * @param array $sample
@@ -397,13 +417,36 @@ class MeanShift implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
+     * Return the membership of a sample to each of the centroids.
+     *
+     * @param array $sample
+     * @return array
+     */
+    protected function membership(array $sample) : array
+    {
+        $membership = $distances = [];
+
+        foreach ($this->centroids as $centroid) {
+            $distances[] = $this->kernel->compute($sample, $centroid);
+        }
+
+        $total = array_sum($distances) ?: self::EPSILON;
+
+        foreach ($distances as $distance) {
+            $membership[] = $distance / $total;
+        }
+
+        return $membership;
+    }
+
+    /**
      * Calculate the magnitude (l1) of centroid shift from the previous epoch.
      *
      * @param array $current
      * @param array $previous
      * @return float
      */
-    protected function centroidShift(array $current, array $previous) : float
+    protected function shift(array $current, array $previous) : float
     {
         $shift = 0.;
 

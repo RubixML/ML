@@ -2159,7 +2159,7 @@ $estimator = new GaussianMixture(5, 1e-4, 100, new KMC2(50));
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Persistable](#persistable), [Verbose](#verbose)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
 **Compatibility:** Continuous
 
@@ -2210,7 +2210,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 
 > **Note**: Seeding Mean Shift using a [Seeder](#seeders) can often speed up convergence of large datasets. The default is to initialize all training samples as seeds.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Continuous
 

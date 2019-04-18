@@ -266,11 +266,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             $yHat[] = $dataset->label($i) - $prediction;
         }
 
-        $residuals = Labeled::quick($dataset->samples(), $yHat);
+        $residual = Labeled::quick($dataset->samples(), $yHat);
 
         if ($this->logger) {
-            $this->logger->info('Attempting to correct'
-                . " error residuals with $this->estimators "
+            $this->logger->info("Boosting with $this->estimators "
                 . Params::shortName($this->booster)
                 . ($this->estimators > 1 ? 's' : ''));
         }
@@ -282,20 +281,21 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $booster = clone $this->booster;
 
-            $subset = $residuals->randomize()->head($p);
+            $subset = $residual->randomize()->head($p);
 
             $booster->train($subset);
 
-            $predictions = $booster->predict($residuals);
+            $predictions = $booster->predict($residual);
+
+            $labels = $residual->labels();
 
             $loss = 0.;
-            $yHat = [];
 
             foreach ($predictions as $i => $prediction) {
-                $label = $residuals->label($i);
+                $label = $labels[$i];
 
                 $loss += ($label - $prediction) ** 2;
-                $yHat[] = $label - ($this->rate * $prediction);
+                $yHat[$i] = $label - ($this->rate * $prediction);
             }
 
             $loss /= $n;
@@ -319,7 +319,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            $residuals = Labeled::quick($residuals->samples(), $yHat);
+            $residual = Labeled::quick($residual->samples(), $yHat);
 
             $previous = $loss;
         }

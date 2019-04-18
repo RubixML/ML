@@ -2,11 +2,13 @@
 
 namespace Rubix\ML\Clusterers;
 
+use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
@@ -37,7 +39,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMeans implements Estimator, Learner, Persistable, Verbose
+class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, Verbose
 {
     use LoggerAware;
 
@@ -328,7 +330,7 @@ class KMeans implements Estimator, Learner, Persistable, Verbose
                 }
             }
 
-            $inertia = $this->inertia($samples, $labels);
+            $inertia = $this->inertia($samples);
 
             $this->steps[] = $inertia;
 
@@ -372,6 +374,25 @@ class KMeans implements Estimator, Learner, Persistable, Verbose
     }
 
     /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if (empty($this->centroids)) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        return array_map([self::class, 'membership'], $dataset->samples());
+    }
+
+    /**
      * Label a given sample based on its distance from a particular centroid.
      *
      * @param array $sample
@@ -392,6 +413,29 @@ class KMeans implements Estimator, Learner, Persistable, Verbose
         }
 
         return (int) $bestCluster;
+    }
+
+    /**
+     * Return the membership of a sample to each of the k centroids.
+     *
+     * @param array $sample
+     * @return array
+     */
+    protected function membership(array $sample) : array
+    {
+        $membership = $distances = [];
+
+        foreach ($this->centroids as $centroid) {
+            $distances[] = $this->kernel->compute($sample, $centroid);
+        }
+
+        $total = array_sum($distances) ?: self::EPSILON;
+
+        foreach ($distances as $distance) {
+            $membership[] = $distance / $total;
+        }
+
+        return $membership;
     }
 
     /**
