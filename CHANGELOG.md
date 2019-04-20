@@ -1,5 +1,6 @@
 - Unreleased
-    - Custom Batch Norm layer parameter initialization
+    - Custom Batch Norm and PReLU parameter initialization
+    - Added custom bias initialization to Dense layer
     - Added Constant neural network parameter initializer
 
 - 0.0.11-beta

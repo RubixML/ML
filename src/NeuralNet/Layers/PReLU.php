@@ -5,7 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use InvalidArgumentException;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use RuntimeException;
 use Generator;
 use Closure;
@@ -28,11 +29,11 @@ use Closure;
 class PReLU implements Hidden, Parametric
 {
     /**
-     * The value to initialize the alpha (leakage) parameters with.
+     * The initializer of the alpha (leakage) parameter.
      *
-     * @var float
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $initial;
+    protected $initializer;
 
     /**
      * The width of the layer.
@@ -63,17 +64,11 @@ class PReLU implements Hidden, Parametric
     protected $computed;
 
     /**
-     * @param float $initial
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
      */
-    public function __construct(float $initial = 0.25)
+    public function __construct(?Initializer $initializer = null)
     {
-        if ($initial < 0. or $initial > 1.) {
-            throw new InvalidArgumentException('Initial leakage parameter must'
-                . " be between 0 and 1, $initial given.");
-        }
-
-        $this->initial = $initial;
+        $this->initializer = $initializer ?? new Constant(0.25);
     }
 
     /**
@@ -110,7 +105,7 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $alpha = Matrix::fill($this->initial, $fanOut, 1);
+        $alpha = $this->initializer->initialize($fanIn, 1);
 
         $this->alpha = new Parameter($alpha);
 
@@ -168,7 +163,7 @@ class PReLU implements Hidden, Parametric
 
         $dIn = $this->input->clipUpper(0.);
 
-        $dAlpha = $dOut->multiply($dIn)->sum()->asColumnMatrix();
+        $dAlpha = $dOut->multiply($dIn)->sum()->asRowMatrix();
 
         $optimizer->step($this->alpha, $dAlpha);
 
@@ -195,7 +190,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $alphas = $this->alpha->w()->column(0);
+        $alphas = $this->alpha->w()->row(0);
 
         $computed = [];
 
@@ -230,7 +225,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alpha = $this->alpha->w()->column(0);
+        $alpha = $this->alpha->w()->row(0);
 
         $gradients = [];
 

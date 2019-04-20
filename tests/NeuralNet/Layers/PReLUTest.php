@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
 class PReLUTest extends TestCase
@@ -42,7 +43,7 @@ class PReLUTest extends TestCase
 
         $this->optimizer = new Stochastic();
 
-        $this->layer = new PReLU(0.25);
+        $this->layer = new PReLU(new Constant(0.25));
 
         $this->layer->initialize($this->fanIn);
     }

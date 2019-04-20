@@ -4498,15 +4498,17 @@ Dense layers are fully connected neuronal layers, meaning each neuron is connect
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | neurons | None | int | The number of neurons in the layer. |
-| 2 | initializer | He | object | The random weight initializer to use. |
+| 2 | weight initializer | He | object | The initializer of the weight parameter. |
+| 3 | bias initializer | Constant | object | The initializer of the bias parameter. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Initializers\He;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 
-$layer = new Dense(100, new He());
+$layer = new Dense(100, new He(), new Constant(0.));
 ```
 
 ### Dropout
@@ -4558,14 +4560,15 @@ The PReLU layer uses leaky ReLU activation functions whose leakage coefficients 
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | initial | 0.25 | float | The value to initialize the alpha (leakage) parameters with. |
+| 1 | initializer | Constant | object | The initializer of the leakage parameter. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Layers\PReLU;
+use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$layer = new PReLU(0.1);
+$layer = new PReLU(new Normal(0.5));
 ```
 
 **References:**

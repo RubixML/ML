@@ -318,7 +318,7 @@ class BatchNorm implements Hidden, Parametric
         unset($this->stdInv, $this->xHat);
 
         return function () use ($dOut, $gamma, $stdInv, $xHat) {
-            $dXHat = $dOut->multiply($gamma);
+            $dXHat = $dOut->multiply($gamma->transpose());
 
             $xHatSigma = $dXHat->multiply($xHat)->sum();
 

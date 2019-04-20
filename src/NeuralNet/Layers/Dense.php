@@ -6,6 +6,7 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -36,7 +37,14 @@ class Dense implements Hidden, Parametric
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $initializer;
+    protected $weightInitializer;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $biasInitializer;
 
     /**
      * The weights.
@@ -61,18 +69,23 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $neurons, ?Initializer $initializer = null)
-    {
+    public function __construct(
+        int $neurons,
+        ?Initializer $weightInitializer = null,
+        ?Initializer $biasInitializer = null
+    ) {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons cannot be'
                 . ' less than 1.');
         }
 
         $this->neurons = $neurons;
-        $this->initializer = $initializer ?? new He();
+        $this->weightInitializer = $weightInitializer ?? new He();
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
     }
 
     /**
@@ -112,10 +125,11 @@ class Dense implements Hidden, Parametric
     {
         $fanOut = $this->neurons;
 
-        $w = $this->initializer->initialize($fanIn, $fanOut);
+        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $b = $this->biasInitializer->initialize($fanOut, 1);
 
         $this->weights = new Parameter($w);
-        $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
+        $this->biases = new Parameter($b);
 
         return $fanOut;
     }
@@ -136,7 +150,7 @@ class Dense implements Hidden, Parametric
         $this->input = $input;
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
     }
 
     /**
@@ -153,7 +167,7 @@ class Dense implements Hidden, Parametric
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
     }
 
     /**
@@ -178,7 +192,7 @@ class Dense implements Hidden, Parametric
         $dOut = $prevGradient();
 
         $dW = $dOut->matmul($this->input->transpose());
-        $dB = $dOut->sum()->asColumnMatrix();
+        $dB = $dOut->sum()->asRowMatrix();
 
         $w = $this->weights->w();
 
