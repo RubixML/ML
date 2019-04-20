@@ -61,10 +61,10 @@ class Dense implements Hidden, Parametric
 
     /**
      * @param int $neurons
-     * @param \Rubix\ML\NeuralNet\Initializers\Initializer $initializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $neurons, Initializer $initializer = null)
+    public function __construct(int $neurons, ?Initializer $initializer = null)
     {
         if ($neurons < 1) {
             throw new InvalidArgumentException('The number of neurons cannot be'

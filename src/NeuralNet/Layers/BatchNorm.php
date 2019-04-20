@@ -7,6 +7,8 @@ use Rubix\Tensor\Vector;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use RuntimeException;
 use Generator;
 use Closure;
@@ -32,6 +34,20 @@ use Closure;
  */
 class BatchNorm implements Hidden, Parametric
 {
+    /**
+     * The initializer for the beta parameter.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $betaInitializer;
+
+    /**
+     * The initializer for the gamma parameter.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $gammaInitializer;
+
     /**
      * The width of the layer. i.e. the number of neurons.
      *
@@ -96,6 +112,16 @@ class BatchNorm implements Hidden, Parametric
     protected $xHat;
 
     /**
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $betaInitializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $gammaInitializer
+     */
+    public function __construct(?Initializer $betaInitializer = null, ?Initializer $gammaInitializer = null)
+    {
+        $this->betaInitializer = $betaInitializer ?? new Constant(0.);
+        $this->gammaInitializer = $gammaInitializer ?? new Constant(1.);
+    }
+
+    /**
      * Return the width of the layer.
      *
      * @return int|null
@@ -134,12 +160,16 @@ class BatchNorm implements Hidden, Parametric
 
         $this->mean = Vector::zeros($fanIn);
         $this->variance = Vector::ones($fanIn);
-        $this->n = 0;
+
+        $beta = $this->betaInitializer->initialize($fanIn, 1);
+        $gamma = $this->gammaInitializer->initialize($fanIn, 1);
+
+        $this->beta = new Parameter($beta);
+        $this->gamma = new Parameter($gamma);
 
         $this->width = $fanOut;
 
-        $this->beta = new Parameter(Matrix::zeros($fanIn, 1));
-        $this->gamma = new Parameter(Matrix::ones($fanIn, 1));
+        $this->n = 0;
 
         return $fanOut;
     }
@@ -157,10 +187,10 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initialized.');
         }
 
-        $beta = $this->beta->w()->column(0);
-        $gamma = $this->gamma->w()->column(0);
-
         $n = $input->n();
+
+        $bHat = $this->beta->w()->row(0);
+        $gHat = $this->gamma->w()->row(0);
 
         $oldMeans = $this->mean->asArray();
         $oldVariances = $this->variance->asArray();
@@ -183,33 +213,31 @@ class BatchNorm implements Hidden, Parametric
                 * ($n * $oldMean - $n * $mean) ** 2)
                 / ($oldWeight + $n);
 
-            $stddev = sqrt($variance ?: self::EPSILON);
+            $stddevs[] = $stddev = sqrt($variance ?: self::EPSILON);
 
-            $gHat = $gamma[$i];
-            $bHat = $beta[$i];
+            $beta = $bHat[$i];
+            $gamma = $gHat[$i];
 
             $stdInvRow = $xHatRow = $outRow = [];
 
             foreach ($row as $value) {
                 $alpha = 1. / $stddev;
-                $beta = $alpha * ($value - $mean);
+
+                $tau = $alpha * ($value - $mean);
 
                 $stdInvRow[] = $alpha;
-                $xHatRow[] = $beta;
-                $outRow[] = $gHat * $beta + $bHat;
+                $xHatRow[] = $tau;
+                $outRow[] = $gamma * $tau + $beta;
             }
 
             $stdInv[] = $stdInvRow;
             $xHat[] = $xHatRow;
             $out[] = $outRow;
-
-            $stddevs[] = $stddev;
         }
 
         $this->mean = Vector::quick($newMeans);
         $this->variance = Vector::quick($newVars);
         $this->stddev = Vector::quick($stddevs);
-
         $this->stdInv = Matrix::quick($stdInv);
         $this->xHat = Matrix::quick($xHat);
 
@@ -231,22 +259,22 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initilaized.');
         }
         
-        $beta = $this->beta->w()->column(0);
-        $gamma = $this->gamma->w()->column(0);
+        $bHat = $this->beta->w()->row(0);
+        $gHat = $this->gamma->w()->row(0);
 
         $out = [];
 
         foreach ($input as $i => $row) {
             $mean = $this->mean[$i];
             $stddev = $this->stddev[$i];
+            
+            $beta = $bHat[$i];
+            $gamma = $gHat[$i];
 
             $vector = [];
 
             foreach ($row as $value) {
-                $vector[] = $gamma[$i]
-                    * ($value - $mean)
-                    / $stddev
-                    + $beta[$i];
+                $vector[] = $gamma * ($value - $mean) / $stddev + $beta;
             }
 
             $out[] = $vector;
@@ -276,8 +304,10 @@ class BatchNorm implements Hidden, Parametric
 
         $dOut = $prevGradient();
 
-        $dBeta = $dOut->sum()->asColumnMatrix();
-        $dGamma = $dOut->multiply($this->xHat)->sum()->asColumnMatrix();
+        $dBeta = $dOut->sum()->asRowMatrix();
+        $dGamma = $dOut->multiply($this->xHat)->sum()->asRowMatrix();
+
+        $gamma = $this->gamma->w()->rowAsVector(0);
 
         $optimizer->step($this->beta, $dBeta);
         $optimizer->step($this->gamma, $dGamma);
@@ -285,23 +315,19 @@ class BatchNorm implements Hidden, Parametric
         $stdInv = $this->stdInv;
         $xHat = $this->xHat;
 
-        $gamma = $this->gamma->w()->columnAsVector(0);
-
         unset($this->stdInv, $this->xHat);
 
         return function () use ($dOut, $gamma, $stdInv, $xHat) {
-            [$m, $n] = $dOut->shape();
-
             $dXHat = $dOut->multiply($gamma);
 
-            $xHatSigma = $dXHat->multiply($xHat)->transpose()->sum();
+            $xHatSigma = $dXHat->multiply($xHat)->sum();
 
-            $dXHatSigma = $dXHat->transpose()->sum();
+            $dXHatSigma = $dXHat->sum();
 
-            return $dXHat->multiply($m)
+            return $dXHat->multiply($dOut->m())
                 ->subtract($dXHatSigma)
                 ->subtract($xHat->multiply($xHatSigma))
-                ->multiply($stdInv->divide($m));
+                ->multiply($stdInv->divide($dOut->m()));
         };
     }
 

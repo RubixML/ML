@@ -162,6 +162,7 @@ $ composer require rubix/ml
 			- [Least Squares](#least-squares)
 			- [Relative Entropy](#relative-entropy)
 	    - [Initializers](#initializers)
+            - [Constant](#constant)
 			- [He](#he)
 			- [Le Cun](#le-cun)
 		    - [Normal](#normal)
@@ -4267,6 +4268,23 @@ To initialize a random weight matrix:
 public initialize(int $fanIn, int $fanOut) : Matrix
 ```
 
+### Constant
+Initialize the parameter to a user specified constant value.
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | value | 0. | float | The value to initialize the parameter to. |
+
+**Example:**
+
+```php
+use Rubix\ML\NeuralNet\Initializers\Constant;
+
+$initializer = new Constant(1.0);
+```
+
 ### He
 The He initializer was designed for hidden layers that feed into rectified linear unit layers such as [ReLU](#relu), [Leaky ReLU](#leaky-relu), and [ELU](#elu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
 
@@ -4452,14 +4470,19 @@ Normalize the activations of the previous layer such that the mean activation is
 
 **Parameters:**
 
-This layer does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | beta initializer | Constant | object | The initializer of the beta parameter. |
+| 2 | gamma initializer | Constant | object | The initializer of the gamma parameter. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$layer = new BatchNorm();
+$layer = new BatchNorm(new Constant(0.), new Normal(1.));
 ```
 
 **References:**

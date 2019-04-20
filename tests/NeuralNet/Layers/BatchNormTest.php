@@ -8,6 +8,7 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
+use Rubix\ML\NeuralNet\Initializers\Constant;
 use PHPUnit\Framework\TestCase;
 
 class BatchNormTest extends TestCase
@@ -42,7 +43,7 @@ class BatchNormTest extends TestCase
 
         $this->optimizer = new Stochastic();
 
-        $this->layer = new BatchNorm();
+        $this->layer = new BatchNorm(new Constant(0.), new Constant(1.));
 
         $this->layer->initialize($this->fanIn);
     }
@@ -81,9 +82,9 @@ class BatchNormTest extends TestCase
         $back = $back();
 
         $dYdX = [
-            [-0.0849052805222375, 0.4108673492513107, -0.2796836491513708],
-            [0.21773431346266278, 0.012460969795807176, -0.4380486992723796],
-            [-0.07399439144834394, -0.009086169905025584, 0.17130353331384188],
+            [-0.06445877134888621, 0.027271018647605647, 0.03718775270128047],
+            [0.11375900761901864, -0.10996704069838469, -0.0037919669206339162],
+            [-0.11909780311643131, -0.01087038130262698, 0.1299681844190583],
         ];
 
         $this->assertInstanceOf(Matrix::class, $back);

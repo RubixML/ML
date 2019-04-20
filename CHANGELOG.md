@@ -1,4 +1,6 @@
 - Unreleased
+    - Custom Batch Norm layer parameter initialization
+    - Added Constant neural network parameter initializer
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD
