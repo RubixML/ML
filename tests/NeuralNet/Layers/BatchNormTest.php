@@ -43,7 +43,7 @@ class BatchNormTest extends TestCase
 
         $this->optimizer = new Stochastic();
 
-        $this->layer = new BatchNorm(new Constant(0.), new Constant(1.));
+        $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
 
         $this->layer->initialize($this->fanIn);
     }
@@ -92,9 +92,9 @@ class BatchNormTest extends TestCase
         $this->assertEquals($dYdX, $back->asArray());
 
         $output = [
-            [-0.12607831595417437, 1.2804902385302876, -1.1575619225761133],
-            [-0.6718883801743488, -0.7438003494787433, 1.413558729653092],
-            [0.7956943312039362, -1.4105786650534555, 0.6111643338495193],
+            [-0.12607831595417437, 1.2804902385302876, -1.1575619225761131],
+            [-0.6718883801743488, -0.7438003494787433, 1.4135587296530918],
+            [0.7956943312039361, -1.4105786650534555, 0.6111643338495193],
         ];
 
         $infer = $this->layer->infer($this->input);

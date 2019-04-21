@@ -5,6 +5,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
+use RuntimeException;
 use Closure;
 
 /**
@@ -29,7 +30,7 @@ class Noise implements Hidden
      *
      * @var float
      */
-    protected $stddev;
+    protected $stdDev;
 
     /**
      * The width of the layer.
@@ -39,24 +40,31 @@ class Noise implements Hidden
     protected $width;
 
     /**
-     * @param float $stddev
+     * @param float $stdDev
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $stddev = 0.1)
+    public function __construct(float $stdDev)
     {
-        if ($stddev < 0.) {
-            throw new InvalidArgumentException('Standard deviation must be'
-                . " 0 or greater, $stddev given.");
+        if ($stdDev < 0.) {
+            throw new InvalidArgumentException('Noise standard deviation must'
+                . " be 0 or greater, $stdDev given.");
         }
 
-        $this->stddev = $stddev;
+        $this->stdDev = $stdDev;
     }
 
     /**
-     * @return int|null
+     * Return the width of the layer.
+     *
+     * @throws \RuntimeException
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
+        if (!$this->width) {
+            throw new RuntimeException('Layer has not been initialized.');
+        }
+
         return $this->width;
     }
 
@@ -85,7 +93,7 @@ class Noise implements Hidden
     public function forward(Matrix $input) : Matrix
     {
         $noise = Matrix::gaussian(...$input->shape())
-            ->multiply($this->stddev);
+            ->multiply($this->stdDev);
 
         return $input->add($noise);
     }

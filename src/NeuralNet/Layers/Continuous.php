@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use InvalidArgumentException;
@@ -43,7 +45,14 @@ class Continuous implements Output
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $initializer;
+    protected $weightInitializer;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $biasInitializer;
 
     /**
      * The weights.
@@ -76,10 +85,16 @@ class Continuous implements Output
     /**
      * @param float $alpha
      * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 1e-4, ?CostFunction $costFn = null)
-    {
+    public function __construct(
+        float $alpha = 1e-4,
+        ?CostFunction $costFn = null,
+        ?Initializer $weightInitializer = null,
+        ?Initializer $biasInitializer = null
+    ) {
         if ($alpha < 0.) {
             throw new InvalidArgumentException('L2 regularization amount'
                 . " must be 0 or greater, $alpha given.");
@@ -87,15 +102,16 @@ class Continuous implements Output
 
         $this->alpha = $alpha;
         $this->costFn = $costFn ?? new LeastSquares();
-        $this->initializer = new Xavier2();
+        $this->weightInitializer = $weightInitializer ?? new Xavier2();
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
     }
 
     /**
      * Return the width of the layer.
      *
-     * @return int|null
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
         return 1;
     }
@@ -127,10 +143,11 @@ class Continuous implements Output
     {
         $fanOut = 1;
 
-        $w = $this->initializer->initialize($fanIn, $fanOut);
+        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $b = $this->biasInitializer->initialize($fanOut, 1);
 
         $this->weights = new Parameter($w);
-        $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
+        $this->biases = new Parameter($b);
 
         return $fanOut;
     }
@@ -151,7 +168,7 @@ class Continuous implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
 
         return $this->z;
     }
@@ -170,7 +187,7 @@ class Continuous implements Output
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
     }
 
     /**
@@ -206,7 +223,7 @@ class Continuous implements Output
             ->divide($this->z->n());
 
         $dW = $dL->matmul($this->input->transpose());
-        $dB = $dL->sum()->asColumnMatrix();
+        $dB = $dL->sum()->asRowMatrix();
 
         $w = $this->weights->w();
 
@@ -244,7 +261,6 @@ class Continuous implements Output
      * Restore the parameters of the layer.
      *
      * @param array $parameters
-     * @throws \RuntimeException
      */
     public function restore(array $parameters) : void
     {

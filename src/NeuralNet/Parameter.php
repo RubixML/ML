@@ -25,7 +25,7 @@ class Parameter
     protected $id;
 
     /**
-     * The parameter Matrix.
+     * The parameter matrix.
      *
      * @var \Rubix\Tensor\Matrix
      */

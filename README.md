@@ -4472,8 +4472,9 @@ Normalize the activations of the previous layer such that the mean activation is
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | beta initializer | Constant | object | The initializer of the beta parameter. |
-| 2 | gamma initializer | Constant | object | The initializer of the gamma parameter. |
+| 1 | decay | 0.9 | float | The decay rate of the previous running averages of the global mean and variance. |
+| 2 | beta initializer | Constant | object | The initializer of the beta parameter. |
+| 3 | gamma initializer | Constant | object | The initializer of the gamma parameter. |
 
 **Example:**
 
@@ -4482,13 +4483,12 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Normal;
 
-$layer = new BatchNorm(new Constant(0.), new Normal(1.));
+$layer = new BatchNorm(0.7, new Constant(0.), new Normal(1.));
 ```
 
 **References:**
 
 >- S. Ioffe et al. (2015). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift.
->- T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for Computing Sample Variances.
 
 ### Dense
 Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
@@ -4588,6 +4588,8 @@ The Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of dist
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
+| 4 | weight initializer | Xavier1 | object | The initializer of the weight parameter. |
+| 5 | bias initializer | Constant | object | The initializer of the bias parameter. |
 
 **Example:**
 
@@ -4607,6 +4609,8 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 |--|--|--|--|--|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 2 | cost fn | Least Squares | object | The function that penalizes the activities of bad predictions. |
+| 3 | weight initializer | Xavier2 | object | The initializer of the weight parameter. |
+| 4 | bias initializer | Constant | object | The initializer of the bias parameter. |
 
 **Example:**
 
@@ -4627,6 +4631,8 @@ The Multiclass output layer gives a joint probability estimate of a multiclass c
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
+| 4 | weight initializer | Xavier1 | object | The initializer of the weight parameter. |
+| 5 | bias initializer | Constant | object | The initializer of the bias parameter. |
 
 **Example:**
 

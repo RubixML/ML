@@ -57,13 +57,6 @@ class PReLU implements Hidden, Parametric
     protected $input;
 
     /**
-     * The memoized activation matrix.
-     *
-     * @var \Rubix\Tensor\Matrix|null
-     */
-    protected $computed;
-
-    /**
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $initializer
      */
     public function __construct(?Initializer $initializer = null)
@@ -72,10 +65,17 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * @return int|null
+     * Return the width of the layer.
+     *
+     * @throws \RuntimeException
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
+        if (!$this->width) {
+            throw new RuntimeException('Layer has not been initialized.');
+        }
+
         return $this->width;
     }
 
@@ -124,9 +124,7 @@ class PReLU implements Hidden, Parametric
     {
         $this->input = $input;
 
-        $this->computed = $this->compute($input);
-
-        return $this->computed;
+        return $this->compute($input);
     }
 
     /**
@@ -154,7 +152,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        if (!$this->input or !$this->computed) {
+        if (!$this->input) {
             throw new RuntimeException('Must perform a forward pass before'
                 . ' backpropagating.');
         }
@@ -168,12 +166,11 @@ class PReLU implements Hidden, Parametric
         $optimizer->step($this->alpha, $dAlpha);
 
         $z = $this->input;
-        $computed = $this->computed;
 
-        unset($this->input, $this->computed);
+        unset($this->input);
 
-        return function () use ($z, $computed, $dOut) {
-            return $this->differentiate($z, $computed)->multiply($dOut);
+        return function () use ($z, $dOut) {
+            return $this->differentiate($z)->multiply($dOut);
         };
     }
 
@@ -212,36 +209,35 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Calculate the derivatives of the activation function.
+     * Calculate the partial derivatives of the activation function.
      *
      * @param \Rubix\Tensor\Matrix $z
-     * @param \Rubix\Tensor\Matrix $computed
      * @throws \RuntimeException
      * @return \Rubix\Tensor\Matrix
      */
-    protected function differentiate(Matrix $z, Matrix $computed) : Matrix
+    protected function differentiate(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alpha = $this->alpha->w()->row(0);
+        $alphas = $this->alpha->w()->row(0);
 
-        $gradients = [];
+        $gradient = [];
 
         foreach ($z as $i => $row) {
-            $temp = $alpha[$i];
+            $alpha = $alphas[$i];
 
-            $gradient = [];
+            $temp = [];
 
             foreach ($row as $value) {
-                $gradient[] = $value > 0. ? 1. : $temp;
+                $temp[] = $value > 0. ? 1. : $alpha;
             }
 
-            $gradients[] = $gradient;
+            $gradient[] = $temp;
         }
 
-        return Matrix::quick($gradients);
+        return Matrix::quick($gradient);
     }
 
     /**
@@ -265,7 +261,6 @@ class PReLU implements Hidden, Parametric
      * Restore the parameters in the layer from an associative array.
      *
      * @param array $parameters
-     * @throws \RuntimeException
      */
     public function restore(array $parameters) : void
     {

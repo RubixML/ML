@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
+use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
@@ -54,7 +56,14 @@ class Binary implements Output
      *
      * @var \Rubix\ML\NeuralNet\Initializers\Initializer
      */
-    protected $initializer;
+    protected $weightInitializer;
+
+    /**
+     * The weight initializer.
+     *
+     * @var \Rubix\ML\NeuralNet\Initializers\Initializer
+     */
+    protected $biasInitializer;
 
     /**
      * The function that outputs the activation or implulse of each neuron.
@@ -101,11 +110,18 @@ class Binary implements Output
     /**
      * @param array $classes
      * @param float $alpha
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
+     * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $classes, float $alpha = 1e-4, ?CostFunction $costFn = null)
-    {
+    public function __construct(
+        array $classes,
+        float $alpha = 1e-4,
+        ?CostFunction $costFn = null,
+        ?Initializer $weightInitializer = null,
+        ?Initializer $biasInitializer = null
+    ) {
         $classes = array_unique($classes);
 
         if (count($classes) !== 2) {
@@ -121,16 +137,17 @@ class Binary implements Output
         $this->classes = array_flip(array_values($classes));
         $this->alpha = $alpha;
         $this->costFn = $costFn ?? new CrossEntropy();
-        $this->initializer = new Xavier1();
+        $this->weightInitializer = $weightInitializer ?? new Xavier1();
+        $this->biasInitializer = $biasInitializer ?? new Constant(0.);
         $this->activationFn = new Sigmoid();
     }
 
     /**
      * Return the width of the layer.
      *
-     * @return int|null
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
         return 1;
     }
@@ -162,10 +179,11 @@ class Binary implements Output
     {
         $fanOut = 1;
 
-        $w = $this->initializer->initialize($fanIn, $fanOut);
+        $w = $this->weightInitializer->initialize($fanIn, $fanOut);
+        $b = $this->biasInitializer->initialize($fanOut, 1);
 
         $this->weights = new Parameter($w);
-        $this->biases = new Parameter(Matrix::zeros($fanOut, 1));
+        $this->biases = new Parameter($b);
 
         return $fanOut;
     }
@@ -186,7 +204,7 @@ class Binary implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
 
         $this->computed = $this->activationFn->compute($this->z);
 
@@ -207,7 +225,7 @@ class Binary implements Output
         }
 
         $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->columnAsVector(0));
+            ->add($this->biases->w()->rowAsVector(0)->transpose());
 
         return $this->activationFn->compute($z);
     }
@@ -255,7 +273,7 @@ class Binary implements Output
             ->multiply($dL);
 
         $dW = $dA->matmul($this->input->transpose());
-        $dB = $dA->sum()->asColumnMatrix();
+        $dB = $dA->sum()->asRowMatrix();
 
         $w = $this->weights->w();
 
@@ -293,7 +311,6 @@ class Binary implements Output
      * Restore the parameters of the layer.
      *
      * @param array $parameters
-     * @throws \RuntimeException
      */
     public function restore(array $parameters) : void
     {

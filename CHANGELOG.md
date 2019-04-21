@@ -1,6 +1,8 @@
 - Unreleased
+    - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization
     - Added custom bias initialization to Dense layer
+    - Output layers now accept custom initializers
     - Added Constant neural network parameter initializer
 
 - 0.0.11-beta

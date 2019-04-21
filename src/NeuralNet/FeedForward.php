@@ -80,8 +80,7 @@ class FeedForward implements Network
             }
         }
 
-        $layers = [];
-        $layers[] = $input;
+        $layers = [$input];
         $layers = array_merge($layers, $hidden);
         $layers[] = $output;
 
@@ -121,7 +120,7 @@ class FeedForward implements Network
     /**
      * Return an array of hidden layers indexed left to right.
      *
-     * @return array
+     * @return \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
     public function hidden() : array
     {
@@ -173,7 +172,8 @@ class FeedForward implements Network
     }
 
     /**
-     * The depth of the network. i.e. the number of layers.
+     * The depth of the network. i.e. the number of layers including
+     * input, hidden, and output.
      *
      * @return int
      */

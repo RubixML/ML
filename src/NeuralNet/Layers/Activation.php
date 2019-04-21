@@ -56,10 +56,17 @@ class Activation implements Hidden
     }
 
     /**
-     * @return int|null
+     * Return the width of the layer.
+     *
+     * @throws \RuntimeException
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
+        if (!$this->width) {
+            throw new RuntimeException('Layer has not been initialized.');
+        }
+
         return $this->width;
     }
 

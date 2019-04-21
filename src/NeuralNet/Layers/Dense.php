@@ -91,9 +91,9 @@ class Dense implements Hidden, Parametric
     /**
      * Return the width of the layer.
      *
-     * @return int|null
+     * @return int
      */
-    public function width() : ?int
+    public function width() : int
     {
         return $this->neurons;
     }
@@ -228,7 +228,6 @@ class Dense implements Hidden, Parametric
      * Restore the parameters in the layer from an associative array.
      *
      * @param array $parameters
-     * @throws \RuntimeException
      */
     public function restore(array $parameters) : void
     {
