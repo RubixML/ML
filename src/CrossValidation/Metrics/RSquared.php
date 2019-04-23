@@ -6,6 +6,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * R Squared
  *
@@ -71,6 +73,6 @@ class RSquared implements Metric
             $sst += ($label - $mean) ** 2;
         }
 
-        return 1. - ($ssr / ($sst ?: self::EPSILON));
+        return 1. - ($ssr / ($sst ?: EPSILON));
     }
 }

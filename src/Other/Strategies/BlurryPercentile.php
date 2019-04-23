@@ -7,6 +7,9 @@ use Rubix\ML\Other\Helpers\Gaussian;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\TWO_PI;
+use const Rubix\ML\EPSILON;
+
 /**
  * Blurry Percentile
  *
@@ -19,8 +22,6 @@ use RuntimeException;
  */
 class BlurryPercentile implements Continuous
 {
-    protected const TWO_PI = 2. * M_PI;
-
     /**
      * The index of the percentile to predict where 50 is the median.
      *
@@ -84,7 +85,7 @@ class BlurryPercentile implements Continuous
         }
 
         $this->percentile = Stats::percentile($values, $this->p);
-        $this->mad = Stats::mad($values) ?: self::EPSILON;
+        $this->mad = Stats::mad($values) ?: EPSILON;
     }
 
     /**
@@ -116,6 +117,6 @@ class BlurryPercentile implements Continuous
         $r1 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
         $r2 = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
 
-        return sqrt(-2. * log($r1)) * cos(self::TWO_PI * $r2);
+        return sqrt(-2. * log($r1)) * cos(TWO_PI * $r2);
     }
 }

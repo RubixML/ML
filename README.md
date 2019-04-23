@@ -4654,7 +4654,7 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
+| 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 
 **Example:**
 
@@ -4675,9 +4675,9 @@ Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentu
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| 2 | momentum | 0.9 | float | The decay rate of the Momentum property. |
-| 3 | rms | 0.999 | float | The decay rate of the RMS property. |
+| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 2 | momentum | 0.9 | float | The inverse decay rate of the accumulated velocity. |
+| 3 | rms | 0.999 | float | The inverse decay rate of the accumulated squared gradients. |
 
 **Example:**
 
@@ -4722,8 +4722,8 @@ Momentum adds velocity to each step until exhausted. It does so by accumulating 
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| 2 | decay | 0.9 | float | The Momentum decay rate. |
+| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 2 | decay | 0.9 | float | The inverse decay rate of the accumulated velocity. |
 
 **Example:**
 
@@ -4744,8 +4744,8 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the master step size. |
-| 2 | decay | 0.9 | float | The RMS decay rate. |
+| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 2 | decay | 0.9 | float | The inverse decay rate of the accumulated squared gradients. |
 
 **Example:**
 
@@ -4766,9 +4766,9 @@ A learning rate decay optimizer that reduces the learning rate by a factor of th
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.01 | float | The learning rate. i.e. the master step size. |
+| 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 | 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
-| 3 | decay | 1e-3 | float | The decay factor to decrease the learning rate by every floor. |
+| 3 | decay | 1e-3 | float | The factor to decrease the learning rate at each *floor*. |
 
 **Example:**
 
@@ -4785,7 +4785,7 @@ A constant learning rate optimizer based on the original Stochastic Gradient Des
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the step size. |
+| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 
 **Example:**
 

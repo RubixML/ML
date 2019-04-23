@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Softmax
  *
@@ -29,7 +31,7 @@ class Softmax extends Sigmoid
         foreach ($z->asColumnVectors() as $vector) {
             $cache = $vector->exp();
 
-            $total = $cache->sum() ?: self::EPSILON;
+            $total = $cache->sum() ?: EPSILON;
 
             foreach ($cache as $j => $value) {
                 $activations[$j][] = $value / $total;

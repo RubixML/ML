@@ -15,6 +15,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * K-d LOF
  *
@@ -287,7 +289,7 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
 
         $mean = Stats::mean($rds);
 
-        return 1. / ($mean ?: self::EPSILON);
+        return 1. / ($mean ?: EPSILON);
     }
 
     /**

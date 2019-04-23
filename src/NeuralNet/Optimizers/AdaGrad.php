@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * AdaGrad
  *
@@ -31,7 +33,7 @@ class AdaGrad implements Optimizer, Adaptive
     protected $rate;
 
     /**
-     * The memoized sum of squared gradient matrices for each parameter.
+     * The parameter cache of sum of squared gradient matrices.
      *
      * @var \Rubix\Tensor\Matrix[]
      */
@@ -51,11 +53,11 @@ class AdaGrad implements Optimizer, Adaptive
         $this->rate = $rate;
     }
     /**
-     * Initialize a parameter.
+     * Warm the cache with a parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
-    public function initialize(Parameter $param) : void
+    public function warm(Parameter $param) : void
     {
         $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
     }
@@ -75,7 +77,7 @@ class AdaGrad implements Optimizer, Adaptive
         $this->cache[$param->id()] = $g2;
 
         $step = $gradient->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(self::EPSILON));
+            ->divide($g2->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

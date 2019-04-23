@@ -11,15 +11,19 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
-use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
+use function Rubix\ML\logsumexp;
+
+use const Rubix\ML\TWO_PI;
+use const Rubix\ML\EPSILON;
 
 /**
  * Gaussian Mixture
@@ -43,8 +47,6 @@ use RuntimeException;
 class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
     use LoggerAware;
-    
-    protected const TWO_PI = 2. * M_PI;
 
     /**
      * The number of gaussian components to fit to the training set i.e. the
@@ -187,7 +189,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         $priors = [];
 
         if (is_array($this->priors)) {
-            $total = LogSumExp::compute($this->priors);
+            $total = logsumexp($this->priors);
 
             foreach ($this->priors as $class => $probability) {
                 $priors[$class] = exp($probability - $total);
@@ -286,7 +288,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                         $total += $membership;
                     }
 
-                    $total = $total ?: self::EPSILON;
+                    $total = $total ?: EPSILON;
 
                     $mean = $a / $total;
 
@@ -297,7 +299,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                     $variance = $b / $total;
 
                     $means[] = $mean;
-                    $variances[] = $variance ?: self::EPSILON;
+                    $variances[] = $variance ?: EPSILON;
 
                     $loss += $total;
                 }
@@ -352,7 +354,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $predictions[] = Argmax::compute($jll);
+            $predictions[] = argmax($jll);
         }
 
         return $predictions;
@@ -379,7 +381,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $total = LogSumExp::compute($jll);
+            $total = logsumexp($jll);
 
             $dist = [];
 
@@ -414,7 +416,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $mean = $means[$column];
                 $variance = $variances[$column];
 
-                $pdf = -0.5 * log(self::TWO_PI * $variance);
+                $pdf = -0.5 * log(TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
 
                 $likelihood += $pdf;

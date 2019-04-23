@@ -7,8 +7,6 @@ use Rubix\ML\NeuralNet\Parameter;
 
 interface Optimizer
 {
-    public const EPSILON = 1e-8;
-    
     /**
      * Take a step of gradient descent for a given parameter.
      *

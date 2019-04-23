@@ -10,11 +10,15 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
+use function Rubix\ML\logsumexp;
+
+use const Rubix\ML\EPSILON;
+use const Rubix\ML\LOG_EPSILON;
 
 /**
  * Naive Bayes
@@ -31,8 +35,6 @@ use RuntimeException;
  */
 class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    protected const LOG_EPSILON = -18.420680744;
-
     /**
      * The amount of additive (Laplace) smoothing to apply to the probabilities.
      *
@@ -178,7 +180,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         $priors = [];
 
         if (is_array($this->priors)) {
-            $max = LogSumExp::compute($this->priors);
+            $max = logsumexp($this->priors);
 
             foreach ($this->priors as $class => $probability) {
                 $priors[$class] = exp($probability - $max);
@@ -267,7 +269,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
                 $total = (array_sum($columnCounts)
                     + (count($columnCounts) * $this->alpha))
-                    ?: self::EPSILON;
+                    ?: EPSILON;
 
                 $probs = [];
 
@@ -288,7 +290,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         if ($this->fitPriors) {
             $total = (array_sum($this->weights)
                 + (count($this->weights) * $this->alpha))
-                ?: self::EPSILON;
+                ?: EPSILON;
 
             foreach ($this->weights as $class => $weight) {
                 $this->priors[$class] = log(($weight + $this->alpha) / $total);
@@ -318,7 +320,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $predictions[] = Argmax::compute($jll);
+            $predictions[] = argmax($jll);
         }
 
         return $predictions;
@@ -346,7 +348,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $total = LogSumExp::compute($jll);
+            $total = logsumexp($jll);
 
             $dist = [];
 
@@ -371,10 +373,10 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         $likelihoods = [];
 
         foreach ($this->probs as $class => $probs) {
-            $likelihood = $this->priors[$class] ?? self::LOG_EPSILON;
+            $likelihood = $this->priors[$class] ?? LOG_EPSILON;
 
             foreach ($sample as $column => $feature) {
-                $likelihood += $probs[$column][$feature] ?? self::LOG_EPSILON;
+                $likelihood += $probs[$column][$feature] ?? LOG_EPSILON;
             }
 
             $likelihoods[$class] = $likelihood;

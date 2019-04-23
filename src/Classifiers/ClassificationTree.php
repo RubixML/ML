@@ -13,10 +13,11 @@ use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
 
 /**
  * Classification Tree
@@ -268,7 +269,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $counts = array_count_values($labels);
 
-        $outcome = Argmax::compute($counts);
+        $outcome = argmax($counts);
 
         $probabilities = [];
 

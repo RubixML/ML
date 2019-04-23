@@ -25,7 +25,7 @@ class AdaGradTest extends TestCase
         $this->assertInstanceOf(Optimizer::class, $this->optimizer);
     }
 
-    public function test_initialize_step()
+    public function test_warm_step()
     {
         $param = new Parameter(Matrix::quick([
             [0.1, 0.6, -0.4],
@@ -45,7 +45,7 @@ class AdaGradTest extends TestCase
             [0.099, 0.101, -0.699],
         ];
 
-        $this->optimizer->initialize($param);
+        $this->optimizer->warm($param);
 
         $this->optimizer->step($param, $gradient);
 

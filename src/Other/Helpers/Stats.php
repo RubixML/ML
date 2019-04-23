@@ -2,8 +2,11 @@
 
 namespace Rubix\ML\Other\Helpers;
 
-use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
+
+use function Rubix\ML\argmax;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Stats
@@ -16,8 +19,6 @@ use InvalidArgumentException;
  */
 class Stats
 {
-    protected const EPSILON = 1e-8;
-
     /**
      * Compute the population mean of a set of values.
      *
@@ -59,12 +60,12 @@ class Stats
                 . ' equal the number of values.');
         }
 
-        $total = array_sum($weights) ?: self::EPSILON;
+        $total = array_sum($weights) ?: EPSILON;
 
         $temp = 0.;
 
         foreach ($values as $i => $value) {
-            $temp += $value * ($weights[$i] ?: self::EPSILON);
+            $temp += $value * ($weights[$i] ?: EPSILON);
         }
 
         return $temp / $total;
@@ -98,7 +99,7 @@ class Stats
 
         $counts = array_count_values(array_map('strval', $values));
 
-        return (float) Argmax::compute($counts);
+        return (float) argmax($counts);
     }
 
     /**
@@ -301,7 +302,7 @@ class Stats
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
 
-        return $numerator / ($denominator ?: self::EPSILON);
+        return $numerator / ($denominator ?: EPSILON);
     }
 
     /**
@@ -327,7 +328,7 @@ class Stats
         $numerator = self::centralMoment($values, 4, $mean, $n);
         $denominator = self::centralMoment($values, 2, $mean, $n) ** 2;
 
-        return $numerator / ($denominator ?: self::EPSILON) - 3.;
+        return $numerator / ($denominator ?: EPSILON) - 3.;
     }
 
     /**

@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Rubix\Tensor\Matrix;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Relative Entropy
  *
@@ -35,8 +37,8 @@ class RelativeEntropy implements CostFunction
      */
     public function compute(Matrix $expected, Matrix $activations) : Matrix
     {
-        $expected = $expected->clip(self::EPSILON, 1.);
-        $activations = $activations->clip(self::EPSILON, 1.);
+        $expected = $expected->clip(EPSILON, 1.);
+        $activations = $activations->clip(EPSILON, 1.);
 
         return $expected->divide($activations)->log()
             ->multiply($expected);
@@ -53,8 +55,8 @@ class RelativeEntropy implements CostFunction
      */
     public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
     {
-        $expected = $expected->clip(self::EPSILON, 1.);
-        $activations = $activations->clip(self::EPSILON, 1.);
+        $expected = $expected->clip(EPSILON, 1.);
+        $activations = $activations->clip(EPSILON, 1.);
 
         return $activations->subtract($expected)
             ->divide($activations);

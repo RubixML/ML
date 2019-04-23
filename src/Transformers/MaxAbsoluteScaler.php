@@ -6,6 +6,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\DataType;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Max Absolute Scaler
  *
@@ -83,7 +85,7 @@ class MaxAbsoluteScaler implements Elastic
 
             $max = max($oldMax, $max);
 
-            $this->maxabs[$column] = $max ?: self::EPSILON;
+            $this->maxabs[$column] = $max ?: EPSILON;
         }
     }
 

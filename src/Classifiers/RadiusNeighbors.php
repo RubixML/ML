@@ -10,11 +10,14 @@ use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Radius Neighbors
@@ -188,7 +191,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 $weights = array_count_values($labels);
             }
 
-            $predictions[] = Argmax::compute($weights);
+            $predictions[] = argmax($weights);
         }
 
         return $predictions;
@@ -234,7 +237,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
                 $weights = array_count_values($labels);
             }
 
-            $total = array_sum($weights) ?: self::EPSILON;
+            $total = array_sum($weights) ?: EPSILON;
 
             $dist = $template;
 

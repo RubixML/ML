@@ -123,10 +123,8 @@ class Cyclical implements Optimizer
 
         $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
 
+        $param->update($gradient->multiply($rate));
+
         $this->n++;
-
-        $step = $gradient->multiply($rate);
-
-        $param->update($step);
     }
 }

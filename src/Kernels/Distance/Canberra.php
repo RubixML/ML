@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Kernels\Distance;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Canberra
  *
@@ -29,7 +31,7 @@ class Canberra implements Distance
             $valueB = $b[$i];
 
             $distance += abs($valueA - $valueB)
-                / ((abs($valueA) + abs($valueB)) ?: self::EPSILON);
+                / ((abs($valueA) + abs($valueB)) ?: EPSILON);
         }
 
         return $distance;

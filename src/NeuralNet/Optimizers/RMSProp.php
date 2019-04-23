@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * RMS Prop
  *
@@ -37,7 +39,7 @@ class RMSProp implements Optimizer, Adaptive
     protected $decay;
 
     /**
-     * The rolling sum of squared gradient matrices.
+     * The cache of rolling sum of squared gradient matrices.
      *
      * @var \Rubix\Tensor\Matrix[]
      */
@@ -67,11 +69,11 @@ class RMSProp implements Optimizer, Adaptive
     }
 
     /**
-     * Initialize a parameter.
+     * warm the cache with a parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
-    public function initialize(Parameter $param) : void
+    public function warm(Parameter $param) : void
     {
         $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
     }
@@ -92,7 +94,7 @@ class RMSProp implements Optimizer, Adaptive
         $this->cache[$param->id()] = $g2;
 
         $step = $gradient->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(self::EPSILON));
+            ->divide($g2->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

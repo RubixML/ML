@@ -14,6 +14,8 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * t-SNE
  *
@@ -420,7 +422,7 @@ class TSNE implements Estimator, Verbose
                 }
 
                 if ($pSigma === 0.) {
-                    $pSigma = self::EPSILON;
+                    $pSigma = EPSILON;
                 }
 
                 $distSigma = 0.;
@@ -465,7 +467,7 @@ class TSNE implements Estimator, Verbose
         $pHat = $p->add($p->transpose());
 
         $sigma = $pHat->sum()
-            ->clipLower(self::EPSILON);
+            ->clipLower(EPSILON);
 
         return $pHat->divide($sigma);
     }
@@ -489,7 +491,7 @@ class TSNE implements Estimator, Verbose
         $qSigma = $q->sum()->multiply(2.);
 
         $q = $q->divide($qSigma)
-            ->clipLower(self::EPSILON);
+            ->clipLower(EPSILON);
 
         $pqd = $p->subtract($q)
             ->multiply($distances);

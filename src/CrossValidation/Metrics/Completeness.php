@@ -6,6 +6,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Completeness
  *
@@ -70,7 +72,7 @@ class Completeness implements Metric
         $score = 0.;
 
         foreach ($table as $dist) {
-            $score += max($dist) / (array_sum($dist) ?: self::EPSILON);
+            $score += max($dist) / (array_sum($dist) ?: EPSILON);
         }
 
         return $score / count($table);

@@ -7,6 +7,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Z Scale Standardizer
  *
@@ -122,7 +124,7 @@ class ZScaleStandardizer implements Elastic
 
             $this->means[$column] = $mean;
             $this->variances[$column] = $variance;
-            $this->stddevs[$column] = sqrt($variance ?: self::EPSILON);
+            $this->stddevs[$column] = sqrt($variance ?: EPSILON);
         }
 
         $this->n = $dataset->numRows();
@@ -161,7 +163,7 @@ class ZScaleStandardizer implements Elastic
                 / ($this->n + $n);
 
             $this->variances[$column] = $varNew;
-            $this->stddevs[$column] = sqrt($varNew ?: self::EPSILON);
+            $this->stddevs[$column] = sqrt($varNew ?: EPSILON);
         }
 
         $this->n += $n;

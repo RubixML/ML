@@ -6,8 +6,6 @@ use Rubix\ML\Datasets\Dataset;
 
 interface Seeder
 {
-    public const EPSILON = 1e-8;
-    
     /**
      * Seed k cluster centroids from a dataset.
      *

@@ -10,11 +10,12 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * AdaBoost
@@ -291,7 +292,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $loss /= $total;
 
             $influence = $this->rate
-                * (log((1. - $loss) / ($loss ?: self::EPSILON))
+                * (log((1. - $loss) / ($loss ?: EPSILON))
                 + log($k - 1));
 
             $this->ensemble[] = $estimator;
@@ -342,7 +343,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . ' been trained.');
         }
         
-        return array_map([Argmax::class, 'compute'], $this->score($dataset));
+        return array_map('Rubix\ML\argmax', $this->score($dataset));
     }
 
     /**
@@ -364,7 +365,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         $probabilities = [];
 
         foreach ($scores as $scores) {
-            $total = array_sum($scores) ?: self::EPSILON;
+            $total = array_sum($scores) ?: EPSILON;
 
             $dist = [];
 

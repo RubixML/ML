@@ -7,9 +7,9 @@ use Rubix\ML\NeuralNet\Parameter;
 interface Adaptive extends Optimizer
 {
     /**
-     * Initialize a parameter.
+     * Warm the cache with a parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
-    public function initialize(Parameter $param) : void;
+    public function warm(Parameter $param) : void;
 }

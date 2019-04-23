@@ -14,6 +14,9 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+use const Rubix\ML\LOG_EPSILON;
+
 /**
  * LODA
  *
@@ -34,8 +37,6 @@ use RuntimeException;
 class LODA implements Estimator, Learner, Online, Ranking, Persistable
 {
     protected const MIN_SPARSE_DIMENSIONS = 3;
-
-    protected const LOG_EPSILON = -18.420680744;
 
     /**
      * The threshold anomaly score to be flagged as an outlier.
@@ -167,8 +168,8 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
         $z = $this->project($dataset);
 
         foreach ($z as $values) {
-            $min = min($values) - self::EPSILON;
-            $max = max($values) + self::EPSILON;
+            $min = min($values) - EPSILON;
+            $max = max($values) + EPSILON;
 
             $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
 
@@ -195,7 +196,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             foreach ($counts as $count) {
                 $densities[] = $count > 0
                     ? -log($count / $m)
-                    : -self::LOG_EPSILON;
+                    : -LOG_EPSILON;
             }
 
             $this->histograms[] = [$edges, $counts, $densities];
@@ -244,7 +245,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             foreach ($counts as $j => $count) {
                 $densities[$j] = $count > 0
                     ? -log($count / $this->n)
-                    : -self::LOG_EPSILON;
+                    : -LOG_EPSILON;
             }
 
             $this->histograms[$i] = [$edges, $counts, $densities];

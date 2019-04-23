@@ -8,6 +8,8 @@ use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Principal Component Analyis
  *
@@ -157,7 +159,7 @@ class PrincipalComponentAnalysis implements Stateful
 
         $this->explainedVar = $explainedVar;
         $this->noiseVar = $noiseVar;
-        $this->lossiness = $noiseVar / ($totalVar ?: self::EPSILON);
+        $this->lossiness = $noiseVar / ($totalVar ?: EPSILON);
 
         $this->mean = $xT->mean()->transpose();
 

@@ -13,6 +13,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Isolation Forest
  *
@@ -224,7 +226,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         foreach ($this->forest as $tree) {
             $node = $tree->search($sample);
 
-            $depth += $node ? $node->depth() : self::EPSILON;
+            $depth += $node ? $node->depth() : EPSILON;
         }
 
         $depth /= $this->estimators;

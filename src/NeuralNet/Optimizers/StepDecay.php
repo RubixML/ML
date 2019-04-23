@@ -88,10 +88,8 @@ class StepDecay implements Optimizer
 
         $rate = $this->rate * (1. / (1. + $f * $this->decay));
 
+        $param->update($gradient->multiply($rate));
+
         $this->n++;
-
-        $step = $gradient->multiply($rate);
-
-        $param->update($step);
     }
 }

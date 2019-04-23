@@ -15,6 +15,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Local Outlier Factor
  *
@@ -273,7 +275,7 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
 
         $rds = array_map('max', $distances, $kdistances);
 
-        return 1. / (Stats::mean($rds) ?: self::EPSILON);
+        return 1. / (Stats::mean($rds) ?: EPSILON);
     }
 
     /**

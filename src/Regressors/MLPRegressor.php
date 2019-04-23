@@ -28,6 +28,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * MLP Regressor
  *
@@ -394,7 +396,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($loss < self::EPSILON or $score >= $max) {
+            if ($loss < EPSILON or $score >= $max) {
                 break 1;
             }
 

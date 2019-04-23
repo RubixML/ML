@@ -45,7 +45,7 @@ class MomentumTest extends TestCase
             [0.09996000000000001, 0.10001, -0.6995],
         ];
 
-        $this->optimizer->initialize($param);
+        $this->optimizer->warm($param);
 
         $this->optimizer->step($param, $gradient);
 

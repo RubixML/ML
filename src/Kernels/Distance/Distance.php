@@ -4,8 +4,6 @@ namespace Rubix\ML\Kernels\Distance;
 
 interface Distance
 {
-    public const EPSILON = 1e-8;
-    
     /**
      * Compute the distance between two vectors.
      *

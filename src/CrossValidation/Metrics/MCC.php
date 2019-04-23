@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * MCC
  *
@@ -114,6 +116,6 @@ class MCC implements Metric
     {
         return ($tp * $tn - $fp * $fn)
             / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-            ?: self::EPSILON);
+            ?: EPSILON);
     }
 }

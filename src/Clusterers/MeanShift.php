@@ -21,6 +21,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Mean Shift
  *
@@ -430,7 +432,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             $distances[] = $this->kernel->compute($sample, $centroid);
         }
 
-        $total = array_sum($distances) ?: self::EPSILON;
+        $total = array_sum($distances) ?: EPSILON;
 
         foreach ($distances as $distance) {
             $membership[] = $distance / $total;

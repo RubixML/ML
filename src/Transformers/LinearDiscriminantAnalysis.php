@@ -9,6 +9,8 @@ use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Linear Discriminant Analyis
  *
@@ -171,7 +173,7 @@ class LinearDiscriminantAnalysis implements Stateful
 
         $this->explainedVar = $explainedVar;
         $this->noiseVar = $noiseVar;
-        $this->lossiness = $noiseVar / ($totalVar ?: self::EPSILON);
+        $this->lossiness = $noiseVar / ($totalVar ?: EPSILON);
 
         $this->eigenvectors = $eigenvectors;
     }

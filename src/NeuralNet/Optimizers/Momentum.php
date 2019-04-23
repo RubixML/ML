@@ -38,7 +38,7 @@ class Momentum implements Optimizer, Adaptive
     protected $decay;
 
     /**
-     * The per parameter velocity matrices.
+     * The parameter cache of velocity matrices.
      *
      * @var \Rubix\Tensor\Matrix[]
      */
@@ -51,7 +51,7 @@ class Momentum implements Optimizer, Adaptive
      * @param float $decay
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001, float $decay = 0.1)
+    public function __construct(float $rate = 0.001, float $decay = 0.9)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('The learning rate must be'
@@ -68,11 +68,11 @@ class Momentum implements Optimizer, Adaptive
     }
 
     /**
-     * Initialize a parameter.
+     * Warm the cache with a parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
-    public function initialize(Parameter $param) : void
+    public function warm(Parameter $param) : void
     {
         $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
     }
@@ -88,7 +88,7 @@ class Momentum implements Optimizer, Adaptive
         $velocity = $this->cache[$param->id()];
 
         $velocity = $gradient->multiply($this->rate)
-            ->add($velocity->multiply(1. - $this->decay));
+            ->add($velocity->multiply($this->decay));
 
         $this->cache[$param->id()] = $velocity;
 

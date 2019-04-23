@@ -7,6 +7,8 @@ use Rubix\ML\Other\Helpers\DataType;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Min Max Normalizer
  *
@@ -149,7 +151,7 @@ class MinMaxNormalizer implements Elastic
             $max = max($max, $this->maximums[$column]);
 
             $scale = ($this->max - $this->min)
-                / (($max - $min) ?: self::EPSILON);
+                / (($max - $min) ?: EPSILON);
 
             $minHat = $this->min - $min * $scale;
 

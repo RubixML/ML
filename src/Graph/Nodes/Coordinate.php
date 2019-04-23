@@ -4,9 +4,10 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use Generator;
+
+use function Rubix\ML\argmax;
 
 /**
  * Coordinate
@@ -68,7 +69,7 @@ class Coordinate extends BinaryNode implements Box
 
         $variances = array_map([Stats::class, 'variance'], $columns);
 
-        $column = Argmax::compute($variances);
+        $column = argmax($variances);
 
         $value = Stats::median($columns[$column]);
 

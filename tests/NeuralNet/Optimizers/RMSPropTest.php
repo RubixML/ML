@@ -45,7 +45,7 @@ class RMSPropTest extends TestCase
             [0.09683772233983162, 0.10316227766016839, -0.6968377223398315],
         ];
 
-        $this->optimizer->initialize($param);
+        $this->optimizer->warm($param);
         
         $this->optimizer->step($param, $gradient);
 

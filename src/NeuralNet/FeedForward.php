@@ -94,7 +94,7 @@ class FeedForward implements Network
             foreach ($layers as $layer) {
                 if ($layer instanceof Parametric) {
                     foreach ($layer->parameters() as $param) {
-                        $optimizer->initialize($param);
+                        $optimizer->warm($param);
                     }
                 }
             }

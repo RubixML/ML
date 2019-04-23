@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * F1 Score
  *
@@ -92,6 +94,6 @@ class F1Score implements Metric
      */
     public function compute(int $tp, int $fp, int $fn) : float
     {
-        return (2 * $tp) / ((2 * $tp + $fp + $fn) ?: self::EPSILON);
+        return (2 * $tp) / ((2 * $tp + $fp + $fn) ?: EPSILON);
     }
 }

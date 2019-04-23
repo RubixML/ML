@@ -4,6 +4,8 @@ namespace Rubix\ML\NeuralNet\CostFunctions;
 
 use Rubix\Tensor\Matrix;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Cross Entropy
  *
@@ -60,6 +62,6 @@ class CrossEntropy implements CostFunction
             ->multiply($activations);
 
         return $activations->subtract($expected)
-            ->divide($denominator->clipLower(self::EPSILON));
+            ->divide($denominator->clipLower(EPSILON));
     }
 }

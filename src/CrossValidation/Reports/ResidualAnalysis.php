@@ -6,6 +6,8 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Residual Analysis
  *
@@ -67,7 +69,7 @@ class ResidualAnalysis implements Report
 
         $mse = Stats::mean($l2);
 
-        $r2 = 1. - ($sse / ($sst ?: self::EPSILON));
+        $r2 = 1. - ($sse / ($sst ?: EPSILON));
 
         return [
             'mean_absolute_error' => Stats::mean($l1),

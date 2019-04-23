@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * L1 Normalizer
  *
@@ -22,7 +24,7 @@ class L1Normalizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $norm = array_sum(array_map('abs', $sample)) ?: self::EPSILON;
+            $norm = array_sum(array_map('abs', $sample)) ?: EPSILON;
 
             foreach ($sample as &$feature) {
                 $feature /= $norm;

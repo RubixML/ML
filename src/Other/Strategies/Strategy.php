@@ -4,8 +4,6 @@ namespace Rubix\ML\Other\Strategies;
 
 interface Strategy
 {
-    public const EPSILON = 1e-8;
-
     /**
      * Fit the guessing strategy to a set of values.
      *

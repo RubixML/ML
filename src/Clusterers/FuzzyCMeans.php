@@ -10,7 +10,6 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
@@ -19,6 +18,8 @@ use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Fuzzy C Means
@@ -247,7 +248,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                         $total += $weight;
                     }
 
-                    $centroid[$column] = $sigma / ($total ?: self::EPSILON);
+                    $centroid[$column] = $sigma / ($total ?: EPSILON);
                 }
             }
 
@@ -283,7 +284,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        return array_map('Rubix\ML\argmax', $this->proba($dataset));
     }
 
     /**
@@ -325,10 +326,10 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $sigma = 0.;
 
             foreach ($deltas as $delta) {
-                $sigma += ($alpha / ($delta ?: self::EPSILON)) ** $this->lambda;
+                $sigma += ($alpha / ($delta ?: EPSILON)) ** $this->lambda;
             }
 
-            $membership[$cluster] = 1. / ($sigma ?: self::EPSILON);
+            $membership[$cluster] = 1. / ($sigma ?: EPSILON);
         }
 
         return $membership;

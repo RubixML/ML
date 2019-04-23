@@ -43,7 +43,11 @@
     "autoload": {
         "psr-4": {
             "Rubix\\ML\\": "src/"
-        }
+        },
+        "files": [
+            "src/Constants.php",
+            "src/Functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

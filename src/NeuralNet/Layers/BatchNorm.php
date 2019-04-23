@@ -14,6 +14,8 @@ use RuntimeException;
 use Generator;
 use Closure;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Batch Norm
  *
@@ -208,7 +210,7 @@ class BatchNorm implements Hidden, Parametric
             $this->variance = $variance;
         }
 
-        $stdDev = $variance->clipLower(self::EPSILON)->sqrt();
+        $stdDev = $variance->clipLower(EPSILON)->sqrt();
 
         $stdInv = $stdDev->reciprocal();
 
@@ -243,7 +245,7 @@ class BatchNorm implements Hidden, Parametric
         $beta = $this->beta->w()->rowAsVector(0)->transpose();
 
         $xHat = $input->subtract($this->mean)
-            ->divide($this->variance->clipLower(self::EPSILON)->sqrt());
+            ->divide($this->variance->clipLower(EPSILON)->sqrt());
 
         return $gamma->multiply($xHat)->add($beta);
     }

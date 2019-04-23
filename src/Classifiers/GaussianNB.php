@@ -11,11 +11,16 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
-use Rubix\ML\Other\Functions\LogSumExp;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
+use function Rubix\ML\logsumexp;
+
+use const Rubix\ML\TWO_PI;
+use const Rubix\ML\EPSILON;
+use const Rubix\ML\LOG_EPSILON;
 
 /**
  * Gaussian Naive Bayes
@@ -35,10 +40,6 @@ use RuntimeException;
  */
 class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    protected const TWO_PI = 2. * M_PI;
-
-    protected const LOG_EPSILON = -18.420680744;
-
     /**
      * The class prior probabilities.
      *
@@ -166,7 +167,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         $priors = [];
 
         if (is_array($this->priors)) {
-            $total = LogSumExp::compute($this->priors);
+            $total = logsumexp($this->priors);
 
             foreach ($this->priors as $class => $probability) {
                 $priors[$class] = exp($probability - $total);
@@ -226,7 +227,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 [$mean, $variance] = Stats::meanVar($values);
 
                 $means[] = $mean;
-                $variances[] = $variance ?: self::EPSILON;
+                $variances[] = $variance ?: EPSILON;
             }
 
             $this->means[$class] = $means;
@@ -238,7 +239,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         if ($this->fitPriors) {
             $this->priors = [];
 
-            $total = array_sum($this->weights) ?: self::EPSILON;
+            $total = array_sum($this->weights) ?: EPSILON;
 
             foreach ($this->weights as $class => $weight) {
                 $this->priors[$class] = log($weight / $total);
@@ -291,7 +292,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                     * ($n * $oldMeans[$column] - $n * $mean) ** 2)
                     / ($oldWeight + $n);
 
-                $variances[$column] = $vHat ?: self::EPSILON;
+                $variances[$column] = $vHat ?: EPSILON;
             }
 
             $this->means[$class] = $means;
@@ -301,7 +302,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         }
 
         if ($this->fitPriors) {
-            $total = array_sum($this->weights) ?: self::EPSILON;
+            $total = array_sum($this->weights) ?: EPSILON;
 
             foreach ($this->weights as $class => $weight) {
                 $this->priors[$class] = log($weight / $total);
@@ -332,7 +333,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $predictions[] = Argmax::compute($jll);
+            $predictions[] = argmax($jll);
         }
 
         return $predictions;
@@ -360,7 +361,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($dataset as $sample) {
             $jll = $this->jointLogLikelihood($sample);
 
-            $total = LogSumExp::compute($jll);
+            $total = logsumexp($jll);
 
             $dist = [];
 
@@ -387,13 +388,13 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($this->means as $class => $means) {
             $variances = $this->variances[$class];
 
-            $likelihood = $this->priors[$class] ?? self::LOG_EPSILON;
+            $likelihood = $this->priors[$class] ?? LOG_EPSILON;
 
             foreach ($sample as $column => $feature) {
                 $mean = $means[$column];
                 $variance = $variances[$column];
 
-                $pdf = -0.5 * log(self::TWO_PI * $variance);
+                $pdf = -0.5 * log(TWO_PI * $variance);
                 $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
 
                 $likelihood += $pdf;

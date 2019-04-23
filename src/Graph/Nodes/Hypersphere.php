@@ -5,9 +5,10 @@ namespace Rubix\ML\Graph\Nodes;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
+
+use function Rubix\ML\argmax;
 
 /**
  * Hypersphere
@@ -68,7 +69,7 @@ class Hypersphere extends BinaryNode implements Ball
 
         $radius = max($distances);
 
-        $leftCentroid = $dataset->row(Argmax::compute($distances));
+        $leftCentroid = $dataset->row(argmax($distances));
 
         $distances = [];
 
@@ -76,7 +77,7 @@ class Hypersphere extends BinaryNode implements Ball
             $distances[] = $kernel->compute($sample, $leftCentroid);
         }
 
-        $rightCentroid = $dataset->row(Argmax::compute($distances));
+        $rightCentroid = $dataset->row(argmax($distances));
         
         $subsets = $dataset->spatialPartition($leftCentroid, $rightCentroid, $kernel);
 

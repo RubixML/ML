@@ -13,7 +13,6 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
@@ -314,7 +313,7 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Pe
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        return array_map('Rubix\ML\argmax', $this->proba($dataset));
     }
 
     /**

@@ -8,7 +8,6 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -210,7 +209,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        return array_map('Rubix\ML\argmax', $this->proba($dataset));
     }
 
     /**

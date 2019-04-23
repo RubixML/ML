@@ -14,7 +14,6 @@ use Rubix\ML\NeuralNet\Snapshot;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Other\Functions\Argmax;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
@@ -29,6 +28,8 @@ use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * Multi Layer Perceptron
@@ -406,7 +407,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 break 1;
             }
 
-            if ($loss < self::EPSILON or $score >= $max) {
+            if ($loss < EPSILON or $score >= $max) {
                 break 1;
             }
 
@@ -448,7 +449,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map([Argmax::class, 'compute'], $this->proba($dataset));
+        return array_map('Rubix\ML\argmax', $this->proba($dataset));
     }
 
     /**

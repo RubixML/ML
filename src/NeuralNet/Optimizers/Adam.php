@@ -6,6 +6,8 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Adam
  *
@@ -50,7 +52,7 @@ class Adam implements Optimizer, Adaptive
     protected $rmsDecay;
 
     /**
-     * The per parameter velocity and squared gradient cache.
+     * The parameter cache of running velocity and squared gradients.
      *
      * @var array[]
      */
@@ -94,11 +96,11 @@ class Adam implements Optimizer, Adaptive
     }
 
     /**
-     * Initialize a parameter.
+     * Warm the cache with a parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
      */
-    public function initialize(Parameter $param) : void
+    public function warm(Parameter $param) : void
     {
         $velocity = Matrix::zeros(...$param->w()->shape());
         $g2 = clone $velocity;
@@ -133,7 +135,7 @@ class Adam implements Optimizer, Adaptive
         }
 
         $step = $velocity->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(self::EPSILON));
+            ->divide($g2->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

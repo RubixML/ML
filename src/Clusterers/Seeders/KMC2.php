@@ -7,6 +7,8 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * K-MC2
  *
@@ -74,7 +76,7 @@ class KMC2 implements Seeder
 
             $target = end($centroids);
 
-            $xDistance = $this->kernel->compute($x, $target) ?: self::EPSILON;
+            $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 
             foreach ($candidates as $y) {
                 $yDistance = $this->kernel->compute($y, $target);

@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Transformers;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * L2 Normalizer
  *
@@ -28,7 +30,7 @@ class L2Normalizer implements Transformer
                 $norm += $feature ** 2;
             }
 
-            $norm = sqrt($norm ?: self::EPSILON);
+            $norm = sqrt($norm ?: EPSILON);
 
             foreach ($sample as &$feature) {
                 $feature /= $norm;

@@ -4,7 +4,6 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Other\Functions\Argmax;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -168,7 +167,7 @@ class BootstrapAggregator implements Learner, Persistable
         switch ($this->type()) {
             case self::CLASSIFIER:
                 return array_map(function ($outcomes) {
-                    return Argmax::compute(array_count_values($outcomes));
+                    return argmax(array_count_values($outcomes));
                 }, $aggregate);
 
             case self::ANOMALY_DETECTOR:

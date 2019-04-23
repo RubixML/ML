@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation\Metrics;
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Informedness
  *
@@ -109,7 +111,7 @@ class Informedness implements Metric
      */
     public function compute(int $tp, int $tn, int $fp, int $fn) : float
     {
-        return $tp / (($tp + $fn) ?: self::EPSILON)
-            + $tn / (($tn + $fp) ?: self::EPSILON) - 1.;
+        return $tp / (($tp + $fn) ?: EPSILON)
+            + $tn / (($tn + $fp) ?: EPSILON) - 1.;
     }
 }

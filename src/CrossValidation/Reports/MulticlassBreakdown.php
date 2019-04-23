@@ -5,6 +5,8 @@ namespace Rubix\ML\CrossValidation\Reports;
 use Rubix\ML\Estimator;
 use InvalidArgumentException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Multiclass Breakdown
  *
@@ -116,18 +118,18 @@ class MulticlassBreakdown implements Report
             $fn = $falseNegatives[$label];
 
             $accuracy = ($tp + $tn) / ($tp + $tn + $fp + $fn);
-            $precision = $tp / (($tp + $fp) ?: self::EPSILON);
-            $recall = $tp / (($tp + $fn) ?: self::EPSILON);
-            $specificity = $tn / (($tn + $fp) ?: self::EPSILON);
-            $npv = $tn / (($tn + $fn) ?: self::EPSILON);
+            $precision = $tp / (($tp + $fp) ?: EPSILON);
+            $recall = $tp / (($tp + $fn) ?: EPSILON);
+            $specificity = $tn / (($tn + $fp) ?: EPSILON);
+            $npv = $tn / (($tn + $fn) ?: EPSILON);
             $cardinality = $tp + $fn;
 
             $f1 = 2. * (($precision * $recall))
-                / (($precision + $recall) ?: self::EPSILON);
+                / (($precision + $recall) ?: EPSILON);
 
             $mcc = ($tp * $tn - $fp * $fn)
                 / sqrt((($tp + $fp) * ($tp + $fn)
-                * ($tn + $fp) * ($tn + $fn)) ?: self::EPSILON);
+                * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
 
             $metrics = [];
 

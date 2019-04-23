@@ -7,6 +7,8 @@ use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Robust Standardizer
  *
@@ -96,7 +98,7 @@ class RobustStandardizer implements Stateful
             [$median, $mad] = Stats::medMad($values);
 
             $this->medians[$column] = $median;
-            $this->mads[$column] = $mad ?: self::EPSILON;
+            $this->mads[$column] = $mad ?: EPSILON;
         }
     }
 

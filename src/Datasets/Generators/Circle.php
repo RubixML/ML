@@ -8,6 +8,8 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
+use const Rubix\ML\TWO_PI;
+
 /**
  * Circle
  *
@@ -19,8 +21,6 @@ use InvalidArgumentException;
  */
 class Circle implements Generator
 {
-    protected const TWO_PI = 2. * M_PI;
-
     /**
      * The center vector of the circle.
      *
@@ -84,7 +84,7 @@ class Circle implements Generator
      */
     public function generate(int $n) : Dataset
     {
-        $r = Vector::rand($n)->multiply(self::TWO_PI);
+        $r = Vector::rand($n)->multiply(TWO_PI);
 
         $x = $r->cos();
         $y = $r->sin();
