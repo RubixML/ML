@@ -4,6 +4,7 @@
     - Added custom bias initialization to Dense layer
     - Output layers now accept custom initializers
     - Added Constant neural network parameter initializer
+    - Removed Exponential neural network Cost Function
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

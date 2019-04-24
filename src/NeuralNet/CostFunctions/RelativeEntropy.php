@@ -29,36 +29,34 @@ class RelativeEntropy implements CostFunction
     }
 
     /**
-     * Compute the loss matrix.
+     * Compute the loss.
      *
      * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $activations
-     * @return \Rubix\Tensor\Matrix
+     * @param \Rubix\Tensor\Matrix $output
+     * @return float
      */
-    public function compute(Matrix $expected, Matrix $activations) : Matrix
+    public function compute(Matrix $expected, Matrix $output) : float
     {
         $expected = $expected->clip(EPSILON, 1.);
-        $activations = $activations->clip(EPSILON, 1.);
+        $output = $output->clip(EPSILON, 1.);
 
-        return $expected->divide($activations)->log()
-            ->multiply($expected);
+        return $expected->divide($output)->log()
+            ->multiply($expected)->sum()->mean();
     }
 
     /**
-     * Calculate the gradient of the cost function with respect to the
-     * activation.
+     * Calculate the gradient of the cost function with respect to the output.
      *
      * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $activations
-     * @param \Rubix\Tensor\Matrix $delta
+     * @param \Rubix\Tensor\Matrix $output
      * @return \Rubix\Tensor\Matrix
      */
-    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
+    public function differentiate(Matrix $expected, Matrix $output) : Matrix
     {
         $expected = $expected->clip(EPSILON, 1.);
-        $activations = $activations->clip(EPSILON, 1.);
+        $output = $output->clip(EPSILON, 1.);
 
-        return $activations->subtract($expected)
-            ->divide($activations);
+        return $output->subtract($expected)
+            ->divide($output);
     }
 }

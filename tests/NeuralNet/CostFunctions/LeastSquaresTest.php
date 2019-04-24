@@ -9,13 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 class LeastSquaresTest extends TestCase
 {
-    protected $costFunction;
+    protected $costFn;
 
     protected $expected;
 
     protected $activation;
-
-    protected $delta;
 
     public function setUp()
     {
@@ -23,39 +21,29 @@ class LeastSquaresTest extends TestCase
 
         $this->activation = Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
-        $this->delta = Matrix::quick([
-            [4.0804000000000125],
-            [4.],
-            [179.56],
-            [7.290000000000015],
-            [0.25],
-        ]);
-
-        $this->costFunction = new LeastSquares();
+        $this->costFn = new LeastSquares();
     }
 
     public function test_build_cost_function()
     {
-        $this->assertInstanceOf(LeastSquares::class, $this->costFunction);
-        $this->assertInstanceOf(CostFunction::class, $this->costFunction);
+        $this->assertInstanceOf(LeastSquares::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
     public function test_compute()
     {
-        $cost = $this->costFunction
-            ->compute($this->expected, $this->activation)
-            ->asArray();
+        $cost = $this->costFn->compute($this->expected, $this->activation);
 
-        $this->assertEquals($this->delta->asArray(), $cost);
+        $this->assertEquals(39.036080000000005, $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction
-            ->differentiate($this->expected, $this->activation, $this->delta)
+        $derivative = $this->costFn
+            ->differentiate($this->expected, $this->activation)
             ->asArray();
 
-        $outcome = [
+        $expected = [
             [-2.020000000000003],
             [-2.0],
             [-13.4],
@@ -63,6 +51,6 @@ class LeastSquaresTest extends TestCase
             [0.5],
         ];
 
-        $this->assertEquals($outcome, $derivative);
+        $this->assertEquals($expected, $derivative);
     }
 }

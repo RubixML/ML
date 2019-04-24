@@ -9,53 +9,41 @@ use PHPUnit\Framework\TestCase;
 
 class HuberLossTest extends TestCase
 {
-    protected $costFunction;
+    protected $costFn;
 
     protected $expected;
 
     protected $activation;
-
-    protected $delta;
-
+    
     public function setUp()
     {
         $this->expected = Matrix::quick([[36.], [22.], [18.], [41.5], [38.]]);
 
         $this->activation = Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
-        $this->delta = Matrix::quick([
-            [1.2539742678211772],
-            [1.2360679774997898],
-            [12.43726162579266],
-            [1.8792360097775962],
-            [0.1180339887498949],
-        ]);
-
-        $this->costFunction = new HuberLoss();
+        $this->costFn = new HuberLoss();
     }
 
     public function test_build_cost_function()
     {
-        $this->assertInstanceOf(HuberLoss::class, $this->costFunction);
-        $this->assertInstanceOf(CostFunction::class, $this->costFunction);
+        $this->assertInstanceOf(HuberLoss::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
     public function test_compute()
     {
-        $cost = $this->costFunction
-            ->compute($this->expected, $this->activation)
-            ->asArray();
+        $cost = $this->costFn->compute($this->expected, $this->activation);
 
-        $this->assertEquals($this->delta->asArray(), $cost);
+        $this->assertEquals(3.384914773928223, $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction
-            ->differentiate($this->expected, $this->activation, $this->delta)
+        $derivative = $this->costFn
+            ->differentiate($this->expected, $this->activation)
             ->asArray();
 
-        $outcome = [
+        $expected = [
             [-0.8961947919452747],
             [-0.8944271909999159],
             [-0.9972269926097788],
@@ -63,6 +51,6 @@ class HuberLossTest extends TestCase
             [0.4472135954999579],
         ];
 
-        $this->assertEquals($outcome, $derivative);
+        $this->assertEquals($expected, $derivative);
     }
 }

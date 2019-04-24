@@ -51,9 +51,9 @@ class MultiLayerPerceptronTest extends TestCase
         $this->estimator = new MultiLayerPerceptron([
             new Dense(10),
             new Activation(new ReLU()),
-            new Dense(5),
+            new Dense(10),
             new Activation(new ReLU()),
-        ], 10, new Adam(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
+        ], 10, new Adam(0.001), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 
         $this->metric = new Accuracy();
 

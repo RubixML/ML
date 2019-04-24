@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class CrossEntropyTest extends TestCase
 {
-    protected $costFunction;
+    protected $costFn;
 
     protected $expected;
 
@@ -23,39 +23,28 @@ class CrossEntropyTest extends TestCase
 
         $this->activation = Matrix::quick([[0.99], [0.2], [0.7], [0.80], [0.02]]);
 
-        $this->delta = Matrix::quick([
-            [0.3159609474567209],
-            [0.7981388693815917],
-            [1.1031860488854577],
-            [0.3711006659477776],
-            [0.7031971797266342],
-        ]);
-
-        $this->costFunction = new CrossEntropy();
+        $this->costFn = new CrossEntropy();
     }
 
     public function test_build_cost_function()
     {
-        $this->assertInstanceOf(CrossEntropy::class, $this->costFunction);
-        $this->assertInstanceOf(CostFunction::class, $this->costFunction);
+        $this->assertInstanceOf(CrossEntropy::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
     }
 
     public function test_compute()
     {
-        $cost = $this->costFunction
-            ->compute($this->expected, $this->activation)
-            ->asArray();
+        $cost = $this->costFn->compute($this->expected, $this->activation);
 
-        $this->assertEquals($this->delta->asArray(), $cost);
+        $this->assertEquals(0.046638777433542236, $cost);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFunction
-            ->differentiate($this->expected, $this->activation, $this->delta)
+        $derivative = $this->costFn->differentiate($this->expected, $this->activation)
             ->asArray();
 
-        $outcome = [
+        $expected = [
             [-1.01010101010101],
             [1.2499999999999998],
             [3.3333333333333326],
@@ -63,6 +52,6 @@ class CrossEntropyTest extends TestCase
             [1.0204081632653061],
         ];
 
-        $this->assertEquals($outcome, $derivative);
+        $this->assertEquals($expected, $derivative);
     }
 }

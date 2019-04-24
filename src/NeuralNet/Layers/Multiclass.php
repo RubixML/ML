@@ -251,25 +251,22 @@ class Multiclass implements Output
         $expected = [];
 
         foreach ($this->classes as $class) {
-            $joint = [];
+            $temp = [];
 
             foreach ($labels as $label) {
-                $joint[] = $class === $label ? 1. : 0.;
+                $temp[] = $class === $label ? 1. : 0.;
             }
 
-            $expected[] = $joint;
+            $expected[] = $temp;
         }
 
         $expected = Matrix::quick($expected);
-
-        $delta = $this->costFn
-            ->compute($expected, $this->computed);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn
-            ->differentiate($expected, $this->computed, $delta)
+            ->differentiate($expected, $this->computed)
             ->add($penalties)
             ->divide($this->computed->n());
 
@@ -285,7 +282,7 @@ class Multiclass implements Output
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
-        $loss = $delta->sum()->mean();
+        $loss = $this->costFn->compute($expected, $this->computed);
 
         unset($this->input, $this->z, $this->computed);
 

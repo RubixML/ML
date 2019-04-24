@@ -211,14 +211,11 @@ class Continuous implements Output
 
         $expected = Matrix::quick([$labels]);
 
-        $delta = $this->costFn
-            ->compute($expected, $this->z);
-
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn
-            ->differentiate($expected, $this->z, $delta)
+            ->differentiate($expected, $this->z)
             ->add($penalties)
             ->divide($this->z->n());
 
@@ -230,7 +227,7 @@ class Continuous implements Output
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
-        $loss = $delta->sum()->mean();
+        $loss = $this->costFn->compute($expected, $this->z);
 
         unset($this->input, $this->z);
 

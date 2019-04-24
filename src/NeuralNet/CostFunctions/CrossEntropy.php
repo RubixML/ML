@@ -33,35 +33,32 @@ class CrossEntropy implements CostFunction
     }
 
     /**
-     * Compute the loss matrix.
+     * Compute the matrix.
      *
      * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $activations
-     * @return \Rubix\Tensor\Matrix
+     * @param \Rubix\Tensor\Matrix $output
+     * @return float
      */
-    public function compute(Matrix $expected, Matrix $activations) : Matrix
+    public function compute(Matrix $expected, Matrix $output) : float
     {
-        return $activations->negate()
-            ->multiply($expected)
-            ->add($activations->exp()->add(1.)->log());
+        return $expected->negate()->multiply($output->log())->sum()->mean();
     }
 
     /**
-     * Calculate the gradient of the cost function with respect to the
-     * activation.
+     * Calculate the gradient of the cost function with respect to the output.
      *
      * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $activations
-     * @param \Rubix\Tensor\Matrix $delta
+     * @param \Rubix\Tensor\Matrix $output
      * @return \Rubix\Tensor\Matrix
      */
-    public function differentiate(Matrix $expected, Matrix $activations, Matrix $delta) : Matrix
+    public function differentiate(Matrix $expected, Matrix $output) : Matrix
     {
-        $denominator = Matrix::ones(...$activations->shape())
-            ->subtract($activations)
-            ->multiply($activations);
+        $denominator = Matrix::ones(...$output->shape())
+            ->subtract($output)
+            ->multiply($output)
+            ->clipLower(EPSILON);
 
-        return $activations->subtract($expected)
-            ->divide($denominator->clipLower(EPSILON));
+        return $output->subtract($expected)
+            ->divide($denominator);
     }
 }
