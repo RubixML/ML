@@ -76,18 +76,18 @@ class Adam implements Optimizer, Adaptive
     public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
+            throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
         if ($momentumDecay < 0. or $momentumDecay > 1.) {
             throw new InvalidArgumentException('Momentum decay must be between'
-                . ' 0 and 1.');
+                . " 0 and 1, $momentumDecay given.");
         }
 
         if ($rmsDecay < 0. or $rmsDecay > 1.) {
             throw new InvalidArgumentException('RMS decay rate must be between'
-                . ' 0 and 1.');
+                . " 0 and 1, $rmsDecay given.");
         }
 
         $this->rate = $rate;

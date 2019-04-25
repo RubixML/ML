@@ -10,16 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 class PlaceholderTest extends TestCase
 {
-    protected $fanIn;
-
     protected $input;
 
     protected $layer;
 
     public function setUp()
     {
-        $this->fanIn = 0;
-
         $this->input = Matrix::quick([
             [1., 2.5,],
             [0.1, 0.],
@@ -34,31 +30,26 @@ class PlaceholderTest extends TestCase
         $this->assertInstanceOf(Placeholder1D::class, $this->layer);
         $this->assertInstanceOf(Input::class, $this->layer);
         $this->assertInstanceOf(Layer::class, $this->layer);
-    }
 
-    public function test_width()
-    {
         $this->assertEquals(3, $this->layer->width());
     }
 
     public function test_forward_infer()
     {
-        $out = $this->layer->forward($this->input);
-
-        $output = [
+        $expected = [
             [1., 2.5,],
             [0.1, 0.],
             [0.002, -6.],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals([3, 2], $out->shape());
-        $this->assertEquals($output, $out->asArray());
+        $forward = $this->layer->forward($this->input);
 
-        $out = $this->layer->infer($this->input);
+        $this->assertInstanceOf(Matrix::class, $forward);
+        $this->assertEquals($expected, $forward->asArray());
 
-        $this->assertInstanceOf(Matrix::class, $out);
-        $this->assertEquals([3, 2], $out->shape());
-        $this->assertEquals($output, $out->asArray());
+        $infer = $this->layer->infer($this->input);
+
+        $this->assertInstanceOf(Matrix::class, $infer);
+        $this->assertEquals($expected, $infer->asArray());
     }
 }

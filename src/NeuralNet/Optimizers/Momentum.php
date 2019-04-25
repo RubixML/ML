@@ -54,13 +54,13 @@ class Momentum implements Optimizer, Adaptive
     public function __construct(float $rate = 0.001, float $decay = 0.9)
     {
         if ($rate <= 0.) {
-            throw new InvalidArgumentException('The learning rate must be'
+            throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
         if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException('Momentum decay must be'
-                . " between 0 and 1, $decay given.");
+            throw new InvalidArgumentException('Decay must be between'
+                . " 0 and 1, $decay given.");
         }
 
         $this->rate = $rate;

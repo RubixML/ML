@@ -265,14 +265,20 @@ class Multiclass implements Output
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
-        $dL = $this->costFn
-            ->differentiate($expected, $this->computed)
-            ->add($penalties)
-            ->divide($this->computed->n());
+        if ($this->costFn instanceof CrossEntropy) {
+            $dA = $this->computed->subtract($expected)
+                ->add($penalties)
+                ->divide($this->computed->n());
+        } else {
+            $dL = $this->costFn
+                ->differentiate($expected, $this->computed)
+                ->add($penalties)
+                ->divide($this->computed->n());
 
-        $dA = $this->activationFn
-            ->differentiate($this->z, $this->computed)
-            ->multiply($dL);
+            $dA = $this->activationFn
+                ->differentiate($this->z, $this->computed)
+                ->multiply($dL);
+        }
 
         $dW = $dA->matmul($this->input->transpose());
         $dB = $dA->sum()->asRowMatrix();

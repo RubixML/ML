@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class DenseTest extends TestCase
 {
+    protected const RANDOM_SEED = 0;
+
     protected $fanIn;
 
     protected $input;
@@ -35,7 +37,6 @@ class DenseTest extends TestCase
 
         $this->prevGrad = function () {
             return Matrix::quick([
-                [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
             ]);
@@ -43,9 +44,9 @@ class DenseTest extends TestCase
 
         $this->optimizer = new Stochastic();
 
-        $this->layer = new Dense(3, new He());
+        $this->layer = new Dense(2, new He());
 
-        $this->layer->initialize($this->fanIn);
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_layer()
@@ -54,32 +55,49 @@ class DenseTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-    }
 
-    public function test_width()
-    {
-        $this->assertEquals(3, $this->layer->width());
+        $this->layer->initialize($this->fanIn);
+
+        $this->assertEquals(2, $this->layer->width());
     }
 
     public function test_forward_back_infer()
     {
+        $this->layer->initialize($this->fanIn);
+
+        $expected = [
+            [0.16048798423102456, -1.1251921552787814, 1.3407869114604536],
+            [0.08541202409567002, -1.7363342816159082, -0.6972828043325793],
+        ];
+
         $forward = $this->layer->forward($this->input);
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals([3, 3], $forward->shape());
+        $this->assertEquals($expected, $forward->asArray());
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
 
+        $expected = [
+            [0.08105979414456366, 0.032423917657825464, 0.09199581049540438],
+            [0.20137427617064546, 0.08054971046825819, -0.14969755527424305],
+            [0.19988818890079615, 0.07995527556031846, 0.29776315973824286],
+        ];
+
         $back = $back();
 
         $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals([3, 3], $back->shape());
+        $this->assertEquals($expected, $back->asArray());
+
+        $expected = [
+            [0.1587733922310246, -1.1356236552787815, 1.3393348114604533],
+            [0.08349361309567001, -1.7448687816159083, -0.7070889543325792],
+        ];
 
         $infer = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals([3, 3], $infer->shape());
+        $this->assertEquals($expected, $infer->asArray());
     }
 }

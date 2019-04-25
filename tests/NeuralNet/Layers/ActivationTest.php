@@ -44,8 +44,6 @@ class ActivationTest extends TestCase
         $this->optimizer = new Stochastic();
 
         $this->layer = new Activation(new ReLU());
-
-        $this->layer->initialize($this->fanIn);
     }
 
     public function test_build_layer()
@@ -54,47 +52,51 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-    }
 
-    public function test_width()
-    {
+        $this->layer->initialize($this->fanIn);
+
         $this->assertEquals($this->fanIn, $this->layer->width());
     }
 
     public function test_forward_back_infer()
     {
-        $forward = $this->layer->forward($this->input);
+        $this->layer->initialize($this->fanIn);
 
-        $output = [
+        $expected = [
             [1., 2.5, 0.],
             [0.1, 0., 3.],
             [0.002, 0., 0.],
         ];
 
+        $forward = $this->layer->forward($this->input);
+
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals([3, 3], $forward->shape());
-        $this->assertEquals($output, $forward->asArray());
+        $this->assertEquals($expected, $forward->asArray());
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
 
-        $back = $back();
-
-        $dYdX = [
+        $expected = [
             [0.25, 0.7, 0.],
             [0.5, 0., 0.01],
             [0.25, 0, 0.],
         ];
 
+        $back = $back();
+
         $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals([3, 3], $back->shape());
-        $this->assertEquals($dYdX, $back->asArray());
+        $this->assertEquals($expected, $back->asArray());
+
+        $expected = [
+            [1., 2.5, 0.],
+            [0.1, 0., 3.],
+            [0.002, 0., 0.],
+        ];
 
         $infer = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals([3, 3], $infer->shape());
-        $this->assertEquals($output, $infer->asArray());
+        $this->assertEquals($expected, $infer->asArray());
     }
 }

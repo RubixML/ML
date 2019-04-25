@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class PReLUTest extends TestCase
 {
+    protected const RANDOM_SEED = 0;
+
     protected $fanIn;
 
     protected $input;
@@ -45,7 +47,7 @@ class PReLUTest extends TestCase
 
         $this->layer = new PReLU(new Constant(0.25));
 
-        $this->layer->initialize($this->fanIn);
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_layer()
@@ -54,53 +56,51 @@ class PReLUTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Parametric::class, $this->layer);
-    }
 
-    public function test_width()
-    {
+        $this->layer->initialize($this->fanIn);
+
         $this->assertEquals(3, $this->layer->width());
     }
 
     public function test_forward_back_infer()
     {
+        $this->layer->initialize($this->fanIn);
+
         $forward = $this->layer->forward($this->input);
 
-        $output = [
+        $expected = [
             [1., 2.5, -0.025],
             [0.1, 0., 3.],
             [0.002, -1.5, -0.125],
         ];
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals([3, 3], $forward->shape());
-        $this->assertEquals($output, $forward->asArray());
+        $this->assertEquals($expected, $forward->asArray());
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
 
-        $back = $back();
-
-        $dYdX = [
+        $expected = [
             [0.25, 0.7, 0.025001000000000002],
             [0.5, 0.05, 0.01],
             [0.25, 0.025104500000000002, 0.22343005000000002],
         ];
 
+        $back = $back();
+
         $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals([3, 3], $back->shape());
-        $this->assertEquals($dYdX, $back->asArray());
+        $this->assertEquals($expected, $back->asArray());
 
-        $infer = $this->layer->infer($this->input);
-
-        $output = [
+        $expected = [
             [1., 2.5, -0.025001000000000002],
             [0.1, 0., 3.],
             [0.002, -1.5062700000000002, -0.1255225],
         ];
 
+        $infer = $this->layer->infer($this->input);
+
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals([3, 3], $infer->shape());
-        $this->assertEquals($output, $infer->asArray());
+        $this->assertEquals($expected, $infer->asArray());
     }
 }

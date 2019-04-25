@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 
 class AlphaDropoutTest extends TestCase
 {
+    protected const RANDOM_SEED = 0;
+
     protected $fanIn;
 
     protected $input;
@@ -44,7 +46,7 @@ class AlphaDropoutTest extends TestCase
 
         $this->layer = new AlphaDropout(0.1);
 
-        $this->layer->initialize($this->fanIn);
+        srand(self::RANDOM_SEED);
     }
 
     public function test_build_layer()
@@ -53,30 +55,43 @@ class AlphaDropoutTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
         $this->assertInstanceOf(Hidden::class, $this->layer);
         $this->assertInstanceOf(Nonparametric::class, $this->layer);
-    }
 
-    public function test_width()
-    {
+        $this->layer->initialize($this->fanIn);
+
         $this->assertEquals($this->fanIn, $this->layer->width());
     }
 
     public function test_forward_back_infer()
     {
+        $this->layer->initialize($this->fanIn);
+
+        $expected = [
+            [-1.457738730518132, 2.465182260431849, 0.06984251844259906],
+            [-1.457738730518132, 0.16197097005757022, 2.9258245185067047],
+            [0.16381353908986965, -5.365736126840699, -0.29867128801728554],
+        ];
+
         $forward = $this->layer->forward($this->input);
 
         $this->assertInstanceOf(Matrix::class, $forward);
-        $this->assertEquals([3, 3], $forward->shape());
+        $this->assertEquals($expected, $forward->asArray());
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
         $this->assertInternalType('callable', $back);
 
+        $expected = [
+            [0.0, 0.7, 0.1],
+            [0.0, 0.2, 0.01],
+            [0.25, 0.1, 0.89],
+        ];
+
         $back = $back();
 
         $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals([3, 3], $back->shape());
+        $this->assertEquals($expected, $back->asArray());
 
-        $output = [
+        $expected = [
             [1., 2.5, -0.1],
             [0.1, 0., 3.],
             [0.002, -6., -0.5],
@@ -85,7 +100,6 @@ class AlphaDropoutTest extends TestCase
         $infer = $this->layer->infer($this->input);
 
         $this->assertInstanceOf(Matrix::class, $infer);
-        $this->assertEquals([3, 3], $infer->shape());
-        $this->assertEquals($output, $infer->asArray());
+        $this->assertEquals($expected, $infer->asArray());
     }
 }
