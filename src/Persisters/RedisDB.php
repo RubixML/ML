@@ -32,13 +32,6 @@ class RedisDB implements Persister
     protected $key;
 
     /**
-     * The number of saves to remember.
-     *
-     * @var int
-     */
-    protected $history;
-
-    /**
      * The connector to the Redis database.
      *
      * @var \Redis
@@ -58,7 +51,6 @@ class RedisDB implements Persister
      * @param int $port
      * @param int $db
      * @param string|null $password
-     * @param int $history
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @param float $timeout
      * @throws \InvalidArgumentException
@@ -70,7 +62,6 @@ class RedisDB implements Persister
         int $port = 6379,
         int $db = 0,
         ?string $password = null,
-        int $history = 2,
         ?Serializer $serializer = null,
         float $timeout = 2.5
     ) {
@@ -80,15 +71,15 @@ class RedisDB implements Persister
         }
 
         if ($timeout <= 0.) {
-            throw new InvalidArgumentException('Timeout must be greater than 0'
-                . ", $timeout given.");
+            throw new InvalidArgumentException('Timeout must be greater than'
+                . " 0, $timeout given.");
         }
 
         $connector = new Redis();
 
         if (!$connector->connect($host, $port, $timeout)) {
             throw new RuntimeException('Could not connect to Redis server'
-                . ' at host ' . $host . ' on port ' . (string) $port . '.');
+                . " at host $host on port $port.");
         }
 
         if (isset($password)) {
@@ -98,17 +89,10 @@ class RedisDB implements Persister
         }
 
         if (!$connector->select($db)) {
-            throw new RuntimeException('Could not select database number'
-                . (string) $db . '.');
-        }
-
-        if ($history < 1) {
-            throw new InvalidArgumentException('History cannot be less'
-                . " than 1, $history given.");
+            throw new RuntimeException("Failed selecting database $db.");
         }
 
         $this->key = $key;
-        $this->history = $history;
         $this->connector = $connector;
         $this->serializer = $serializer ?? new Native();
     }
@@ -133,12 +117,11 @@ class RedisDB implements Persister
     {
         $data = $this->serializer->serialize($persistable);
 
-        $length = $this->connector->lPush($this->key, $data);
+        $success = $this->connector->set($this->key, $data);
 
-        $remove = $length - $this->history;
-
-        if ($remove > 0) {
-            $this->connector->lTrim($this->key, 0, $remove);
+        if (!$success) {
+            throw new RuntimeException('Failed to save persistable'
+                . ' to the database.');
         }
     }
 
@@ -150,12 +133,13 @@ class RedisDB implements Persister
      */
     public function load() : Persistable
     {
-        $data = $this->connector->lGet($this->key, 0) ?: '';
+        $data = $this->connector->get($this->key) ?: '';
 
         $persistable = $this->serializer->unserialize($data);
 
         if (!$persistable instanceof Persistable) {
-            throw new RuntimeException('Model could not be reconstituted.');
+            throw new RuntimeException('Persistable could not be'
+                . ' reconstituted.');
         }
 
         return $persistable;

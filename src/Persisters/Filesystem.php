@@ -31,9 +31,9 @@ class Filesystem implements Persister
     protected $path;
 
     /**
-     * The number of saves to remember.
+     * Should we keep a history of past saves?
      *
-     * @var int
+     * @var bool
      */
     protected $history;
 
@@ -46,20 +46,15 @@ class Filesystem implements Persister
 
     /**
      * @param string $path
-     * @param int $history
+     * @param bool $history
      * @param \Rubix\ML\Persisters\Serializers\Serializer|null $serializer
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $path, int $history = 2, ?Serializer $serializer = null)
+    public function __construct(string $path, bool $history = false, ?Serializer $serializer = null)
     {
         if (!is_writable(dirname($path))) {
             throw new InvalidArgumentException('Folder does not exist or'
                 . ' is not writable, check path and permissions.');
-        }
-
-        if ($history < 0) {
-            throw new InvalidArgumentException('The number of backups'
-                . " cannot be less than 0, $history given.");
         }
 
         $this->path = $path;
@@ -76,37 +71,19 @@ class Filesystem implements Persister
      */
     public function save(Persistable $persistable) : void
     {
-        if (is_file($this->path)) {
+        if ($this->history and is_file($this->path)) {
             $filename = $this->path . '.' . (string) time() . self::BACKUP_EXT;
 
             if (!rename($this->path, $filename)) {
-                throw new RuntimeException('Failed to rename file, check path'
-                 . ' and permissions.');
-            }
-
-            $backups = [];
-
-            foreach (glob("$this->path.*" . self::BACKUP_EXT) as $filename) {
-                $backups[$filename] = filemtime($filename);
-            }
-
-            $remove = count($backups) - ($this->history - 1);
-
-            if ($remove > 0) {
-                asort($backups);
-
-                $paths = array_slice(array_keys($backups), 0, $remove);
-
-                foreach ($paths as $filename) {
-                    unlink($filename);
-                }
+                throw new RuntimeException('Failed to create history,'
+                 . ' check path and permissions.');
             }
         }
 
         $data = $this->serializer->serialize($persistable);
 
         if (!file_put_contents($this->path, $data, LOCK_EX)) {
-            throw new RuntimeException('Failed to save model to the'
+            throw new RuntimeException('Failed to save persistable to'
                 . ' filesystem, check path and permissions.');
         }
     }

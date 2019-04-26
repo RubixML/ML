@@ -6,6 +6,8 @@
     - Output layers now accept custom initializers
     - Added Constant neural network parameter initializer
     - Removed Exponential neural network Cost Function
+    - Filesystem save history is now either on or off
+    - Removed save history from Redis DB Persister
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

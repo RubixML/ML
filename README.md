@@ -2987,7 +2987,7 @@ use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Persisters\Serializers\Native;
 
-$persister = new Filesystem('random_forest.model', 2, new Native());
+$persister = new Filesystem('random_forest.model', true, new Native());
 
 $estimator = new PersistentModel(new RandomForest(100), $persister);
 ```
@@ -3053,7 +3053,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | path | | string | The path to the model file on the filesystem. |
-| 2 | history | 2 | int | The number of saves to remember. |
+| 2 | history | false | bool | Should we keep a history of past saves? |
 | 3 | serializer | Native | object | The serializer used to convert to and from storage format. |
 
 **Additional Methods:**
@@ -3066,7 +3066,7 @@ This persister does not have any additional methods.
 use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\Persisters\Serializers\Binary;
 
-$persister = new Filesystem('/path/to/example.model', 3, new Binary());
+$persister = new Filesystem('/path/to/example.model', true, new Binary());
 ```
 
 ### Redis DB
@@ -3083,9 +3083,8 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 3 | port | 6379 | int | The port of the Redis server. |
 | 4 | db | 0 | int | The database number. |
 | 5 | password | None | string | An optional password to access a password-protected server. |
-| 6 | history | 2 | int | The number of saves to remember. |
-| 7 | serializer | Native | object | The serializer used to convert to and from storage format. |
-| 8 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
+| 6 | serializer | Native | object | The serializer used to convert to and from storage format. |
+| 7 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
 
 **Additional Methods:**
 
@@ -3100,7 +3099,7 @@ public info() : array
 use Rubix\ML\Persisters\RedisDB;
 use Rubix\ML\Persisters\Serializers\Native;
 
-$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', 5, new Native(), 1.5);
+$persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', new Native(), 2.5);
 ```
 
 ### Serializers

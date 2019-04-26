@@ -23,7 +23,7 @@ class FilesystemTest extends TestCase
 
         $this->persistable = new DummyClassifier();
 
-        $this->persister = new Filesystem($this->path, 1, new Native());
+        $this->persister = new Filesystem($this->path, true, new Native());
     }
 
     public function test_build_persister()
