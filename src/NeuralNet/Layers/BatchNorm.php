@@ -4,15 +4,15 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\ColumnVector;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
-use Closure;
 
 use const Rubix\ML\EPSILON;
 
@@ -136,7 +136,7 @@ class BatchNorm implements Hidden, Parametric
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
         return $this->width;
@@ -169,11 +169,11 @@ class BatchNorm implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $beta = $this->betaInitializer->initialize($fanIn, 1);
-        $gamma = $this->gammaInitializer->initialize($fanIn, 1);
+        $beta = $this->betaInitializer->initialize(1, $fanOut)->columnAsVector(0);
+        $gamma = $this->gammaInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->beta = new Parameter($beta);
-        $this->gamma = new Parameter($gamma);
+        $this->beta = new VectorParam($beta);
+        $this->gamma = new VectorParam($gamma);
 
         $this->width = $fanOut;
 
@@ -190,11 +190,8 @@ class BatchNorm implements Hidden, Parametric
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->beta or !$this->gamma) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
-
-        $gamma = $this->gamma->w()->rowAsVector(0)->transpose();
-        $beta = $this->beta->w()->rowAsVector(0)->transpose();
 
         $means = $variances = [];
 
@@ -225,7 +222,7 @@ class BatchNorm implements Hidden, Parametric
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return $gamma->multiply($xHat)->add($beta);
+        return $this->gamma->w()->multiply($xHat)->add($this->beta->w());
     }
 
     /**
@@ -241,24 +238,21 @@ class BatchNorm implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initilaized.');
         }
 
-        $gamma = $this->gamma->w()->rowAsVector(0)->transpose();
-        $beta = $this->beta->w()->rowAsVector(0)->transpose();
-
         $xHat = $input->subtract($this->mean)
             ->divide($this->variance->clipLower(EPSILON)->sqrt());
 
-        return $gamma->multiply($xHat)->add($beta);
+        return $this->gamma->w()->multiply($xHat)->add($this->beta->w());
     }
 
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->beta or !$this->gamma) {
             throw new RuntimeException('Layer has not been initilaized.');
@@ -269,12 +263,12 @@ class BatchNorm implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->result();
 
-        $dBeta = $dOut->sum()->asRowMatrix();
-        $dGamma = $dOut->multiply($this->xHat)->sum()->asRowMatrix();
+        $dBeta = $dOut->sum();
+        $dGamma = $dOut->multiply($this->xHat)->sum();
 
-        $gamma = $this->gamma->w()->rowAsVector(0);
+        $gamma = $this->gamma->w();
 
         $optimizer->step($this->beta, $dBeta);
         $optimizer->step($this->gamma, $dGamma);
@@ -284,8 +278,8 @@ class BatchNorm implements Hidden, Parametric
 
         unset($this->stdInv, $this->xHat);
 
-        return function () use ($dOut, $gamma, $stdInv, $xHat) {
-            $dXHat = $dOut->multiply($gamma->transpose());
+        return new Deferred(function () use ($dOut, $gamma, $stdInv, $xHat) {
+            $dXHat = $dOut->multiply($gamma);
 
             $xHatSigma = $dXHat->multiply($xHat)->sum();
 
@@ -295,7 +289,7 @@ class BatchNorm implements Hidden, Parametric
                 ->subtract($dXHatSigma)
                 ->subtract($xHat->multiply($xHatSigma))
                 ->multiply($stdInv->divide($dOut->m()));
-        };
+        });
     }
 
     /**

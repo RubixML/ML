@@ -3,7 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\Tensor\Vector;
+use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\NeuralNet\MatrixParam;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -125,7 +128,7 @@ class Continuous implements Output
     public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         yield $this->weights;
@@ -144,10 +147,10 @@ class Continuous implements Output
         $fanOut = 1;
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize($fanOut, 1);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->weights = new MatrixParam($w);
+        $this->biases = new VectorParam($b);
 
         return $fanOut;
     }
@@ -162,13 +165,13 @@ class Continuous implements Output
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
 
         return $this->z;
     }
@@ -183,11 +186,11 @@ class Continuous implements Output
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
     }
 
     /**
@@ -201,7 +204,7 @@ class Continuous implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         if (!$this->input or !$this->z) {
@@ -209,7 +212,7 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $expected = Matrix::quick([$labels]);
+        $expected = Vector::quick($labels);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
@@ -220,7 +223,7 @@ class Continuous implements Output
             ->divide($this->z->n());
 
         $dW = $dL->matmul($this->input->transpose());
-        $dB = $dL->sum()->asRowMatrix();
+        $dB = $dL->sum();
 
         $w = $this->weights->w();
 
@@ -229,11 +232,13 @@ class Continuous implements Output
 
         $loss = $this->costFn->compute($expected, $this->z);
 
+        $gradient = new Deferred(function () use ($w, $dL) {
+            return $w->transpose()->matmul($dL);
+        });
+
         unset($this->input, $this->z);
 
-        return [function () use ($w, $dL) {
-            return $w->transpose()->matmul($dL);
-        }, $loss];
+        return [$gradient, $loss];
     }
 
     /**
@@ -245,7 +250,7 @@ class Continuous implements Output
     public function read() : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         return [

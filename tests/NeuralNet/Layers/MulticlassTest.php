@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
@@ -73,10 +74,8 @@ class MulticlassTest extends TestCase
 
         [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
         $this->assertInternalType('float', $loss);
-
-        $back = $back();
 
         $expected = [
             [-0.02314956691486992, 0.0013034187833920589, 0.026704012638151413],
@@ -84,8 +83,8 @@ class MulticlassTest extends TestCase
             [0.08201144203904855, -0.017002135254245234, -0.08555498623142435],
         ];
 
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray(), '', 1e-4);
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray(), '', 1e-4);
 
         $infer = $this->layer->infer($this->input);
 

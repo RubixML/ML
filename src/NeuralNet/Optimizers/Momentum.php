@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\Tensor\Matrix;
+use Rubix\Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
@@ -40,7 +40,7 @@ class Momentum implements Optimizer, Adaptive
     /**
      * The parameter cache of velocity matrices.
      *
-     * @var \Rubix\Tensor\Matrix[]
+     * @var \Rubix\Tensor\Tensor[]
      */
     protected $cache = [
         //
@@ -74,16 +74,16 @@ class Momentum implements Optimizer, Adaptive
      */
     public function warm(Parameter $param) : void
     {
-        $this->cache[$param->id()] = Matrix::zeros(...$param->w()->shape());
+        $this->cache[$param->id()] = get_class($param->w())::zeros(...$param->w()->shape());
     }
 
     /**
      * Take a step of gradient descent for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
-     * @param \Rubix\Tensor\Matrix $gradient
+     * @param \Rubix\Tensor\Tensor $gradient
      */
-    public function step(Parameter $param, Matrix $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : void
     {
         $velocity = $this->cache[$param->id()];
 

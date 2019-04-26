@@ -392,7 +392,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestSnapshot = Snapshot::take($this->network);
+                $bestSnapshot = new Snapshot($this->network);
             }
 
             if ($this->logger) {

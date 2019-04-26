@@ -3,7 +3,9 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\NeuralNet\MatrixParam;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -11,7 +13,6 @@ use Rubix\ML\NeuralNet\Initializers\Initializer;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
-use Closure;
 
 /**
  * Dense
@@ -107,7 +108,7 @@ class Dense implements Hidden, Parametric
     public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         yield $this->weights;
@@ -126,10 +127,10 @@ class Dense implements Hidden, Parametric
         $fanOut = $this->neurons;
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize($fanOut, 1);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->weights = new MatrixParam($w);
+        $this->biases = new VectorParam($b);
 
         return $fanOut;
     }
@@ -144,13 +145,13 @@ class Dense implements Hidden, Parametric
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         $this->input = $input;
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
     }
 
     /**
@@ -163,25 +164,25 @@ class Dense implements Hidden, Parametric
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         return $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
     }
 
     /**
-     * Calculate the gradients and update the parameters of the layer.
+     * Calculate the gradient and update the parameters of the layer.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         if (!$this->input) {
@@ -189,10 +190,10 @@ class Dense implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->result();
 
         $dW = $dOut->matmul($this->input->transpose());
-        $dB = $dOut->sum()->asRowMatrix();
+        $dB = $dOut->sum();
 
         $w = $this->weights->w();
 
@@ -201,9 +202,9 @@ class Dense implements Hidden, Parametric
 
         unset($this->input);
 
-        return function () use ($w, $dOut) {
+        return new Deferred(function () use ($w, $dOut) {
             return $w->transpose()->matmul($dOut);
-        };
+        });
     }
 
     /**
@@ -215,7 +216,7 @@ class Dense implements Hidden, Parametric
     public function read() : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         return [

@@ -3,10 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
-use Closure;
 
 /**
  * Dropout
@@ -78,7 +78,7 @@ class Dropout implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
         return $this->width;
@@ -128,12 +128,12 @@ class Dropout implements Hidden
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->mask) {
             throw new RuntimeException('Must perform forward pass before'
@@ -144,8 +144,8 @@ class Dropout implements Hidden
 
         unset($this->mask);
 
-        return function () use ($prevGradient, $mask) {
-            return $prevGradient()->multiply($mask);
-        };
+        return new Deferred(function () use ($prevGradient, $mask) {
+            return $prevGradient->result()->multiply($mask);
+        });
     }
 }

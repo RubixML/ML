@@ -2,27 +2,70 @@
 
 namespace Rubix\ML\NeuralNet;
 
+use Rubix\ML\Persistable;
 use Rubix\ML\NeuralNet\Layers\Parametric;
-use SplObjectStorage;
+use IteratorAggregate;
+use ArrayIterator;
 
-class Snapshot extends SplObjectStorage
+/**
+ * Snapshot
+ *
+ * A snapshot represents the state of a nerual network at a moment in time.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
+class Snapshot implements Persistable, IteratorAggregate
 {
     /**
-     * Take a snapshot of a network.
+     * The layer and parameter storage.
      *
-     * @param \Rubix\ML\NeuralNet\Network $network
-     * @return self
+     * @var array[]
      */
-    public static function take(Network $network) : self
+    protected $storage;
+
+    /**
+     * The timestamp of the snapshot.
+     *
+     * @var int
+     */
+    protected $timestamp;
+
+    /**
+     * @param \Rubix\ML\NeuralNet\Network $network
+     */
+    public function __construct(Network $network)
     {
-        $snapshot = new self();
+        $storage = [];
 
         foreach ($network->parametric() as $layer) {
             if ($layer instanceof Parametric) {
-                $snapshot->attach($layer, $layer->read());
+                $storage[] = [$layer, $layer->read()];
             }
         }
 
-        return $snapshot;
+        $this->storage = $storage;
+        $this->timestamp = time();
+    }
+
+    /**
+     * Return the timestamp of the snapshot.
+     *
+     * @return int
+     */
+    public function timestamp() : int
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * Get an iterator for the snapshot.
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->storage);
     }
 }

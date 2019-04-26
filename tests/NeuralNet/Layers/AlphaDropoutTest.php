@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\AlphaDropout;
@@ -34,13 +35,13 @@ class AlphaDropoutTest extends TestCase
             [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = function () {
+        $this->prevGrad = new Deferred(function () {
             return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
             ]);
-        };
+        });
 
         $this->optimizer = new Stochastic();
 
@@ -78,7 +79,7 @@ class AlphaDropoutTest extends TestCase
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
 
         $expected = [
             [0.0, 0.7, 0.1],
@@ -86,10 +87,8 @@ class AlphaDropoutTest extends TestCase
             [0.25, 0.1, 0.89],
         ];
 
-        $back = $back();
-
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray());
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray());
 
         $expected = [
             [1., 2.5, -0.1],

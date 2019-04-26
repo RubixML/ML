@@ -4,19 +4,21 @@ namespace Rubix\ML\Tests\NeuralNet;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\MatrixParam;
 use PHPUnit\Framework\TestCase;
 
-class ParameterTest extends TestCase
+class MatrixParamTest extends TestCase
 {
     protected $param;
 
     public function setUp()
     {
-        $this->param = new Parameter(Matrix::quick([[5]]));
+        $this->param = new MatrixParam(Matrix::quick([[5]]));
     }
 
     public function test_build_parameter()
     {
+        $this->assertInstanceOf(MatrixParam::class, $this->param);
         $this->assertInstanceOf(Parameter::class, $this->param);
     }
 

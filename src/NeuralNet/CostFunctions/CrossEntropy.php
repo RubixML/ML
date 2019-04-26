@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Rubix\Tensor\Matrix;
+use Rubix\Tensor\Tensor;
 
 use const Rubix\ML\EPSILON;
 
@@ -35,11 +35,11 @@ class CrossEntropy implements CostFunction
     /**
      * Compute the matrix.
      *
-     * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $output
+     * @param \Rubix\Tensor\Tensor $expected
+     * @param \Rubix\Tensor\Tensor $output
      * @return float
      */
-    public function compute(Matrix $expected, Matrix $output) : float
+    public function compute(Tensor $expected, Tensor $output) : float
     {
         return $expected->negate()->multiply($output->log())->sum()->mean();
     }
@@ -47,13 +47,15 @@ class CrossEntropy implements CostFunction
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $output
-     * @return \Rubix\Tensor\Matrix
+     * @param \Rubix\Tensor\Tensor $expected
+     * @param \Rubix\Tensor\Tensor $output
+     * @return \Rubix\Tensor\Tensor
      */
-    public function differentiate(Matrix $expected, Matrix $output) : Matrix
+    public function differentiate(Tensor $expected, Tensor $output) : Tensor
     {
-        $denominator = Matrix::ones(...$output->shape())
+        $tensor = get_class($expected);
+        
+        $denominator = $tensor::ones(...$expected->shape())
             ->subtract($output)
             ->multiply($output)
             ->clipLower(EPSILON);

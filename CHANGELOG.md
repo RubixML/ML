@@ -1,4 +1,5 @@
 - Unreleased
+    - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization
     - Added custom bias initialization to Dense layer

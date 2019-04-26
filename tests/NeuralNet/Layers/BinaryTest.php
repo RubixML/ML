@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;
@@ -71,7 +72,7 @@ class BinaryTest extends TestCase
 
         [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
         $this->assertInternalType('float', $loss);
 
         $expected = [
@@ -80,10 +81,8 @@ class BinaryTest extends TestCase
             [0.045575878089120406, -0.06464569644342781, 0.06788707081287679],
         ];
 
-        $back = $back();
-
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray(), '', 1e-4);
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray(), '', 1e-4);
 
         $expected = [
             [0.5431400980394667, 0.23113347851058044, 0.8086830533932138],

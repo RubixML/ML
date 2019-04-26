@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\Optimizers;
 
-use Rubix\Tensor\Matrix;
+use Rubix\Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
 use InvalidArgumentException;
 
@@ -102,7 +102,7 @@ class Adam implements Optimizer, Adaptive
      */
     public function warm(Parameter $param) : void
     {
-        $velocity = Matrix::zeros(...$param->w()->shape());
+        $velocity = get_class($param->w())::zeros(...$param->w()->shape());
         $g2 = clone $velocity;
 
         $this->cache[$param->id()] = [$velocity, $g2];
@@ -112,9 +112,9 @@ class Adam implements Optimizer, Adaptive
      * Calculate a gradient descent step for a given parameter.
      *
      * @param \Rubix\ML\NeuralNet\Parameter $param
-     * @param \Rubix\Tensor\Matrix $gradient
+     * @param \Rubix\Tensor\Tensor $gradient
      */
-    public function step(Parameter $param, Matrix $gradient) : void
+    public function step(Parameter $param, Tensor $gradient) : void
     {
         [$velocity, $g2] = $this->cache[$param->id()];
 

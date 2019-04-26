@@ -8,6 +8,7 @@ use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
+use Generator;
 
 /**
  * CART
@@ -290,27 +291,26 @@ abstract class CART implements BinaryTree
     }
 
     /**
-     * Return an array of all the nodes in the tree starting at a
-     * given node.
+     * Return a generator for all the nodes in the tree starting at the root.
      *
-     * @return array
+     * @return \Generator
      */
-    public function dump() : array
+    public function dump() : Generator
     {
         $nodes = [];
 
         $stack = [$this->root];
 
         while ($stack) {
-            $nodes[] = $current = array_pop($stack);
+            $current = array_pop($stack);
 
             if ($current instanceof BinaryNode) {
                 foreach ($current->children() as $child) {
                     $stack[] = $child;
                 }
             }
-        }
 
-        return $nodes;
+            yield $current;
+        }
     }
 }

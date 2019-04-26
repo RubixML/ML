@@ -3,7 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\Tensor\Vector;
+use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\NeuralNet\MatrixParam;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -180,10 +183,10 @@ class Binary implements Output
         $fanOut = 1;
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize($fanOut, 1);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->weights = new MatrixParam($w);
+        $this->biases = new VectorParam($b);
 
         return $fanOut;
     }
@@ -204,7 +207,7 @@ class Binary implements Output
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
 
         $this->computed = $this->activationFn->compute($this->z);
 
@@ -225,7 +228,7 @@ class Binary implements Output
         }
 
         $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
 
         return $this->activationFn->compute($z);
     }
@@ -255,13 +258,14 @@ class Binary implements Output
             $expected[] = $this->classes[$label];
         }
 
-        $expected = Matrix::quick([$expected]);
+        $expected = Vector::quick($expected);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
-            $dA = $this->computed->subtract($expected)
+            $dA = $this->computed
+                ->subtract($expected)
                 ->add($penalties)
                 ->divide($this->computed->n());
         } else {
@@ -276,7 +280,7 @@ class Binary implements Output
         }
 
         $dW = $dA->matmul($this->input->transpose());
-        $dB = $dA->sum()->asRowMatrix();
+        $dB = $dA->sum();
 
         $w = $this->weights->w();
 
@@ -285,11 +289,13 @@ class Binary implements Output
 
         $loss = $this->costFn->compute($expected, $this->computed);
 
+        $gradient = new Deferred(function () use ($w, $dA) {
+            return $w->transpose()->matmul($dA);
+        });
+
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($w, $dA) {
-            return $w->transpose()->matmul($dA);
-        }, $loss];
+        return [$gradient, $loss];
     }
 
     /**

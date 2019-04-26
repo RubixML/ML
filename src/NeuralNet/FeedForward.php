@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\NeuralNet;
 
+use Rubix\Tensor\Tensor;
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\NeuralNet\Layers\Layer;
@@ -221,7 +222,7 @@ class FeedForward implements Network
      * @param \Rubix\Tensor\Matrix $input
      * @return \Rubix\Tensor\Matrix
      */
-    public function infer(Matrix $input) : Matrix
+    public function infer(Matrix $input) : Tensor
     {
         $input = $this->input->infer($input);
 
@@ -257,9 +258,9 @@ class FeedForward implements Network
      */
     public function restore(Snapshot $snapshot) : void
     {
-        foreach ($snapshot as $layer) {
+        foreach ($snapshot as [$layer, $params]) {
             if ($layer instanceof Parametric) {
-                $layer->restore($snapshot[$layer]);
+                $layer->restore($params);
             }
         }
     }

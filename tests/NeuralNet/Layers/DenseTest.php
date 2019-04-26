@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -35,12 +36,12 @@ class DenseTest extends TestCase
             [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = function () {
+        $this->prevGrad = new Deferred(function () {
             return Matrix::quick([
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
             ]);
-        };
+        });
 
         $this->optimizer = new Stochastic();
 
@@ -77,7 +78,7 @@ class DenseTest extends TestCase
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
 
         $expected = [
             [0.08105979414456366, 0.032423917657825464, 0.09199581049540438],
@@ -85,10 +86,8 @@ class DenseTest extends TestCase
             [0.19988818890079615, 0.07995527556031846, 0.29776315973824286],
         ];
 
-        $back = $back();
-
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray());
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray());
 
         $expected = [
             [0.1587733922310246, -1.1356236552787815, 1.3393348114604533],

@@ -380,7 +380,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
 
             if ($score > $bestScore) {
                 $bestScore = $score;
-                $bestSnapshot = Snapshot::take($this->network);
+                $bestSnapshot = new Snapshot($this->network);
             }
 
             if ($this->logger) {

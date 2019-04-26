@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\NeuralNet\CostFunctions;
 
-use Rubix\Tensor\Matrix;
+use Rubix\Tensor\Tensor;
 
 /**
  * Least Squares
@@ -29,11 +29,11 @@ class LeastSquares implements CostFunction
     /**
      * Compute the loss.
      *
-     * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $output
+     * @param \Rubix\Tensor\Tensor $expected
+     * @param \Rubix\Tensor\Tensor $output
      * @return float
      */
-    public function compute(Matrix $expected, Matrix $output) : float
+    public function compute(Tensor $expected, Tensor $output) : float
     {
         return $output->subtract($expected)->square()->sum()->mean();
     }
@@ -41,11 +41,11 @@ class LeastSquares implements CostFunction
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Matrix $expected
-     * @param \Rubix\Tensor\Matrix $output
-     * @return \Rubix\Tensor\Matrix
+     * @param \Rubix\Tensor\Tensor $expected
+     * @param \Rubix\Tensor\Tensor $output
+     * @return \Rubix\Tensor\Tensor
      */
-    public function differentiate(Matrix $expected, Matrix $output) : Matrix
+    public function differentiate(Tensor $expected, Tensor $output) : Tensor
     {
         return $output->subtract($expected);
     }

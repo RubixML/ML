@@ -22,15 +22,22 @@ class SnapshotTest extends TestCase
     public function setUp()
     {
         $this->network = new FeedForward(new Placeholder1D(1), [
-            new Dense(5),
+            new Dense(10),
             new Activation(new ELU()),
         ], new Binary(['yes', 'no'], 1e-4, new LeastSquares()), new Stochastic());
 
-        $this->snapshot = Snapshot::take($this->network);
+        $this->snapshot = new Snapshot($this->network);
     }
 
     public function test_build_snapshot()
     {
         $this->assertInstanceOf(Snapshot::class, $this->snapshot);
+        $this->assertCount(2, iterator_to_array($this->snapshot));
+        $this->assertEquals(4, $this->network->depth());
+    }
+
+    public function test_timestamp()
+    {
+        $this->assertInternalType('int', $this->snapshot->timestamp());
     }
 }

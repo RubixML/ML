@@ -3,10 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
-use Closure;
 
 /**
  * Noise
@@ -62,7 +62,7 @@ class Noise implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
         return $this->width;
@@ -112,11 +112,11 @@ class Noise implements Hidden
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         return $prevGradient;
     }

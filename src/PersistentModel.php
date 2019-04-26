@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
 use Rubix\ML\Other\Traits\LoggerAware;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -24,7 +25,7 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
     /**
      * The underlying persistable estimator instance.
      *
-     * @var \Rubix\ML\Persistable
+     * @var \Rubix\ML\Learner
      */
     protected $base;
 
@@ -39,19 +40,33 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
      * Factory method to restore the model from persistence.
      *
      * @param \Rubix\ML\Persisters\Persister $persister
+     * @throws \InvalidArgumentException
      * @return self
      */
     public static function load(Persister $persister) : self
     {
-        return new self($persister->load(), $persister);
+        $learner = $persister->load();
+
+        if (!$learner instanceof Learner) {
+            throw new InvalidArgumentException('Peristable must be a'
+                . ' learner.');
+        }
+
+        return new self($learner, $persister);
     }
 
     /**
-     * @param \Rubix\ML\Persistable $base
+     * @param \Rubix\ML\Learner $base
      * @param \Rubix\ML\Persisters\Persister $persister
+     * @throws \InvalidArgumentException
      */
-    public function __construct(Persistable $base, Persister $persister)
+    public function __construct(Learner $base, Persister $persister)
     {
+        if (!$base instanceof Persistable) {
+            throw new InvalidArgumentException('Base estimator must'
+                . ' be persistable.');
+        }
+
         $this->base = $base;
         $this->persister = $persister;
     }
@@ -141,10 +156,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
      */
     public function save() : void
     {
-        $this->persister->save($this->base);
+        if ($this->base instanceof Persistable) {
+            $this->persister->save($this->base);
 
-        if ($this->logger) {
-            $this->logger->info('Model saved successully');
+            if ($this->logger) {
+                $this->logger->info('Model saved successully');
+            }
         }
     }
 

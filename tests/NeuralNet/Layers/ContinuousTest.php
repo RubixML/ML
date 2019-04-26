@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
@@ -71,7 +72,7 @@ class ContinuousTest extends TestCase
 
         [$back, $loss] = $this->layer->back($this->labels, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
         $this->assertInternalType('float', $loss);
 
         $expected = [
@@ -80,10 +81,8 @@ class ContinuousTest extends TestCase
             [-6.811738590037662, -19.795554417514563, -13.548265161465714],
         ];
 
-        $back = $back();
-
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray());
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray());
 
         $expected = [
             [0.5913062141627208, 2.9973293893216404, 2.277761099156666],

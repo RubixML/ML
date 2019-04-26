@@ -3,10 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use RuntimeException;
-use Closure;
 
 /**
  * Activation
@@ -64,7 +64,7 @@ class Activation implements Hidden
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
         return $this->width;
@@ -113,14 +113,14 @@ class Activation implements Hidden
     }
 
     /**
-     * Calculate the gradients and update the parameters of the layer.
+     * Calculate the gradient and update the parameters of the layer.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->input or !$this->computed) {
             throw new RuntimeException('Must perform forward pass before'
@@ -132,10 +132,10 @@ class Activation implements Hidden
 
         unset($this->input, $this->computed);
 
-        return function () use ($input, $computed, $prevGradient) {
+        return new Deferred(function () use ($input, $computed, $prevGradient) {
             return $this->activationFunction
                 ->differentiate($input, $computed)
-                ->multiply($prevGradient());
-        };
+                ->multiply($prevGradient->result());
+        });
     }
 }

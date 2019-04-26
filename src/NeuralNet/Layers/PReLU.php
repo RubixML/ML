@@ -3,13 +3,14 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use RuntimeException;
 use Generator;
-use Closure;
 
 /**
  * PReLU
@@ -73,7 +74,7 @@ class PReLU implements Hidden, Parametric
     public function width() : int
     {
         if (!$this->width) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
         return $this->width;
@@ -105,9 +106,9 @@ class PReLU implements Hidden, Parametric
     {
         $fanOut = $fanIn;
 
-        $alpha = $this->initializer->initialize($fanIn, 1);
+        $alpha = $this->initializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->alpha = new Parameter($alpha);
+        $this->alpha = new VectorParam($alpha);
 
         $this->width = $fanOut;
 
@@ -139,14 +140,14 @@ class PReLU implements Hidden, Parametric
     }
 
     /**
-     * Calculate the gradients and update the parameters of the layer.
+     * Calculate the gradient and update the parameters of the layer.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
         if (!$this->alpha) {
             throw new RuntimeException('Layer has not been initlaized.');
@@ -157,11 +158,11 @@ class PReLU implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient();
+        $dOut = $prevGradient->result();
 
         $dIn = $this->input->clipUpper(0.);
 
-        $dAlpha = $dOut->multiply($dIn)->sum()->asRowMatrix();
+        $dAlpha = $dOut->multiply($dIn)->sum();
 
         $optimizer->step($this->alpha, $dAlpha);
 
@@ -169,9 +170,9 @@ class PReLU implements Hidden, Parametric
 
         unset($this->input);
 
-        return function () use ($z, $dOut) {
+        return new Deferred(function () use ($z, $dOut) {
             return $this->differentiate($z)->multiply($dOut);
-        };
+        });
     }
 
     /**
@@ -184,10 +185,10 @@ class PReLU implements Hidden, Parametric
     protected function compute(Matrix $z) : Matrix
     {
         if (!$this->alpha) {
-            throw new RuntimeException('Layer has not been initialized.');
+            throw new RuntimeException('Layer is not initialized.');
         }
 
-        $alphas = $this->alpha->w()->row(0);
+        $alphas = $this->alpha->w();
 
         $computed = [];
 
@@ -221,7 +222,7 @@ class PReLU implements Hidden, Parametric
             throw new RuntimeException('Layer has not been initlaized.');
         }
 
-        $alphas = $this->alpha->w()->row(0);
+        $alphas = $this->alpha->w();
 
         $gradient = [];
 

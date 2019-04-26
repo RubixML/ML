@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\MatrixParam;
 use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class CyclicalTest extends TestCase
 
     public function test_step()
     {
-        $param = new Parameter(Matrix::quick([
+        $param = new MatrixParam(Matrix::quick([
             [0.1, 0.6, -0.4],
             [0.5, 0.6, -0.4],
             [0.1, 0.1, -0.7],

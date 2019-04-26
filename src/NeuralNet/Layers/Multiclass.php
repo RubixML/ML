@@ -3,7 +3,9 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\NeuralNet\MatrixParam;
+use Rubix\ML\NeuralNet\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -160,7 +162,7 @@ class Multiclass implements Output
     public function parameters() : Generator
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         yield $this->weights;
@@ -179,10 +181,10 @@ class Multiclass implements Output
         $fanOut = count($this->classes);
 
         $w = $this->weightInitializer->initialize($fanIn, $fanOut);
-        $b = $this->biasInitializer->initialize($fanOut, 1);
+        $b = $this->biasInitializer->initialize(1, $fanOut)->columnAsVector(0);
 
-        $this->weights = new Parameter($w);
-        $this->biases = new Parameter($b);
+        $this->weights = new MatrixParam($w);
+        $this->biases = new VectorParam($b);
 
         return $fanOut;
     }
@@ -197,13 +199,13 @@ class Multiclass implements Output
     public function forward(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         $this->input = $input;
 
         $this->z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
 
         $this->computed = $this->activationFn->compute($this->z);
 
@@ -220,11 +222,11 @@ class Multiclass implements Output
     public function infer(Matrix $input) : Matrix
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         $z = $this->weights->w()->matmul($input)
-            ->add($this->biases->w()->rowAsVector(0)->transpose());
+            ->add($this->biases->w());
 
         return $this->activationFn->compute($z);
     }
@@ -240,7 +242,7 @@ class Multiclass implements Output
     public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         if (!$this->input or !$this->z or !$this->computed) {
@@ -266,7 +268,8 @@ class Multiclass implements Output
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
-            $dA = $this->computed->subtract($expected)
+            $dA = $this->computed
+                ->subtract($expected)
                 ->add($penalties)
                 ->divide($this->computed->n());
         } else {
@@ -281,7 +284,7 @@ class Multiclass implements Output
         }
 
         $dW = $dA->matmul($this->input->transpose());
-        $dB = $dA->sum()->asRowMatrix();
+        $dB = $dA->sum();
 
         $w = $this->weights->w();
 
@@ -290,11 +293,13 @@ class Multiclass implements Output
 
         $loss = $this->costFn->compute($expected, $this->computed);
 
+        $gradient = new Deferred(function () use ($w, $dA) {
+            return $w->transpose()->matmul($dA);
+        });
+
         unset($this->input, $this->z, $this->computed);
 
-        return [function () use ($w, $dA) {
-            return $w->transpose()->matmul($dA);
-        }, $loss];
+        return [$gradient, $loss];
     }
 
     /**
@@ -306,7 +311,7 @@ class Multiclass implements Output
     public function read() : array
     {
         if (!$this->weights or !$this->biases) {
-            throw new RuntimeException('Layer has not been initialized');
+            throw new RuntimeException('Layer is not initialized');
         }
 
         return [

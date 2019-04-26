@@ -2,17 +2,17 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Closure;
 
 interface Hidden extends Nonparametric
 {
     /**
-     * Calculate the gradients and update the parameters of the layer.
+     * Calculate the gradient and update the parameters of the layer.
      *
-     * @param Closure $prevGradient
+     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
-     * @return Closure
+     * @return \Rubix\ML\NeuralNet\Deferred
      */
-    public function back(Closure $prevGradient, Optimizer $optimizer) : Closure;
+    public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred;
 }

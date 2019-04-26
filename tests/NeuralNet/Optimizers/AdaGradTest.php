@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\MatrixParam;
 use Rubix\ML\NeuralNet\Optimizers\AdaGrad;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -27,7 +27,7 @@ class AdaGradTest extends TestCase
 
     public function test_warm_step()
     {
-        $param = new Parameter(Matrix::quick([
+        $param = new MatrixParam(Matrix::quick([
             [0.1, 0.6, -0.4],
             [0.5, 0.6, -0.4],
             [0.1, 0.1, -0.7],

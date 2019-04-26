@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\NeuralNet\Layers\PReLU;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -35,13 +36,13 @@ class PReLUTest extends TestCase
             [0.002, -6., -0.5],
         ]);
 
-        $this->prevGrad = function () {
+        $this->prevGrad = new Deferred(function () {
             return Matrix::quick([
                 [0.25, 0.7, 0.1],
                 [0.50, 0.2, 0.01],
                 [0.25, 0.1, 0.89],
             ]);
-        };
+        });
 
         $this->optimizer = new Stochastic();
 
@@ -79,7 +80,7 @@ class PReLUTest extends TestCase
 
         $back = $this->layer->back($this->prevGrad, $this->optimizer);
 
-        $this->assertInternalType('callable', $back);
+        $this->assertInstanceOf(Deferred::class, $back);
 
         $expected = [
             [0.25, 0.7, 0.025001000000000002],
@@ -87,10 +88,8 @@ class PReLUTest extends TestCase
             [0.25, 0.025104500000000002, 0.22343005000000002],
         ];
 
-        $back = $back();
-
-        $this->assertInstanceOf(Matrix::class, $back);
-        $this->assertEquals($expected, $back->asArray());
+        $this->assertInstanceOf(Matrix::class, $back->result());
+        $this->assertEquals($expected, $back->result()->asArray());
 
         $expected = [
             [1., 2.5, -0.025001000000000002],
