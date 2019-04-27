@@ -254,8 +254,8 @@ $ composer require rubix/ml
 	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
     - [What is a Tuple?](#what-is-a-tuple)
     - [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
-    - [Does Rubix support multi (parallel) processing?](#does-rubix-support-multi-parallel-processing)
-	- [Does Rubix support multi threading?](#does-rubix-support-multi-threading)
+    - [Does Rubix support multiprocessing?](#does-rubix-support-multiprocessing)
+	- [Does Rubix support multithreading?](#does-rubix-support-multi-threading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
 	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
 - [Testing](#testing)
@@ -1526,6 +1526,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 |--|--|--|--|--|
 | 1 | experts | | array | An array of classifier instances that comprise the committee. |
 | 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
+| 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 
 **Additional Methods:**
@@ -1551,7 +1552,7 @@ $estimator = new CommitteeMachine([
 	new KNearestNeighbors(3),
 ], [
 	4, 6, 5, // Arbitrary influence values for each expert
-]);
+], 3);
 ```
 
 ### Dummy Classifier
@@ -5959,10 +5960,10 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
-### Does Rubix support multi (parallel) processing?
-Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
+### Does Rubix support multiprocessing?
+Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Committee Machine](#committee-machine), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
 
-### Does Rubix support multi threading?
+### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?

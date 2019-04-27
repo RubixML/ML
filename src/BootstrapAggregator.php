@@ -212,15 +212,15 @@ class BootstrapAggregator implements Learner, Persistable
     }
 
     /**
-     * Train an estimator using a bootstrap set and return it.
+     * Train an estimator using a dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $subset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public function _train(Learner $estimator, Dataset $subset) : Learner
+    public function _train(Learner $estimator, Dataset $dataset) : Learner
     {
-        $estimator->train($subset);
+        $estimator->train($dataset);
 
         return $estimator;
     }
