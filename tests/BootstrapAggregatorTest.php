@@ -15,9 +15,9 @@ use RuntimeException;
 
 class BootstrapAggregatorTest extends TestCase
 {
-    protected const TRAIN_SIZE = 300;
+    protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.6;
+    protected const MIN_SCORE = 0.8;
 
     protected const RANDOM_SEED = 0;
 
@@ -31,7 +31,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(5), 50, 0.4);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.4, 3);
 
         $this->metric = new RSquared();
 

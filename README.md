@@ -2833,6 +2833,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 | 1 | base | | object | The base estimator to be used in the ensemble. |
 | 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
 | 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
+| 4 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 **Additional Methods:**
 
@@ -2844,7 +2845,7 @@ This meta estimator does not have any additional methods.
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new BootstrapAggregator(new RegressionTree(5), 100, 0.2);
+$estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2, 8);
 ```
 
 **References:**
@@ -5959,7 +5960,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multi (parallel) processing?
-Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), and [Grid Search](#grid-search).
+Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
 
 ### Does Rubix support multi threading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.

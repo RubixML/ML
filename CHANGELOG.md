@@ -1,6 +1,7 @@
 - Unreleased
     - Random Forest training uses parallel processing
     - Grid Search now does searches in parallel
+    - Bootstrap Aggregator uses multiple processes
     - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization

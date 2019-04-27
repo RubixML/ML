@@ -2,8 +2,12 @@
 
 namespace Rubix\ML;
 
+use Amp\Loop;
+use Amp\Promise;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Amp\Parallel\Worker\DefaultPool;
+use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -52,6 +56,13 @@ class BootstrapAggregator implements Learner, Persistable
     protected $ratio;
 
     /**
+     * The max number of processes to run in parallel for training.
+     *
+     * @var int
+     */
+    protected $workers;
+
+    /**
      * The ensemble of estimators.
      *
      * @var array
@@ -64,9 +75,10 @@ class BootstrapAggregator implements Learner, Persistable
      * @param \Rubix\ML\Learner $base
      * @param int $estimators
      * @param float $ratio
+     * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
+    public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5, int $workers = 4)
     {
         if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
@@ -84,9 +96,15 @@ class BootstrapAggregator implements Learner, Persistable
                 . " 0.01 and 1, $ratio given.");
         }
 
+        if ($workers < 1) {
+            throw new InvalidArgumentException('Cannot have less than'
+                . " 1 worker process, $workers given.");
+        }
+
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->workers = $workers;
     }
 
     /**
@@ -132,15 +150,31 @@ class BootstrapAggregator implements Learner, Persistable
 
         $this->ensemble = [];
 
-        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
-            $estimator = clone $this->base;
+        Loop::run(function () use ($dataset, $p) {
+            $pool = new DefaultPool($this->workers);
 
-            $subset = $dataset->randomSubsetWithReplacement($p);
+            $tasks = $coroutines = [];
 
-            $estimator->train($subset);
+            for ($i = 0; $i < $this->estimators; $i++) {
+                $estimator = clone $this->base;
 
-            $this->ensemble[] = $estimator;
-        }
+                $subset = $dataset->randomSubsetWithReplacement($p);
+
+                $params = [$estimator, $subset];
+
+                $tasks[] = new CallableTask([$this, '_train'], $params);
+            }
+
+            foreach ($tasks as $task) {
+                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                    return yield $pool->enqueue($task);
+                });
+            }
+
+            $this->ensemble = yield Promise\all($coroutines);
+            
+            return yield $pool->shutdown();
+        });
     }
 
     /**
@@ -166,18 +200,50 @@ class BootstrapAggregator implements Learner, Persistable
         
         switch ($this->type()) {
             case self::CLASSIFIER:
-                return array_map(function ($outcomes) {
-                    return argmax(array_count_values($outcomes));
-                }, $aggregate);
+                return array_map([self::class, 'decideClass'], $aggregate);
 
             case self::ANOMALY_DETECTOR:
-                return array_map(function ($outcomes) {
-                    return Stats::mean($outcomes) > 0.5 ? 1 : 0;
-                }, $aggregate);
+                return array_map([self::class, 'decideAnomaly'], $aggregate);
 
             default:
                 return array_map([Stats::class, 'mean'], $aggregate);
 
         }
+    }
+
+    /**
+     * Train an estimator using a bootstrap set and return it.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $subset
+     * @return \Rubix\ML\Learner
+     */
+    public function _train(Learner $estimator, Dataset $subset) : Learner
+    {
+        $estimator->train($subset);
+
+        return $estimator;
+    }
+
+    /**
+     * Classification decision function.
+     *
+     * @param (int|string)[] $outcomes
+     * @return int|string
+     */
+    public function decideClass($outcomes)
+    {
+        return argmax(array_count_values($outcomes));
+    }
+
+    /**
+     * Anomaly detection decision function.
+     *
+     * @param int[] $outcomes
+     * @return int
+     */
+    public function decideAnomaly($outcomes) : int
+    {
+        return Stats::mean($outcomes) > 0.5 ? 1 : 0;
     }
 }

@@ -191,7 +191,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
 
                 $params = [$estimator, $subset];
 
-                $tasks[] = new CallableTask([self::class, 'trainer'], $params);
+                $tasks[] = new CallableTask([$this, '_train'], $params);
             }
 
             foreach ($tasks as $task) {
@@ -288,16 +288,16 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
-     * Build a tree using a bootstrap set and return it.
+     * Train an estimator using a bootstrap set and return it.
      *
-     * @param \Rubix\ML\Learner $tree
-     * @param \Rubix\ML\Datasets\Labeled $subset
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $subset
      * @return \Rubix\ML\Learner
      */
-    public static function trainer(Learner $tree, Labeled $subset) : Learner
+    public function _train(Learner $estimator, Dataset $subset) : Learner
     {
-        $tree->train($subset);
+        $estimator->train($subset);
 
-        return $tree;
+        return $estimator;
     }
 }
