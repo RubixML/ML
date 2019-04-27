@@ -121,6 +121,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
                 . " 0.01 and 0.99, $ratio given.");
         }
 
+        if ($workers < 1) {
+            throw new InvalidArgumentException('Cannot have less than'
+                . " 1 worker process, $workers given.");
+        }
+
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;

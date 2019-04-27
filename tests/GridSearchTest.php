@@ -40,7 +40,7 @@ class GridSearchTest extends TestCase
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [new Euclidean(), new Manhattan()],
-        ], new F1Score(), new HoldOut(0.2));
+        ], new F1Score(), new HoldOut(0.2), 4);
 
         $this->estimator->setLogger(new BlackHole());
 

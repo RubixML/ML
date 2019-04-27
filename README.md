@@ -106,7 +106,6 @@ $ composer require rubix/ml
 		- [Meta-Estimators](#meta-estimators)
 			- [Bootstrap Aggregator](#bootstrap-aggregator)
 			- [Grid Search](#grid-search)
-			- [Model Orchestra](#model-orchestra)
 			- [Persistent Model](#persistent-model)
 			- [Pipeline](#pipeline)
         - [Persisters](#persisters)
@@ -255,7 +254,7 @@ $ composer require rubix/ml
 	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
     - [What is a Tuple?](#what-is-a-tuple)
     - [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
-    - [Does Rubix support multi processing?](#does-rubix-support-multi-processing)
+    - [Does Rubix support multi (parallel) processing?](#does-rubix-support-multi-parallel-processing)
 	- [Does Rubix support multi threading?](#does-rubix-support-multi-threading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
 	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
@@ -2869,18 +2868,13 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
 | 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
-| 5 | retrain | true | bool | Should we retrain using the best parameter combination and entire dataset? |
+| 5 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 **Additional Methods:**
 
-Return every parameter combination from the last grid search:
+Return an array of every possible parameter combination:
 ```php
-public params() : array
-```
-
-The validation scores of the last search:
-```php
-public scores() : array
+public combinations() : array
 ```
 
 A [tuple](#what-is-a-tuple) containing the best parameters and their validation score:
@@ -2907,52 +2901,7 @@ $grid = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), true);
-```
-
-### Model Orchestra
-A Model Orchestra is a stacked model ensemble comprised of an *orchestra* of estimators (Classifiers or Regressors) and a *conductor* estimator. The role of the conductor is to learn the influence scores of each estimator in the orchestra while using their predictions as inputs to make a final weighted prediction.
-
-> **Note**: The features that each estimator passes on to the conductor may vary depending on the type of estimator. For example, a Probabilistic classifier will pass class probability scores while a regressor will pass on a single real value. If a datatype is not compatible with the conducting estimator, then wrap it in a [Pipeline](#pipeline) and use a transformer such as [One Hot Encoder](#one-hot-encoder) or [Interval Discretizer.](#interval-discretizer)
-
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
-
-**Compatibility:** Depends on the base learners
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | orchestra | | array | The estimator instances that comprise the orchestra section of the ensemble. |
-| 2 | conductor | | object | The estimator that will weight each prediction and give the final output. |
-| 3 | ratio | 0.8 | float | The ratio of samples used to train the orchestra (the remaining are used to train the conductor).
-
-**Additional Methods:**
-
-Return an array of estimators comprising the orchestra part of the ensemble:
-```php
-public orchestra() : array
-```
-
-Return the conductor estimator:
-```php
-public conductor() : Estimator
-```
-
-**Example:**
-
-```php
-use Rubix\ML\ModelOrchestra;
-use Rubix\ML\Classifiers\GaussianNB;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-use Rubix\ML\Classifiers\ClassificationTree;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-
-$estimator = new ModelOrchestra([
-	new ClassificationTree(10, 3, 2),
-	new KNearestNeighbors(3, new Euclidean()),
-	new GaussianNB(),
-], new SoftmaxClassifier(10), 0.8);
+$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), 4);
 ```
 
 ### Persistent Model
@@ -6009,8 +5958,8 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
-### Does Rubix support multi processing?
-Yes, Rubix currently supports multi processing in some Learners including [Random Forest](#random-forest).
+### Does Rubix support multi (parallel) processing?
+Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), and [Grid Search](#grid-search).
 
 ### Does Rubix support multi threading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.

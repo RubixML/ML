@@ -1,5 +1,6 @@
 - Unreleased
     - Random Forest training uses parallel processing
+    - Grid Search now does searches in parallel
     - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization
@@ -9,6 +10,8 @@
     - Removed Exponential neural network Cost Function
     - Filesystem save history is now either on or off
     - Removed save history from Redis DB Persister
+    - Removed Model Orchestra meta-estimator
+    - Grid Search automatically retrains base estimator
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

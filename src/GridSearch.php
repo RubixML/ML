@@ -2,10 +2,14 @@
 
 namespace Rubix\ML;
 
+use Amp\Loop;
+use Amp\Promise;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
+use Amp\Parallel\Worker\DefaultPool;
+use Amp\Parallel\Worker\CallableTask;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -65,11 +69,11 @@ class GridSearch implements Learner, Persistable, Verbose
     protected $validator;
 
     /**
-     * Should we retrain the best estimator using the whole dataset?
+     * The max number of processes to run in parallel for training.
      *
-     * @var bool
+     * @var int
      */
-    protected $retrain;
+    protected $workers;
 
     /**
      * The argument names for the base estimator's constructor.
@@ -88,28 +92,10 @@ class GridSearch implements Learner, Persistable, Verbose
     protected $type;
 
     /**
-     * Every combination of parmeters from the last grid search.
-     *
-     * @var array
-     */
-    protected $params = [
-        //
-    ];
-
-    /**
-     * The validation scores of each parmeter search.
-     *
-     * @var array
-     */
-    protected $scores = [
-        //
-    ];
-
-    /**
      * A tuple containing the parameters with the highest validation score and
      * the validation score.
      *
-     * @var array|null
+     * @var (float|array)[]|null
      */
     protected $best;
 
@@ -125,7 +111,7 @@ class GridSearch implements Learner, Persistable, Verbose
      * @param array $grid
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
-     * @param bool $retrain
+     * @param int $workers
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -133,7 +119,7 @@ class GridSearch implements Learner, Persistable, Verbose
         array $grid,
         ?Metric $metric = null,
         ?Validator $validator = null,
-        bool $retrain = true
+        int $workers = 4
     ) {
         $reflector = new ReflectionClass($base);
 
@@ -193,12 +179,17 @@ class GridSearch implements Learner, Persistable, Verbose
             }
         }
 
+        if ($workers < 1) {
+            throw new InvalidArgumentException('Cannot have less than'
+                . " 1 worker process, $workers given.");
+        }
+
         $this->base = $base;
         $this->combinations = $this->combineGrid($grid);
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
-        $this->retrain = $retrain;
+        $this->workers = $workers;
         $this->estimator = $proxy;
     }
 
@@ -243,19 +234,9 @@ class GridSearch implements Learner, Persistable, Verbose
     }
 
     /**
-     * The validation scores from the last grid search.
-     *
-     * @return array
-     */
-    public function scores() : array
-    {
-        return $this->scores;
-    }
-
-    /**
      * Return the parameters that had the highest validation score.
      *
-     * @return array|null
+     * @return (float|array)[]|null
      */
     public function best() : ?array
     {
@@ -286,61 +267,60 @@ class GridSearch implements Learner, Persistable, Verbose
                 . ' Labeled training set.');
         }
 
-        if ($this->logger) {
-            $this->logger->info('Searching ' . count($this->combinations)
-                . ' combinations of hyper-parameters');
-        }
+        $results = [];
 
-        $this->params = $this->scores = $this->best = [];
+        Loop::run(function () use (&$results, $dataset) {
+            $pool = new DefaultPool($this->workers);
+
+            $tasks = $coroutines = [];
+
+            foreach ($this->combinations as $params) {
+                $tasks[] = new CallableTask([$this, 'score'], [
+                    $params,
+                    $dataset,
+                ]);
+            }
+
+            foreach ($tasks as $task) {
+                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                    return yield $pool->enqueue($task);
+                });
+            }
+
+            $results = yield Promise\all($coroutines);
+            
+            return yield $pool->shutdown();
+        });
 
         $bestScore = -INF;
         $bestParams = [];
-        $bestEstimator = null;
 
-        foreach ($this->combinations as $params) {
-            $estimator = new $this->base(...$params);
-
-            if ($this->logger) {
-                $constructor = array_combine($this->args, $params) ?: [];
-                
-                $this->logger->info('Testing parameters '
-                    . Params::stringify($constructor));
-            }
-
-            $score = $this->validator->test($estimator, $dataset, $this->metric);
-
+        foreach ($results as [$score, $params]) {
             if ($score > $bestScore) {
                 $bestScore = $score;
                 $bestParams = $params;
-                $bestEstimator = $estimator;
-            }
-
-            $this->scores[] = $score;
-
-            if ($this->logger) {
-                $this->logger->info("Test complete, score=$score");
             }
         }
 
-        $this->best = ['score' => $bestScore, 'params' => $bestParams];
+        $this->best = [
+            'score' => $bestScore,
+            'params' => $bestParams,
+        ];
 
         if ($this->logger) {
-            $this->logger->info('Best combination: ' . Params::stringify($bestParams));
-            $this->logger->info("Best score=$bestScore");
+            $constructor = array_combine($this->args, $bestParams) ?: [];
+
+            $this->logger->info('Best params: ' . Params::stringify($constructor));
         }
 
-        if ($this->retrain) {
-            if ($this->logger) {
-                $this->logger->info('Retraining base estimator on full dataset');
-            }
+        $estimator = new $this->base(...$bestParams);
 
-            $bestEstimator->train($dataset);
-        }
+        $estimator->train($dataset);
 
-        $this->estimator = $bestEstimator;
+        $this->estimator = $estimator;
 
         if ($this->logger) {
-            $this->logger->info('Search complete');
+            $this->logger->info('Training complete');
         }
     }
 
@@ -381,6 +361,30 @@ class GridSearch implements Learner, Persistable, Verbose
         }
 
         return $combinations;
+    }
+
+    /**
+     * Validate a combination of hyperparameters and return them in a
+     * tuple with the validation score.
+     *
+     * @param array $params
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return array
+     */
+    public function score(array $params, Labeled $dataset) : array
+    {
+        $estimator = new $this->base(...$params);
+
+        $score = $this->validator->test($estimator, $dataset, $this->metric);
+
+        if ($this->logger) {
+            $constructor = array_combine($this->args, $params) ?: [];
+                
+            $this->logger->info("Test complete: score=$score"
+                . ' Params: ' . Params::stringify($constructor));
+        }
+
+        return [$score, $params];
     }
 
     /**
