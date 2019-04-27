@@ -19,7 +19,7 @@ use RuntimeException;
 
 class RandomForestTest extends TestCase
 {
-    protected const TRAIN_SIZE = 350;
+    protected const TRAIN_SIZE = 450;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
@@ -34,12 +34,12 @@ class RandomForestTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
+            'red' => new Blob([255, 32, 64], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([64, 0, 255], 20.),
         ], [3, 4, 3]);
 
-        $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
+        $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2, 4);
 
         $this->metric = new Accuracy();
 

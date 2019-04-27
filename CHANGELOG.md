@@ -1,4 +1,5 @@
 - Unreleased
+    - Random Forest training uses parallel processing
     - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization

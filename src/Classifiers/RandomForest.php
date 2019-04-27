@@ -2,12 +2,16 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Amp\Loop;
+use Amp\Promise;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Amp\Parallel\Worker\DefaultPool;
+use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -55,13 +59,11 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
     protected $ratio;
 
     /**
-     * The possible class outcomes.
+     * The max number of processes to run in parallel for training.
      *
-     * @var array
+     * @var int
      */
-    protected $classes = [
-        //
-    ];
+    protected $workers;
 
     /**
      * The decision trees that make up the forest.
@@ -73,9 +75,18 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
     ];
 
     /**
+     * The possible class outcomes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
+
+    /**
      * The number of feature columns in the training set.
      *
-     * @var int
+     * @var int|null
      */
     protected $featureCount;
 
@@ -83,10 +94,15 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
      * @param \Rubix\ML\Learner|null $base
      * @param int $estimators
      * @param float $ratio
+     * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
-    {
+    public function __construct(
+        ?Learner $base = null,
+        int $estimators = 100,
+        float $ratio = 0.1,
+        int $workers = 4
+    ) {
         $base = $base ?? new ClassificationTree();
 
         if (!in_array(get_class($base), self::AVAILABLE_TREES)) {
@@ -95,8 +111,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('The number of estimators in the'
-                . " ensemble cannot be less than 1, $estimators given.");
+            throw new InvalidArgumentException('The number of estimators'
+                . " in the ensemble cannot be less than 1, $estimators"
+                . ' given.');
         }
 
         if ($ratio < 0.01 or $ratio > 0.99) {
@@ -107,6 +124,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
+        $this->workers = $workers;
     }
 
     /**
@@ -140,38 +158,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
-     * Return the feature importances calculated during training keyed by
-     * feature column.
-     *
-     * @throws \RuntimeException
-     * @return array
-     */
-    public function featureImportances() : array
-    {
-        if (!$this->forest or !$this->featureCount) {
-            return [];
-        }
-
-        $importances = array_fill(0, $this->featureCount, 0.);
-
-        foreach ($this->forest as $tree) {
-            foreach ($tree->featureImportances() as $column => $value) {
-                $importances[$column] += $value;
-            }
-        }
-
-        $k = count($this->forest);
-
-        foreach ($importances as &$importance) {
-            $importance /= $k;
-        }
-
-        return $importances;
-    }
-
-    /**
-     * Train a Random Forest by training an ensemble of decision trees on random
-     * subsets of the training data.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -182,23 +169,39 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
-
-        $this->classes = $dataset->possibleOutcomes();
-        $this->featureCount = $dataset->numColumns();
-
+        
         $k = (int) round($this->ratio * $dataset->numRows());
 
         $this->forest = [];
 
-        for ($i = 0; $i < $this->estimators; $i++) {
-            $estimator = clone $this->base;
+        Loop::run(function () use ($dataset, $k) {
+            $pool = new DefaultPool($this->workers);
 
-            $subset = $dataset->randomSubsetWithReplacement($k);
+            $tasks = $coroutines = [];
 
-            $estimator->train($subset);
+            for ($i = 0; $i < $this->estimators; $i++) {
+                $estimator = clone $this->base;
 
-            $this->forest[] = $estimator;
-        }
+                $subset = $dataset->randomSubsetWithReplacement($k);
+
+                $params = [$estimator, $subset];
+
+                $tasks[] = new CallableTask([self::class, 'trainer'], $params);
+            }
+
+            foreach ($tasks as $task) {
+                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                    return yield $pool->enqueue($task);
+                });
+            }
+
+            $this->forest = yield Promise\all($coroutines);
+            
+            return yield $pool->shutdown();
+        });
+
+        $this->classes = $dataset->possibleOutcomes();
+        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -247,5 +250,49 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Return the feature importances calculated during training keyed by
+     * feature column.
+     *
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function featureImportances() : array
+    {
+        if (!$this->forest or !$this->featureCount) {
+            return [];
+        }
+
+        $importances = array_fill(0, $this->featureCount, 0.);
+
+        foreach ($this->forest as $tree) {
+            foreach ($tree->featureImportances() as $column => $value) {
+                $importances[$column] += $value;
+            }
+        }
+
+        $k = count($this->forest);
+
+        foreach ($importances as &$importance) {
+            $importance /= $k;
+        }
+
+        return $importances;
+    }
+
+    /**
+     * Build a tree using a bootstrap set and return it.
+     *
+     * @param \Rubix\ML\Learner $tree
+     * @param \Rubix\ML\Datasets\Labeled $subset
+     * @return \Rubix\ML\Learner
+     */
+    public static function trainer(Learner $tree, Labeled $subset) : Learner
+    {
+        $tree->train($subset);
+
+        return $tree;
     }
 }

@@ -252,12 +252,13 @@ $ composer require rubix/ml
 			- [Word](#word-tokenizer)
 - [FAQ](#faq)
 	- [What environment (SAPI) should I run Rubix in?](#what-environment-sapi-should-i-run-rubix-in)
-	- [What is a Tuple?](#what-is-a-tuple)
+	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
+    - [What is a Tuple?](#what-is-a-tuple)
     - [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
-	- [Does Rubix support multithreading?](#does-rubix-support-multithreading)
+    - [Does Rubix support multi processing?](#does-rubix-support-multi-processing)
+	- [Does Rubix support multi threading?](#does-rubix-support-multi-threading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
 	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
-    - [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
 - [Testing](#testing)
 - [Contributing](#contributing)
 
@@ -1929,6 +1930,7 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](#classifi
 | 1 | base | Classification Tree | object | The base tree estimator. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
+| 4 | workers | 4 | int | The max number of processes to run in parallel during training. |
 
 **Additional Methods:**
 
@@ -1940,7 +1942,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(ClassificationTree(10), 400, 0.1);
+$estimator = new RandomForest(ClassificationTree(10), 400, 0.1, 4);
 ```
 
 **References:**
@@ -5986,6 +5988,11 @@ $ php example.php
 
 > **Note**: The PHP interpreter must be in your default PATH for the above syntax to work.
 
+### I'm getting out of memory errors
+Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) or slightly below your device's memory supply for best results.
+
+> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](#online) estimators for more information.
+
 ### What is a Tuple?
 A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
 
@@ -6002,7 +6009,10 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
-### Does Rubix support multithreading?
+### Does Rubix support multi processing?
+Yes, Rubix currently supports multi processing in some Learners including [Random Forest](#random-forest).
+
+### Does Rubix support multi threading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
@@ -6010,11 +6020,6 @@ Yes. Deep Learning is a subset of machine learning that involves forming higher-
 
 ### Does Rubix support Reinforcement Learning?
 We do not. Rubix is only designed for *supervised* and *unsupervised* learning.
-
-### I'm getting out of memory errors
-Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) or slightly below your device's memory supply for best results.
-
-> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](#online) estimators for more information.
 
 ---
 ## Testing
