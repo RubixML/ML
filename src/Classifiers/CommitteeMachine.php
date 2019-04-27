@@ -2,12 +2,16 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Amp\Loop;
+use Amp\Promise;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Amp\Parallel\Worker\DefaultPool;
+use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 
 /**
@@ -41,6 +45,13 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     protected $influences;
 
     /**
+     * The max number of processes to run in parallel for training.
+     *
+     * @var int
+     */
+    protected $workers;
+
+    /**
      * The data types that the committee is compatible with.
      *
      * @var int[]
@@ -59,9 +70,10 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     /**
      * @param array $experts
      * @param array|null $influences
+     * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $experts, ?array $influences = null)
+    public function __construct(array $experts, ?array $influences = null, int $workers = 4)
     {
         $k = count($experts);
 
@@ -108,6 +120,11 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
             $influences = array_fill(0, $k, 1 / $k);
         }
 
+        if ($workers < 1) {
+            throw new InvalidArgumentException('Cannot have less than'
+                . " 1 worker process, $workers given.");
+        }
+
         $compatibility = array_intersect(...array_map(function ($estimator) {
             return $estimator->compatibility();
         }, $experts));
@@ -120,6 +137,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
 
         $this->experts = $experts;
         $this->influences = $influences;
+        $this->workers = $workers;
         $this->compatibility = $compatibility;
     }
 
@@ -175,11 +193,29 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
                 . ' labeled training set.');
         }
 
-        $this->classes = $dataset->possibleOutcomes();
+        Loop::run(function () use ($dataset) {
+            $pool = new DefaultPool($this->workers);
 
-        foreach ($this->experts as $expert) {
-            $expert->train($dataset);
-        }
+            $tasks = $coroutines = [];
+
+            foreach ($this->experts as $estimator) {
+                $params = [$estimator, $dataset];
+
+                $tasks[] = new CallableTask([$this, '_train'], $params);
+            }
+
+            foreach ($tasks as $task) {
+                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                    return yield $pool->enqueue($task);
+                });
+            }
+
+            $this->experts = yield Promise\all($coroutines);
+            
+            return yield $pool->shutdown();
+        });
+
+        $this->classes = $dataset->possibleOutcomes();
     }
 
     /**
@@ -218,5 +254,19 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
         }
 
         return $probabilities;
+    }
+
+    /**
+     * Train an estimator using a dataset and return it.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Rubix\ML\Learner
+     */
+    public function _train(Learner $estimator, Dataset $dataset) : Learner
+    {
+        $estimator->train($dataset);
+
+        return $estimator;
     }
 }

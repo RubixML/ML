@@ -46,7 +46,7 @@ class CommitteeMachineTest extends TestCase
             new ClassificationTree(10, 3, 2),
             new KNearestNeighbors(3, new Euclidean()),
             new GaussianNB(),
-        ]);
+        ], null, 4);
 
         $this->metric = new Accuracy();
 

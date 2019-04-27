@@ -22,7 +22,7 @@ $ composer require rubix/ml
 
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
-- [Redis extension](https://github.com/phpredis/phpredis) for persisting models to a Redis DB
+- [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Documentation
@@ -59,8 +59,8 @@ $ composer require rubix/ml
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
 			- [K-d LOF](#k-d-lof)
+            - [LODA](#loda)
 			- [Local Outlier Factor](#local-outlier-factor)
-			- [LODA](#loda)
 			- [One Class SVM](#one-class-svm)
 			- [Robust Z Score](#robust-z-score)
 		- [Classifiers](#classifiers)
@@ -254,8 +254,8 @@ $ composer require rubix/ml
 	- [I'm getting out of memory errors](#im-getting-out-of-memory-errors)
     - [What is a Tuple?](#what-is-a-tuple)
     - [What is the difference between categorical and continuous data types?](#what-is-the-difference-between-categorical-and-continuous-data-types)
-    - [Does Rubix support multi (parallel) processing?](#does-rubix-support-multi-parallel-processing)
-	- [Does Rubix support multi threading?](#does-rubix-support-multi-threading)
+    - [Does Rubix support multiprocessing?](#does-rubix-support-multiprocessing)
+	- [Does Rubix support multithreading?](#does-rubix-support-multi-threading)
 	- [Does Rubix support Deep Learning?](#does-rubix-support-deep-learning)
 	- [Does Rubix support Reinforcement Learning?](#does-rubix-support-reinforcement-learning)
 - [Testing](#testing)
@@ -1213,6 +1213,8 @@ Anomaly detection is the process of identifying samples that do not conform to a
 ### Isolation Forest
 An ensemble detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/IsolationForest.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
 
 **Compatibility:** Categorical, Continuous
@@ -1243,6 +1245,8 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 
 ### K-d LOF
 A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from fast nearest neighbors search.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
 
@@ -1277,40 +1281,10 @@ $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
 
-### Local Outlier Factor
-Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its *k* nearest neighbors. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
-
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
-
-**Compatibility:** Continuous
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
-| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-
-**Additional Methods:**
-
-This estimator does not have any additional methods.
-
-**Example:**
-
-```php
-use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
-use Rubix\ML\Kernels\Distance\Minkowski;
-
-$estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
-```
-
-**References:**
-
->- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
-
 ### LODA
 Lightweight Online Detector of Anomalies uses sparse random projection vectors to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LODA.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
 
@@ -1341,10 +1315,46 @@ $estimator = new LODA(3.5, 250, 6);
 >- T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
 >- L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
 
+### Local Outlier Factor
+Local Outlier Factor (LOF) measures the local deviation of density of a given sample with respect to its *k* nearest neighbors. As such, LOF only considers the local region (or *neighborhood*) of an unknown sample which enables it to detect anomalies within individual clusters of data.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LocalOutlierFactor.php)
+
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
+
+**Compatibility:** Continuous
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | k | 20 | int | The k nearest neighbors that form a local region. |
+| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+
+**Additional Methods:**
+
+This estimator does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\AnomalyDetection\LocalOutlierFactor;
+use Rubix\ML\Kernels\Distance\Minkowski;
+
+$estimator = new LocalOutlierFactor(20, 0.1, new Minkowski(3.5));
+```
+
+**References:**
+
+>- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.
+
 ### One Class SVM
 An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with  multiclass SVM ([SVC](#svc)).
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/OneClassSVM.php)
 
 **Interfaces:** [Learner](#learner), [Persistable](#persistable)
 
@@ -1379,6 +1389,8 @@ $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
 
 ### Robust Z Score
 A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
@@ -1526,6 +1538,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 |--|--|--|--|--|
 | 1 | experts | | array | An array of classifier instances that comprise the committee. |
 | 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
+| 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 
 **Additional Methods:**
@@ -1551,7 +1564,7 @@ $estimator = new CommitteeMachine([
 	new KNearestNeighbors(3),
 ], [
 	4, 6, 5, // Arbitrary influence values for each expert
-]);
+], 3);
 ```
 
 ### Dummy Classifier
@@ -5959,10 +5972,10 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
-### Does Rubix support multi (parallel) processing?
-Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
+### Does Rubix support multiprocessing?
+Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Committee Machine](#committee-machine), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
 
-### Does Rubix support multi threading?
+### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
