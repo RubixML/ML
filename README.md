@@ -231,7 +231,7 @@ $ composer require rubix/ml
 			- [Multiclass Breakdown](#multiclass-breakdown)
 			- [Residual Analysis](#residual-analysis)
 	- [Other](#other)
-		- [Guessing Strategies](#guessing-strategies)
+		- [Strategies](#strategies)
 			- [Blurry Percentile](#blurry-percentile)
 			- [Constant](#constant)
 			- [K Most Frequent](#k-most-frequent)
@@ -680,6 +680,8 @@ $dataset->apply($transformer);
 ### Labeled
 For *supervised* Estimators you will need to train it with a Labeled dataset consisting of samples with the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label as well.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php)
+
 **Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -842,6 +844,8 @@ $strata = $dataset->stratify();
 ### Unlabeled
 Unlabeled datasets can be used to train *unsupervised* Estimators and for feeding data into an Estimator to make predictions.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php)
+
 **Parameters:**
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
@@ -937,6 +941,8 @@ object(Rubix\ML\Datasets\Unlabeled)#24136 (1) {
 ### Agglomerate
 An Agglomerate is a collection of generators with each of them given a user-defined label. Agglomerates are useful for classification, clustering, and anomaly detection problems where the target label is a discrete value.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/Agglomerate.php)
+
 **Data Types:** Depends on agglomerated generators' types
 
 **Label Type:** Categorical
@@ -972,6 +978,8 @@ $generator = new Agglomerate([
 ### Blob
 A normally distributed (Gaussian) n-dimensional blob of samples centered at a given vector. The standard deviation can be set for the whole blob or for each feature column independently. When a global value is used, the resulting blob will be isotropic and will converge asypmtotically to a sphere.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/Blob.php)
+
 **Data Types:** Continuous
 
 **Label Type:** None
@@ -997,6 +1005,8 @@ $generator = new Blob([-1.2, -5., 2.6, 0.8, 10.], 0.25);
 
 ### Circle
 Creates a dataset of points forming a circle in 2 dimensions. The label of each sample is the random value used to generate the projection measured in degrees.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/Circle.php)
 
 **Data Types:** Continuous
 
@@ -1026,6 +1036,8 @@ $generator = new Circle(0.0, 0.0, 100, 0.1);
 ### Half Moon
 Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted on a chart. The label for each sample is the value obtained by reversing the generative process for that particular sample.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/HalfMoon.php)
+
 **Data Types:** Continuous
 
 **Label Type:** Continuous
@@ -1054,6 +1066,8 @@ $generator = new HalfMoon(4.0, 0.0, 6, 180.0, 0.2);
 
 ### Swiss Roll
 Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral. The labels are the seeds to the swiss roll transformation.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/SwissRoll.php)
 
 **Data Types:** Continuous
 
@@ -1244,7 +1258,7 @@ $estimator = new IsolationForest(300, 0.01, 0.2);
 >- F. T. Liu et al. (2011). Isolation-based Anomaly Detection.
 
 ### K-d LOF
-A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from fast nearest neighbors search.
+A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from neighborhood pruning during nearest neighbors search. The tradeoff between K-d LOF and the brute force method is that while K-d LOF is faster, it cannot be partially trained.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php)
 
@@ -1436,6 +1450,8 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
+> [Source] (https://github.com/RubixML/RubixML/blob/master/src/Classifiers/AdaBoost.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Depends on base learner
@@ -1484,6 +1500,8 @@ $estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-2);
 ### Classification Tree
 A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ClassificationTree.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Categorical, Continuous
@@ -1528,6 +1546,8 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/CommitteeMachine.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Depends on the base learners
@@ -1539,7 +1559,6 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | 1 | experts | | array | An array of classifier instances that comprise the committee. |
 | 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
 | 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
-
 
 **Additional Methods:**
 
@@ -1570,6 +1589,8 @@ $estimator = new CommitteeMachine([
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/DummyClassifier.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Categorical, Continuous, Resource
@@ -1596,6 +1617,7 @@ $estimator = new DummyClassifier(new PopularityContest());
 ### Extra Tree Classifier
 An *Extremely Randomized* Classification Tree - these trees differ from standard [Classification Trees](#classification-tree) in that they choose the best split drawn from a random set determined by *max features*, rather than searching the entire column. Extra Trees work well in ensembles such as [Random Forest](#random-forest) or [AdaBoost](#adaboost) as the *weak learner* or they can be used on their own. The strength of Extra Trees are computational efficiency as well as increasing variance of the prediction (if that is desired).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ExtraTreeClassifier.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -1643,6 +1665,8 @@ $estimator = new ExtraTreeClassifier(50, 3, 0.10, 4, 1e-3);
 ### Gaussian Naive Bayes
 A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/GaussianNB.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -1688,6 +1712,8 @@ $estimator = new GaussianNB([
 ### K-d Neighbors
 A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KDNeighbors.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -1722,6 +1748,8 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -1749,6 +1777,8 @@ $estimator = new KNearestNeighbors(3, new Manhattan(), true);
 
 ### Logistic Regression
 A type of linear classifier that uses the logistic (*sigmoid*) function to estimate the probabilities of exactly *two* classes.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/LogisticRegression.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -1791,6 +1821,8 @@ $estimator = new LogisticRegression(10, new Adam(0.001), 1e-4, 100, 1e-4, new Cr
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex deep learning problems.
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultiLayerPerceptron.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -1860,6 +1892,8 @@ $estimator = new MultiLayerPerceptron([
 ### Naive Bayes
 Probability-based classifier that estimates posterior probabilities of each class using Bayes' Theorem and the conditional probabilities calculated during training. The *naive* part relates to the fact that the algorithm assumes that all features are independent (non-correlated).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/NaiveBayes.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Categorical
@@ -1899,6 +1933,8 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RadiusNeighbors.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -1930,6 +1966,8 @@ $estimator = new RadiusNeighbors(50.0, new Manhattan(), false, 30);
 
 ### Random Forest
 Ensemble classifier that trains Decision Trees ([Classification Trees](#classification-tree) or [Extra Trees](#extra-tree)) on a random subset (*bootstrap* set) of the training data. A prediction is made based on the probability scores returned from each tree in the forest averaged and weighted equally.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RandomForest.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
 
@@ -1964,6 +2002,8 @@ $estimator = new RandomForest(ClassificationTree(10), 400, 0.1, 4);
 
 ### Softmax Classifier
 A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a Softmax output layer.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2007,6 +2047,8 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SVC.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Continous
@@ -2047,6 +2089,8 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php)
+
 **Interfaces:** [Estimator](#estimators)
 
 **Compatibility:** Continuous
@@ -2081,6 +2125,8 @@ $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 
 ### Fuzzy C Means
 Distance-based soft clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/FuzzyCMeans.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2125,6 +2171,8 @@ $estimator = new FuzzyCMeans(5, 1.2, new Euclidean(), 400, 1., new Random());
 
 ### Gaussian Mixture
 A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow both the centers (*means*) *and* the radii (*variances*) to be learned as well.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/GaussianMixture.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2172,6 +2220,8 @@ $estimator = new GaussianMixture(5, 1e-4, 100, new KMC2(50));
 
 ### K Means
 A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/KMeans.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
@@ -2222,7 +2272,9 @@ $estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus());
 ### Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
-> **Note**: Seeding Mean Shift using a [Seeder](#seeders) can often speed up convergence of large datasets. The default is to initialize all training samples as seeds.
+> **Note**: Seeding Mean Shift with a [Seeder](#seeders) can speed up convergence using large datasets. The default is to initialize all training samples as seeds.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2282,6 +2334,8 @@ Seeders are responsible for initializing k starting clusters used by certain lea
 ### K-MC2
 This is a fast [Plus Plus](#plus-plus) approximator that replaces the brute force method with a substantially faster Markov Chain Monte Carlo (MCMC) sampling method with comparable performance.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/KMC2.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -2303,7 +2357,9 @@ $seeder = new KMC2(200, new Euclidean());
 >- O. Bachem et al. (2016). Approximate K-Means++ in Sublinear Time.
 
 ### Plus Plus
- This seeder attempts to maximize the likelihood of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
+This seeder attempts to maximize the likelihood of seeding distant clusters while still remaining random. It does so by sequentially selecting random samples weighted by their distance from the previous seed.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/PlusPlus.php)
 
 **Parameters:**
 
@@ -2328,6 +2384,8 @@ $seeder = new PlusPlus(new Minkowski(5.0));
 ### Random
 Completely random selection of k seeds from the given dataset.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/Random.php)
+
 **Parameters:**
 
 This seeder does not have any parameters.
@@ -2346,6 +2404,8 @@ Manifold learning is a type of non-linear dimensionality reduction used primaril
 
 ### t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Embedders/TSNE.php)
 
 **Interfaces:** [Estimator](#estimators), [Verbose](#verbose)
 
@@ -2392,6 +2452,8 @@ Regressors predict continuous (*real-valued*) outcomes. In contrast to a [Classi
 ### Adaline
 Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/Adaline.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -2432,6 +2494,8 @@ $estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5));
 ### Dummy Regressor
 Regressor that guesses output values based on a user-defined [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/DummyRegressor.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Categorical, Continuous, Resource
@@ -2459,6 +2523,8 @@ $estimator = new DummyRegressor(new BlurryPercentile(56.5, 0.1));
 An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](#regression-tree) in that they choose a split drawn from a random set determined by the max features parameter, rather than searching the entire column for the best split.
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2508,6 +2574,8 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 
 > **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ensemble](#ensemble), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Depends on base learner
@@ -2549,6 +2617,8 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3,
 ### K-d Neighbors Regressor
 A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/KDNeighborsRegressor.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -2583,6 +2653,8 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 
 > **Note**: K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/KNNRegressor.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -2612,6 +2684,8 @@ $estimator = new KNNRegressor(2, new Minkowski(3.0), false);
 A multi layer feedforward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](#multi-layer-perceptron) classifier, the MLP Regressor is able to tackle deep learning problems by forming higher-order representations of the features using intermediate computational units called *hidden* layers.
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2678,6 +2752,8 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 
 > **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/RadiusNeighborsRegressor.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -2715,7 +2791,7 @@ $estimator = new RadiusNeighborsRegressor(0.5, new Diagonal(), true, 20);
 ### Regression Tree
 A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the impurity (variance) of the labels at each decision node split.
 
-> **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
@@ -2759,6 +2835,8 @@ $estimator = new RegressionTree(30, 2, 35., null, 1e-4);
 ### Ridge
 L2 penalized least squares linear regression solved using closed-form equation.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
 **Compatibility:** Continuous
@@ -2792,6 +2870,8 @@ $estimator = new Ridge(2.0);
 The Support Vector Machine Regressor is a maximum margin algorithm for the purposes of regression. Similarly to the [Support Vector Machine Classifier](#svc), the model produced by SVR (*R* for regression) depends only on a subset of the training data, because the cost function for building the model ignores any training data close to the model prediction given by parameter *epsilon*. Thus, the value of epsilon defines a margin of tolerance where no penalty is given to errors.
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
@@ -2833,7 +2913,9 @@ Meta-estimators enhance base estimators by adding additional functionality such 
 ### Bootstrap Aggregator
 Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement. 
 
-> **Note**: Bootstrap Aggregator does not work with clusterers or embedders.
+> **Note**: Bootstrap Aggregator is not compatible with clusterers or embedders.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/BootstrapAggregator.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
 
@@ -2869,6 +2951,8 @@ $estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2, 8);
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
 
 > **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable), [Verbose](#verbose)
 
@@ -2921,6 +3005,8 @@ $estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new
 ### Persistent Model
 The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow the estimator to be saved and retrieved from storage.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/PersistentModel.php)
+
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose)
 
 **Compatibility:** Depends on the base learner
@@ -2961,6 +3047,8 @@ $estimator = new PersistentModel(new RandomForest(100), $persister);
 Pipeline is a meta estimator responsible for transforming the input data by applying a series of [transformer](#transformers) middleware. Pipeline accepts a base estimator and a list of transformers to apply to the input data before it is fed to the estimator. Under the hood, Pipeline will automatically fit the training set upon training and transform any [Dataset object](#dataset-objects) supplied as an argument to one of the base Estimator's methods, including `train()` and `predict()`. With the *elastic* mode enabled, Pipeline can update the fitting of certain transformers during online (*partial*) training.
 
 > **Note**: Since transformations are applied to dataset objects in place (without making a copy), using the dataset in a program after it has been run through Pipeline may have unexpected results. If you need a *clean* dataset object to call multiple methods with, you can use the PHP clone syntax to keep an original (untransformed) copy in memory.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Pipeline.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
@@ -3013,6 +3101,8 @@ public load() : Persistable
 ### Filesystem
 Filesystems are local or remote storage drives that are organized by files and folders. The Filesystem persister saves models to a file at a given path and automatically keeps backups of the latest versions of your models.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/Filesystem.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -3038,6 +3128,8 @@ $persister = new Filesystem('/path/to/example.model', true, new Binary());
 Redis is a high performance in-memory key value store that can be used to persist your trained models over a network.
 
 > **Note**: The Redis persister requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/RedisDB.php)
 
 **Parameters:**
 
@@ -3070,22 +3162,22 @@ $persister = new RedisDB('model:sentiment', '127.0.0.1', 6379, 2, 'secret', new 
 ### Serializers
 Serializers take Persistable estimators and convert them between their in-memory and storage representations.
 
-To serialize a Persistable estimator:
+To serialize a Persistable:
 ```php
 public serialize(Persistable $persistable) : string
 ```
 
-To unserialize a Persistable estimator:
+To unserialize a Persistable:
 ```php
 public unserialize(string $data) : Persistable
 ```
 
 ### Binary Serializer
-Converts Persistables to and from binary storage format.
+Converts Persistable objects to and from binary format.
 
 > **Note**: The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
 
-> **Note**: Binary format is *usually* smaller and faster than plain text format, although this is not always the case.
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Binary.php)
 
 **Parameters:**
 
@@ -3101,6 +3193,8 @@ $serializer = new Binary();
 
 ### Native
 The native plain text serialization format that is bundled with PHP core.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Native.php)
 
 **Parameters:**
 
@@ -3174,6 +3268,8 @@ $transformer->update($folds[2]);
 ### Dense Random Projector
 The Dense Random Projector uses a random matrix sampled from a dense uniform distribution [-1, 1] to reduce the dimensionality of a dataset by projecting it onto a vector space of target dimensionality.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/DenseRandomProjector.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
@@ -3205,6 +3301,8 @@ $transformer = new DenseRandomProjector(50);
 ### Gaussian Random Projector
 A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/GaussianRandomProjector.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
@@ -3233,6 +3331,8 @@ $transformer = new GaussianRandomProjector(100);
 ### HTML Stripper
 Removes any HTML tags that may be in the text of a categorical variable.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
@@ -3257,6 +3357,8 @@ $transformer = new HTMLStripper();
 The Image Resizer scales and crops images to a user specified width, height, and color depth.
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php)
 
 **Interfaces:** [Transformer](#transformers)
 
@@ -3287,6 +3389,8 @@ Image Vectorizer takes images and converts them into a flat vector of raw color 
 
 > **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Resource (Images)
@@ -3311,6 +3415,8 @@ $transformer = new ImageVectorizer(3);
 
 ### Interval Discretizer
 This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/IntervalDiscretizer.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
@@ -3345,6 +3451,8 @@ $transformer = new IntervalDiscretizer(10);
 ### L1 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L1 norm (or *magnitude*) of that vector.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/L1Normalizer.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Continuous only
@@ -3368,6 +3476,8 @@ $transformer = new L1Normalizer();
 ### L2 Normalizer
 Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/L2Normalizer.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Continuous only
@@ -3390,6 +3500,8 @@ $transformer = new L2Normalizer();
 
 ### Lambda Function
 Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](#what-is-a-tuple).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/LambdaFunction.php)
 
 **Interfaces:** [Transformer](#transformers)
 
@@ -3421,6 +3533,8 @@ $transformer = new LambdaFunction(function ($samples, $labels) {
 
 ### Linear Discriminant Analysis
 A supervised dimensionality reduction technique that selects the most discriminating features based on class labels. In other words, LDA finds a linear combination of features that characterizes or best separates two or more classes.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/LinearDiscriminantAnalysis.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
@@ -3460,6 +3574,8 @@ $transformer = new LinearDiscriminantAnalysis(20);
 ### Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/MaxAbsoluteScaler.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
 **Compatibility:** Continuous
@@ -3485,6 +3601,8 @@ $transformer = new MaxAbsoluteScaler();
 
 ### Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/MinMaxNormalizer.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
@@ -3520,6 +3638,8 @@ $transformer = new MinMaxNormalizer(-5., 5.);
 ### Missing Data Imputer
 In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/MissingDataImputer.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Categorical, Continuous
@@ -3549,6 +3669,8 @@ $transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new Popul
 ### Numeric String Converter
 Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/NumericStringConverter.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
@@ -3572,6 +3694,8 @@ $transformer = new NumericStringConverter();
 ### One Hot Encoder
 The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/OneHotEncoder.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Categorical
@@ -3594,6 +3718,8 @@ $transformer = new OneHotEncoder();
 
 ### Polynomial Expander
 This transformer will generate polynomials up to and including the specified *degree* of each continuous feature column. Polynomial expansion is sometimes used to fit data that is non-linear using a linear estimator such as [Ridge](#ridge) or [Logistic Regression](#logistic-regression).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/PolynomialExpander.php)
 
 **Interfaces:** [Transformer](#transformers)
 
@@ -3619,6 +3745,8 @@ $transformer = new PolynomialExpander(3);
 
 ### Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/PrincipalComponentAnalysis.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
@@ -3662,6 +3790,8 @@ $transformer = new PrincipalComponentAnalysis(15);
 ### Robust Standardizer
 This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/RobustStandardizer.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
@@ -3695,6 +3825,8 @@ $transformer = new RobustStandardizer(true);
 ### Sparse Random Projector
 The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian distribution (mostly *0*s) to reduce the dimensionality of a dataset.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/SparseRandomProjector.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous only
@@ -3727,6 +3859,8 @@ $transformer = new SparseRandomProjector(30);
 ### Stop Word Filter
 Removes user-specified words from any categorical feature column including blobs of text.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/StopWordFilter.php)
+
 **Interfaces:** [Transformer](#transformers)
 
 **Compatibility:** Categorical
@@ -3749,6 +3883,8 @@ $transformer = new StopWordFilter(['i', 'me', 'my', ...]);
 
 ### Text Normalizer
 This transformer converts all text to lowercase and *optionally* removes extra whitespace.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/TextNormalizer.php)
 
 **Interfaces:** [Transformer](#transformers)
 
@@ -3774,6 +3910,8 @@ $transformer = new TextNormalizer(true);
 *Term Frequency - Inverse Document Frequency* is a measure of how important a word is to a document. The TF-IDF value increases proportionally with the number of times a word appears in a document (*TF*) and is offset by the frequency of the word in the corpus (*IDF*).
 
 > **Note**: This transformer assumes that its input is made up of word frequency vectors such as those created by the [Word Count Vectorizer](#word-count-vectorizer).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/TfIdfTransformer.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
@@ -3804,6 +3942,8 @@ $transformer = new TfIdfTransformer();
 ### Variance Threshold Filter
 A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/VarianceThresholdFilter.php)
+
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
 **Compatibility:** Continuous
@@ -3831,6 +3971,8 @@ $transformer = new VarianceThresholdFilter(50);
 
 ### Word Count Vectorizer
 The Word Count Vectorizer builds a vocabulary from the training samples and transforms text blobs into fixed length feature vectors. Each feature column represents a word or *token* from the vocabulary and the value denotes the number of times that word appears in a given sample.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/WordCountVectorizer.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
@@ -3866,6 +4008,8 @@ $transformer = new WordCountVectorizer(10000, 3, new SkipGram());
 
 ### Z Scale Standardizer
 A method of centering and scaling a dataset such that it has 0 mean and unit variance, also known as a Z Score.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/ZScaleStandardizer.php)
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
 
@@ -3917,6 +4061,8 @@ Activation Functions can be broken down into three classes - Sigmoidal (or *S* s
 ### ELU
 *Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ELU.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -3938,6 +4084,8 @@ $activationFunction = new ELU(5.0);
 ### Gaussian
 The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Gaussian.php)
+
 **Parameters:**
 
 This activation Function does not have any parameters.
@@ -3953,6 +4101,8 @@ $activationFunction = new Gaussian();
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/HyperbolicTangent.php)
+
 **Parameters:**
 
 This activation Function does not have any parameters.
@@ -3967,6 +4117,8 @@ $activationFunction = new HyperbolicTangent();
 
 ### ISRU
 Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ISRU.php)
 
 **Parameters:**
 
@@ -3989,6 +4141,8 @@ $activationFunction = new ISRU(2.0);
 ### Leaky ReLU
 Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/LeakyReLU.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4008,9 +4162,9 @@ $activationFunction = new LeakyReLU(0.3);
 >- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
 
 ### ReLU
-Rectified Linear Units output only the positive part of the inputs.
+Rectified Linear Units output only the positive signal of the inputs. They are analogous to half-wave rectifiers in electrical engineering.
 
-> **Note**: ReLUs are analogous to half-wave rectifiers in electrical engineering.
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ReLU.php)
 
 **Parameters:**
 
@@ -4030,6 +4184,8 @@ $activationFunction = new ReLU();
 
 ### SELU
 Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/SELU.php)
 
 **Parameters:**
 
@@ -4053,6 +4209,8 @@ $activationFunction = new SELU(1.05070, 1.67326);
 ### Sigmoid
 A bounded S-shaped function (specifically the *Logistic* function) with an output value between 0 and 1.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Sigmoid.php)
+
 **Parameters:**
 
 This activation Function does not have any parameters.
@@ -4067,6 +4225,8 @@ $activationFunction = new Sigmoid();
 
 ### Softmax
 The Softmax function is a generalization of the [Sigmoid](#sigmoid) function that *squashes* each activation between 0 and 1 *and* all activations together add up to exactly 1.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Softmax.php)
 
 **Parameters:**
 
@@ -4084,6 +4244,8 @@ $activationFunction = new Softmax(1e-10);
 
 ### Soft Plus
 A smooth approximation of the ReLU function whose output is constrained to be positive.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/SoftPlus.php)
 
 **Parameters:**
 
@@ -4104,6 +4266,8 @@ $activationFunction = new SoftPlus();
 ### Softsign
 A function that squashes the input smoothly between -1 and 1.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Softsign.php)
+
 **Parameters:**
 
 This activation function does not have any parameters.
@@ -4122,6 +4286,8 @@ $activationFunction = new Softsign();
 
 ### Thresholded ReLU
 Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ThresholdedReLU.php)
 
 **Parameters:**
 
@@ -4147,6 +4313,8 @@ In neural networks, the cost function is a function that the network tries to mi
 ### Cross Entropy
 Cross Entropy, or *log loss*, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect score would have a log loss of 0.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/CrossEntropy.php)
+
 **Parameters:**
 
 This cost function does not have any parameters.
@@ -4161,6 +4329,8 @@ $costFunction = new CrossEntropy();
 
 ### Huber Loss
 The *pseudo* Huber Loss function transitions between L1 and L2 (Least Squares) loss at a given pivot point (*delta*) such that the function becomes more quadratic as the loss decreases. The combination of L1 and L2 loss makes Huber Loss robust to outliers while maintaining smoothness near the minimum.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/HuberLoss.php)
 
 **Parameters:**
 
@@ -4179,6 +4349,8 @@ $costFunction = new HuberLoss(0.5);
 ### Least Squares
 Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of the network.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/LeastSquares.php)
+
 **Parameters:**
 
 This cost function does not have any parameters.
@@ -4193,6 +4365,8 @@ $costFunction = new LeastSquares();
 
 ### Relative Entropy
 Relative Entropy or *Kullback-Leibler divergence* is a measure of how the expectation and activation of the network diverge.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/RelativeEntropy.php)
 
 **Parameters:**
 
@@ -4218,6 +4392,8 @@ public initialize(int $fanIn, int $fanOut) : Matrix
 ### Constant
 Initialize the parameter to a user specified constant value.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Constant.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4234,6 +4410,8 @@ $initializer = new Constant(1.0);
 
 ### He
 The He initializer was designed for hidden layers that feed into rectified linear unit layers such as [ReLU](#relu), [Leaky ReLU](#leaky-relu), and [ELU](#elu). It draws from a uniform distribution with limits defined as +/- (6 / (fanIn + fanOut)) ** (1. / sqrt(2)).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/He.php)
 
 **Parameters:**
 
@@ -4254,6 +4432,8 @@ $initializer = new He();
 ### Le Cun
 Proposed by Yan Le Cun in a paper in 1998, this initializer was one of the first published attempts to control the variance of activations between layers through weight initialization. It remains a good default choice for many hidden layer configurations.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/LeCun.php)
+
 **Parameters:**
 
 This initializer does not have any parameters.
@@ -4273,6 +4453,8 @@ $initializer = new LeCun();
 ### Normal
 Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Normal.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4290,6 +4472,8 @@ $initializer = new Normal(0.1);
 ### Uniform
 Generates a random uniform distribution centered at 0 and bounded at both ends by the parameter beta.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Uniform.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4306,6 +4490,8 @@ $initializer = new Uniform(1e-3);
 
 ### Xavier 1
 The Xavier 1 initializer draws from a uniform distribution [-limit, limit] where *limit* is equal to sqrt(6 / (fanIn + fanOut)). This initializer is best suited for layers that feed into an activation layer that outputs a value between 0 and 1 such as [Softmax](#softmax) or [Sigmoid](#sigmoid).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Xavier1.php)
 
 **Parameters:**
 
@@ -4325,6 +4511,8 @@ $initializer = new Xavier1();
 
 ### Xavier 2
 The Xavier 2 initializer draws from a uniform distribution [-limit, limit] where *limit* is squal to (6 / (fanIn + fanOut)) ** 0.25. This initializer is best suited for layers that feed into an activation layer that outputs values between -1 and 1 such as [Hyperbolic Tangent](#hyperbolic-tangent) and [Softsign](#softsign).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Xavier2.php)
 
 **Parameters:**
 
@@ -4354,6 +4542,8 @@ The entry point for data into a neural network is the input layer which is the f
 ### Placeholder 1D
 The Placeholder 1D input layer represents the *future* input values of a mini batch (matrix) of single dimensional tensors (vectors) to the neural network.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Placeholder1D.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4373,6 +4563,8 @@ In multilayer networks, hidden layers are responsible for transforming the input
 
 ### Activation
 Activation layers apply a nonlinear activation function to their inputs.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Activation.php)
 
 **Parameters:**
 
@@ -4394,6 +4586,8 @@ Alpha Dropout is a type of dropout layer that maintains the mean and variance of
 
 > **Note**: Alpha Dropout is generally only used in the context of SELU networks. Use regular [Dropout](#dropout) for other types of neural nets.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/AlphaDropout.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4414,6 +4608,8 @@ $layer = new AlphaDropout(0.1);
 
 ### Batch Norm
 Normalize the activations of the previous layer such that the mean activation is close to 0 and the activation standard deviation is close to 1. Batch Norm can be used to reduce the amount of *covariate shift* within the network making it possible to use higher learning rates and converge faster under some circumstances.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/BatchNorm.php)
 
 **Parameters:**
 
@@ -4440,6 +4636,8 @@ $layer = new BatchNorm(0.7, new Constant(0.), new Normal(1.));
 ### Dense
 Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dense.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4460,6 +4658,8 @@ $layer = new Dense(100, new He(), new Constant(0.));
 
 ### Dropout
 Dropout layers temporarily disable neurons during each training pass. Dropout is a regularization and model averaging technique for reducing overfitting in neural networks by preventing complex co-adaptations on training data.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dropout.php)
 
 **Parameters:**
 
@@ -4482,6 +4682,8 @@ $layer = new Dropout(0.5);
 ### Noise
 This layer adds random Gaussian noise to the inputs to the layer with a standard deviation given as a parameter. Noise added to neural network activations acts as a regularizer by indirectly adding a penalty to the weights through the cost function in the output layer.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Noise.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4502,6 +4704,8 @@ $layer = new Noise(2.0);
 
 ### PReLU
 The PReLU layer uses leaky ReLU activation functions whose leakage coefficients are parameterized and optimized on a per neuron basis during training.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/PReLU.php)
 
 **Parameters:**
 
@@ -4528,6 +4732,8 @@ Activations are read directly from the Output layer when making predictions. The
 ### Binary
 The Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of distinguishing between two discrete classes. The Binary layer is useful for neural networks that output a binary class prediction such as *yes* or *no*.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Binary.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4550,6 +4756,8 @@ $layer = new Binary(['yes', 'no'], 1e-3, new CrossEntropy());
 ### Continuous
 The Continuous output layer consists of a single linear neuron that outputs a scalar value useful for regression problems.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Continuous.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4570,6 +4778,8 @@ $layer = new Continuous(1e-5, new HuberLoss(3.0));
 
 ### Multiclass
 The Multiclass output layer gives a joint probability estimate of a multiclass classification problem using the [Softmax](#softmax) activation function.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Multiclass.php)
 
 **Parameters:**
 
@@ -4597,6 +4807,8 @@ Gradient Descent is an algorithm that takes iterative steps towards finding the 
 ### AdaGrad
 Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of parameters that do not change often and slows down the learning of parameters that do enjoy heavy activity.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/AdaGrad.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4617,6 +4829,8 @@ $optimizer = new AdaGrad(0.125);
 
 ### Adam
 Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction, which thus prefers flat minima in the error surface.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Adam.php)
 
 **Parameters:**
 
@@ -4640,6 +4854,8 @@ $optimizer = new Adam(0.0001, 0.9, 0.999);
 
 ### Cyclical
 The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus achieving higher accuracy.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Cyclical.php)
 
 **Parameters:**
 
@@ -4665,6 +4881,8 @@ $optimizer = new Cyclical(0.001, 0.005, 1000);
 ### Momentum
 Momentum adds velocity to each step until exhausted. It does so by accumulating momentum from past updates and adding a factor of the previous velocity to the current step.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Momentum.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4686,6 +4904,8 @@ $optimizer = new Momentum(0.001, 0.925);
 
 ### RMS Prop
 An adaptive gradient technique that divides the current gradient over a rolling window of magnitudes of recent gradients.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/RMSProp.php)
 
 **Parameters:**
 
@@ -4709,6 +4929,8 @@ $optimizer = new RMSProp(0.01, 0.9);
 ### Step Decay
 A learning rate decay optimizer that reduces the learning rate by a factor of the decay parameter whenever it reaches a new *floor*. The number of steps needed to reach a new floor is defined by the *steps* parameter.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/StepDecay.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4727,6 +4949,8 @@ $optimizer = new StepDecay(0.1, 50, 1e-3);
 
 ### Stochastic
 A constant learning rate optimizer based on the original Stochastic Gradient Descent paper.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Stochastic.php)
 
 **Parameters:**
 
@@ -4753,6 +4977,8 @@ Distance kernels measure the distance between points in vector space. They are u
 ### Canberra
 A weighted version of [Manhattan](#manhattan) distance which computes the L1 distance between two coordinates in a vector space.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Canberra.php)
+
 **Parameters:**
 
 This kernel does not have any parameters.
@@ -4767,6 +4993,8 @@ $kernel = new Canberra();
 
 ### Cosine
 Cosine Similarity is a measure that ignores the magnitude of the distance between two vectors thus acting as strictly a judgement of orientation. Two vectors with the same orientation have a cosine similarity of 1, two vectors oriented at 90° relative to each other have a similarity of 0, and two vectors diametrically opposed have a similarity of -1. To be used as a distance function, we subtract the Cosine Similarity from 1 in order to satisfy the positive semi-definite condition, therefore the Cosine *distance* is a number between 0 and 2.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Cosine.php)
 
 **Parameters:**
 
@@ -4783,6 +5011,8 @@ $kernel = new Cosine();
 ### Diagonal
 The Diagonal (sometimes called *Chebyshev*) distance is a measure that constrains movement to horizontal, vertical, and diagonal from a point. An example that uses Diagonal movement is a chess board.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Diagonal.php)
+
 **Parameters:**
 
 This kernel does not have any parameters.
@@ -4797,6 +5027,8 @@ $kernel = new Diagonal();
 
 ### Euclidean
 This is the ordinary straight line (*bee line*) distance between two points in Euclidean space. The associated norm of the Euclidean distance is called the L2 norm.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Euclidean.php)
 
 **Parameters:**
 
@@ -4813,6 +5045,8 @@ $kernel = new Euclidean();
 ### Jaccard
 This *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Jaccard.php)
+
 **Parameters:**
 
 This kernel does not have any parameters.
@@ -4828,6 +5062,8 @@ $kernel = new Jaccard();
 ### Manhattan
 A distance metric that constrains movement to horizontal and vertical, similar to navigating the city blocks of Manhattan. An example that used this type of movement is a checkers board.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Manhattan.php)
+
 **Parameters:**
 
 This kernel does not have any parameters.
@@ -4842,6 +5078,8 @@ $kernel = new Manhattan();
 
 ### Minkowski
 The Minkowski distance is a metric in a normed vector space which can be considered as a generalization of both the [Euclidean](#euclidean) and [Manhattan](#manhattan) distances. When the *lambda* parameter is set to 1 or 2, the distance is equivalent to Manhattan and Euclidean respectively.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Minkowski.php)
 
 **Parameters:**
 
@@ -4941,11 +5179,6 @@ Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
 ```
 
-Return the validation scores computed at last test time:
-```php
-public scores() : ?array
-```
-
 **Example:**
 
 ```php
@@ -4967,6 +5200,8 @@ float(0.869)
 ### Hold Out
 Hold Out is a simple cross validation technique that uses a *hold out* validation set. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/HoldOut.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -4984,6 +5219,8 @@ $validator = new HoldOut(0.25, true);
 
 ### K Fold
 K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the validation performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/KFold.php)
 
 **Parameters:**
 
@@ -5005,6 +5242,8 @@ Leave P Out tests the model with a unique holdout set of P samples for each roun
 
 > **Note**: Leave P Out can become slow with large datasets and small values of P.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/LeavePOut.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5021,6 +5260,8 @@ $validator = new LeavePOut(50);
 
 ### Monte Carlo
 Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (randomized splits of the dataset).
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/MonteCarlo.php)
 
 **Parameters:**
 
@@ -5083,6 +5324,8 @@ float(-0.99846070553066)
 ### Accuracy
 Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Accuracy.php)
+
 **Compatibility:** Classification, Anomaly Detection
 
 **Range:** 0 to 1
@@ -5097,6 +5340,8 @@ $metric = new Accuracy();
 
 ### Completeness
 A ground truth clustering metric that measures the ratio of samples in a class that are also members of the same cluster. A cluster is said to be *complete* when all the samples in a class are contained in a cluster.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Completeness.php)
 
 **Compatibility:** Clustering
 
@@ -5113,6 +5358,8 @@ $metric = new Completeness();
 ### F1 Score
 A weighted average of precision and recall with equal relative contribution.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/F1Score.php)
+
 **Compatibility:** Classification, Anomaly Detection
 
 **Range:** 0 to 1
@@ -5127,6 +5374,8 @@ $metric = new F1Score();
 
 ### Homogeneity
 A ground truth clustering metric that measures the ratio of samples in a cluster that are also members of the same class. A cluster is said to be *homogeneous* when the entire cluster is comprised of a single class of samples.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Homogeneity.php)
 
 **Compatibility:** Clustering
 
@@ -5143,6 +5392,8 @@ $metric = new Homogeneity();
 ### Informedness
 Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php)
+
 **Compatibility:** Classification, Anomaly Detection
 
 **Range:** 0 to 1
@@ -5155,7 +5406,9 @@ $metric = new Informedness();
 ```
 
 ### MCC
-Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.p
+Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MCC.php)
 
 **Compatibility:** Classification, Anomaly Detection
 
@@ -5172,6 +5425,8 @@ $metric = new MCC();
 ### Mean Absolute Error
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanAbsoluteError.php)
+
 **Compatibility:** Regression
 
 **Range:** -∞ to 0
@@ -5186,6 +5441,8 @@ $metric = new MeanAbsoluteError();
 
 ### Mean Squared Error
 A regression metric that punishes bad predictions the worse they get by averaging the *squared* error  over the testing set.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MeanSquaredError.php)
 
 **Compatibility:** Regression
 
@@ -5202,6 +5459,8 @@ $metric = new MeanSquaredError();
 ### Median Absolute Error
 Median Absolute Error (MAE) is a robust measure of the error that ignores highly erroneous predictions.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MedianAbsoluteError.php)
+
 **Compatibility:** Regression
 
 **Range:** -∞ to 0
@@ -5216,6 +5475,8 @@ $metric = new MedianAbsoluteError();
 
 ### Rand Index
 The Adjusted Rand Index is a measure of similarity between the clustering and some ground truth that is adjusted for chance. It considers all pairs of samples that are assigned in the same or different clusters in the predicted and empirical clusterings.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/RandIndex.php)
 
 **Compatibility:** Regression
 
@@ -5236,6 +5497,8 @@ $metric = new RandIndex();
 ### RMS Error
 Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to compute the residuals of a regression problem.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/RMSError.php)
+
 **Compatibility:** Regression
 
 **Range:** -∞ to 0
@@ -5251,6 +5514,8 @@ $metric = new RMSError();
 ### R Squared
 The *coefficient of determination* or R Squared (R²) is the proportion of the variance in the dependent variable that is predictable from the independent variable(s).
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/RSquared.php)
+
 **Compatibility:** Regression
 
 **Range:** -∞ to 1
@@ -5265,6 +5530,8 @@ $metric = new RSquared();
 
 ### V Measure
 V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/VMeasure.php)
 
 **Compatibility:** Clustering
 
@@ -5309,6 +5576,8 @@ $result = $report->generate($predictions, $labels);
 ### Aggregate Report
 A report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5333,6 +5602,8 @@ $result = $report->generate($estimator, $testing);
 
 ### Confusion Matrix
 A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ConfusionMatrix.php)
 
 **Compatibility:** Classification, Anomaly Detection
 
@@ -5380,6 +5651,8 @@ var_dump($result);
 ### Contingency Table
 A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ContingencyTable.php)
+
 **Compatibility:** Clustering
 
 **Parameters:**
@@ -5425,6 +5698,8 @@ array(3) {
 
 ### Multiclass Breakdown
 A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php)
 
 **Compatibility:** Classification, Anomaly Detection
 
@@ -5476,6 +5751,8 @@ var_dump($result);
 ### Residual Analysis
 Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php)
+
 **Compatibility:** Regression
 
 **Parameters:**
@@ -5518,7 +5795,7 @@ var_dump($result);
 ### Other
 This section includes all classes that do not fall under a specific category.
 
-### Guessing Strategies
+### Strategies
 Guesses can be thought of as a type of *weak* prediction. Unlike a real prediction, guesses are made using limited information. A guessing Strategy attempts to use such information to formulate an educated guess. Guessing is utilized in both Dummy Estimators ([Dummy Classifier](#dummy-classifier), [Dummy Regressor](#dummy-regressor)) as well as the [Missing Data Imputer](#missing-data-imputer).
 
 The Strategy interface provides an API similar to Transformers as far as fitting, however, instead of being fit to an entire dataset, each Strategy is fit to an array of either continuous or discrete values.
@@ -5535,6 +5812,8 @@ public guess() : mixed
 
 ### Blurry Percentile
 A strategy that guesses within the domain of the p-th percentile of the fitted data plus some gaussian noise.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/BlurryPercentile.php)
 
 **Data Type:** Continuous
 
@@ -5556,6 +5835,8 @@ $strategy = new BlurryPercentile(34.0, 0.2);
 ### Constant
 Always guess a constant value.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Constant.php)
+
 **Data Type:** Continuous
 
 **Parameters:**
@@ -5573,6 +5854,8 @@ $strategy = new Constant(17.);
 
 ### K Most Frequent
 This strategy outputs one of K most frequent discrete values at random.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/KMostFrequent.php)
 
 **Data Type:** Categorical
 
@@ -5593,6 +5876,8 @@ $strategy = new KMostFrequent(5);
 ### Lottery
 Hold a lottery in which each category has an equal chance of being picked.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Lottery.php)
+
 **Data Type:** Categorical
 
 **Parameters:**
@@ -5609,6 +5894,8 @@ $strategy = new Lottery();
 
 ### Mean
 This strategy always predicts the mean of the fitted data.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Mean.php)
 
 **Data Type:** Continuous
 
@@ -5627,6 +5914,8 @@ $strategy = new Mean();
 ### Popularity Contest
 Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/PopularityContest.php)
+
 **Data Type:** Categorical
 
 **Parameters:**
@@ -5643,6 +5932,8 @@ $strategy = new PopularityContest();
 
 ### Wild Guess
 It is what you think it is. Make a guess somewhere in between the minimum and maximum values observed during fitting with equal probability given to all values within range.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/WildGuess.php)
 
 **Data Type:** Continuous
 
@@ -5870,6 +6161,8 @@ var_dump($tokenizer->tokenize($text));
 ### N-gram
 N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs tokens of contiguous words ranging from *min* to *max* number of words per token.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/NGram.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5887,6 +6180,8 @@ $tokenizer = new NGram(1, 3);
 
 ### Skip-Gram
 Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in addition to allowing adjacent sequences of words, the next *k* words will be *skipped* forming n-grams of the new forward looking sequences.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/SkipGram.php)
 
 **Parameters:**
 
@@ -5906,6 +6201,8 @@ $tokenizer = new SkipGram(2, 2);
 ### Whitespace
 Tokens are delimited by a user-specified whitespace character.
 
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Whitespace.php)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5922,6 +6219,8 @@ $tokenizer = new Whitespace(',');
 
 ### Word Tokenizer
 The Word tokenizer uses a regular expression to tokenize the words in a blob of text.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Word.php)
 
 **Parameters:**
 
