@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\CommitteeMachine;
@@ -45,7 +46,7 @@ class CommitteeMachineTest extends TestCase
             new ClassificationTree(10, 3, 2),
             new KNearestNeighbors(3, new Euclidean()),
             new GaussianNB(),
-        ], [3, 4, 5], 3);
+        ], [3, 4, 5]);
 
         $this->metric = new F1Score();
 
@@ -56,6 +57,7 @@ class CommitteeMachineTest extends TestCase
     {
         $this->assertInstanceOf(CommitteeMachine::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 

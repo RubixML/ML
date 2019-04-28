@@ -4,6 +4,7 @@ namespace Rubix\ML\Classifiers;
 
 use Amp\Loop;
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -11,11 +12,14 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use InvalidArgumentException;
 use RuntimeException;
 
 use function Amp\call;
 use function Amp\Promise\all;
+
+use const Rubix\ML\DEFAULT_WORKERS;
 
 /**
  * Random Forest
@@ -32,8 +36,10 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RandomForest implements Estimator, Learner, Probabilistic, Persistable
+class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persistable
 {
+    use Multiprocessing;
+
     protected const AVAILABLE_TREES = [
         ClassificationTree::class,
         ExtraTreeClassifier::class,
@@ -59,13 +65,6 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
      * @var float
      */
     protected $ratio;
-
-    /**
-     * The max number of processes to run in parallel for training.
-     *
-     * @var int
-     */
-    protected $workers;
 
     /**
      * The decision trees that make up the forest.
@@ -96,14 +95,12 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
      * @param \Rubix\ML\Learner|null $base
      * @param int $estimators
      * @param float $ratio
-     * @param int $workers
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Learner $base = null,
         int $estimators = 100,
-        float $ratio = 0.1,
-        int $workers = 4
+        float $ratio = 0.1
     ) {
         $base = $base ?? new ClassificationTree();
 
@@ -123,15 +120,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
                 . " 0.01 and 0.99, $ratio given.");
         }
 
-        if ($workers < 1) {
-            throw new InvalidArgumentException('Cannot have less than'
-                . " 1 worker process, $workers given.");
-        }
-
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->workers = $workers;
+        $this->workers = min(DEFAULT_WORKERS, $estimators);
     }
 
     /**

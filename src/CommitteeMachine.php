@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
@@ -28,8 +29,10 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Persistable
+class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 {
+    use Multiprocessing;
+
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
@@ -49,13 +52,6 @@ class CommitteeMachine implements Estimator, Learner, Persistable
      * @var (int|float)[]
      */
     protected $influences;
-
-    /**
-     * The max number of processes to run in parallel for training.
-     *
-     * @var int
-     */
-    protected $workers;
 
     /**
      * The type of estimator this is.
@@ -83,10 +79,9 @@ class CommitteeMachine implements Estimator, Learner, Persistable
     /**
      * @param array $experts
      * @param array|null $influences
-     * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $experts, ?array $influences = null, int $workers = 4)
+    public function __construct(array $experts, ?array $influences = null)
     {
         $p = count($experts);
 
@@ -141,11 +136,6 @@ class CommitteeMachine implements Estimator, Learner, Persistable
             $influences = array_fill(0, $p, 1 / $p);
         }
 
-        if ($workers < 1) {
-            throw new InvalidArgumentException('Cannot have less than'
-                . " 1 worker process, $workers given.");
-        }
-
         $compatibility = array_intersect(...array_map(function ($estimator) {
             return $estimator->compatibility();
         }, $experts));
@@ -156,9 +146,9 @@ class CommitteeMachine implements Estimator, Learner, Persistable
 
         $this->experts = $experts;
         $this->influences = $influences;
-        $this->workers = $workers;
         $this->type = $type;
         $this->compatibility = array_values($compatibility);
+        $this->workers = min(DEFAULT_WORKERS, $p);
     }
 
     /**
@@ -252,23 +242,23 @@ class CommitteeMachine implements Estimator, Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        $votes = [];
+        $aggregate = [];
 
-        foreach ($this->experts as $expert) {
-            foreach ($expert->predict($dataset) as $i => $prediction) {
-                $votes[$i][] = $prediction;
+        foreach ($this->experts as $estimator) {
+            foreach ($estimator->predict($dataset) as $i => $prediction) {
+                $aggregate[$i][] = $prediction;
             }
         }
 
         switch ($this->type) {
             case self::CLASSIFIER:
-                return array_map([$this, 'decideClass'], $votes);
+                return array_map([$this, 'decideClass'], $aggregate);
 
             case self::REGRESSOR:
-                return array_map([$this, 'decideValue'], $votes);
+                return array_map([$this, 'decideValue'], $aggregate);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([$this, 'decideAnomaly'], $votes);
+                return array_map([$this, 'decideAnomaly'], $aggregate);
         }
     }
 

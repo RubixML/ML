@@ -2,7 +2,9 @@
 
 namespace Rubix\ML\Tests;
 
+use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
@@ -40,7 +42,7 @@ class GridSearchTest extends TestCase
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [new Euclidean(), new Manhattan()],
-        ], new F1Score(), new HoldOut(0.2), 4);
+        ], new F1Score(), new HoldOut(0.2));
 
         $this->estimator->setLogger(new BlackHole());
 
@@ -52,6 +54,8 @@ class GridSearchTest extends TestCase
     public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

@@ -56,6 +56,14 @@ $ composer require rubix/ml
             - [Half Moon](#half-moon)
             - [Swiss Roll](#swiss-roll)
 	- [Estimators](#estimators)
+        - [Interfaces](#estimators)
+            - [Learner](#learner)
+            - [Online](#online)
+            - [Parallel](#parallel)
+            - [Persistable](#persistable)
+            - [Probabilistic](#probabilistic)
+            - [Verbose](#verbose)
+            - [Wrapper](#wrapper)
 		- [Anomaly Detectors](#anomaly-detectors)
 			- [Isolation Forest](#isolation-forest)
 			- [K-d LOF](#k-d-lof)
@@ -108,12 +116,12 @@ $ composer require rubix/ml
 			- [Grid Search](#grid-search)
 			- [Persistent Model](#persistent-model)
 			- [Pipeline](#pipeline)
-        - [Persisters](#persisters)
-			- [Filesystem](#filesystem)
-			- [Redis DB](#redis-db)
-            - [Serializers](#serializers)
-                - [Binary](#binary-serializer)
-                - [Native](#native)
+    - [Persisters](#persisters)
+        - [Filesystem](#filesystem)
+        - [Redis DB](#redis-db)
+        - [Serializers](#serializers)
+            - [Binary](#binary-serializer)
+            - [Native](#native)
 	- [Transformers](#transformers)
 		- [Dense Random Projector](#dense-random-projector)
 		- [Gaussian Random Projector](#gaussian-random-projector)
@@ -1100,15 +1108,39 @@ $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
 ### Estimators
 Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on data. Estimators that can be trained with data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
 
-To make predictions, pass the estimator a dataset object filled with samples you'd like to predict:
+> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
+
+To make predictions from a dataset object:
 ```php
 public predict(Dataset $dataset) : array
 ```
 
-> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
+**Example:**
+
+```php
+$predictions = $estimator->predict($dataset);
+
+var_dump($predictions);
+```
+
+**Output:**
+
+```sh
+array(3) {
+  [0]=>
+  string(7) "married"
+  [1]=>
+  string(8) "divorced"
+  [2]=>
+  string(7) "married"
+}
+
+```
 
 ### Learner
 Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can formulate a generalized function that maps future samples to good predictions.
+
+> **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
 
 To train an learner pass it a training dataset:
 ```php
@@ -1123,14 +1155,21 @@ public trained() : bool
 **Example:**
 ```php
 $estimator->train($dataset);
+
+var_dump($estimator->trained());
 ```
 
-> **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
+**Output:**
+```sh
+bool(true)
+```
 
 ### Online
 Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new information about the world is acquired.
 
-You can partially train an online estimator by:
+> **Note**: Learner will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained learner will reset it back to baseline first.
+
+To partially train an online learner:
 ```php
 public partial(Dataset $dataset) : void
 ```
@@ -1146,9 +1185,38 @@ $estimator->partial($folds[1]);
 $estimator->partial($folds[2]);
 ```
 
-> **Note**: an Estimator will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained Estimator will reset it back to baseline first.
+### Parallel
+Multiprocessing is the use of two or more processes that *usually* execute on multiple cores when training. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel.
 
----
+> **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores can result in slower performance but too many workers can cause excess overhead.
+
+To set the maximum number of worker processes:
+```php
+public setWorkers(int $workers) : void
+```
+
+Return the maximum number of workers:
+```php
+public workers() : int
+```
+
+**Example:**
+
+```php
+$estimator->setWorkers(4);
+
+var_dump($estimator->workers());
+```
+
+**Output:**
+
+```sh
+int(4)
+```
+
+### Persistable
+If an estimator implements Persistable then it can be saved and loaded via any one of the [Persisters](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
+
 ### Probabilistic
 Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
 
@@ -1217,8 +1285,19 @@ use Rubix\ML\Other\Loggers\Screen;
 $estimator->setLogger(new Screen('sentiment'));
 ```
 
-### Persistable
-If an estimator implements Persistable then it can be saved and loaded via any one of the [Persisters](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
+### Wrapper
+Wrappers are meta-estimators that wrap a base estimator for the purposes of adding functionality. Most wrappers allow access to the underlying base estimator's methods from the Wrapper instance, but you can also access the base estimator directly using the `base()` method.
+
+To return the base estimator:
+```php
+public base() : Estimator
+```
+
+**Example:**
+
+```php
+$base = $estimator->base();
+```
 
 ---
 ### Anomaly Detectors
@@ -1924,7 +2003,7 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](#classifi
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RandomForest.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Parallel](#parallel), [Persistable](#persistable)
 
 **Compatibility:** Categorical, Continuous
 
@@ -1932,10 +2011,9 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](#classifi
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | base | Classification Tree | object | The base tree estimator. |
+| 1 | base | ClassificationTree | object | The base tree estimator. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
-| 4 | workers | 4 | int | The max number of processes to run in parallel during training. |
 
 **Additional Methods:**
 
@@ -1947,7 +2025,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(ClassificationTree(10), 400, 0.1, 4);
+$estimator = new RandomForest(new ClassificationTree(10), 400, 0.1);
 ```
 
 **References:**
@@ -2872,7 +2950,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/BootstrapAggregator.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable)
 
 **Compatibility:** Depends on base learner
 
@@ -2883,7 +2961,6 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 | 1 | base | | object | The base estimator to be used in the ensemble. |
 | 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
 | 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
-| 4 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 **Additional Methods:**
 
@@ -2895,7 +2972,7 @@ This meta estimator does not have any additional methods.
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2, 8);
+$estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2);
 ```
 
 **References:**
@@ -2909,7 +2986,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable)
 
 **Compatibility:** Depends on the base learners
 
@@ -2919,7 +2996,6 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 |--|--|--|--|--|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | Equal | array | The influence score for each expert in the committee. |
-| 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 **Additional Methods:**
 
@@ -2944,7 +3020,7 @@ $estimator = new CommitteeMachine([
     new RandomForest(new ClassificationTree(4), 100, 0.3),
     new KDNeighbors(3),
     new SoftmaxClassifier(100, new Mometum(0.001)),
-], [4, 6, 5, 4], 4);
+], [4, 6, 5, 4]);
 ```
 
 ### Grid Search
@@ -2954,7 +3030,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable), [Verbose](#verbose)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable), [Verbose](#verbose)
 
 **Compatibility:** Depends on the base learner
 
@@ -2966,7 +3042,6 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
 | 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
-| 5 | workers | 4 | int | The max number of processes to run in parallel for training. |
 
 **Additional Methods:**
 
@@ -2999,7 +3074,7 @@ $grid = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10), 4);
+$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10));
 ```
 
 ### Persistent Model
@@ -3072,21 +3147,22 @@ This meta estimator does not have any additional methods.
 use Rubix\ML\Pipeline;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizer\Adam;
+use Rubix\ML\Transformers\NumericStringConverter;
 use Rubix\ML\Transformers\MissingDataImputer;
 use Rubix\ML\Transformers\OneHotEncoder;
 use Rubix\ML\Transformers\PrincipalComponentAnalysis;
-use Rubix\ML\Transformers\ZScaleStandardizer;
 
 $estimator = new Pipeline([
+    new NumericStringConverter(),
 	new MissingDataImputer('?'),
 	new OneHotEncoder(), 
 	new PrincipalComponentAnalysis(20),
-	new ZScaleStandardizer(true),
-], new SoftmaxClassifier(128, new Adam(0.001)), true);
+], new SoftmaxClassifier(100, new Adam(0.001)));
 ```
 
+---
 ### Persisters
-Persisters are responsible for persisting a *Persistable* estimator to storage and are also used by the [Persistent Model](#persistent-model) meta-estimator to save and restore models.
+Persisters are responsible for persisting a *Persistable* object to storage and are also used by the [Persistent Model](#persistent-model) meta-estimator to save and restore models.
 
 To store a persistable estimator:
 ```php

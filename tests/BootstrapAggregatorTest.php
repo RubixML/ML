@@ -2,11 +2,13 @@
 
 namespace Rubix\ML\Tests;
 
+use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -31,7 +33,7 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.4, 3);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(20), 30, 0.4);
 
         $this->metric = new RSquared();
 
@@ -41,6 +43,8 @@ class BootstrapAggregatorTest extends TestCase
     public function test_build_meta_estimator()
     {
         $this->assertInstanceOf(BootstrapAggregator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 

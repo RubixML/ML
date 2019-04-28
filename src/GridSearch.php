@@ -11,6 +11,7 @@ use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\F1Score;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -36,9 +37,9 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GridSearch implements Learner, Persistable, Verbose
+class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 {
-    use LoggerAware;
+    use Multiprocessing, LoggerAware;
 
     /**
      * The class name of the base estimator.
@@ -70,13 +71,6 @@ class GridSearch implements Learner, Persistable, Verbose
      * @var \Rubix\ML\CrossValidation\Validator
      */
     protected $validator;
-
-    /**
-     * The max number of processes to run in parallel for training.
-     *
-     * @var int
-     */
-    protected $workers;
 
     /**
      * The argument names for the base estimator's constructor.
@@ -114,15 +108,13 @@ class GridSearch implements Learner, Persistable, Verbose
      * @param array $grid
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\CrossValidation\Validator|null $validator
-     * @param int $workers
      * @throws \InvalidArgumentException
      */
     public function __construct(
         string $base,
         array $grid,
         ?Metric $metric = null,
-        ?Validator $validator = null,
-        int $workers = 4
+        ?Validator $validator = null
     ) {
         $reflector = new ReflectionClass($base);
 
@@ -182,18 +174,15 @@ class GridSearch implements Learner, Persistable, Verbose
             }
         }
 
-        if ($workers < 1) {
-            throw new InvalidArgumentException('Cannot have less than'
-                . " 1 worker process, $workers given.");
-        }
+        $combinations = $this->combineGrid($grid);
 
         $this->base = $base;
-        $this->combinations = $this->combineGrid($grid);
+        $this->combinations = $combinations;
         $this->args = array_slice($args, 0, count($grid));
         $this->metric = $metric;
         $this->validator = $validator ?? new KFold(5);
-        $this->workers = $workers;
         $this->estimator = $proxy;
+        $this->workers = min(DEFAULT_WORKERS, count($combinations));
     }
 
     /**

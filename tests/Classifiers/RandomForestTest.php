@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -39,7 +40,7 @@ class RandomForestTest extends TestCase
             'blue' => new Blob([64, 0, 255], 20.),
         ], [3, 4, 3]);
 
-        $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2, 4);
+        $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
 
         $this->metric = new Accuracy();
 
@@ -50,6 +51,7 @@ class RandomForestTest extends TestCase
     {
         $this->assertInstanceOf(RandomForest::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

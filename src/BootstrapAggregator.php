@@ -8,6 +8,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -30,8 +31,10 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BootstrapAggregator implements Learner, Persistable
+class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
+    use Multiprocessing;
+
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
         self::REGRESSOR,
@@ -60,13 +63,6 @@ class BootstrapAggregator implements Learner, Persistable
     protected $ratio;
 
     /**
-     * The max number of processes to run in parallel for training.
-     *
-     * @var int
-     */
-    protected $workers;
-
-    /**
      * The ensemble of estimators.
      *
      * @var array
@@ -79,10 +75,9 @@ class BootstrapAggregator implements Learner, Persistable
      * @param \Rubix\ML\Learner $base
      * @param int $estimators
      * @param float $ratio
-     * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5, int $workers = 4)
+    public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
         if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
             throw new InvalidArgumentException('This meta estimator'
@@ -100,15 +95,10 @@ class BootstrapAggregator implements Learner, Persistable
                 . " 0.01 and 1, $ratio given.");
         }
 
-        if ($workers < 1) {
-            throw new InvalidArgumentException('Cannot have less than'
-                . " 1 worker process, $workers given.");
-        }
-
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->workers = $workers;
+        $this->workers = min(DEFAULT_WORKERS, $estimators);
     }
 
     /**
@@ -226,23 +216,23 @@ class BootstrapAggregator implements Learner, Persistable
     /**
      * Classification decision function.
      *
-     * @param (int|string)[] $outcomes
+     * @param (int|string)[] $votes
      * @return int|string
      */
-    public function decideClass($outcomes)
+    public function decideClass($votes)
     {
-        return argmax(array_count_values($outcomes));
+        return argmax(array_count_values($votes));
     }
 
     /**
      * Anomaly detection decision function.
      *
-     * @param int[] $outcomes
+     * @param int[] $votes
      * @return int
      */
-    public function decideAnomaly($outcomes) : int
+    public function decideAnomaly($votes) : int
     {
-        return Stats::mean($outcomes) > 0.5 ? 1 : 0;
+        return Stats::mean($votes) > 0.5 ? 1 : 0;
     }
 
     /**
