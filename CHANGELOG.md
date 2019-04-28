@@ -1,8 +1,8 @@
 - Unreleased
-    - Committee Machine is now a meta estimator
     - Added Parallel interface for multiprocessing
     - Random Forest training uses parallel processing
-    - Committee Machine now multi processing
+    - Committee Machine is now a meta estimator
+    - Committee Machine now Parallel and Verbose
     - Bootstrap Aggregator uses multiple processes
     - Grid Search now does searches in parallel
     - Neural Network Snapshots now Persistable

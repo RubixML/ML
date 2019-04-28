@@ -2986,7 +2986,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Verbose](#verbose), [Persistable](#persistable)
 
 **Compatibility:** Depends on the base learners
 
@@ -2998,6 +2998,11 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | 2 | influences | Equal | array | The influence score for each expert in the committee. |
 
 **Additional Methods:**
+
+Return the learner instances of the committee:
+```php
+public experts() : array
+```
 
 Return the normalized influence scores of each expert in the committee:
 ```php
@@ -3022,6 +3027,10 @@ $estimator = new CommitteeMachine([
     new SoftmaxClassifier(100, new Mometum(0.001)),
 ], [4, 6, 5, 4]);
 ```
+
+**References:**
+
+>- [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
 
 ### Grid Search
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.

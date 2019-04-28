@@ -7,6 +7,16 @@ use Closure;
 
 use function call_user_func;
 
+/**
+ * Deferred
+ *
+ * A deferred computation i.e. an object that represents the result of a
+ * computation performed sometime in the future.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class Deferred
 {
     /**

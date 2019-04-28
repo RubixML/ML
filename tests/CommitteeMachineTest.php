@@ -3,6 +3,7 @@
 namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -10,6 +11,7 @@ use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
@@ -48,6 +50,8 @@ class CommitteeMachineTest extends TestCase
             new GaussianNB(),
         ], [3, 4, 5]);
 
+        $this->estimator->setLogger(new BlackHole());
+
         $this->metric = new F1Score();
 
         srand(self::RANDOM_SEED);
@@ -59,6 +63,7 @@ class CommitteeMachineTest extends TestCase
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

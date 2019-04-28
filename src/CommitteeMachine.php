@@ -6,8 +6,10 @@ use Amp\Loop;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\Params;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -25,13 +27,16 @@ use function Amp\Promise\all;
  * > **Note**: Influence values can be arbitrary as they are normalized upon object
  * creation.
  *
+ * References:
+ * [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.
+ *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
+class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
 {
-    use Multiprocessing;
+    use Multiprocessing, LoggerAware;
 
     protected const COMPATIBLE_ESTIMATOR_TYPES = [
         self::CLASSIFIER,
@@ -182,6 +187,16 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
+     * Return the learner instances of the committee.
+     *
+     * @return \Rubix\ML\Learner[]
+     */
+    public function experts() : array
+    {
+        return $this->experts;
+    }
+
+    /**
      * Return the normalized influence values for each expert in the committee.
      *
      * @return array
@@ -208,19 +223,35 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
+        if ($this->logger) {
+            $this->logger->info('Learner init ' . Params::stringify([
+                'experts' => $this->experts,
+                'influences' => $this->influences,
+                'workers' => $this->workers,
+            ]));
+        }
+
         Loop::run(function () use ($dataset) {
             $pool = new DefaultPool($this->workers);
 
             $coroutines = [];
 
-            foreach ($this->experts as $estimator) {
+            foreach ($this->experts as $i => $estimator) {
                 $task = new CallableTask(
                     [$this, '_train'],
                     [$estimator, $dataset]
                 );
 
-                $coroutines[] = call(function () use ($pool, $task) {
-                    return yield $pool->enqueue($task);
+                $coroutines[] = call(function () use ($pool, $task, $i) {
+                    $estimator = yield $pool->enqueue($task);
+
+                    if ($this->logger) {
+                        $this->logger->info(Params::stringify([
+                            $i => $estimator,
+                        ]) . ' finished');
+                    }
+
+                    return $estimator;
                 });
             }
 
@@ -231,6 +262,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable
 
         if ($this->type === self::CLASSIFIER and $dataset instanceof Labeled) {
             $this->classes = $dataset->possibleOutcomes();
+        }
+
+        if ($this->logger) {
+            $this->logger->info('Training complete');
         }
     }
 
