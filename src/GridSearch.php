@@ -3,7 +3,6 @@
 namespace Rubix\ML;
 
 use Amp\Loop;
-use Amp\Promise;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
@@ -20,6 +19,9 @@ use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
 use ReflectionClass;
+
+use function Amp\call;
+use function Amp\Promise\all;
 
 /**
  * Grid Search
@@ -272,22 +274,20 @@ class GridSearch implements Learner, Persistable, Verbose
         Loop::run(function () use (&$results, $dataset) {
             $pool = new DefaultPool($this->workers);
 
-            $tasks = $coroutines = [];
+            $coroutines = [];
 
             foreach ($this->combinations as $params) {
-                $tasks[] = new CallableTask([$this, 'score'], [
-                    $params,
-                    $dataset,
-                ]);
-            }
+                $task = new CallableTask(
+                    [$this, 'score'],
+                    [$params, $dataset]
+                );
 
-            foreach ($tasks as $task) {
-                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                $coroutines[] = call(function () use ($pool, $task) {
                     return yield $pool->enqueue($task);
                 });
             }
 
-            $results = yield Promise\all($coroutines);
+            $results = yield all($coroutines);
             
             return yield $pool->shutdown();
         });

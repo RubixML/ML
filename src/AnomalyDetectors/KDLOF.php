@@ -20,8 +20,10 @@ use const Rubix\ML\EPSILON;
 /**
  * K-d LOF
  *
- * A k-d tree accelerated version of Local Outlier Factor which benefits
- * from fast nearest neighbors search.
+ * A k-d tree accelerated version of Local Outlier Factor which benefits from
+ * neighborhood pruning during nearest neighbors search. The tradeoff between
+ * K-d LOF and the brute force method is that while K-d LOF is faster, it
+ * cannot be partially trained.
  *
  * References:
  * [1] M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local

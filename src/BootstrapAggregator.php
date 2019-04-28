@@ -3,13 +3,15 @@
 namespace Rubix\ML;
 
 use Amp\Loop;
-use Amp\Promise;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Amp\call;
+use function Amp\Promise\all;
 
 /**
  * Bootstrap Aggregator
@@ -153,25 +155,24 @@ class BootstrapAggregator implements Learner, Persistable
         Loop::run(function () use ($dataset, $p) {
             $pool = new DefaultPool($this->workers);
 
-            $tasks = $coroutines = [];
+            $coroutines = [];
 
             for ($i = 0; $i < $this->estimators; $i++) {
                 $estimator = clone $this->base;
 
                 $subset = $dataset->randomSubsetWithReplacement($p);
 
-                $params = [$estimator, $subset];
+                $task = new CallableTask(
+                    [$this, '_train'],
+                    [$estimator, $subset]
+                );
 
-                $tasks[] = new CallableTask([$this, '_train'], $params);
-            }
-
-            foreach ($tasks as $task) {
-                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                $coroutines[] = call(function () use ($pool, $task) {
                     return yield $pool->enqueue($task);
                 });
             }
 
-            $this->ensemble = yield Promise\all($coroutines);
+            $this->ensemble = yield all($coroutines);
             
             return yield $pool->shutdown();
         });

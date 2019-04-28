@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Amp\Loop;
-use Amp\Promise;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -14,6 +13,9 @@ use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Amp\call;
+use function Amp\Promise\all;
 
 /**
  * Random Forest
@@ -182,25 +184,24 @@ class RandomForest implements Estimator, Learner, Probabilistic, Persistable
         Loop::run(function () use ($dataset, $k) {
             $pool = new DefaultPool($this->workers);
 
-            $tasks = $coroutines = [];
+            $coroutines = [];
 
             for ($i = 0; $i < $this->estimators; $i++) {
                 $estimator = clone $this->base;
 
                 $subset = $dataset->randomSubsetWithReplacement($k);
 
-                $params = [$estimator, $subset];
+                $task = new CallableTask(
+                    [$this, '_train'],
+                    [$estimator, $subset]
+                );
 
-                $tasks[] = new CallableTask([$this, '_train'], $params);
-            }
-
-            foreach ($tasks as $task) {
-                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                $coroutines[] = call(function () use ($pool, $task) {
                     return yield $pool->enqueue($task);
                 });
             }
 
-            $this->forest = yield Promise\all($coroutines);
+            $this->forest = yield all($coroutines);
             
             return yield $pool->shutdown();
         });

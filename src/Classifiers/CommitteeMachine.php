@@ -3,7 +3,6 @@
 namespace Rubix\ML\Classifiers;
 
 use Amp\Loop;
-use Amp\Promise;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
@@ -13,6 +12,9 @@ use Rubix\ML\Datasets\Labeled;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
+
+use function Amp\call;
+use function Amp\Promise\all;
 
 /**
  * Committee Machine
@@ -196,21 +198,20 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
         Loop::run(function () use ($dataset) {
             $pool = new DefaultPool($this->workers);
 
-            $tasks = $coroutines = [];
+            $coroutines = [];
 
             foreach ($this->experts as $estimator) {
-                $params = [$estimator, $dataset];
+                $task = new CallableTask(
+                    [$this, '_train'],
+                    [$estimator, $dataset]
+                );
 
-                $tasks[] = new CallableTask([$this, '_train'], $params);
-            }
-
-            foreach ($tasks as $task) {
-                $coroutines[] = \Amp\call(function () use ($pool, $task) {
+                $coroutines[] = call(function () use ($pool, $task) {
                     return yield $pool->enqueue($task);
                 });
             }
 
-            $this->experts = yield Promise\all($coroutines);
+            $this->experts = yield all($coroutines);
             
             return yield $pool->shutdown();
         });
