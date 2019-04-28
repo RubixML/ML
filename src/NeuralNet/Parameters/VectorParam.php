@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet;
+namespace Rubix\ML\NeuralNet\Parameters;
 
 use Rubix\Tensor\Vector;
 use Rubix\Tensor\Tensor;

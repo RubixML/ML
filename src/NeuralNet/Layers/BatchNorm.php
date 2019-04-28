@@ -6,7 +6,7 @@ use Rubix\Tensor\Matrix;
 use Rubix\Tensor\ColumnVector;
 use Rubix\ML\NeuralNet\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\NeuralNet\VectorParam;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
@@ -67,14 +67,14 @@ class BatchNorm implements Hidden, Parametric
     /**
      * The learnable centering parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
      */
     protected $beta;
 
     /**
      * The learnable scaling parameter.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
      */
     protected $gamma;
 

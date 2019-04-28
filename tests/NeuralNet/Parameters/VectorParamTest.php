@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet\Parameters;
 
 use Rubix\Tensor\Vector;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\VectorParam;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use PHPUnit\Framework\TestCase;
 
 class VectorParamTest extends TestCase

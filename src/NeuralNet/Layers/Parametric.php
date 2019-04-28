@@ -16,7 +16,7 @@ interface Parametric extends Nonparametric
     /**
      * Return the parameters of the layer in an associative array.
      *
-     * @return \Rubix\ML\NeuralNet\Parameter[]
+     * @return \Rubix\ML\NeuralNet\Parameters\Parameter[]
      */
     public function read() : array;
 

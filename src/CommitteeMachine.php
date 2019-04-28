@@ -30,6 +30,12 @@ use function Amp\Promise\all;
  */
 class CommitteeMachine implements Estimator, Learner, Persistable
 {
+    protected const COMPATIBLE_ESTIMATOR_TYPES = [
+        self::CLASSIFIER,
+        self::REGRESSOR,
+        self::ANOMALY_DETECTOR,
+    ];
+
     /**
      * The committee of experts. i.e. the ensemble of estimators.
      *
@@ -100,19 +106,17 @@ class CommitteeMachine implements Estimator, Learner, Persistable
 
         $type = $prototype->type();
 
-        if (
-            $type !== self::CLASSIFIER and
-            $type !== self::REGRESSOR and
-            $type !== self::ANOMALY_DETECTOR
-        ) {
-            throw new InvalidArgumentException('Expert must be a classifier,'
-                . ' regressor, or anomaly detector.');
+        if (!in_array($type, self::COMPATIBLE_ESTIMATOR_TYPES)) {
+            throw new InvalidArgumentException('This meta estimator'
+                . ' only supports classifiers, regressors, and anomaly'
+                . ' detectors, ' . self::TYPES[$type] . ' given.');
         }
 
         foreach ($experts as $expert) {
             if ($expert->type() !== $type) {
                 throw new InvalidArgumentException('Experts must be of the'
-                 . ' same type.');
+                    . ' same type, ' . self::TYPES[$type] . ' expected but'
+                    . ' found ' . self::TYPES[$expert->type()] . '.');
             }
         }
 
@@ -147,9 +151,7 @@ class CommitteeMachine implements Estimator, Learner, Persistable
         }, $experts));
 
         if (count($compatibility) < 1) {
-            throw new InvalidArgumentException('Committee must only'
-                . ' contain estimators that share at least 1 data type'
-                . ' they are compatible with.');
+            throw new InvalidArgumentException('Incompatible committee.');
         }
 
         $this->experts = $experts;

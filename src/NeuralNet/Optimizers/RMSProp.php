@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Tensor;
-use Rubix\ML\NeuralNet\Parameter;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
 use InvalidArgumentException;
 
 use const Rubix\ML\EPSILON;
@@ -71,7 +71,7 @@ class RMSProp implements Optimizer, Adaptive
     /**
      * warm the cache with a parameter.
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      */
     public function warm(Parameter $param) : void
     {
@@ -81,7 +81,7 @@ class RMSProp implements Optimizer, Adaptive
     /**
      * Take a step of gradient descent for a given parameter.
      *
-     * @param \Rubix\ML\NeuralNet\Parameter $param
+     * @param \Rubix\ML\NeuralNet\Parameters\Parameter $param
      * @param \Rubix\Tensor\Tensor $gradient
      */
     public function step(Parameter $param, Tensor $gradient) : void

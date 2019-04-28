@@ -1,10 +1,10 @@
 <?php
 
-namespace Rubix\ML\Tests\NeuralNet;
+namespace Rubix\ML\Tests\NeuralNet\Parameters;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\MatrixParam;
+use Rubix\ML\NeuralNet\Parameters\Parameter;
+use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 
 class MatrixParamTest extends TestCase

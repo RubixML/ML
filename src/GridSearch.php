@@ -289,13 +289,24 @@ class GridSearch implements Learner, Persistable, Verbose
             $coroutines = [];
 
             foreach ($this->combinations as $params) {
+                $estimator = new $this->base(...$params);
+
                 $task = new CallableTask(
                     [$this, 'score'],
-                    [$params, $dataset]
+                    [$estimator, $dataset]
                 );
 
-                $coroutines[] = call(function () use ($pool, $task) {
-                    return yield $pool->enqueue($task);
+                $coroutines[] = call(function () use ($pool, $task, $params) {
+                    $score = yield $pool->enqueue($task);
+
+                    if ($this->logger) {
+                        $constructor = array_combine($this->args, $params) ?: [];
+                            
+                        $this->logger->info("Test complete: score=$score"
+                            . ' Params: ' . Params::stringify($constructor));
+                    }
+
+                    return [$score, $params];
                 });
             }
 
@@ -376,27 +387,15 @@ class GridSearch implements Learner, Persistable, Verbose
     }
 
     /**
-     * Validate a combination of hyperparameters and return them in a
-     * tuple with the validation score.
+     * Cross validate a learner with a given dataset and return the score.
      *
-     * @param array $params
+     * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return array
+     * @return float
      */
-    public function score(array $params, Labeled $dataset) : array
+    public function score(Learner $estimator, Labeled $dataset) : float
     {
-        $estimator = new $this->base(...$params);
-
-        $score = $this->validator->test($estimator, $dataset, $this->metric);
-
-        if ($this->logger) {
-            $constructor = array_combine($this->args, $params) ?: [];
-                
-            $this->logger->info("Test complete: score=$score"
-                . ' Params: ' . Params::stringify($constructor));
-        }
-
-        return [$score, $params];
+        return $this->validator->test($estimator, $dataset, $this->metric);
     }
 
     /**

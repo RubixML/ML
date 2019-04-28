@@ -15,6 +15,7 @@
     - Removed save history from Redis DB Persister
     - Removed Model Orchestra meta-estimator
     - Grid Search automatically retrains base estimator
+    - Added neural net Parameter namespace and interface
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

@@ -214,27 +214,13 @@ class BootstrapAggregator implements Learner, Persistable
             case self::CLASSIFIER:
                 return array_map([self::class, 'decideClass'], $aggregate);
 
+            case self::REGRESSOR:
+                return array_map([Stats::class, 'mean'], $aggregate);
+
             case self::ANOMALY_DETECTOR:
                 return array_map([self::class, 'decideAnomaly'], $aggregate);
 
-            default:
-                return array_map([Stats::class, 'mean'], $aggregate);
-
         }
-    }
-
-    /**
-     * Train an estimator using a dataset and return it.
-     *
-     * @param \Rubix\ML\Learner $estimator
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return \Rubix\ML\Learner
-     */
-    public function _train(Learner $estimator, Dataset $dataset) : Learner
-    {
-        $estimator->train($dataset);
-
-        return $estimator;
     }
 
     /**
@@ -257,5 +243,19 @@ class BootstrapAggregator implements Learner, Persistable
     public function decideAnomaly($outcomes) : int
     {
         return Stats::mean($outcomes) > 0.5 ? 1 : 0;
+    }
+
+    /**
+     * Parallel training routine.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return \Rubix\ML\Learner
+     */
+    public function _train(Learner $estimator, Dataset $dataset) : Learner
+    {
+        $estimator->train($dataset);
+
+        return $estimator;
     }
 }

@@ -3,10 +3,10 @@
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\MatrixParam;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\Optimizers\Adaptive;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 
 class MomentumTest extends TestCase

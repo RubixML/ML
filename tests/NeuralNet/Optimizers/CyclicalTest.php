@@ -3,9 +3,9 @@
 namespace Rubix\ML\Tests\NeuralNet\Optimizers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\MatrixParam;
 use Rubix\ML\NeuralNet\Optimizers\Cyclical;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use PHPUnit\Framework\TestCase;
 
 class CyclicalTest extends TestCase

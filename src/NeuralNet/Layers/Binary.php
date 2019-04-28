@@ -5,8 +5,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
 use Rubix\ML\NeuralNet\Deferred;
-use Rubix\ML\NeuralNet\MatrixParam;
-use Rubix\ML\NeuralNet\VectorParam;
+use Rubix\ML\NeuralNet\Parameters\MatrixParam;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -78,14 +78,14 @@ class Binary implements Output
     /**
      * The weights.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
      */
     protected $weights;
 
     /**
      * The biases.
      *
-     * @var \Rubix\ML\NeuralNet\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
      */
     protected $biases;
 
