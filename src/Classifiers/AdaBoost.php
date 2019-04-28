@@ -248,14 +248,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'base' => $this->base,
-                    'estimators' => $this->estimators,
-                    'rate' => $this->rate,
-                    'ratio' => $this->ratio,
-                    'tolerance' => $this->tolerance,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'base' => $this->base,
+                'estimators' => $this->estimators,
+                'rate' => $this->rate,
+                'ratio' => $this->ratio,
+                'tolerance' => $this->tolerance,
+            ]));
         }
 
         $this->classes = $dataset->possibleOutcomes();

@@ -4,9 +4,11 @@ namespace Rubix\ML;
 
 use Amp\Loop;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -148,6 +150,15 @@ class BootstrapAggregator implements Learner, Persistable
      */
     public function train(Dataset $dataset) : void
     {
+        if ($this->type() === self::CLASSIFIER or $this->type() === self::REGRESSOR) {
+            if (!$dataset instanceof Labeled) {
+                throw new InvalidArgumentException('This estimator requires a'
+                    . ' labeled training set.');
+            }
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
         $p = (int) round($this->ratio * $dataset->numRows());
 
         $this->ensemble = [];

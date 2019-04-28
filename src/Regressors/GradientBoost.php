@@ -236,16 +236,15 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'booster' => $this->booster,
-                    'rate' => $this->rate,
-                    'estimators' => $this->estimators,
-                    'ratio' => $this->ratio,
-                    'min_change' => $this->minChange,
-                    'tolerance' => $this->tolerance,
-                    'base' => $this->base,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'booster' => $this->booster,
+                'rate' => $this->rate,
+                'estimators' => $this->estimators,
+                'ratio' => $this->ratio,
+                'min_change' => $this->minChange,
+                'tolerance' => $this->tolerance,
+                'base' => $this->base,
+            ]));
         }
 
         $n = $dataset->numRows();

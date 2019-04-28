@@ -240,13 +240,12 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'k' => $this->k,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'seeder' => $this->seeder,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'k' => $this->k,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'seeder' => $this->seeder,
+            ]));
         }
 
         $samples = $dataset->samples();

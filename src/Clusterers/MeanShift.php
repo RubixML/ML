@@ -271,16 +271,15 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'radius' => $this->radius,
-                    'kernel' => $this->kernel,
-                    'max_leaf_size' => $this->maxLeafSize,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'seeder' => $this->seeder,
-                    'ratio' => $this->ratio,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'radius' => $this->radius,
+                'kernel' => $this->kernel,
+                'max_leaf_size' => $this->maxLeafSize,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'seeder' => $this->seeder,
+                'ratio' => $this->ratio,
+            ]));
         }
 
         $n = $dataset->numRows();

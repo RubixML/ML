@@ -66,7 +66,6 @@ $ composer require rubix/ml
 		- [Classifiers](#classifiers)
 			- [AdaBoost](#adaboost)
 			- [Classification Tree](#classification-tree)
-			- [Committee Machine](#committee-machine)
 			- [Dummy Classifier](#dummy-classifier)
 			- [Extra Tree Classifier](#extra-tree-classifier)
 			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
@@ -105,6 +104,7 @@ $ composer require rubix/ml
 			- [SVR](#svr)
 		- [Meta-Estimators](#meta-estimators)
 			- [Bootstrap Aggregator](#bootstrap-aggregator)
+            - [Committee Machine](#committee-machine)
 			- [Grid Search](#grid-search)
 			- [Persistent Model](#persistent-model)
 			- [Pipeline](#pipeline)
@@ -1541,51 +1541,6 @@ use Rubix\ML\Classifiers\ClassificationTree;
 $estimator = new ClassificationTree(30, 7, 0.1, 4, 1e-4);
 ```
 
-### Committee Machine
-A voting ensemble that aggregates the predictions of a committee of heterogeneous classifiers (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
-
-> **Note**: Influence values can be arbitrary as they are normalized upon instantiation anyways.
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/CommitteeMachine.php)
-
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
-
-**Compatibility:** Depends on the base learners
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | experts | | array | An array of classifier instances that comprise the committee. |
-| 2 | influences | 1 / n | array | The influence values of each expert in the committee. |
-| 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
-
-**Additional Methods:**
-
-Return the normalized influence scores of each estimator in the committee:
-```php
-public influences() : array
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Classifiers\CommitteeMachine;
-use Rubix\ML\Classifiers\RandomForest;
-use Rubix\ML\Classifiers\ClassificationTree;
-use Rubix\ML\Classifiers\SoftmaxClassifier;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\Classifiers\KNearestNeighbors;
-
-$estimator = new CommitteeMachine([
-	new SoftmaxClassifier(100, new Adam(0.001)),
-	new RandomForest(new ClassificationTree(4), 100, 0.3),
-	new KNearestNeighbors(3),
-], [
-	4, 6, 5, // Arbitrary influence values for each expert
-], 3);
-```
-
 ### Dummy Classifier
 A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
@@ -2946,6 +2901,51 @@ $estimator = new BootstrapAggregator(new RegressionTree(20), 300, 0.2, 8);
 **References:**
 
 >- L. Breiman. (1996). Bagging Predictors.
+
+### Committee Machine
+A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
+
+> **Note**: Influence values can be arbitrary as they are normalized upon instantiation.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
+
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+
+**Compatibility:** Depends on the base learners
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | experts | | array | An array of learner instances that will comprise the committee. |
+| 2 | influences | Equal | array | The influence score for each expert in the committee. |
+| 3 | workers | 4 | int | The max number of processes to run in parallel for training. |
+
+**Additional Methods:**
+
+Return the normalized influence scores of each expert in the committee:
+```php
+public influences() : array
+```
+
+**Example:**
+
+```php
+use Rubix\ML\CommitteeMachine;
+use Rubix\ML\Classifiers\GaussianNB;
+use Rubix\ML\Classifiers\RandomForest;
+use Rubix\ML\Classifiers\ClassificationTree;
+use Rubix\ML\Classifiers\KDNeighbors;
+use Rubix\ML\Classifiers\SoftmaxClassifier;
+use Rubix\ML\NeuralNet\Optimizers\Momentum;
+
+$estimator = new CommitteeMachine([
+    new GaussianNB(),
+    new RandomForest(new ClassificationTree(4), 100, 0.3),
+    new KDNeighbors(3),
+    new SoftmaxClassifier(100, new Mometum(0.001)),
+], [4, 6, 5, 4], 4);
+```
 
 ### Grid Search
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.

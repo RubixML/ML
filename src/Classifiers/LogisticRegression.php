@@ -250,15 +250,14 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'batch_size' => $this->batchSize,
-                    'optimizer' => $this->optimizer,
-                    'alpha' => $this->alpha,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'cost_fn' => $this->costFn,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'batch_size' => $this->batchSize,
+                'optimizer' => $this->optimizer,
+                'alpha' => $this->alpha,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'cost_fn' => $this->costFn,
+            ]));
         }
         
         $n = $dataset->numRows();

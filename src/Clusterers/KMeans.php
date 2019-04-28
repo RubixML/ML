@@ -263,15 +263,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'k' => $this->k,
-                    'batch_size' => $this->batchSize,
-                    'kernel' => $this->kernel,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'seeder' => $this->seeder,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'k' => $this->k,
+                'batch_size' => $this->batchSize,
+                'kernel' => $this->kernel,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'seeder' => $this->seeder,
+            ]));
         }
 
         $n = $dataset->numRows();

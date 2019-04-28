@@ -214,15 +214,14 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'c' => $this->c,
-                    'fuzz' => $this->fuzz,
-                    'kernel' => $this->kernel,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'seeder' => $this->seeder,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'c' => $this->c,
+                'fuzz' => $this->fuzz,
+                'kernel' => $this->kernel,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'seeder' => $this->seeder,
+            ]));
         }
 
         $this->centroids = $this->seeder->seed($dataset, $this->c);

@@ -1,16 +1,14 @@
 <?php
 
-namespace Rubix\ML\Classifiers;
+namespace Rubix\ML;
 
 use Amp\Loop;
-use Rubix\ML\Learner;
-use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
-use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
 use function Amp\call;
@@ -20,7 +18,7 @@ use function Amp\Promise\all;
  * Committee Machine
  *
  * A voting ensemble that aggregates the predictions of a committee of heterogeneous
- * classifiers (called *experts*). The committee uses a user-specified influence-based
+ * estimators (called *experts*). The committee uses a user-specified influence-based
  * scheme to sway final predictions.
  *
  * > **Note**: Influence values can be arbitrary as they are normalized upon object
@@ -30,7 +28,7 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
+class CommitteeMachine implements Estimator, Learner, Persistable
 {
     /**
      * The committee of experts. i.e. the ensemble of estimators.
@@ -54,6 +52,13 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     protected $workers;
 
     /**
+     * The type of estimator this is.
+     *
+     * @var int
+     */
+    protected $type;
+
+    /**
      * The data types that the committee is compatible with.
      *
      * @var int[]
@@ -61,7 +66,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
     protected $compatibility;
 
     /**
-     * The unique class labels.
+     * The possible class labels.
      *
      * @var array
      */
@@ -77,34 +82,44 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function __construct(array $experts, ?array $influences = null, int $workers = 4)
     {
-        $k = count($experts);
+        $p = count($experts);
 
-        if ($k < 1) {
-            throw new InvalidArgumentException('Ensemble must contain at least'
-                . ' 1 estimator, 0 given.');
+        if ($p < 1) {
+            throw new InvalidArgumentException('Committee must contain at least'
+                . ' 1 expert, none given.');
         }
 
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Base estimator must'
-                    . ' implement the learner interface.');
+                throw new InvalidArgumentException('Expert must implement the'
+                    . ' learner interface.');
             }
+        }
 
-            if ($expert->type() !== self::CLASSIFIER) {
-                throw new InvalidArgumentException('Base estimator must be a'
-                    . ' classifier, ' . self::TYPES[$expert->type()] . ' given.');
-            }
+        $prototype = reset($experts);
 
-            if (!$expert instanceof Probabilistic) {
-                throw new InvalidArgumentException('Base estimator must'
-                    . ' implement the probabilistic interface.');
+        $type = $prototype->type();
+
+        if (
+            $type !== self::CLASSIFIER and
+            $type !== self::REGRESSOR and
+            $type !== self::ANOMALY_DETECTOR
+        ) {
+            throw new InvalidArgumentException('Expert must be a classifier,'
+                . ' regressor, or anomaly detector.');
+        }
+
+        foreach ($experts as $expert) {
+            if ($expert->type() !== $type) {
+                throw new InvalidArgumentException('Experts must be of the'
+                 . ' same type.');
             }
         }
 
         if (is_array($influences)) {
-            if (count($influences) !== $k) {
+            if (count($influences) !== $p) {
                 throw new InvalidArgumentException('The number of influence'
-                    . " values must equal the number of experts, $k needed"
+                    . " values must equal the number of experts, $p needed"
                     . ' but ' . count($influences) . 'given.');
             }
 
@@ -119,7 +134,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
                 $influence /= $total;
             }
         } else {
-            $influences = array_fill(0, $k, 1 / $k);
+            $influences = array_fill(0, $p, 1 / $p);
         }
 
         if ($workers < 1) {
@@ -140,7 +155,8 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
         $this->experts = $experts;
         $this->influences = $influences;
         $this->workers = $workers;
-        $this->compatibility = $compatibility;
+        $this->type = $type;
+        $this->compatibility = array_values($compatibility);
     }
 
     /**
@@ -150,7 +166,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function type() : int
     {
-        return self::CLASSIFIER;
+        return $this->type;
     }
 
     /**
@@ -170,7 +186,7 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function trained() : bool
     {
-        return !empty($this->classes);
+        return reset($this->experts)->trained();
     }
 
     /**
@@ -187,13 +203,18 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      * Train all the experts with the dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
     public function train(Dataset $dataset) : void
     {
-        if (!$dataset instanceof Labeled) {
-            throw new InvalidArgumentException('This estimator requires a'
-                . ' labeled training set.');
+        if ($this->type === self::CLASSIFIER or $this->type === self::REGRESSOR) {
+            if (!$dataset instanceof Labeled) {
+                throw new InvalidArgumentException('This estimator requires a'
+                    . ' labeled training set.');
+            }
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         Loop::run(function () use ($dataset) {
             $pool = new DefaultPool($this->workers);
@@ -216,7 +237,9 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
             return yield $pool->shutdown();
         });
 
-        $this->classes = $dataset->possibleOutcomes();
+        if ($this->type === self::CLASSIFIER and $dataset instanceof Labeled) {
+            $this->classes = $dataset->possibleOutcomes();
+        }
     }
 
     /**
@@ -227,38 +250,73 @@ class CommitteeMachine implements Estimator, Learner, Probabilistic, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('Rubix\ML\argmax', $this->proba($dataset));
-    }
+        $votes = [];
 
-    /**
-     * Estimate probabilities for each possible outcome.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @return array
-     */
-    public function proba(Dataset $dataset) : array
-    {
-        $probabilities = array_fill(
-            0,
-            $dataset->numRows(),
-            array_fill_keys($this->classes, 0.)
-        );
-
-        foreach ($this->experts as $i => $expert) {
-            $influence = $this->influences[$i];
-
-            foreach ($expert->proba($dataset) as $j => $joint) {
-                foreach ($joint as $class => $proba) {
-                    $probabilities[$j][$class] += $influence * $proba;
-                }
+        foreach ($this->experts as $expert) {
+            foreach ($expert->predict($dataset) as $i => $prediction) {
+                $votes[$i][] = $prediction;
             }
         }
 
-        return $probabilities;
+        switch ($this->type) {
+            case self::CLASSIFIER:
+                return array_map([$this, 'decideClass'], $votes);
+
+            case self::REGRESSOR:
+                return array_map([$this, 'decideValue'], $votes);
+
+            case self::ANOMALY_DETECTOR:
+                return array_map([$this, 'decideAnomaly'], $votes);
+        }
     }
 
     /**
-     * Train an estimator using a dataset and return it.
+     * Decide on a class outcome.
+     *
+     * @param (int|string)[] $votes
+     * @return int|string
+     */
+    public function decideClass(array $votes)
+    {
+        $scores = array_fill_keys($this->classes, 0.);
+
+        foreach ($votes as $i => $vote) {
+            $scores[$vote] += $this->influences[$i];
+        }
+
+        return argmax($scores);
+    }
+
+    /**
+     * Decide on a real valued outcome.
+     *
+     * @param (int|float)[] $votes
+     * @return float
+     */
+    public function decideValue(array $votes) : float
+    {
+        return Stats::weightedMean($votes, $this->influences);
+    }
+
+    /**
+     * Decide on an anomaly outcome.
+     *
+     * @param int[] $votes
+     * @return int
+     */
+    public function decideAnomaly(array $votes) : int
+    {
+        $scores = array_fill(0, 2, 0.);
+
+        foreach ($votes as $i => $vote) {
+            $scores[$vote] += $this->influences[$i];
+        }
+
+        return argmax($scores);
+    }
+
+    /**
+     * Train an learner using a dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset

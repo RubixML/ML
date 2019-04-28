@@ -17,6 +17,7 @@ use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use ReflectionClass;
 
@@ -267,6 +268,17 @@ class GridSearch implements Learner, Persistable, Verbose
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This Estimator requires a'
                 . ' Labeled training set.');
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        if ($this->logger) {
+            $this->logger->info('Learner init ' . Params::stringify([
+                'base' => $this->base,
+                'metric' => $this->metric,
+                'validator' => $this->validator,
+                'workers' => $this->workers,
+            ]));
         }
 
         $results = [];

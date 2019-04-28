@@ -341,19 +341,18 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Learner initialized w/ '
-                . Params::stringify([
-                    'hidden' => $this->hidden,
-                    'batch_size' => $this->batchSize,
-                    'optimizer' => $this->optimizer,
-                    'alpha' => $this->alpha,
-                    'epochs' => $this->epochs,
-                    'min_change' => $this->minChange,
-                    'cost_fn' => $this->costFn,
-                    'hold_out' => $this->holdout,
-                    'metric' => $this->metric,
-                    'window' => $this->window,
-                ]));
+            $this->logger->info('Learner init ' . Params::stringify([
+                'hidden' => $this->hidden,
+                'batch_size' => $this->batchSize,
+                'optimizer' => $this->optimizer,
+                'alpha' => $this->alpha,
+                'epochs' => $this->epochs,
+                'min_change' => $this->minChange,
+                'cost_fn' => $this->costFn,
+                'hold_out' => $this->holdout,
+                'metric' => $this->metric,
+                'window' => $this->window,
+            ]));
         }
 
         $n = $dataset->numRows();
