@@ -102,9 +102,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         int $estimators = 100,
         float $ratio = 0.1
     ) {
-        $base = $base ?? new ClassificationTree();
-
-        if (!in_array(get_class($base), self::AVAILABLE_TREES)) {
+        if ($base and !in_array(get_class($base), self::AVAILABLE_TREES)) {
             throw new InvalidArgumentException('Base estimator is not'
                 . ' compatible with this ensemble.');
         }
@@ -120,7 +118,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 . " 0.01 and 0.99, $ratio given.");
         }
 
-        $this->base = $base;
+        $this->base = $base ?? new ClassificationTree();
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->workers = min(DEFAULT_WORKERS, $estimators);

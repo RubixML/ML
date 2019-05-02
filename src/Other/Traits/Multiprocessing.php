@@ -4,6 +4,8 @@ namespace Rubix\ML\Other\Traits;
 
 use InvalidArgumentException;
 
+use const Rubix\ML\DEFAULT_WORKERS;
+
 /**
  * Multiprocessing
  *
@@ -27,7 +29,7 @@ trait Multiprocessing
      *
      * @var int
      */
-    protected $workers = 4;
+    protected $workers = DEFAULT_WORKERS;
 
     /**
      * Set the maximum number of processes to run in parallel.

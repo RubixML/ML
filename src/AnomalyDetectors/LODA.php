@@ -39,25 +39,25 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
     /**
+     * The number of bins in each equi-width histogram.
+     *
+     * @var int
+     */
+    protected $bins;
+
+    /**
+     * The number of projection/histogram pairs in the ensemble.
+     *
+     * @var int
+     */
+    protected $estimators;
+
+    /**
      * The threshold anomaly score to be flagged as an outlier.
      *
      * @var float
      */
     protected $threshold;
-
-    /**
-     * The number of histograms in the ensemble.
-     *
-     * @var int
-     */
-    protected $k;
-
-    /**
-     * The number of bins in each equi-width histogram.
-     *
-     * @var int|null
-     */
-    protected $bins;
 
     /**
      * The random projection matrix.
@@ -67,7 +67,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $r;
 
     /**
-     * The edges, counts, and densities of the k histograms.
+     * The edges, counts, and densities of the histograms.
      *
      * @var array[]|null
      */
@@ -81,31 +81,42 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $n;
 
     /**
+     * Estimate the number of bins from a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return int
+     */
+    public static function estimateBins(Dataset $dataset) : int
+    {
+        return (int) round(log($dataset->numRows(), 2)) + 1;
+    }
+
+    /**
+     * @param int $bins
+     * @param int $estimators
      * @param float $threshold
-     * @param int $k
-     * @param int|null $bins
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $threshold = 5.5, int $k = 100, ?int $bins = null)
+    public function __construct(int $bins = 5, int $estimators = 100, float $threshold = 5.5)
     {
+        if ($bins < 1) {
+            throw new InvalidArgumentException('The number of bins cannot'
+                . " be less than 1, $bins given.");
+        }
+
+        if ($estimators < 1) {
+            throw new InvalidArgumentException('At least 1 histogram is'
+                . " requied to make a prediction, $estimators given.");
+        }
+
         if ($threshold < 0.) {
             throw new InvalidArgumentException('Threshold must be'
                 . " greater than 0, $threshold given.");
         }
 
-        if ($k < 1) {
-            throw new InvalidArgumentException('At least 1 histogram is'
-                . " requied to make a prediction, $k given.");
-        }
-
-        if (isset($bins) and $bins < 1) {
-            throw new InvalidArgumentException('The number of bins cannot'
-                . " be less than 1, $bins given.");
-        }
-
-        $this->threshold = $threshold;
-        $this->k = $k;
         $this->bins = $bins;
+        $this->estimators = $estimators;
+        $this->threshold = $threshold;
     }
 
     /**
@@ -152,20 +163,18 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
         [$m, $n] = $dataset->shape();
 
-        $this->bins = $this->bins ?? (int) round(log($m, 2)) + 1;
-
-        $r = Matrix::gaussian($n, $this->k);
+        $this->r = Matrix::gaussian($n, $this->estimators);
 
         if ($n >= self::MIN_SPARSE_DIMENSIONS) {
-            $mask = Matrix::rand($n, $this->k)
+            $mask = Matrix::rand($n, $this->estimators)
                 ->less(sqrt($n) / $n);
 
-            $r = $r->multiply($mask);
+            $this->r = $this->r->multiply($mask);
         }
 
-        $this->r = $r;
-
-        $z = $this->project($dataset);
+        $z = Matrix::quick($dataset->samples())
+            ->matmul($this->r)
+            ->transpose();
 
         foreach ($z as $values) {
             $min = min($values) - EPSILON;
@@ -223,7 +232,9 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
         $this->n += $dataset->numRows();
 
-        $z = $this->project($dataset);
+        $z = Matrix::quick($dataset->samples())
+            ->matmul($this->r)
+            ->transpose();
 
         foreach ($z as $i => $values) {
             [$edges, $counts, $densities] = $this->histograms[$i];
@@ -282,28 +293,11 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $z = $this->project($dataset);
-
-        return $this->logLikelihood($z);
-    }
-
-    /**
-     * Project the samples in a dataset onto the number line.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \RuntimeException
-     * @return \Rubix\Tensor\Matrix
-     */
-    protected function project(Dataset $dataset) : Matrix
-    {
-        if (!$this->r) {
-            throw new RuntimeException('Projection matrix has'
-                . ' not been initialized.');
-        }
-
-        return Matrix::quick($dataset->samples())
+        $z = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
+
+        return $this->logLikelihood($z);
     }
 
     /**
@@ -331,7 +325,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
         }
 
         foreach ($likelihoods as &$likelihood) {
-            $likelihood /= $this->k;
+            $likelihood /= $this->estimators;
         }
 
         return $likelihoods;

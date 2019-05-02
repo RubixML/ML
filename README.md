@@ -221,9 +221,8 @@ $ composer require rubix/ml
 		- [Metrics](#validation-metrics)
 			- [Accuracy](#accuracy)
 			- [Completeness](#completeness)
-			- [F1 Score](#f1-score)
+			- [F Beta](#f-beta)
 			- [Homogeneity](#homogeneity)
-			- [Informedness](#informedness)
 			- [MCC](#mcc)
 			- [Mean Absolute Error](#mean-absolute-error)
 			- [Mean Squared Error](#mean-squared-error)
@@ -1188,7 +1187,7 @@ $estimator->partial($folds[2]);
 ### Parallel
 Multiprocessing is the use of two or more processes that *usually* execute on multiple cores when training. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel.
 
-> **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores can result in slower performance but too many workers can cause excess overhead.
+> **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
 To set the maximum number of worker processes:
 ```php
@@ -1387,20 +1386,25 @@ Lightweight Online Detector of Anomalies uses sparse random projection vectors t
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | threshold | 5.5 | float | The threshold anomaly score to be flagged as an outlier. |
-| 2 | k | 100 | int | The number of random projections and histograms. |
-| 3 | bins | Auto | int | The number of bins for each equi-width histogram. |
+| 1 | bins | 5 | int | The number of equi-width bins for each histogram. |
+| 2 | estimators | 100 | int | The number of random projections and histograms. |
+| 3 | threshold | 5.5 | float | The threshold anomaly score to be flagged as an outlier. |
 
 **Additional Methods:**
 
-This estimator does not have any additional methods.
+To estimate the number of histogram bins from a dataset:
+```php
+public static estimateBins($dataset) : int
+```
 
 **Example:**
 
 ```php
 use Rubix\ML\AnomalyDetection\LODA;
 
-$estimator = new LODA(3.5, 250, 6);
+$bins = LODA::estimateBins($dataset);
+
+$estimator = new LODA($bins, 250, 3.5);
 ```
 
 **References:**
@@ -1874,7 +1878,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | metric | F1 Score | object | The validation metric used to monitor the training progress of the network. |
+| 9 | metric | FBeta | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
 **Additional Methods:**
@@ -1908,14 +1912,18 @@ use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultiLayerPerceptron([
-	new Dense(30),
+    new Dense(100),
 	new Activation(new LeakyReLU()),
 	new Dropout(0.3),
-	new Dense(20),
+    new Dense(100),
 	new Activation(new LeakyReLU()),
-	new Dropout(0.2),
-	new Dense(10),
-	new PReLU(0.25),
+	new Dropout(0.3),
+	new Dense(50),
+	new Activation(new LeakyReLU()),
+	new Dense(30),
+    new PReLU(),
+    new Dense(10),
+	new PReLU(),
 ], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
@@ -3076,14 +3084,14 @@ use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Manhattan;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\KFold;
 
 $grid = [
 	[1, 3, 5, 10], [new Euclidean(), new Manhattan()], [true, false],
 ];
 
-$estimator = new GridSearch(KNearestNeightbors::class, $grid, new F1Score(), new KFold(10));
+$estimator = new GridSearch(KNearestNeightbors::class, $grid, new FBeta(), new KFold(10));
 ```
 
 ### Persistent Model
@@ -5440,21 +5448,29 @@ use Rubix\ML\CrossValidation\Metrics\Completeness;
 $metric = new Completeness();
 ```
 
-### F1 Score
-A weighted average of precision and recall with equal relative contribution.
+### F Beta
+A weighted harmonic mean of precision and recall. The beta parameter controls the weight of precision in the combined score. As beta goes to infinity the score only considers recall whereas when it goes to 0 it only considers precision.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/F1Score.php)
+> **Note**: Beta equal to 1 is called an F1 score.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/FBeta.php)
 
 **Compatibility:** Classification, Anomaly Detection
 
 **Range:** 0 to 1
 
+**Parameters**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | beta | 1. | float | The weight of precision in the harmonic mean. |
+
 **Example:**
 
 ```php
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 
-$metric = new F1Score();
+$metric = new FBeta(0.7);
 ```
 
 ### Homogeneity
@@ -5472,22 +5488,6 @@ A ground truth clustering metric that measures the ratio of samples in a cluster
 use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 
 $metric = new Homogeneity();
-```
-
-### Informedness
-Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from 0 through 1 and has a zero value when the test gives the same proportion of positive results for groups with and without the disease, i.e the test is useless.
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php)
-
-**Compatibility:** Classification, Anomaly Detection
-
-**Range:** 0 to 1
-
-**Example:**
-```php
-use Rubix\ML\CrossValidation\Metrics\Informedness;
-
-$metric = new Informedness();
 ```
 
 ### MCC
@@ -5653,7 +5653,7 @@ public compatibility() : array
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
 
-$report = new ConfusionMatrix(['positive', 'negative']);
+$report = new ConfusionMatrix();
 
 $result = $report->generate($predictions, $labels);
 ```
@@ -5678,8 +5678,7 @@ use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
 $report = new AggregateReport([
 	'breakdown' => new MulticlassBreakdown(),
-	'matrix1' => new ConfusionMatrix(['wolf', 'lamb']),
-	'matrix2' => new ConfusionMatrix(['human', 'gorilla']),
+	'matrix' => new ConfusionMatrix(),
 ]);
 
 $result = $report->generate($estimator, $testing);
@@ -5694,16 +5693,14 @@ A Confusion Matrix is a table that visualizes the true positives, false, positiv
 
 **Parameters:**
 
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | classes | All | array | The classes to compare in the matrix. |
+This report does not have any parameters.
 
 **Example:**
 
 ```php
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 
-$report = new ConfusionMatrix(['dog', 'cat', 'turtle']);
+$report = new ConfusionMatrix();
 
 $result = $report->generate($estimator, $testing);
 
@@ -5711,6 +5708,7 @@ var_dump($result);
 ```
 
 **Output:**
+
 ```sh
   array(3) {
     ["dog"]=> array(2) {
@@ -5790,16 +5788,14 @@ A report that drills down in to each unique class outcome. The report includes m
 
 **Parameters:**
 
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | classes | All | array | The classes to break down. |
+This report does not have any parameters.
 
 **Example:**
 
 ```php
 use Rubix\ML\CrossValidation\Reports\MulticlassBreakdown;
 
-$report = new MulticlassBreakdown(['wolf', 'lamb']);
+$report = new MulticlassBreakdown();
 
 $result = $report->generate($estimator, $testing);
 

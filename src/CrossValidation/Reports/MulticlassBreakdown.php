@@ -21,33 +21,6 @@ use const Rubix\ML\EPSILON;
 class MulticlassBreakdown implements Report
 {
     /**
-     * The classes to break down.
-     *
-     * @var array|null
-     */
-    protected $classes;
-
-    /**
-     * @param array|null $classes
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(?array $classes = null)
-    {
-        if (is_array($classes)) {
-            $classes = array_unique($classes);
-
-            foreach ($classes as $class) {
-                if (!is_string($class) and !is_int($class)) {
-                    throw new InvalidArgumentException('Class type must be a'
-                        . ' string or integer, ' . gettype($class) . ' found.');
-                }
-            }
-        }
-
-        $this->classes = $classes;
-    }
-
-    /**
      * The estimator types that this report is compatible with.
      *
      * @return int[]
@@ -70,52 +43,54 @@ class MulticlassBreakdown implements Report
      */
     public function generate(array $predictions, array $labels) : array
     {
-        if (count($predictions) !== count($labels)) {
+        $n = count($predictions);
+
+        if ($n !== count($labels)) {
             throw new InvalidArgumentException('The number of labels'
                 . ' must equal the number of predictions.');
         }
 
-        $classes = $this->classes ?: array_unique(array_merge($predictions, $labels));
-
-        $n = count($predictions);
-
-        $truePositives = $trueNegatives = $falsePositives = $falseNegatives =
-            array_fill_keys($classes, 0);
-
-        foreach ($predictions as $i => $prediction) {
-            if (isset($truePositives[$prediction])) {
-                $label = $labels[$i];
-
-                if ($prediction === $label) {
-                    $truePositives[$prediction]++;
-
-                    foreach ($classes as $class) {
-                        if ($class !== $prediction) {
-                            $trueNegatives[$class]++;
-                        }
-                    }
-                } else {
-                    $falsePositives[$prediction]++;
-                    $falseNegatives[$label]++;
-                }
-            }
-        }
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $k = count($classes);
 
-        $overall = array_fill_keys([
+        $truePos = $trueNeg = $falsePos = $falseNeg = array_fill_keys($classes, 0);
+
+        foreach ($predictions as $i => $prediction) {
+            $label = $labels[$i];
+
+            if ($prediction === $label) {
+                $truePos[$prediction]++;
+                
+                foreach ($classes as $class) {
+                    if ($class !== $prediction) {
+                        $trueNeg[$class]++;
+                    }
+                }
+            } else {
+                $falsePos[$prediction]++;
+                $falseNeg[$label]++;
+            }
+        }
+
+        $averages = array_fill_keys([
             'accuracy', 'precision', 'recall', 'specificity', 'negative_predictive_value',
             'false_discovery_rate', 'miss_rate', 'fall_out', 'false_omission_rate',
-            'f1_score', 'mcc', 'informedness', 'markedness', 'true_positives',
-            'true_negatives', 'false_positives', 'false_negatives',
+            'f1_score', 'mcc', 'informedness', 'markedness',
+        ], 0.);
+
+        $counts = array_fill_keys([
+            'true_positives', 'true_negatives', 'false_positives', 'false_negatives',
         ], 0);
+
+        $overall = array_replace($averages, $counts);
 
         $table = array_fill_keys($classes, []);
 
-        foreach ($truePositives as $label => $tp) {
-            $tn = $trueNegatives[$label];
-            $fp = $falsePositives[$label];
-            $fn = $falseNegatives[$label];
+        foreach ($truePos as $label => $tp) {
+            $tn = $trueNeg[$label];
+            $fp = $falsePos[$label];
+            $fn = $falseNeg[$label];
 
             $accuracy = ($tp + $tn) / ($tp + $tn + $fp + $fn);
             $precision = $tp / (($tp + $fp) ?: EPSILON);
@@ -124,7 +99,7 @@ class MulticlassBreakdown implements Report
             $npv = $tn / (($tn + $fn) ?: EPSILON);
             $cardinality = $tp + $fn;
 
-            $f1 = 2. * (($precision * $recall))
+            $f1score = 2. * (($precision * $recall))
                 / (($precision + $recall) ?: EPSILON);
 
             $mcc = ($tp * $tn - $fp * $fn)
@@ -142,7 +117,7 @@ class MulticlassBreakdown implements Report
             $metrics['miss_rate'] = 1. - $recall;
             $metrics['fall_out'] = 1. - $specificity;
             $metrics['false_omission_rate'] = 1. - $npv;
-            $metrics['f1_score'] = $f1;
+            $metrics['f1_score'] = $f1score;
             $metrics['mcc'] = $mcc;
             $metrics['informedness'] = $recall + $specificity - 1.;
             $metrics['markedness'] = $precision + $npv - 1.;
@@ -155,27 +130,30 @@ class MulticlassBreakdown implements Report
 
             $table[$label] = $metrics;
 
-            $overall['accuracy'] += $accuracy / $k;
-            $overall['precision'] += $precision / $k;
-            $overall['recall'] += $recall / $k;
-            $overall['specificity'] += $specificity / $k;
-            $overall['negative_predictive_value'] += $npv / $k;
-            $overall['false_discovery_rate'] += (1. - $precision) / $k;
-            $overall['miss_rate'] += (1. - $recall) / $k;
-            $overall['fall_out'] += (1. - $specificity) / $k;
-            $overall['false_omission_rate'] += (1. - $npv) / $k;
-            $overall['f1_score'] += $f1 / $k;
-            $overall['mcc'] += $mcc / $k;
-            $overall['informedness'] += ($recall + $specificity - 1.) / $k;
-            $overall['markedness'] += ($precision + $npv - 1.) / $k;
+            $overall['accuracy'] += $accuracy;
+            $overall['precision'] += $precision;
+            $overall['recall'] += $recall;
+            $overall['specificity'] += $specificity;
+            $overall['negative_predictive_value'] += $npv;
+            $overall['false_discovery_rate'] += (1. - $precision);
+            $overall['miss_rate'] += (1. - $recall);
+            $overall['fall_out'] += (1. - $specificity);
+            $overall['false_omission_rate'] += (1. - $npv);
+            $overall['f1_score'] += $f1score;
+            $overall['mcc'] += $mcc;
+            $overall['informedness'] += ($recall + $specificity - 1.);
+            $overall['markedness'] += ($precision + $npv - 1.);
             $overall['true_positives'] += $tp;
             $overall['true_negatives'] += $tn;
             $overall['false_positives'] += $fp;
             $overall['false_negatives'] += $fn;
         }
 
+        foreach (array_keys($averages) as $metric) {
+            $overall[$metric] /= $k;
+        }
+
         $overall['cardinality'] = $n;
-        $overall['density'] = 1.;
 
         return [
             'overall' => $overall,

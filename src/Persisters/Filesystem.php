@@ -21,7 +21,7 @@ use RuntimeException;
  */
 class Filesystem implements Persister
 {
-    public const BACKUP_EXT = '.old';
+    public const HISTORY_EXT = '.old';
 
     /**
      * The path to the model file on the filesystem.
@@ -66,18 +66,21 @@ class Filesystem implements Persister
      * Save the persitable model.
      *
      * @param \Rubix\ML\Persistable $persistable
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function save(Persistable $persistable) : void
     {
         if ($this->history and is_file($this->path)) {
-            $filename = $this->path . '.' . (string) time() . self::BACKUP_EXT;
+            $filename = $this->path . '.' . (string) time() . self::HISTORY_EXT;
 
             if (!rename($this->path, $filename)) {
-                throw new RuntimeException('Failed to create history,'
-                 . ' check path and permissions.');
+                throw new RuntimeException('Failed to rename history,'
+                 . ' file, check path and permissions.');
             }
+        }
+
+        if (is_file($this->path) and !is_writable($this->path)) {
+            throw new RuntimeException("File $this->path is not writable.");
         }
 
         $data = $this->serializer->serialize($persistable);
@@ -96,10 +99,9 @@ class Filesystem implements Persister
      */
     public function load() : Persistable
     {
-        if (!is_file($this->path)) {
-            throw new RuntimeException('File ' . basename($this->path)
-                . ' does not exist or is a folder, check path'
-                . ' and permissions.');
+        if (!is_readable($this->path)) {
+            throw new RuntimeException("File $this->path does not"
+                . ' exist or is a folder, check path and permissions.');
         }
             
         $data = file_get_contents($this->path) ?: '';

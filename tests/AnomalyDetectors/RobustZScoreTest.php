@@ -11,7 +11,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -39,7 +39,7 @@ class RobustZScoreTest extends TestCase
 
         $this->estimator = new RobustZScore(1.8, 3.0);
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

@@ -47,7 +47,6 @@ class MulticlassBreakdownTest extends TestCase
                 'false_positives' => 2,
                 'false_negatives' => 2,
                 'cardinality' => 5,
-                'density' => 1.0,
             ],
             'label' => [
                 'wolf' => [

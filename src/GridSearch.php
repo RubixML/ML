@@ -13,7 +13,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
@@ -104,6 +104,33 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $estimator;
 
     /**
+     * Return an array of all possible combinations of parameters. i.e the
+     * Cartesian product of the supplied parameter grid.
+     *
+     * @param array $grid
+     * @return array
+     */
+    public static function combineGrid(array $grid) : array
+    {
+        $combinations = [[]];
+
+        foreach ($grid as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
+    }
+
+    /**
      * @param string $base
      * @param array $grid
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
@@ -154,7 +181,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         } else {
             switch ($proxy->type()) {
                 case self::CLASSIFIER:
-                    $metric = new F1Score();
+                    $metric = new FBeta();
                     break 1;
     
                 case self::REGRESSOR:
@@ -166,7 +193,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
                     break 1;
     
                 case self::ANOMALY_DETECTOR:
-                    $metric = new F1Score();
+                    $metric = new FBeta();
                     break 1;
     
                 default:
@@ -174,7 +201,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             }
         }
 
-        $combinations = $this->combineGrid($grid);
+        $combinations = self::combineGrid($grid);
 
         $this->base = $base;
         $this->combinations = $combinations;
@@ -291,8 +318,9 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
                     if ($this->logger) {
                         $constructor = array_combine($this->args, $params) ?: [];
                             
-                        $this->logger->info("Test complete: score=$score"
-                            . ' Params: ' . Params::stringify($constructor));
+                        $this->logger->info('Test complete: ' . Params::stringify([
+                            Params::shortName($this->metric) => $score,
+                        ]) . ' Params: ' . Params::stringify($constructor));
                     }
 
                     return [$score, $params];
@@ -346,33 +374,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     public function predict(Dataset $dataset) : array
     {
         return $this->estimator->predict($dataset);
-    }
-
-    /**
-     * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the supplied parameter grid.
-     *
-     * @param array $params
-     * @return array
-     */
-    protected function combineGrid(array $params) : array
-    {
-        $combinations = [[]];
-
-        foreach ($params as $i => $options) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($options as $option) {
-                    $product[$i] = $option;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
     }
 
     /**

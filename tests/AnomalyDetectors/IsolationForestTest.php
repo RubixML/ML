@@ -11,7 +11,7 @@ use Rubix\ML\AnomalyDetectors\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\AnomalyDetectors\IsolationForest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -39,7 +39,7 @@ class IsolationForestTest extends TestCase
 
         $this->estimator = new IsolationForest(300, 0.4, 0.1);
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

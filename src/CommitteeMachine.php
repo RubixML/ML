@@ -236,19 +236,19 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
 
             $coroutines = [];
 
-            foreach ($this->experts as $i => $estimator) {
+            foreach ($this->experts as $index => $estimator) {
                 $task = new CallableTask(
                     [$this, '_train'],
                     [$estimator, $dataset]
                 );
 
-                $coroutines[] = call(function () use ($pool, $task, $i) {
+                $coroutines[] = call(function () use ($pool, $task, $index) {
                     $estimator = yield $pool->enqueue($task);
 
                     if ($this->logger) {
                         $this->logger->info(Params::stringify([
-                            $i => $estimator,
-                        ]) . ' finished');
+                            $index => $estimator,
+                        ]) . ' finished training');
                     }
 
                     return $estimator;

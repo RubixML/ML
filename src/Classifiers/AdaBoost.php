@@ -136,9 +136,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
         float $ratio = 0.8,
         float $tolerance = 1e-3
     ) {
-        $base = $base ?? new ClassificationTree(1);
-
-        if ($base->type() !== self::CLASSIFIER) {
+        if ($base and $base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
                 . ' classifier, ' . self::TYPES[$base->type()] . ' given.');
         }
@@ -163,7 +161,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " be between 0 and 1, $tolerance given.");
         }
 
-        $this->base = $base;
+        $this->base = $base ?? new ClassificationTree(1);
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;

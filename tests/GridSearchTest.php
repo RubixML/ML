@@ -15,7 +15,7 @@ use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 
 class GridSearchTest extends TestCase
@@ -42,11 +42,11 @@ class GridSearchTest extends TestCase
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
             [1, 3, 5], [new Euclidean(), new Manhattan()],
-        ], new F1Score(), new HoldOut(0.2));
+        ], new FBeta(), new HoldOut(0.2));
 
         $this->estimator->setLogger(new BlackHole());
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

@@ -17,7 +17,7 @@ use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -52,7 +52,7 @@ class CommitteeMachineTest extends TestCase
 
         $this->estimator->setLogger(new BlackHole());
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

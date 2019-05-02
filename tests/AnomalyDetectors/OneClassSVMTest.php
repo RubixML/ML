@@ -12,7 +12,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -40,7 +40,7 @@ class OneClassSVMTest extends TestCase
 
         $this->estimator = new OneClassSVM(0.01, new Polynomial(4, 1e-3), true, 1e-4);
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

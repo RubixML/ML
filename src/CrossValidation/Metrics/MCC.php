@@ -3,6 +3,7 @@
 namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
+use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 
 use const Rubix\ML\EPSILON;
@@ -29,6 +30,22 @@ use const Rubix\ML\EPSILON;
  */
 class MCC implements Metric
 {
+    /**
+     * Compute the class mcc score.
+     *
+     * @param int $tp
+     * @param int $tn
+     * @param int $fp
+     * @param int $fn
+     * @return float
+     */
+    public static function mcc(int $tp, int $tn, int $fp, int $fn) : float
+    {
+        return ($tp * $tn - $fp * $fn)
+            / (sqrt(($tp + $fp) * ($tp + $fn)
+            * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
+    }
+
     /**
      * Return a tuple of the min and max output value for this metric.
      *
@@ -73,49 +90,27 @@ class MCC implements Metric
 
         $classes = array_unique(array_merge($predictions, $labels));
 
-        $truePositives = $trueNegatives = $falsePositives = $falseNegatives
-            = array_fill_keys($classes, 0);
+        $truePos = $trueNeg = $falsePos = $falseNeg = array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
             if ($prediction === $label) {
-                $truePositives[$prediction]++;
+                $truePos[$prediction]++;
 
                 foreach ($classes as $class) {
                     if ($class !== $prediction) {
-                        $trueNegatives[$class]++;
+                        $trueNeg[$class]++;
                     }
                 }
             } else {
-                $falsePositives[$prediction]++;
-                $falseNegatives[$label]++;
+                $falsePos[$prediction]++;
+                $falseNeg[$label]++;
             }
         }
 
-        return array_sum(array_map(
-            [$this, 'compute'],
-            $truePositives,
-            $trueNegatives,
-            $falsePositives,
-            $falseNegatives
-        ))
-            / count($classes);
-    }
-
-    /**
-     * Compute the class mcc score.
-     *
-     * @param int $tp
-     * @param int $tn
-     * @param int $fp
-     * @param int $fn
-     * @return float
-     */
-    public function compute(int $tp, int $tn, int $fp, int $fn) : float
-    {
-        return ($tp * $tn - $fp * $fn)
-            / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn))
-            ?: EPSILON);
+        return Stats::mean(
+            array_map([$this, 'mcc'], $truePos, $trueNeg, $falsePos, $falseNeg)
+        );
     }
 }

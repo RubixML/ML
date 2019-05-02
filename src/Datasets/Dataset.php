@@ -262,7 +262,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function prepend(Dataset $dataset) : Dataset;
+    public function prepend(Dataset $dataset);
 
     /**
      * Append this dataset with another dataset.
@@ -270,7 +270,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Datasets\Dataset
      */
-    public function append(Dataset $dataset) : Dataset;
+    public function append(Dataset $dataset);
 
     /**
      * Is the dataset empty?

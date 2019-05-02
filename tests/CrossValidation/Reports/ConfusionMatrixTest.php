@@ -12,7 +12,7 @@ class ConfusionMatrixTest extends TestCase
 
     public function setUp()
     {
-        $this->report = new ConfusionMatrix(['wolf', 'lamb']);
+        $this->report = new ConfusionMatrix();
     }
 
     public function test_build_report()

@@ -17,6 +17,9 @@
     - Removed Model Orchestra meta-estimator
     - Grid Search automatically retrains base estimator
     - Added neural net Parameter namespace and interface
+    - Changed order of LODA hyperparameters
+    - Added F Beta classificaion metric
+    - Removed F1 Score and Informedness metric
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

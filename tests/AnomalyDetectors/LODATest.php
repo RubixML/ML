@@ -13,7 +13,7 @@ use Rubix\ML\AnomalyDetectors\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -39,9 +39,9 @@ class LODATest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new LODA(5.5, 100, null);
+        $this->estimator = new LODA(5, 100, 5.5);
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
@@ -61,6 +61,13 @@ class LODATest extends TestCase
         $this->assertContains(DataType::CONTINUOUS, $this->estimator->compatibility());
 
         $this->assertFalse($this->estimator->trained());
+    }
+
+    public function test_estimate_bins()
+    {
+        $bins = LODA::estimateBins($this->generator->generate(100));
+
+        $this->assertSame(8, $bins);
     }
 
     public function test_train_partial_predict()

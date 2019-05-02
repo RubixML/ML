@@ -21,7 +21,7 @@ use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
@@ -228,7 +228,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         $this->minChange = $minChange;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->holdout = $holdout;
-        $this->metric = $metric ?? new F1Score();
+        $this->metric = $metric ?? new FBeta();
         $this->window = $window;
     }
 

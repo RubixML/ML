@@ -27,6 +27,18 @@ use InvalidArgumentException;
 class RandIndex implements Metric
 {
     /**
+     * Compute n choose k.
+     *
+     * @param int $n
+     * @param int $k
+     * @return int
+     */
+    public static function comb(int $n, int $k = 2) : int
+    {
+        return $k === 0 ? 1 : (int) (($n * self::comb($n - 1, $k - 1)) / $k);
+    }
+
+    /**
      * Return a tuple of the min and max output value for this metric.
      *
      * @return float[]
@@ -71,26 +83,14 @@ class RandIndex implements Metric
 
         $table = Matrix::build((new ContingencyTable())->generate($predictions, $labels));
 
-        $sigma = $table->map([$this, 'comb'])->sum()->sum();
+        $sigma = $table->map([self::class, 'comb'])->sum()->sum();
 
-        $alpha = $table->sum()->map([$this, 'comb'])->sum();
-        $beta = $table->transpose()->sum()->map([$this, 'comb'])->sum();
+        $alpha = $table->sum()->map([self::class, 'comb'])->sum();
+        $beta = $table->transpose()->sum()->map([self::class, 'comb'])->sum();
 
-        $pHat = ($alpha * $beta) / $this->comb($n);
+        $pHat = ($alpha * $beta) / self::comb($n);
         $mean = ($alpha + $beta) / 2.;
 
         return ($sigma - $pHat) / ($mean - $pHat);
-    }
-
-    /**
-     * Compute n choose k.
-     *
-     * @param int $n
-     * @param int $k
-     * @return int
-     */
-    public function comb(int $n, int $k = 2) : int
-    {
-        return $k === 0 ? 1 : (int) (($n * $this->comb($n - 1, $k - 1)) / $k);
     }
 }

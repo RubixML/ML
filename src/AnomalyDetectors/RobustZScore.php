@@ -147,9 +147,11 @@ class RobustZScore implements Estimator, Learner, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
+        $columns = $dataset->columns();
+
         $this->medians = $this->mads = [];
 
-        foreach ($dataset->columns() as $column => $values) {
+        foreach ($columns as $column => $values) {
             [$median, $mad] = Stats::medMad($values);
 
             $this->medians[$column] = $median;
@@ -196,9 +198,7 @@ class RobustZScore implements Estimator, Learner, Persistable
                 $score += $z;
             }
 
-            $score /= $p;
-
-            $predictions[] = $score > $this->tolerance ? 1 : 0;
+            $predictions[] = ($score / $p) > $this->tolerance ? 1 : 0;
         }
 
         return $predictions;

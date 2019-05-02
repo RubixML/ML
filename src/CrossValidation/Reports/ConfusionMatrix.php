@@ -20,33 +20,6 @@ use InvalidArgumentException;
 class ConfusionMatrix implements Report
 {
     /**
-     * The classes to compare in the matrix.
-     *
-     * @var array|null
-     */
-    protected $classes;
-
-    /**
-     * @param array|null $classes
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(?array $classes = null)
-    {
-        if (is_array($classes)) {
-            $classes = array_unique($classes);
-
-            foreach ($classes as $class) {
-                if (!is_string($class) and !is_int($class)) {
-                    throw new InvalidArgumentException('Class type must be a'
-                        . ' string or integer, ' . gettype($class) . ' found.');
-                }
-            }
-        }
-
-        $this->classes = $classes;
-    }
-
-    /**
      * The estimator types that this report is compatible with.
      *
      * @return int[]
@@ -74,14 +47,12 @@ class ConfusionMatrix implements Report
                 . ' must equal the number of predictions.');
         }
         
-        $classes = $this->classes ?? array_unique(array_merge($predictions, $labels));
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $matrix = array_fill_keys($classes, array_fill_keys($classes, 0));
 
         foreach ($predictions as $i => $prediction) {
-            if (isset($matrix[$prediction])) {
-                $matrix[$prediction][$labels[$i]]++;
-            }
+            $matrix[$prediction][$labels[$i]]++;
         }
 
         return $matrix;

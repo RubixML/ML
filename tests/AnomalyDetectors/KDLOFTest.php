@@ -13,7 +13,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -40,7 +40,7 @@ class KDLOFTest extends TestCase
 
         $this->estimator = new KDLOF(20, 0.1, new Euclidean(), 20);
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

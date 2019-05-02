@@ -79,11 +79,11 @@ class KFold implements Validator
 
         for ($i = 0; $i < $this->k; $i++) {
             $training = Labeled::quick();
-            $testing = null;
+            $testing = Labeled::quick();
 
             foreach ($folds as $j => $fold) {
                 if ($i === $j) {
-                    $testing = clone $fold;
+                    $testing = $testing->append($fold);
                 } else {
                     $training = $training->append($fold);
                 }

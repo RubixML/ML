@@ -15,7 +15,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\CrossValidation\Metrics\F1Score;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -48,7 +48,7 @@ class PipelineTest extends TestCase
 
         $this->estimator->setLogger(new BlackHole());
 
-        $this->metric = new F1Score();
+        $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }

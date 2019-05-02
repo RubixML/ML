@@ -287,9 +287,9 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return self
      */
-    public function prepend(Dataset $dataset) : Dataset
+    public function prepend(Dataset $dataset) : self
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Can only merge with a labeled'
@@ -307,9 +307,9 @@ class Labeled extends DataFrame implements Dataset
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return self
      */
-    public function append(Dataset $dataset) : Dataset
+    public function append(Dataset $dataset) : self
     {
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('Can only merge with a labeled'
