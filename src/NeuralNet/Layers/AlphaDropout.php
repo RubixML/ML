@@ -3,6 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
+use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 
 /**
  * Alpha Dropout
@@ -22,10 +23,7 @@ use Rubix\Tensor\Matrix;
  */
 class AlphaDropout extends Dropout
 {
-    protected const ALPHA = 1.6732632423543772848170429916717;
-    protected const SCALE = 1.0507009873554804934193349852946;
-
-    protected const ALPHA_P = -self::ALPHA * self::SCALE;
+    protected const ALPHA_P = -SELU::ALPHA * SELU::SCALE;
 
     /**
      * The scaling coefficient.

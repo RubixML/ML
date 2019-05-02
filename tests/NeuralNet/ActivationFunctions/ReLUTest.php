@@ -23,7 +23,7 @@ class ReLUTest extends TestCase
             [1.0], [0.0], [0.0], [20.0], [0.0],
         ]);
 
-        $this->activationFunction = new ReLU();
+        $this->activationFunction = new ReLU(0.1);
     }
 
     public function test_build_activation_function()

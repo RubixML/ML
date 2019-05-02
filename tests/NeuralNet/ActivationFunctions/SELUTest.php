@@ -98,9 +98,9 @@ class SELUTest extends TestCase
         $derivatives = $this->activationFunction->differentiate($this->input, $this->activations);
 
         $this->assertEquals(1.0507009873554805, $derivatives[0][0]);
-        $this->assertEquals(0.30824181219712865, $derivatives[1][0]);
-        $this->assertEquals(1.0, $derivatives[2][0]);
+        $this->assertEquals(1.0312683299116618, $derivatives[1][0]);
+        $this->assertEquals(1.7580993408473766, $derivatives[2][0]);
         $this->assertEquals(1.0507009873554805, $derivatives[3][0]);
-        $this->assertEquals(-0.7580195232607867, $derivatives[4][0]);
+        $this->assertEquals(-0.08905350803294294, $derivatives[4][0]);
     }
 }

@@ -151,9 +151,7 @@ $ composer require rubix/ml
 	- [Neural Network](#neural-network)
 		- [Activation Functions](#activation-functions)
 			- [ELU](#elu)
-			- [Gaussian](#gaussian)
 			- [Hyperbolic Tangent](#hyperbolic-tangent)
-			- [ISRU](#isru)
 			- [Leaky ReLU](#leaky-relu)
 			- [ReLU](#relu)
 			- [SELU](#selu)
@@ -1214,7 +1212,7 @@ int(4)
 ```
 
 ### Persistable
-If an estimator implements Persistable then it can be saved and loaded via any one of the [Persisters](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
+If an estimator implements Persistable then it can be saved and loaded by a [Persister](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
 
 ### Probabilistic
 Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
@@ -4174,23 +4172,6 @@ $activationFunction = new ELU(5.0);
 
 >- D. A. Clevert et al. (2016). Fast and Accurate Deep Network Learning by Exponential Linear Units.
 
-### Gaussian
-The Gaussian activation function is a type of Radial Basis Function (*RBF*) whose activation depends only on the distance the input is from the origin.
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Gaussian.php)
-
-**Parameters:**
-
-This activation Function does not have any parameters.
-
-**Example:**
-
-```php
-use Rubix\ML\NeuralNet\ActivationFunctions\Gaussian;
-
-$activationFunction = new Gaussian();
-```
-
 ### Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
@@ -4208,29 +4189,6 @@ use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 $activationFunction = new HyperbolicTangent();
 ```
 
-### ISRU
-Inverse Square Root units have a curve similar to [Hyperbolic Tangent](#hyperbolic-tangent) and [Sigmoid](#sigmoid) but use the inverse of the square root function instead. It is purported by the authors to be computationally less complex than either of the aforementioned. In addition, ISRU allows the parameter alpha to control the range of activation such that it equals + or - 1 / sqrt(alpha).
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ISRU.php)
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | alpha | 1.0 | float | The parameter that controls the range of activation. |
-
-**Example:**
-
-```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ISRU;
-
-$activationFunction = new ISRU(2.0);
-```
-
-**References:**
-
->- B. Carlile et al. (2017). Improving Deep Learning by Inverse Square RootvLinear Units.
-
 ### Leaky ReLU
 Leaky Rectified Linear Units are activation functions that output x when x > 0 or a small leakage value determined as the input times the leakage coefficient when x < 0. The amount of leakage is controlled by the *leakage* parameter.
 
@@ -4240,7 +4198,7 @@ Leaky Rectified Linear Units are activation functions that output x when x > 0 o
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | leakage | 0.1 | float | The amount of leakage as a ratio of the input value. |
+| 1 | leakage | 0.1 | float | The amount of leakage as a proportion of the input value to allow to pass through when not inactivated. |
 
 **Example:**
 
@@ -4255,44 +4213,44 @@ $activationFunction = new LeakyReLU(0.3);
 >- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
 
 ### ReLU
-Rectified Linear Units output only the positive signal of the inputs. They are analogous to half-wave rectifiers in electrical engineering.
+A Thresholded ReLU (Rectified Linear Unit) only outputs the signal above a user-defined threshold parameter.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ReLU.php)
 
 **Parameters:**
 
-This activation Function does not have any parameters.
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
-$activationFunction = new ReLU();
+$activationFunction = new ReLU(0.1);
 ```
 
 **References:**
 
->- V. Nair et al. (2011). Rectified Linear Units Improve RestrictedvBoltzmann Machines.
+>- A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network Acoustic Models.
+>- K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of Co-adapting Features.
 
 ### SELU
-Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function.
+Scaled Exponential Linear Unit is a *self-normalizing* activation function based on the [ELU](#elu) activation function. Neuronal activations of SELU networks automatically converge toward zero mean and unit variance, unlike explicitly normalized networks such as those with [Batch Norm](#batch-norm).
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/SELU.php)
 
 **Parameters:**
 
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | scale | 1.05070 | float | The factor to scale the output by. |
-| 2 | alpha | 1.67326 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be more than -1.0 when inactivated. |
+This actvation function does not have any parameters.
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\SELU;
 
-$activationFunction = new SELU(1.05070, 1.67326);
+$activationFunction = new SELU();
 ```
 
 **References:**
@@ -4376,29 +4334,6 @@ $activationFunction = new Softsign();
 **References:**
 
 >- X. Glorot et al. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks
-
-### Thresholded ReLU
-Thresholded ReLU has a user-defined threshold parameter that controls the level at which the neuron is activated.
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ThresholdedReLU.php)
-
-**Parameters:**
-
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
-
-**Example:**
-
-```php
-use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
-
-$activationFunction = new ThresholdedReLU(0.5);
-```
-
-**References:**
-
->- K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of Co-adapting Features.
 
 ### Cost Functions
 In neural networks, the cost function is a function that the network tries to minimize during training. The cost of a particular activation is defined as the difference between the output of the network and what the correct output should be given the ground truth label. Different cost functions have different ways of punishing erroneous activations and thus produce differently shaped gradients when backpropagated.
@@ -5732,7 +5667,7 @@ var_dump($result);
 ```
 
 ### Contingency Table
-A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples.
+A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples. It is similar to a [Confusion Matrix](#confusion-matrix) but uses the labels to establish a ground truth for a clustering instead.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ContingencyTable.php)
 

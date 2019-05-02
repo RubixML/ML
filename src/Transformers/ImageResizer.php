@@ -45,11 +45,8 @@ class ImageResizer implements Transformer
      * @param string $driver
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        int $width = 32,
-        int $height = 32,
-        string $driver = 'gd'
-    ) {
+    public function __construct(int $width = 32, int $height = 32, string $driver = 'gd')
+    {
         if ($width < 1 or $height < 1) {
             throw new InvalidArgumentException('Width and height must be'
                 . " greater than 1 pixel, $width and $height given.");

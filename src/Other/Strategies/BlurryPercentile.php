@@ -59,13 +59,13 @@ class BlurryPercentile implements Continuous
     public function __construct(float $p = 50.0, float $blur = 0.1)
     {
         if ($p < 0. or $p > 100.) {
-            throw new InvalidArgumentException('Percentile must be between 0'
-                . " and 100, $p given.");
+            throw new InvalidArgumentException('Percentile must be between'
+                . " 0 and 100, $p given.");
         }
 
         if ($blur < 0. or $blur > 1.) {
-            throw new InvalidArgumentException('Blur factor must be between 0'
-                . " and 1, $blur given.");
+            throw new InvalidArgumentException('Blur factor must be between'
+                . " 0 and 1, $blur given.");
         }
 
         $this->p = $p;
@@ -108,7 +108,7 @@ class BlurryPercentile implements Continuous
 
     /**
      * Generate a random number from a Gaussian distribution with 0 mean and
-     * standard deviation of 1 i.e a number between -1 and 1.
+     * standard deviation of 1.
      *
      * @return float
      */

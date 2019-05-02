@@ -22,8 +22,8 @@ use InvalidArgumentException;
 class ELU implements ActivationFunction
 {
     /**
-     * At which negative value the ELU will saturate. i.e. alpha = 1.means
-     * that the leakage will never be more than -1.0.
+     * At which negative value the ELU will saturate. For example if alpha
+     * equals 1, the leaked value will never be greater than -1.0.
      *
      * @var float
      */

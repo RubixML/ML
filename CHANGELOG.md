@@ -20,6 +20,9 @@
     - Changed order of LODA hyperparameters
     - Added F Beta classificaion metric
     - Removed F1 Score and Informedness metric
+    - Removed ISRU and Gaussian activation functions
+    - ReLU is now optionally thresholded
+    - Fixed SELU derivitive computation
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

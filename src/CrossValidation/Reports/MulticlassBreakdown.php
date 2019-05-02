@@ -85,7 +85,7 @@ class MulticlassBreakdown implements Report
 
         $overall = array_replace($averages, $counts);
 
-        $table = array_fill_keys($classes, []);
+        $table = [];
 
         foreach ($truePos as $label => $tp) {
             $tn = $trueNeg[$label];
@@ -135,14 +135,14 @@ class MulticlassBreakdown implements Report
             $overall['recall'] += $recall;
             $overall['specificity'] += $specificity;
             $overall['negative_predictive_value'] += $npv;
-            $overall['false_discovery_rate'] += (1. - $precision);
-            $overall['miss_rate'] += (1. - $recall);
-            $overall['fall_out'] += (1. - $specificity);
-            $overall['false_omission_rate'] += (1. - $npv);
+            $overall['false_discovery_rate'] += 1. - $precision;
+            $overall['miss_rate'] += 1. - $recall;
+            $overall['fall_out'] += 1. - $specificity;
+            $overall['false_omission_rate'] += 1. - $npv;
             $overall['f1_score'] += $f1score;
             $overall['mcc'] += $mcc;
-            $overall['informedness'] += ($recall + $specificity - 1.);
-            $overall['markedness'] += ($precision + $npv - 1.);
+            $overall['informedness'] += $recall + $specificity - 1.;
+            $overall['markedness'] += $precision + $npv - 1.;
             $overall['true_positives'] += $tp;
             $overall['true_negatives'] += $tn;
             $overall['false_positives'] += $fp;

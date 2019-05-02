@@ -143,7 +143,7 @@ class DBSCAN implements Estimator
 
         $predictions = [];
 
-        foreach ($dataset->samples() as $i => $sample) {
+        foreach ($dataset as $i => $sample) {
             if (isset($predictions[$i])) {
                 continue 1;
             }
