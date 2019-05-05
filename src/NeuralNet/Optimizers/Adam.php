@@ -16,8 +16,7 @@ use const Rubix\ML\EPSILON;
  * addition to storing an exponentially decaying average of past squared
  * gradients like RMSprop, Adam also keeps an exponentially decaying average
  * of past gradients, similar to Momentum. Whereas Momentum can be seen as a
- * ball running down a slope, Adam behaves like a heavy ball with friction,
- * which thus prefers flat minima in the error surface.
+ * ball running down a slope, Adam behaves like a heavy ball with friction.
  *
  * References:
  * [1] D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
@@ -45,11 +44,11 @@ class Adam implements Optimizer, Adaptive
     protected $momentumDecay;
 
     /**
-     * The decay rate of the RMS property.
+     * The decay rate of the previous norms.
      *
      * @var float
      */
-    protected $rmsDecay;
+    protected $normDecay;
 
     /**
      * The opposite of the momentum decay.
@@ -59,7 +58,7 @@ class Adam implements Optimizer, Adaptive
     protected $beta1;
 
     /**
-     * The opposite of the rms decay.
+     * The opposite of the norm decay.
      *
      * @var float
      */
@@ -84,10 +83,10 @@ class Adam implements Optimizer, Adaptive
     /**
      * @param float $rate
      * @param float $momentumDecay
-     * @param float $rmsDecay
+     * @param float $normDecay
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $rmsDecay = 0.001)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('Learning rate must be'
@@ -99,16 +98,16 @@ class Adam implements Optimizer, Adaptive
                 . " 0 and 1, $momentumDecay given.");
         }
 
-        if ($rmsDecay <= 0. or $rmsDecay >= 1.) {
-            throw new InvalidArgumentException('RMS decay must be between'
-                . " 0 and 1, $rmsDecay given.");
+        if ($normDecay <= 0. or $normDecay >= 1.) {
+            throw new InvalidArgumentException('Norm decay must be between'
+                . " 0 and 1, $normDecay given.");
         }
 
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
-        $this->rmsDecay = $rmsDecay;
+        $this->normDecay = $normDecay;
         $this->beta1 = 1. - $momentumDecay;
-        $this->beta2 = 1. - $rmsDecay;
+        $this->beta2 = 1. - $normDecay;
     }
 
     /**
@@ -119,9 +118,9 @@ class Adam implements Optimizer, Adaptive
     public function warm(Parameter $param) : void
     {
         $velocity = get_class($param->w())::zeros(...$param->w()->shape());
-        $g2 = clone $velocity;
+        $norm = clone $velocity;
 
-        $this->cache[$param->id()] = [$velocity, $g2];
+        $this->cache[$param->id()] = [$velocity, $norm];
     }
 
     /**
@@ -132,26 +131,26 @@ class Adam implements Optimizer, Adaptive
      */
     public function step(Parameter $param, Tensor $gradient) : void
     {
-        [$velocity, $g2] = $this->cache[$param->id()];
+        [$velocity, $norm] = $this->cache[$param->id()];
 
         $velocity = $velocity->multiply($this->beta1)
             ->add($gradient->multiply($this->momentumDecay));
 
-        $g2 = $g2->multiply($this->beta2)
-            ->add($gradient->square()->multiply($this->rmsDecay));
+        $norm = $norm->multiply($this->beta2)
+            ->add($gradient->square()->multiply($this->normDecay));
 
-        $this->cache[$param->id()] = [$velocity, $g2];
+        $this->cache[$param->id()] = [$velocity, $norm];
 
         if ($this->t < self::WARM_UP_STEPS) {
             $this->t++;
             
             $velocity = $velocity->divide(1. - $this->beta1 ** $this->t);
 
-            $g2 = $g2->divide(1. - $this->beta2 ** $this->t);
+            $norm = $norm->divide(1. - $this->beta2 ** $this->t);
         }
 
         $step = $velocity->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(EPSILON));
+            ->divide($norm->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

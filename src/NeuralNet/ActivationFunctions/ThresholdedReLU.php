@@ -6,42 +6,40 @@ use Rubix\Tensor\Matrix;
 use InvalidArgumentException;
 
 /**
- * Leaky ReLU
+ * Thresholded ReLU
  *
- * Leaky Rectified Linear Units are functions that output x when x > 0 or a
- * small leakage value when x < 0. The amount of leakage is controlled by the
- * user-specified parameter.
+ * A Thresholded ReLU (Rectified Linear Unit) only outputs the signal above
+ * a user-defined threshold parameter.
  *
  * References:
- * [1] A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural Network
- * Acoustic Models.
+ * [1] K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of
+ * Co-adapting Features.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeakyReLU implements ActivationFunction
+class ThresholdedReLU implements ActivationFunction
 {
     /**
-     * The amount of leakage as a ratio of the input value to allow to pass
-     * through when not activated.
+     * The input value necessary to trigger an activation.
      *
      * @var float
      */
-    protected $leakage;
+    protected $threshold;
 
     /**
-     * @param float $leakage
+     * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $leakage = 0.1)
+    public function __construct(float $threshold = 1.)
     {
-        if ($leakage <= 0. or $leakage >= 1.) {
-            throw new InvalidArgumentException('Leakage must be between'
-                . " 0 and 1, $leakage given.");
+        if ($threshold < 0.) {
+            throw new InvalidArgumentException('Threshold must be'
+                . " positive, $threshold given.");
         }
 
-        $this->leakage = $leakage;
+        $this->threshold = $threshold;
     }
 
     /**
@@ -52,7 +50,7 @@ class LeakyReLU implements ActivationFunction
      */
     public function range() : array
     {
-        return [-INF, INF];
+        return [0, INF];
     }
 
     /**
@@ -75,7 +73,7 @@ class LeakyReLU implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $z->map([$this, '_differentiate']);
+        return $z->greater($this->threshold);
     }
 
     /**
@@ -84,15 +82,6 @@ class LeakyReLU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > 0. ? $z : $this->leakage * $z;
-    }
-
-    /**
-     * @param float $z
-     * @return float
-     */
-    public function _differentiate(float $z) : float
-    {
-        return $z > 0. ? 1. : $this->leakage;
+        return $z > $this->threshold ? $z : 0.;
     }
 }

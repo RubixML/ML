@@ -3,11 +3,11 @@
 namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
+use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 
-class ReLUTest extends TestCase
+class ThresholdedReLUTest extends TestCase
 {
     protected $input;
 
@@ -23,12 +23,12 @@ class ReLUTest extends TestCase
             [1.0], [0.0], [0.0], [20.0], [0.0],
         ]);
 
-        $this->activationFunction = new ReLU();
+        $this->activationFunction = new ThresholdedReLU(0.1);
     }
 
     public function test_build_activation_function()
     {
-        $this->assertInstanceOf(ReLU::class, $this->activationFunction);
+        $this->assertInstanceOf(ThresholdedReLU::class, $this->activationFunction);
         $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
     }
 

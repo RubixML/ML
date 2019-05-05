@@ -12,25 +12,25 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Other\Loggers\BlackHole;
-use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\NeuralNet\Optimizers\AdaMax;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
 class MultiLayerPerceptronTest extends TestCase
 {
-    protected const TRAIN_SIZE = 450;
+    protected const TRAIN_SIZE = 550;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -50,10 +50,10 @@ class MultiLayerPerceptronTest extends TestCase
 
         $this->estimator = new MultiLayerPerceptron([
             new Dense(10),
-            new Activation(new ReLU()),
+            new Activation(new LeakyReLU()),
             new Dense(10),
-            new Activation(new ReLU()),
-        ], 10, new Adam(0.001), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
+            new Activation(new LeakyReLU()),
+        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 
         $this->metric = new Accuracy();
 

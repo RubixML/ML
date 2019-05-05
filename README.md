@@ -191,6 +191,7 @@ $ composer require rubix/ml
 		- [Optimizers](#optimizers)
 			- [AdaGrad](#adagrad)
 			- [Adam](#adam)
+            - [AdaMax](#adamax)
 			- [Cyclical](#cyclical)
 			- [Momentum](#momentum)
 			- [RMS Prop](#rms-prop)
@@ -4856,7 +4857,7 @@ $optimizer = new AdaGrad(0.125);
 >- J. Duchi et al. (2011). Adaptive Subgradient Methods for Online Learning and Stochastic Optimization.
 
 ### Adam
-Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction, which thus prefers flat minima in the error surface.
+Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentum and RMS prop to achieve a balance of velocity and stability. In addition to storing an exponentially decaying average of past squared gradients like [RMSprop](#rms-prop), Adam also keeps an exponentially decaying average of past gradients, similar to [Momentum](#momentum). Whereas Momentum can be seen as a ball running down a slope, Adam behaves like a heavy ball with friction.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Adam.php)
 
@@ -4866,7 +4867,7 @@ Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentu
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 | 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
-| 3 | rms decay | 0.001 | float | The decay rate of the rms property. |
+| 3 | norm decay | 0.001 | float | The decay rate of the rms property. |
 
 **Example:**
 
@@ -4874,6 +4875,31 @@ Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentu
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
 $optimizer = new Adam(0.0001, 0.1, 0.001);
+```
+
+**References:**
+
+>- D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
+
+### AdaMax
+A version of [Adam](#adam) that replaces the RMS property with the infinity norm of the gradients. 
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/AdaMax.php)
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
+| 3 | norm decay | 0.001 | float | The decay rate of the infinity norm. |
+
+**Example:**
+
+```php
+use Rubix\ML\NeuralNet\Optimizers\AdaMax;
+
+$optimizer = new AdaMax(0.0001, 0.1, 0.001);
 ```
 
 **References:**

@@ -7,14 +7,12 @@ use Rubix\Tensor\Matrix;
 /**
  * ReLU
  *
- * A Thresholded ReLU (Rectified Linear Unit) only outputs the signal above
- * a user-defined threshold parameter.
+ * ReLU (Rectified Linear Unit) is an activation function that only outputs
+ * the positive signal of the input.
  *
  * References:
  * [1] A. L. Maas et al. (2013). Rectifier Nonlinearities Improve Neural
  * Network Acoustic Models.
- * [2] K. Konda et al. (2015). Zero-bias Autoencoders and the Benefits of
- * Co-adapting Features.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -23,22 +21,6 @@ use Rubix\Tensor\Matrix;
 class ReLU implements ActivationFunction
 {
     /**
-     * The input value necessary to trigger an activation.
-     *
-     * @var float
-     */
-    protected $threshold;
-
-    /**
-     * @param float $threshold
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(float $threshold = 0.)
-    {
-        $this->threshold = $threshold;
-    }
-
-    /**
      * Return a tuple of the min and max output value for this activation
      * function.
      *
@@ -46,7 +28,7 @@ class ReLU implements ActivationFunction
      */
     public function range() : array
     {
-        return [min(0., $this->threshold), INF];
+        return [0, INF];
     }
 
     /**
@@ -69,7 +51,7 @@ class ReLU implements ActivationFunction
      */
     public function differentiate(Matrix $z, Matrix $computed) : Matrix
     {
-        return $computed->map([$this, '_differentiate']);
+        return $z->greater(0.);
     }
 
     /**
@@ -78,15 +60,6 @@ class ReLU implements ActivationFunction
      */
     public function _compute(float $z) : float
     {
-        return $z > $this->threshold ? $z : 0.;
-    }
-
-    /**
-     * @param float $computed
-     * @return float
-     */
-    public function _differentiate(float $computed) : float
-    {
-        return $computed > $this->threshold ? 1. : 0.;
+        return $z > 0. ? $z : 0.;
     }
 }
