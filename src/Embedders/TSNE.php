@@ -206,7 +206,7 @@ class TSNE implements Estimator, Verbose
         $this->rate = $rate;
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
-        $this->early = (int) max(250, round($epochs / 4));
+        $this->early = max(250, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
         $this->window = $window;
     }
@@ -466,8 +466,7 @@ class TSNE implements Estimator, Verbose
 
         $pHat = $p->add($p->transpose());
 
-        $sigma = $pHat->sum()
-            ->clipLower(EPSILON);
+        $sigma = $pHat->sum()->clipLower(EPSILON);
 
         return $pHat->divide($sigma);
     }

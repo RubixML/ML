@@ -46,7 +46,7 @@ class StepDecay implements Optimizer
      *
      * @var int
      */
-    protected $n = 0;
+    protected $t = 0;
 
     /**
      * @param float $rate
@@ -67,8 +67,8 @@ class StepDecay implements Optimizer
         }
 
         if ($decay < 0.) {
-            throw new InvalidArgumentException('Decay cannot be'
-                . " negative, $decay given.");
+            throw new InvalidArgumentException('Decay rate must be'
+                . " positive, $decay given.");
         }
 
         $this->rate = $rate;
@@ -84,12 +84,12 @@ class StepDecay implements Optimizer
      */
     public function step(Parameter $param, Tensor $gradient) : void
     {
-        $f = floor($this->n / $this->steps);
+        $f = floor($this->t / $this->steps);
 
         $rate = $this->rate * (1. / (1. + $f * $this->decay));
 
         $param->update($gradient->multiply($rate));
 
-        $this->n++;
+        $this->t++;
     }
 }

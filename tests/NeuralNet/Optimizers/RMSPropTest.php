@@ -15,7 +15,7 @@ class RMSPropTest extends TestCase
 
     public function setUp()
     {
-        $this->optimizer = new RMSProp(0.001);
+        $this->optimizer = new RMSProp(0.001, 0.1);
     }
 
     public function test_build_optimizer()

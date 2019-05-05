@@ -38,7 +38,7 @@ class Adam implements Optimizer, Adaptive
     protected $rate;
 
     /**
-     * The decay rate of the momentum property.
+     * The momentum decay rate.
      *
      * @var float
      */
@@ -50,6 +50,20 @@ class Adam implements Optimizer, Adaptive
      * @var float
      */
     protected $rmsDecay;
+
+    /**
+     * The opposite of the momentum decay.
+     *
+     * @var float
+     */
+    protected $beta1;
+
+    /**
+     * The opposite of the rms decay.
+     *
+     * @var float
+     */
+    protected $beta2;
 
     /**
      * The parameter cache of running velocity and squared gradients.
@@ -73,7 +87,7 @@ class Adam implements Optimizer, Adaptive
      * @param float $rmsDecay
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001, float $momentumDecay = 0.9, float $rmsDecay = 0.999)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $rmsDecay = 0.001)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('Learning rate must be'
@@ -85,14 +99,16 @@ class Adam implements Optimizer, Adaptive
                 . " 0 and 1, $momentumDecay given.");
         }
 
-        if ($rmsDecay < 0. or $rmsDecay > 1.) {
-            throw new InvalidArgumentException('RMS decay rate must be between'
+        if ($rmsDecay <= 0. or $rmsDecay >= 1.) {
+            throw new InvalidArgumentException('RMS decay must be between'
                 . " 0 and 1, $rmsDecay given.");
         }
 
         $this->rate = $rate;
         $this->momentumDecay = $momentumDecay;
         $this->rmsDecay = $rmsDecay;
+        $this->beta1 = 1. - $momentumDecay;
+        $this->beta2 = 1. - $rmsDecay;
     }
 
     /**
@@ -118,20 +134,20 @@ class Adam implements Optimizer, Adaptive
     {
         [$velocity, $g2] = $this->cache[$param->id()];
 
-        $velocity = $velocity->multiply($this->momentumDecay)
-            ->add($gradient->multiply(1. - $this->momentumDecay));
+        $velocity = $velocity->multiply($this->beta1)
+            ->add($gradient->multiply($this->momentumDecay));
 
-        $g2 = $g2->multiply($this->rmsDecay)
-            ->add($gradient->square()->multiply(1. - $this->rmsDecay));
+        $g2 = $g2->multiply($this->beta2)
+            ->add($gradient->square()->multiply($this->rmsDecay));
 
         $this->cache[$param->id()] = [$velocity, $g2];
 
         if ($this->t < self::WARM_UP_STEPS) {
             $this->t++;
             
-            $velocity = $velocity->divide(1. - $this->momentumDecay ** $this->t);
+            $velocity = $velocity->divide(1. - $this->beta1 ** $this->t);
 
-            $g2 = $g2->divide(1. - $this->rmsDecay ** $this->t);
+            $g2 = $g2->divide(1. - $this->beta2 ** $this->t);
         }
 
         $step = $velocity->multiply($this->rate)

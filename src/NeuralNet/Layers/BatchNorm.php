@@ -113,7 +113,7 @@ class BatchNorm implements Hidden, Parametric
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        float $decay = 0.9,
+        float $decay = 0.1,
         ?Initializer $betaInitializer = null,
         ?Initializer $gammaInitializer = null
     ) {
@@ -213,16 +213,18 @@ class BatchNorm implements Hidden, Parametric
 
         $xHat = $stdInv->multiply($input->subtract($mean));
 
-        $this->mean = $this->mean->multiply($this->decay)
-            ->add($mean->multiply(1. - $this->decay));
+        $this->mean = $this->mean->multiply(1. - $this->decay)
+            ->add($mean->multiply($this->decay));
 
-        $this->variance = $this->variance->multiply($this->decay)
-            ->add($variance->multiply(1. - $this->decay));
+        $this->variance = $this->variance->multiply(1. - $this->decay)
+            ->add($variance->multiply($this->decay));
 
         $this->stdInv = $stdInv;
         $this->xHat = $xHat;
 
-        return $this->gamma->w()->multiply($xHat)->add($this->beta->w());
+        return $this->gamma->w()
+            ->multiply($xHat)
+            ->add($this->beta->w());
     }
 
     /**
@@ -241,7 +243,9 @@ class BatchNorm implements Hidden, Parametric
         $xHat = $input->subtract($this->mean)
             ->divide($this->variance->clipLower(EPSILON)->sqrt());
 
-        return $this->gamma->w()->multiply($xHat)->add($this->beta->w());
+        return $this->gamma->w()
+            ->multiply($xHat)
+            ->add($this->beta->w());
     }
 
     /**

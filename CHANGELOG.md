@@ -23,6 +23,7 @@
     - Removed ISRU and Gaussian activation functions
     - ReLU is now optionally thresholded
     - Fixed SELU derivitive computation
+    - Changed adaptive optimizer default decay parameters
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

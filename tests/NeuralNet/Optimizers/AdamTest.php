@@ -15,7 +15,7 @@ class AdamTest extends TestCase
 
     public function setUp()
     {
-        $this->optimizer = new Adam(0.001);
+        $this->optimizer = new Adam(0.001, 0.1, 0.001);
     }
 
     public function test_build_optimizer()

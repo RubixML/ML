@@ -39,6 +39,13 @@ class RMSProp implements Optimizer, Adaptive
     protected $decay;
 
     /**
+     * The opposite of the rms decay rate.
+     *
+     * @var float
+     */
+    protected $rho;
+
+    /**
      * The cache of rolling sum of squared gradient matrices.
      *
      * @var \Rubix\Tensor\Tensor[]
@@ -52,20 +59,21 @@ class RMSProp implements Optimizer, Adaptive
      * @param float $decay
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001, float $decay = 0.9)
+    public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('Learning rate must be'
                 . " greater than 0, $rate given.");
         }
 
-        if ($decay < 0. or $decay > 1.) {
+        if ($decay <= 0. or $decay >= 1.) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }
 
         $this->rate = $rate;
         $this->decay = $decay;
+        $this->rho = 1. - $decay;
     }
 
     /**
@@ -88,8 +96,8 @@ class RMSProp implements Optimizer, Adaptive
     {
         $g2 = $this->cache[$param->id()];
 
-        $g2 = $g2->multiply($this->decay)
-            ->add($gradient->square()->multiply(1. - $this->decay));
+        $g2 = $g2->multiply($this->rho)
+            ->add($gradient->square()->multiply($this->decay));
 
         $this->cache[$param->id()] = $g2;
 

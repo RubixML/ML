@@ -4865,15 +4865,15 @@ Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentu
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
-| 2 | momentum | 0.9 | float | The inverse decay rate of the accumulated velocity. |
-| 3 | rms | 0.999 | float | The inverse decay rate of the accumulated squared gradients. |
+| 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
+| 3 | rms decay | 0.001 | float | The decay rate of the rms property. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 
-$optimizer = new Adam(0.0001, 0.9, 0.999);
+$optimizer = new Adam(0.0001, 0.1, 0.001);
 ```
 
 **References:**
@@ -4916,14 +4916,14 @@ Momentum adds velocity to each step until exhausted. It does so by accumulating 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
-| 2 | decay | 0.9 | float | The inverse decay rate of the accumulated velocity. |
+| 2 | decay | 0.1 | float | The decay rate of the accumulated velocity. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 
-$optimizer = new Momentum(0.001, 0.925);
+$optimizer = new Momentum(0.001, 0.2);
 ```
 
 **References:**
@@ -4940,14 +4940,14 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
-| 2 | decay | 0.9 | float | The inverse decay rate of the accumulated squared gradients. |
+| 2 | decay | 0.1 | float | The decay rate of the rms property. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
-$optimizer = new RMSProp(0.01, 0.9);
+$optimizer = new RMSProp(0.01, 0.1);
 ```
 
 **References:**

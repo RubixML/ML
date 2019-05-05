@@ -15,7 +15,7 @@ class MomentumTest extends TestCase
 
     public function setUp()
     {
-        $this->optimizer = new Momentum(0.001);
+        $this->optimizer = new Momentum(0.001, 0.1);
     }
 
     public function test_build_optimizer()

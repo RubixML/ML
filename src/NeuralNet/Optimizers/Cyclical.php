@@ -64,7 +64,7 @@ class Cyclical implements Optimizer
      *
      * @var int
      */
-    protected $n;
+    protected $t = 0;
 
     /**
      * @param float $lower
@@ -104,7 +104,6 @@ class Cyclical implements Optimizer
         $this->range = $upper - $lower;
         $this->steps = $steps;
         $this->decay = $decay;
-        $this->n = 0;
     }
 
     /**
@@ -115,16 +114,16 @@ class Cyclical implements Optimizer
      */
     public function step(Parameter $param, Tensor $gradient) : void
     {
-        $cycle = floor(1 + $this->n / (2 * $this->steps));
+        $cycle = floor(1 + $this->t / (2 * $this->steps));
 
-        $x = abs($this->n / $this->steps - 2 * $cycle + 1);
+        $x = abs($this->t / $this->steps - 2 * $cycle + 1);
 
-        $scale = $this->decay ** $this->n;
+        $scale = $this->decay ** $this->t;
 
         $rate = $this->lower + $this->range * max(0, 1 - $x) * $scale;
 
         $param->update($gradient->multiply($rate));
 
-        $this->n++;
+        $this->t++;
     }
 }
