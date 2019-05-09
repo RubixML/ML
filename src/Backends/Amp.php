@@ -3,6 +3,7 @@
 namespace Rubix\ML\Backends;
 
 use Amp\Loop;
+use Rubix\ML\Other\Helpers\CPU;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
@@ -23,6 +24,8 @@ use function Amp\Promise\all;
  */
 class Amp implements Backend
 {
+    public const DEFAULT_WORKERS = 4;
+
     /**
      * The worker pool.
      *
@@ -40,10 +43,20 @@ class Amp implements Backend
     ];
 
     /**
+     * Automatically build an Amp backend based on processor core count.
+     *
+     * @return self
+     */
+    public static function auto() : self
+    {
+        return new self(CPU::cores() ?: self::DEFAULT_WORKERS);
+    }
+
+    /**
      * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $workers = 4)
+    public function __construct(int $workers = self::DEFAULT_WORKERS)
     {
         if ($workers < 1) {
             throw new InvalidArgumentException('Number of workers'

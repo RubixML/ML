@@ -5,7 +5,10 @@ namespace Rubix\ML\Backends;
 /**
  * Serial
  *
- * The Serial backend executes tasks sequentially inside of a single process.
+ * The Serial backend executes tasks sequentially inside of a single PHP process.
+ * The advantage of the Serial backend is that it has zero overhead due to
+ * parallelization, thus it may be faster than a parallel backend in cases where
+ * the computions are minimal such as with small datasets.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

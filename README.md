@@ -46,6 +46,15 @@ $ composer require rubix/ml
 	- [Iris Flower Classifier](https://github.com/RubixML/Iris)
 	- [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
 - [API Reference](#api-reference)
+    - [Interfaces](#interfaces)
+	    - [Estimator](#estimator)
+        - [Learner](#learner)
+        - [Online](#online)
+        - [Parallel](#parallel)
+        - [Persistable](#persistable)
+        - [Probabilistic](#probabilistic)
+        - [Verbose](#verbose)
+        - [Wrapper](#wrapper)
 	- [Dataset Objects](#dataset-objects)
 		- [Labeled](#labeled)
 		- [Unlabeled](#unlabeled)
@@ -55,67 +64,58 @@ $ composer require rubix/ml
             - [Circle](#circle)
             - [Half Moon](#half-moon)
             - [Swiss Roll](#swiss-roll)
-	- [Estimators](#estimators)
-        - [Interfaces](#estimators)
-            - [Learner](#learner)
-            - [Online](#online)
-            - [Parallel](#parallel)
-            - [Persistable](#persistable)
-            - [Probabilistic](#probabilistic)
-            - [Verbose](#verbose)
-            - [Wrapper](#wrapper)
-		- [Anomaly Detectors](#anomaly-detectors)
-			- [Isolation Forest](#isolation-forest)
-			- [K-d LOF](#k-d-lof)
-            - [LODA](#loda)
-			- [Local Outlier Factor](#local-outlier-factor)
-			- [One Class SVM](#one-class-svm)
-			- [Robust Z Score](#robust-z-score)
-		- [Classifiers](#classifiers)
-			- [AdaBoost](#adaboost)
-			- [Classification Tree](#classification-tree)
-			- [Dummy Classifier](#dummy-classifier)
-			- [Extra Tree Classifier](#extra-tree-classifier)
-			- [Gaussian Naive Bayes](#gaussian-naive-bayes)
-			- [K-d Neighbors](#k-d-neighbors)
-			- [K Nearest Neighbors](#k-nearest-neighbors)
-			- [Logistic Regression](#logistic-regression)
-			- [Multi Layer Perceptron](#multi-layer-perceptron)
-			- [Naive Bayes](#naive-bayes)
-			- [Radius Neighbors](#radius-neighbors)
-			- [Random Forest](#random-forest)
-			- [Softmax Classifier](#softmax-classifier)
-			- [SVC](#svc)
-		- [Clusterers](#clusterers)
-			- [DBSCAN](#dbscan)
-			- [Fuzzy C Means](#fuzzy-c-means)
-			- [Gaussian Mixture](#gaussian-mixture)
-			- [K Means](#k-means)
-			- [Mean Shift](#mean-shift)
-			- [Seeders](#seeders)
-				- [K-MC2](#k-mc2)
-				- [Plus Plus](#plus-plus)
-				- [Random](#random)
-		- [Embedders](#embedders)
-			- [t-SNE](#t-sne)
-		- [Regressors](#regressors)
-			- [Adaline](#adaline)
-			- [Dummy Regressor](#dummy-regressor)
-			- [Extra Tree Regressor](#extra-tree-regressor)
-			- [Gradient Boost](#gradient-boost)
-			- [K-d Neighbors Regressor](#k-d-neighbors-regressor)
-			- [KNN Regressor](#knn-regressor)
-			- [MLP Regressor](#mlp-regressor)
-			- [Radius Neighbors Regressor](#radius-neighbors-regressor)
-			- [Regression Tree](#regression-tree)
-			- [Ridge](#ridge)
-			- [SVR](#svr)
-		- [Meta-Estimators](#meta-estimators)
-			- [Bootstrap Aggregator](#bootstrap-aggregator)
-            - [Committee Machine](#committee-machine)
-			- [Grid Search](#grid-search)
-			- [Persistent Model](#persistent-model)
-			- [Pipeline](#pipeline)
+    - [Anomaly Detectors](#anomaly-detectors)
+        - [Isolation Forest](#isolation-forest)
+        - [K-d LOF](#k-d-lof)
+        - [LODA](#loda)
+        - [Local Outlier Factor](#local-outlier-factor)
+        - [One Class SVM](#one-class-svm)
+        - [Robust Z Score](#robust-z-score)
+    - [Classifiers](#classifiers)
+        - [AdaBoost](#adaboost)
+        - [Classification Tree](#classification-tree)
+        - [Dummy Classifier](#dummy-classifier)
+        - [Extra Tree Classifier](#extra-tree-classifier)
+        - [Gaussian Naive Bayes](#gaussian-naive-bayes)
+        - [K-d Neighbors](#k-d-neighbors)
+        - [K Nearest Neighbors](#k-nearest-neighbors)
+        - [Logistic Regression](#logistic-regression)
+        - [Multi Layer Perceptron](#multi-layer-perceptron)
+        - [Naive Bayes](#naive-bayes)
+        - [Radius Neighbors](#radius-neighbors)
+        - [Random Forest](#random-forest)
+        - [Softmax Classifier](#softmax-classifier)
+        - [SVC](#svc)
+    - [Clusterers](#clusterers)
+        - [DBSCAN](#dbscan)
+        - [Fuzzy C Means](#fuzzy-c-means)
+        - [Gaussian Mixture](#gaussian-mixture)
+        - [K Means](#k-means)
+        - [Mean Shift](#mean-shift)
+        - [Seeders](#seeders)
+            - [K-MC2](#k-mc2)
+            - [Plus Plus](#plus-plus)
+            - [Random](#random)
+    - [Embedders](#embedders)
+        - [t-SNE](#t-sne)
+    - [Regressors](#regressors)
+        - [Adaline](#adaline)
+        - [Dummy Regressor](#dummy-regressor)
+        - [Extra Tree Regressor](#extra-tree-regressor)
+        - [Gradient Boost](#gradient-boost)
+        - [K-d Neighbors Regressor](#k-d-neighbors-regressor)
+        - [KNN Regressor](#knn-regressor)
+        - [MLP Regressor](#mlp-regressor)
+        - [Radius Neighbors Regressor](#radius-neighbors-regressor)
+        - [Regression Tree](#regression-tree)
+        - [Ridge](#ridge)
+        - [SVR](#svr)
+    - [Meta-Estimators](#meta-estimators)
+        - [Bootstrap Aggregator](#bootstrap-aggregator)
+        - [Committee Machine](#committee-machine)
+        - [Grid Search](#grid-search)
+        - [Persistent Model](#persistent-model)
+        - [Pipeline](#pipeline)
     - [Backends]
         - [Amp](#amp)
         - [Serial](#serial)
@@ -433,12 +433,201 @@ The Rubix architecture is defined by a few key abstractions and their correspond
 ### API Reference
 This section breaks down the public application programming interface (API) of each Rubix ML component in detail.
 
+---
+### Interfaces
+Interfaces define the basic functionality of every object in Rubix.
+
+### Estimator
+Estimators consist of [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on data. Estimators that can be trained with data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
+
+> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
+
+To make predictions from a dataset object:
+```php
+public predict(Dataset $dataset) : array
+```
+
+**Example:**
+
+```php
+$predictions = $estimator->predict($dataset);
+
+var_dump($predictions);
+```
+
+**Output:**
+
+```sh
+array(3) {
+  [0]=>
+  string(7) "married"
+  [1]=>
+  string(8) "divorced"
+  [2]=>
+  string(7) "married"
+}
+
+```
+
+### Learner
+Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can formulate a generalized function that maps future samples to good predictions.
+
+> **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
+
+To train an learner pass it a training dataset:
+```php
+public train(Dataset $training) : void
+```
+
+Return whether or not the learner has been trained:
+```php
+public trained() : bool
+```
+
+**Example:**
+```php
+$estimator->train($dataset);
+
+var_dump($estimator->trained());
+```
+
+**Output:**
+```sh
+bool(true)
+```
+
+### Online
+Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new information about the world is acquired.
+
+> **Note**: Learner will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained learner will reset it back to baseline first.
+
+To partially train an online learner:
+```php
+public partial(Dataset $dataset) : void
+```
+
+**Example:**
+```php
+$folds = $dataset->fold(3);
+
+$estimator->train($folds[0]);
+
+$estimator->partial($folds[1]);
+
+$estimator->partial($folds[2]);
+```
+
+### Parallel
+Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. A processing [Backend](#backends) is responsible for paralellizing operations and can be injected into a Parallel Learner using the `setBackend()` method.
+
+> **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
+
+> **Note**: Unless otherwise stated, all objects implementing Parallel have a default backend of [Serial](#serial).
+
+To set the backend processing engine:
+```php
+public setBackend(Backend $backend) : void
+```
+
+**Example:**
+
+```php
+use Rubix\ML\Backends\Amp;
+
+$estimator->setBackend(new Amp(4));
+```
+
+### Persistable
+If an estimator implements Persistable then it can be saved and loaded by a [Persister](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
+
+### Probabilistic
+Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
+
+Return the probability estimates of a prediction:
+```php
+public proba(Dataset $dataset) : array
+```
+
+**Example:**
+```php
+$probabilities = $estimator->proba($dataset);  
+
+var_dump($probabilities);
+```
+
+**Output:**
+```sh
+array(2) {
+	[0] => array(2) {
+		['married'] => 0.975,
+		['divorced'] => 0.025,
+	}
+	[1] => array(2) {
+		['married'] => 0.200,
+		['divorced'] => 0.800,
+	}
+}
+```
+
+### Ranking
+In the way that a Probabilistic estimator ranks the outcome of a particlar sample as a *normalized* (between 0 and 1) value, Ranking estimators rank the outcome by an *arbitrary* score. The purpose of a Ranking estimator is so that you are able to sort the samples by the output. This is useful in cases such as [Anomaly Detection](#anomaly-detectors) where an analyst can flag the top n outliers by rank for further investigation.
+
+To rank the dataset by an artitrary scoring function:
+```php
+public rank(Dataset $dataset) : array
+```
+
+**Example:**
+```php
+$scores = $estimator->rank($dataset);
+
+var_dump($scores);
+```
+
+**Output:**
+```sh
+array(3) {
+  [0]=> float(1.80)
+  [1]=> int(1.25)
+  [2]=> int(9.45)
+}
+```
+
+### Verbose
+Verbose objects are capable of logging important events to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the included [Screen Logger](#screen). Logging is especially useful for monitoring the progress of the underlying learning algorithm in real time.
+
+To set the logger pass in any PSR-3 compatible logger instance:
+```php
+public setLogger(LoggerInterface $logger) : void
+```
+
+**Example:**
+```php
+use Rubix\ML\Other\Loggers\Screen;
+
+$estimator->setLogger(new Screen('sentiment'));
+```
+
+### Wrapper
+Wrappers are meta-estimators that wrap a base estimator for the purposes of adding extra functionality. Most wrappers allow access to the underlying base estimator's methods from the Wrapper instance, but you can also return the base estimator directly using the `base()` method.
+
+To return the base estimator:
+```php
+public base() : Estimator
+```
+
+**Example:**
+
+```php
+$base = $estimator->base();
+```
+
 ### Dataset Objects
-In Rubix, data is passed around using specialized data structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way. 
+In Rubix, data are passed around using specialized container structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way. 
 
 > **Note**: There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
 
-The Dataset interface has a robust API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available on the basic interface.
+The Dataset interface has an assorted API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available on the basic interface.
 
 #### Stacking
 Stack a number of dataset objects on top of each other and return a single dataset:
@@ -1103,190 +1292,6 @@ This generator does not have any additional methods.
 use Rubix\ML\Datasets\Generators\SwissRoll;
 
 $generator = new SwissRoll(5.5, 1.5, -2.0, 10, 21.0, 0.2);
-```
-
----
-### Estimators
-Estimators consist of various [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on data. Estimators that can be trained with data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
-
-> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
-
-To make predictions from a dataset object:
-```php
-public predict(Dataset $dataset) : array
-```
-
-**Example:**
-
-```php
-$predictions = $estimator->predict($dataset);
-
-var_dump($predictions);
-```
-
-**Output:**
-
-```sh
-array(3) {
-  [0]=>
-  string(7) "married"
-  [1]=>
-  string(8) "divorced"
-  [2]=>
-  string(7) "married"
-}
-
-```
-
-### Learner
-Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are able make predictions. Training is the process of feeding data to the learner so that it can formulate a generalized function that maps future samples to good predictions.
-
-> **Note**: Calling `train()` on an already trained estimator will cause any previous training to be lost. If you would like to be able to train a model incrementally, see the [Online](#online) Estimator interface.
-
-To train an learner pass it a training dataset:
-```php
-public train(Dataset $training) : void
-```
-
-Return whether or not the learner has been trained:
-```php
-public trained() : bool
-```
-
-**Example:**
-```php
-$estimator->train($dataset);
-
-var_dump($estimator->trained());
-```
-
-**Output:**
-```sh
-bool(true)
-```
-
-### Online
-Certain estimators that implement the *Online* interface can be trained in batches. Estimators of this type are great for when you either have a continuous stream of data or a dataset that is too large to fit into memory. Partial training allows the model to evolve as new information about the world is acquired.
-
-> **Note**: Learner will continue to train as long as you are using the `partial()` method, however, calling `train()` on a trained or partially trained learner will reset it back to baseline first.
-
-To partially train an online learner:
-```php
-public partial(Dataset $dataset) : void
-```
-
-**Example:**
-```php
-$folds = $dataset->fold(3);
-
-$estimator->train($folds[0]);
-
-$estimator->partial($folds[1]);
-
-$estimator->partial($folds[2]);
-```
-
-### Parallel
-Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. A processing [Backend](#backends) is responsible for paralellizing operations and can be injected into a Parallel Learner using the `setBackend()` method.
-
-> **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
-
-To set the backend processing engine:
-```php
-public setBackend(Backend $backends) : void
-```
-
-**Example:**
-
-```php
-use Rubix\ML\Backends\Amp;
-
-$estimator->setBackend(new Amp(8));
-```
-
-### Persistable
-If an estimator implements Persistable then it can be saved and loaded by a [Persister](#persisters) or by wrapping it with a [Persistent Model](#persistent-model) meta estimator.
-
-### Probabilistic
-Estimators that implement the *Probabilistic* interface have an additional method that returns an array of probability scores of each possible class, cluster, etc. Probabilities are useful for ascertaining the degree to which the estimator is certain about a particular prediction.
-
-Return the probability estimates of a prediction:
-```php
-public proba(Dataset $dataset) : array
-```
-
-**Example:**
-```php
-$probabilities = $estimator->proba($dataset);  
-
-var_dump($probabilities);
-```
-
-**Output:**
-```sh
-array(2) {
-	[0] => array(2) {
-		['married'] => 0.975,
-		['divorced'] => 0.025,
-	}
-	[1] => array(2) {
-		['married'] => 0.200,
-		['divorced'] => 0.800,
-	}
-}
-```
-
-### Ranking
-In the way that a Probabilistic estimator ranks the outcome of a particlar sample as a *normalized* (between 0 and 1) value, Ranking estimators rank the outcome by an *arbitrary* score. The purpose of a Ranking estimator is so that you are able to sort the samples by the output. This is useful in cases such as [Anomaly Detection](#anomaly-detectors) where an analyst can flag the top n outliers by rank for further investigation.
-
-To rank the dataset by an artitrary scoring function:
-```php
-public rank(Dataset $dataset) : array
-```
-
-**Example:**
-```php
-$scores = $estimator->rank($dataset);
-
-var_dump($scores);
-```
-
-**Output:**
-```sh
-array(3) {
-  [0]=> float(1.80)
-  [1]=> int(1.25)
-  [2]=> int(9.45)
-}
-```
-
-### Verbose
-Verbose estimators are capable of logging errors and important training events to any PSR-3 compatible logger such as [Monolog](https://github.com/Seldaek/monolog), [Analog](https://github.com/jbroadway/analog), or the included [Screen Logger](#screen). Logging is especially useful for monitoring the progress of the underlying learning algorithm in real time.
-
-To set the logger pass in any PSR-3 compatible logger instance:
-```php
-public setLogger(LoggerInterface $logger) : void
-```
-
-**Example:**
-```php
-use Rubix\ML\Other\Loggers\Screen;
-
-$estimator->setLogger(new Screen('sentiment'));
-```
-
-### Wrapper
-Wrappers are meta-estimators that wrap a base estimator for the purposes of adding functionality. Most wrappers allow access to the underlying base estimator's methods from the Wrapper instance, but you can also access the base estimator directly using the `base()` method.
-
-To return the base estimator:
-```php
-public base() : Estimator
-```
-
-**Example:**
-
-```php
-$base = $estimator->base();
 ```
 
 ---
@@ -3170,10 +3175,12 @@ $estimator = new Pipeline([
 
 ---
 ### Backends
-A Backend processing engine is responsible for executing a queue of computations, often in parallel. They are used by objects that implement the [Parallel](#parallel) interface.
+A Backend processing engine is responsible for executing a queue of computations, often in parallel. They are used by objects that implement the [Parallel](#parallel) interface for their underlying computations.
 
 ### Amp
 Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Backends/Amp.php)
 
 **Parameters:**
 
@@ -3183,18 +3190,25 @@ Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses
 
 **Additional Methods:**
 
-This backend does not have any additional methods.
+Automatically build an Amp backend based on processor core count:
+```php
+public static auto() : self
+```
 
 **Example:**
 
 ```php
 use Rubix\ML\Backends\Amp;
 
+$backend = Amp::auto();
+
 $backend = new Amp(16);
 ```
 
 ### Serial
-The Serial backend executes tasks sequentially inside of a single process.
+The Serial backend executes tasks sequentially inside of a single PHP process. The advantage of the Serial backend is that it has zero overhead due to parallelization, thus it may be faster than a parallel backend in cases where the computions are minimal such as with small datasets.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Backends/Serial.php)
 
 **Parameters:**
 
@@ -5312,6 +5326,8 @@ K Fold is a technique that splits the training set into K individual sets and fo
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/KFold.php)
 
+**Interfaces:** [Parallel](#parallel)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5334,6 +5350,8 @@ Leave P Out tests the model with a unique holdout set of P samples for each roun
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/LeavePOut.php)
 
+**Interfaces:** [Parallel](#parallel)
+
 **Parameters:**
 
 | # | Param | Default | Type | Description |
@@ -5352,6 +5370,8 @@ $validator = new LeavePOut(50);
 Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (randomized splits of the dataset).
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/MonteCarlo.php)
+
+**Interfaces:** [Parallel](#parallel)
 
 **Parameters:**
 
@@ -6350,7 +6370,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix currently supports parallel processing in some Learners such as [Random Forest](#random-forest), [Committee Machine](#committee-machine), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search).
+Yes, Rubix currently supports parallel processing through various [Backends](#backends) in some Learners such as [Random Forest](#random-forest), [Committee Machine](#committee-machine), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search), as well as the [K Fold](#f-fold), [Leave P Out](#leave-p-out), and [Monte Carlo](#monte-carlo) cross validators.
 
 ### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.

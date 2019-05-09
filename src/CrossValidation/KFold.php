@@ -3,9 +3,13 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -26,8 +30,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KFold implements Validator
+class KFold implements Validator, Parallel
 {
+    use Multiprocessing;
+
     /**
      * The number of times to fold the dataset and therefore the number of
      * unique testing sets that will be generated.
@@ -57,6 +63,7 @@ class KFold implements Validator
 
         $this->k = $k;
         $this->stratify = $stratify;
+        $this->backend = new Serial();
     }
 
     /**
@@ -89,14 +96,33 @@ class KFold implements Validator
                     $training = $training->append($fold);
                 }
             }
-
-            $estimator->train($training);
-
-            $predictions = $estimator->predict($testing);
-    
-            $scores[] = $metric->score($predictions, $testing->labels());
+            
+            $this->backend->enqueue(
+                [self::class, 'score'],
+                [$estimator, $training, $testing, $metric]
+            );
         }
 
+        $scores = $this->backend->process();
+
         return Stats::mean($scores);
+    }
+
+    /**
+     * Score an estimator on one of k folds of the dataset.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $training
+     * @param \Rubix\ML\Datasets\Labeled $testing
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @return float
+     */
+    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
+    {
+        $estimator->train($training);
+
+        $predictions = $estimator->predict($testing);
+
+        return $metric->score($predictions, $testing->labels());
     }
 }

@@ -1,12 +1,13 @@
 - Unreleased
-    - Added Amp and Serial Backends
     - Added Parallel interface for multiprocessing
     - Added Backend processing interface
+    - Added Amp parallel and Serial processing Backends
     - Random Forest uses parallel processing
     - Committee Machine is now a meta estimator
     - Committee Machine now Parallel and Verbose
     - Bootstrap Aggregator uses multiple processes
-    - Grid Search now does searches in parallel
+    - Grid Search now trains in parallel
+    - K Fold, Leave P Out, and Monte Carlo validators now Parallel
     - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization

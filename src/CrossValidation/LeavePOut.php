@@ -3,8 +3,13 @@
 namespace Rubix\ML\CrossValidation;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -21,8 +26,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeavePOut implements Validator
+class LeavePOut implements Validator, Parallel
 {
+    use Multiprocessing;
+
     /**
      * The number of samples to leave out each round for testing.
      *
@@ -42,6 +49,7 @@ class LeavePOut implements Validator
         }
 
         $this->p = $p;
+        $this->backend = new Serial();
     }
 
     /**
@@ -66,13 +74,32 @@ class LeavePOut implements Validator
 
             $testing = $training->splice($i * $this->p, $this->p);
 
-            $estimator->train($training);
-
-            $predictions = $estimator->predict($testing);
-
-            $score += $metric->score($predictions, $testing->labels());
+            $this->backend->enqueue(
+                [self::class, 'score'],
+                [$estimator, $training, $testing, $metric]
+            );
         }
 
-        return $score / $n;
+        $scores = $this->backend->process();
+
+        return Stats::mean($scores);
+    }
+
+    /**
+     * Score an estimator on one of p slices of the dataset.
+     *
+     * @param \Rubix\ML\Learner $estimator
+     * @param \Rubix\ML\Datasets\Dataset $training
+     * @param \Rubix\ML\Datasets\Labeled $testing
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
+     * @return float
+     */
+    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
+    {
+        $estimator->train($training);
+
+        $predictions = $estimator->predict($testing);
+
+        return $metric->score($predictions, $testing->labels());
     }
 }
