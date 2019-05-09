@@ -94,9 +94,9 @@ class Cyclical implements Optimizer
                 . " cycle must be greater than 0, $steps given.");
         }
 
-        if ($decay < 0. or $decay > 1.) {
-            throw new InvalidArgumentException('Decay must be between 0'
-                . " and 1, $decay given.");
+        if ($decay <= 0. or $decay >= 1.) {
+            throw new InvalidArgumentException('Decay must be between'
+                . " 0 and 1, $decay given.");
         }
 
         $this->lower = $lower;

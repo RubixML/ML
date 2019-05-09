@@ -7,6 +7,4 @@ namespace Rubix\ML
     const LOG_EPSILON = -18.420680744;
 
     const TWO_PI = 2. * M_PI;
-
-    const DEFAULT_WORKERS = 4;
 }

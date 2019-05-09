@@ -2,20 +2,15 @@
 
 namespace Rubix\ML;
 
-use Amp\Loop;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
-use Amp\Parallel\Worker\DefaultPool;
-use Amp\Parallel\Worker\CallableTask;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
-
-use function Amp\call;
-use function Amp\Promise\all;
 
 /**
  * Committee Machine
@@ -34,7 +29,7 @@ use function Amp\Promise\all;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persistable
+class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Verbose
 {
     use Multiprocessing, LoggerAware;
 
@@ -153,7 +148,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
         $this->influences = $influences;
         $this->type = $type;
         $this->compatibility = array_values($compatibility);
-        $this->workers = min(DEFAULT_WORKERS, $p);
+        $this->backend = new Serial();
     }
 
     /**
@@ -227,38 +222,26 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
             $this->logger->info('Learner init ' . Params::stringify([
                 'experts' => $this->experts,
                 'influences' => $this->influences,
-                'workers' => $this->workers,
+                'backend' => $this->backend,
             ]));
         }
 
-        Loop::run(function () use ($dataset) {
-            $pool = new DefaultPool($this->workers);
-
-            $coroutines = [];
-
-            foreach ($this->experts as $index => $estimator) {
-                $task = new CallableTask(
-                    [$this, '_train'],
-                    [$estimator, $dataset]
-                );
-
-                $coroutines[] = call(function () use ($pool, $task, $index) {
-                    $estimator = yield $pool->enqueue($task);
-
+        foreach ($this->experts as $estimator) {
+            $this->backend->enqueue(
+                [self::class, 'trainer'],
+                [
+                    $estimator, $dataset,
+                ],
+                function ($result) {
                     if ($this->logger) {
-                        $this->logger->info(Params::stringify([
-                            $index => $estimator,
-                        ]) . ' finished training');
+                        $this->logger->info(Params::shortName($result)
+                            . ' finished training');
                     }
+                }
+            );
+        }
 
-                    return $estimator;
-                });
-            }
-
-            $this->experts = yield all($coroutines);
-            
-            return yield $pool->shutdown();
-        });
+        $this->experts = $this->backend->process();
 
         if ($this->type === self::CLASSIFIER and $dataset instanceof Labeled) {
             $this->classes = $dataset->possibleOutcomes();
@@ -349,7 +332,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Verbose, Persist
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public function _train(Learner $estimator, Dataset $dataset) : Learner
+    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 

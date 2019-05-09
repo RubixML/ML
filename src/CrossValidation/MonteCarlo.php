@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -56,9 +57,9 @@ class MonteCarlo implements Validator
                 . " simulations, $simulations given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio <= 0.01 or $ratio >= 1.) {
             throw new InvalidArgumentException('Holdout ratio must be'
-                . " between 0.01 and 1, $ratio given.");
+                . " between 0 and 1, $ratio given.");
         }
 
         $this->simulations = $simulations;
@@ -79,22 +80,22 @@ class MonteCarlo implements Validator
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
-        $score = 0.;
+        $scores = [];
 
-        for ($epoch = 1; $epoch <= $this->simulations; $epoch++) {
+        for ($i = 0; $i < $this->simulations; $i++) {
             $dataset->randomize();
 
             [$testing, $training] = $this->stratify
                 ? $dataset->stratifiedSplit($this->ratio)
                 : $dataset->split($this->ratio);
-
+    
             $estimator->train($training);
-
+    
             $predictions = $estimator->predict($testing);
-
-            $score += $metric->score($predictions, $testing->labels());
+    
+            $scores[] = $metric->score($predictions, $testing->labels());
         }
 
-        return $score / $this->simulations;
+        return Stats::mean($scores);
     }
 }

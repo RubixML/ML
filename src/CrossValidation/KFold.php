@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -75,12 +76,12 @@ class KFold implements Validator
             ? $dataset->stratifiedFold($this->k)
             : $dataset->fold($this->k);
 
-        $score = 0.;
+        $scores = [];
 
         for ($i = 0; $i < $this->k; $i++) {
             $training = Labeled::quick();
             $testing = Labeled::quick();
-
+    
             foreach ($folds as $j => $fold) {
                 if ($i === $j) {
                     $testing = $testing->append($fold);
@@ -92,10 +93,10 @@ class KFold implements Validator
             $estimator->train($training);
 
             $predictions = $estimator->predict($testing);
-
-            $score += $metric->score($predictions, $testing->labels());
+    
+            $scores[] = $metric->score($predictions, $testing->labels());
         }
 
-        return $score / $this->k;
+        return Stats::mean($scores);
     }
 }

@@ -10,7 +10,7 @@ namespace Rubix\ML
      */
     function argmin(array $values)
     {
-        return $values ? array_search(min($values), $values) : null;
+        return array_search(min($values), $values);
     }
 
     /**
@@ -21,17 +21,17 @@ namespace Rubix\ML
      */
     function argmax(array $values)
     {
-        return $values ? array_search(max($values), $values) : null;
+        return array_search(max($values), $values);
     }
 
     /**
      * Compute the log of the sum of exponential values.
      *
      * @param array $values
-     * @return float|null
+     * @return float
      */
-    function logsumexp(array $values) : ?float
+    function logsumexp(array $values) : float
     {
-        return $values ? log(array_sum(array_map('exp', $values))) : null;
+        return log(array_sum(array_map('exp', $values)));
     }
 }

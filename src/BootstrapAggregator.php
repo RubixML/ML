@@ -2,19 +2,14 @@
 
 namespace Rubix\ML;
 
-use Amp\Loop;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
-use Amp\Parallel\Worker\DefaultPool;
-use Amp\Parallel\Worker\CallableTask;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
-
-use function Amp\call;
-use function Amp\Promise\all;
 
 /**
  * Bootstrap Aggregator
@@ -90,15 +85,15 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
                 . " least 1 estimator, $estimators given.");
         }
         
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+                . " 0 and 1, $ratio given.");
         }
 
         $this->base = $base;
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->workers = min(DEFAULT_WORKERS, $estimators);
+        $this->backend = new Serial();
     }
 
     /**
@@ -151,32 +146,18 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         $p = (int) round($this->ratio * $dataset->numRows());
 
-        $this->ensemble = [];
+        for ($i = 0; $i < $this->estimators; $i++) {
+            $estimator = clone $this->base;
 
-        Loop::run(function () use ($dataset, $p) {
-            $pool = new DefaultPool($this->workers);
+            $subset = $dataset->randomSubsetWithReplacement($p);
 
-            $coroutines = [];
+            $this->backend->enqueue(
+                [self::class, 'trainer'],
+                [$estimator, $subset]
+            );
+        }
 
-            for ($i = 0; $i < $this->estimators; $i++) {
-                $estimator = clone $this->base;
-
-                $subset = $dataset->randomSubsetWithReplacement($p);
-
-                $task = new CallableTask(
-                    [$this, '_train'],
-                    [$estimator, $subset]
-                );
-
-                $coroutines[] = call(function () use ($pool, $task) {
-                    return yield $pool->enqueue($task);
-                });
-            }
-
-            $this->ensemble = yield all($coroutines);
-            
-            return yield $pool->shutdown();
-        });
+        $this->ensemble = $this->backend->process();
     }
 
     /**
@@ -242,7 +223,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public function _train(Learner $estimator, Dataset $dataset) : Learner
+    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 

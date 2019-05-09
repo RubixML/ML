@@ -15,6 +15,9 @@
         <testsuite name="Anomaly Detectors">
             <directory>tests/AnomalyDetectors</directory>
         </testsuite>
+        <testsuite name="Backends">
+            <directory>tests/Backends</directory>
+        </testsuite>
         <testsuite name="Classifiers">
             <directory>tests/Classifiers</directory>
         </testsuite>

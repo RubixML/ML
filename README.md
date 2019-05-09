@@ -116,6 +116,9 @@ $ composer require rubix/ml
 			- [Grid Search](#grid-search)
 			- [Persistent Model](#persistent-model)
 			- [Pipeline](#pipeline)
+    - [Backends]
+        - [Amp](#amp)
+        - [Serial](#serial)
     - [Persisters](#persisters)
         - [Filesystem](#filesystem)
         - [Redis DB](#redis-db)
@@ -1184,32 +1187,21 @@ $estimator->partial($folds[2]);
 ```
 
 ### Parallel
-Multiprocessing is the use of two or more processes that *usually* execute on multiple cores when training. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel.
+Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. A processing [Backend](#backends) is responsible for paralellizing operations and can be injected into a Parallel Learner using the `setBackend()` method.
 
 > **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
-To set the maximum number of worker processes:
+To set the backend processing engine:
 ```php
-public setWorkers(int $workers) : void
-```
-
-Return the maximum number of workers:
-```php
-public workers() : int
+public setBackend(Backend $backends) : void
 ```
 
 **Example:**
 
 ```php
-$estimator->setWorkers(4);
+use Rubix\ML\Backends\Amp;
 
-var_dump($estimator->workers());
-```
-
-**Output:**
-
-```sh
-int(4)
+$estimator->setBackend(new Amp(8));
 ```
 
 ### Persistable
@@ -3174,6 +3166,50 @@ $estimator = new Pipeline([
 	new OneHotEncoder(), 
 	new PrincipalComponentAnalysis(20),
 ], new SoftmaxClassifier(100, new Adam(0.001)));
+```
+
+---
+### Backends
+A Backend processing engine is responsible for executing a queue of computations, often in parallel. They are used by objects that implement the [Parallel](#parallel) interface.
+
+### Amp
+Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
+
+**Parameters:**
+
+| # | Param | Default | Type | Description |
+|--|--|--|--|--|
+| 1 | workers | 4 | int | The maximum number of processes to execute in parallel. |
+
+**Additional Methods:**
+
+This backend does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Backends\Amp;
+
+$backend = new Amp(16);
+```
+
+### Serial
+The Serial backend executes tasks sequentially inside of a single process.
+
+**Parameters:**
+
+This backend does not have any additional parameters.
+
+**Additional Methods:**
+
+This backend does not have any additional methods.
+
+**Example:**
+
+```php
+use Rubix\ML\Backends\Serial;
+
+$backend = new Serial();
 ```
 
 ---

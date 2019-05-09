@@ -2,9 +2,7 @@
 
 namespace Rubix\ML\Other\Traits;
 
-use InvalidArgumentException;
-
-use const Rubix\ML\DEFAULT_WORKERS;
+use Rubix\ML\Backends\Backend;
 
 /**
  * Multiprocessing
@@ -25,35 +23,19 @@ use const Rubix\ML\DEFAULT_WORKERS;
 trait Multiprocessing
 {
     /**
-     * The max number of processes to run in parallel.
+     * The backend processing engine.
      *
-     * @var int
+     * @var \Rubix\ML\Backends\Backend
      */
-    protected $workers = DEFAULT_WORKERS;
+    protected $backend;
 
     /**
-     * Set the maximum number of processes to run in parallel.
+     * Set the parallel processing backend.
      *
-     * @param int $workers
-     * @throws \InvalidArgumentException
+     * @param \Rubix\ML\Backends\Backend $backend
      */
-    public function setWorkers(int $workers) : void
+    public function setBackend(Backend $backend) : void
     {
-        if ($workers < 1) {
-            throw new InvalidArgumentException('Cannot run less than'
-                . " 1 worker process, $workers given.");
-        }
-
-        $this->workers = $workers;
-    }
-
-    /**
-     * Return the maximum number of workers.
-     *
-     * @return int
-     */
-    public function workers() : int
-    {
-        return $this->workers;
+        $this->backend = $backend;
     }
 }

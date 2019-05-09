@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
-use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
@@ -55,7 +54,6 @@ class GridSearchTest extends TestCase
     {
         $this->assertInstanceOf(GridSearch::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Parallel::class, $this->estimator);
         $this->assertInstanceOf(Verbose::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

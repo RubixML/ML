@@ -1,6 +1,8 @@
 - Unreleased
+    - Added Amp and Serial Backends
     - Added Parallel interface for multiprocessing
-    - Random Forest training uses parallel processing
+    - Added Backend processing interface
+    - Random Forest uses parallel processing
     - Committee Machine is now a meta estimator
     - Committee Machine now Parallel and Verbose
     - Bootstrap Aggregator uses multiple processes

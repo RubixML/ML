@@ -2,19 +2,14 @@
 
 namespace Rubix\ML;
 
+use Rubix\ML\Backends\Backend;
+
 interface Parallel
 {
     /**
-     * Return the maximum number of workers.
+     * Set the parallel processing backend.
      *
-     * @return int
+     * @param \Rubix\ML\Backends\Backend $backend
      */
-    public function workers() : int;
-
-    /**
-     * Set the maximum number of processes to run in parallel.
-     *
-     * @param int $n
-     */
-    public function setWorkers(int $n) : void;
+    public function setBackend(Backend $backend) : void;
 }

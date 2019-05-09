@@ -93,7 +93,7 @@ class Adam implements Optimizer, Adaptive
                 . " greater than 0, $rate given.");
         }
 
-        if ($momentumDecay < 0. or $momentumDecay > 1.) {
+        if ($momentumDecay <= 0. or $momentumDecay >= 1.) {
             throw new InvalidArgumentException('Momentum decay must be between'
                 . " 0 and 1, $momentumDecay given.");
         }

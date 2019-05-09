@@ -2,24 +2,18 @@
 
 namespace Rubix\ML\Classifiers;
 
-use Amp\Loop;
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Amp\Parallel\Worker\DefaultPool;
-use Amp\Parallel\Worker\CallableTask;
 use Rubix\ML\Other\Traits\Multiprocessing;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
-
-use function Amp\call;
-use function Amp\Promise\all;
-
-use const Rubix\ML\DEFAULT_WORKERS;
 
 /**
  * Random Forest
@@ -97,11 +91,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param float $ratio
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        ?Learner $base = null,
-        int $estimators = 100,
-        float $ratio = 0.1
-    ) {
+    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
+    {
         if ($base and !in_array(get_class($base), self::AVAILABLE_TREES)) {
             throw new InvalidArgumentException('Base estimator is not'
                 . ' compatible with this ensemble.');
@@ -113,15 +104,15 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 . ' given.');
         }
 
-        if ($ratio < 0.01 or $ratio > 0.99) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 0.99, $ratio given.");
+                . " 0 and 1, $ratio given.");
         }
 
         $this->base = $base ?? new ClassificationTree();
         $this->estimators = $estimators;
         $this->ratio = $ratio;
-        $this->workers = min(DEFAULT_WORKERS, $estimators);
+        $this->backend = new Serial();
     }
 
     /**
@@ -166,35 +157,23 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
             throw new InvalidArgumentException('This estimator requires a'
                 . ' labeled training set.');
         }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
         
         $k = (int) round($this->ratio * $dataset->numRows());
 
-        $this->forest = [];
+        for ($i = 0; $i < $this->estimators; $i++) {
+            $estimator = clone $this->base;
 
-        Loop::run(function () use ($dataset, $k) {
-            $pool = new DefaultPool($this->workers);
+            $subset = $dataset->randomSubsetWithReplacement($k);
 
-            $coroutines = [];
+            $this->backend->enqueue(
+                [self::class, 'trainer'],
+                [$estimator, $subset]
+            );
+        }
 
-            for ($i = 0; $i < $this->estimators; $i++) {
-                $estimator = clone $this->base;
-
-                $subset = $dataset->randomSubsetWithReplacement($k);
-
-                $task = new CallableTask(
-                    [$this, '_train'],
-                    [$estimator, $subset]
-                );
-
-                $coroutines[] = call(function () use ($pool, $task) {
-                    return yield $pool->enqueue($task);
-                });
-            }
-
-            $this->forest = yield all($coroutines);
-            
-            return yield $pool->shutdown();
-        });
+        $this->forest = $this->backend->process();
 
         $this->classes = $dataset->possibleOutcomes();
         $this->featureCount = $dataset->numColumns();
@@ -285,7 +264,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public function _train(Learner $estimator, Dataset $dataset) : Learner
+    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 
