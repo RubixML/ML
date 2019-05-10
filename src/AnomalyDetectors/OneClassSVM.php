@@ -157,7 +157,7 @@ class OneClassSVM implements Estimator, Learner, Persistable
     public function predict(Dataset $dataset) : array
     {
         if (!$this->model) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

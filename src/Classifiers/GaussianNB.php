@@ -322,7 +322,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->means) or empty($this->variances)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 
@@ -350,7 +350,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->means) or empty($this->variances)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

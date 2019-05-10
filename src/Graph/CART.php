@@ -8,7 +8,10 @@ use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
+use RuntimeException;
 use Generator;
+
+use const Rubix\ML\EPSILON;
 
 /**
  * CART
@@ -25,8 +28,6 @@ use Generator;
  */
 abstract class CART implements BinaryTree
 {
-    protected const BETA = 1e-8;
-
     /**
      * The root node of the tree.
      *
@@ -191,7 +192,7 @@ abstract class CART implements BinaryTree
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = $this->split($left);
 
-                if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
+                if ($node->purityIncrease() + EPSILON > $this->minPurityIncrease) {
                     $current->attachLeft($node);
 
                     $stack[] = [$node, $depth];
@@ -205,7 +206,7 @@ abstract class CART implements BinaryTree
             if ($right->numRows() > $this->maxLeafSize) {
                 $node = $this->split($right);
     
-                if ($node->purityIncrease() + self::BETA > $this->minPurityIncrease) {
+                if ($node->purityIncrease() + EPSILON > $this->minPurityIncrease) {
                     $current->attachRight($node);
 
                     $stack[] = [$node, $depth];
@@ -261,31 +262,28 @@ abstract class CART implements BinaryTree
      * Return an array indexed by feature column that contains the normalized
      * importance score of that feature.
      *
+     * @throws \RuntimeException
      * @return array
      */
     public function featureImportances() : array
     {
-        if (!$this->root) {
-            return [];
+        if ($this->bare()) {
+            throw new RuntimeException('Tree has not been grown.');
         }
 
         $importances = array_fill(0, $this->featureCount, 0.);
 
         foreach ($this->dump() as $node) {
             if ($node instanceof Decision) {
-                $index = $node->column();
-
-                $importances[$index] += $node->purityIncrease();
+                $importances[$node->column()] += exp($node->purityIncrease());
             }
         }
 
-        $total = array_sum($importances) ?: self::BETA;
+        $total = array_sum($importances) ?: EPSILON;
 
         foreach ($importances as &$importance) {
             $importance /= $total;
         }
-
-        arsort($importances);
 
         return $importances;
     }
@@ -297,20 +295,18 @@ abstract class CART implements BinaryTree
      */
     public function dump() : Generator
     {
-        $nodes = [];
-
         $stack = [$this->root];
 
         while ($stack) {
             $current = array_pop($stack);
+
+            yield $current;
 
             if ($current instanceof BinaryNode) {
                 foreach ($current->children() as $child) {
                     $stack[] = $child;
                 }
             }
-
-            yield $current;
         }
     }
 }

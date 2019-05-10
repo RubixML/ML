@@ -336,7 +336,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
         
@@ -353,7 +353,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->ensemble) or empty($this->influences)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Backends;
 
+use Closure;
+
 /**
  * Serial
  *
@@ -30,15 +32,15 @@ class Serial implements Backend
      *
      * @param callable $function
      * @param array $args
-     * @param callable $after
+     * @param \Closure|null $after
      */
-    public function enqueue(callable $function, array $args = [], ?callable $after = null) : void
+    public function enqueue(callable $function, array $args = [], ?Closure $after = null) : void
     {
         $this->queue[] = [$function, $args, $after];
     }
 
     /**
-     * Process the queue.
+     * Process the queue and return the results.
      *
      * @return array
      */
@@ -59,5 +61,13 @@ class Serial implements Backend
         $this->queue = [];
 
         return $results;
+    }
+
+    /**
+     * Flush the queue.
+     */
+    public function flush() : void
+    {
+        $this->queue = [];
     }
 }

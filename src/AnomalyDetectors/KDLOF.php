@@ -223,7 +223,7 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if ($this->tree->bare()) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
         

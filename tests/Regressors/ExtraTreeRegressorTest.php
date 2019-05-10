@@ -75,6 +75,16 @@ class ExtraTreeRegressorTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
+    public function test_train_feature_importances()
+    {
+        $this->estimator->train($this->training);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(6, $importances);
+        $this->assertEquals(1, array_sum($importances));
+    }
+
     public function test_train_with_unlabeled()
     {
         $this->expectException(InvalidArgumentException::class);

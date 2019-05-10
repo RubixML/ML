@@ -11,6 +11,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Committee Machine
@@ -226,6 +227,8 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             ]));
         }
 
+        $this->backend->flush();
+
         foreach ($this->experts as $estimator) {
             $this->backend->enqueue(
                 [self::class, 'trainer'],
@@ -260,23 +263,32 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function predict(Dataset $dataset) : array
     {
-        $aggregate = [];
+        if (!$this->trained()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            foreach ($estimator->predict($dataset) as $i => $prediction) {
-                $aggregate[$i][] = $prediction;
-            }
+            $this->backend->enqueue(
+                [self::class, 'predictor'],
+                [$estimator, $dataset]
+            );
         }
+
+        $aggregate = $this->backend->process();
+
+        $votes = array_map(null, ...$aggregate);
 
         switch ($this->type) {
             case self::CLASSIFIER:
-                return array_map([$this, 'decideClass'], $aggregate);
+                return array_map([$this, 'decideClass'], $votes);
 
             case self::REGRESSOR:
-                return array_map([$this, 'decideValue'], $aggregate);
+                return array_map([$this, 'decideValue'], $votes);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([$this, 'decideAnomaly'], $aggregate);
+                return array_map([$this, 'decideAnomaly'], $votes);
         }
     }
 
@@ -337,5 +349,17 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $estimator->train($dataset);
 
         return $estimator;
+    }
+    
+    /**
+     * Return the predictions from an expert.
+     *
+     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return array
+     */
+    public static function predictor(Estimator $estimator, Dataset $dataset) : array
+    {
+        return $estimator->predict($dataset);
     }
 }

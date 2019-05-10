@@ -146,6 +146,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         $p = (int) round($this->ratio * $dataset->numRows());
 
+        $this->backend->flush();
+
         for ($i = 0; $i < $this->estimators; $i++) {
             $estimator = clone $this->base;
 
@@ -173,23 +175,28 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             throw new RuntimeException('Estimator has not been trained.');
         }
 
-        $aggregate = [];
+        $this->backend->flush();
 
         foreach ($this->ensemble as $estimator) {
-            foreach ($estimator->predict($dataset) as $i => $prediction) {
-                $aggregate[$i][] = $prediction;
-            }
+            $this->backend->enqueue(
+                [self::class, 'predictor'],
+                [$estimator, $dataset]
+            );
         }
+
+        $aggregate = $this->backend->process();
+
+        $votes = array_map(null, ...$aggregate);
         
         switch ($this->type()) {
             case self::CLASSIFIER:
-                return array_map([self::class, 'decideClass'], $aggregate);
+                return array_map([self::class, 'decideClass'], $votes);
 
             case self::REGRESSOR:
-                return array_map([Stats::class, 'mean'], $aggregate);
+                return array_map([Stats::class, 'mean'], $votes);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([self::class, 'decideAnomaly'], $aggregate);
+                return array_map([self::class, 'decideAnomaly'], $votes);
 
         }
     }
@@ -228,5 +235,17 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $estimator->train($dataset);
 
         return $estimator;
+    }
+
+    /**
+     * Return the predictions from an estimator.
+     *
+     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return array
+     */
+    public static function predictor(Estimator $estimator, Dataset $dataset) : array
+    {
+        return $estimator->predict($dataset);
     }
 }

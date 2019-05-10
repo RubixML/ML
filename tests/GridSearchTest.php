@@ -7,6 +7,7 @@ use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\GridSearch;
 use Rubix\ML\Persistable;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\CrossValidation\HoldOut;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -36,7 +37,7 @@ class GridSearchTest extends TestCase
         $this->generator = new Agglomerate([
             'inner' => new Circle(0., 0., 1., 0.01),
             'middle' => new Circle(0., 0., 5., 0.05),
-            'outer' => new Circle(0., 0., 10., 0.1),
+            'outer' => new Circle(0., 0., 10., 0.15),
         ]);
 
         $this->estimator = new GridSearch(KNearestNeighbors::class, [
@@ -44,6 +45,8 @@ class GridSearchTest extends TestCase
         ], new FBeta(), new HoldOut(0.2));
 
         $this->estimator->setLogger(new BlackHole());
+
+        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 

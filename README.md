@@ -116,7 +116,7 @@ $ composer require rubix/ml
         - [Grid Search](#grid-search)
         - [Persistent Model](#persistent-model)
         - [Pipeline](#pipeline)
-    - [Backends]
+    - [Backends](#backends)
         - [Amp](#amp)
         - [Serial](#serial)
     - [Persisters](#persisters)
@@ -518,7 +518,7 @@ $estimator->partial($folds[2]);
 ```
 
 ### Parallel
-Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. A processing [Backend](#backends) is responsible for paralellizing operations and can be injected into a Parallel Learner using the `setBackend()` method.
+Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. Parallelizable objects can use one of various processing [Backends](#backends) under the hood which can be set using the `setBackend()` method.
 
 > **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
@@ -3192,7 +3192,7 @@ Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses
 
 Automatically build an Amp backend based on processor core count:
 ```php
-public static auto() : self
+public static autotune() : self
 ```
 
 **Example:**
@@ -3200,7 +3200,7 @@ public static auto() : self
 ```php
 use Rubix\ML\Backends\Amp;
 
-$backend = Amp::auto();
+$backend = Amp::autotune();
 
 $backend = new Amp(16);
 ```

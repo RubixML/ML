@@ -21,6 +21,14 @@ class AmpTest extends TestCase
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
+    public function test_autotune()
+    {
+        $backend = Amp::autotune();
+
+        $this->assertInstanceOf(Amp::class, $backend);
+        $this->assertInstanceOf(Backend::class, $backend);
+    }
+
     public function test_enqueue_process()
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);

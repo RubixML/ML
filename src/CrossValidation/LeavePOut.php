@@ -75,7 +75,7 @@ class LeavePOut implements Validator, Parallel
             $testing = $training->splice($i * $this->p, $this->p);
 
             $this->backend->enqueue(
-                [self::class, 'score'],
+                [self::class, 'scorer'],
                 [$estimator, $training, $testing, $metric]
             );
         }
@@ -94,7 +94,7 @@ class LeavePOut implements Validator, Parallel
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @return float
      */
-    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
+    public static function scorer(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
     {
         $estimator->train($training);
 

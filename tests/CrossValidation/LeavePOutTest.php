@@ -2,6 +2,8 @@
 
 namespace Rubix\ML\Tests\CrossValidation;
 
+use Rubix\ML\Parallel;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\CrossValidation\LeavePOut;
 use Rubix\ML\CrossValidation\Validator;
@@ -30,12 +32,15 @@ class LeavePOutTest extends TestCase
         $this->estimator = new DummyClassifier();
 
         $this->validator = new LeavePOut(10);
+
+        $this->validator->setBackend(new Serial());
     }
 
     public function test_build_validator()
     {
         $this->assertInstanceOf(LeavePOut::class, $this->validator);
         $this->assertInstanceOf(Validator::class, $this->validator);
+        $this->assertInstanceOf(Parallel::class, $this->validator);
     }
 
     public function test_test_estimator()

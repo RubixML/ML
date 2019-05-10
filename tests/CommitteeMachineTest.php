@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
@@ -40,7 +41,7 @@ class CommitteeMachineTest extends TestCase
         $this->generator = new Agglomerate([
             'inner' => new Circle(0., 0., 1., 0.01),
             'middle' => new Circle(0., 0., 5., 0.05),
-            'outer' => new Circle(0., 0., 10., 0.1),
+            'outer' => new Circle(0., 0., 10., 0.15),
         ], [3, 3, 4]);
 
         $this->estimator = new CommitteeMachine([
@@ -50,6 +51,8 @@ class CommitteeMachineTest extends TestCase
         ], [3, 4, 5]);
 
         $this->estimator->setLogger(new BlackHole());
+
+        $this->estimator->setBackend(new Serial());
 
         $this->metric = new FBeta();
 

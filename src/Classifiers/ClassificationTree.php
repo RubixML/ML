@@ -165,7 +165,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     public function predict(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 
@@ -195,7 +195,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     public function proba(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

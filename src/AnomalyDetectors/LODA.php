@@ -287,7 +287,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (!$this->r or !$this->histograms) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

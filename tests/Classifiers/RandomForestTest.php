@@ -6,6 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\RandomForest;
@@ -40,6 +41,8 @@ class RandomForestTest extends TestCase
         ], [3, 4, 3]);
 
         $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
+
+        $this->estimator->setBackend(new Serial());
 
         $this->metric = new Accuracy();
 
@@ -77,6 +80,18 @@ class RandomForestTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_train_feature_importances()
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
+
+        $importances = $this->estimator->featureImportances();
+
+        $this->assertCount(3, $importances);
+        $this->assertEquals(1, array_sum($importances));
     }
 
     public function test_train_with_unlabeled()

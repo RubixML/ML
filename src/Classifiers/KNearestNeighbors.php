@@ -175,7 +175,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     public function predict(Dataset $dataset) : array
     {
         if (empty($this->samples) or empty($this->labels)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 
@@ -213,7 +213,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->samples) or empty($this->labels)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

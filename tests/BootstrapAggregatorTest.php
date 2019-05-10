@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\BootstrapAggregator;
 use Rubix\ML\Other\Helpers\DataType;
@@ -32,7 +33,9 @@ class BootstrapAggregatorTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new BootstrapAggregator(new RegressionTree(20), 30, 0.4);
+        $this->estimator = new BootstrapAggregator(new RegressionTree(10), 30, 0.4);
+
+        $this->estimator->setBackend(new Serial());
 
         $this->metric = new RSquared();
 

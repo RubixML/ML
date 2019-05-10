@@ -325,7 +325,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
     public function proba(Dataset $dataset) : array
     {
         if (!$this->network or !$this->classes) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 

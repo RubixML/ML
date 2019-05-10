@@ -218,7 +218,7 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
     public function rank(Dataset $dataset) : array
     {
         if (empty($this->samples)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
         

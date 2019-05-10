@@ -66,7 +66,9 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      *
      * @var array
      */
-    protected $forest;
+    protected $forest = [
+        //
+    ];
 
     /**
      * The isolation score offset used by the decision function.
@@ -186,7 +188,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function predict(Dataset $dataset) : array
     {
         if ($this->offset === null) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
 
@@ -204,7 +206,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (empty($this->forest)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
         

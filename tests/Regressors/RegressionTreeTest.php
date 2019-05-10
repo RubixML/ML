@@ -58,7 +58,7 @@ class RegressionTreeTest extends TestCase
         $this->assertEquals(0, $this->estimator->height());
     }
 
-    public function test_train_predict_importances()
+    public function test_train_predict()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
 
@@ -75,10 +75,18 @@ class RegressionTreeTest extends TestCase
         $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    public function test_train_feature_importances()
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+
+        $this->estimator->train($training);
 
         $importances = $this->estimator->featureImportances();
 
         $this->assertCount(3, $importances);
+        $this->assertEquals(1, array_sum($importances));
     }
 
     public function test_train_with_unlabeled()

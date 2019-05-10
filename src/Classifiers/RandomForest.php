@@ -5,6 +5,7 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Parallel;
 use Rubix\ML\Estimator;
+use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Backends\Serial;
@@ -200,9 +201,20 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function proba(Dataset $dataset) : array
     {
         if (empty($this->forest)) {
-            throw new RuntimeException('The learner has not'
+            throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
+
+        $this->backend->flush();
+
+        foreach ($this->forest as $estimator) {
+            $this->backend->enqueue(
+                [self::class, 'predictor'],
+                [$estimator, $dataset]
+            );
+        }
+
+        $aggregate = $this->backend->process();
 
         $probabilities = array_fill(
             0,
@@ -210,8 +222,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
             array_fill_keys($this->classes, 0.)
         );
 
-        foreach ($this->forest as $tree) {
-            foreach ($tree->proba($dataset) as $i => $joint) {
+        foreach ($aggregate as $proba) {
+            foreach ($proba as $i => $joint) {
                 foreach ($joint as $class => $probability) {
                     $probabilities[$i][$class] += $probability;
                 }
@@ -237,21 +249,31 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function featureImportances() : array
     {
         if (!$this->forest or !$this->featureCount) {
-            return [];
+            throw new RuntimeException('The estimator has not'
+                . ' been trained.');
         }
+
+        $this->backend->flush();
+
+        foreach ($this->forest as $estimator) {
+            $this->backend->enqueue(
+                [self::class, 'scorer'],
+                [$estimator]
+            );
+        }
+
+        $aggregate = $this->backend->process();
 
         $importances = array_fill(0, $this->featureCount, 0.);
 
-        foreach ($this->forest as $tree) {
-            foreach ($tree->featureImportances() as $column => $value) {
+        foreach ($aggregate as $scores) {
+            foreach ($scores as $column => $value) {
                 $importances[$column] += $value;
             }
         }
 
-        $k = count($this->forest);
-
         foreach ($importances as &$importance) {
-            $importance /= $k;
+            $importance /= $this->estimators;
         }
 
         return $importances;
@@ -269,5 +291,28 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $estimator->train($dataset);
 
         return $estimator;
+    }
+
+    /**
+     * Return the probabilities from a decision tree.
+     *
+     * @param \Rubix\ML\Probabilistic $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return array
+     */
+    public static function predictor(Probabilistic $estimator, Dataset $dataset) : array
+    {
+        return $estimator->proba($dataset);
+    }
+
+    /**
+     * Return the feature importanes from a decision tree.
+     *
+     * @param \Rubix\ML\Graph\CART $tree
+     * @return array
+     */
+    public static function scorer(CART $tree) : array
+    {
+        return $tree->featureImportances();
     }
 }

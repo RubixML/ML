@@ -7,6 +7,7 @@ use Rubix\ML\Other\Helpers\CPU;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
 use InvalidArgumentException;
+use Closure;
 
 use function Amp\call;
 use function Amp\Promise\all;
@@ -47,7 +48,7 @@ class Amp implements Backend
      *
      * @return self
      */
-    public static function auto() : self
+    public static function autotune() : self
     {
         return new self(CPU::cores() ?: self::DEFAULT_WORKERS);
     }
@@ -71,9 +72,9 @@ class Amp implements Backend
      *
      * @param callable $function
      * @param array $args
-     * @param callable $after
+     * @param Closure|null $after
      */
-    public function enqueue(callable $function, array $args = [], ?callable $after = null) : void
+    public function enqueue(callable $function, array $args = [], ?Closure $after = null) : void
     {
         $task = new CallableTask($function, $args);
 
@@ -91,7 +92,7 @@ class Amp implements Backend
     }
 
     /**
-     * Process the queue.
+     * Process the queue and return the results.
      *
      * @return array
      */
@@ -101,10 +102,18 @@ class Amp implements Backend
 
         Loop::run(function () use (&$results) {
             $results = yield all($this->queue);
+
+            $this->queue = [];
         });
 
-        $this->queue = [];
-
         return $results;
+    }
+
+    /**
+     * Flush the queue.
+     */
+    public function flush() : void
+    {
+        $this->queue = [];
     }
 }
