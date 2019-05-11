@@ -10,7 +10,7 @@ use Generator;
  * Neighborhood
  *
  * Neighborhoods represent a group of samples that are close to
- * each other in distance but not necessarily the closest.
+ * each other in distance but not *necessarily* the closest.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

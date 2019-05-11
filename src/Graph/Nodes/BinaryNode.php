@@ -48,7 +48,7 @@ class BinaryNode implements Node
     }
 
     /**
-     * Return the children of this node in an array.
+     * Return the children of this node in a generator.
      *
      * @return \Generator
      */
@@ -85,7 +85,7 @@ class BinaryNode implements Node
     }
 
     /**
-     * Recursive function to determine the height of the node.
+     * Recursive function to determine the height of the node in the tree.
      *
      * @return int
      */
@@ -169,7 +169,7 @@ class BinaryNode implements Node
     }
 
     /**
-     * Is this node an orphaned node?
+     * Is this an orphaned node?
      *
      * @return bool
      */

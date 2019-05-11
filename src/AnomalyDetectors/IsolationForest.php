@@ -156,7 +156,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $this->forest = [];
 
-        for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
+        for ($i = 1; $i <= $this->estimators; $i++) {
             $tree = new ITree($maxDepth);
 
             $subset = $dataset->randomize()->head($p);

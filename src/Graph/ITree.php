@@ -112,11 +112,9 @@ class ITree implements BinaryTree
      */
     public function grow(Dataset $dataset) : void
     {
-        $depth = 1;
-
         $this->root = Isolator::split($dataset);
 
-        $stack = [[$this->root, $depth]];
+        $stack = [[$this->root, 1]];
 
         while ($stack) {
             [$current, $depth] = array_pop($stack) ?? [];

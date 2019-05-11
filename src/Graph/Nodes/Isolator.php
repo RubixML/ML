@@ -8,8 +8,8 @@ use InvalidArgumentException;
 /**
  * Isolator
  *
- * Isolator nodes represent splits in a tree designed to isolate
- * groups into their own cells.
+ * Isolator nodes represent splits in a tree designed to isolate groups
+ * into cells by randomly dividing them.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

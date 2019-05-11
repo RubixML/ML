@@ -2,7 +2,7 @@
 
 namespace Rubix\ML;
 
-interface Wrapper
+interface Wrapper extends Estimator
 {
     /**
      * Return the base estimator instance.

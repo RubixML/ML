@@ -158,18 +158,14 @@ abstract class CART implements BinaryTree
     {
         $this->featureCount = $dataset->numColumns();
 
-        $depth = 1;
-
         $this->root = $this->split($dataset);
 
-        $stack = [[$this->root, $depth]];
+        $stack = [[$this->root, 1]];
 
         while ($stack) {
             [$current, $depth] = array_pop($stack) ?? [];
 
             [$left, $right] = $current->groups();
-
-            $current->cleanup();
 
             $depth++;
 
@@ -216,6 +212,8 @@ abstract class CART implements BinaryTree
             } else {
                 $current->attachRight($this->terminate($right));
             }
+
+            $current->cleanup();
         }
     }
 
@@ -298,9 +296,7 @@ abstract class CART implements BinaryTree
         $stack = [$this->root];
 
         while ($stack) {
-            $current = array_pop($stack);
-
-            yield $current;
+            yield $current = array_pop($stack);
 
             if ($current instanceof BinaryNode) {
                 foreach ($current->children() as $child) {

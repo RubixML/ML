@@ -5,23 +5,14 @@ namespace Rubix\ML\Tests\Kernels\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class EuclideanTest extends TestCase
 {
     protected $kernel;
 
-    protected $a;
-
-    protected $b;
-
-    protected $c;
-
     public function setUp()
     {
-        $this->a = ['x' => 2, 'y' => 1, 'z' => 4];
-        $this->b = ['x' => 7, 'y' => 9, 'z' => 4];
-        $this->c = ['x' => 2, 'y' => 2, 'z' => 3];
-
         $this->kernel = new Euclidean();
     }
 
@@ -31,14 +22,21 @@ class EuclideanTest extends TestCase
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
-    public function test_compute_distance()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(array $a, array $b, float $expected)
     {
-        $distance1 = $this->kernel->compute($this->a, $this->b);
-        $distance2 = $this->kernel->compute($this->a, $this->c);
-        $distance3 = $this->kernel->compute($this->b, $this->c);
+        $distance = $this->kernel->compute($a, $b);
 
-        $this->assertEquals(9.433981132056603, $distance1);
-        $this->assertEquals(1.4142135623730951, $distance2);
-        $this->assertEquals(8.660254037844387, $distance3);
+        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertEquals($expected, $distance);
+    }
+
+    public function compute_provider() : Generator
+    {
+        yield [[2, 1, 4, 0], [-2, 1, 8, -2],  6.0];
+        yield [[7.4, -2.5], [0.01, -1], 7.540696254325591];
+        yield [[1000, -2000, 3000], [1000, -2000, 3000], 0.0];
     }
 }

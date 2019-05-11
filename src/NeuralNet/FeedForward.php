@@ -85,10 +85,8 @@ class FeedForward implements Network
         $layers = array_merge($layers, $hidden);
         $layers[] = $output;
 
-        $fanIn = 0;
-
         foreach ($layers as $layer) {
-            $fanIn = $layer->initialize($fanIn);
+            $fanIn = $layer->initialize($fanIn ?? 0);
         }
 
         if ($optimizer instanceof Adaptive) {

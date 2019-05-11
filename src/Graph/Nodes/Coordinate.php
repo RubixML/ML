@@ -42,14 +42,14 @@ class Coordinate extends BinaryNode implements Box
     protected $groups;
 
     /**
-     * The minimum vector that encompasses all samples contained within.
+     * The minimum vector containing all points.
      *
      * @var (int|float)[]
      */
     protected $min;
 
     /**
-     * The maximum vector that encompasses all samples contained within.
+     * The maximum vector containing all points.
      *
      * @var (int|float)[]
      */
@@ -159,7 +159,7 @@ class Coordinate extends BinaryNode implements Box
     }
 
     /**
-     * Return the bounding box surrounding this node.
+     * Return a generator with the bounding box surrounding this node.
      *
      * @return \Generator
      */

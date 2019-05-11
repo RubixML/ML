@@ -25,8 +25,6 @@ use const Rubix\ML\EPSILON;
  */
 class KMC2 implements Seeder
 {
-    protected const PHI = 100000000;
-
     /**
      * The number of candidate nodes in the Markov Chain.
      *
@@ -90,7 +88,7 @@ class KMC2 implements Seeder
                     continue 1;
                 }
 
-                $threshold = rand(0, self::PHI) / self::PHI;
+                $threshold = rand(0, PHP_INT_MAX) / PHP_INT_MAX;
 
                 if ($probability > $threshold) {
                     $xDistance = $yDistance;

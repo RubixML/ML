@@ -5,9 +5,12 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class MeanSquaredErrorTest extends TestCase
 {
+    protected const LABELS = [10, 10.0, 6, -1400, .08];
+
     protected $metric;
 
     public function setUp()
@@ -24,17 +27,14 @@ class MeanSquaredErrorTest extends TestCase
         $this->assertNotEmpty(array_filter($this->metric->compatibility(), 'is_int'));
     }
 
-    public function test_score_predictions()
+    /**
+     * @dataProvider score_provider
+     */
+    public function test_score(array $predictions, float $expected)
     {
-        $predictions = [9, 15, 9, 12, 8];
-
-        $labels = [10, 10, 6, 14, 8];
-        
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, $labels);
-
-        $this->assertEquals(-7.8, $score);
+        $score = $this->metric->score($predictions, self::LABELS);
 
         $this->assertThat(
             $score,
@@ -43,5 +43,14 @@ class MeanSquaredErrorTest extends TestCase
                 $this->lessThanOrEqual($max)
             )
         );
+
+        $this->assertEquals($expected, $score);
+    }
+
+    public function score_provider() : Generator
+    {
+        yield [[7, 9.5, -20, -500, .079], -162137.0500002];
+        yield [[0, 0, 0, 0, 0], -392047.20128000004];
+        yield [[10, 10.0, 6, -1400, .08], 0.0];
     }
 }

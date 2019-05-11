@@ -4,6 +4,8 @@ namespace Rubix\ML\Kernels\Distance;
 
 use Rubix\Tensor\Vector;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Cosine
  *
@@ -34,6 +36,6 @@ class Cosine implements Distance
         $a = Vector::quick($a);
         $b = Vector::quick($b);
 
-        return 1. - ($a->dot($b) / ($a->l2Norm() * $b->l2Norm()));
+        return 1. - ($a->dot($b) / (($a->l2Norm() * $b->l2Norm()) ?: EPSILON));
     }
 }

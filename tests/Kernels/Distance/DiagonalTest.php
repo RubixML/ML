@@ -5,23 +5,14 @@ namespace Rubix\ML\Tests\Kernels\Distance;
 use Rubix\ML\Kernels\Distance\Diagonal;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class DiagonalTest extends TestCase
 {
     protected $kernel;
 
-    protected $a;
-
-    protected $b;
-
-    protected $c;
-
     public function setUp()
     {
-        $this->a = ['x' => 2, 'y' => 1, 'z' => 4];
-        $this->b = ['x' => 7, 'y' => 9, 'z' => 4];
-        $this->c = ['x' => 2, 'y' => 2, 'z' => 3];
-
         $this->kernel = new Diagonal();
     }
 
@@ -31,14 +22,21 @@ class DiagonalTest extends TestCase
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
-    public function test_compute_distance()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(array $a, array $b, float $expected)
     {
-        $distance1 = $this->kernel->compute($this->a, $this->b);
-        $distance2 = $this->kernel->compute($this->a, $this->c);
-        $distance3 = $this->kernel->compute($this->b, $this->c);
+        $distance = $this->kernel->compute($a, $b);
 
-        $this->assertEquals(8.0, $distance1);
-        $this->assertEquals(1.0, $distance2);
-        $this->assertEquals(7.0, $distance3);
+        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertEquals($expected, $distance);
+    }
+
+    public function compute_provider() : Generator
+    {
+        yield [[2, 1, 4, 0], [-2, 1, 8, -2],  4.0];
+        yield [[7.4, -2.5], [0.01, -1], 7.390000000000001];
+        yield [[1000, -2000, 3000], [1000, -2000, 3000], 0.0];
     }
 }

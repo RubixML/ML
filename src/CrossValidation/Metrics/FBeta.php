@@ -137,6 +137,6 @@ class FBeta implements Metric
         );
 
         return (1. + $this->beta2) * $precision * $recall
-            / ($this->beta2 * $precision + $recall);
+            / (($this->beta2 * $precision + $recall) ?: EPSILON);
     }
 }

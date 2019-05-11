@@ -5,9 +5,12 @@ namespace Rubix\ML\Tests\CrossValidation\Metrics;
 use Rubix\ML\CrossValidation\Metrics\MCC;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class MCCTest extends TestCase
 {
+    protected const LABELS = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
+
     protected $metric;
 
     public function setUp()
@@ -24,17 +27,14 @@ class MCCTest extends TestCase
         $this->assertNotEmpty(array_filter($this->metric->compatibility(), 'is_int'));
     }
 
-    public function test_score_predictions()
+    /**
+     * @dataProvider score_provider
+     */
+    public function test_score(array $predictions, float $expected)
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
         [$min, $max] = $this->metric->range();
 
-        $score = $this->metric->score($predictions, $labels);
-
-        $this->assertEquals(0.16666666668055555, $score);
+        $score = $this->metric->score($predictions, self::LABELS);
 
         $this->assertThat(
             $score,
@@ -43,5 +43,14 @@ class MCCTest extends TestCase
                 $this->lessThanOrEqual($max)
             )
         );
+
+        $this->assertEquals($expected, $score);
+    }
+
+    public function score_provider() : Generator
+    {
+        yield [['wolf', 'lamb', 'wolf', 'lamb', 'wolf'], 0.16666666666666666];
+        yield [['wolf', 'wolf', 'lamb', 'lamb', 'lamb'], -1.0];
+        yield [['lamb', 'lamb', 'wolf', 'wolf', 'wolf'], 1.0];
     }
 }

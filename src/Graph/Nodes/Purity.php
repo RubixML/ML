@@ -12,8 +12,8 @@ interface Purity extends Node
     public function impurity() : float;
 
     /**
-     * Return the number of samples from the training set this node is
-     * responsible for.
+     * Return the number of samples from the training set this node
+     * represents.
      *
      * @return int
      */

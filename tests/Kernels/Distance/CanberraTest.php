@@ -5,23 +5,14 @@ namespace Rubix\ML\Tests\Kernels\Distance;
 use Rubix\ML\Kernels\Distance\Canberra;
 use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class CanberraTest extends TestCase
 {
     protected $kernel;
 
-    protected $a;
-
-    protected $b;
-
-    protected $c;
-
     public function setUp()
     {
-        $this->a = ['x' => 2, 'y' => 1, 'z' => 4];
-        $this->b = ['x' => 7, 'y' => 9, 'z' => 4];
-        $this->c = ['x' => 2, 'y' => 2, 'z' => 3];
-
         $this->kernel = new Canberra();
     }
 
@@ -31,14 +22,21 @@ class CanberraTest extends TestCase
         $this->assertInstanceOf(Distance::class, $this->kernel);
     }
 
-    public function test_compute_distance()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(array $a, array $b, float $expected)
     {
-        $distance1 = $this->kernel->compute($this->a, $this->b);
-        $distance2 = $this->kernel->compute($this->a, $this->c);
-        $distance3 = $this->kernel->compute($this->b, $this->c);
+        $distance = $this->kernel->compute($a, $b);
 
-        $this->assertEquals(1.3555555555555556, $distance1, '', 1e-3);
-        $this->assertEquals(0.47619047619047616, $distance2, '', 1e-3);
-        $this->assertEquals(1.33477633477633485, $distance3, '', 1e-3);
+        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertEquals($expected, $distance);
+    }
+
+    public function compute_provider() : Generator
+    {
+        yield [[2, 1, 4, 0], [-2, 1, 8, -2], 2.333333333333333];
+        yield [[7.4, -2.5], [0.01, -1], 1.4258723732407943];
+        yield [[1000, -2000, 3000], [1000, -2000, 3000], 0.0];
     }
 }

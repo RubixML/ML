@@ -8,8 +8,7 @@ use InvalidArgumentException;
 /**
  * Cell
  *
- * A cell node contains samples that are likely members of the same
- * group.
+ * A cell node contains samples that are likely members of the same group.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

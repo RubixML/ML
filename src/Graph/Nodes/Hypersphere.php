@@ -4,7 +4,6 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\Tensor\Matrix;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
@@ -44,9 +43,7 @@ class Hypersphere extends BinaryNode implements Ball
     protected $groups;
 
     /**
-     * Factory method to build a centroid node from a labeled dataset
-     * using the column with the highest variance as the column for the
-     * split.
+     * Factory method to build a hypersphere splitting the samples by sides.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
