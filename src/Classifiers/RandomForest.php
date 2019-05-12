@@ -11,6 +11,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -168,10 +169,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
 
             $subset = $dataset->randomSubsetWithReplacement($k);
 
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'trainer'],
                 [$estimator, $subset]
-            );
+            ));
         }
 
         $this->forest = $this->backend->process();
@@ -208,10 +209,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $this->backend->flush();
 
         foreach ($this->forest as $estimator) {
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'predictor'],
                 [$estimator, $dataset]
-            );
+            ));
         }
 
         $aggregate = $this->backend->process();
@@ -256,10 +257,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         $this->backend->flush();
 
         foreach ($this->forest as $estimator) {
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'scorer'],
                 [$estimator]
-            );
+            ));
         }
 
         $aggregate = $this->backend->process();

@@ -7,13 +7,12 @@ use Closure;
 interface Backend
 {
     /**
-     * Queue up a function for backend processing.
+     * Queue up a deferred computation for backend processing.
      *
-     * @param callable $function
-     * @param array $args
+     * @param \Rubix\ML\Backends\Deferred $computation
      * @param \Closure|null $after
      */
-    public function enqueue(callable $function, array $args = [], ?Closure $after = null) : void;
+    public function enqueue(Deferred $computation, ?Closure $after = null) : void;
 
     /**
      * Process the queue and return the results.

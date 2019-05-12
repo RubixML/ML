@@ -8,6 +8,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -74,10 +75,10 @@ class LeavePOut implements Validator, Parallel
 
             $testing = $training->splice($i * $this->p, $this->p);
 
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'scorer'],
                 [$estimator, $training, $testing, $metric]
-            );
+            ));
         }
 
         $scores = $this->backend->process();

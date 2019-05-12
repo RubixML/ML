@@ -1,4 +1,5 @@
 - Unreleased
+    - Added AdaMax neural network Optimizer
     - Added Parallel interface for multiprocessing
     - Added Backend processing interface
     - Added Amp parallel and Serial processing Backends
@@ -8,7 +9,6 @@
     - Bootstrap Aggregator uses multiple processes
     - Grid Search now trains in parallel
     - K Fold, Leave P Out, and Monte Carlo validators now Parallel
-    - Neural Network Snapshots now Persistable
     - Added momentum to Batch Norm moving averages
     - Custom Batch Norm and PReLU parameter initialization
     - Added custom bias initialization to Dense layer
@@ -26,7 +26,7 @@
     - Removed ISRU and Gaussian activation functions
     - Fixed SELU derivitive computation
     - Changed adaptive optimizer default decay parameters
-    - Added AdaMax neural network Optimizer
+    - Changed default learning rate of Stochastic Optimizer
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

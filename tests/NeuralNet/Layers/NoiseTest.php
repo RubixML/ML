@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -43,7 +43,7 @@ class NoiseTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic();
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Noise(0.1);
 

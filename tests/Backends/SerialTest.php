@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Backends;
 
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Deferred;
 use PHPUnit\Framework\TestCase;
 
 class SerialTest extends TestCase
@@ -26,7 +27,7 @@ class SerialTest extends TestCase
         $functions = array_fill(0, 10, [self::class, 'foo']);
 
         foreach ($functions as $i => $function) {
-            $this->backend->enqueue($function, [$i]);
+            $this->backend->enqueue(new Deferred($function, [$i]));
         }
 
         $results = $this->backend->process();

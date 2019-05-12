@@ -8,9 +8,9 @@ use Closure;
  * Serial
  *
  * The Serial backend executes tasks sequentially inside of a single PHP process.
- * The advantage of the Serial backend is that it has zero overhead due to
- * parallelization, thus it may be faster than a parallel backend in cases where
- * the computions are minimal such as with small datasets.
+ * The advantage of the Serial backend is that it has zero overhead, thus it may
+ * be faster than a parallel backend in cases where the computions are minimal
+ * such as with small datasets.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,7 +19,7 @@ use Closure;
 class Serial implements Backend
 {
     /**
-     * An array of tuples containing a callable and its args.
+     * A 2-tuple of deferred computations and their callbacks.
      *
      * @var array[]
      */
@@ -28,15 +28,14 @@ class Serial implements Backend
     ];
 
     /**
-     * Queue up a function for backend processing.
+     * Queue up a deferred computation for backend processing.
      *
-     * @param callable $function
-     * @param array $args
+     * @param \Rubix\ML\Backends\Deferred $deferred
      * @param \Closure|null $after
      */
-    public function enqueue(callable $function, array $args = [], ?Closure $after = null) : void
+    public function enqueue(Deferred $deferred, ?Closure $after = null) : void
     {
-        $this->queue[] = [$function, $args, $after];
+        $this->queue[] = [$deferred, $after];
     }
 
     /**
@@ -48,8 +47,8 @@ class Serial implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$function, $args, $after]) {
-            $result = $function(...$args);
+        foreach ($this->queue as [$deferred, $after]) {
+            $result = $deferred->result();
 
             if ($after) {
                 $after($result);

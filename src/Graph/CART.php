@@ -73,12 +73,13 @@ abstract class CART implements BinaryTree
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have'
-                . ' depth less than 1.');
+                . " depth of less than 1, $maxDepth given.");
         }
 
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample'
-                . ' is required to create a leaf node.');
+                . ' is required to create a leaf node, '
+                . " $maxLeafSize given.");
         }
 
         if ($minPurityIncrease < 0.) {

@@ -2,7 +2,6 @@
 
 namespace Rubix\ML\NeuralNet;
 
-use Rubix\ML\Persistable;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use IteratorAggregate;
 use ArrayIterator;
@@ -16,7 +15,7 @@ use ArrayIterator;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Snapshot implements Persistable, IteratorAggregate
+class Snapshot implements IteratorAggregate
 {
     /**
      * The layer and parameter storage.
@@ -24,13 +23,6 @@ class Snapshot implements Persistable, IteratorAggregate
      * @var array[]
      */
     protected $storage;
-
-    /**
-     * The timestamp of the snapshot.
-     *
-     * @var int
-     */
-    protected $timestamp;
 
     /**
      * @param \Rubix\ML\NeuralNet\Network $network
@@ -46,17 +38,6 @@ class Snapshot implements Persistable, IteratorAggregate
         }
 
         $this->storage = $storage;
-        $this->timestamp = time();
-    }
-
-    /**
-     * Return the timestamp of the snapshot.
-     *
-     * @return int
-     */
-    public function timestamp() : int
-    {
-        return $this->timestamp;
     }
 
     /**

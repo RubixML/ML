@@ -1,11 +1,6 @@
 <?php
 
-namespace Rubix\ML\NeuralNet;
-
-use Rubix\Tensor\Matrix;
-use Closure;
-
-use function call_user_func;
+namespace Rubix\ML\Backends;
 
 /**
  * Deferred
@@ -20,36 +15,45 @@ use function call_user_func;
 class Deferred
 {
     /**
-     * The closure for the computation.
+     * The function containing the computation.
      *
-     * @var \Closure
+     * @var callable
      */
-    protected $computation;
+    protected $function;
+
+    /**
+     * The arguments to the function.
+     *
+     * @var array
+     */
+    protected $args;
 
     /**
      * The memoized result of the computation.
      *
-     * @var \Rubix\Tensor\Matrix|null
+     * @var mixed|null
      */
     protected $result;
 
     /**
-     * @param \Closure $computation
+     * @param callable $function
+     * @param array $args
      */
-    public function __construct(Closure $computation)
+    public function __construct(callable $function, array $args = [])
     {
-        $this->computation = $computation;
+        $this->function = $function;
+        $this->args = $args;
     }
 
     /**
      * Return the result of the computation.
      *
-     * @return \Rubix\Tensor\Matrix
+     * @return mixed
      */
-    public function result() : Matrix
+    public function result()
     {
         if (!$this->result) {
-            $this->result = call_user_func($this->computation);
+            $this->result = ($this->function)(...$this->args);
         }
 
         return $this->result;

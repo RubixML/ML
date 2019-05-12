@@ -177,10 +177,10 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             ->transpose();
 
         foreach ($z as $values) {
-            $min = min($values) - EPSILON;
-            $max = max($values) + EPSILON;
+            $start = min($values) - EPSILON;
+            $end = max($values) + EPSILON;
 
-            $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
+            $edges = Vector::linspace($start, $end, $this->bins + 1)->asArray();
 
             $edges[] = INF;
 

@@ -518,7 +518,7 @@ $estimator->partial($folds[2]);
 ```
 
 ### Parallel
-Multiprocessing is the use of two or more processes that *usually* execute on multiple cores. Estimators that implement the Parallel interface can take advantage of multiple core systems by executing parts or all of the algorithm in parallel. Parallelizable objects can use one of various processing [Backends](#backends) under the hood which can be set using the `setBackend()` method.
+Multiprocessing is the use of two or more processes that *usually* execute in parallel on multiple cores. Objects that implement the Parallel interface can take advantage of multi core systems by executing parts or all of their algorithm in parallel. Parallelizable objects can utilize various parllel processing [Backends](#backends) under the hood which are set using the `setBackend()` method.
 
 > **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
@@ -3175,10 +3175,10 @@ $estimator = new Pipeline([
 
 ---
 ### Backends
-A Backend processing engine is responsible for executing a queue of computations, often in parallel. They are used by objects that implement the [Parallel](#parallel) interface for their underlying computations.
+A computation Backend is responsible for executing a queue of Deferred computations, often in parallel. They are used by objects that implement the [Parallel](#parallel) interface to carry out their underlying computations.
 
 ### Amp
-Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
+[Amp](https://amphp.org/) Parallel is a multiprocessing subsystem that requires no extensions. It uses a non-blocking concurrency framework that implements coroutines using PHP generator functions under the hood.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Backends/Amp.php)
 
@@ -3190,7 +3190,7 @@ Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses
 
 **Additional Methods:**
 
-Automatically build an Amp backend based on processor core count:
+Build an Amp backend based on autodetected core count:
 ```php
 public static autotune() : self
 ```
@@ -3206,7 +3206,7 @@ $backend = new Amp(16);
 ```
 
 ### Serial
-The Serial backend executes tasks sequentially inside of a single PHP process. The advantage of the Serial backend is that it has zero overhead due to parallelization, thus it may be faster than a parallel backend in cases where the computions are minimal such as with small datasets.
+The Serial backend executes tasks sequentially inside of a single PHP process. The advantage of the Serial backend is that it has zero overhead, thus it may be faster than a parallel backend in cases where the computions are minimal such as with small datasets.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Backends/Serial.php)
 
@@ -5060,14 +5060,14 @@ A constant learning rate optimizer based on the original Stochastic Gradient Des
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
+| 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 
-$optimizer = new Stochastic(0.001);
+$optimizer = new Stochastic(0.01);
 ```
 
 ---
@@ -6370,7 +6370,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix currently supports parallel processing through various [Backends](#backends) in some Learners such as [Random Forest](#random-forest), [Committee Machine](#committee-machine), [Bootstrap Aggregator](#bootstrap-aggregator), and [Grid Search](#grid-search), as well as the [K Fold](#f-fold), [Leave P Out](#leave-p-out), and [Monte Carlo](#monte-carlo) cross validators.
+Yes, Rubix currently supports parallel processing (multiprocessing) by utilizing various parllel computing [Backends](#backends) under the hood of objects that implement the [Parallel](#parallel) interface.
 
 ### Does Rubix support multithreading?
 Not currently, however we do plan to add CPU and GPU multithreading in the future.

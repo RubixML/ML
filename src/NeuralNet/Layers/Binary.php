@@ -4,12 +4,12 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
-use Rubix\ML\NeuralNet\Deferred;
-use Rubix\ML\NeuralNet\Parameters\MatrixParam;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Parameters\MatrixParam;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;

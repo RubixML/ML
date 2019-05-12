@@ -3,11 +3,10 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Deferred;
-use Rubix\ML\NeuralNet\Parameters\Parameter;
-use Rubix\ML\NeuralNet\Parameters\VectorParam;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
+use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use RuntimeException;
 use Generator;
@@ -46,7 +45,7 @@ class PReLU implements Hidden, Parametric
     /**
      * The parameterized leakage coeficients.
      *
-     * @var \Rubix\ML\NeuralNet\Parameters\Parameter|null
+     * @var \Rubix\ML\NeuralNet\Parameters\VectorParam|null
      */
     protected $alpha;
 
@@ -142,10 +141,10 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the gradient and update the parameters of the layer.
      *
-     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
+     * @param \Rubix\ML\Backends\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Deferred
+     * @return \Rubix\ML\Backends\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {

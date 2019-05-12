@@ -35,9 +35,4 @@ class SnapshotTest extends TestCase
         $this->assertCount(2, iterator_to_array($this->snapshot));
         $this->assertEquals(4, $this->network->depth());
     }
-
-    public function test_timestamp()
-    {
-        $this->assertInternalType('int', $this->snapshot->timestamp());
-    }
 }

@@ -171,30 +171,51 @@ class Stats
      */
     public static function percentile(array $values, float $p) : float
     {
+        $percentiles = self::percentiles($values, [$p]);
+
+        return reset($percentiles);
+    }
+
+    /**
+     * Calculate the pth percentiles of a given set of values.
+     *
+     * @param array $values
+     * @param array $p
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public static function percentiles(array $values, array $p) : array
+    {
         if (empty($values)) {
-            throw new InvalidArgumentException('Percentile is not defined for'
-                . ' an empty set.');
+            throw new InvalidArgumentException('Percentile is not defined'
+                . ' for an empty set.');
         }
-
-        if ($p < 0. or $p > 100.) {
-            throw new InvalidArgumentException('P must be between 0 and 1,'
-                . " $p given.");
-        }
-
-        $n = count($values);
 
         sort($values);
 
-        $x = ($p / 100) * ($n - 1) + 1;
+        $n = count($values);
 
-        $xHat = (int) $x;
+        $percentiles = [];
 
-        $remainder = $x - $xHat;
+        foreach ($p as $pHat) {
+            if ($pHat < 0. or $pHat > 100.) {
+                throw new InvalidArgumentException('P must be between'
+                    . " 0 and 100, $pHat given.");
+            }
 
-        $a = $values[$xHat - 1];
-        $b = $values[$xHat];
+            $x = ($pHat / 100) * ($n - 1) + 1;
 
-        return $a + $remainder * ($b - $a);
+            $xHat = (int) $x;
+
+            $remainder = $x - $xHat;
+
+            $a = $values[$xHat - 1];
+            $b = $values[$xHat];
+
+            $percentiles[] = $a + $remainder * ($b - $a);
+        }
+
+        return $percentiles;
     }
 
     /**
@@ -369,7 +390,7 @@ class Stats
      * @param array $values
      * @return array
      */
-    public static function medMad(array $values) : array
+    public static function medianMad(array $values) : array
     {
         $median = self::median($values);
 

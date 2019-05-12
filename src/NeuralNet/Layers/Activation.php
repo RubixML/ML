@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use RuntimeException;
@@ -115,10 +115,10 @@ class Activation implements Hidden
     /**
      * Calculate the gradient and update the parameters of the layer.
      *
-     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
+     * @param \Rubix\ML\Backends\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Deferred
+     * @return \Rubix\ML\Backends\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {

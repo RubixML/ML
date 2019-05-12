@@ -52,5 +52,7 @@ class CompletenessTest extends TestCase
         yield [[0, 1, 1, 0, 1], 0.5833333333333333];
         yield [[0, 0, 1, 1, 1], 1.0];
         yield [[1, 1, 0, 0, 0], 1.0];
+        yield [[0, 1, 2, 3, 4], 0.41666666666666663];
+        yield [[0, 0, 0, 0, 0], 1.0];
     }
 }

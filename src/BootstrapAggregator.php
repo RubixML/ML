@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -153,10 +154,10 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
             $subset = $dataset->randomSubsetWithReplacement($p);
 
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'trainer'],
                 [$estimator, $subset]
-            );
+            ));
         }
 
         $this->ensemble = $this->backend->process();
@@ -178,10 +179,10 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         $this->backend->flush();
 
         foreach ($this->ensemble as $estimator) {
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'predictor'],
                 [$estimator, $dataset]
-            );
+            ));
         }
 
         $aggregate = $this->backend->process();

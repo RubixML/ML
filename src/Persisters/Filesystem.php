@@ -80,7 +80,8 @@ class Filesystem implements Persister
         }
 
         if (is_file($this->path) and !is_writable($this->path)) {
-            throw new RuntimeException("File $this->path is not writable.");
+            throw new RuntimeException("Existing file $this->path is"
+                . ' not writable.');
         }
 
         $data = $this->serializer->serialize($persistable);

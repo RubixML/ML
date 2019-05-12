@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
@@ -38,7 +38,7 @@ class MulticlassTest extends TestCase
 
         $this->labels = ['hot', 'cold', 'ice cold'];
 
-        $this->optimizer = new Stochastic();
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Multiclass(['hot', 'cold', 'ice cold'], 1e-4, new CrossEntropy());
 

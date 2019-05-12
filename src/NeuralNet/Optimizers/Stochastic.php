@@ -28,7 +28,7 @@ class Stochastic implements Optimizer
      * @param float $rate
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $rate = 0.001)
+    public function __construct(float $rate = 0.01)
     {
         if ($rate <= 0.) {
             throw new InvalidArgumentException('Learning rate must'

@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\ColumnVector;
-use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -251,10 +251,10 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param \Rubix\ML\NeuralNet\Deferred $prevGradient
+     * @param \Rubix\ML\Backends\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\NeuralNet\Deferred
+     * @return \Rubix\ML\Backends\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {

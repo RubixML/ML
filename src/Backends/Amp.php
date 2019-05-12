@@ -25,8 +25,6 @@ use function Amp\Promise\all;
  */
 class Amp implements Backend
 {
-    public const DEFAULT_WORKERS = 4;
-
     /**
      * The worker pool.
      *
@@ -50,14 +48,14 @@ class Amp implements Backend
      */
     public static function autotune() : self
     {
-        return new self(CPU::cores() ?: self::DEFAULT_WORKERS);
+        return new self(CPU::cores());
     }
 
     /**
      * @param int $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $workers = self::DEFAULT_WORKERS)
+    public function __construct(int $workers = 4)
     {
         if ($workers < 1) {
             throw new InvalidArgumentException('Number of workers'
@@ -68,15 +66,15 @@ class Amp implements Backend
     }
 
     /**
-     * Queue up a function for backend processing.
+     * Queue up a deferred computation for backend processing.
      *
-     * @param callable $function
-     * @param array $args
-     * @param Closure|null $after
+     * @param \Rubix\ML\Backends\Deferred $deferred
+     * @param \Closure|null $after
+     * @throws \InvalidArgumentException
      */
-    public function enqueue(callable $function, array $args = [], ?Closure $after = null) : void
+    public function enqueue(Deferred $deferred, ?Closure $after = null) : void
     {
-        $task = new CallableTask($function, $args);
+        $task = new CallableTask([$deferred, 'result'], []);
 
         $coroutine = call(function () use ($task, $after) {
             $result = yield $this->pool->enqueue($task);

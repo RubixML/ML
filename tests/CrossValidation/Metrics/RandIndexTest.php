@@ -52,5 +52,7 @@ class RandIndexTest extends TestCase
         yield [[0, 1, 1, 0, 1], -0.25000000000000006];
         yield [[0, 0, 1, 1, 1], 1.0];
         yield [[1, 1, 0, 0, 0], 1.0];
+        yield [[0, 1, 2, 3, 4], 0.0];
+        yield [[0, 0, 0, 0, 0], 0.0];
     }
 }

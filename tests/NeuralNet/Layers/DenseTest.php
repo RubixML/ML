@@ -3,7 +3,7 @@
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\NeuralNet\Deferred;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Hidden;
@@ -43,7 +43,7 @@ class DenseTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic();
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Dense(2, new He());
 

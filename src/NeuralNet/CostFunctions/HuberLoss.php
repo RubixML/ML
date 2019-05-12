@@ -32,7 +32,7 @@ class HuberLoss implements CostFunction
      *
      * @var float
      */
-    protected $beta;
+    protected $delta2;
 
     /**
      * @param float $delta
@@ -46,7 +46,7 @@ class HuberLoss implements CostFunction
         }
 
         $this->delta = $delta;
-        $this->beta = $delta ** 2;
+        $this->delta2 = $delta ** 2;
     }
 
     /**
@@ -84,7 +84,7 @@ class HuberLoss implements CostFunction
         $alpha = $output->subtract($expected);
 
         return $alpha->square()
-            ->add($this->beta)
+            ->add($this->delta2)
             ->pow(-0.5)
             ->multiply($alpha);
     }
@@ -95,6 +95,6 @@ class HuberLoss implements CostFunction
      */
     public function _compute(float $z) : float
     {
-        return $this->beta * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
+        return $this->delta2 * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
     }
 }

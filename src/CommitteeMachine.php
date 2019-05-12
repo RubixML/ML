@@ -5,6 +5,7 @@ namespace Rubix\ML;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Backends\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -120,7 +121,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             if (count($influences) !== $p) {
                 throw new InvalidArgumentException('The number of influence'
                     . " values must equal the number of experts, $p needed"
-                    . ' but ' . count($influences) . 'given.');
+                    . ' but ' . count($influences) . ' given.');
             }
 
             $total = array_sum($influences);
@@ -231,10 +232,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         foreach ($this->experts as $estimator) {
             $this->backend->enqueue(
-                [self::class, 'trainer'],
-                [
-                    $estimator, $dataset,
-                ],
+                new Deferred(
+                    [self::class, 'trainer'],
+                    [$estimator, $dataset]
+                ),
                 function ($result) {
                     if ($this->logger) {
                         $this->logger->info(Params::shortName($result)
@@ -270,10 +271,10 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         $this->backend->flush();
 
         foreach ($this->experts as $estimator) {
-            $this->backend->enqueue(
+            $this->backend->enqueue(new Deferred(
                 [self::class, 'predictor'],
                 [$estimator, $dataset]
-            );
+            ));
         }
 
         $aggregate = $this->backend->process();

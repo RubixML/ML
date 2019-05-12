@@ -86,7 +86,7 @@ class StatsTest extends TestCase
 
     public function test_med_mad()
     {
-        [$median, $mad] = Stats::medMad($this->values);
+        [$median, $mad] = Stats::medianMad($this->values);
 
         $this->assertEquals(9.75, $median);
         $this->assertEquals(3.5, $mad);

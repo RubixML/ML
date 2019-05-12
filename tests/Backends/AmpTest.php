@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Backends;
 
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
+use Rubix\ML\Backends\Deferred;
 use PHPUnit\Framework\TestCase;
 
 class AmpTest extends TestCase
@@ -21,20 +22,12 @@ class AmpTest extends TestCase
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    public function test_autotune()
-    {
-        $backend = Amp::autotune();
-
-        $this->assertInstanceOf(Amp::class, $backend);
-        $this->assertInstanceOf(Backend::class, $backend);
-    }
-
     public function test_enqueue_process()
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);
 
         foreach ($functions as $i => $function) {
-            $this->backend->enqueue($function, [$i]);
+            $this->backend->enqueue(new Deferred($function, [$i]));
         }
 
         $results = $this->backend->process();

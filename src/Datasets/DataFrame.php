@@ -17,7 +17,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      * The rows of samples and columns of features that make up the
      * data table i.e. the fixed-length feature vectors.
      *
-     * @var array
+     * @var array[]
      */
     protected $samples;
 
@@ -111,7 +111,7 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
      */
     public function types() : array
     {
-        return array_map([DataType::class, 'determine'], reset($this->samples));
+        return array_map([DataType::class, 'determine'], reset($this->samples) ?: []);
     }
 
     /**

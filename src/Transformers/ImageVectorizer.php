@@ -45,9 +45,9 @@ class ImageVectorizer implements Transformer
                 . ' PHP configuration.');
         }
 
-        if ($channels < 1 or $channels > 3) {
+        if ($channels < 1 or $channels > 4) {
             throw new InvalidArgumentException('The number of channels must'
-                . " be between 1 and 3, $channels given.");
+                . " be between 1 and 4, $channels given.");
         }
 
         $this->channels = $channels;

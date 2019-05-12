@@ -2,6 +2,13 @@
 
 namespace Rubix\ML\Other\Helpers;
 
+use function gettype;
+use function is_string;
+use function is_int;
+use function is_float;
+use function is_numeric;
+use function is_resource;
+
 class DataType
 {
     public const OTHER = 0;

@@ -33,7 +33,7 @@ class AdaGrad implements Optimizer, Adaptive
     protected $rate;
 
     /**
-     * The parameter cache of sum of squared gradient matrices.
+     * The cache of sum of squared gradients.
      *
      * @var \Rubix\Tensor\Tensor[]
      */
@@ -70,14 +70,14 @@ class AdaGrad implements Optimizer, Adaptive
      */
     public function step(Parameter $param, Tensor $gradient) : void
     {
-        $g2 = $this->cache[$param->id()];
+        $norm = $this->cache[$param->id()];
 
-        $g2 = $g2->add($gradient->square());
+        $norm = $norm->add($gradient->square());
 
-        $this->cache[$param->id()] = $g2;
+        $this->cache[$param->id()] = $norm;
 
         $step = $gradient->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(EPSILON));
+            ->divide($norm->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

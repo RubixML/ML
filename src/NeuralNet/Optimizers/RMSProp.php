@@ -46,7 +46,7 @@ class RMSProp implements Optimizer, Adaptive
     protected $rho;
 
     /**
-     * The cache of rolling sum of squared gradient matrices.
+     * The cache of running squared gradients.
      *
      * @var \Rubix\Tensor\Tensor[]
      */
@@ -94,15 +94,15 @@ class RMSProp implements Optimizer, Adaptive
      */
     public function step(Parameter $param, Tensor $gradient) : void
     {
-        $g2 = $this->cache[$param->id()];
+        $norm = $this->cache[$param->id()];
 
-        $g2 = $g2->multiply($this->rho)
+        $norm = $norm->multiply($this->rho)
             ->add($gradient->square()->multiply($this->decay));
 
-        $this->cache[$param->id()] = $g2;
+        $this->cache[$param->id()] = $norm;
 
         $step = $gradient->multiply($this->rate)
-            ->divide($g2->sqrt()->clipLower(EPSILON));
+            ->divide($norm->sqrt()->clipLower(EPSILON));
 
         $param->update($step);
     }

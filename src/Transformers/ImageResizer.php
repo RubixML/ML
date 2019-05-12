@@ -65,9 +65,7 @@ class ImageResizer implements Transformer
     public function transform(array &$samples) : void
     {
         foreach ($samples as &$sample) {
-            $vectors = [];
-
-            foreach ($sample as $column => &$value) {
+            foreach ($sample as &$value) {
                 if (is_resource($value) ? get_resource_type($value) === 'gd' : false) {
                     $image = $this->intervention->make($value);
 

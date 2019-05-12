@@ -95,7 +95,7 @@ class RobustStandardizer implements Stateful
         $this->medians = $this->mads = [];
 
         foreach ($columns as $column => $values) {
-            [$median, $mad] = Stats::medMad($values);
+            [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;
             $this->mads[$column] = $mad ?: EPSILON;
