@@ -7,6 +7,8 @@ use Exception;
 
 class CPU
 {
+    protected const WIN_CORES = 'wmic cpu get NumberOfLogicalProcessors';
+    
     protected const CPU_INFO = '/proc/cpuinfo';
 
     protected const CORE_REGEX = '/^processor/m';
@@ -20,22 +22,37 @@ class CPU
     public static function cores() : int
     {
         try {
-            $cpuinfo = file_get_contents(self::CPU_INFO);
+            switch (true) {
+                case stripos(PHP_OS, 'WIN') === 0:
+                    $results = explode("\n", shell_exec(self::WIN_CORES) ?? '');
 
-            if (!$cpuinfo) {
-                throw new Exception();
+                    if (empty($results)) {
+                        throw new Exception();
+                    }
+
+                    return (int) preg_replace('/[^0-9]/', '', $results[1]);
+
+                case is_readable(self::CPU_INFO):
+                    $cpuinfo = file_get_contents(self::CPU_INFO) ?: '';
+
+                    $matches = [];
+
+                    preg_match_all(self::CORE_REGEX, $cpuinfo, $matches);
+
+                    $cores = count($matches[0]);
+
+                    if ($cores < 1) {
+                        throw new Exception();
+                    }
+
+                    return $cores;
+
+                default:
+                    throw new Exception();
             }
-
-            $matches = [];
-
-            preg_match_all(self::CORE_REGEX, $cpuinfo, $matches);
-
-            $cores = count($matches[0]);
         } catch (Exception $e) {
-            throw new RuntimeException('Could not auto detect CPU'
-                . ' core count.');
+            throw new RuntimeException('Could not auto detect'
+                . ' processor core count.');
         }
-
-        return $cores;
     }
 }

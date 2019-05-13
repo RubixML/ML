@@ -489,8 +489,7 @@ class TSNE implements Estimator, Verbose
 
         $qSigma = $q->sum()->multiply(2.);
 
-        $q = $q->divide($qSigma)
-            ->clipLower(EPSILON);
+        $q = $q->divide($qSigma)->clipLower(EPSILON);
 
         $pqd = $p->subtract($q)
             ->multiply($distances);
@@ -500,8 +499,7 @@ class TSNE implements Estimator, Verbose
         $gradient = [];
 
         foreach ($pqd->asVectors() as $i => $row) {
-            $yHat = $y->rowAsVector($i)
-                ->subtract($y);
+            $yHat = $y->rowAsVector($i)->subtract($y);
             
             $gradient[] = $row->matmul($yHat)
                 ->multiply($c)

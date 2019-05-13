@@ -6,7 +6,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Amp;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\RandomForest;
@@ -42,7 +42,7 @@ class RandomForestTest extends TestCase
 
         $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
 
-        $this->estimator->setBackend(new Serial());
+        $this->estimator->setBackend(new Amp(8));
 
         $this->metric = new Accuracy();
 

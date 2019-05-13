@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Tests\Backends;
 
+use Rubix\ML\Deferred;
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
 class AmpTest extends TestCase
@@ -13,7 +13,7 @@ class AmpTest extends TestCase
 
     public function setUp()
     {
-        $this->backend = new Amp(4);
+        $this->backend = Amp::autotune();
     }
 
     public function test_build_backend()

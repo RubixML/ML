@@ -101,9 +101,9 @@ class Amp implements Backend
 
         Loop::run(function () use (&$results) {
             $results = yield all($this->queue);
-
-            $this->queue = [];
         });
+
+        $this->queue = [];
 
         return $results;
     }

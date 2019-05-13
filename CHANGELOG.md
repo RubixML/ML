@@ -4,6 +4,7 @@
     - Added Backend processing interface
     - Added Amp parallel and Serial processing Backends
     - Random Forest uses parallel processing
+    - Added CPU helper and core auto detection
     - Committee Machine is now a meta estimator
     - Committee Machine now Parallel and Verbose
     - Bootstrap Aggregator uses multiple processes

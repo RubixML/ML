@@ -119,9 +119,9 @@ class MulticlassBreakdown implements Report
             $metrics['fall_out'] = 1. - $specificity;
             $metrics['false_omission_rate'] = 1. - $npv;
             $metrics['f1_score'] = $f1score;
-            $metrics['mcc'] = $mcc;
             $metrics['informedness'] = $recall + $specificity - 1.;
             $metrics['markedness'] = $precision + $npv - 1.;
+            $metrics['mcc'] = $mcc;
             $metrics['true_positives'] = $tp;
             $metrics['true_negatives'] = $tn;
             $metrics['false_positives'] = $fp;
@@ -141,9 +141,9 @@ class MulticlassBreakdown implements Report
             $overall['fall_out'] += 1. - $specificity;
             $overall['false_omission_rate'] += 1. - $npv;
             $overall['f1_score'] += $f1score;
-            $overall['mcc'] += $mcc;
             $overall['informedness'] += $recall + $specificity - 1.;
             $overall['markedness'] += $precision + $npv - 1.;
+            $overall['mcc'] += $mcc;
             $overall['true_positives'] += $tp;
             $overall['true_negatives'] += $tn;
             $overall['false_positives'] += $fp;
