@@ -1,6 +1,8 @@
 <?php
 
-namespace Rubix\ML\Backends;
+namespace Rubix\ML;
+
+use function is_null;
 
 /**
  * Deferred
@@ -46,14 +48,24 @@ class Deferred
     }
 
     /**
+     * Run the computation.
+     *
+     * @return mixed
+     */
+    public function compute()
+    {
+        return ($this->function)(...$this->args);
+    }
+
+    /**
      * Return the result of the computation.
      *
      * @return mixed
      */
     public function result()
     {
-        if (!$this->result) {
-            $this->result = ($this->function)(...$this->args);
+        if (is_null($this->result)) {
+            $this->result = $this->compute();
         }
 
         return $this->result;

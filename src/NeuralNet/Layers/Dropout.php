@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use InvalidArgumentException;
 use RuntimeException;
@@ -128,10 +128,10 @@ class Dropout implements Hidden
     /**
      * Calculate the gradients of the layer and update the parameters.
      *
-     * @param \Rubix\ML\Backends\Deferred $prevGradient
+     * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\Backends\Deferred
+     * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -144,8 +144,18 @@ class Dropout implements Hidden
 
         unset($this->mask);
 
-        return new Deferred(function () use ($prevGradient, $mask) {
-            return $prevGradient->result()->multiply($mask);
-        });
+        return new Deferred([$this, 'gradient'], [$prevGradient, $mask]);
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\ML\Deferred $prevGradient
+     * @param \Rubix\Tensor\Matrix $mask
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Deferred $prevGradient, Matrix $mask)
+    {
+        return $prevGradient->compute()->multiply($mask);
     }
 }

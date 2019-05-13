@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -230,15 +230,25 @@ class Continuous implements Output
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
-        $loss = $this->costFn->compute($expected, $this->z);
+        $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
 
-        $gradient = new Deferred(function () use ($w, $dL) {
-            return $w->transpose()->matmul($dL);
-        });
+        $loss = $this->costFn->compute($expected, $this->z);
 
         unset($this->input, $this->z);
 
         return [$gradient, $loss];
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $w
+     * @param \Rubix\Tensor\Matrix $dL
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Matrix $w, Matrix $dL) : Matrix
+    {
+        return $w->transpose()->matmul($dL);
     }
 
     /**

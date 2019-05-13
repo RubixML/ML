@@ -6373,13 +6373,13 @@ Continuous data are *quantitative* properties of samples such as *age* or *speed
 Yes, Rubix currently supports parallel processing (multiprocessing) by utilizing various parllel computing [Backends](#backends) under the hood of objects that implement the [Parallel](#parallel) interface.
 
 ### Does Rubix support multithreading?
-Not currently, however we do plan to add CPU and GPU multithreading in the future.
+Not currently, however we plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
 Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
 ### Does Rubix support Reinforcement Learning?
-We do not. Rubix is only designed for *supervised* and *unsupervised* learning.
+Not currently. Rubix is for *supervised* and *unsupervised* learning only.
 
 ---
 ## Testing

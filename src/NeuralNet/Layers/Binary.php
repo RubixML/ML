@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -287,15 +287,25 @@ class Binary implements Output
         $optimizer->step($this->weights, $dW);
         $optimizer->step($this->biases, $dB);
 
-        $loss = $this->costFn->compute($expected, $this->computed);
+        $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 
-        $gradient = new Deferred(function () use ($w, $dA) {
-            return $w->transpose()->matmul($dA);
-        });
+        $loss = $this->costFn->compute($expected, $this->computed);
 
         unset($this->input, $this->z, $this->computed);
 
         return [$gradient, $loss];
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $w
+     * @param \Rubix\Tensor\Matrix $dA
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Matrix $w, Matrix $dA) : Matrix
+    {
+        return $w->transpose()->matmul($dA);
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Backends;
 
 use Rubix\ML\Backends\Amp;
 use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
 class AmpTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Tests\Backends;
 
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use PHPUnit\Framework\TestCase;
 
 class DeferredTest extends TestCase

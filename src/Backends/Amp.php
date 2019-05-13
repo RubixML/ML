@@ -3,6 +3,7 @@
 namespace Rubix\ML\Backends;
 
 use Amp\Loop;
+use Rubix\ML\Deferred;
 use Rubix\ML\Other\Helpers\CPU;
 use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\CallableTask;
@@ -68,13 +69,13 @@ class Amp implements Backend
     /**
      * Queue up a deferred computation for backend processing.
      *
-     * @param \Rubix\ML\Backends\Deferred $deferred
+     * @param \Rubix\ML\Deferred $deferred
      * @param \Closure|null $after
      * @throws \InvalidArgumentException
      */
     public function enqueue(Deferred $deferred, ?Closure $after = null) : void
     {
-        $task = new CallableTask([$deferred, 'result'], []);
+        $task = new CallableTask([$deferred, 'compute'], []);
 
         $coroutine = call(function () use ($task, $after) {
             $result = yield $this->pool->enqueue($task);

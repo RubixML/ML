@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -174,10 +174,10 @@ class Dense implements Hidden, Parametric
     /**
      * Calculate the gradient and update the parameters of the layer.
      *
-     * @param \Rubix\ML\Backends\Deferred $prevGradient
+     * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\Backends\Deferred
+     * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -190,7 +190,7 @@ class Dense implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient->result();
+        $dOut = $prevGradient->compute();
 
         $dW = $dOut->matmul($this->input->transpose());
         $dB = $dOut->sum();
@@ -202,9 +202,19 @@ class Dense implements Hidden, Parametric
 
         unset($this->input);
 
-        return new Deferred(function () use ($w, $dOut) {
-            return $w->transpose()->matmul($dOut);
-        });
+        return new Deferred([$this, 'gradient'], [$w, $dOut]);
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $w
+     * @param \Rubix\Tensor\Matrix $dOut
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Matrix $w, Matrix $dOut) : Matrix
+    {
+        return $w->transpose()->matmul($dOut);
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
@@ -141,10 +141,10 @@ class PReLU implements Hidden, Parametric
     /**
      * Calculate the gradient and update the parameters of the layer.
      *
-     * @param \Rubix\ML\Backends\Deferred $prevGradient
+     * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\Backends\Deferred
+     * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -157,7 +157,7 @@ class PReLU implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient->result();
+        $dOut = $prevGradient->compute();
 
         $dIn = $this->input->clipUpper(0.);
 
@@ -169,9 +169,19 @@ class PReLU implements Hidden, Parametric
 
         unset($this->input);
 
-        return new Deferred(function () use ($z, $dOut) {
-            return $this->differentiate($z)->multiply($dOut);
-        });
+        return new Deferred([$this, 'gradient'], [$z, $dOut]);
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $z
+     * @param \Rubix\Tensor\Matrix $dOut
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient($z, $dOut) : Matrix
+    {
+        return $this->differentiate($z)->multiply($dOut);
     }
 
     /**

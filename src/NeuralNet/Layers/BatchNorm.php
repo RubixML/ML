@@ -4,7 +4,7 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\ColumnVector;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -251,10 +251,10 @@ class BatchNorm implements Hidden, Parametric
     /**
      * Calculate the errors and gradients of the layer and update the parameters.
      *
-     * @param \Rubix\ML\Backends\Deferred $prevGradient
+     * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\Backends\Deferred
+     * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -267,7 +267,7 @@ class BatchNorm implements Hidden, Parametric
                 . ' backpropagating.');
         }
 
-        $dOut = $prevGradient->result();
+        $dOut = $prevGradient->compute();
 
         $dBeta = $dOut->sum();
         $dGamma = $dOut->multiply($this->xHat)->sum();
@@ -282,18 +282,33 @@ class BatchNorm implements Hidden, Parametric
 
         unset($this->stdInv, $this->xHat);
 
-        return new Deferred(function () use ($dOut, $gamma, $stdInv, $xHat) {
-            $dXHat = $dOut->multiply($gamma);
+        return new Deferred(
+            [$this, 'gradient'],
+            [$dOut, $gamma, $stdInv, $xHat]
+        );
+    }
 
-            $xHatSigma = $dXHat->multiply($xHat)->sum();
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $dOut
+     * @param \Rubix\Tensor\ColumnVector $gamma
+     * @param \Rubix\Tensor\ColumnVector $stdInv
+     * @param \Rubix\Tensor\Matrix $xHat
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Matrix $dOut, ColumnVector $gamma, ColumnVector $stdInv, Matrix $xHat) : Matrix
+    {
+        $dXHat = $dOut->multiply($gamma);
 
-            $dXHatSigma = $dXHat->sum();
+        $xHatSigma = $dXHat->multiply($xHat)->sum();
 
-            return $dXHat->multiply($dOut->m())
-                ->subtract($dXHatSigma)
-                ->subtract($xHat->multiply($xHatSigma))
-                ->multiply($stdInv->divide($dOut->m()));
-        });
+        $dXHatSigma = $dXHat->sum();
+
+        return $dXHat->multiply($dOut->m())
+            ->subtract($dXHatSigma)
+            ->subtract($xHat->multiply($xHatSigma))
+            ->multiply($stdInv->divide($dOut->m()));
     }
 
     /**

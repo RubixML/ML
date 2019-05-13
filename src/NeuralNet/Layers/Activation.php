@@ -3,7 +3,7 @@
 namespace Rubix\ML\NeuralNet\Layers;
 
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Backends\Deferred;
+use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use RuntimeException;
@@ -24,7 +24,7 @@ class Activation implements Hidden
      *
      * @var \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction
      */
-    protected $activationFunction;
+    protected $activationFn;
 
     /**
      * The width of the layer.
@@ -48,11 +48,11 @@ class Activation implements Hidden
     protected $computed;
 
     /**
-     * @param \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFunction
+     * @param \Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction $activationFn
      */
-    public function __construct(ActivationFunction $activationFunction)
+    public function __construct(ActivationFunction $activationFn)
     {
-        $this->activationFunction = $activationFunction;
+        $this->activationFn = $activationFn;
     }
 
     /**
@@ -96,7 +96,7 @@ class Activation implements Hidden
     {
         $this->input = $input;
 
-        $this->computed = $this->activationFunction->compute($input);
+        $this->computed = $this->activationFn->compute($input);
 
         return $this->computed;
     }
@@ -109,16 +109,16 @@ class Activation implements Hidden
      */
     public function infer(Matrix $input) : Matrix
     {
-        return $this->activationFunction->compute($input);
+        return $this->activationFn->compute($input);
     }
 
     /**
      * Calculate the gradient and update the parameters of the layer.
      *
-     * @param \Rubix\ML\Backends\Deferred $prevGradient
+     * @param \Rubix\ML\Deferred $prevGradient
      * @param \Rubix\ML\NeuralNet\Optimizers\Optimizer $optimizer
      * @throws \RuntimeException
-     * @return \Rubix\ML\Backends\Deferred
+     * @return \Rubix\ML\Deferred
      */
     public function back(Deferred $prevGradient, Optimizer $optimizer) : Deferred
     {
@@ -132,10 +132,24 @@ class Activation implements Hidden
 
         unset($this->input, $this->computed);
 
-        return new Deferred(function () use ($input, $computed, $prevGradient) {
-            return $this->activationFunction
-                ->differentiate($input, $computed)
-                ->multiply($prevGradient->result());
-        });
+        return new Deferred(
+            [$this, 'gradient'],
+            [$input, $computed, $prevGradient]
+        );
+    }
+
+    /**
+     * Calculate the gradient for the previous layer.
+     *
+     * @param \Rubix\Tensor\Matrix $input
+     * @param \Rubix\Tensor\Matrix $computed
+     * @param \Rubix\ML\Deferred $prevGradient
+     * @return \Rubix\Tensor\Matrix
+     */
+    public function gradient(Matrix $input, Matrix $computed, Deferred $prevGradient) : Matrix
+    {
+        return $this->activationFn
+            ->differentiate($input, $computed)
+            ->multiply($prevGradient->compute());
     }
 }
