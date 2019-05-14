@@ -31,7 +31,7 @@ class ResidualAnalysisTest extends TestCase
             'mean_absolute_error' => 0.8,
             'median_absolute_error' => 1.,
             'mean_squared_error' => 1,
-            'mean_squared_log_error' => 0.,
+            'mean_squared_log_error' => 0.019107097505647368,
             'rms_error' => 1.,
             'error_mean' => -0.2,
             'error_variance' => 0.9599999999999997,

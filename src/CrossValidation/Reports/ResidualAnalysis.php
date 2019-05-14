@@ -49,7 +49,7 @@ class ResidualAnalysis implements Report
 
         $muHat = Stats::mean($labels);
 
-        $errors = $l1 = $l2 = [];
+        $errors = $l1 = $l2 = $log = [];
 
         $sse = $sst = 0.;
 
@@ -60,6 +60,7 @@ class ResidualAnalysis implements Report
 
             $l1[] = abs($error);
             $l2[] = $t = $error ** 2;
+            $log[] = log((1 + $label) / (1 + $prediction)) ** 2;
 
             $sse += $t;
             $sst += ($label - $muHat) ** 2;
@@ -68,6 +69,7 @@ class ResidualAnalysis implements Report
         [$mean, $variance] = Stats::meanVar($errors);
 
         $mse = Stats::mean($l2);
+        $msle = Stats::mean($log);
 
         $r2 = 1. - ($sse / ($sst ?: EPSILON));
 
@@ -76,7 +78,7 @@ class ResidualAnalysis implements Report
             'median_absolute_error' => Stats::median($l1),
             'mean_squared_error' => $mse,
             'rms_error' => sqrt($mse),
-            'mean_squared_log_error' => log($mse),
+            'mean_squared_log_error' => $msle,
             'r_squared' => $r2,
             'error_mean' => $mean,
             'error_variance' => $variance,
