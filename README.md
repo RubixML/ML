@@ -41,6 +41,7 @@ $ composer require rubix/ml
     - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 	- [Color Blob Clusterer](https://github.com/RubixML/Colors)
 	- [Credit Card Default Predictor](https://github.com/RubixML/Credit)
+    - [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
 	- [Human Activity Recognizer](https://github.com/RubixML/HAR)
 	- [Housing Price Predictor](https://github.com/RubixML/Housing)
 	- [Iris Flower Classifier](https://github.com/RubixML/Iris)
@@ -4332,16 +4333,14 @@ The Softmax function is a generalization of the [Sigmoid](#sigmoid) function tha
 
 **Parameters:**
 
-| # | Param | Default | Type | Description |
-|--|--|--|--|--|
-| 1 | epsilon | 1e-8 | float | The smoothing parameter i.e a small value to add to the denominator for numerical stability. |
+This activation function does not have any parameters.
 
 **Example:**
 
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
 
-$activationFunction = new Softmax(1e-10);
+$activationFunction = new Softmax();
 ```
 
 ### Soft Plus
