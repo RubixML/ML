@@ -53,3 +53,6 @@ Typically bugs indicate an area of the code that has not been properly tested ye
 
 ### Mutability Policy
 Objects implemented in Rubix have a mutability policy of *generally* immutable which means properties are kept protected and changes cannot be made without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some cases, such as for performance reasons, object properties may be allowed to be mutated directly.
+
+### Anti Plagiarism Policy
+Our community has a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.
