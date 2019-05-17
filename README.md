@@ -5507,6 +5507,27 @@ use Rubix\ML\CrossValidation\Metrics\Homogeneity;
 $metric = new Homogeneity();
 ```
 
+### Informedness
+Informedness is a measure of the probability that an estimator will make an informed decision. The index was suggested by W.J. Youden as a way of summarizing the performance of a diagnostic test. Its value ranges from -1 through 1 and has a zero value when the test gives yields no useful information.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Informedness.php)
+
+**Compatibility:** Classification, Anomaly Detection
+
+**Range:** -1 to 1
+
+**Example:**
+
+```php
+use Rubix\ML\CrossValidation\Metrics\Informedness;
+
+$metric = new Informedness();
+```
+
+**References:**
+
+>- W. J. Youden. (1950). Index for Rating Diagnostic Tests.
+
 ### MCC
 Matthews Correlation Coefficient measures the quality of a classification. It takes into account true and false positives and negatives and is generally regarded as a balanced measure which can be used even if the classes are of very different sizes. The MCC is in essence a correlation coefficient between the observed and predicted binary classifications; it returns a value between −1 and +1. A coefficient of +1 represents a perfect prediction, 0 no better than random prediction and −1 indicates total disagreement between prediction and observation.
 
@@ -5523,6 +5544,10 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $metric = new MCC();
 ```
+
+**References:**
+
+>- B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary Structure of T4 Phage Lysozyme.
 
 ### MAPE
 The *Mean Absolute Percentage Error* expresses the relative error of a set of predictions and their labels as a percentage. It can be thought of as a weighted version of Mean Absolute Error.

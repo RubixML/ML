@@ -22,8 +22,7 @@
     - Grid Search automatically retrains base estimator
     - Added neural net Parameter namespace and interface
     - Changed order of LODA hyperparameters
-    - Added F Beta classificaion metric
-    - Removed F1 Score and Informedness metric
+    - Replaced F1 Score with F Beta metric
     - Removed ISRU and Gaussian activation functions
     - Fixed SELU derivitive computation
     - Changed adaptive optimizer default decay parameters
