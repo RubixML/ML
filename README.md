@@ -4,7 +4,7 @@
 
 A high-level machine learning library that allows you to build programs that learn from data using the [PHP](https://php.net) language.
 
-- **Easy** and fast prototyping with user-friendly API
+- **Developer-friendly** API for fast prototyping
 - **40+** modern *supervised* and *unsupervised* learners
 - **Modular** architecture combines power and flexibility
 - **Open source** and free to use commercially
@@ -227,6 +227,7 @@ $ composer require rubix/ml
 			- [F Beta](#f-beta)
 			- [Homogeneity](#homogeneity)
 			- [MCC](#mcc)
+            - [MAPE](#mape)
 			- [Mean Absolute Error](#mean-absolute-error)
 			- [Mean Squared Error](#mean-squared-error)
 			- [Median Absolute Error](#median-absolute-error)
@@ -519,7 +520,7 @@ $estimator->partial($folds[2]);
 ```
 
 ### Parallel
-Multiprocessing is the use of two or more processes that *usually* execute in parallel on multiple cores. Objects that implement the Parallel interface can take advantage of multi core systems by executing parts or all of their algorithm in parallel. Parallelizable objects can utilize various parllel processing [Backends](#backends) under the hood which are set using the `setBackend()` method.
+Multiprocessing is the use of two or more processes that *usually* execute in parallel on multiple cores. Objects that implement the Parallel interface can take advantage of multi core systems by executing parts or all of their algorithm in parallel. Parallelizable objects can utilize various parallel processing [Backends](#backends) under the hood which are set using the `setBackend()` method.
 
 > **Note**: The optimal number of workers will depend on the system specifications of the computer. Fewer workers than CPU cores may not achieve full processing potential but more workers than cores can cause excess overhead.
 
@@ -5523,6 +5524,23 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 $metric = new MCC();
 ```
 
+### MAPE
+The *Mean Absolute Percentage Error* expresses the relative error of a set of predictions and their labels as a percentage. It can be thought of as a weighted version of Mean Absolute Error.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MAPE.php)
+
+**Compatibility:** Regression
+
+**Range:** -∞ to 0
+
+**Example:**
+
+```php
+use Rubix\ML\CrossValidation\Metrics\MAPE;
+
+$metric = new MAPE();
+```
+
 ### Mean Absolute Error
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
@@ -5871,21 +5889,23 @@ var_dump($result);
 **Output:**
 
 ```sh
-  array(12) {
-    ["mean_absolute_error"]=> float(0.44927554249285)
-    ["median_absolute_error"]=> float(0.30273889978541)
-    ["mean_squared_error"]=> float(0.44278193357447)
-    ["rms_error"]=> float(0.66541861529001)
-	["mean_squared_log_error"]=> float(-0.35381010755)
-	["r_squared"]=> float(0.99393263320234)
-    ["error_mean"]=> float(0.14748941084881)
-    ["error_variance"]=> float(0.42102880726195)
-    ["error_skewness"]=> float(-2.7901397847317)
-    ["error_kurtosis"]=> float(12.967400285518)
-    ["error_min"]=> float(-3.5540079974946)
-    ["error_max"]=> float(1.4097829828182)
-    ["cardinality"]=> int(80)
-  }
+array(12) {
+    ['mean_absolute_error']=> float(0.18220216502615122)
+    ['mean_absolute_percentage_error']=> float(18.174348688407402)
+    ['median_absolute_error']=> float(0.17700000000000005)
+    ['mean_squared_error']=> float(0.05292430893457563)
+    ['mean_squared_percentage_error']=> float(7.525564187948428)
+    ['mean_squared_log_error']=> float(51.96853354084834)
+    ['rms_error']=> float(0.23005283944036775)
+    ['r_squared']=> float(0.9999669635675313)
+    ['error_mean']=> float(-0.07112216502615118)
+    ['error_variance']=> float(0.04786594657656853)
+    ['error_skewness']=> float(-0.49093461098755187)
+    ['error_kurtosis']=> float(-1.216490935575394)
+    ['error_min']=> float(-0.423310825130748)
+    ['error_max']=> float(0.17700000000000005)
+    ['cardinality']=> int(5)
+}
 ```
 
 ---
@@ -6338,7 +6358,7 @@ Here you can find answers to the most frequently asked Rubix ML questions.
 ### What environment (SAPI) should I run Rubix in?
 All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
 
-If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run a standalone model server that implements its own networking (HTTP, TCP, ZMQ, etc.) layer and runs from the CLI instead of Apache server or NGINX via FPM which is much slower.
+If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run an optimized standalone model server that implements its own networking (HTTP, TCP, etc.) layer and runs from the CLI instead of Apache server or NGINX via FPM which are much slower.
 
 To run a program using the PHP command line interface (CLI), open a terminal and enter:
 ```sh
@@ -6369,7 +6389,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix currently supports parallel processing (multiprocessing) by utilizing various parllel computing [Backends](#backends) under the hood of objects that implement the [Parallel](#parallel) interface.
+Yes, Rubix currently supports parallel processing (multiprocessing) by utilizing various parallel computing [Backends](#backends) under the hood of objects that implement the [Parallel](#parallel) interface.
 
 ### Does Rubix support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.

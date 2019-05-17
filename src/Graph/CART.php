@@ -168,6 +168,8 @@ abstract class CART implements BinaryTree
 
             [$left, $right] = $current->groups();
 
+            $current->cleanup();
+
             $depth++;
 
             if ($left->empty() or $right->empty()) {
@@ -213,8 +215,6 @@ abstract class CART implements BinaryTree
             } else {
                 $current->attachRight($this->terminate($right));
             }
-
-            $current->cleanup();
         }
     }
 

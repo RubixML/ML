@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 use Rubix\ML\CrossValidation\Reports\Report;
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class ContingencyTableTest extends TestCase
 {
@@ -21,25 +22,31 @@ class ContingencyTableTest extends TestCase
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
-    public function test_generate_report()
+    /**
+     * @dataProvider generate_report_provider
+     */
+    public function test_generate_report(array $predictions, array $labels, array $expected)
     {
-        $predictions = [1, 2, 2, 1, 2];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $outcome = [
-            1 => [
-                'wolf' => 1,
-                'lamb' => 1,
-            ],
-            2 => [
-                'wolf' => 2,
-                'lamb' => 1,
-            ],
-        ];
-
         $result = $this->report->generate($predictions, $labels);
 
-        $this->assertEquals($outcome, $result);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function generate_report_provider() : Generator
+    {
+        yield [
+            [0, 1, 1, 0, 1],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            [
+                0 => [
+                    'wolf' => 1,
+                    'lamb' => 1,
+                ],
+                1 => [
+                    'wolf' => 2,
+                    'lamb' => 1,
+                ],
+            ],
+        ];
     }
 }

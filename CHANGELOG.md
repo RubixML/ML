@@ -28,6 +28,9 @@
     - Fixed SELU derivitive computation
     - Changed adaptive optimizer default decay parameters
     - Changed default learning rate of Stochastic Optimizer
+    - Add Mean Absolute Percentage Error metric
+    - Add MAPE and MSPE to Residual Analysis report
+    - Fix MSLE computation in Residual Analysis report
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD

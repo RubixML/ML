@@ -44,7 +44,7 @@ class FeedForward implements Network
     ];
 
     /**
-     * The pathing of the backward pass through the hidden layers.
+     * The memoized pathing of the backward pass through the hidden layers.
      *
      * @var \Rubix\ML\NeuralNet\Layers\Hidden[]
      */
@@ -190,9 +190,7 @@ class FeedForward implements Network
      */
     public function roundtrip(Labeled $batch) : float
     {
-        $input = Matrix::quick($batch->samples())->transpose();
-
-        $this->feed($input);
+        $this->feed(Matrix::quick($batch->samples())->transpose());
 
         return $this->backpropagate($batch->labels());
     }

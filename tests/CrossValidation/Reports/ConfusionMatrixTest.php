@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\CrossValidation\Reports;
 use Rubix\ML\CrossValidation\Reports\Report;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class ConfusionMatrixTest extends TestCase
 {
@@ -21,25 +22,31 @@ class ConfusionMatrixTest extends TestCase
         $this->assertInstanceOf(Report::class, $this->report);
     }
 
-    public function test_generate_report()
+    /**
+     * @dataProvider generate_report_provider
+     */
+    public function test_generate_report(array $predictions, array $labels, array $expected)
     {
-        $predictions = ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'];
-
-        $labels = ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'];
-
-        $outcome = [
-            'wolf' => [
-                'wolf' => 2,
-                'lamb' => 1,
-            ],
-            'lamb' => [
-                'wolf' => 1,
-                'lamb' => 1,
-            ],
-        ];
-
         $result = $this->report->generate($predictions, $labels);
 
-        $this->assertEquals($outcome, $result);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function generate_report_provider() : Generator
+    {
+        yield [
+            ['wolf', 'lamb', 'wolf', 'lamb', 'wolf'],
+            ['lamb', 'lamb', 'wolf', 'wolf', 'wolf'],
+            [
+                'wolf' => [
+                    'wolf' => 2,
+                    'lamb' => 1,
+                ],
+                'lamb' => [
+                    'wolf' => 1,
+                    'lamb' => 1,
+                ],
+            ],
+        ];
     }
 }

@@ -491,8 +491,7 @@ class TSNE implements Estimator, Verbose
 
         $q = $q->divide($qSigma)->clipLower(EPSILON);
 
-        $pqd = $p->subtract($q)
-            ->multiply($distances);
+        $pqd = $p->subtract($q)->multiply($distances);
 
         $c = 2. * (1. + $this->degrees) / $this->degrees;
 
