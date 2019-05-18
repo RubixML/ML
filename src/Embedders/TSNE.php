@@ -3,15 +3,16 @@
 namespace Rubix\ML\Embedders;
 
 use Rubix\ML\Verbose;
-use Rubix\ML\Estimator;
 use Rubix\Tensor\Matrix;
+use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEmbedder;
 use InvalidArgumentException;
 
 use const Rubix\ML\EPSILON;
@@ -34,11 +35,9 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TSNE implements Estimator, Verbose
+class TSNE implements Embedder, Verbose
 {
     use LoggerAware;
-
-    protected const Y_INIT = 1e-4;
 
     protected const INIT_MOMENTUM = 0.5;
     protected const MOMENTUM_BOOST = 0.3;
@@ -49,6 +48,8 @@ class TSNE implements Estimator, Verbose
 
     protected const BINARY_PRECISION = 100;
     protected const SEARCH_TOLERANCE = 1e-5;
+
+    protected const Y_INIT = 1e-4;
 
     /**
      * The number of dimensions of the embedding.
@@ -212,17 +213,7 @@ class TSNE implements Estimator, Verbose
     }
 
     /**
-     * Return the integer encoded estimator type.
-     *
-     * @return int
-     */
-    public function type() : int
-    {
-        return self::EMBEDDER;
-    }
-
-    /**
-     * Return the data types that this estimator is compatible with.
+     * Return the data types that this embedder is compatible with.
      *
      * @return int[]
      */
@@ -245,15 +236,15 @@ class TSNE implements Estimator, Verbose
     }
 
     /**
-     * Embed a high dimensional sample matrix into a lower dimensional one.
+     * Embed a high dimensional dataset into a lower dimensional one.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return array[]
+     * @return \Rubix\ML\Datasets\Dataset
      */
-    public function predict(Dataset $dataset) : array
+    public function embed(Dataset $dataset) : Dataset
     {
-        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+        DatasetIsCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {
             $this->logger->info('Embedder initialized w/ '
@@ -350,17 +341,22 @@ class TSNE implements Estimator, Verbose
                 $momentum += self::MOMENTUM_BOOST;
 
                 if ($this->logger) {
-                    $this->logger->info('Early exaggeration'
-                        . ' stage exhausted');
+                    $this->logger->info('Early exaggeration exhausted');
                 }
             }
         }
+
+        $samples = $y->asArray();
 
         if ($this->logger) {
             $this->logger->info('Embedding complete');
         }
 
-        return $y->asArray();
+        if ($dataset instanceof Labeled) {
+            return Labeled::quick($samples, $dataset->labels());
+        }
+
+        return Unlabeled::quick($samples);
     }
 
     /**

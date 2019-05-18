@@ -31,6 +31,7 @@
     - Added MAPE and MSPE to Residual Analysis report
     - Fixed MSLE computation in Residual Analysis report
     - Renamed RMSError Metric to RMSE
+    - Embedders no longer implement Estimator interface
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD
