@@ -27,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PrincipalComponentAnalysis implements Stateful
+class PrincipalComponentAnalysis implements Transformer, Stateful
 {
     /**
      * The target number of dimensions to project onto.

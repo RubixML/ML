@@ -383,8 +383,10 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete,"
-                    . " score=$score loss=$loss");
+                $scoreName = Params::shortName($this->metric);
+                $lossName = Params::shortName($this->costFn);
+
+                $this->logger->info("Epoch $epoch $scoreName=$score $lossName=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -416,15 +418,13 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 $this->network->restore($bestSnapshot);
 
                 if ($this->logger) {
-                    $this->logger->info('Network restored'
-                        . ' from previous snapshot');
+                    $this->logger->info('Network restored from snapshot');
                 }
             }
         }
 
         if ($this->logger) {
             $this->logger->info('Training complete');
-            $this->logger->info("Best validation score=$bestScore");
         }
     }
 

@@ -23,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LinearDiscriminantAnalysis implements Stateful
+class LinearDiscriminantAnalysis implements Transformer, Stateful
 {
     /**
      * The target number of dimensions to project onto.

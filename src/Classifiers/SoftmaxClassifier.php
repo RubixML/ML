@@ -285,7 +285,9 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Pe
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, loss=$loss");
+                $name = Params::shortName($this->costFn);
+
+                $this->logger->info("Epoch $epoch $name=$loss");
             }
 
             if (is_nan($loss)) {

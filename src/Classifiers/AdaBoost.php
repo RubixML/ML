@@ -297,7 +297,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
             $this->influences[] = $influence;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, loss=$loss");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
             if (is_nan($loss) or $total <= 0) {

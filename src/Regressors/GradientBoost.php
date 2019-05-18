@@ -299,7 +299,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, loss=$loss");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
             if (is_nan($loss)) {

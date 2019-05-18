@@ -23,7 +23,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class WordCountVectorizer implements Stateful
+class WordCountVectorizer implements Transformer, Stateful
 {
     /**
      * The maximum size of the vocabulary.

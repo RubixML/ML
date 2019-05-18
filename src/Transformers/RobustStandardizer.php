@@ -21,7 +21,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustStandardizer implements Stateful
+class RobustStandardizer implements Transformer, Stateful
 {
     /**
      * Should we center the data?

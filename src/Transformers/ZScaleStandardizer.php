@@ -23,7 +23,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ZScaleStandardizer implements Elastic
+class ZScaleStandardizer implements Transformer, Stateful, Elastic
 {
     /**
      * Should we center the data?

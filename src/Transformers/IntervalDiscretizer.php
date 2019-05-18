@@ -21,7 +21,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class IntervalDiscretizer implements Stateful
+class IntervalDiscretizer implements Transformer, Stateful
 {
     protected const START_CATEGORY = 'a';
 

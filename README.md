@@ -3097,7 +3097,7 @@ The Persistent Model wrapper gives the estimator two additional methods (`save()
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/PersistentModel.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic)
 
 **Compatibility:** Depends on the base learner
 

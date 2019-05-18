@@ -238,7 +238,7 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
                 function ($result) {
                     if ($this->logger) {
                         $this->logger->info(Params::shortName($result)
-                            . ' finished training');
+                            . ' complete');
                     }
                 }
             );

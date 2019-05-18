@@ -18,7 +18,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneHotEncoder implements Stateful
+class OneHotEncoder implements Transformer, Stateful
 {
     /**
      * The set of unique possible categories of the training set.

@@ -340,7 +340,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         if ($this->logger) {
             $constructor = array_combine($this->args, $bestParams) ?: [];
 
-            $this->logger->info('Best params: ' . Params::stringify($constructor));
+            $this->logger->info('Best: ' . Params::stringify($constructor));
         }
 
         $estimator = new $this->base(...$bestParams);

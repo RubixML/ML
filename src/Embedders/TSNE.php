@@ -322,8 +322,7 @@ class TSNE implements Estimator, Verbose
             $this->steps[] = $magnitude;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete,"
-                    . " gradient=$magnitude");
+                $this->logger->info("Epoch $epoch Gradient=$magnitude");
             }
 
             if (is_nan($magnitude)) {

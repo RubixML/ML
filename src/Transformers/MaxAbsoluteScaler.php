@@ -18,7 +18,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MaxAbsoluteScaler implements Elastic
+class MaxAbsoluteScaler implements Transformer, Stateful, Elastic
 {
     /**
      * The maximum absolute values for each fitted feature column.

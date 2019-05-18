@@ -336,7 +336,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             $this->steps[] = $inertia;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, inertia=$inertia");
+                $this->logger->info("Epoch $epoch Inertia=$inertia");
             }
 
             if (is_nan($inertia)) {

@@ -335,7 +335,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             $this->steps[] = $shift;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, shift=$shift");
+                $this->logger->info("Epoch $epoch Shift=$shift");
             }
 
             if (is_nan($shift)) {

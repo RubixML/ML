@@ -22,7 +22,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class GaussianRandomProjector implements Stateful
+class GaussianRandomProjector implements Transformer, Stateful
 {
     /**
      * The target number of dimensions.

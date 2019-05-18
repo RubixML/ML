@@ -4,7 +4,6 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
-use Rubix\ML\Other\Traits\LoggerAware;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -18,10 +17,8 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Verbose
+class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
 {
-    use LoggerAware;
-
     /**
      * The underlying persistable estimator instance.
      *
@@ -48,8 +45,8 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
         $learner = $persister->load();
 
         if (!$learner instanceof Learner) {
-            throw new InvalidArgumentException('Peristable must be a'
-                . ' learner.');
+            throw new InvalidArgumentException('Peristable must be an'
+                . ' instance of a learner.');
         }
 
         return new self($learner, $persister);
@@ -143,12 +140,12 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
     {
         $base = $this->base();
 
-        if ($base instanceof Probabilistic) {
-            return $base->proba($dataset);
+        if (!$base instanceof Probabilistic) {
+            throw new RuntimeException('Base estimator must'
+                . ' implement the probabilistic interface.');
         }
 
-        throw new RuntimeException('Base estimator must'
-            . ' implement the probabilistic interface.');
+        return $base->proba($dataset);
     }
 
     /**
@@ -158,10 +155,6 @@ class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic, Ver
     {
         if ($this->base instanceof Persistable) {
             $this->persister->save($this->base);
-
-            if ($this->logger) {
-                $this->logger->info('Model saved successully');
-            }
         }
     }
 

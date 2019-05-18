@@ -395,7 +395,10 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
             }
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch complete, score=$score loss=$loss");
+                $scoreName = Params::shortName($this->metric);
+                $lossName = Params::shortName($this->costFn);
+
+                $this->logger->info("Epoch $epoch $scoreName=$score $lossName=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -436,7 +439,6 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
 
         if ($this->logger) {
             $this->logger->info('Training complete');
-            $this->logger->info("Best validation score=$bestScore");
         }
     }
 

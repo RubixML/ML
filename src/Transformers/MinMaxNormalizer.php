@@ -19,7 +19,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MinMaxNormalizer implements Elastic
+class MinMaxNormalizer implements Transformer, Stateful, Elastic
 {
     /**
      * The minimum value of the transformed features.

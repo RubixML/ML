@@ -26,7 +26,7 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class TfIdfTransformer implements Elastic
+class TfIdfTransformer implements Transformer, Stateful, Elastic
 {
     /**
      * The document frequencies of each word i.e. the number of times a word
