@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\MAPE;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-class MAPETest extends TestCase
+class SMAPETest extends TestCase
 {
     protected const LABELS = [10, 10.0, 6, -1400, .08];
 
@@ -15,12 +15,12 @@ class MAPETest extends TestCase
 
     public function setUp()
     {
-        $this->metric = new MAPE();
+        $this->metric = new SMAPE();
     }
 
     public function test_build_metric()
     {
-        $this->assertInstanceOf(MAPE::class, $this->metric);
+        $this->assertInstanceOf(SMAPE::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
 
         $this->assertNotEmpty(array_filter($this->metric->range(), 'is_numeric'));
@@ -49,8 +49,8 @@ class MAPETest extends TestCase
 
     public function score_provider() : Generator
     {
-        yield [[7, 9.5, -20, -500, .079], -71.87722470733797];
-        yield [[0, 0, 0, 0, 0], -2852160000000.0];
+        yield [[7, 9.5, -20, -500, .079], -33.641702651574725];
+        yield [[0, 0, 0, 0, 0], -100.0];
         yield [[10, 10.0, 6, -1400, .08], 0.0];
     }
 }

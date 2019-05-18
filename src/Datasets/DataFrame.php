@@ -3,7 +3,6 @@
 namespace Rubix\ML\Datasets;
 
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Transformers\Transformer;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RuntimeException;
@@ -222,19 +221,6 @@ class DataFrame implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $columns;
-    }
-
-    /**
-     * Apply a transformation to the dataset and return for chaining.
-     *
-     * @param \Rubix\ML\Transformers\Transformer $transformer
-     * @return self
-     */
-    public function apply(Transformer $transformer) : self
-    {
-        $transformer->transform($this->samples);
-
-        return $this;
     }
 
     /**

@@ -27,9 +27,9 @@
     - Fixed SELU derivitive computation
     - Changed adaptive optimizer default decay parameters
     - Changed default learning rate of Stochastic Optimizer
-    - Add Mean Absolute Percentage Error metric
-    - Add MAPE and MSPE to Residual Analysis report
-    - Fix MSLE computation in Residual Analysis report
+    - Added SMAPE (Symmetric MAPE) regression metric
+    - Added MAPE and MSPE to Residual Analysis report
+    - Fixed MSLE computation in Residual Analysis report
     - Renamed RMSError Metric to RMSE
 
 - 0.0.11-beta

@@ -226,14 +226,15 @@ $ composer require rubix/ml
 			- [Completeness](#completeness)
 			- [F Beta](#f-beta)
 			- [Homogeneity](#homogeneity)
+            - [Informedness](#informedness)
 			- [MCC](#mcc)
-            - [MAPE](#mape)
 			- [Mean Absolute Error](#mean-absolute-error)
 			- [Mean Squared Error](#mean-squared-error)
 			- [Median Absolute Error](#median-absolute-error)
 			- [Rand Index](#rand-index)
 			- [RMSE](#rmse)
 			- [R Squared](#r-squared)
+            - [SMAPE](#smape)
 			- [V Measure](#v-measure)
 		- [Reports](#reports)
 			- [Aggregate Report](#aggregate-report)
@@ -5390,9 +5391,11 @@ $validator = new MonteCarlo(30, 0.1);
 ```
 
 ### Validation Metrics
-Validation metrics are for evaluating the performance of an Estimator given the ground truth labels.
+Validation metrics are for evaluating the performance of an Estimator. They output a score based on the predictions and the ground-truth labels.
 
-Compute a validation score, pass in the predictions from an estimator along with the ground-truth labels:
+> **Note**: Regression metrics output the negative of their value to maintain the notion that cross validation scores should be *maximized* instead of *minimized* such as the case with loss functions.
+
+To compute a validation score, pass in the predictions from an estimator along with the expected labels:
 ```php
 public score(array $predictions, array $labels) : float
 ```
@@ -5432,7 +5435,7 @@ float(-0.99846070553066)
 ```
 
 ### Accuracy
-Accuracy is a quick classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
+Accuracy is a quick and simple classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Accuracy.php)
 
@@ -5549,23 +5552,6 @@ $metric = new MCC();
 
 >- B. W. Matthews. (1975). Decision of the Predicted and Observed Secondary Structure of T4 Phage Lysozyme.
 
-### MAPE
-The *Mean Absolute Percentage Error* expresses the relative error of a set of predictions and their labels as a percentage. It can be thought of as a weighted version of Mean Absolute Error.
-
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/MAPE.php)
-
-**Compatibility:** Regression
-
-**Range:** -∞ to 0
-
-**Example:**
-
-```php
-use Rubix\ML\CrossValidation\Metrics\MAPE;
-
-$metric = new MAPE();
-```
-
 ### Mean Absolute Error
 A metric that measures the average amount that a prediction is off by given some ground truth (labels).
 
@@ -5671,6 +5657,27 @@ use Rubix\ML\CrossValidation\Metrics\RSquared;
 
 $metric = new RSquared();
 ```
+
+### SMAPE
+*Symmetric Mean Absolute Percentage Error* expresses the relative error of a set of predictions and their labels as a percentage. It has an upper bound of 100 and a lower bound of 0.
+
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/SMAPE.php)
+
+**Compatibility:** Regression
+
+**Range:** -100 to 0
+
+**Example:**
+
+```php
+use Rubix\ML\CrossValidation\Metrics\SMAPE;
+
+$metric = new SMAPE();
+```
+
+**References:**
+
+>- V. Kreinovich. et al. (2014). How to Estimate Forecasting Quality: A System Motivated Derivation of Symmetric Mean Absolute Percentage Error (SMAPE) and Other Similar Characteristics.
 
 ### V Measure
 V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.

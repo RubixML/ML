@@ -8,6 +8,7 @@ use Rubix\ML\Other\Tokenizers\Word;
 use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class WordCountVectorizerTest extends TestCase
 {
@@ -47,5 +48,14 @@ class WordCountVectorizerTest extends TestCase
         ];
     
         $this->assertEquals($outcome, $this->dataset->samples());
+    }
+
+    public function test_transform_unfitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $samples = $this->dataset->samples();
+
+        $this->transformer->transform($samples);
     }
 }

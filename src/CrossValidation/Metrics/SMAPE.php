@@ -8,17 +8,22 @@ use InvalidArgumentException;
 use const Rubix\ML\EPSILON;
 
 /**
- * MAPE
+ * SMAPE
  *
- * The *Mean Absolute Percentage Error* expresses the relative error of a set
- * of predictions and their labels as a percentage. It can be thought of as a
- * weighted version of Mean Absolute Error.
+ * *Symmetric Mean Absolute Percentage Error* expresses the relative error of
+ * a set of predictions and their labels as a percentage. It has an upper
+ * bound of 100 and a lower bound of 0.
+ *
+ * References:
+ * [1] V. Kreinovich. et al. How to Estimate Forecasting Quality: A System
+ * Motivated Derivation of Symmetric Mean Absolute Percentage Error (SMAPE)
+ * and Other Similar Characteristics.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class MAPE implements Metric
+class SMAPE implements Metric
 {
     /**
      * Return a tuple of the min and max output value for this metric.
@@ -27,7 +32,7 @@ class MAPE implements Metric
      */
     public function range() : array
     {
-        return [-INF, 0.];
+        return [-100., 0.];
     }
 
     /**
@@ -64,8 +69,10 @@ class MAPE implements Metric
         $error = 0.;
 
         foreach ($predictions as $i => $prediction) {
-            $error += abs(($labels[$i] - $prediction)
-                / ($prediction ?: EPSILON)) * 100.;
+            $label = $labels[$i];
+
+            $error += 100. * abs(($label - $prediction)
+                / ((abs($prediction) + abs($label)) ?: EPSILON));
         }
 
         return -($error / count($predictions));

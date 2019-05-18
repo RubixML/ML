@@ -2,7 +2,9 @@
 
 namespace Rubix\ML\Datasets;
 
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 use RuntimeException;
@@ -218,6 +220,25 @@ class Labeled extends DataFrame implements Dataset
     public function possibleOutcomes() : array
     {
         return array_values(array_unique($this->labels, SORT_REGULAR));
+    }
+
+    /**
+     * Apply a transformation to the dataset.
+     *
+     * @param \Rubix\ML\Transformers\Transformer $transformer
+     * @return self
+     */
+    public function apply(Transformer $transformer) : self
+    {
+        if ($transformer instanceof Stateful) {
+            if (!$transformer->fitted()) {
+                $transformer->fit($this);
+            }
+        }
+
+        $transformer->transform($this->samples);
+
+        return $this;
     }
 
     /**

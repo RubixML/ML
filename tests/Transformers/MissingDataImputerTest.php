@@ -51,6 +51,8 @@ class MissingDataImputerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->dataset->apply($this->transformer);
+        $samples = $this->dataset->samples();
+
+        $this->transformer->transform($samples);
     }
 }

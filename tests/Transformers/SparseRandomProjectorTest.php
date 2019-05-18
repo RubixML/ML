@@ -48,7 +48,8 @@ class SparseRandomProjectorTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->generator->generate(1)
-            ->apply($this->transformer);
+        $samples = $this->generator->generate(1)->samples();
+
+        $this->transformer->transform($samples);
     }
 }
