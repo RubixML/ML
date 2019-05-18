@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\CrossValidation\Metrics;
 
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\RMSError;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -15,12 +15,12 @@ class RMSErrorTest extends TestCase
 
     public function setUp()
     {
-        $this->metric = new RMSError();
+        $this->metric = new RMSE();
     }
 
     public function test_build_metric()
     {
-        $this->assertInstanceOf(RMSError::class, $this->metric);
+        $this->assertInstanceOf(RMSE::class, $this->metric);
         $this->assertInstanceOf(Metric::class, $this->metric);
 
         $this->assertNotEmpty(array_filter($this->metric->range(), 'is_numeric'));

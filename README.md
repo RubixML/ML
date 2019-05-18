@@ -232,7 +232,7 @@ $ composer require rubix/ml
 			- [Mean Squared Error](#mean-squared-error)
 			- [Median Absolute Error](#median-absolute-error)
 			- [Rand Index](#rand-index)
-			- [RMS Error](#rms-error)
+			- [RMSE](#rmse)
 			- [R Squared](#r-squared)
 			- [V Measure](#v-measure)
 		- [Reports](#reports)
@@ -5638,10 +5638,10 @@ $metric = new RandIndex();
 
 >- W. M. Rand. (1971). Objective Criteria for the Evaluation of  Clustering Methods.
 
-### RMS Error
-Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to compute the residuals of a regression problem.
+### RMSE
+The Root Mean Squared Error is equivalent to the average L2 loss.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/RMSError.php)
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/RMSE.php)
 
 **Compatibility:** Regression
 
@@ -5650,9 +5650,9 @@ Root Mean Squared (RMS) Error or average L2 loss is a metric that is used to com
 **Example:**
 
 ```php
-use Rubix\ML\CrossValidation\Metrics\RMSError;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
 
-$metric = new RMSError();
+$metric = new RMSE();
 ```
 
 ### R Squared

@@ -30,6 +30,7 @@
     - Add Mean Absolute Percentage Error metric
     - Add MAPE and MSPE to Residual Analysis report
     - Fix MSLE computation in Residual Analysis report
+    - Renamed RMSError Metric to RMSE
 
 - 0.0.11-beta
     - K Means now uses mini batch GD instead of SGD
