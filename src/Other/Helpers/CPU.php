@@ -51,8 +51,7 @@ class CPU
                     throw new Exception();
             }
         } catch (Exception $e) {
-            throw new RuntimeException('Could not auto detect'
-                . ' processor core count.');
+            throw new RuntimeException('Could not detect processor core count.');
         }
     }
 }

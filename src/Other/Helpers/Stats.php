@@ -31,8 +31,7 @@ class Stats
         $n = $n ?? count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Mean is undefined for empty'
-                . ' set.');
+            throw new InvalidArgumentException('Mean is undefined for empty set.');
         }
 
         return array_sum($values) / $n;
@@ -43,16 +42,14 @@ class Stats
      *
      * @param array $values
      * @param array $weights
-     * @param int|null $n
      * @return float
      */
-    public static function weightedMean(array $values, array $weights, ?int $n = null) : float
+    public static function weightedMean(array $values, array $weights) : float
     {
-        $n = $n ?? count($values);
+        $n = count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Mean is undefined for empty'
-                . ' set.');
+            throw new InvalidArgumentException('Weighted mean is undefined for empty set.');
         }
 
         if (count($weights) !== $n) {
@@ -79,7 +76,7 @@ class Stats
      */
     public static function midrange(array $values) : float
     {
-        return self::mean([min($values), max($values)]);
+        return (min($values) + max($values)) / 2.;
     }
 
     /**
@@ -93,8 +90,7 @@ class Stats
     public static function mode(array $values) : float
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Mode is undefined for empty'
-                . ' set.');
+            throw new InvalidArgumentException('Mode is undefined for empty set.');
         }
 
         $counts = array_count_values(array_map('strval', $values));
@@ -117,8 +113,7 @@ class Stats
         $n = $n ?? count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Variance is undefined for an'
-                . ' empty set.');
+            throw new InvalidArgumentException('Variance is undefined for an empty set.');
         }
 
         $mean = $mean ?? self::mean($values);
@@ -144,8 +139,7 @@ class Stats
         $n = count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Median is undefined for empty'
-                . ' set.');
+            throw new InvalidArgumentException('Median is undefined for empty set.');
         }
 
         $mid = intdiv($n, 2);
@@ -187,8 +181,7 @@ class Stats
     public static function percentiles(array $values, array $p) : array
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Percentile is not defined'
-                . ' for an empty set.');
+            throw new InvalidArgumentException('Percentile is undefined for an empty set.');
         }
 
         sort($values);
@@ -230,8 +223,8 @@ class Stats
         $n = count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Interquartile range is not'
-                . ' defined for empty set.');
+            throw new InvalidArgumentException('Interquartile range is'
+                . ' undefined for an empty set.');
         }
 
         $mid = intdiv($n, 2);
@@ -284,8 +277,7 @@ class Stats
         $n = $n ?? count($values);
 
         if ($n < 1) {
-            throw new InvalidArgumentException('Central moment is undefined for'
-                . ' empty set.');
+            throw new InvalidArgumentException('Central moment is undefined for empty set.');
         }
 
         $mean = $mean ?? self::mean($values, $n);
@@ -313,9 +305,8 @@ class Stats
     {
         $n = $n ?? count($values);
 
-        if ($n === 0) {
-            throw new InvalidArgumentException('Skewness is undefined for'
-                . ' empty set.');
+        if ($n < 1) {
+            throw new InvalidArgumentException('Skewness is undefined for empty set.');
         }
 
         $mean = $mean ?? self::mean($values, $n);
@@ -339,9 +330,8 @@ class Stats
     {
         $n = $n ?? count($values);
 
-        if ($n === 0) {
-            throw new InvalidArgumentException('Central moment is undefined for'
-                . ' empty set.');
+        if ($n < 1) {
+            throw new InvalidArgumentException('Central moment is undefined for empty set.');
         }
 
         $mean = $mean ?? self::mean($values, $n);
@@ -363,8 +353,7 @@ class Stats
     public static function range(array $values) : float
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Range is undefined for empty'
-                . ' set.');
+            throw new InvalidArgumentException('Range is undefined for empty set.');
         }
 
         return (float) (max($values) - min($values));
@@ -374,7 +363,7 @@ class Stats
      * Compute the population mean and variance and return them in a 2-tuple.
      *
      * @param array $values
-     * @return array
+     * @return float[]
      */
     public static function meanVar(array $values) : array
     {
@@ -388,7 +377,7 @@ class Stats
      * them in a 2-tuple.
      *
      * @param array $values
-     * @return array
+     * @return float[]
      */
     public static function medianMad(array $values) : array
     {

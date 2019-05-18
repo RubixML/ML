@@ -13,7 +13,7 @@ class AmpTest extends TestCase
 
     public function setUp()
     {
-        $this->backend = Amp::autotune();
+        $this->backend = new Amp(4);
     }
 
     public function test_build_backend()

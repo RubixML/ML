@@ -196,7 +196,8 @@ class BatchNorm implements Hidden, Parametric
         $means = $variances = [];
 
         foreach ($input as $row) {
-            [$means[], $variances[]] = Stats::meanVar($row);
+            $means[] = $mean = Stats::mean($row);
+            $variances[] = Stats::variance($row, $mean);
         }
 
         $mean = ColumnVector::quick($means);

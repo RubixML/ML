@@ -43,21 +43,13 @@ class Amp implements Backend
     ];
 
     /**
-     * Automatically build an Amp backend based on processor core count.
-     *
-     * @return self
-     */
-    public static function autotune() : self
-    {
-        return new self(CPU::cores());
-    }
-
-    /**
-     * @param int $workers
+     * @param int|null $workers
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $workers = 4)
+    public function __construct(?int $workers = null)
     {
+        $workers = $workers ?? CPU::cores();
+
         if ($workers < 1) {
             throw new InvalidArgumentException('Number of workers'
                 . " must be greater than 0, $workers given.");
