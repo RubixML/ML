@@ -96,7 +96,7 @@ class LabeledTest extends TestCase
             ['nice', 'furry', 'loner', 'not monster'],
         ];
         
-        $this->assertEquals($outcome, $this->dataset->zip());
+        $this->assertEquals($outcome, iterator_to_array($this->dataset->zip()));
     }
 
     public function test_transform_labels()

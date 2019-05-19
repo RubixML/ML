@@ -1,4 +1,6 @@
 - Unreleased
+
+- 0.0.12-beta
     - Added AdaMax neural network Optimizer
     - Added Parallel interface for multiprocessing
     - Added Backend processing interface
@@ -28,7 +30,7 @@
     - Changed adaptive optimizer default decay parameters
     - Changed default learning rate of Stochastic Optimizer
     - Added SMAPE (Symmetric MAPE) regression metric
-    - Added MAPE and MSPE to Residual Analysis report
+    - Added MAPE to Residual Analysis report
     - Fixed MSLE computation in Residual Analysis report
     - Renamed RMSError Metric to RMSE
     - Embedders no longer implement Estimator interface

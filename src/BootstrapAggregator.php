@@ -81,8 +81,8 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
         }
 
         if ($estimators < 1) {
-            throw new InvalidArgumentException('Ensemble must train at'
-                . " least 1 estimator, $estimators given.");
+            throw new InvalidArgumentException('Ensemble must contain at'
+                . " least 1 learner, $estimators given.");
         }
         
         if ($ratio <= 0. or $ratio >= 1.) {

@@ -207,7 +207,7 @@ class TSNE implements Embedder, Verbose
         $this->rate = $rate;
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
-        $this->early = max(250, (int) round($epochs / 4));
+        $this->early = min(250, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
         $this->window = $window;
     }
@@ -247,7 +247,7 @@ class TSNE implements Embedder, Verbose
         DatasetIsCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Embedder initialized w/ '
+            $this->logger->info('Embedder init w/ '
                 . Params::stringify([
                     'dimensions' => $this->dimensions,
                     'perplexity' => $this->perplexity,

@@ -8,6 +8,7 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 use RuntimeException;
+use Generator;
 
 /**
  * Labeled
@@ -146,19 +147,17 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Return the samples and labels in a single array.
+     * Zip the samples and labels together in a Generator.
      *
-     * @return array[]
+     * @return \Generator
      */
-    public function zip() : array
+    public function zip() : Generator
     {
-        $rows = $this->samples;
+        foreach ($this->samples as $i => $sample) {
+            $sample[] = $this->labels[$i];
 
-        foreach ($rows as $i => &$row) {
-            $row[] = $this->labels[$i];
+            yield $sample;
         }
-
-        return $rows;
     }
 
     /**

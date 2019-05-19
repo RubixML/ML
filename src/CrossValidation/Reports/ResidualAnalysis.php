@@ -57,12 +57,10 @@ class ResidualAnalysis implements Report
             $label = $labels[$i];
 
             $errors[] = $error = $label - $prediction;
-            $density = $error / ($prediction ?: EPSILON);
 
             $l1[] = abs($error);
             $l2[] = $se = $error ** 2;
-            $ape[] = abs($density) * 100.;
-            $spe[] = $density ** 2 * 100.;
+            $ape[] = abs($error / ($prediction ?: EPSILON)) * 100.;
             $log[] = log((1. + $label) / ((1. + $prediction) ?: EPSILON)) ** 2;
 
             $sse += $se;
@@ -78,7 +76,6 @@ class ResidualAnalysis implements Report
             'median_absolute_error' => Stats::median($l1),
             'mean_absolute_percentage_error' => Stats::mean($ape),
             'mean_squared_error' => $mse,
-            'mean_squared_percentage_error' => Stats::mean($spe),
             'rms_error' => sqrt($mse),
             'mean_squared_log_error' => Stats::mean($log),
             'r_squared' => 1. - ($sse / ($sst ?: EPSILON)),

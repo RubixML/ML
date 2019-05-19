@@ -861,7 +861,7 @@ public append(Dataset $dataset) : self
 ```
 
 #### Applying a Transformation
-You can apply a fitted [Transformer](#transformers) to a Dataset directly passing it to the apply method on the Dataset.
+You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the apply method on the Dataset.
 
 ```php
 public apply(Transformer $transformer) : void
@@ -871,11 +871,7 @@ public apply(Transformer $transformer) : void
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 
-$transformer = new OneHotEncoder();
-
-$transformer->fit($dataset);
-
-$dataset->apply($transformer);
+$dataset->apply(new OneHotEncoder());
 ```
 
 ### Labeled
@@ -911,9 +907,9 @@ Return an array of labels:
 public labels() : array
 ```
 
-Return the samples and labels in a single array:
+Zip the samples and labels together in a Generator:
 ```php
-public zip() : array
+public zip() : Generator
 ```
 
 Return the label at the given row offset:
@@ -3213,14 +3209,13 @@ A computation Backend is responsible for executing a queue of Deferred computati
 **Additional Methods:**
 
 This backend does not have any additional methods.
-```
 
 **Example:**
 
 ```php
 use Rubix\ML\Backends\Amp;
 
-$backend = new Amp(); // Autodetect
+$backend = new Amp(); // Auto
 
 $backend = new Amp(16);
 ```
@@ -5742,7 +5737,7 @@ $result = $report->generate($predictions, $labels);
 ```
 
 ### Aggregate Report
-A report that aggregates the results of multiple reports. The reports are indexed by the key given at construction time.
+A report that aggregates the results of multiple reports. The reports are indexed by their key given at construction time.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php)
 
@@ -5943,7 +5938,6 @@ array(12) {
     ['mean_absolute_percentage_error']=> float(18.174348688407402)
     ['median_absolute_error']=> float(0.17700000000000005)
     ['mean_squared_error']=> float(0.05292430893457563)
-    ['mean_squared_percentage_error']=> float(7.525564187948428)
     ['mean_squared_log_error']=> float(51.96853354084834)
     ['rms_error']=> float(0.23005283944036775)
     ['r_squared']=> float(0.9999669635675313)
