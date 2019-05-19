@@ -1381,7 +1381,7 @@ Lightweight Online Detector of Anomalies uses sparse random projection vectors t
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | bins | 5 | int | The number of equi-width bins for each histogram. |
+| 1 | bins | Auto | int | The number of equi-width bins for each histogram. |
 | 2 | estimators | 100 | int | The number of random projections and histograms. |
 | 3 | threshold | 5.5 | float | The threshold anomaly score to be flagged as an outlier. |
 
@@ -1397,9 +1397,7 @@ public static estimateBins($dataset) : int
 ```php
 use Rubix\ML\AnomalyDetection\LODA;
 
-$bins = LODA::estimateBins($dataset);
-
-$estimator = new LODA($bins, 250, 3.5);
+$estimator = new LODA(5, 250, 3.5);
 ```
 
 **References:**

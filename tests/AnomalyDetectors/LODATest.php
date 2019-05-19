@@ -39,7 +39,7 @@ class LODATest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new LODA(5, 100, 5.5);
+        $this->estimator = new LODA(null, 100, 5.5);
 
         $this->metric = new FBeta();
 

@@ -1,4 +1,5 @@
 - Unreleased
+    - LODA now defaults to auto detect bin count
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer

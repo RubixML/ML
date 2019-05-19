@@ -41,7 +41,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * The number of bins in each equi-width histogram.
      *
-     * @var int
+     * @var int|null
      */
     protected $bins;
 
@@ -58,6 +58,13 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
      * @var float
      */
     protected $threshold;
+
+    /**
+     * Should we calculate the equi-width bin count on the fly?
+     *
+     * @var bool
+     */
+    protected $fitBins;
 
     /**
      * The random projection matrix.
@@ -92,14 +99,14 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * @param int $bins
+     * @param int|null $bins
      * @param int $estimators
      * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $bins = 5, int $estimators = 100, float $threshold = 5.5)
+    public function __construct(?int $bins = null, int $estimators = 100, float $threshold = 5.5)
     {
-        if ($bins < 1) {
+        if (isset($bins) and $bins < 1) {
             throw new InvalidArgumentException('The number of bins cannot'
                 . " be less than 1, $bins given.");
         }
@@ -117,6 +124,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
         $this->bins = $bins;
         $this->estimators = $estimators;
         $this->threshold = $threshold;
+        $this->fitBins = empty($bins);
     }
 
     /**
@@ -160,6 +168,10 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     public function train(Dataset $dataset) : void
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        if ($this->fitBins) {
+            $this->bins = self::estimateBins($dataset);
+        }
 
         [$m, $n] = $dataset->shape();
 
