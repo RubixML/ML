@@ -49,7 +49,7 @@ class ResidualAnalysis implements Report
 
         $muHat = Stats::mean($labels);
 
-        $errors = $l1 = $l2 = $ape = $spe = $log = [];
+        $errors = $l1 = $l2 = $are = $sle = [];
 
         $sse = $sst = 0.;
 
@@ -60,31 +60,39 @@ class ResidualAnalysis implements Report
 
             $l1[] = abs($error);
             $l2[] = $se = $error ** 2;
-            $ape[] = abs($error / ($prediction ?: EPSILON)) * 100.;
-            $log[] = log((1. + $label) / ((1. + $prediction) ?: EPSILON)) ** 2;
+            $are[] = abs($error / ($prediction ?: EPSILON));
+            $sle[] = log((1. + $label) / ((1. + $prediction) ?: EPSILON)) ** 2;
 
             $sse += $se;
             $sst += ($label - $muHat) ** 2;
         }
 
-        [$mean, $variance] = Stats::meanVar($errors);
-
         $mse = Stats::mean($l2);
+
+        [$mean, $variance] = Stats::meanVar($errors);
+        [$median, $mad] = Stats::medianMad($errors);
+
+        $min = min($errors);
+        $max = max($errors);
 
         return [
             'mean_absolute_error' => Stats::mean($l1),
             'median_absolute_error' => Stats::median($l1),
-            'mean_absolute_percentage_error' => Stats::mean($ape),
             'mean_squared_error' => $mse,
+            'mean_absolute_percentage_error' => 100. * Stats::mean($are),
             'rms_error' => sqrt($mse),
-            'mean_squared_log_error' => Stats::mean($log),
+            'mean_squared_log_error' => Stats::mean($sle),
             'r_squared' => 1. - ($sse / ($sst ?: EPSILON)),
             'error_mean' => $mean,
+            'error_midrange' => ($min + $max) / 2.,
+            'error_median' => $median,
             'error_variance' => $variance,
+            'error_mad' => $mad,
+            'error_interquartile_range' => Stats::iqr($errors),
             'error_skewness' => Stats::skewness($errors, $mean),
             'error_kurtosis' => Stats::kurtosis($errors, $mean),
-            'error_min' => min($errors),
-            'error_max' => max($errors),
+            'error_min' => $min,
+            'error_max' => $max,
             'cardinality' => count($predictions),
         ];
     }

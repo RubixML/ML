@@ -71,8 +71,8 @@ class SMAPE implements Metric
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];
 
-            $error += 100. * abs(($label - $prediction)
-                / ((abs($prediction) + abs($label)) ?: EPSILON));
+            $error += 100. * abs(($prediction - $label)
+                / ((abs($label) + abs($prediction)) ?: EPSILON));
         }
 
         return -($error / count($predictions));

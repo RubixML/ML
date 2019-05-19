@@ -5883,28 +5883,29 @@ var_dump($result);
 **Output:**
 
 ```sh
-["label"]=> array(2) {
-	["wolf"]=> array(19) {
-      	["accuracy"]=> float(0.6)
-      	["precision"]=> float(0.66666666666667)
-      	["recall"]=> float(0.66666666666667)
-      	["specificity"]=> float(0.5)
-      	["negative_predictive_value"]=> float(0.5)
-      	["false_discovery_rate"]=> float(0.33333333333333)
-      	["miss_rate"]=> float(0.33333333333333)
-      	["fall_out"]=> float(0.5)
-      	["false_omission_rate"]=> float(0.5)
-     	["f1_score"]=> float(0.66666666666667)
-      	["mcc"]=> float(0.16666666666667)
-      	["informedness"]=> float(0.16666666666667)
-      	["markedness"]=> float(0.16666666666667)
-      	["true_positives"]=> int(2)
-      	["true_negatives"]=> int(1)
-      	["false_positives"]=> int(1)
-      	["false_negatives"]=> int(1)
-      	["cardinality"]=> int(3)
-      	["density"]=> float(0.6)
+['label']=> array(2) {
+	['wolf']=> array(19) {
+      	['accuracy']=> float(0.6)
+      	['precision']=> float(0.66666666666667)
+      	['recall']=> float(0.66666666666667)
+      	['specificity']=> float(0.5)
+      	['negative_predictive_value']=> float(0.5)
+      	['false_discovery_rate']=> float(0.33333333333333)
+      	['miss_rate']=> float(0.33333333333333)
+      	['fall_out']=> float(0.5)
+      	['false_omission_rate']=> float(0.5)
+     	['f1_score']=> float(0.66666666666667)
+      	['mcc']=> float(0.16666666666667)
+      	['informedness']=> float(0.16666666666667)
+      	['markedness']=> float(0.16666666666667)
+      	['true_positives']=> int(2)
+      	['true_negatives']=> int(1)
+      	['false_positives']=> int(1)
+      	['false_negatives']=> int(1)
+      	['cardinality']=> int(3)
+      	['density']=> float(0.6)
     }
+    ...
 ```
 
 ### Residual Analysis
@@ -5933,16 +5934,20 @@ var_dump($result);
 **Output:**
 
 ```sh
-array(12) {
+array(18) {
     ['mean_absolute_error']=> float(0.18220216502615122)
-    ['mean_absolute_percentage_error']=> float(18.174348688407402)
     ['median_absolute_error']=> float(0.17700000000000005)
     ['mean_squared_error']=> float(0.05292430893457563)
-    ['mean_squared_log_error']=> float(51.96853354084834)
+    ['mean_absolute_percentage_error']=> float(18.174348688407402)
     ['rms_error']=> float(0.23005283944036775)
+    ['mean_squared_log_error']=> float(51.96853354084834)
     ['r_squared']=> float(0.9999669635675313)
     ['error_mean']=> float(-0.07112216502615118)
+    ['error_midrange']=> float(-0.12315541256537399)
+    ['error_median']=> float(0.0007000000000000001)
     ['error_variance']=> float(0.04786594657656853)
+    ['error_mad']=> float(0.17630000000000004)
+    ['error_interquartile_range']=> float(0.455155412565378)
     ['error_skewness']=> float(-0.49093461098755187)
     ['error_kurtosis']=> float(-1.216490935575394)
     ['error_min']=> float(-0.423310825130748)
