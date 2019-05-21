@@ -61,5 +61,6 @@ class ParamsTest extends TestCase
     public function test_get_short_name()
     {
         $this->assertEquals('KNearestNeighbors', Params::shortName(new KNearestNeighbors()));
+        $this->assertEquals('KNearestNeighbors', Params::shortName(KNearestNeighbors::class));
     }
 }
