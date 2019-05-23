@@ -2,17 +2,17 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier1;
 use Rubix\ML\NeuralNet\Initializers\Constant;
 use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Softmax;
+use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
@@ -48,7 +48,7 @@ class Multiclass implements Output
     /**
      * The function that computes the loss of bad activations.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
      */
     protected $costFn;
 
@@ -111,7 +111,7 @@ class Multiclass implements Output
     /**
      * @param array $classes
      * @param float $alpha
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
@@ -119,7 +119,7 @@ class Multiclass implements Output
     public function __construct(
         array $classes,
         float $alpha = 1e-4,
-        ?CostFunction $costFn = null,
+        ?ClassificationLoss $costFn = null,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
     ) {

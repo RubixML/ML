@@ -14,7 +14,7 @@ use Rubix\Tensor\Tensor;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LeastSquares implements CostFunction
+class LeastSquares implements RegressionLoss
 {
     /**
      * Return a tuple of the min and max output value for this function.

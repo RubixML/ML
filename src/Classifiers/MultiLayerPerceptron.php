@@ -18,12 +18,12 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
+use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\FBeta;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -102,7 +102,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
      * The function that computes the cost of an erroneous activation during
      * training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss
      */
     protected $costFn;
 
@@ -168,7 +168,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param float $holdout
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param int $window
@@ -181,7 +181,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?CostFunction $costFn = null,
+        ?ClassificationLoss $costFn = null,
         float $holdout = 0.1,
         ?Metric $metric = null,
         int $window = 3

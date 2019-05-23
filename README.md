@@ -1522,11 +1522,11 @@ $estimator = new RobustZScore(1.5, 3.0);
 Classifiers are a type of estimator that predict discrete outcomes such as categorical class labels.
 
 ### AdaBoost
-Short for *Adaptive Boosting*, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify.
+Short for *Adaptive Boosting*, this ensemble classifier can improve the performance of an otherwise *weak* classifier by focusing more attention on samples that are harder to classify. It builds an additive model where at each stage a new learner is instantiated and trained.
 
 > **Note**: The default base classifier is a *Decision Stump* i.e a Classification Tree with a max depth of 1.
 
-> [Source] (https://github.com/RubixML/RubixML/blob/master/src/Classifiers/AdaBoost.php)
+> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/AdaBoost.php)
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 

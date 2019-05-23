@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Tests\NeuralNet\Layers;
 
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Deferred;
+use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Binary;

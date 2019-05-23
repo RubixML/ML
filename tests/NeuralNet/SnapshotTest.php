@@ -10,7 +10,7 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
@@ -24,7 +24,7 @@ class SnapshotTest extends TestCase
         $this->network = new FeedForward(new Placeholder1D(1), [
             new Dense(10),
             new Activation(new ELU()),
-        ], new Binary(['yes', 'no'], 1e-4, new LeastSquares()), new Stochastic());
+        ], new Binary(['yes', 'no'], 1e-4, new CrossEntropy()), new Stochastic());
 
         $this->snapshot = new Snapshot($this->network);
     }

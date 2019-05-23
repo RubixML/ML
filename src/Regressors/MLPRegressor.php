@@ -20,8 +20,8 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -101,7 +101,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
      * The function that computes the cost of an erroneous activation during
      * training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
     protected $costFn;
 
@@ -160,7 +160,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param float $holdout
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param int $window
@@ -173,7 +173,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?CostFunction $costFn = null,
+        ?RegressionLoss $costFn = null,
         float $holdout = 0.1,
         ?Metric $metric = null,
         int $window = 3

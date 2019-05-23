@@ -17,8 +17,8 @@ use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -71,7 +71,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
      * The function that computes the cost of an erroneous activation during
      * training.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
     protected $costFn;
 
@@ -104,7 +104,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
      * @param float $alpha
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -113,7 +113,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?CostFunction $costFn = null
+        ?RegressionLoss $costFn = null
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'

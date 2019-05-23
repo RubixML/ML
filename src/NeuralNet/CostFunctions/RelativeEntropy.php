@@ -16,7 +16,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RelativeEntropy implements CostFunction
+class RelativeEntropy implements ClassificationLoss
 {
     /**
      * Return a tuple of the min and max output value for this function.

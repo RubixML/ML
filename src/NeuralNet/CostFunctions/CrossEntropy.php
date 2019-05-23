@@ -20,7 +20,7 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class CrossEntropy implements CostFunction
+class CrossEntropy implements ClassificationLoss
 {
     /**
      * Return a tuple of the min and max output value for this function.

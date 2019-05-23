@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\NeuralNet\Layers;
 
+use Rubix\ML\Deferred;
 use Rubix\Tensor\Matrix;
 use Rubix\Tensor\Vector;
-use Rubix\ML\Deferred;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Initializers\Constant;
@@ -12,7 +12,7 @@ use Rubix\ML\NeuralNet\Parameters\MatrixParam;
 use Rubix\ML\NeuralNet\Parameters\VectorParam;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
+use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
 use InvalidArgumentException;
 use RuntimeException;
 use Generator;
@@ -39,7 +39,7 @@ class Continuous implements Output
     /**
      * The function that computes the loss of bad activations.
      *
-     * @var \Rubix\ML\NeuralNet\CostFunctions\CostFunction
+     * @var \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss
      */
     protected $costFn;
 
@@ -87,14 +87,14 @@ class Continuous implements Output
 
     /**
      * @param float $alpha
-     * @param \Rubix\ML\NeuralNet\CostFunctions\CostFunction|null $costFn
+     * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $weightInitializer
      * @param \Rubix\ML\NeuralNet\Initializers\Initializer|null $biasInitializer
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $alpha = 1e-4,
-        ?CostFunction $costFn = null,
+        ?RegressionLoss $costFn = null,
         ?Initializer $weightInitializer = null,
         ?Initializer $biasInitializer = null
     ) {

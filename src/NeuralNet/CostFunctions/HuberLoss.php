@@ -17,7 +17,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class HuberLoss implements CostFunction
+class HuberLoss implements RegressionLoss
 {
     /**
      * The pivot point i.e the point where numbers larger will be evalutated

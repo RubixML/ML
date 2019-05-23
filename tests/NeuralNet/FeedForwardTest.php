@@ -12,7 +12,7 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use PHPUnit\Framework\TestCase;
 
 class FeedForwardTest extends TestCase
@@ -52,7 +52,7 @@ class FeedForwardTest extends TestCase
             new Activation(new ReLU()),
         ];
 
-        $this->output = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new LeastSquares());
+        $this->output = new Multiclass(['yes', 'no', 'maybe'], 1e-4, new CrossEntropy());
 
         $this->network = new FeedForward($this->input, $this->hidden, $this->output, new Adam(0.001));
     }
