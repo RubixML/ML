@@ -31,32 +31,32 @@ class RelativeEntropy implements ClassificationLoss
     /**
      * Compute the loss.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : Tensor
+    public function compute(Tensor $output, Tensor $target) : Tensor
     {
-        $expected = $expected->clip(EPSILON, 1.);
+        $target = $target->clip(EPSILON, 1.);
         $output = $output->clip(EPSILON, 1.);
 
-        return $expected->divide($output)->log()
-            ->multiply($expected);
+        return $target->divide($output)->log()
+            ->multiply($target);
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function differentiate(Tensor $expected, Tensor $output) : Tensor
+    public function differentiate(Tensor $output, Tensor $target) : Tensor
     {
-        $expected = $expected->clip(EPSILON, 1.);
+        $target = $target->clip(EPSILON, 1.);
         $output = $output->clip(EPSILON, 1.);
 
-        return $output->subtract($expected)
+        return $output->subtract($target)
             ->divide($output);
     }
 }

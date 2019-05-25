@@ -11,9 +11,9 @@ use InvalidArgumentException;
  *
  * The Cyclical optimizer uses a global learning rate that cycles between the
  * lower and upper bound over a designated period while also decaying the
- * uppoer bound by a factor of decay each step. Cyclical learning rates
- * have been shown to help escape local minima and saddle points thus
- * acheiving higher accuracy.
+ * upper bound by the decay coefficient at each step. Cyclical learning rates
+ * have been shown to help escape bad local minima and saddle points thus
+ * achieving lower training loss.
  *
  * References:
  * [1] L. N. Smith. (2017). Cyclical Learning Rates for Training Neural Networks.

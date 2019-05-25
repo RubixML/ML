@@ -212,13 +212,13 @@ class Continuous implements Output
                 . ' backpropagating.');
         }
 
-        $expected = Vector::quick($labels);
+        $target = Vector::quick($labels);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         $dL = $this->costFn
-            ->differentiate($expected, $this->z)
+            ->differentiate($this->z, $target)
             ->add($penalties)
             ->divide($this->z->n());
 
@@ -232,7 +232,7 @@ class Continuous implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
 
-        $loss = $this->costFn->compute($expected, $this->z)->sum()->mean();
+        $loss = $this->costFn->compute($this->z, $target)->sum()->mean();
 
         unset($this->input, $this->z);
 

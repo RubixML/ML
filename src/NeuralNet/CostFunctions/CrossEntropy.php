@@ -33,34 +33,34 @@ class CrossEntropy implements ClassificationLoss
     }
 
     /**
-     * Compute the matrix.
+     * Compute the loss.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : Tensor
+    public function compute(Tensor $output, Tensor $target) : Tensor
     {
-        return $expected->negate()->multiply($output->log());
+        return $target->negate()->multiply($output->clipLower(EPSILON)->log());
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function differentiate(Tensor $expected, Tensor $output) : Tensor
+    public function differentiate(Tensor $output, Tensor $target) : Tensor
     {
-        $tensor = get_class($expected);
+        $tensor = get_class($target);
         
-        $denominator = $tensor::ones(...$expected->shape())
+        $denominator = $tensor::ones(...$target->shape())
             ->subtract($output)
             ->multiply($output)
             ->clipLower(EPSILON);
 
-        return $output->subtract($expected)
+        return $output->subtract($target)
             ->divide($denominator);
     }
 }

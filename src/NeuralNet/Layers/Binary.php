@@ -258,19 +258,19 @@ class Binary implements Output
             $expected[] = $this->classes[$label];
         }
 
-        $expected = Vector::quick($expected);
+        $target = Vector::quick($expected);
 
         $penalties = $this->weights->w()->sum()
             ->multiply($this->alpha);
 
         if ($this->costFn instanceof CrossEntropy) {
             $dA = $this->computed
-                ->subtract($expected)
+                ->subtract($target)
                 ->add($penalties)
                 ->divide($this->computed->n());
         } else {
             $dL = $this->costFn
-                ->differentiate($expected, $this->computed)
+                ->differentiate($this->computed, $target)
                 ->add($penalties)
                 ->divide($this->computed->n());
 
@@ -289,7 +289,7 @@ class Binary implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 
-        $loss = $this->costFn->compute($expected, $this->computed)->sum()->mean();
+        $loss = $this->costFn->compute($this->computed, $target)->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
 

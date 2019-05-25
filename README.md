@@ -2,15 +2,15 @@
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
-A high-level machine learning library that allows you to build programs that learn from data using the [PHP](https://php.net) language.
+A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
 - **Developer-friendly** API for fast prototyping
-- **40+** modern *supervised* and *unsupervised* learners
+- **40+** modern supervised and unsupervised learners
 - **Modular** architecture combines power and flexibility
 - **Open source** and free to use commercially
 
 ## Installation
-Install Rubix ML with [Composer](https://getcomposer.org/):
+Install Rubix ML into your project with [Composer](https://getcomposer.org/):
 ```sh
 $ composer require rubix/ml
 ```
@@ -1906,17 +1906,15 @@ use Rubix\ML\CrossValidation\Metrics\MCC;
 
 $estimator = new MultiLayerPerceptron([
     new Dense(100),
-	new Activation(new LeakyReLU()),
-	new Dropout(0.3),
+    new Activation(new LeakyReLU()),
+    new Dropout(0.3),
     new Dense(100),
-	new Activation(new LeakyReLU()),
-	new Dropout(0.3),
-	new Dense(50),
-	new Activation(new LeakyReLU()),
-	new Dense(30),
+    new Activation(new LeakyReLU()),
+    new Dropout(0.3),
+    new Dense(50),
     new PReLU(),
-    new Dense(10),
-	new PReLU(),
+    new Dense(30),
+    new PReLU(),
 ], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
@@ -2035,7 +2033,7 @@ $estimator = new RandomForest(new ClassificationTree(10), 400, 0.1);
 >- L. Breiman et al. (2005). Extremely Randomized Trees.
 
 ### Softmax Classifier
-A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a Softmax output layer.
+A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a [Softmax](#softmax) output layer.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php)
 
@@ -4968,7 +4966,7 @@ $optimizer = new AdaMax(0.0001, 0.1, 0.001);
 >- D. P. Kingma et al. (2014). Adam: A Method for Stochastic Optimization.
 
 ### Cyclical
-The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by a factor of gamma each step. Cyclical learning rates have been shown to help escape local minima and saddle points thus achieving higher accuracy.
+The Cyclical optimizer uses a global learning rate that cycles between the lower and upper bound over a designated period while also decaying the upper bound by the decay coefficient at each step. Cyclical learning rates have been shown to help escape bad local minima and saddle points thus achieving lower training loss.
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Optimizers/Cyclical.php)
 

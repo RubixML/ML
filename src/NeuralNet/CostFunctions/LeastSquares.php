@@ -29,24 +29,24 @@ class LeastSquares implements RegressionLoss
     /**
      * Compute the loss.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : Tensor
+    public function compute(Tensor $output, Tensor $target) : Tensor
     {
-        return $output->subtract($expected)->square();
+        return $output->subtract($target)->square();
     }
 
     /**
      * Calculate the gradient of the cost function with respect to the output.
      *
-     * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
+     * @param \Rubix\Tensor\Tensor $target
      * @return \Rubix\Tensor\Tensor
      */
-    public function differentiate(Tensor $expected, Tensor $output) : Tensor
+    public function differentiate(Tensor $output, Tensor $target) : Tensor
     {
-        return $output->subtract($expected);
+        return $output->subtract($target);
     }
 }
