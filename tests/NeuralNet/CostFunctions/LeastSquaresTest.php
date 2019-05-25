@@ -32,16 +32,22 @@ class LeastSquaresTest extends TestCase
 
     public function test_compute()
     {
-        $cost = $this->costFn->compute($this->expected, $this->activation);
+        $loss = $this->costFn->compute($this->expected, $this->activation)->asArray();
 
-        $this->assertEquals(39.036080000000005, $cost);
+        $expected = [
+            [4.0804000000000125],
+            [4.0],
+            [179.56],
+            [7.290000000000015],
+            [0.25],
+        ];
+
+        $this->assertEquals($expected, $loss);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFn
-            ->differentiate($this->expected, $this->activation)
-            ->asArray();
+        $gradient = $this->costFn->differentiate($this->expected, $this->activation)->asArray();
 
         $expected = [
             [-2.020000000000003],
@@ -51,6 +57,6 @@ class LeastSquaresTest extends TestCase
             [0.5],
         ];
 
-        $this->assertEquals($expected, $derivative);
+        $this->assertEquals($expected, $gradient);
     }
 }

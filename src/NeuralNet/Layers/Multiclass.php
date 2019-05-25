@@ -293,7 +293,7 @@ class Multiclass implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dA]);
 
-        $loss = $this->costFn->compute($expected, $this->computed);
+        $loss = $this->costFn->compute($expected, $this->computed)->sum()->mean();
 
         unset($this->input, $this->z, $this->computed);
 

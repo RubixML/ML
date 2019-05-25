@@ -18,9 +18,9 @@ interface CostFunction
      *
      * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
-     * @return float
+     * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : float;
+    public function compute(Tensor $expected, Tensor $output) : Tensor;
 
     /**
      * Calculate the gradient of the cost function with respect to the output.

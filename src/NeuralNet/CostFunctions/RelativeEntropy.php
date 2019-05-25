@@ -33,15 +33,15 @@ class RelativeEntropy implements ClassificationLoss
      *
      * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
-     * @return float
+     * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : float
+    public function compute(Tensor $expected, Tensor $output) : Tensor
     {
         $expected = $expected->clip(EPSILON, 1.);
         $output = $output->clip(EPSILON, 1.);
 
         return $expected->divide($output)->log()
-            ->multiply($expected)->sum()->mean();
+            ->multiply($expected);
     }
 
     /**

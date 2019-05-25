@@ -21,7 +21,7 @@ class HuberLossTest extends TestCase
 
         $this->activation = Matrix::quick([[33.98], [20.], [4.6], [44.2], [38.5]]);
 
-        $this->costFn = new HuberLoss();
+        $this->costFn = new HuberLoss(1.);
     }
 
     public function test_build_cost_function()
@@ -32,16 +32,22 @@ class HuberLossTest extends TestCase
 
     public function test_compute()
     {
-        $cost = $this->costFn->compute($this->expected, $this->activation);
+        $loss = $this->costFn->compute($this->expected, $this->activation)->asArray();
 
-        $this->assertEquals(3.384914773928223, $cost);
+        $expected = [
+            [1.2539742678211772],
+            [1.2360679774997898],
+            [12.43726162579266],
+            [1.8792360097775962],
+            [0.1180339887498949],
+        ];
+
+        $this->assertEquals($expected, $loss);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFn
-            ->differentiate($this->expected, $this->activation)
-            ->asArray();
+        $gradient = $this->costFn->differentiate($this->expected, $this->activation)->asArray();
 
         $expected = [
             [-0.8961947919452747],
@@ -51,6 +57,6 @@ class HuberLossTest extends TestCase
             [0.4472135954999579],
         ];
 
-        $this->assertEquals($expected, $derivative);
+        $this->assertEquals($expected, $gradient);
     }
 }

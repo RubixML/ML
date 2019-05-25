@@ -31,11 +31,11 @@ class LeastSquares implements RegressionLoss
      *
      * @param \Rubix\Tensor\Tensor $expected
      * @param \Rubix\Tensor\Tensor $output
-     * @return float
+     * @return \Rubix\Tensor\Tensor
      */
-    public function compute(Tensor $expected, Tensor $output) : float
+    public function compute(Tensor $expected, Tensor $output) : Tensor
     {
-        return $output->subtract($expected)->square()->sum()->mean();
+        return $output->subtract($expected)->square();
     }
 
     /**

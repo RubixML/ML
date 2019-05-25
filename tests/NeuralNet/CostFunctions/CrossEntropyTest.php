@@ -34,15 +34,22 @@ class CrossEntropyTest extends TestCase
 
     public function test_compute()
     {
-        $cost = $this->costFn->compute($this->expected, $this->activation);
+        $loss = $this->costFn->compute($this->expected, $this->activation)->asArray();
 
-        $this->assertEquals(0.046638777433542236, $cost);
+        $expected = [
+            [0.01005033585350145],
+            [0.0],
+            [0.0],
+            [0.2231435513142097],
+            [0.0],
+        ];
+
+        $this->assertEquals($expected, $loss);
     }
 
     public function test_differentiate()
     {
-        $derivative = $this->costFn->differentiate($this->expected, $this->activation)
-            ->asArray();
+        $gradient = $this->costFn->differentiate($this->expected, $this->activation)->asArray();
 
         $expected = [
             [-1.01010101010101],
@@ -52,6 +59,6 @@ class CrossEntropyTest extends TestCase
             [1.0204081632653061],
         ];
 
-        $this->assertEquals($expected, $derivative);
+        $this->assertEquals($expected, $gradient);
     }
 }

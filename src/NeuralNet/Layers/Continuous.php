@@ -232,7 +232,7 @@ class Continuous implements Output
 
         $gradient = new Deferred([$this, 'gradient'], [$w, $dL]);
 
-        $loss = $this->costFn->compute($expected, $this->z);
+        $loss = $this->costFn->compute($expected, $this->z)->sum()->mean();
 
         unset($this->input, $this->z);
 
