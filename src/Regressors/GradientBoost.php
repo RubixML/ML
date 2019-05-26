@@ -5,6 +5,7 @@ namespace Rubix\ML\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
+use Rubix\Tensor\Vector;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
@@ -144,8 +145,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         $this->booster = $booster ?? new RegressionTree(3);
-        $this->rate = $rate;
         $this->estimators = $estimators;
+        $this->rate = $rate;
         $this->ratio = $ratio;
         $this->minChange = $minChange;
         $this->base = $base ?? new DummyRegressor(new Mean());
@@ -168,7 +169,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      */
     public function compatibility() : array
     {
-        $compatibility = array_intersect($this->base->compatibility(), $this->booster->compatibility());
+        $compatibility = array_intersect(
+            $this->base->compatibility(),
+            $this->booster->compatibility()
+        );
 
         return array_values($compatibility);
     }
@@ -219,31 +223,20 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             ]));
         }
 
-        $n = $dataset->numRows();
-        $p = (int) round($this->ratio * $n);
+        $p = (int) round($this->ratio * $dataset->numRows());
 
         if ($this->logger) {
-            $this->logger->info('Training '
-                . Params::shortName($this->base) . ' base estimator');
+            $this->logger->info('Training base estimator');
         }
 
         $this->base->train($dataset);
 
-        $predictions = $this->base->predict($dataset);
+        $output = Vector::quick($this->base->predict($dataset));
+        $target = Vector::quick($dataset->labels());
 
-        $yHat = [];
+        $gradient = $this->gradient($output, $target)->asArray();
 
-        foreach ($predictions as $i => $prediction) {
-            $yHat[] = $dataset->label($i) - $prediction;
-        }
-
-        $residual = Labeled::quick($dataset->samples(), $yHat);
-
-        if ($this->logger) {
-            $this->logger->info("Boosting with $this->estimators "
-                . Params::shortName($this->booster)
-                . ($this->estimators > 1 ? 's' : ''));
-        }
+        $dataset = Labeled::quick($dataset->samples(), $gradient);
 
         $this->ensemble = $this->steps = [];
 
@@ -252,24 +245,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $booster = clone $this->booster;
 
-            $subset = $residual->randomize()->head($p);
+            $subset = $dataset->randomize()->head($p);
 
             $booster->train($subset);
 
-            $predictions = $booster->predict($residual);
+            $output = Vector::quick($booster->predict($dataset));
+            $target = Vector::quick($dataset->labels());
 
-            $labels = $residual->labels();
-
-            $loss = 0.;
-
-            foreach ($predictions as $i => $prediction) {
-                $label = $labels[$i];
-
-                $loss += ($label - $prediction) ** 2;
-                $yHat[$i] = $label - ($this->rate * $prediction);
-            }
-
-            $loss /= $n;
+            $loss = $this->loss($output, $target);
 
             $this->ensemble[] = $booster;
             $this->steps[] = $loss;
@@ -286,7 +269,11 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            $residual = Labeled::quick($residual->samples(), $yHat);
+            $output = $output->multiply($this->rate);
+
+            $gradient = $this->gradient($output, $target)->asArray();
+
+            $dataset = Labeled::quick($dataset->samples(), $gradient);
 
             $previous = $loss;
         }
@@ -321,5 +308,29 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Calculate the training loss.
+     *
+     * @param \Rubix\Tensor\Vector $output
+     * @param \Rubix\Tensor\Vector $target
+     * @return float
+     */
+    public function loss(Vector $output, Vector $target) : float
+    {
+        return $target->subtract($output)->square()->mean();
+    }
+
+    /**
+     * Compute the negative gradient of the cost function.
+     *
+     * @param \Rubix\Tensor\Vector $output
+     * @param \Rubix\Tensor\Vector $target
+     * @return \Rubix\Tensor\Vector
+     */
+    public function gradient(Vector $output, Vector $target) : Vector
+    {
+        return $target->subtract($output);
     }
 }
