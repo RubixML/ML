@@ -15,6 +15,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Gradient Boost
  *
@@ -38,16 +40,11 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 {
     use LoggerAware;
 
-    public const AVAILABLE_BOOSTERS = [
-        RegressionTree::class,
-        ExtraTreeRegressor::class,
-    ];
-
     /**
      * The weak regressor that will fix up the error residuals of the base
      * learner.
      *
-     * @var \Rubix\ML\Learner
+     * @var \Rubix\ML\Regressors\RegressionTree
      */
     protected $booster;
 
@@ -80,13 +77,6 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $minChange;
 
     /**
-     * The amount of mean squared error to tolerate before early stopping.
-     *
-     * @var float
-     */
-    protected $tolerance;
-
-    /**
      * The base regressor to be boosted.
      *
      * @var \Rubix\ML\Learner
@@ -112,29 +102,22 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     ];
 
     /**
-     * @param \Rubix\ML\Learner|null $booster
-     * @param float $rate
+     * @param \Rubix\ML\Regressors\RegressionTree|null $booster
      * @param int $estimators
+     * @param float $rate
      * @param float $ratio
      * @param float $minChange
-     * @param float $tolerance
      * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        ?Learner $booster = null,
-        float $rate = 0.1,
+        ?RegressionTree $booster = null,
         int $estimators = 100,
+        float $rate = 0.1,
         float $ratio = 0.8,
         float $minChange = 1e-4,
-        float $tolerance = 1e-3,
         ?Learner $base = null
     ) {
-        if ($booster and !in_array(get_class($booster), self::AVAILABLE_BOOSTERS)) {
-            throw new InvalidArgumentException('The estimator chosen as the'
-                . ' booster is not compatible with gradient boost.');
-        }
-
         if ($rate < 0.) {
             throw new InvalidArgumentException('Learning rate must be greater'
                 . " than 0, $rate given.");
@@ -145,19 +128,14 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " 1 estimator, $estimators given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio <= 0. or $ratio >= 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+                . " 0 and 1, $ratio given.");
         }
 
         if ($minChange < 0.) {
             throw new InvalidArgumentException('Minimum change cannot be less'
                 . " than 0, $minChange given.");
-        }
-
-        if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Tolerance cannot be less than'
-                . " 0, $tolerance given.");
         }
 
         if ($base and $base->type() !== self::REGRESSOR) {
@@ -170,7 +148,6 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->minChange = $minChange;
-        $this->tolerance = $tolerance;
         $this->base = $base ?? new DummyRegressor(new Mean());
     }
 
@@ -234,11 +211,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
                 'booster' => $this->booster,
-                'rate' => $this->rate,
                 'estimators' => $this->estimators,
+                'rate' => $this->rate,
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
-                'tolerance' => $this->tolerance,
                 'base' => $this->base,
             ]));
         }
@@ -302,15 +278,11 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
             if (abs($previous - $loss) < $this->minChange) {
-                break 1;
-            }
-
-            if ($loss < $this->tolerance) {
                 break 1;
             }
 

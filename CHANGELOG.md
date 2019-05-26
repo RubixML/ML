@@ -1,6 +1,7 @@
 - Unreleased
     - Added Regression and Classification Loss interfaces
     - LODA now defaults to auto detect bin count
+    - Removed tolerance param from Gradient Boost and AdaBoost
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer

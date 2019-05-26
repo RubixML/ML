@@ -6,100 +6,103 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\ThresholdedReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class ThresholdedReLUTest extends TestCase
 {
-    protected $input;
-
-    protected $activationFunction;
-
-    protected $activations;
+    protected $activationFn;
 
     public function setUp()
     {
-        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
-
-        $this->activations = Matrix::quick([
-            [1.0], [0.0], [0.0], [20.0], [0.0],
-        ]);
-
-        $this->activationFunction = new ThresholdedReLU(0.1);
+        $this->activationFn = new ThresholdedReLU(0.1);
     }
 
     public function test_build_activation_function()
     {
-        $this->assertInstanceOf(ThresholdedReLU::class, $this->activationFunction);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
+        $this->assertInstanceOf(ThresholdedReLU::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
     public function test_get_range()
     {
-        $this->assertEquals([0., INF], $this->activationFunction->range());
+        $this->assertEquals([0., INF], $this->activationFn->range());
     }
 
-    public function test_compute()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(Matrix $input, array $expected)
     {
-        [$min, $max] = $this->activationFunction->range();
+        $activations = $this->activationFn->compute($input)->asArray();
 
-        $activations = $this->activationFunction->compute($this->input);
-
-        $this->assertEquals($this->activations[0][0], $activations[0][0]);
-        $this->assertEquals($this->activations[1][0], $activations[1][0]);
-        $this->assertEquals($this->activations[2][0], $activations[2][0]);
-        $this->assertEquals($this->activations[3][0], $activations[3][0]);
-        $this->assertEquals($this->activations[4][0], $activations[4][0]);
-
-        $this->assertThat(
-            $activations[0][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[1][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[2][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[3][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[4][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
+        $this->assertEquals($expected, $activations);
     }
 
-    public function test_differentiate()
+    public function compute_provider() : Generator
     {
-        $activations = $this->activationFunction->compute($this->input);
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            [
+                [1.0, 0.0, 0.0, 20.0, 0.0],
+            ],
+        ];
 
-        $derivatives = $this->activationFunction->differentiate($this->input, $activations);
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [0.0, 0.31, 0.0],
+                [0.99, 0.0, 0.0],
+                [0.0, 0.0, 0.54],
+            ],
+        ];
+    }
 
-        $this->assertEquals(1.0, $derivatives[0][0]);
-        $this->assertEquals(0.0, $derivatives[1][0]);
-        $this->assertEquals(0.0, $derivatives[2][0]);
-        $this->assertEquals(1.0, $derivatives[3][0]);
-        $this->assertEquals(0.0, $derivatives[4][0]);
+    /**
+     * @dataProvider differentiate_provider
+     */
+    public function test_differentiate(Matrix $input, Matrix $activations, array $expected)
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
+    }
+
+    public function differentiate_provider() : Generator
+    {
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            Matrix::quick([
+                [1.0, 0.0, 0.0, 20.0, 0.0],
+            ]),
+            [
+                [1, 0, 0, 1, 0],
+            ],
+        ];
+
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            Matrix::quick([
+                [0.0, 0.31, 0.0],
+                [0.99, 0.0, 0.0],
+                [0.0, 0.0, 0.54],
+            ]),
+            [
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 1],
+            ],
+        ];
     }
 }

@@ -36,15 +36,10 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
 {
     use Multiprocessing;
 
-    protected const AVAILABLE_TREES = [
-        ClassificationTree::class,
-        ExtraTreeClassifier::class,
-    ];
-
     /**
      * The base estimator.
      *
-     * @var \Rubix\ML\Learner
+     * @var \Rubix\ML\Classifiers\ClassificationTree
      */
     protected $base;
 
@@ -88,18 +83,13 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     protected $featureCount;
 
     /**
-     * @param \Rubix\ML\Learner|null $base
+     * @param \Rubix\ML\Classifiers\ClassificationTree|null $base
      * @param int $estimators
      * @param float $ratio
      * @throws \InvalidArgumentException
      */
-    public function __construct(?Learner $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?ClassificationTree $base = null, int $estimators = 100, float $ratio = 0.1)
     {
-        if ($base and !in_array(get_class($base), self::AVAILABLE_TREES)) {
-            throw new InvalidArgumentException('Base estimator is not'
-                . ' compatible with this ensemble.');
-        }
-
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
                 . " in the ensemble cannot be less than 1, $estimators"

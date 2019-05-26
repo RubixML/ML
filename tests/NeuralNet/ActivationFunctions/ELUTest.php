@@ -7,32 +7,21 @@ use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use Generator;
 
 class ELUTest extends TestCase
 {
-    protected const TOLERANCE = 1e-10;
-
-    protected $input;
-
-    protected $activationFunction;
-
-    protected $activations;
+    protected $activationFn;
 
     public function setUp()
     {
-        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
-
-        $this->activations = Matrix::quick([
-            [1.0], [-0.3934693402873666], [0.0], [20.0], [-0.9999546000702375],
-        ]);
-
-        $this->activationFunction = new ELU(1.0);
+        $this->activationFn = new ELU(1.0);
     }
 
     public function test_build_activation_function()
     {
-        $this->assertInstanceOf(ELU::class, $this->activationFunction);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
+        $this->assertInstanceOf(ELU::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
     public function test_bad_alpha_parameter()
@@ -44,70 +33,84 @@ class ELUTest extends TestCase
 
     public function test_get_range()
     {
-        $this->assertEquals([-1.0, INF], $this->activationFunction->range());
+        $this->assertEquals([-1.0, INF], $this->activationFn->range());
     }
 
-    public function test_compute()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(Matrix $input, array $expected)
     {
-        [$min, $max] = $this->activationFunction->range();
+        $activations = $this->activationFn->compute($input)->asArray();
 
-        $activations = $this->activationFunction->compute($this->input);
-
-        $this->assertEquals($this->activations[0][0], $activations[0][0], '', self::TOLERANCE);
-        $this->assertEquals($this->activations[1][0], $activations[1][0], '', self::TOLERANCE);
-        $this->assertEquals($this->activations[2][0], $activations[2][0], '', self::TOLERANCE);
-        $this->assertEquals($this->activations[3][0], $activations[3][0], '', self::TOLERANCE);
-        $this->assertEquals($this->activations[4][0], $activations[4][0], '', self::TOLERANCE);
-
-        $this->assertThat(
-            $activations[0][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[1][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[2][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[3][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[4][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
+        $this->assertEquals($expected, $activations);
     }
 
-    public function test_differentiate()
+    public function compute_provider() : Generator
     {
-        $derivatives = $this->activationFunction->differentiate($this->input, $this->activations);
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0]
+            ]),
+            [
+                [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
+            ],
+        ];
 
-        $this->assertEquals(1.0, $derivatives[0][0], '', self::TOLERANCE);
-        $this->assertEquals(0.6065306597126334, $derivatives[1][0], '', self::TOLERANCE);
-        $this->assertEquals(1.0, $derivatives[2][0], '', self::TOLERANCE);
-        $this->assertEquals(1.0, $derivatives[3][0], '', self::TOLERANCE);
-        $this->assertEquals(4.539992976249074E-5, $derivatives[4][0], '', self::TOLERANCE);
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [-0.11307956328284252, 0.31, -0.3873736058155839],
+                [0.99, 0.08, -0.029554466451491845],
+                [0.05, -0.4054794520298056, 0.54],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider differentiate_provider
+     */
+    public function test_differentiate(Matrix $input, Matrix $activations, array $expected)
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
+    }
+
+    public function differentiate_provider() : Generator
+    {
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            Matrix::quick([
+                [1.0, -0.3934693402873666, 0.0, 20.0, -0.9999546000702375],
+            ]),
+            [
+                [1.0, 0.6065306597126334, 1.0, 1.0, 4.539992976249074E-5],
+            ],
+        ];
+
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            Matrix::quick([
+                [-0.11307956328284252, 0.31, -0.3873736058155839],
+                [0.99, 0.08, -0.029554466451491845],
+                [0.05, -0.4054794520298056, 0.54],
+            ]),
+            [
+                [0.8869204367171575, 1.0, 0.6126263941844161],
+                [1.0, 1.0, 0.9704455335485082],
+                [1.0, 0.5945205479701944, 1.0],
+            ],
+        ];
     }
 }

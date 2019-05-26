@@ -68,13 +68,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @var float
      */
     protected $ratio;
-
-    /**
-     * The amount of validation error to tolerate before early stopping.
-     *
-     * @var float
-     */
-    protected $tolerance;
     
     /**
      * The class labels of the training set.
@@ -127,15 +120,13 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
      * @param int $estimators
      * @param float $rate
      * @param float $ratio
-     * @param float $tolerance
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Learner $base = null,
         int $estimators = 100,
         float $rate = 1.,
-        float $ratio = 0.8,
-        float $tolerance = 1e-3
+        float $ratio = 0.8
     ) {
         if ($base and $base->type() !== self::CLASSIFIER) {
             throw new InvalidArgumentException('Base estimator must be a'
@@ -152,21 +143,15 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than 0, $rate given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio <= 0 or $ratio >= 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
-        }
-
-        if ($tolerance < 0. or $tolerance > 1.) {
-            throw new InvalidArgumentException('Validation error tolerance must'
-                . " be between 0 and 1, $tolerance given.");
+                . " 0 and 1, $ratio given.");
         }
 
         $this->base = $base ?? new ClassificationTree(1);
         $this->estimators = $estimators;
         $this->rate = $rate;
         $this->ratio = $ratio;
-        $this->tolerance = $tolerance;
     }
 
     /**
@@ -252,7 +237,6 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 'estimators' => $this->estimators,
                 'rate' => $this->rate,
                 'ratio' => $this->ratio,
-                'tolerance' => $this->tolerance,
             ]));
         }
 
@@ -301,11 +285,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $total <= 0) {
-                break 1;
-            }
-
-            if ($loss < $this->tolerance) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 

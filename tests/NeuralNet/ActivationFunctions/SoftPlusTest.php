@@ -6,99 +6,103 @@ use Rubix\Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
 use PHPUnit\Framework\TestCase;
+use Generator;
 
 class SoftPlusTest extends TestCase
 {
-    protected $input;
-
-    protected $activationFunction;
-
-    protected $activations;
+    protected $activationFn;
 
     public function setUp()
     {
-        $this->input = Matrix::quick([[1.0], [-0.5], [0.0], [20.0], [-10.0]]);
-
-        $this->activations = Matrix::quick([
-            [1.3132616875182228], [0.4740769841801067], [0.6931471805599453],
-            [20.000000002061153], [4.5398899216870535E-5],
-        ]);
-
-        $this->activationFunction = new SoftPlus();
+        $this->activationFn = new SoftPlus();
     }
 
     public function test_build_activation_function()
     {
-        $this->assertInstanceOf(SoftPlus::class, $this->activationFunction);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFunction);
+        $this->assertInstanceOf(SoftPlus::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
     }
 
     public function test_get_range()
     {
-        $this->assertEquals([0.0, INF], $this->activationFunction->range());
+        $this->assertEquals([0.0, INF], $this->activationFn->range());
     }
 
-    public function test_compute()
+    /**
+     * @dataProvider compute_provider
+     */
+    public function test_compute(Matrix $input, array $expected)
     {
-        [$min, $max] = $this->activationFunction->range();
+        $activations = $this->activationFn->compute($input)->asArray();
 
-        $activations = $this->activationFunction->compute($this->input);
-
-        $this->assertEquals($this->activations[0][0], $activations[0][0]);
-        $this->assertEquals($this->activations[1][0], $activations[1][0]);
-        $this->assertEquals($this->activations[2][0], $activations[2][0]);
-        $this->assertEquals($this->activations[3][0], $activations[3][0]);
-        $this->assertEquals($this->activations[4][0], $activations[4][0]);
-
-        $this->assertThat(
-            $activations[0][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[1][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[2][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[3][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
-
-        $this->assertThat(
-            $activations[4][0],
-            $this->logicalAnd(
-                $this->greaterThanOrEqual($min),
-                $this->lessThanOrEqual($max)
-        )
-        );
+        $this->assertEquals($expected, $activations);
     }
 
-    public function test_differentiate()
+    public function compute_provider() : Generator
     {
-        $derivatives = $this->activationFunction->differentiate($this->input, $this->activations);
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            [
+                [1.3132616875182228, 0.4740769841801067, 0.6931471805599453, 20.000000002061153, 4.5398899216870535E-5],
+            ],
+        ];
 
-        $this->assertEquals(0.7880584423829144, $derivatives[0][0]);
-        $this->assertEquals(0.6163482688094494, $derivatives[1][0]);
-        $this->assertEquals(0.6666666666666666, $derivatives[2][0]);
-        $this->assertEquals(0.9999999979388463, $derivatives[3][0]);
-        $this->assertEquals(0.5000113497248023, $derivatives[4][0]);
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            [
+                [0.6349461015956135, 0.8601118864387145, 0.47786415060626164],
+                [1.3059609474567209, 0.7339469673175899, 0.6782596763414485],
+                [0.7184596480132864, 0.466573094164618, 0.9991627362708937],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider differentiate_provider
+     */
+    public function test_differentiate(Matrix $input, Matrix $activations, array $expected)
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEquals($expected, $derivatives);
+    }
+
+    public function differentiate_provider() : Generator
+    {
+        yield [
+            Matrix::quick([
+                [1.0, -0.5, 0.0, 20.0, -10.0],
+            ]),
+            Matrix::quick([
+                [1.3132616875182228, 0.4740769841801067, 0.6931471805599453, 20.000000002061153, 4.5398899216870535E-5],
+            ]),
+            [
+                [0.7880584423829144, 0.6163482688094494, 0.6666666666666666, 0.9999999979388463, 0.5000113497248023],
+            ],
+        ];
+
+        yield [
+            Matrix::quick([
+                [-0.12, 0.31, -0.49],
+                [0.99, 0.08, -0.03],
+                [0.05, -0.52, 0.54],
+            ]),
+            Matrix::quick([
+                [0.6349461015956135, 0.8601118864387145, 0.47786415060626164],
+                [1.3059609474567209, 0.7339469673175899, 0.6782596763414485],
+                [0.7184596480132864, 0.466573094164618, 0.9991627362708937],
+            ]),
+            [
+                [0.6536101281900434, 0.7026840300982835, 0.6172433983573185],
+                [0.7868364913554997, 0.6756708090907413, 0.6633501645777039],
+                [0.6722677309178808, 0.6145723336890343, 0.7308939307469305],
+            ],
+        ];
     }
 }

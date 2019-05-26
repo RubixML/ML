@@ -1540,7 +1540,6 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 1.0 | float | The learning rate i.e step size. |
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training set per epoch. |
-| 5 | tolerance | 1e-3 | float | The amount of validation error to tolerate before an early stop is considered. |
 
 **Additional Methods:**
 
@@ -1565,7 +1564,7 @@ public steps() : array
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 
-$estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5, 1e-2);
+$estimator = new AdaBoost(new ExtraTreeClassifier(3), 100, 0.1, 0.5);
 ```
 
 **References:**
@@ -2569,13 +2568,12 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 
 | # | Param | Default | Type | Description |
 |--|--|--|--|--|
-| 1 | booster | Regression Tree | object | The regressor that will fix up the error residuals of the base learner. |
-| 2 | rate | 0.1 | float | The learning rate of the ensemble. |
-| 3 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 1 | booster | RegressionTree | object | The regressor that will fix up the error residuals of the base learner. |
+| 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
+| 3 | rate | 0.1 | float | The learning rate of the ensemble. |
 | 4 | ratio | 0.8 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
-| 6 | tolerance | 1e-3 | float | The amount of mean squared error to tolerate before early stopping. |
-| 7 | base | Dummy Regressor | object | The *weak* learner to be boosted. |
+| 6 | base | Dummy Regressor | object | The *weak* learner to be boosted. |
 
 **Additional Methods:**
 
@@ -2592,7 +2590,7 @@ use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Other\Strategies\Mean;
 
-$estimator = new GradientBoost(new RegressionTree(3), 0.1, 400, 0.3, 1e-4, 1e-3, new DummyRegressor(new Mean()));
+$estimator = new GradientBoost(new RegressionTree(3), 400, 0.1, 0.3, 1e-4, new DummyRegressor(new Mean()));
 ```
 
 **References:**
