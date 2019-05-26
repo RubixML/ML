@@ -102,19 +102,23 @@ class IntervalDiscretizer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
+        $n = $dataset->numColumns();
+        
         $this->intervals = [];
 
-        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
+        for ($column = 0; $column < $n; $column++) {
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $values = $dataset->column($column);
+                
+                $min = min($values);
+                $max = max($values);
 
-        foreach ($columns as $column => $values) {
-            $min = min($values);
-            $max = max($values);
+                $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
 
-            $edges = Vector::linspace($min, $max, $this->bins + 1)->asArray();
+                array_shift($edges);
 
-            array_shift($edges);
-
-            $this->intervals[$column] = $edges;
+                $this->intervals[$column] = $edges;
+            }
         }
     }
 

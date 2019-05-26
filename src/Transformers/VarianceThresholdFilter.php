@@ -77,16 +77,20 @@ class VarianceThresholdFilter implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
-
+        $n = $dataset->numColumns();
+        
         $this->selected = [];
 
-        foreach ($columns as $column => $values) {
-            if (Stats::variance($values) <= $this->threshold) {
-                continue 1;
-            }
+        for ($column = 0; $column < $n; $column++) {
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $values = $dataset->column($column);
+                
+                if (Stats::variance($values) <= $this->threshold) {
+                    continue 1;
+                }
 
-            $this->selected[$column] = true;
+                $this->selected[$column] = true;
+            }
         }
     }
 

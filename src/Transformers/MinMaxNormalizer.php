@@ -141,24 +141,28 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic
             return;
         }
 
-        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
+        $n = $dataset->numColumns();
 
-        foreach ($columns as $column => $values) {
-            $min = min($values);
-            $max = max($values);
+        for ($column = 0; $column < $n; $column++) {
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $values = $dataset->column($column);
+                
+                $min = min($values);
+                $max = max($values);
 
-            $min = min($min, $this->minimums[$column]);
-            $max = max($max, $this->maximums[$column]);
+                $min = min($min, $this->minimums[$column]);
+                $max = max($max, $this->maximums[$column]);
 
-            $scale = ($this->max - $this->min)
-                / (($max - $min) ?: EPSILON);
+                $scale = ($this->max - $this->min)
+                    / (($max - $min) ?: EPSILON);
 
-            $minHat = $this->min - $min * $scale;
+                $minHat = $this->min - $min * $scale;
 
-            $this->minimums[$column] = $min;
-            $this->maximums[$column] = $max;
-            $this->scales[$column] = $scale;
-            $this->mins[$column] = $minHat;
+                $this->minimums[$column] = $min;
+                $this->maximums[$column] = $max;
+                $this->scales[$column] = $scale;
+                $this->mins[$column] = $minHat;
+            }
         }
     }
 

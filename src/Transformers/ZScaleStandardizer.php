@@ -115,16 +115,20 @@ class ZScaleStandardizer implements Transformer, Stateful, Elastic
      */
     public function fit(Dataset $dataset) : void
     {
-        $columns = $dataset->columnsByType(DataType::CONTINUOUS);
+        $n = $dataset->numColumns();
 
         $this->means = $this->variances = $this->stddevs = [];
 
-        foreach ($columns as $column => $values) {
-            [$mean, $variance] = Stats::meanVar($values);
+        for ($column = 0; $column < $n; $column++) {
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $values = $dataset->column($column);
 
-            $this->means[$column] = $mean;
-            $this->variances[$column] = $variance;
-            $this->stddevs[$column] = sqrt($variance ?: EPSILON);
+                [$mean, $variance] = Stats::meanVar($values);
+
+                $this->means[$column] = $mean;
+                $this->variances[$column] = $variance;
+                $this->stddevs[$column] = sqrt($variance ?: EPSILON);
+            }
         }
 
         $this->n = $dataset->numRows();

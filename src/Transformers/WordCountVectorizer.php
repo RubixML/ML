@@ -117,47 +117,51 @@ class WordCountVectorizer implements Transformer, Stateful
      */
     public function fit(Dataset $dataset) : void
     {
-        $columns = $dataset->columnsByType(DataType::CATEGORICAL);
+        $n = $dataset->numColumns();
 
         $this->vocabulary = [];
 
-        foreach ($columns as $column => $values) {
-            $tfs = $dfs = [];
+        for ($column = 0; $column < $n; $column++) {
+            if ($dataset->columnType($column) === DataType::CATEGORICAL) {
+                $values = $dataset->column($column);
 
-            foreach ($values as $text) {
-                $tokens = $this->tokenizer->tokenize($text);
+                $tfs = $dfs = [];
 
-                $counts = array_count_values($tokens);
+                foreach ($values as $text) {
+                    $tokens = $this->tokenizer->tokenize($text);
 
-                foreach ($counts as $token => $count) {
-                    if (isset($tfs[$token])) {
-                        $tfs[$token] += $count;
-                        $dfs[$token] += 1;
-                    } else {
-                        $tfs[$token] = $count;
-                        $dfs[$token] = 1;
+                    $counts = array_count_values($tokens);
+
+                    foreach ($counts as $token => $count) {
+                        if (isset($tfs[$token])) {
+                            $tfs[$token] += $count;
+                            $dfs[$token] += 1;
+                        } else {
+                            $tfs[$token] = $count;
+                            $dfs[$token] = 1;
+                        }
                     }
                 }
-            }
 
-            if ($this->minDocumentFrequency > 1) {
-                foreach ($dfs as $token => $frequency) {
-                    if ($frequency < $this->minDocumentFrequency) {
-                        unset($tfs[$token]);
+                if ($this->minDocumentFrequency > 1) {
+                    foreach ($dfs as $token => $frequency) {
+                        if ($frequency < $this->minDocumentFrequency) {
+                            unset($tfs[$token]);
+                        }
                     }
                 }
-            }
 
-            if (count($tfs) > $this->maxVocabulary) {
-                arsort($tfs);
-    
-                $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
+                if (count($tfs) > $this->maxVocabulary) {
+                    arsort($tfs);
+        
+                    $tfs = array_slice($tfs, 0, $this->maxVocabulary, true);
+                }
+        
+                $this->vocabulary[$column] = array_combine(
+                    array_keys($tfs),
+                    range(0, count($tfs) - 1)
+                ) ?: [];
             }
-    
-            $this->vocabulary[$column] = array_combine(
-                array_keys($tfs),
-                range(0, count($tfs) - 1)
-            ) ?: [];
         }
     }
 
