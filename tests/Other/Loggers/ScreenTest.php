@@ -14,10 +14,10 @@ class ScreenTest extends TestCase
 
     public function setUp()
     {
-        $this->logger = new Screen('default', false);
+        $this->logger = new Screen('default', Screen::DEFAULT_TIMESTAMP_FORMAT);
     }
 
-    public function test_build_strategy()
+    public function test_build_logger()
     {
         $this->assertInstanceOf(Screen::class, $this->logger);
         $this->assertInstanceOf(Logger::class, $this->logger);
@@ -26,7 +26,7 @@ class ScreenTest extends TestCase
 
     public function test_log()
     {
-        $this->expectOutputString('default.INFO: test' . PHP_EOL);
+        $this->expectOutputRegex('/\b(default.INFO: test)\b/');
 
         $this->logger->log(LogLevel::INFO, 'test');
     }

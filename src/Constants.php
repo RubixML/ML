@@ -12,5 +12,8 @@ namespace Rubix\ML
      */
     const LOG_EPSILON = -18.420680744;
 
+    /**
+     * Two multiplied by pi.
+     */
     const TWO_PI = 2. * M_PI;
 }

@@ -2,6 +2,7 @@
     - Added Regression and Classification Loss interfaces
     - LODA now defaults to auto detect bin count
     - Removed tolerance param from Gradient Boost and AdaBoost
+    - Screen logger timestamp format now configurable
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer

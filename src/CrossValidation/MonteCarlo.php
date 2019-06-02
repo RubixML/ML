@@ -88,7 +88,7 @@ class MonteCarlo implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
-        $scores = [];
+        $this->backend->flush();
 
         for ($i = 0; $i < $this->simulations; $i++) {
             $dataset->randomize();

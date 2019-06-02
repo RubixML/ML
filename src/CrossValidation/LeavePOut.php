@@ -68,7 +68,7 @@ class LeavePOut implements Validator, Parallel
 
         $n = (int) round($dataset->numRows() / $this->p);
 
-        $score = 0.;
+        $this->backend->flush();
 
         for ($i = 0; $i < $n; $i++) {
             $training = clone $dataset;

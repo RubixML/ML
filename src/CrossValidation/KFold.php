@@ -84,7 +84,7 @@ class KFold implements Validator, Parallel
             ? $dataset->stratifiedFold($this->k)
             : $dataset->fold($this->k);
 
-        $scores = [];
+        $this->backend->flush();
 
         for ($i = 0; $i < $this->k; $i++) {
             $training = Labeled::quick();

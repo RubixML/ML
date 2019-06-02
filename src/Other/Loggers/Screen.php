@@ -13,7 +13,9 @@ namespace Rubix\ML\Other\Loggers;
  */
 class Screen extends Logger
 {
-    public const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    public const DEFAULT_CHANNEL = 'main';
+    
+    public const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
     
     /**
      * The channel name that appears on each line.
@@ -23,20 +25,22 @@ class Screen extends Logger
     protected $channel;
 
     /**
-     * Should we show timestamps?
+     * The format of the timestamp.
      *
-     * @var bool
+     * @var string
      */
-    protected $timestamps;
+    protected $format;
 
     /**
      * @param string $channel
-     * @param bool $timestamps
+     * @param string $format
      */
-    public function __construct(string $channel = 'model', bool $timestamps = true)
-    {
+    public function __construct(
+        string $channel = self::DEFAULT_CHANNEL,
+        string $format = self::DEFAULT_TIMESTAMP_FORMAT
+    ) {
         $this->channel = trim($channel);
-        $this->timestamps = $timestamps;
+        $this->format = $format;
     }
 
     /**
@@ -48,14 +52,10 @@ class Screen extends Logger
      */
     public function log($level, $message, array $context = []) : void
     {
-        $prefix = '';
-
-        if ($this->timestamps) {
-            $prefix .= '[' . date(self::TIMESTAMP_FORMAT) . '] ';
-        }
+        $prefix = $this->format ? '[' . date($this->format) . '] ' : '';
 
         $prefix .= $this->channel . '.' . strtoupper((string) $level) . ': ';
 
-        echo $prefix . $message . PHP_EOL;
+        echo $prefix . trim($message) . PHP_EOL;
     }
 }
