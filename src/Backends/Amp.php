@@ -59,6 +59,16 @@ class Amp implements Backend
     }
 
     /**
+     * Return the number of background worker processes.
+     *
+     * @return int
+     */
+    public function workers() : int
+    {
+        return $this->pool->getMaxSize();
+    }
+
+    /**
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Deferred $deferred
@@ -95,7 +105,7 @@ class Amp implements Backend
             $results = yield all($this->queue);
         });
 
-        $this->queue = [];
+        $this->flush();
 
         return $results;
     }

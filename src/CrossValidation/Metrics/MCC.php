@@ -39,11 +39,10 @@ class MCC implements Metric
      * @param int $fn
      * @return float
      */
-    public static function mcc(int $tp, int $tn, int $fp, int $fn) : float
+    public static function compute(int $tp, int $tn, int $fp, int $fn) : float
     {
         return ($tp * $tn - $fp * $fn)
-            / (sqrt(($tp + $fp) * ($tp + $fn)
-            * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
+            / (sqrt(($tp + $fp) * ($tp + $fn) * ($tn + $fp) * ($tn + $fn)) ?: EPSILON);
     }
 
     /**
@@ -110,7 +109,7 @@ class MCC implements Metric
         }
 
         return Stats::mean(
-            array_map([$this, 'mcc'], $truePos, $trueNeg, $falsePos, $falseNeg)
+            array_map([self::class, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg)
         );
     }
 }

@@ -23,8 +23,6 @@ class RMSE extends MeanSquaredError
      */
     public function score(array $predictions, array $labels) : float
     {
-        $score = parent::score($predictions, $labels);
-
-        return -sqrt(-$score);
+        return -sqrt(-parent::score($predictions, $labels));
     }
 }

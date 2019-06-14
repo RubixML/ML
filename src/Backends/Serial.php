@@ -29,6 +29,16 @@ class Serial implements Backend
     ];
 
     /**
+     * Return the number of background worker processes.
+     *
+     * @return int
+     */
+    public function workers() : int
+    {
+        return 1;
+    }
+
+    /**
      * Queue up a deferred computation for backend processing.
      *
      * @param \Rubix\ML\Deferred $deferred

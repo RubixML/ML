@@ -4,6 +4,8 @@ namespace Rubix\ML\CrossValidation\Metrics;
 
 use Rubix\ML\Estimator;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * V Measure
  *
@@ -59,6 +61,6 @@ class VMeasure implements Metric
         $completeness = (new Completeness())->score($predictions, $labels);
 
         return 2. * ($homogeneity * $completeness)
-            / ($homogeneity + $completeness);
+            / (($homogeneity + $completeness) ?: EPSILON);
     }
 }

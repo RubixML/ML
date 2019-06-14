@@ -28,6 +28,20 @@ use const Rubix\ML\EPSILON;
 class Informedness implements Metric
 {
     /**
+     * Compute the class informedness score.
+     *
+     * @param int $tp
+     * @param int $tn
+     * @param int $fp
+     * @param int $fn
+     * @return float
+     */
+    public static function compute(int $tp, int $tn, int $fp, int $fn) : float
+    {
+        return $tp / (($tp + $fn) ?: EPSILON) + $tn / (($tn + $fp) ?: EPSILON) - 1.;
+    }
+    
+    /**
      * Return a tuple of the min and max output value for this metric.
      *
      * @return float[]
@@ -91,21 +105,7 @@ class Informedness implements Metric
         }
 
         return Stats::mean(
-            array_map([$this, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg)
+            array_map([self::class, 'compute'], $truePos, $trueNeg, $falsePos, $falseNeg)
         );
-    }
-
-    /**
-     * Compute the class informedness score.
-     *
-     * @param int $tp
-     * @param int $tn
-     * @param int $fp
-     * @param int $fn
-     * @return float
-     */
-    public function compute(int $tp, int $tn, int $fp, int $fn) : float
-    {
-        return $tp / (($tp + $fn) ?: EPSILON) + $tn / (($tn + $fp) ?: EPSILON) - 1.;
     }
 }

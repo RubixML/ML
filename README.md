@@ -880,8 +880,9 @@ For *supervised* Estimators you will need to train it with a Labeled dataset con
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php)
 
 **Parameters:**
+
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
@@ -1044,8 +1045,9 @@ Unlabeled datasets can be used to train *unsupervised* Estimators and for feedin
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php)
 
 **Parameters:**
+
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | validate | true | bool | Should we validate the input? |
 
@@ -1147,7 +1149,7 @@ An Agglomerate is a collection of generators with each of them given a user-defi
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | generators | | array | A collection of generators keyed by their user-specified label (0 indexed by default). |
 | 2 | weights | Auto | array | A set of arbitrary weight values corresponding to a generator's proportion to the overall agglomeration. |
 
@@ -1184,7 +1186,7 @@ A normally distributed (Gaussian) n-dimensional blob of samples centered at a gi
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | center | [0.0, 0.0] | array | The coordinates of the center of the blob. |
 | 2 | stddev | 1.0 | float or array | Either the global standard deviation or an array with the standard deviation on a per feature column basis. |
 
@@ -1212,7 +1214,7 @@ Creates a dataset of points forming a circle in 2 dimensions. The label of each 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the circle. |
 | 2 | y | 0.0 | float | The *y* coordinate of the center of the circle. |
 | 3 | scale | 1.0 | float | The scaling factor of the circle. |
@@ -1242,7 +1244,7 @@ Generate a dataset consisting of 2 dimensional samples that form a half moon sha
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the half moon. |
 | 2 | y | 0.0 | float | The *y* coordinate of the center of the half moon. |
 | 3 | scale | 1.0 | float | The scaling factor of the half moon. |
@@ -1273,7 +1275,7 @@ Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the swiss roll. |
 | 2 | y | 0.0 | float | The *y* coordinate of the center of the swiss roll. |
 | 3 | z | 0.0 | float | The *z* coordinate of the center of the swiss roll. |
@@ -1309,7 +1311,7 @@ An ensemble detector comprised of Isolation Trees each trained on a different su
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | estimators | 300 | int | The number of estimators to train in the ensemble. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
@@ -1342,7 +1344,7 @@ A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
@@ -1380,7 +1382,7 @@ Lightweight Online Detector of Anomalies uses sparse random projection vectors t
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | bins | Auto | int | The number of equi-width bins for each histogram. |
 | 2 | estimators | 100 | int | The number of random projections and histograms. |
 | 3 | threshold | 5.5 | float | The threshold anomaly score to be flagged as an outlier. |
@@ -1417,7 +1419,7 @@ Local Outlier Factor (LOF) measures the local deviation of density of a given sa
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
@@ -1453,7 +1455,7 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | nu | 0.1 | float | An upper bound on the percentage of margin errors and a lower bound on the percentage of support vectors. |
 | 2 | kernel | RBF | object | The kernel function used to express non-linear data in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
@@ -1489,7 +1491,7 @@ A quick *global* anomaly detector that uses a modified Z score which is robust t
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
 | 2 | threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
 
@@ -1535,7 +1537,7 @@ Short for *Adaptive Boosting*, this ensemble classifier can improve the performa
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | base | Classification Tree | object | The base *weak* classifier to be boosted. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 1.0 | float | The learning rate i.e step size. |
@@ -1584,7 +1586,7 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
@@ -1628,7 +1630,7 @@ A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | strategy | Popularity Contest | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 **Additional Methods:**
@@ -1656,7 +1658,7 @@ An *Extremely Randomized* Classification Tree - these trees differ from standard
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
@@ -1704,7 +1706,7 @@ A variate of the [Naive Bayes](#naive-bayes) algorithm that uses a probability d
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | priors | Auto | array | The user-defined class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
 **Additional Methods:**
@@ -1751,7 +1753,7 @@ A fast [K Nearest Neighbors](#k-nearest-neighbors) algorithm that uses a K-d tre
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -1787,7 +1789,7 @@ A distance-based algorithm that locates the K nearest neighbors from the trainin
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -1817,7 +1819,7 @@ A type of linear classifier that uses the logistic (*sigmoid*) function to estim
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
@@ -1861,7 +1863,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
@@ -1933,7 +1935,7 @@ Probability-based classifier that estimates posterior probabilities of each clas
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing to apply to the probabilities. |
 | 2 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
@@ -1974,7 +1976,7 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -2008,7 +2010,7 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](#classifi
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | base | ClassificationTree | object | The base tree estimator. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
@@ -2043,7 +2045,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
@@ -2087,7 +2089,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
 | 2 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
 | 3 | shrinking | true | bool | Should we use the shrinking heuristic? |
@@ -2129,7 +2131,7 @@ Clustering is a technique in machine learning that focuses on grouping samples i
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
@@ -2166,7 +2168,7 @@ Distance-based soft clusterer that allows samples to belong to multiple clusters
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | c | | int | The number of target clusters. |
 | 2 | fuzz | 2.0 | float | Determines the bandwidth of the fuzzy area. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
@@ -2212,7 +2214,7 @@ A Gaussian Mixture model (GMM) is a probabilistic model for representing the pre
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
 | 2 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 3 | min change | 1e-3 | float | The minimum change in the components necessary for the algorithm to continue training. |
@@ -2261,7 +2263,7 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
 | 2 | batch size | 100 | int | The size of each mini batch in samples. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
@@ -2314,7 +2316,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 | 3 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
@@ -2370,7 +2372,7 @@ This is a fast [Plus Plus](#plus-plus) approximator that replaces the brute forc
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | m | 50 | int | The number of candidate nodes in the Markov Chain. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 
@@ -2395,7 +2397,7 @@ This seeder attempts to maximize the likelihood of seeding distant clusters whil
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
 
 **Example:**
@@ -2445,7 +2447,7 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network]
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
 | 2 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
 | 3 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
@@ -2487,7 +2489,7 @@ Regressor that guesses output values based on a user-defined [Guessing Strategy]
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | strategy | Mean | object | The guessing strategy to employ when guessing the outcome of a sample. |
 
 **Additional Methods:**
@@ -2517,7 +2519,7 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
@@ -2567,7 +2569,7 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | booster | RegressionTree | object | The regressor that will fix up the error residuals of the base learner. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
 | 3 | rate | 0.1 | float | The learning rate of the ensemble. |
@@ -2609,7 +2611,7 @@ A fast implementation of [KNN Regressor](#knn-regressor) using a spatially-aware
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -2645,7 +2647,7 @@ A version of [K Nearest Neighbors](#knn-regressor) that uses the average (mean) 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -2677,7 +2679,7 @@ A multi layer feedforward [Neural Network](#neural-network) with a continuous ou
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
 | 2 | batch size | 100 | int | The number of training samples to process at a time. |
 | 3 | optimizer | Adam | object | The gradient descent optimizer used to train the underlying network. |
@@ -2744,7 +2746,7 @@ This is the regressor version of [Radius Neighbors](#radius-neighbors) classifie
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
@@ -2783,7 +2785,7 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
 | 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
@@ -2827,7 +2829,7 @@ L2 penalized least squares linear regression solved using closed-form equation.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The L2 regularization penalty amount to be added to the weight coefficients. |
 
 **Additional Methods:**
@@ -2863,7 +2865,7 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
 | 2 | epsilon | 0.1 | float | Specifies the margin within which no penalty is associated in the training loss. |
 | 3 | kernel | RBF | object | The kernel function used to operate in higher dimensions. |
@@ -2922,7 +2924,7 @@ $low = $embedder->embed($high);
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | 2 | int | The number of dimensions of the target embedding. |
 | 2 | perplexity | 30 | int | The number of effective nearest neighbors to refer to when computing the variance of the Gaussian over that sample. |
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
@@ -2971,7 +2973,7 @@ Bootstrap Aggregating (or *bagging* for short) is a model averaging technique de
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | base | | object | The base estimator to be used in the ensemble. |
 | 2 | estimators | 10 | int | The number of base estimators to train in the ensemble. |
 | 3 | ratio | 0.5 | float | The ratio of samples from the training set to train each base estimator with. |
@@ -3007,7 +3009,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | Equal | array | The influence score for each expert in the committee. |
 
@@ -3060,7 +3062,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | base | | string | The fully qualified class name of the base Estimator. |
 | 2 | grid | | array | An array of [n-tuples](#what-is-a-tuple) where each tuple contains possible parameters for a given constructor location by ordinal. |
 | 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
@@ -3112,7 +3114,7 @@ The Persistent Model wrapper gives the estimator two additional methods (`save()
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | base | | object | An instance of the base estimator to be persisted. |
 | 2 | persister | | object | The persister object used to store the model data. |
 
@@ -3155,7 +3157,7 @@ Pipeline is a meta estimator responsible for transforming the input data by appl
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | transformers |  | array | The transformer middleware to be applied to the input data in order. |
 | 2 | estimator |  | object | An instance of the base estimator to receive transformed data. |
 | 3 | elastic | true | bool | Should we update the elastic transformers during partial training? |
@@ -3197,7 +3199,7 @@ A computation Backend is responsible for executing a queue of Deferred computati
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | workers | Auto | int | The maximum number of processes to execute in parallel. |
 
 **Additional Methods:**
@@ -3257,7 +3259,7 @@ Filesystems are local or remote storage drives that are organized by files and f
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | path | | string | The path to the model file on the filesystem. |
 | 2 | history | false | bool | Should we keep a history of past saves? |
 | 3 | serializer | Native | object | The serializer used to convert to and from storage format. |
@@ -3285,7 +3287,7 @@ Redis is a high performance in-memory key value store that can be used to persis
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | key | | string | The key of the object in the database. |
 | 2 | host | '127.0.0.1' | string | The hostname or IP address of the Redis server. |
 | 3 | port | 6379 | int | The port of the Redis server. |
@@ -3428,7 +3430,7 @@ The Dense Random Projector uses a random matrix sampled from a dense uniform dis
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
 **Additional Methods:**
@@ -3461,7 +3463,7 @@ A random projector is a dimensionality reducer based on the Johnson-Lindenstraus
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
 **Additional Methods:**
@@ -3518,7 +3520,7 @@ The Image Resizer scales and crops images to a user specified width, height, and
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | width | 32 | int | The width of the transformed image. |
 | 2 | heights | 32 | int | The height of the transformed image. |
 | 3 | driver | 'gd' | string | The PHP extension to use for image processing ('gd' *or* 'imagick'). |
@@ -3549,7 +3551,7 @@ Image Vectorizer takes images and converts them into a flat vector of raw color 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | channels | 3 | int | The channel depth i.e the number of rgba channels to encode starting with red. |
 
 **Additional Methods:**
@@ -3576,7 +3578,7 @@ This transformer creates an equi-width histogram for each continuous feature col
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | bins | 5 | int | The number of bins (discrete features) per continuous feature column. |
 
 **Additional Methods:**
@@ -3661,7 +3663,7 @@ Run a stateless lambda function (*anonymous* function) over the sample matrix. T
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | lambda | | callable | The lambda function to run over the sample matrix. |
 
 **Additional Methods:**
@@ -3694,7 +3696,7 @@ A supervised dimensionality reduction technique that selects the most discrimina
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | | int | The target number of dimensions to project onto. |
 
 **Additional Methods:**
@@ -3762,7 +3764,7 @@ The *Min Max* Normalizer scales the input features to a value between a user-spe
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | min | 0. | float | The minimum value of the transformed features. |
 | 2 | max | 1. | float | The maximum value of the transformed features. |
 
@@ -3798,7 +3800,7 @@ In the real world, it is common to have data with missing values here and there.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | placeholder | '?' | string or numeric | The placeholder value that denotes a missing value. |
 | 2 | continuous strategy | Mean | object | The guessing strategy to employ for continuous feature columns. |
 | 3 | categorical strategy | K Most Frequent | object | The guessing strategy to employ for categorical feature columns. |
@@ -3879,7 +3881,7 @@ This transformer will generate polynomials up to and including the specified *de
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | degree | 2 | int | The highest degree polynomial to generate from each feature vector. |
 
 **Additional Methods:**
@@ -3906,7 +3908,7 @@ Principal Component Analysis or *PCA* is a dimensionality reduction technique th
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | None | int | The target number of dimensions to project onto. |
 
 **Additional Methods:**
@@ -3950,7 +3952,7 @@ This standardizer transforms continuous features by centering them around the me
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
 **Additional Methods:**
@@ -3985,7 +3987,7 @@ The Sparse Random Projector uses a random matrix sampled from a sparse Gaussian 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
 **Additional Methods:**
@@ -4019,7 +4021,7 @@ Removes user-specified words from any categorical feature column including blobs
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | stop words | | array | A list of stop words to filter out of each text feature. |
 
 **Additional Methods:**
@@ -4044,7 +4046,7 @@ This transformer converts all text to lowercase and *optionally* removes extra w
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | trim | false | bool | Should we trim excess whitespace? |
 
 **Additional Methods:**
@@ -4102,7 +4104,7 @@ A type of feature selector that selects feature columns that have a greater vari
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | threshold | 0. | float | Feature columns with a variance greater than this threshold will be selected. |
 
 **Additional Methods:**
@@ -4131,7 +4133,7 @@ The Word Count Vectorizer builds a vocabulary from the training samples and tran
 
 **Parameters:**
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | max vocabulary | PHP_INT_MAX | int | The maximum number of words to encode into each document vector. |
 | 2 | min document frequency | 1 | int | The minimum number of documents a word must appear in to be added to the vocabulary. |
 | 3 | tokenizer | Word | object | The tokenizer that extracts individual words from samples of text. |
@@ -4168,7 +4170,7 @@ A method of centering and scaling a dataset such that it has 0 mean and unit var
 
 **Parameters:**
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
 **Additional Methods:**
@@ -4217,7 +4219,7 @@ Activation Functions can be broken down into three classes - Sigmoidal (or *S* s
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | alpha | 1.0 | float | The value at which leakage will begin to saturate. Ex. alpha = 1.0 means that the output will never be less than -1.0 when inactivated. |
 
 **Example:**
@@ -4257,7 +4259,7 @@ Leaky Rectified Linear Units are activation functions that output x when x > 0 o
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | leakage | 0.1 | float | The amount of leakage as a proportion of the input value to allow to pass through when not inactivated. |
 
 **Example:**
@@ -4280,7 +4282,7 @@ A Thresholded ReLU (Rectified Linear Unit) only outputs the signal above a user-
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | threshold | 0. | float | The input value necessary to trigger an activation. |
 
 **Example:**
@@ -4421,7 +4423,7 @@ The *pseudo* Huber Loss function transitions between L1 and L2 (Least Squares) l
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | delta | 1. | float | The pivot point i.e the point where numbers larger will be evaluated with an L1 loss while number smaller will be evaluated with an L2 loss. |
 
 **Example:**
@@ -4483,7 +4485,7 @@ Initialize the parameter to a user specified constant value.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | value | 0. | float | The value to initialize the parameter to. |
 
 **Example:**
@@ -4544,7 +4546,7 @@ Generates a random weight matrix from a Gaussian distribution with user-specifie
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
 
 **Example:**
@@ -4563,7 +4565,7 @@ Generates a random uniform distribution centered at 0 and bounded at both ends b
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | beta | 0.05 | float | The minimum and maximum bound on the random distribution. |
 
 **Example:**
@@ -4633,7 +4635,7 @@ The Placeholder 1D input layer represents the *future* input values of a mini ba
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | inputs | None | int | The number of inputs to the neural network. |
 
 **Example:**
@@ -4655,7 +4657,7 @@ Activation layers apply a nonlinear activation function to their inputs.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | activation fn | None | object | The function computes the activation of the layer. |
 
 **Example:**
@@ -4677,7 +4679,7 @@ Alpha Dropout is a type of dropout layer that maintains the mean and variance of
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | ratio | 0.1 | float | The ratio of neurons that are dropped during each training pass. |
 
 **Example:**
@@ -4700,7 +4702,7 @@ Normalize the activations of the previous layer such that the mean activation is
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | decay | 0.9 | float | The decay rate of the previous running averages of the global mean and variance. |
 | 2 | beta initializer | Constant | object | The initializer of the beta parameter. |
 | 3 | gamma initializer | Constant | object | The initializer of the gamma parameter. |
@@ -4727,7 +4729,7 @@ Dense layers are fully connected neuronal layers, meaning each neuron is connect
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | neurons | None | int | The number of neurons in the layer. |
 | 2 | weight initializer | He | object | The initializer of the weight parameter. |
 | 3 | bias initializer | Constant | object | The initializer of the bias parameter. |
@@ -4750,7 +4752,7 @@ Dropout layers temporarily disable neurons during each training pass. Dropout is
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | ratio | 0.5 | float | The ratio of neurons that are dropped during each training pass. |
 
 **Example:**
@@ -4773,7 +4775,7 @@ This layer adds random Gaussian noise to the inputs to the layer with a standard
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | stddev | 0.1 | float | The standard deviation of the gaussian noise to add to the inputs. |
 
 **Example:**
@@ -4796,7 +4798,7 @@ The PReLU layer uses leaky ReLU activation functions whose leakage coefficients 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | initializer | Constant | object | The initializer of the leakage parameter. |
 
 **Example:**
@@ -4823,7 +4825,7 @@ The Binary layer consists of a single [Sigmoid](#sigmoid) neuron capable of dist
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | classes | None | array | The unique class labels of the binary classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
@@ -4847,7 +4849,7 @@ The Continuous output layer consists of a single linear neuron that outputs a sc
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 2 | cost fn | Least Squares | object | The function that penalizes the activities of bad predictions. |
 | 3 | weight initializer | Xavier2 | object | The initializer of the weight parameter. |
@@ -4870,7 +4872,7 @@ The Multiclass output layer gives a joint probability estimate of a multiclass c
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | classes | None | array | The unique class labels of the multiclass classification problem. |
 | 2 | alpha | 1e-4 | float | The L2 regularization penalty. |
 | 3 | cost fn | Cross Entropy | object | The function that penalizes the activities of bad predictions. |
@@ -4898,7 +4900,7 @@ Short for *Adaptive Gradient*, the AdaGrad Optimizer speeds up the learning of p
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 
 **Example:**
@@ -4921,7 +4923,7 @@ Short for *Adaptive Moment Estimation*, the Adam Optimizer combines both Momentu
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 | 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | norm decay | 0.001 | float | The decay rate of the rms property. |
@@ -4946,7 +4948,7 @@ A version of [Adam](#adam) that replaces the RMS property with the infinity norm
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 | 2 | momentum decay | 0.1 | float | The decay rate of the accumulated velocity. |
 | 3 | norm decay | 0.001 | float | The decay rate of the infinity norm. |
@@ -4971,7 +4973,7 @@ The Cyclical optimizer uses a global learning rate that cycles between the lower
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | lower | 0.001 | float | The lower bound on the learning rate. |
 | 2 | upper | 0.006 | float | The upper bound on the learning rate. |
 | 3 | steps | 100 | int | The number of steps in every half cycle. |
@@ -4997,7 +4999,7 @@ Momentum adds velocity to each step until exhausted. It does so by accumulating 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the accumulated velocity. |
 
@@ -5021,7 +5023,7 @@ An adaptive gradient technique that divides the current gradient over a rolling 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.001 | float | The learning rate. i.e. the global step size. |
 | 2 | decay | 0.1 | float | The decay rate of the rms property. |
 
@@ -5045,7 +5047,7 @@ A learning rate decay optimizer that reduces the learning rate by a factor of th
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 | 2 | steps | 100 | int | The size of every floor in steps. i.e. the number of steps to take before applying another factor of decay. |
 | 3 | decay | 1e-3 | float | The factor to decrease the learning rate at each *floor*. |
@@ -5066,7 +5068,7 @@ A constant learning rate optimizer based on the original Stochastic Gradient Des
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | rate | 0.01 | float | The learning rate. i.e. the global step size. |
 
 **Example:**
@@ -5195,7 +5197,7 @@ The Minkowski distance is a metric in a normed vector space which can be conside
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | lambda | 3.0 | float | Controls the curvature of the unit circle drawn from a point at a fixed distance. |
 
 **Example:**
@@ -5231,7 +5233,7 @@ This kernel projects a sample vector using polynomials of the p'th degree.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | degree | 3 | int | The degree of the polynomial. |
 | 2 | gamma | null | float | The kernel coefficient. |
 | 3 | coef0 | 0. | float | The independent term. |
@@ -5250,7 +5252,7 @@ Non linear radial basis function computes the distance from a centroid or origin
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | gamma | null | float | The kernel coefficient. |
 
 **Example:**
@@ -5267,7 +5269,7 @@ S shaped nonliearity kernel with output values ranging from -1 to 1.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | gamma | null | float | The kernel coefficient. |
 | 2 | coef0 | 0. | float | The independent term. |
 
@@ -5316,7 +5318,7 @@ Hold Out is a simple cross validation technique that uses a *hold out* validatio
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 | 2 | stratify | false | bool | Should we stratify the dataset before splitting? |
 
@@ -5338,7 +5340,7 @@ K Fold is a technique that splits the training set into K individual sets and fo
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 10 | int | The number of times to split the training set into equal sized folds. |
 | 2 | stratify | false | bool | Should we stratify the dataset before folding? |
 
@@ -5362,7 +5364,7 @@ Leave P Out tests the model with a unique holdout set of P samples for each roun
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | p | 10 | int | The number of samples to leave out each round for testing. |
 
 **Example:**
@@ -5383,7 +5385,7 @@ Repeated Random Subsampling or Monte Carlo cross validation is a technique that 
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | simulations | 10 | int | The number of simulations to run i.e the number of tests to average. |
 | 2 | ratio | 0.2 | float | The ratio of samples to hold out for testing. |
 | 3 | stratify | false | bool | Should we stratify the dataset before splitting? |
@@ -5488,7 +5490,7 @@ A weighted harmonic mean of precision and recall. The beta parameter controls th
 **Parameters**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | beta | 1. | float | The weight of precision in the harmonic mean. |
 
 **Example:**
@@ -5738,7 +5740,7 @@ A report that aggregates the results of multiple reports. The reports are indexe
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | reports | | array | An array of report objects to aggregate. |
 
 **Example:**
@@ -5979,7 +5981,7 @@ A strategy that guesses within the domain of the p-th percentile of the fitted d
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | p | 50.0 | float | The index of the percentile to predict where 50 is the median. |
 | 2 | blur | 0.1 | float | The amount of gaussian noise to add to the guess as a factor of the median absolute deviation (MAD). |
 
@@ -6001,7 +6003,7 @@ Always guess a constant value.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | value | 0. | float | The value to guess. |
 
 **Example:**
@@ -6021,7 +6023,7 @@ This strategy outputs one of K most frequent discrete values at random.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | k | 1 | int | The number of most frequency categories to consider when formulating a guess. |
 
 **Example:**
@@ -6099,7 +6101,7 @@ It is what you think it is. Make a guess somewhere in between the minimum and ma
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | precision | 2 | int | The number of decimal places of precision for each guess. |
 
 **Example:**
@@ -6268,7 +6270,7 @@ A logger that outputs to the php standard output.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | channel | 'main' | string | The channel name that appears on each line. |
 | 2 | format | 'Y-m-d H:i:s' | string | The format of the timestamp. |
 
@@ -6325,7 +6327,7 @@ N-grams are sequences of n-words of a given string. The N-gram tokenizer outputs
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | min | 2 | int | The minimum number of contiguous words to a token. |
 | 2 | max | 2 | int | The maximum number of contiguous words to a token. |
 
@@ -6345,7 +6347,7 @@ Skip-grams are a technique similar to n-grams, whereby n-grams are formed but in
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | n | 2 | int | The number of contiguous words to a single token. |
 | 2 | skip | 2 | int | The number of words to skip over to form new n-gram sequences. |
 
@@ -6365,7 +6367,7 @@ Tokens are delimited by a user-specified whitespace character.
 **Parameters:**
 
 | # | Param | Default | Type | Description |
-|--|--|--|--|--|
+|---|---|---|---|---|
 | 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 
 **Example:**
