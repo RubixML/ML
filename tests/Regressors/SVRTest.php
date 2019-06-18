@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
@@ -44,7 +43,6 @@ class SVRTest extends TestCase
     {
         $this->assertInstanceOf(SVR::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
         $this->assertSame(Estimator::REGRESSOR, $this->estimator->type());

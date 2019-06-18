@@ -4,7 +4,6 @@ namespace Rubix\ML\AnomalyDetectors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Kernels\SVM\Kernel;
@@ -12,6 +11,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+use svmmodel;
 use svm;
 
 /**
@@ -33,7 +33,7 @@ use svm;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class OneClassSVM implements Estimator, Learner, Persistable
+class OneClassSVM implements Estimator, Learner
 {
     /**
      * The support vector machine instance.
@@ -170,5 +170,31 @@ class OneClassSVM implements Estimator, Learner, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Save the model data to the filesystem.
+     *
+     * @param string $path
+     * @throws \RuntimeException
+     */
+    public function save(string $path) : void
+    {
+        if (!$this->model) {
+            throw new RuntimeException('The estimator has not'
+                . ' been trained.');
+        }
+
+        $this->model->save($path);
+    }
+
+    /**
+     * Load model data from the filesystem.
+     *
+     * @param string $path
+     */
+    public function load(string $path) : void
+    {
+        $this->model = new svmmodel($path);
     }
 }

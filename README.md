@@ -1464,7 +1464,15 @@ An unsupervised Support Vector Machine used for anomaly detection. The One Class
 
 **Additional Methods:**
 
-This estimator does not have any additional methods.
+Save the model data to the filesystem:
+```php
+public save(string $path) : void
+```
+
+Load the model data from the filesystem:
+```php
+public load(string $path) : void
+```
 
 **Example:**
 
@@ -1473,6 +1481,18 @@ use Rubix\ML\AnomalyDetection\OneClassSVM;
 use Rubix\ML\Kernels\SVM\Polynomial;
 
 $estimator = new OneClassSVM(0.1, new Polynomial(4), true, 1e-3, 100.);
+
+$estimator->train($dataset);
+
+$estimator->save('svm.model');
+
+// ...
+
+$estimator = new OneClassSVM();
+
+$estimator->load('svm.model');
+
+$predictions = $estimator->predict($dataset);
 ```
 
 **References:**
@@ -2082,7 +2102,7 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SVC.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner)
 
 **Compatibility:** Continuous
 
@@ -2098,7 +2118,15 @@ The multiclass Support Vector Machine (SVM) Classifier is a maximum margin class
 
 **Additional Methods:**
 
-This estimator does not have any additional methods.
+Save the model data to the filesystem:
+```php
+public save(string $path) : void
+```
+
+Load the model data from the filesystem:
+```php
+public load(string $path) : void
+```
 
 **Example:**
 
@@ -2107,6 +2135,18 @@ use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\Linear;
 
 $estimator = new SVC(1.0, new Linear(), true, 1e-3, 100.);
+
+$estimator->train($dataset);
+
+$estimator->save('svm.model');
+
+// ...
+
+$estimator = new SVC();
+
+$estimator->load('svm.model');
+
+$predictions = $estimator->predict($dataset);
 ```
 
 **References:**
@@ -2858,7 +2898,7 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 
 > [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php)
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](#estimators), [Learner](#learner)
 
 **Compatibility:** Continuous
 
@@ -2875,15 +2915,35 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 
 **Additional Methods:**
 
-This estimator does not have any additional methods.
+Save the model data to the filesystem:
+```php
+public save(string $path) : void
+```
+
+Load the model data from the filesystem:
+```php
+public load(string $path) : void
+```
 
 **Example:**
 
 ```php
-use Rubix\ML\Classifiers\SVC;
-use Rubix\ML\Kernels\SVM\Linear;
+use Rubix\ML\Classifiers\SVR;
+use Rubix\ML\Kernels\SVM\RBF;
 
 $estimator = new SVR(1.0, 0.03, new RBF(), true, 1e-3, 256.);
+
+$estimator->train($dataset);
+
+$estimator->save('svm.model');
+
+// ...
+
+$estimator = new SVR();
+
+$estimator->load('svm.model');
+
+$predictions = $estimator->predict($dataset);
 ```
 
 **References**

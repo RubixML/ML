@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Classifiers\SVC;
 use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Unlabeled;
@@ -49,7 +48,6 @@ class SVCTest extends TestCase
     {
         $this->assertInstanceOf(SVC::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
         $this->assertSame(Estimator::CLASSIFIER, $this->estimator->type());

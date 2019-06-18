@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
@@ -49,7 +48,6 @@ class OneClassSVMTest extends TestCase
     {
         $this->assertInstanceOf(OneClassSVM::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
-        $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 
         $this->assertSame(Estimator::ANOMALY_DETECTOR, $this->estimator->type());
