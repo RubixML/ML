@@ -37,10 +37,10 @@ class FuzzyCMeansTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 64, 32], 30.),
+            'red' => new Blob([255, 32, 0], 30.),
             'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([128, 0, 255], 20.),
-        ]);
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
         $this->estimator = new FuzzyCMeans(3, 2.0, new Euclidean(), 300, 10., new Random());
 

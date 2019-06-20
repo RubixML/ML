@@ -37,12 +37,12 @@ class MeanShiftTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 32, 64], 20.),
-            'green' => new Blob([0, 128, 0], 40.),
-            'blue' => new Blob([64, 0, 255], 30.),
-        ]);
+            'red' => new Blob([255, 32, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
-        $this->estimator = new MeanShift(120.443930031579, new Euclidean(), 30, 100, 1e-4, new KMC2(50), 0.10);
+        $this->estimator = new MeanShift(66, new Euclidean(), 30, 100, 1e-4, new KMC2(50), 0.10);
 
         $this->metric = new VMeasure();
 
@@ -74,7 +74,7 @@ class MeanShiftTest extends TestCase
 
         $radius = MeanShift::estimateRadius($subset, 30.);
 
-        $this->assertEquals(120.443930031579, $radius);
+        $this->assertEquals(66.96148136908327, $radius);
     }
 
     public function test_train_predict()

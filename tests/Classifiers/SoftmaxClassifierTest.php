@@ -39,10 +39,10 @@ class SoftmaxClassifierTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
-        ], [3, 4, 3]);
+            'red' => new Blob([255, 32, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
         $this->estimator = new SoftmaxClassifier(10, new Adam(0.01), 1e-4, 300, 1e-4, new CrossEntropy());
 
@@ -75,10 +75,7 @@ class SoftmaxClassifierTest extends TestCase
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $transformer = new ZScaleStandardizer();
-
-        $transformer->fit($dataset);
-        $dataset->apply($transformer);
+        $dataset->apply(new ZScaleStandardizer());
 
         $testing = $dataset->randomize()->take(self::TEST_SIZE);
 

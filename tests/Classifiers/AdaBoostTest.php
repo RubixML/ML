@@ -36,10 +36,10 @@ class AdaBoostTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
-        ], [3, 4, 3]);
+            'red' => new Blob([255, 32, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
         $this->estimator = new AdaBoost(new ClassificationTree(1), 50, 1., 0.8);
 

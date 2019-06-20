@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\SVM\Polynomial;
 use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -55,11 +56,13 @@ class SVRTest extends TestCase
 
     public function test_train_predict()
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $testing = $this->generator->generate(self::TEST_SIZE);
+        $dataset->apply(new ZScaleStandardizer());
 
-        $this->estimator->train($training);
+        $testing = $dataset->randomize()->take(self::TEST_SIZE);
+
+        $this->estimator->train($dataset);
 
         $this->assertTrue($this->estimator->trained());
 

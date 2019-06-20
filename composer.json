@@ -1,7 +1,7 @@
 {
     "name": "rubix/ml",
     "type": "library",
-    "description": "Rubix ML is a high-level machine learning library that lets you build programs that learn from dats using the PHP language.",
+    "description": "A high-level machine learning and deep learning library for the PHP language.",
     "homepage": "https://github.com/RubixML/RubixML",
     "license": "MIT",
     "keywords": [
@@ -47,8 +47,8 @@
             "Rubix\\ML\\": "src/"
         },
         "files": [
-            "src/Constants.php",
-            "src/Functions.php"
+            "src/constants.php",
+            "src/functions.php"
         ]
     },
     "autoload-dev": {

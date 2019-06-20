@@ -34,10 +34,10 @@ class ExtraTreeClassifierTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
-        ], [3, 4, 3]);
+            'red' => new Blob([255, 32, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
         $this->estimator = new ExtraTreeClassifier(10, 3, 0., null, 1e-4);
 

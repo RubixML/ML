@@ -29,12 +29,12 @@ class DBSCANTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 3.),
-            'green' => new Blob([0, 128, 0], 1.),
-            'blue' => new Blob([0, 0, 255], 2.),
-        ], [3, 3, 4]);
+            'red' => new Blob([255, 32, 0], 30.),
+            'green' => new Blob([0, 128, 0], 10.),
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
-        $this->estimator = new DBSCAN(10.0, 75, new Euclidean(), 20);
+        $this->estimator = new DBSCAN(25.0, 50, new Euclidean(), 20);
 
         $this->metric = new VMeasure();
 

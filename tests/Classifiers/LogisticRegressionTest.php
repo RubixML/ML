@@ -74,10 +74,7 @@ class LogisticRegressionTest extends TestCase
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
-        $transformer = new ZScaleStandardizer();
-
-        $transformer->fit($dataset);
-        $dataset->apply($transformer);
+        $dataset->apply(new ZScaleStandardizer());
 
         $testing = $dataset->randomize()->take(self::TEST_SIZE);
 
