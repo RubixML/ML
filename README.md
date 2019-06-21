@@ -367,7 +367,7 @@ For our 100 sample example training set, training should only take a matter of m
 
 Turning back to our example problem, suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predictions on whether they will stay married or get divorced by taking their answers as features and running them in an Unlabeled dataset through the trained Estimator's `predict()` method.
 ```php
-use Rubix\ML\Dataset\Unlabeled;
+use Rubix\ML\Datasets\Unlabeled;
 
 $unknown = [
     [4, 3, 44.2], [2, 2, 16.7], [2, 4, 19.5], [1, 5, 8.6], [3, 3, 55.0],
