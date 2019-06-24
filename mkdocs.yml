@@ -1,0 +1,225 @@
+site_name: Rubix ML for PHP
+
+theme: readthedocs
+
+nav:
+- Home: index.md
+- Installation: installation.md
+- Basic Introduction:
+  - What is Machine Learning?: intro/what-is-machine-learning.md
+  - Obtaining Data: intro/obtaining-data.md
+  - Choosing an Estimator: intro/choosing-an-estimator.md
+  - Training and Prediction: intro/training-and-prediction.md
+  - Model Evaluation: intro/model-evaluation.md
+- System Architecture: system-architecture.md
+- Dataset Objects:
+  - API Reference: datasets/api.md
+  - Labeled: datasets/labeled.md
+  - Unlabeled: datasets/unlabeled.md
+  - Generators:
+    - Agglomerate: datasets/generators/agglomerate.md
+    - Blob: datasets/generators/blob.md
+    - Circle: datasets/generators/circle.md
+    - Half Moon: datasets/generators/half-moon.md
+    - Swiss Roll: datasets/generators/swiss-roll.md
+- Interfaces:
+  - Estimator: estimator.md
+  - Learner: learner.md
+  - Online: online.md
+  - Parallel: parallel.md
+  - Persistable: persistable.md
+  - Probabilistic: probabilistic.md
+  - Ranking: ranking.md
+  - Verbose: verbose.md
+  - Wrapper: wrapper.md
+- Anomaly Detectors:
+  - Isolation Forest: anomaly-detectors/isolation-forest.md
+  - K-d LOF: anomaly-detectors/kd-lof.md
+  - LODA: anomaly-detectors/loda.md
+  - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
+  - One Class SVM: anomaly-detectors/one-class-svm.md
+  - Robust Z Score: anomaly-detectors/robust-z-score.md
+- Classifiers:
+  - AdaBoost: classifiers/adaboost.md
+  - Classification Tree: classifiers/classification-tree.md
+  - Dummy Classifier: classifiers/dummy-classifier.md
+  - Extra Tree Classifier: classifiers/extra-tree-classifier.md
+  - Gaussian Naive Bayes: classifiers/gaussian-naive-bayes.md
+  - K-d Neighbors: classifiers/kd-neighbors.md
+  - K Nearest Neighbors: classifiers/k-nearest-neighbors.md
+  - Logistic Regression: classifiers/logistic-regression.md
+  - Multi Layer Perceptron: classifiers/multi-layer-perceptron.md
+  - Naive Bayes: classifiers/naive-bayes.md
+  - Radius Neighbors: classifiers/radius-neighbors.md
+  - Random Forest: classifiers/random-forest.md
+  - Softmax Classifier: classifiers/softmax-classifier.md
+  - SVC: classifiers/svc.md
+- Clusterers:
+  - DBSCAN: clusterers/dbscan.md
+  - Fuzzy C Means: clusterers/fuzzy-c-means.md
+  - Gaussian Mixture: clusterers/gaussian-mixture.md
+  - K Means: clusterers/k-means.md
+  - Mean Shift: clusterers/mean-shift.md
+  - Seeders:
+    - K-MC2: clusterers/seeders/k-mc2.md
+    - Plus Plus: clusterers/seeders/plus-plus.md
+    - Random: clusterers/seeders/random.md
+- Regressors:
+  - Adaline: regressors/adaline.md
+  - Dummy Regressor: regressors/dummy-regressor.md
+  - Extra Tree Regressor: regressors/extra-tree-regressor.md
+  - Gradient Boost: regressors/gradient-boost.md
+  - K-d Neighbors Regressor: regressors/kd-neighbors-regressor.md
+  - KNN Regressor: regressors/knn-regressor.md
+  - MLP Regressor: regressors/mlp-regressor.md
+  - Radius Neighbors Regressor: regressors/radius-neighbors-regressor.md
+  - Regression Tree: regressors/regression-tree.md
+  - Ridge: regressors/ridge.md
+  - SVR: regressors/svr.md
+- Embedders:
+  - t-SNE: embedders/t-sne.md
+- Meta Estimators:
+  - Bootstrap Aggregator: bootstrap-aggregator.md
+  - Committee Machine: committee-machine.md
+  - Grid Search: grid-search.md
+  - Persistent Mode: persistent-model.md
+  - Pipeline: pipeline.md
+- Backends:
+  - Amp: backends/amp.md
+  - Serial: backends/serial.md
+- Persisters:
+  - Filesystem: persisters/filesystem.md
+  - Redis DB: persisters/redis-db.md
+  - Serializers:
+    - Binary: persisters/serializers/binary.md
+    - Native: persisters/serializers/native.md
+- Transformers:
+  - Dense Random Projector: transformers/dense-random-projector.md
+  - Gaussian Random Projector: transformers/gaussian-random-projector.md
+  - HTML Stripper: transformers/html-stripper.md
+  - Image Resizer: transformers/image-resizer.md
+  - Image Vectorizer: transformers/image-vectorizer.md
+  - Interval Discretizer: transformers/interval-discretizer.md
+  - L1 Normalizer: transformers/l1-normalizer.md
+  - L2 Normalizer: transformers/l2-normalizer.md
+  - Lambda Function: transformers/lambda-function.md
+  - Linear Disciminant Analysis: transformers/linear-discriminant-analysis.md
+  - Max Absolute Scaler: transformers/max-absolute-scaler.md
+  - Min Max Normalizer: transformers/min-max-normalizer.md
+  - Missing Data Imputer: transformers/missing-data-imputer.md
+  - Numeric String Converter: transformers/numeric-string-converter.md
+  - One Hot Encoder: transformers/one-hot-encoder.md
+  - Polynomial Expander: transformers/polynomial-expander.md
+  - Principal Component Analysis: transformers/principal-component-analysis.md
+  - Robust Standardizer: transformers/robust-standardizer.md
+  - Sparse Random Projector: transformers/sparse-random-projector.md
+  - Stop Word Filter: transformers/stop-word-filter.md
+  - Text Normalizer: transformers/text-normalizer.md
+  - TF-IDF Transformer: transformers/tf-idf-transformer.md
+  - Variance Threshold Filter: transformers/variance-threshold-filter.md
+  - Word Count Vectorizer: transformers/word-count-vectorizer.md
+  - Z Scale Standardizer: transformers/z-scale-standardizer.md
+- Neural Network:
+  - Activation Functions:
+    - ELU: neural-network/activation-functions/elu.md
+    - Hyperbolic Tangent: neural-network/activation-functions/hyperbolic-tangent.md
+    - Leaky ReLU: neural-network/activation-functions/leaky-relu.md
+    - ReLU: neural-network/activation-functions/relu.md
+    - SELU: neural-network/activation-functions/selu.md
+    - Sigmoid: neural-network/activation-functions/sigmoid.md
+    - Softmax: neural-network/activation-functions/softmax.md
+    - Soft Plus: neural-network/activation-functions/soft-plus.md
+    - Soft Sign: neural-network/activation-functions/softsign.md
+    - Thresholded ReLU: neural-network/activation-functions/thresholded-relu.md
+  - Cost Functions:
+    - Cross Entropy: neural-network/cost-functions/cross-entropy.md
+    - Huber Loss: neural-network/cost-functions/huber-loss.md
+    - Least Squares: neural-network/cost-functions/least-squares.md
+    - Relative Entropy: neural-network/cost-functions/relative-entropy.md
+  - Initializers:
+    - Constant: neural-network/initializers/constant.md
+    - He: neural-network/initializers/he.md
+    - LeCun: neural-network/initializers/lecun.md
+    - Normal: neural-network/initializers/normal.md
+    - Uniform: neural-network/initializers/uniform.md
+    - Xavier 1: neural-network/initializers/xavier-1.md
+    - Xavier 2: neural-network/initializers/xavier-2.md
+  - Hidden Layers:
+    - Activation: neural-network/hidden-layers/activation.md
+    - Alpha Dropout: neural-network/hidden-layers/alpha-dropout.md
+    - Batch Norm: neural-network/hidden-layers/batch-norm.md
+    - Dense: neural-network/hidden-layers/dense.md
+    - Dropout: neural-network/hidden-layers/dropout.md
+    - Noise: neural-network/hidden-layers/noise.md
+    - PReLU: neural-network/hidden-layers/prelu.md
+  - Optimizers:
+    - AdaGrad: neural-network/optimizers/adagrad.md
+    - Adam: neural-network/optimizers/adam.md
+    - AdaMax: neural-network/optimizers/adamax.md
+    - Cyclical: neural-network/optimizers/cyclical.md
+    - Momentum: neural-network/optimizers/momentum.md
+    - RMS Prop: neural-network/optimizers/rms-prop.md
+    - Step Decay: neural-network/optimizers/step-decay.md
+    - Stochastic: neural-network/optimizers/stochastic.md
+- Kernels:
+  - Distance:
+    - Canberra: kernels/distance/canberra.md
+    - Cosine: kernels/distance/cosine.md
+    - Diagonal: kernels/distance/diagonal.md
+    - Euclidean: kernels/distance/euclidean.md
+    - Jaccard: kernels/distance/jaccard.md
+    - Manhattan: kernels/distance/manhattan.md
+    - Minkowski: kernels/distance/minkowski.md
+  - SVM:
+    - Linear: kernels/svm/linear.md
+    - Polynomial: kernels/svm/polynomial.md
+    - RBF: kernels/svm/rbf.md
+    - Sigmoidal: kernels/svm/sigmoidal.md
+- Cross Validation:
+  - Hold Out: cross-validation/hold-out.md
+  - K Fold: cross-validation/k-fold.md
+  - Leave P Out: cross-validation/leave-p-out.md
+  - Monte Carlo: cross-validation/monte-carlo.md
+  - Metrics:
+    - Accuracy: cross-validation/metrics/accuracy.md
+    - Completeness: cross-validation/metrics/completeness.md
+    - F Beta: cross-validation/metrics/f-beta.md
+    - Homogeneity: cross-validation/metrics/homogeneity.md
+    - Informedness: cross-validation/metrics/informedness.md
+    - MCC: cross-validation/metrics/mcc.md
+    - Mean Absolute Error: cross-validation/metrics/mean-absolute-error.md
+    - Mean Squared Error: cross-validation/metrics/mean-squared-error.md
+    - Median Absolute Error: cross-validation/metrics/median-absolute-error.md
+    - Rand Index: cross-validation/metrics/rand-index.md
+    - RMSE: cross-validation/metrics/rmse.md
+    - R Squared: cross-validation/metrics/r-squared.md
+    - SMAPE: cross-validation/metrics/smape.md
+    - V Measure: cross-validation/metrics/v-measure.md
+  - Reports:
+    - Aggregate Report: cross-validation/reports/aggregate-report.md
+    - Confusion Matrix: cross-validation/reports/confusion-matrix.md
+    - Contingency Table: cross-validation/reports/contingency-table.md
+    - Multiclass Breakdown: cross-validation/reports/multiclass-breakdown.md
+    - Residual Analysis: cross-validation/reports/residual-analysis.md
+- Other:
+  - Helpers:
+    - Data Type: other/helpers/data-type.md
+    - Params: other/helpers/params.md
+  - Loggers:
+    - Screen: other/loggers/screen.md
+  - Strategies:
+    - Blurry Percentile: other/strategies/blurry-percentile.md
+    - Constant: other/strategies/constant.md
+    - K Most Frequent: other/strategies/k-most-frequent.md
+    - Lottery: other/strategies/lottery.md
+    - Mean: other/strategies/mean.md
+    - Popularity Contest: other/strategies/popularity-contest.md
+    - Wild Guess: other/strategies/wild-guess.md
+  - Tokenizers:
+    - N-Gram: other/tokenizers/n-gram.md
+    - Skip Gram: other/tokenizers/skip-gram.md
+    - Whitespace: other/tokenizers/whitespace.md
+    - Word: other/tokenizers/word.md
+- FAQ: faq.md
+
+use_directory_urls: false
