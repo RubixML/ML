@@ -1,4 +1,4 @@
-### Data Type
+# Data Type
 Determine the data type of a variable according to Rubix ML's type system.
 
 To determine the data type of a variable:
@@ -28,8 +28,7 @@ Return true if the variable is an unrecognized data type:
 public isOther($variable) : bool
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Other\Helpers\DataType;
 

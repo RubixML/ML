@@ -1,22 +1,19 @@
-### HTML Stripper
-Removes any HTML tags that may be in the text of a categorical variable.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/HTMLStripper.php)
+# HTML Stripper
+Removes any HTML tags that may be in the text of a categorical variable.
 
 **Interfaces:** [Transformer](#transformers)
 
-**Compatibility:** Categorical
+**Data Type Compatibility:** Categorical
 
-**Parameters:**
-
+### Parameters
 This transformer does not have any parameters.
 
-**Additional Methods:**
-
+### Additional Methods
 This transformer does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\HTMLStripper;
 

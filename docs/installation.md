@@ -1,4 +1,4 @@
-## Installation
+# Installation
 Install Rubix ML into your project with [Composer](https://getcomposer.org/):
 ```sh
 $ composer require rubix/ml

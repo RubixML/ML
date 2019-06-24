@@ -1,4 +1,4 @@
-### Params
+# Params
 Generate distributions of values to use in conjunction with [Grid Search](#grid-search) or other forms of model selection and/or cross validation.
 
 To generate a *unique* distribution of integer parameters:
@@ -16,8 +16,7 @@ To generate a uniformly spaced grid of parameters:
 public static grid(float $min, float $max, int $n = 10) : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Other\Helpers\Params;
 
@@ -61,8 +60,7 @@ array(5) {
 
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Other\Helpers\Params;

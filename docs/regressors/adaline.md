@@ -1,14 +1,13 @@
-### Adaline
-Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Adaline.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/Adaline.php)
+# Adaline
+Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network](#neural-network) with a linear output neuron. Training is equivalent to solving [Ridge](#ridge) regression iteratively using mini batch Gradient Descent.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
@@ -18,8 +17,7 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer [neural network]
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -30,8 +28,7 @@ Return the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;

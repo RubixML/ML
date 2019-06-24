@@ -1,14 +1,13 @@
-### Swiss Roll
-Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral. The labels are the seeds to the swiss roll transformation.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/SwissRoll.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/SwissRoll.php)
+# Swiss Roll
+Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral. The labels are the seeds to the swiss roll transformation.
 
 **Data Types:** Continuous
 
 **Label Type:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the swiss roll. |
@@ -18,12 +17,10 @@ Generate a non-linear 3-dimensional dataset resembling a *swiss roll* or spiral.
 | 5 | depth | 21.0 | float | The depth of the swiss roll i.e the scale of the y axis. |
 | 6 | noise | 0.3 | float | The standard deviation of the gaussian noise. |
 
-**Additional Methods:**
-
+### Additional Methods
 This generator does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Datasets\Generators\SwissRoll;
 

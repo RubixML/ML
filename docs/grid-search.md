@@ -1,16 +1,15 @@
-### Grid Search
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php">Source</a></span></p>
+
+# Grid Search
 Grid Search is an algorithm that optimizes hyper-parameter selection. From the user's perspective, the process of training and predicting is the same, however, under the hood, Grid Search trains one estimator per combination of parameters and the best model is selected as the base estimator.
 
 > **Note**: You can choose the parameters to search manually or you can generate them randomly or in a grid using the [Params](#params) helper.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/GridSearch.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable), [Verbose](#verbose)
 
-**Compatibility:** Depends on the base learner
+**Data Type Compatibility:** Depends on the base learner
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | string | The fully qualified class name of the base Estimator. |
@@ -18,8 +17,7 @@ Grid Search is an algorithm that optimizes hyper-parameter selection. From the u
 | 3 | metric | Auto | object | The validation metric used to score each set of hyper-parameters. |
 | 4 | validator | KFold | object | An instance of a validator object (HoldOut, KFold, etc.) that will be used to test each model. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return an array of every possible parameter combination:
 ```php
 public combinations() : array
@@ -35,8 +33,7 @@ Return the underlying base estimator:
 public estimator() : Estimator
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\GridSearch;
 use Rubix\ML\Classifiers\KNearestNeighbors;

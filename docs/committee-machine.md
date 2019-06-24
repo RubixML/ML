@@ -1,23 +1,21 @@
-### Committee Machine
-A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php">Source</a></span></p>
+
+# Committee Machine
+A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions. [[Source]](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
 
 > **Note**: Influence values can be arbitrary as they are normalized upon instantiation.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Depends on the base learners
+**Data Type Compatibility:** Depends on the base learners
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
 | 2 | influences | Equal | array | The influence score for each expert in the committee. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the learner instances of the committee:
 ```php
 public experts() : array
@@ -28,8 +26,7 @@ Return the normalized influence scores of each expert in the committee:
 public influences() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CommitteeMachine;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -47,6 +44,5 @@ $estimator = new CommitteeMachine([
 ], [4, 6, 5, 4]);
 ```
 
-**References:**
-
+### References
 >- [1] H. Drucker. (1997). Fast Committee Machines for Regression and Classification.

@@ -11,8 +11,7 @@ Return a list of estimators that report is compatible with:
 public compatibility() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Reports\ConfusionMatrix;
 

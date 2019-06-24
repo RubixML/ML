@@ -1,16 +1,15 @@
-### MLP Regressor
-A multi layer feedforward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](#multi-layer-perceptron) classifier, the MLP Regressor is able to tackle deep learning problems by forming higher-order representations of the features using intermediate computational units called *hidden* layers.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php">Source</a></span></p>
+
+# MLP Regressor
+A multi layer feedforward [Neural Network](#neural-network) with a continuous output layer suitable for regression problems. Like the [Multi Layer Perceptron](#multi-layer-perceptron) classifier, the MLP Regressor is able to tackle deep learning problems by forming higher-order representations of the features using intermediate computational units called *hidden* layers.)
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/MLPRegressor.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
@@ -24,8 +23,7 @@ A multi layer feedforward [Neural Network](#neural-network) with a continuous ou
 | 9 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -41,8 +39,7 @@ Returns the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Regressors\MLPRegressor;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -61,6 +58,5 @@ $estimator = new MLPRegressor([
 ], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
 ```
 
-**References:**
-
+### References
 >- G. E. Hinton. (1989). Connectionist learning procedures.

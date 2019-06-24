@@ -1,14 +1,12 @@
-### Hyperbolic Tangent
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/HyperbolicTangent.php">Source</a></span></p>
+
+# Hyperbolic Tangent
 S-shaped function that squeezes the input value into an output space between -1 and 1 centered at 0.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/HyperbolicTangent.php)
-
-**Parameters:**
-
+### Parameters
 This activation Function does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\HyperbolicTangent;
 

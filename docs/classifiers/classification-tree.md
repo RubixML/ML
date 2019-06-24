@@ -1,14 +1,13 @@
-### Classification Tree
-A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ClassificationTree.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ClassificationTree.php)
+# Classification Tree
+A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Categorical, Continuous
+**Data Type Compatibility:** Categorical, Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
@@ -17,8 +16,7 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-3 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -34,8 +32,7 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifiers\ClassificationTree;
 

@@ -1,14 +1,13 @@
-### K Means
-A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/KMeans.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/KMeans.php)
+# K Means
+A fast online centroid-based hard clustering algorithm capable of clustering linearly separable data points given some prior knowledge of the target number of clusters (defined by *k*). K Means with inertia is trained using adaptive mini batch gradient descent and minimizes the inertial cost function. Inertia is defined as the sum of the distances between each sample and its nearest cluster centroid.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), [Verbose](#verbose)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | | int | The number of target clusters. |
@@ -18,8 +17,7 @@ A fast online centroid-based hard clustering algorithm capable of clustering lin
 | 5 | min change | 10. | float | The minimum change in the inertia for training to continue. |
 | 6 | seeder | PlusPlus | object | The seeder used to initialize the cluster centroids. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the *k* computed centroids of the training set:
 ```php
 public centroids() : array
@@ -35,8 +33,7 @@ Return the value of the inertial function at each epoch from the last round of t
 public steps() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
@@ -45,6 +42,5 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus());
 ```
 
-**References:**
-
+### References
 >- D. Sculley. (2010). Web-Scale K-Means Clustering.

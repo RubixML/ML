@@ -6,7 +6,7 @@ To tokenize a blob of text:
 public tokenize(string $text) : array
 ```
 
-**Example:**
+### Example
 ```php
 use Rubix\ML\Extractors\Tokenizers\Word;
 

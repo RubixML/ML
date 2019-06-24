@@ -1,16 +1,14 @@
-### Confusion Matrix
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ConfusionMatrix.php">Source</a></span></p>
+
+# Confusion Matrix
 A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ConfusionMatrix.php)
+**Estimator Compatibility:** Classifier, Anomaly Detector
 
-**Compatibility:** Classification, Anomaly Detection
-
-**Parameters:**
-
+### Parameters
 This report does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;
 

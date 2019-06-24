@@ -1,14 +1,12 @@
-### Random
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/Random.php">Source</a></span></p>
+
+# Random
 Completely random selection of k seeds from the given dataset.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/Seeders/Random.php)
-
-**Parameters:**
-
+### Parameters
 This seeder does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Clusterers\Seeders\Random;
 

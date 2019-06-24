@@ -11,7 +11,7 @@ Return the dimensionality of the samples produced by the generator:
 public dimensions() : int
 ```
 
-**Example:**
+### Example
 
 ```php
 use Rubix\ML\Datasets\Generators\Blob;

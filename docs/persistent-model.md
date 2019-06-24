@@ -1,21 +1,19 @@
-### Persistent Model
-The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow the estimator to be saved and retrieved from storage.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/PersitentModel.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/PersistentModel.php)
+# Persistent Model
+The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow the estimator to be saved and retrieved from storage.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic)
 
-**Compatibility:** Depends on the base learner
+**Data Type Compatibility:** Depends on the base learner
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | base | | object | An instance of the base estimator to be persisted. |
 | 2 | persister | | object | The persister object used to store the model data. |
 
-**Additional Methods:**
-
+### Additional Methods
 Save the persistent model to storage:
 ```php
 public save() : void
@@ -26,8 +24,7 @@ Load the persistent model from storage given a persister:
 public static load(Persister $persister) : self
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\PersistentModel;
 use Rubix\ML\Classifiers\RandomForest;

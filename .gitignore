@@ -1,4 +1,5 @@
 /vendor
+/site
 composer.lock
 test.json
 *.model

@@ -1,14 +1,13 @@
-### K-d LOF
-A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from neighborhood pruning during nearest neighbors search. The tradeoff between K-d LOF and the brute force method is that while K-d LOF is faster, it cannot be partially trained.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php)
+# K-d LOF
+A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from neighborhood pruning during nearest neighbors search. The tradeoff between K-d LOF and the brute force method is that while K-d LOF is faster, it cannot be partially trained.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
@@ -16,15 +15,13 @@ A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) 
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the base k-d tree instance:
 ```php
 public tree() : KDTree
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\AnomalyDetection\KDLOF;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -32,6 +29,5 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 $estimator = new KDLOF(20, 0.1, new Euclidean(), 30);
 ```
 
-**References:**
-
+### References
 >- M. M. Breunig et al. (2000). LOF: Identifying Density-Based Local Outliers.

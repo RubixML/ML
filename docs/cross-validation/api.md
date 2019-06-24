@@ -5,8 +5,7 @@ Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;

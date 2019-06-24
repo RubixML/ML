@@ -3,7 +3,7 @@ Machine learning projects typically begin with a question. For example, you migh
 
 An alternative to collecting data yourself is to download one of the many open datasets that are free to use from a public repository. The advantages of using a public dataset is that, usually, the data has already been cleaned and prepared for you. We recommend the University of California Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) as a great place to get started with using open source datasets.
 
-## Extracing Data
+## Extracting Data
 Before data can become useful, we need to load it into the computer in the proper format. This involves extracting the data from source before anything else. There are many PHP libraries that help make extracting data from various sources easy and intuitive, and we recommend checking them out as a great place to start.
 
 - [PHP League CSV](https://csv.thephpleague.com/) - Generator-based CSV extractor

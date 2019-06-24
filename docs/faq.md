@@ -1,4 +1,4 @@
-## FAQ
+# FAQ
 Here you can find answers to the most frequently asked Rubix ML questions.
 
 ### What environment (SAPI) should I run Rubix in?
@@ -21,8 +21,7 @@ Try adjusting the `memory_limit` option in your php.ini file to something more r
 ### What is a Tuple?
 A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
 
-**Example:**
-
+### Example
 ```php
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```

@@ -1,22 +1,19 @@
-### Numeric String Converter
-Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/NumericStringConverter.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/NumericStringConverter.php)
+# Numeric String Converter
+Convert all numeric strings into their integer and floating point countertypes. Useful for when extracting from a source that only recognizes data as string types.
 
 **Interfaces:** [Transformer](#transformers)
 
-**Compatibility:** Categorical
+**Data Type Compatibility:** Categorical
 
-**Parameters:**
-
+### Parameters
 This transformer does not have any parameters.
 
-**Additional Methods:**
-
+### Additional Methods
 This transformer does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\NumericStringConverter;
 

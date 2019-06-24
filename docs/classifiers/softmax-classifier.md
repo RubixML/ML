@@ -1,14 +1,13 @@
-### Softmax Classifier
-A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a [Softmax](#softmax) output layer.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SoftmaxClassifier.php)
+# Softmax Classifier
+A generalization of [Logistic Regression](#logistic-regression) for multiclass problems using a single layer neural network with a [Softmax](#softmax) output layer.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | batch size | 100 | int | The number of training samples to process at a time. |
@@ -18,8 +17,7 @@ A generalization of [Logistic Regression](#logistic-regression) for multiclass p
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -30,8 +28,7 @@ Return the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;

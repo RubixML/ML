@@ -1,6 +1,6 @@
 <a href="https://rubixml.com" target="_blank"><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/images/rubix-ml-logo.svg?sanitize=true" width="250" alt="Rubix ML for PHP" /></a>
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![Documentation Status](https://img.shields.io/readthedocs/rubix-ml.svg?style=flat-square)](https://rubix-ml.readthedocs.io/en/latest/?badge=latest) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
@@ -26,7 +26,7 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Documentation
-
+View the latest documentation [here](https://rubix-ml.readthedocs.io/en/latest/).
 
 ## Testing
 Rubix utilizes a combination of static code analysis and unit tests. We provide three [Composer](https://getcomposer.org/) commands that can be run from the root directory to automate the testing process.

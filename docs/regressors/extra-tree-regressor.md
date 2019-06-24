@@ -1,16 +1,15 @@
-### Extra Tree Regressor
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php">Source</a></span></p>
+
+# Extra Tree Regressor
 An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](#regression-tree) in that they choose a split drawn from a random set determined by the max features parameter, rather than searching the entire column for the best split.
 
 > **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Categorical, Continuous
+**Data Type Compatibility:** Categorical, Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch that is allowed. |
@@ -19,8 +18,7 @@ An *Extremely Randomized* Regression Tree, these trees differ from standard [Reg
 | 4 | max features | Auto | int | The number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -36,14 +34,12 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifiers\ExtraTreeRegressor;
 
 $estimator = new ExtraTreeRegressor(30, 3, 0.05, 20, 1e-4);
 ```
 
-**References:**
-
+### References
 >- P. Geurts et al. (2005). Extremely Randomized Trees.

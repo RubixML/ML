@@ -1,16 +1,16 @@
-### Aggregate Report
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php">Source</a></span></p>
+
+# Aggregate Report
 A report that aggregates the results of multiple reports. The reports are indexed by their key given at construction time.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/AggregateReport.php)
+**Estimator Compatibility:** Depends on base reports
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | reports | | array | An array of report objects to aggregate. |
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\Reports\AggregateReport;
 use Rubix\ML\CrossValidation\Reports\ConfusionMatrix;

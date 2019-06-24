@@ -1,22 +1,19 @@
-### One Hot Encoder
-The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/OneHotEncoder.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/OneHotEncoder.php)
+# One Hot Encoder
+The One Hot Encoder takes a column of categorical features and produces a n-d *one-hot* representation where n is equal to the number of unique categories in that column. A 0 in any location indicates that a category represented by that column is not present whereas a 1 indicates that a category is present in the sample.
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
-**Compatibility:** Categorical
+**Data Type Compatibility:** Categorical
 
-**Parameters:**
-
+### Parameters
 This transformer does not have any parameters.
 
-**Additional Methods:**
-
+### Additional Methods
 This transformer does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 

@@ -1,16 +1,15 @@
-### Multi Layer Perceptron
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultiLayerPerceptron.php">Source</a></span></p>
+
+# Multi Layer Perceptron
 A multiclass feedforward [Neural Network](#neural-network) classifier that uses a series of user-defined [hidden layers](#hidden) as intermediate computational units. Multiple layers and non-linear activation functions allow the Multi Layer Perceptron to handle complex deep learning problems.
 
 > **Note**: The MLP features progress monitoring which stops training early if it can no longer make progress. It also utilizes snapshotting to make sure that it always has the best settings of the model parameters even if progress began to decline during training.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Classifiers/MultiLayerPerceptron.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | hidden | | array | An array composing the hidden layers of the neural network. |
@@ -24,8 +23,7 @@ A multiclass feedforward [Neural Network](#neural-network) classifier that uses 
 | 9 | metric | FBeta | object | The validation metric used to monitor the training progress of the network. |
 | 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the average loss of a sample at each epoch of training:
 ```php
 public steps() : array
@@ -41,8 +39,7 @@ Returns the underlying neural network instance or *null* if untrained:
 public network() : Network|null
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifiers\MultiLayerPerceptron;
 use Rubix\ML\NeuralNet\Layers\Dense;
@@ -68,6 +65,5 @@ $estimator = new MultiLayerPerceptron([
 ], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
 ```
 
-**References:**
-
+### References
 >- G. E. Hinton. (1989). Connectionist learning procedures.

@@ -1,17 +1,18 @@
-site_name: Rubix ML for PHP
+site_name: Rubix ML Documentation
 
 theme: readthedocs
 
 nav:
 - Home: index.md
 - Installation: installation.md
-- Basic Introduction:
-  - What is Machine Learning?: intro/what-is-machine-learning.md
-  - Obtaining Data: intro/obtaining-data.md
-  - Choosing an Estimator: intro/choosing-an-estimator.md
-  - Training and Prediction: intro/training-and-prediction.md
-  - Model Evaluation: intro/model-evaluation.md
+- Getting Started:
+  - What is Machine Learning?: getting-started/what-is-machine-learning.md
+  - Obtaining Data: getting-started/obtaining-data.md
+  - Choosing an Estimator: getting-started/choosing-an-estimator.md
+  - Training and Prediction: getting-started/training-and-prediction.md
+  - Model Evaluation: getting-started/model-evaluation.md
 - System Architecture: system-architecture.md
+- FAQ: faq.md
 - Dataset Objects:
   - API Reference: datasets/api.md
   - Labeled: datasets/labeled.md
@@ -220,6 +221,9 @@ nav:
     - Skip Gram: other/tokenizers/skip-gram.md
     - Whitespace: other/tokenizers/whitespace.md
     - Word: other/tokenizers/word.md
-- FAQ: faq.md
 
 use_directory_urls: false
+
+markdown_extensions:
+    - toc:
+        permalink: "#"

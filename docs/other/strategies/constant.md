@@ -1,17 +1,16 @@
-### Constant
-Always guess a constant value.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Constant.php">Source</a></span></p>'
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Constant.php)
+# Constant
+Always guess a constant value.
 
 **Data Type:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0. | float | The value to guess. |
 
-**Example:**
+### Example
 ```php
 use Rubix\ML\Other\Strategies\Constant;
 

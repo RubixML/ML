@@ -1,14 +1,12 @@
-### Least Squares
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/LeastSquares.php">Source</a></span></p>
+
+# Least Squares
 Least Squares or *quadratic* loss is a function that measures the squared error between the target output and the actual output of the network.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/CostFunctions/LeastSquares.php)
-
-**Parameters:**
-
+### Parameters
 This cost function does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 

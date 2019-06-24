@@ -1,12 +1,11 @@
-### Redis DB
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/RedisDB.php">Source</a></span></p>
+
+# Redis DB
 Redis is a high performance in-memory key value store that can be used to persist your trained models over a network.
 
 > **Note**: The Redis persister requires the PHP [Redis extension](https://github.com/phpredis/phpredis) and a properly configured Redis server.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/RedisDB.php)
-
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | key | | string | The key of the object in the database. |
@@ -17,15 +16,13 @@ Redis is a high performance in-memory key value store that can be used to persis
 | 6 | serializer | Native | object | The serializer used to convert to and from storage format. |
 | 7 | timeout | 2.5 | float | The time in seconds to wait for a response from the server before timing out. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return an associative array of info from the Redis server:
 ```php
 public info() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Persisters\RedisDB;
 use Rubix\ML\Persisters\Serializers\Native;

@@ -1,16 +1,14 @@
-### Contingency Table
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ContingencyTable.php">Source</a></span></p>
+
+# Contingency Table
 A Contingency Table is used to display the frequency distribution of class labels among a clustering of samples. It is similar to a [Confusion Matrix](#confusion-matrix) but uses the labels to establish a ground truth for a clustering instead.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ContingencyTable.php)
+**Estimator Compatibility:** Clusterer
 
-**Compatibility:** Clustering
-
-**Parameters:**
-
+### Parameters
 This report does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\Reports\ContingencyTable;
 

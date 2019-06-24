@@ -37,7 +37,7 @@ Return the *last* **n** rows of data in a new dataset object:
 public tail(int $n = 10) : self
 ```
 
-**Example:**
+### Example
 
 ```php
 // Return the sample matrix
@@ -111,7 +111,7 @@ Batch the dataset into subsets of **n** rows per batch:
 public batch(int $n = 50) : array
 ```
 
-**Example:**
+### Example
 
 ```php
 // Remove the first 5 rows and return them in a new dataset
@@ -144,7 +144,7 @@ Generate a random *weighted* subset with replacement of size **n**:
 public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```
 
-**Example:**
+### Example
 ```php
 // Randomize and split the dataset into two subsets
 [$left, $right] = $dataset->randomize()->split(0.8);
@@ -160,7 +160,7 @@ To filter a Dataset by a feature column:
 public filterByColumn(int $index, callable $fn) : self
 ```
 
-**Example:**
+### Example
 ```php
 $tallPeople = $dataset->filterByColumn(2, function ($value) {
 	return $value > 178.5;
@@ -174,7 +174,7 @@ To sort a dataset in place by a specific feature column:
 public sortByColumn(int $index, bool $descending = false) : self
 ```
 
-**Example:**
+### Example
 ```php
 var_dump($dataset->samples());
 
@@ -240,7 +240,7 @@ You can apply a [Transformer](#transformers) directly to a Dataset by passing it
 public apply(Transformer $transformer) : void
 ```
 
-**Example:**
+### Example
 ```php
 use Rubix\ML\Transformers\OneHotEncoder;
 

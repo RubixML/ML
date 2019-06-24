@@ -1,16 +1,14 @@
-### Constant
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Constant.php">Source</a></span></p>
+
+# Constant
 Initialize the parameter to a user specified constant value.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Constant.php)
-
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | value | 0. | float | The value to initialize the parameter to. |
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\NeuralNet\Initializers\Constant;
 

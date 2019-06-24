@@ -18,8 +18,7 @@ Return a list of estimators that metric is compatible with:
 public compatibility() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\Metrics\MeanAbsoluteError;
 

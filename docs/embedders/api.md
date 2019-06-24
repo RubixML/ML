@@ -6,8 +6,7 @@ To embed a dataset and return the low dimensional dataset:
 public embed(Dataset $dataset) : Dataset
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 

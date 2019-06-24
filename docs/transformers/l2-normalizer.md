@@ -1,22 +1,19 @@
-### L2 Normalizer
-Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/L2Normalizer.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/L2Normalizer.php)
+# L2 Normalizer
+Transform each sample vector in the sample matrix such that each feature is divided by the L2 norm (or *magnitude*) of that vector.
 
 **Interfaces:** [Transformer](#transformers)
 
-**Compatibility:** Continuous only
+**Data Type Compatibility:** Continuous only
 
-**Parameters:**
-
+### Parameters
 This transformer does not have any parameters.
 
-**Additional Methods:**
-
+### Additional Methods
 This transformer does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\L2Normalizer;
 

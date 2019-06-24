@@ -1,14 +1,13 @@
-### Regression Tree
-A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the impurity (variance) of the labels at each decision node split.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/RegressionTree.php)
+# Regression Tree
+A Decision Tree learning algorithm (CART) that performs greedy splitting by minimizing the impurity (variance) of the labels at each decision node split.
 
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Categorical, Continuous
+**Data Type Compatibility:** Categorical, Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
@@ -17,8 +16,7 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 4 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
 | 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the feature importances calculated during training indexed by feature column:
 ```php
 public featureImportances() : array
@@ -34,8 +32,7 @@ Return the balance of the tree:
 public balance() : int
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 

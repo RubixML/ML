@@ -1,16 +1,14 @@
-### Lottery
-Hold a lottery in which each category has an equal chance of being picked.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Lottery.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Lottery.php)
+# Lottery
+Hold a lottery in which each category has an equal chance of being picked.
 
 **Data Type:** Categorical
 
-**Parameters:**
-
+### Parameters
 This strategy does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Other\Strategies\Lottery;
 

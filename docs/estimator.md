@@ -8,8 +8,7 @@ To make predictions from a dataset object:
 public predict(Dataset $dataset) : array
 ```
 
-**Example:**
-
+### Example
 ```php
 $predictions = $estimator->predict($dataset);
 

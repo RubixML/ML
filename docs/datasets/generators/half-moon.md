@@ -1,14 +1,13 @@
-### Half Moon
-Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted on a chart. The label for each sample is the value obtained by reversing the generative process for that particular sample.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/HalfMoon.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Generators/HalfMoon.php)
+# Half Moon
+Generate a dataset consisting of 2 dimensional samples that form a half moon shape when plotted on a chart. The label for each sample is the value obtained by reversing the generative process for that particular sample.
 
 **Data Types:** Continuous
 
 **Label Type:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | x | 0.0 | float | The *x* coordinate of the center of the half moon. |
@@ -17,12 +16,10 @@ Generate a dataset consisting of 2 dimensional samples that form a half moon sha
 | 4 | rotate | 90.0 | float | The amount in degrees to rotate the half moon counterclockwise. |
 | 5 | noise | 0.1 | float | The amount of Gaussian noise to add to each data point as a percentage of the scaling factor. |
 
-**Additional Methods:**
-
+### Additional Methods
 This generator does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Datasets\Generators\HalfMoon;
 

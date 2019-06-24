@@ -1,12 +1,12 @@
-### Linear
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Linear.php">Source</a></span></p>
+
+# Linear
 A simple linear kernel computed by the dot product of two vectors.
 
-**Parameters:**
-
+### Parameters
 This kernel does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Kernels\SVM\Linear;
 

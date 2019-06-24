@@ -1,17 +1,16 @@
-### Labeled
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php">Source</a></span></p>
+
+# Labeled
 For *supervised* Estimators you will need to train it with a Labeled dataset consisting of samples with the addition of labels that correspond to the observed outcome of each sample. Splitting, folding, randomizing, sorting, and subsampling are all done while keeping the indices of samples and labels aligned. In addition to the basic Dataset interface, the Labeled class can sort and *stratify* the data by label as well.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Datasets/Labeled.php)
-
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | labels | | array | A 1-dimensional array of labels that correspond to the samples in the dataset. |
 | 3 | validate | true | bool | Should we validate the data? |
 
-**Additional Methods:**
+### Additional Methods
 Build a new labeled dataset with validation:
 ```php
 public static build(array $samples = [], array $labels = []) : self
@@ -90,7 +89,7 @@ Return *k* equal size subsets of the dataset:
 public stratifiedFold($k = 10) : array
 ```
 
-**Example:**
+### Example
 ```php
 use Rubix\ML\Datasets\Labeled;
 
@@ -135,6 +134,7 @@ var_dump($outcomes);
 ```
 
 **Output:**
+
 ```sh
 array(4) {
     [0]=> string(5) "female"
@@ -151,7 +151,7 @@ array(2) {
 }
 ```
 
-**Example:**
+### Example
 ```php
 // Fold the dataset into 5 equal size stratified subsets
 $folds = $dataset->stratifiedFold(5);

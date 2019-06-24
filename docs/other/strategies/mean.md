@@ -1,16 +1,14 @@
-### Mean
-This strategy always predicts the mean of the fitted data.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Mean.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/Mean.php)
+# Mean
+This strategy always predicts the mean of the fitted data.
 
 **Data Type:** Continuous
 
-**Parameters:**
-
+### Parameters
 This strategy does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Other\Strategies\Mean;
 

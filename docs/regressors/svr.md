@@ -1,16 +1,15 @@
-### SVR
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php">Source</a></span></p>
+
+# SVR
 The Support Vector Machine Regressor is a maximum margin algorithm for the purposes of regression. Similarly to the [Support Vector Machine Classifier](#svc), the model produced by SVR (*R* for regression) depends only on a subset of the training data, because the cost function for building the model ignores any training data close to the model prediction given by parameter *epsilon*. Thus, the value of epsilon defines a margin of tolerance where no penalty is given to errors.
 
 > **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Regressors/SVR.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | c | 1.0 | float | The parameter that defines the width of the margin used to separate the classes. |
@@ -20,8 +19,7 @@ The Support Vector Machine Regressor is a maximum margin algorithm for the purpo
 | 5 | tolerance | 1e-3 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cache size | 100. | float | The size of the kernel cache in MB. |
 
-**Additional Methods:**
-
+### Additional Methods
 Save the model data to the filesystem:
 ```php
 public save(string $path) : void
@@ -32,8 +30,7 @@ Load the model data from the filesystem:
 public load(string $path) : void
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Classifiers\SVR;
 use Rubix\ML\Kernels\SVM\RBF;
@@ -53,7 +50,6 @@ $estimator->load('svm.model');
 $predictions = $estimator->predict($dataset);
 ```
 
-**References**
-
+### References
 >- C. Chang et al. (2011). LIBSVM: A library for support vector machines.
 >- A. Smola et al. (2003). A Tutorial on Support Vector Regression.

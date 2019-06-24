@@ -1,16 +1,15 @@
-### DBSCAN
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php">Source</a></span></p>
+
+# DBSCAN
 *Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a *quasi* [Anomaly Detector](#anomaly-detectors).
 
 > **Note**: Noise samples are assigned the cluster number *-1*.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php)
-
 **Interfaces:** [Estimator](#estimators)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
@@ -20,12 +19,10 @@
 
 > **Note**: The smaller the radius, the tighter the clusters will be.
 
-**Additional Methods:**
-
+### Additional Methods
 This estimator does not have any additional methods.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Clusterers\DBSCAN;
 use Rubix\ML\Kernels\Distance\Diagonal;
@@ -33,6 +30,5 @@ use Rubix\ML\Kernels\Distance\Diagonal;
 $estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
 ```
 
-**References:**
-
+### References
 >- M. Ester et al. (1996). A Densty-Based Algorithm for Discovering Clusters.

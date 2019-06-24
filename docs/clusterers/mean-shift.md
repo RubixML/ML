@@ -1,16 +1,15 @@
-### Mean Shift
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">Source</a></span></p>
+
+# Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
 > **Note**: Seeding Mean Shift with a [Seeder](#seeders) can speed up convergence using large datasets. The default is to initialize all training samples as seeds.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php)
-
 **Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
@@ -21,8 +20,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | 6 | seeder | None | object | The seeder used to initialize the cluster centroids. |
 | 7 | ratio | 0.2 | float | The ratio of samples from the training set to seed the algorithm with. |
 
-**Additional Methods:**
-
+### Additional Methods
 Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
 ```php
 public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $distance = null) : float
@@ -40,8 +38,7 @@ Returns the amount of centroid shift during each epoch of training:
 public steps() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Kernels\Distance\Diagonal;
@@ -52,7 +49,6 @@ $radius = MeanShift::estimateRadius($dataset, 30., new Diagonal()); // Automatic
 $estimator = new MeanShift($radius, new Diagonal(), 30, 2000, 1e-6, new KMC2(), 0.1);
 ```
 
-**References:**
-
+### References
 >- M. A. Carreira-Perpinan et al. (2015). A Review of Mean-shift Algorithms for Clustering.
 >- D. Comaniciu et al. (2012). Mean Shift: A Robust Approach Toward Feature Space Analysis.

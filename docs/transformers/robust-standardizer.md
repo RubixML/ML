@@ -1,20 +1,18 @@
-### Robust Standardizer
-This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/RobustStandardizer.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/RobustStandardizer.php)
+# Robust Standardizer
+This standardizer transforms continuous features by centering them around the median and scaling by the median absolute deviation (*MAD*). The use of robust statistics make this standardizer more immune to outliers than the [Z Scale Standardizer](#z-scale-standardizer) which used mean and variance.
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
-**Compatibility:** Continuous
+**Data Type Compatibility:** Continuous
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | center | true | bool | Should we center the sample dataset? |
 
-**Additional Methods:**
-
+### Additional Methods
 Return the medians calculated by fitting the training set:
 ```php
 public medians() : array
@@ -25,8 +23,7 @@ Return the median absolute deviations calculated during fitting:
 public mads() : array
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\RobustStandardizer;
 

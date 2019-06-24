@@ -1,16 +1,14 @@
-### Normal
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Normal.php">Source</a></span></p>
+
+# Normal
 Generates a random weight matrix from a Gaussian distribution with user-specified standard deviation.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Normal.php)
-
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | stddev | 0.05 | float | The standard deviation of the distribution to sample from. |
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\NeuralNet\Initializers\Normal;
 

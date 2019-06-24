@@ -1,16 +1,14 @@
-### Popularity Contest
-Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/PopularityContest.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/PopularityContest.php)
+# Popularity Contest
+Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.
 
 **Data Type:** Categorical
 
-**Parameters:**
-
+### Parameters
 This strategy does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Other\Strategies\Lottery;
 

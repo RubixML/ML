@@ -1,16 +1,14 @@
-### Residual Analysis
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php">Source</a></span></p>
+
+# Residual Analysis
 Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php)
+**Estimator Compatibility:** Regressor
 
-**Compatibility:** Regression
-
-**Parameters:**
-
+### Parameters
 This report does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\CrossValidation\Reports\ResidualAnaysis;
 

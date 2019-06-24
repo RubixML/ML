@@ -1,16 +1,14 @@
-### Whitespace
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Whitespace.php">Source</a></span></p>
+
+# Whitespace
 Tokens are delimited by a user-specified whitespace character.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Whitespace.php)
-
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | delimiter | ' ' | string | The whitespace character that delimits each token. |
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Extractors\Tokenizers\Whitespace;
 

@@ -1,16 +1,14 @@
-### Binary Serializer
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Binary.php">Source</a></span></p>
+
+# Binary Serializer
 Converts Persistable objects to and from binary format.
 
 > **Note**: The [Igbinary extension](https://github.com/igbinary/igbinary) is needed to use this serializer.
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Persisters/Serializers/Binary.php)
-
-**Parameters:**
-
+### Parameters
 This serializer does not have any parameters.
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Persisters\Serializers\Binary;
 

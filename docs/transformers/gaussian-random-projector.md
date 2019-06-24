@@ -1,27 +1,24 @@
-### Gaussian Random Projector
-A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
+<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/GaussianRandomProjector.php">Source</a></span></p>
 
-> [Source](https://github.com/RubixML/RubixML/blob/master/src/Transformers/GaussianRandomProjector.php)
+# Gaussian Random Projector
+A random projector is a dimensionality reducer based on the Johnson-Lindenstrauss lemma that uses a random matrix to project feature vectors onto a user-specified number of dimensions. It is faster than most non-randomized dimensionality reduction techniques such as [PCA](#principal-component-analysis) or [LDA](#linear-discriminant-analysis) and it offers similar results. This version utilizes a random matrix sampled from a smooth Gaussian distribution.
 
 **Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
 
-**Compatibility:** Continuous only
+**Data Type Compatibility:** Continuous only
 
-**Parameters:**
-
+### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | dimensions | | int | The number of target dimensions to project onto. |
 
-**Additional Methods:**
-
+### Additional Methods
 Estimate the minimum dimensionality needed given total sample size and *max distortion* using the Johnson-Lindenstrauss lemma:
 ```php
 public static estimate(int $n, float $maxDistortion = 0.1) : int
 ```
 
-**Example:**
-
+### Example
 ```php
 use Rubix\ML\Transformers\GaussianRandomProjector;
 
