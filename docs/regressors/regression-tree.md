@@ -10,7 +10,7 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
 | 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The maximum number of features to consider when determining a best split. |

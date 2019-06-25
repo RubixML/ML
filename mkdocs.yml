@@ -58,6 +58,7 @@ nav:
   - K Means: clusterers/k-means.md
   - Mean Shift: clusterers/mean-shift.md
   - Seeders:
+    - API Reference: clusterers/seeders/api.md
     - K-MC2: clusterers/seeders/k-mc2.md
     - Plus Plus: clusterers/seeders/plus-plus.md
     - Random: clusterers/seeders/random.md
@@ -83,6 +84,7 @@ nav:
   - API Reference: embedders/api.md
   - t-SNE: embedders/t-sne.md
 - Backends:
+  - API Reference: backends/api.md
   - Amp: backends/amp.md
   - Serial: backends/serial.md
 - Persisters:

@@ -1,11 +1,13 @@
-### Validators
-Validators take an [Estimator](#estimators) instance, [Labeled Dataset](#labeled) object, and validation [Metric](#validation-metrics) and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the Estimator beforehand as the Validator will automatically train it on subsets of the dataset created by the testing algorithm.
+# Validators
+Validators take an [Estimator](../estimator.md) instance, [Labeled](../datasets/labeled.md) dataset object, and validation [Metric](metrics/api.md) and return a validation score that measures the generalization performance of the model using one of various cross validation techniques. There is no need to train the estimator beforehand as the validator will automatically train it on subsets of the dataset created by the testing algorithm.
 
+### Test an Estimator
 ```php
 public test(Estimator $estimator, Labeled $dataset, Validation $metric) : float
 ```
 
-### Example
+**Example**
+
 ```php
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;

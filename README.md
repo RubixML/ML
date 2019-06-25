@@ -20,7 +20,7 @@ Install Rubix ML into your project with [Composer](https://getcomposer.org/):
 $ composer require rubix/ml
 ```
 
-## Requirements
+### Requirements
 - [PHP](https://php.net/manual/en/install.php) 7.1.3 or above
 
 #### Optional
@@ -29,8 +29,6 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
-
-
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.

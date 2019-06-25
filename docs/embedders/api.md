@@ -1,5 +1,5 @@
 # Embedders
-Manifold learning is a type of non-linear dimensionality reduction used primarily for visualizing high dimensional datasets in low (1 to 3) dimensions. Embedders are manifold learners that embed high dimensional datasets into lower ones.
+Embedders are non-linear dimensionality reducers that produce dense representations of an input feature space such that they can be vizualized or used as inputs to a learning algorithm.
 
 ### Embed a Dataset
 To embed a dataset and return the low dimensional dataset:

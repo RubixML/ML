@@ -3,6 +3,8 @@
 # Committee Machine
 A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
 
+> **Note:** Bootstrap Aggregator is not compatible with clusterers.
+
 > **Note:** Influence values can be arbitrary as they are normalized upon instantiation.
 
 **Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
@@ -13,7 +15,7 @@ A voting ensemble that aggregates the predictions of a committee of heterogeneou
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | experts | | array | An array of learner instances that will comprise the committee. |
-| 2 | influences | Equal | array | The influence score for each expert in the committee. |
+| 2 | influences | Auto | array | The influence scores for each expert in the committee. The default is to weight each expert equally. |
 
 ### Additional Methods
 Return the learner instances of the committee:

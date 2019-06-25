@@ -1,4 +1,5 @@
 - Unreleased
+    - Added documentation site
     - Added Regression and Classification Loss interfaces
     - LODA now defaults to auto detect bin count
     - Removed tolerance param from Gradient Boost and AdaBoost

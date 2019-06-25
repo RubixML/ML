@@ -43,7 +43,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing Backend under the hood of objects that implement the [Parallel](parallel.md) interface.
+Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood. Objects that implement the [Parallel](parallel.md) interface are able to take advantage of parallel backends.
 
 ### Does Rubix support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.

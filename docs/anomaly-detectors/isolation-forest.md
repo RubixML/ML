@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/IsolationForest.php">Source</a></span>
 
 # Isolation Forest
-An ensemble detector comprised of Isolation Trees each trained on a different subset of the training set. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
+An ensemble anomaly detector comprised of Isolation Trees each trained on a different subset of the training set. Isolation Trees are a type of randomized decision tree that assigns an isolation score based on the depth in the tree a sample reaches upon search. The Isolation Forest works by averaging the isolation score of a sample across a user-specified number of trees.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
 
@@ -10,9 +10,9 @@ An ensemble detector comprised of Isolation Trees each trained on a different su
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | estimators | 300 | int | The number of estimators to train in the ensemble. |
+| 1 | estimators | 300 | int | The number of isolation trees to train in the ensemble. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
-| 3 | ratio | 0.2 | float | The ratio of random samples to train each estimator with. |
+| 3 | ratio | 0.2 | float | The ratio of samples to train each estimator with. |
 
 ### Additional Methods
 This estimator does not have any additional methods.

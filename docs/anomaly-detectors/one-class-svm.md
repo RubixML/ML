@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/OneClassSVM.php">Source</a></span>
 
 # One Class SVM
-An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with  multiclass SVM or [SVC](../classifiers/svc.md).
+An unsupervised Support Vector Machine used for anomaly detection. The One Class SVM aims to find a maximum margin between a set of data points and the *origin*, rather than between classes such as with multiclass SVM or [SVC](../classifiers/svc.md).
 
 > **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine under the hood.
 

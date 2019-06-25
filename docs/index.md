@@ -1,17 +1,10 @@
-# Welcome to MkDocs
+# Rubix ML for PHP
 
-For full documentation visit [mkdocs.org](https://mkdocs.org).
+<a href="https://rubixml.com" target="_blank"><img src="https://raw.githubusercontent.com/RubixML/RubixML/master/docs/img/rubix-ml-logo.svg?sanitize=true" width="350" alt="Rubix ML for PHP" /></a>
 
-## Commands
+A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- **Developer-friendly** API is straightforward and delightful
+- **Modular** architecture combines power, flexibility, and extensibility
+- **40+** modern supervised and unsupervised learning algorithms
+- **Open source** and free to use commercially

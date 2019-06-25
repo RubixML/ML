@@ -3,8 +3,6 @@ In Rubix, data are passed around using specialized container structures called D
 
 > **Note:** There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
 
-The Dataset interface has an assorted API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available on the basic interface.
-
 ### Selecting
 Return all the samples in the dataset:
 ```php

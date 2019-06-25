@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/ClassificationTree.php">Source</a></span>
 
 # Classification Tree
-A binary tree-based classifier that minimizes gini impurity to greedily construct a decision tree for classification.
+A binary decision tree-based classifier that minimizes gini impurity to greedily construct a model for classification. 
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
@@ -10,7 +10,7 @@ A binary tree-based classifier that minimizes gini impurity to greedily construc
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch. |
+| 1 | max depth | PHP_INT_MAX | int | The maximum depth of a branch in the tree. |
 | 2 | max leaf size | 3 | int | The max number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The max number of features to consider when determining a best split. |
