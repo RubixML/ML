@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageVectorizer.php">Source</a></span>
 
 # Image Vectorizer
 Image Vectorizer takes images and converts them into a flat vector of raw color channel data.
 
-> **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+> **Note:** Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-**Interfaces:** [Transformer](#transformers)
+**Interfaces:** [Transformer](api.md#transformer)
 
 **Data Type Compatibility:** Resource (Images)
 

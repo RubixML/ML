@@ -1,5 +1,6 @@
 # Installation
 Install Rubix ML into your project with [Composer](https://getcomposer.org/):
+
 ```sh
 $ composer require rubix/ml
 ```
@@ -7,7 +8,7 @@ $ composer require rubix/ml
 ## Requirements
 - [PHP](https://php.net/manual/en/install.php) 7.1.3 or above
 
-#### Optional
+### Optional
 
 - [SVM extension](https://php.net/manual/en/book.svm.php) for Support Vector Machine engine (libsvm)
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation

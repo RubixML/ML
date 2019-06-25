@@ -1,5 +1,5 @@
 # FAQ
-Here you can find answers to the most frequently asked Rubix ML questions.
+Here you will find answers to the most frequently asked Rubix ML questions.
 
 ### What environment (SAPI) should I run Rubix in?
 All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
@@ -11,17 +11,26 @@ To run a program using the PHP command line interface (CLI), open a terminal and
 $ php example.php
 ```
 
-> **Note**: The PHP interpreter must be in your default PATH for the above syntax to work.
+> **Note:** The PHP interpreter must be in your default PATH for the above syntax to work.
 
 ### I'm getting out of memory errors
 Try adjusting the `memory_limit` option in your php.ini file to something more reasonable. We recommend setting this to *-1* (no limit) or slightly below your device's memory supply for best results.
 
-> **Note**: Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](#online) estimators for more information.
+You can temporarily set the `memory_limit` in your script by using the `ini_set()` function.
+
+**Example**
+
+```php
+ini_set('memory_limit', '-1');
+```
+
+> **Note:** Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](online.md) learners for more information.
 
 ### What is a Tuple?
 A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
 
-### Example
+**Example**
+
 ```php
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
@@ -34,7 +43,7 @@ Categorical (or *discrete*) data are those that describe a *qualitative* propert
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix currently supports parallel processing (multiprocessing) by utilizing various parallel computing [Backends](#backends) under the hood of objects that implement the [Parallel](#parallel) interface.
+Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing Backend under the hood of objects that implement the [Parallel](parallel.md) interface.
 
 ### Does Rubix support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.

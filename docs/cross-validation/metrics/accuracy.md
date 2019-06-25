@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Accuracy.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/Accuracy.php">Source</a></span>
 
 # Accuracy
 Accuracy is a quick and simple classification and anomaly detection metric defined as the number of true positives over all samples in the testing set.

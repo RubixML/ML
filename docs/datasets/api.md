@@ -1,17 +1,11 @@
 # Dataset Objects
 In Rubix, data are passed around using specialized container structures called Dataset objects. Dataset objects can hold a heterogeneous mix of categorical and continuous data and make it easy to transport data in a canonical way. 
 
-> **Note**: There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
+> **Note:** There are two *types* of features that estimators can process i.e *categorical* and *continuous*. Any numerical (integer or float) datum is considered continuous and any string datum is considered categorical by convention throughout Rubix.
 
 The Dataset interface has an assorted API designed to make working on datasets fast and easy. Below you'll find a description of the various methods available on the basic interface.
 
-#### Stacking
-Stack a number of dataset objects on top of each other and return a single dataset:
-```php
-public static stack(array $datasets) : self;
-```
-
-#### Selecting
+### Selecting
 Return all the samples in the dataset:
 ```php
 public samples() : array
@@ -37,7 +31,7 @@ Return the *last* **n** rows of data in a new dataset object:
 public tail(int $n = 10) : self
 ```
 
-### Example
+**Example**
 
 ```php
 // Return the sample matrix
@@ -47,8 +41,7 @@ $samples = $dataset->samples();
 $subset = $dataset->head(5);
 ```
 
-#### Properties
-
+### Properties
 Return the number of rows in the dataset:
 ```php
 public numRows() : int
@@ -69,18 +62,39 @@ Return the integer encoded column type given a column index:
 public columnType(int $index) : int
 ```
 
-Return the range for each feature column:
+### Applying Transformations
+You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the apply method on the Dataset.
+
 ```php
-public ranges() : array
+public apply(Transformer $transformer) : void
 ```
 
-Return the range of a feature column. The range for a continuous column is defined as the minimum and maximum values, and for categorical columns the range is defined as every unique category.
+**Example**
+
 ```php
-public columnRange(int $index) : array
+use Rubix\ML\Transformers\OneHotEncoder;
+
+$dataset->apply(new OneHotEncoder());
 ```
 
-#### Splitting, Folding, and Batching
+### Stacking
+Stack a number of dataset objects on top of each other to form a single dataset:
+```php
+public static stack(array $datasets) : self
+```
 
+### Prepending and Appending
+To prepend a given dataset onto the beginning of another dataset:
+```php
+public prepend(Dataset $dataset) : self
+```
+
+To append a given dataset onto the end of another dataset:
+```php
+public append(Dataset $dataset) : self
+```
+
+### Slicing and Splitting
 Remove **n** rows from the dataset and return them in a new dataset:
 ```php
 public take(int $n = 1) : self
@@ -101,17 +115,19 @@ Partition the dataset into *left* and *right* subsets based on the value of a fe
 public partition(int $index, mixed $value) : array
 ```
 
+### Folding
 Fold the dataset **k** - 1 times to form **k** equal size datasets:
 ```php
 public fold(int $k = 10) : array
 ```
 
-Batch the dataset into subsets of **n** rows per batch:
+### Batching
+Batch the dataset into subsets containing a maximum of **n** rows per batch:
 ```php
 public batch(int $n = 50) : array
 ```
 
-### Example
+**Example**
 
 ```php
 // Remove the first 5 rows and return them in a new dataset
@@ -127,8 +143,7 @@ $subset = $dataset->take(5);
 $folds = $dataset->fold(8);
 ```
 
-#### Randomizing
-
+### Randomizing
 Randomize the order of the Dataset and return it:
 ```php
 public randomize() : self
@@ -144,7 +159,8 @@ Generate a random *weighted* subset with replacement of size **n**:
 public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```
 
-### Example
+**Example**
+
 ```php
 // Randomize and split the dataset into two subsets
 [$left, $right] = $dataset->randomize()->split(0.8);
@@ -153,28 +169,28 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 $subset = $dataset->randomSubsetWithReplacement(500);
 ```
 
-#### Filtering
-
+### Filtering
 To filter a Dataset by a feature column:
 ```php
 public filterByColumn(int $index, callable $fn) : self
 ```
 
-### Example
+**Example**
+
 ```php
 $tallPeople = $dataset->filterByColumn(2, function ($value) {
 	return $value > 178.5;
 });
 ```
 
-#### Sorting
-
+### Sorting
 To sort a dataset in place by a specific feature column:
 ```php
 public sortByColumn(int $index, bool $descending = false) : self
 ```
 
-### Example
+**Example**
+
 ```php
 var_dump($dataset->samples());
 
@@ -183,7 +199,8 @@ $dataset->sortByColumn(2, false);
 var_dump($dataset->samples());
 ```
 
-**Output:**
+**Output**
+
 ```sh
 array(3) {
     [0]=> array(3) {
@@ -220,29 +237,4 @@ array(3) {
 	    [2]=> int(8)
     }
 }
-```
-
-#### Prepending and Appending
-To prepend a given dataset onto the beginning of another dataset:
-```php
-public prepend(Dataset $dataset) : self
-```
-
-To append a given dataset onto the end of another dataset:
-```php
-public append(Dataset $dataset) : self
-```
-
-#### Applying a Transformation
-You can apply a [Transformer](#transformers) directly to a Dataset by passing it to the apply method on the Dataset.
-
-```php
-public apply(Transformer $transformer) : void
-```
-
-### Example
-```php
-use Rubix\ML\Transformers\OneHotEncoder;
-
-$dataset->apply(new OneHotEncoder());
 ```

@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MinMaxNormalizer.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MinMaxNormalizer.php">Source</a></span>
 
 # Min Max Normalizer
 The *Min Max* Normalizer scales the input features to a value between a user-specified range (*default* 0 to 1).
 
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
 
 **Data Type Compatibility:** Continuous
 

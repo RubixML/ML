@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/SMAPE.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/SMAPE.php">Source</a></span>
 
 # SMAPE
 *Symmetric Mean Absolute Percentage Error* expresses the relative error of a set of predictions and their labels as a percentage. It has an upper bound of 100 and a lower bound of 0.

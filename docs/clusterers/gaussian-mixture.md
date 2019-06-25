@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/GaussianMixture.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/GaussianMixture.php">Source</a></span>
 
 # Gaussian Mixture
-A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](#k-means) but allow both the centers (*means*) *and* the radii (*variances*) to be learned as well.
+A Gaussian Mixture model (GMM) is a probabilistic model for representing the presence of clusters within an overall population without requiring a sample to know which sub-population it belongs to a priori. GMMs are similar to centroid-based clusterers like [K Means](k-means.md) but allow both the centers (*means*) *and* the radii (*variances*) to be learned as well.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

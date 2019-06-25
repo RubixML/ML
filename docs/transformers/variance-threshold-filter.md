@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/VarianceThresholdFilter.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/VarianceThresholdFilter.php">Source</a></span>
 
 # Variance Threshold Filter
 A type of feature selector that selects feature columns that have a greater variance than the user-specified threshold.
 
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
 **Data Type Compatibility:** Continuous
 

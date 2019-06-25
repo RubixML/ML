@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/BootstrapAggregator.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/BootstrapAggregator.php">Source</a></span>
 
 # Bootstrap Aggregator
 Bootstrap Aggregating (or *bagging* for short) is a model averaging technique designed to improve the stability and performance of a user-specified base estimator by training a number of them on a unique *bootstrapped* training set sampled at random with replacement.
 
-> **Note**: Bootstrap Aggregator is not compatible with clusterers or embedders.
+> **Note:** Bootstrap Aggregator is not compatible with clusterers or embedders.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Persistable](#persistable)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Persistable](persistable.md)
 
 **Data Type Compatibility:** Depends on base learner
 

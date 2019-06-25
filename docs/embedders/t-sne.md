@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Embedders/TSNE.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Embedders/TSNE.php">Source</a></span>
 
 # t-SNE
 *T-distributed Stochastic Neighbor Embedding* is a two-stage non-linear manifold learning algorithm based on batch Gradient Descent. During the first stage (*early* stage) the samples are exaggerated to encourage distant clusters. Since the t-SNE cost function (KL Divergence) has a rough gradient, momentum is employed to help escape bad local minima.
 
-**Interfaces:** [Verbose](#verbose)
+**Interfaces:** [Verbose](../verbose.md)
 
 **Data Type Compatibility:** Continuous
 

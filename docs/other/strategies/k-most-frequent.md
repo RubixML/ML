@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/KMostFrequent.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/KMostFrequent.php">Source</a></span>
 
 # K Most Frequent
 This strategy outputs one of K most frequent discrete values at random.

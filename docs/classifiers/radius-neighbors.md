@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RadiusNeighbors.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/RadiusNeighbors.php">Source</a></span>
 
 # Radius Neighbors
 Radius Neighbors is a spatial tree-based classifier that takes the weighted vote of each neighbor within a fixed user-defined radius measured by a kernel distance function.
 
-> **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
+> **Note:** Unknown samples with 0 samples from the training set that are within radius will be labeled as outliers (*-1*).
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

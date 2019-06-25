@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Polynomial.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/SVM/Polynomial.php">Source</a></span>
 
 # Polynomial
 This kernel projects a sample vector using polynomials of the p'th degree.

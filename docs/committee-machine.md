@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php">Source</a></span>
 
 # Committee Machine
-A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions. [[Source]](https://github.com/RubixML/RubixML/blob/master/src/CommitteeMachine.php)
+A voting ensemble that aggregates the predictions of a committee of heterogeneous learners (referred to as *experts*). The committee employs a user-specified influence-based scheme to make final predictions.
 
-> **Note**: Influence values can be arbitrary as they are normalized upon instantiation.
+> **Note:** Influence values can be arbitrary as they are normalized upon instantiation.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Parallel](#parallel), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Parallel](parallel.md), [Verbose](verbose.md), [Persistable](persistable.md)
 
 **Data Type Compatibility:** Depends on the base learners
 
@@ -41,7 +41,9 @@ $estimator = new CommitteeMachine([
     new RandomForest(new ClassificationTree(4), 100, 0.3),
     new KDNeighbors(3),
     new SoftmaxClassifier(100, new Mometum(0.001)),
-], [4, 6, 5, 4]);
+], [
+    1, 4, 3, 2,
+]);
 ```
 
 ### References

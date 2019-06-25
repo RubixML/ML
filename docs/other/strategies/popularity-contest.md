@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/PopularityContest.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/PopularityContest.php">Source</a></span>
 
 # Popularity Contest
 Hold a popularity contest where the probability of winning (being guessed) is based on the category's prior probability.

@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/FuzzyCMeans.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/FuzzyCMeans.php">Source</a></span>
 
 # Fuzzy C Means
 Distance-based soft clusterer that allows samples to belong to multiple clusters if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -23,7 +23,7 @@ Return the *c* computed centroids of the training set:
 public centroids() : array
 ```
 
-Returns the inertia at each epoch from  the last round of training:
+Returns the inertia at each epoch from the last round of training:
 ```php
 public steps() : array
 ```

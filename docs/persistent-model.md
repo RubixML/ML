@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/PersitentModel.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/PersitentModel.php">Source</a></span>
 
 # Persistent Model
 The Persistent Model wrapper gives the estimator two additional methods (`save()` and `load()`) that allow the estimator to be saved and retrieved from storage.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic)
+**Interfaces:** [Estimator](estimator.md), [Learner](learner.md), [Probabilistic](probabilistic.md)
 
-**Data Type Compatibility:** Depends on the base learner
+**Data Type Compatibility:** Depends on base learner
 
 ### Parameters
 | # | Param | Default | Type | Description |

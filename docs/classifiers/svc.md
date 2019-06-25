@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SVC.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/SVC.php">Source</a></span>
 
 # SVC
 The multiclass Support Vector Machine (SVM) Classifier is a maximum margin classifier that can efficiently perform non-linear classification by implicitly mapping feature vectors into high dimensional feature space (called the *kernel trick*).
 
-> **Note**: This estimator requires the [SVM PHP extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine written in C++ under the hood.
+> **Note:** This estimator requires the [SVM extension](https://php.net/manual/en/book.svm.php) which uses the LIBSVM engine under the hood.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md)
 
 **Data Type Compatibility:** Continuous
 

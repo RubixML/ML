@@ -1,7 +1,7 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/VMeasure.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/VMeasure.php">Source</a></span>
 
 # V Measure
-V Measure is the harmonic balance between [homogeneity](#homogeneity) and [completeness](#completeness) and is used as a measure to determine the quality of a clustering.
+V Measure is the harmonic balance between [homogeneity](homogeneity.md) and [completeness](completeness.md) and is used as a measure to determine the quality of a clustering.
 
 **Estimator Compatibility:** Clusterer
 

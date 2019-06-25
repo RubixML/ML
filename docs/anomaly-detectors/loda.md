@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LODA.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LODA.php">Source</a></span>
 
 # LODA
 Lightweight Online Detector of Anomalies uses sparse random projection vectors to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The anomaly score is given by the negative log likelihood whose upper threshold can be set by the user.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Online](#online), [Ranking](#ranking), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

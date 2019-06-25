@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">Source</a></span>
 
 # Mean Shift
 A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
 
-> **Note**: Seeding Mean Shift with a [Seeder](#seeders) can speed up convergence using large datasets. The default is to initialize all training samples as seeds.
+> **Note:** Seeding Mean Shift with a Seeder can speed up convergence on large datasets. The default behavior is to initialize all training samples as seeds.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Probabilistic](#probabilistic), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -26,7 +26,7 @@ Estimate the radius of a cluster that encompasses a certain percentage of the to
 public static estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $distance = null) : float
 ```
 
-> **Note**: Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a sample subset of the training data.
+> **Note:** Since radius estimation scales quadratically in the number of samples, for large datasets you can speed up the process by running it on a sample subset of the training data.
 
 Return the centroids computed from the training set:
 ```php

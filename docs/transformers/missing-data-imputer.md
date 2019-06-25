@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MissingDataImputer.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MissingDataImputer.php">Source</a></span>
 
 # Missing Data Imputer
-In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given [Strategy](#guessing-strategies).
+In the real world, it is common to have data with missing values here and there. The Missing Data Imputer replaces missing value *placeholder* values with a guess based on a given guessing [Strategy](../other/strategies/api.md).
 
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
+**Interfaces:** [Transformer](api.md#transformers), [Stateful](api.md#stateful)
 
 **Data Type Compatibility:** Categorical, Continuous
 

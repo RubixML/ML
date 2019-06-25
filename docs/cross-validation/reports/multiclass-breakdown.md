@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php">Source</a></span>
 
 # Multiclass Breakdown
 A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
@@ -19,7 +19,7 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-**Output:**
+**Output**
 
 ```sh
 ['label']=> array(2) {

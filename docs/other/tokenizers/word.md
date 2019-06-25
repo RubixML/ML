@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Word.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Tokenizers/Word.php">Source</a></span>
 
 # Word Tokenizer
 The Word tokenizer uses a regular expression to tokenize the words in a blob of text.

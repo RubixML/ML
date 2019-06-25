@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MaxAbsoluteScaler.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/MaxAbsoluteScaler.php">Source</a></span>
 
 # Max Absolute Scaler
 Scale the sample matrix by the maximum absolute value of each feature column independently such that the feature will be between -1 and 1.
 
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful), [Elastic](#elastic)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful), [Elastic](api.md#elastic)
 
 **Data Type Compatibility:** Continuous
 

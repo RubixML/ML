@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/DummyRegressor.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/DummyRegressor.php">Source</a></span>
 
 # Dummy Regressor
-Regressor that guesses output values based on a user-defined [Guessing Strategy](#guessing-strategies). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
+Regressor that guesses output values based on a user-defined guessing [Strategy](../other/strategies/api.md). Dummy Regressor is useful to provide a sanity check and to compare performance against actual Regressors.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous, Resource
 

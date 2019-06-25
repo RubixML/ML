@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Datasets/Unlabeled.php">Source</a></span>
 
 # Unlabeled
 Unlabeled datasets can be used to train *unsupervised* Estimators and for feeding data into an Estimator to make predictions.
@@ -9,8 +9,9 @@ Unlabeled datasets can be used to train *unsupervised* Estimators and for feedin
 | 1 | samples | | array | A 2-dimensional array consisting of rows of samples and columns with feature values. |
 | 2 | validate | true | bool | Should we validate the input? |
 
-
 ### Additional Methods
+
+#### Factories
 Build a new unlabeled dataset with validation:
 ```php
 public static build(array $samples = []) : self
@@ -26,17 +27,18 @@ Build a dataset with an iterator:
 public static fromIterator(iterable $samples) : self
 ```
 
-### Example
+**Example**
+
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-$dataset = Unlabeled::build($samples);  // Build a new dataset with validation
+// Import samples
 
-// or ...
+$dataset = new Unlabeled($samples, true);  // Using the constructor
 
-$dataset = Unlabeled::quick($samples);  // Build a new dataset without validation
+$dataset = Unlabeled::build($samples);  // Build a dataset with validation
 
-// or ...
+$dataset = Unlabeled::quick($samples);  // Build a dataset without validation
 
-$dataset = new Unlabeled($samples, true);  // Use the full constructor
+$dataset = Unlabeled::fromIterator($samples); // From an iterator
 ```

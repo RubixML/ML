@@ -1,13 +1,29 @@
 # Data Type
 Determine the data type of a variable according to Rubix ML's type system.
 
-To determine the data type of a variable:
+### Determining Data Type
+To determine the integer-encoded data type of a variable:
 ```php
 public determine($variable) : int
 ```
 
-> **Note**: The return value is an integer encoding of the datatype defined as constants on the DataType class.
+**Example**
 
+```php
+use Rubix\ML\Other\Helpers\DataType;
+
+var_dump(DataType::determine('adventure'));
+```
+
+**Output**
+
+```sh
+int(2)
+```
+
+> **Note:** The return value is an integer encoding of the datatype defined as constants on the DataType class.
+
+### Is Type?
 Return true if the variable is categorical:
 ```php
 public isCategorical($variable) : bool
@@ -28,21 +44,30 @@ Return true if the variable is an unrecognized data type:
 public isOther($variable) : bool
 ```
 
-### Example
+**Example**
+
 ```php
-use Rubix\ML\Other\Helpers\DataType;
-
-var_dump(DataType::determine('string'));
-
 var_dump(DataType::isContinuous(16));
 
+var_dump(DataType::isContinuous(0.928346));
+
 var_dump(DataType::isCategorical(18));
+
+var_dump(DataType::isCategorical('outdoors'));
+
+var_dump(DataType::isCategorical('16'));
 ```
 
-**Output:**
+**Output**
 
 ```sh
-int(2) // Categorical
 bool(true)
+
+bool(true)
+
 bool(false)
+
+bool(true)
+
+bool(true)
 ```

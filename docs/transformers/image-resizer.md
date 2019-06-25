@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/ImageResizer.php">Source</a></span>
 
 # Image Resizer
 The Image Resizer scales and crops images to a user specified width, height, and color depth.
 
-> **Note**: Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
+> **Note:** Note that the [GD extension](https://php.net/manual/en/book.image.php) is required to use this transformer.
 
-**Interfaces:** [Transformer](#transformers)
+**Interfaces:** [Transformer](api.md#transformer)
 
 **Data Type Compatibility:** Resource (GD Image)
 

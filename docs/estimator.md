@@ -1,21 +1,21 @@
 # Estimator
-Estimators consist of [Classifiers](#classifiers), [Regressors](#regressors), [Clusterers](#clusterers), [Embedders](#embedders), and [Anomaly Detectors](#anomaly-detectors) that make *predictions* based on data. Estimators that can be trained with data are called *Learners* and they can either be supervised or unsupervised depending on the task. Estimators can employ methods on top of the basic API by implementing a number of addon interfaces such as [Online](#online), [Probabilistic](#probabilistic), [Persistable](#persistable), and [Verbose](#verbose). The most basic Estimator is one that outputs an array of predictions given a dataset of unknown or testing samples.
+Estimators form the core of the Rubix system because they are responsible for ouputting information from the model (referred to as *predictions*). An estimator can be a Classifier, Regressor, Clusterer, or Anomaly Detector and the interpretation of their predictions depend on the estimator type.
 
-> **Note**: The return value of `predict()` is an array containing the predictions indexed in the same order that they were fed into the estimator.
-
-To make predictions from a dataset object:
+### Make Predictions
+Make predictions on a dataset:
 ```php
 public predict(Dataset $dataset) : array
 ```
 
-### Example
+**Example**
+
 ```php
 $predictions = $estimator->predict($dataset);
 
 var_dump($predictions);
 ```
 
-**Output:**
+**Output**
 
 ```sh
 array(3) {
@@ -27,3 +27,5 @@ array(3) {
   string(7) "married"
 }
 ```
+
+> **Note:** The return value of `predict()` is an array containing the predictions indexed in the order the samples were passed to the estimator.

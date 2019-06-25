@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Uniform.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Initializers/Uniform.php">Source</a></span>
 
 # Uniform
 Generates a random uniform distribution centered at 0 and bounded at both ends by the parameter beta.

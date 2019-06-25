@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php">Source</a></span>
 
 # Ridge
 L2 penalized least squares linear regression solved using closed-form equation.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

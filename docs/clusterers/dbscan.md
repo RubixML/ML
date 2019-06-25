@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/DBSCAN.php">Source</a></span>
 
 # DBSCAN
-*Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a *quasi* [Anomaly Detector](#anomaly-detectors).
+*Density-Based Spatial Clustering of Applications with Noise* is a clustering algorithm able to find non-linearly separable and arbitrarily-shaped clusters. In addition, DBSCAN also has the ability to mark outliers as *noise* and thus can be used as a *quasi* anomaly detector.
 
-> **Note**: Noise samples are assigned the cluster number *-1*.
+> **Note:** Noise samples are assigned the cluster number -1.
 
-**Interfaces:** [Estimator](#estimators)
+**Interfaces:** [Estimator](../estimator.md)
 
 **Data Type Compatibility:** Continuous
 
@@ -17,7 +17,7 @@
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
-> **Note**: The smaller the radius, the tighter the clusters will be.
+> **Note:** The smaller the radius, the tighter the clusters will be.
 
 ### Additional Methods
 This estimator does not have any additional methods.

@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/DummyClassifier.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/DummyClassifier.php">Source</a></span>
 
 # Dummy Classifier
-A classifier that uses a user-defined [Guessing Strategy](#guessing-strategies) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
+A classifier that uses a user-defined guessing [Strategy](../other/strategies/api.md) to make predictions. Dummy Classifier is useful to provide a sanity check and to compare performance with an actual classifier.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous, Resource
 

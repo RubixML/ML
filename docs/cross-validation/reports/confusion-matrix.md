@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ConfusionMatrix.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ConfusionMatrix.php">Source</a></span>
 
 # Confusion Matrix
 A Confusion Matrix is a table that visualizes the true positives, false, positives, true negatives, and false negatives of a classifier. The name stems from the fact that the matrix makes it easy to see the classes that the classifier might be confusing.
@@ -19,23 +19,21 @@ $result = $report->generate($estimator, $testing);
 var_dump($result);
 ```
 
-**Output:**
+**Output**
 
 ```sh
   array(3) {
-    ["dog"]=> array(2) {
+    ["dog"]=> array(3) {
       ["dog"]=> int(842)
       ["cat"]=> int(5)
       ["turtle"]=> int(0)
     }
-    ["cat"]=>
-    array(2) {
+    ["cat"]=> array(3) {
       ["dog"]=> int(0)
       ["cat"]=> int(783)
       ["turtle"]=> int(3)
     }
-    ["turtle"]=>
-    array(2) {
+    ["turtle"]=> array(2) {
       ["dog"]=> int(31)
       ["cat"]=> int(79)
       ["turtle"]=> int(496)

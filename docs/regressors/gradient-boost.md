@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/GradientBoost.php">Source</a></span>
 
 # Gradient Boost
 Gradient Boost is a stage-wise additive model that uses a Gradient Descent boosting paradigm for training  boosters (Regression Trees) to correct the error residuals of a *weak* base learner.
 
-> **Note**: The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
+> **Note:** The default base regressor is a Dummy Regressor using the *Mean* Strategy and the default booster is a Regression Tree with a max depth of 3.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ensemble](#ensemble), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Depends on base learner
 

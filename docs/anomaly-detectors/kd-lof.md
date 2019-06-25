@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/KDLOF.php">Source</a></span>
 
 # K-d LOF
-A k-d tree accelerated version of [Local Outlier Factor](#local-outlier-factor) which benefits from neighborhood pruning during nearest neighbors search. The tradeoff between K-d LOF and the brute force method is that while K-d LOF is faster, it cannot be partially trained.
+A k-d tree accelerated version of [Local Outlier Factor](local-outlier-factor.md) which benefits from neighborhood pruning during nearest neighbors search. The tradeoff between K-d LOF and the brute force method is that while K-d LOF is faster, it cannot be partially trained.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Ranking](#ranking), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

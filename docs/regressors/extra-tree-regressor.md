@@ -1,11 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/ExtraTreeRegressor.php">Source</a></span>
 
 # Extra Tree Regressor
-An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](#regression-tree) in that they choose a split drawn from a random set determined by the max features parameter, rather than searching the entire column for the best split.
+An *Extremely Randomized* Regression Tree, these trees differ from standard [Regression Trees](regression-tree.md) in that they choose a split drawn from a random set determined by the max features parameter, rather than searching the entire column for the best split.
 
-> **Note**: Decision tree based algorithms can handle both categorical and continuous features at the same time.
-
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Verbose](#verbose), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Categorical, Continuous
 

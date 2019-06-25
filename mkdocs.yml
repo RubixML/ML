@@ -5,12 +5,7 @@ theme: readthedocs
 nav:
 - Home: index.md
 - Installation: installation.md
-- Getting Started:
-  - What is Machine Learning?: getting-started/what-is-machine-learning.md
-  - Obtaining Data: getting-started/obtaining-data.md
-  - Choosing an Estimator: getting-started/choosing-an-estimator.md
-  - Training and Prediction: getting-started/training-and-prediction.md
-  - Model Evaluation: getting-started/model-evaluation.md
+- Getting Started: getting-started.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md
 - Dataset Objects:
@@ -18,22 +13,23 @@ nav:
   - Labeled: datasets/labeled.md
   - Unlabeled: datasets/unlabeled.md
   - Generators:
+    - API Reference: datasets/generators/api.md
     - Agglomerate: datasets/generators/agglomerate.md
     - Blob: datasets/generators/blob.md
     - Circle: datasets/generators/circle.md
     - Half Moon: datasets/generators/half-moon.md
     - Swiss Roll: datasets/generators/swiss-roll.md
-- Interfaces:
+- General API:
   - Estimator: estimator.md
   - Learner: learner.md
   - Online: online.md
   - Parallel: parallel.md
   - Persistable: persistable.md
   - Probabilistic: probabilistic.md
-  - Ranking: ranking.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Anomaly Detectors:
+  - API Reference: anomaly-detectors/api.md
   - Isolation Forest: anomaly-detectors/isolation-forest.md
   - K-d LOF: anomaly-detectors/kd-lof.md
   - LODA: anomaly-detectors/loda.md
@@ -77,24 +73,28 @@ nav:
   - Regression Tree: regressors/regression-tree.md
   - Ridge: regressors/ridge.md
   - SVR: regressors/svr.md
-- Embedders:
-  - t-SNE: embedders/t-sne.md
 - Meta Estimators:
   - Bootstrap Aggregator: bootstrap-aggregator.md
   - Committee Machine: committee-machine.md
   - Grid Search: grid-search.md
   - Persistent Mode: persistent-model.md
   - Pipeline: pipeline.md
+- Embedders:
+  - API Reference: embedders/api.md
+  - t-SNE: embedders/t-sne.md
 - Backends:
   - Amp: backends/amp.md
   - Serial: backends/serial.md
 - Persisters:
+  - API Reference: persisters/api.md
   - Filesystem: persisters/filesystem.md
   - Redis DB: persisters/redis-db.md
   - Serializers:
+    - API Reference: persisters/serializers/api.md
     - Binary: persisters/serializers/binary.md
     - Native: persisters/serializers/native.md
 - Transformers:
+  - API Reference: transformers/api.md
   - Dense Random Projector: transformers/dense-random-projector.md
   - Gaussian Random Projector: transformers/gaussian-random-projector.md
   - HTML Stripper: transformers/html-stripper.md
@@ -177,11 +177,13 @@ nav:
     - RBF: kernels/svm/rbf.md
     - Sigmoidal: kernels/svm/sigmoidal.md
 - Cross Validation:
+  - API Reference: cross-validation/api.md
   - Hold Out: cross-validation/hold-out.md
   - K Fold: cross-validation/k-fold.md
   - Leave P Out: cross-validation/leave-p-out.md
   - Monte Carlo: cross-validation/monte-carlo.md
   - Metrics:
+    - API Reference: cross-validation/metrics/api.md
     - Accuracy: cross-validation/metrics/accuracy.md
     - Completeness: cross-validation/metrics/completeness.md
     - F Beta: cross-validation/metrics/f-beta.md
@@ -197,6 +199,7 @@ nav:
     - SMAPE: cross-validation/metrics/smape.md
     - V Measure: cross-validation/metrics/v-measure.md
   - Reports:
+    - API Reference: cross-validation/reports/api.md
     - Aggregate Report: cross-validation/reports/aggregate-report.md
     - Confusion Matrix: cross-validation/reports/confusion-matrix.md
     - Contingency Table: cross-validation/reports/contingency-table.md
@@ -209,6 +212,7 @@ nav:
   - Loggers:
     - Screen: other/loggers/screen.md
   - Strategies:
+    - API Reference: other/strategies/api.md
     - Blurry Percentile: other/strategies/blurry-percentile.md
     - Constant: other/strategies/constant.md
     - K Most Frequent: other/strategies/k-most-frequent.md
@@ -217,10 +221,12 @@ nav:
     - Popularity Contest: other/strategies/popularity-contest.md
     - Wild Guess: other/strategies/wild-guess.md
   - Tokenizers:
+    - API Reference: other/tokenizers/api.md
     - N-Gram: other/tokenizers/n-gram.md
     - Skip Gram: other/tokenizers/skip-gram.md
     - Whitespace: other/tokenizers/whitespace.md
     - Word: other/tokenizers/word.md
+- Testing: testing.md
 
 use_directory_urls: false
 

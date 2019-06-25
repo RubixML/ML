@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/BlurryPercentile.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Other/Strategies/BlurryPercentile.php">Source</a></span>
 
 # Blurry Percentile
 A strategy that guesses within the domain of the p-th percentile of the fitted data plus some gaussian noise.

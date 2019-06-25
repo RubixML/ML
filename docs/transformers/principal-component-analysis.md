@@ -1,9 +1,9 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/PrincipalComponentAnalysis.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/PrincipalComponentAnalysis.php">Source</a></span>
 
 # Principal Component Analysis
 Principal Component Analysis or *PCA* is a dimensionality reduction technique that aims to transform the feature space by the k *principal components* that explain the most variance of the data where *k* is the dimensionality of the output specified by the user. PCA is used to compress high dimensional samples down to lower dimensions such that they would retain as much of the information as possible.
 
-**Interfaces:** [Transformer](#transformers), [Stateful](#stateful)
+**Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
 **Data Type Compatibility:** Continuous only
 

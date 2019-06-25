@@ -1,11 +1,11 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RadiusNeighborsRegressor.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/RadiusNeighborsRegressor.php">Source</a></span>
 
 # Radius Neighbors Regressor
-This is the regressor version of [Radius Neighbors](#radius-neighbors) classifier implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
+This is the regressor version of Radius Neighbors implementing a binary spatial tree under the hood for fast radius queries. The prediction is a weighted average of each label from the training set that is within a fixed user-defined radius.
 
-> **Note**: Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
+> **Note:** Unknown samples with 0 samples from the training set that are within radius will be labeled *NaN*.
 
-**Interfaces:** [Estimator](#estimators), [Learner](#learner), [Persistable](#persistable)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

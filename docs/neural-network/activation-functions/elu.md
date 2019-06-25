@@ -1,4 +1,4 @@
-<p><span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ELU.php">Source</a></span></p>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ELU.php">Source</a></span>
 
 # ELU
 *Exponential Linear Units* are a type of rectifier that soften the transition from non-activated to activated using the exponential function.
@@ -12,7 +12,7 @@
 ```php
 use Rubix\ML\NeuralNet\ActivationFunctions\ELU;
 
-$activationFunction = new ELU(5.0);
+$activationFunction = new ELU(2.5);
 ```
 
 ### References
