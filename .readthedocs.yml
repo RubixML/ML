@@ -1,0 +1,14 @@
+# .readthedocs.yml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+python:
+  version: 3.7
+
+mkdocs:
+  configuration: mkdocs.yml
+  fail_on_warning: false
+
+formats: all
