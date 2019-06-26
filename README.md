@@ -1,4 +1,4 @@
-# Rubix ML for PHP
+# Rubix ML: Machine Learning for PHP
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rubix/ml.svg?style=flat-square&colorB=8892BF)](https://www.php.net/) [![Latest Stable Version](https://img.shields.io/packagist/v/rubix/ml.svg?style=flat-square&colorB=orange)](https://packagist.org/packages/rubix/ml) [![Downloads from Packagist](https://img.shields.io/packagist/dt/rubix/ml.svg?style=flat-square&colorB=red)](https://packagist.org/packages/rubix/ml) [![Travis](https://img.shields.io/travis/RubixML/RubixML.svg?style=flat-square)](https://travis-ci.org/RubixML/RubixML) [![Documentation Status](https://img.shields.io/readthedocs/rubix-ml.svg?style=flat-square)](https://rubix-ml.readthedocs.io/en/latest/?badge=latest) [![GitHub license](https://img.shields.io/github/license/andrewdalpino/Rubix.svg?style=flat-square)](https://github.com/andrewdalpino/Rubix/blob/master/LICENSE.md)
 

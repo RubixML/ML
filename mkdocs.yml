@@ -1,6 +1,10 @@
-site_name: Rubix ML Documentation
+site_name: Rubix ML for PHP
 
 theme: readthedocs
+
+repo_url: https://github.com/RubixML/RubixML
+site_url: https://rubixml.com
+site_description: 'A high-level machine learning and deep learning library for the PHP language.'
 
 nav:
 - Home: index.md
