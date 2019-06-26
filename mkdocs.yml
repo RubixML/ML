@@ -8,8 +8,7 @@ site_description: 'A high-level machine learning and deep learning library for t
 
 nav:
 - Home: index.md
-- Installation: installation.md
-- Getting Started: getting-started.md
+- Basic Introduction: basic-introduction.md
 - System Architecture: system-architecture.md
 - FAQ: faq.md
 - Dataset Objects:
