@@ -78,7 +78,7 @@ nav:
   - Bootstrap Aggregator: bootstrap-aggregator.md
   - Committee Machine: committee-machine.md
   - Grid Search: grid-search.md
-  - Persistent Mode: persistent-model.md
+  - Persistent Model: persistent-model.md
   - Pipeline: pipeline.md
 - Embedders:
   - API Reference: embedders/api.md

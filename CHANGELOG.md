@@ -5,6 +5,7 @@
     - Removed tolerance param from Gradient Boost and AdaBoost
     - Screen logger timestamp format now configurable
     - Dropped Persistable contract between SVM-based learners
+    - Random Forest feature importances now serial
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer

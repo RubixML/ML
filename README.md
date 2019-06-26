@@ -12,7 +12,7 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Open source** and free to use commercially
 
 ## Documentation
-View the latest documentation on [Read The Docs](https://rubix-ml.readthedocs.io/en/latest/).
+View the latest documentation [here](https://docs.rubixml.com/en/latest/).
 
 ## Installation
 Install Rubix ML into your project with [Composer](https://getcomposer.org/):
