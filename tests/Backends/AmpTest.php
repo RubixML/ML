@@ -22,6 +22,11 @@ class AmpTest extends TestCase
         $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
+    public function test_workers()
+    {
+        $this->assertEquals(4, $this->backend->workers());
+    }
+
     public function test_enqueue_process()
     {
         $functions = array_fill(0, 10, [self::class, 'foo']);

@@ -10,10 +10,13 @@
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | workers | Auto | int | The maximum number of processes to execute in parallel. |
+| 1 | workers | Auto | int | The maximum number of workers i.e. processes to execute in parallel. |
 
 ### Additional Methods
-This backend does not have any additional methods.
+Return the maximum number of workers:
+```php
+public workers() : int
+```
 
 ### Example
 ```php
@@ -22,4 +25,12 @@ use Rubix\ML\Backends\Amp;
 $backend = new Amp(); // Autodetect workers
 
 $backend = new Amp(16);
+
+var_dump($backend->workers());
+```
+
+**Output**
+
+```sh
+int(16)
 ```
