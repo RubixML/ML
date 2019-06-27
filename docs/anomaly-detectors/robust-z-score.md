@@ -1,17 +1,16 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php">Source</a></span>
 
 # Robust Z Score
-A quick *global* anomaly detector that uses a modified Z score which is robust to outliers to detect anomalies within a dataset. The modified Z score consists of taking the median and median absolute deviation (MAD) instead of the mean and standard deviation (*standard* Z score) thus making the statistic more robust to training sets that may already contain outliers. Outliers can be flagged in one of two ways. First, their average Z score can be above the user-defined tolerance level or an individual feature's score could be above the threshold (*hard* limit).
+A statistical anomaly detector that uses modified Z scores that are robust to preexisting outliers. The modified Z score takes the median and median absolute deviation (MAD) unlike the mean and standard deviation of a *standard* Z score - thus making the statistic more robust to training sets that may already contain outliers. Anomalies are flagged if their maximum feature-specific Z score exceeds some user-defined threshold parameter.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | tolerance | 3.0 | float | The average z score to tolerate before a sample is considered an outlier. |
-| 2 | threshold | 3.5 | float | The threshold z score of a individual feature to consider the entire sample an outlier. |
+| 1 | threshold | 3.5 | float | The minimum average Z score to be considered an anomaly. |
 
 ### Additional Methods
 Return the median of each feature column in the training set:
@@ -28,7 +27,7 @@ public mads() : ?array
 ```php
 use Rubix\ML\AnomalyDetection\RobustZScore;
 
-$estimator = new RobustZScore(1.5, 3.0);
+$estimator = new RobustZScore(3.0);
 ```
 
 ### References

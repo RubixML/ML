@@ -15,14 +15,12 @@ use RuntimeException;
 /**
  * Robust Z Score
  *
- * A quick *global* anomaly detector that uses a robust Z score to score and
- * detect outliers within a dataset. The modified Z score consists of taking
- * the median and median absolute deviation (MAD) instead of the mean and
- * standard deviation (*standard* Z score) thus making the statistic more
- * robust to training sets that may already contain outliers. Outliers can be
- * flagged in one of two ways. First, their average Z score can be above the
- * user-defined tolerance level or an individual feature's score could be above
- * the threshold (*hard* limit).
+ * A statistical anomaly detector that uses modified Z scores that are robust to
+ * preexisting outliers. The modified Z score takes the median and median absolute
+ * deviation (MAD) unlike the mean and standard deviation of a *standard* Z score
+ * - thus making the statistic more robust to training sets that may already contain
+ * outliers. Anomalies are flagged if their maximum feature-specific Z score exceeds
+ * some user-defined threshold parameter.
  *
  * References:
  * [1] P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.
@@ -31,20 +29,12 @@ use RuntimeException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RobustZScore implements Estimator, Learner, Persistable
+class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
     protected const LAMBDA = 0.6745;
 
     /**
-     * The average z score to tolerate before a sample is considered an outlier.
-     *
-     * @var float
-     */
-    protected $tolerance;
-
-    /**
-     * The threshold z score of a individual feature to consider the entire
-     * sample an outlier.
+     * The minimum average z score to be considered an anomaly.
      *
      * @var float
      */
@@ -65,23 +55,16 @@ class RobustZScore implements Estimator, Learner, Persistable
     protected $mads;
 
     /**
-     * @param float $tolerance
      * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $tolerance = 3.0, float $threshold = 3.5)
+    public function __construct(float $threshold = 3.5)
     {
-        if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Tolerance must be 0 or'
-                . " greater, $tolerance given.");
+        if ($threshold <= 0.) {
+            throw new InvalidArgumentException('Threshold must be greater'
+                . " than 0, $threshold given.");
         }
 
-        if ($threshold < 0.) {
-            throw new InvalidArgumentException('Threshold must be 0 or'
-                . " greater, $threshold given.");
-        }
-
-        $this->tolerance = $tolerance;
         $this->threshold = $threshold;
     }
 
@@ -147,11 +130,13 @@ class RobustZScore implements Estimator, Learner, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $columns = $dataset->columns();
+        $n = $dataset->numColumns();
 
         $this->medians = $this->mads = [];
 
-        foreach ($columns as $column => $values) {
+        for ($column = 0; $column < $n; $column++) {
+            $values = $dataset->column($column);
+
             [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;
@@ -169,6 +154,16 @@ class RobustZScore implements Estimator, Learner, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
+        return array_map([self::class, 'decide'], $this->rank($dataset));
+    }
+
+    /**
+     * Apply an arbitrary unnormalized scoring function over the dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     */
+    public function rank(Dataset $dataset) : array
+    {
         if (!$this->medians or !$this->mads) {
             throw new RuntimeException('The estimator has not'
                 . ' been trained.');
@@ -178,29 +173,32 @@ class RobustZScore implements Estimator, Learner, Persistable
 
         $p = $dataset->numColumns();
 
-        $predictions = [];
+        $scores = [];
 
         foreach ($dataset as $sample) {
-            $score = 0.;
+            $zHat = [];
 
-            foreach ($sample as $column => $feature) {
-                $median = $this->medians[$column];
-                $mad = $this->mads[$column];
-
-                $z = abs((self::LAMBDA * ($feature - $median)) / $mad);
-
-                if ($z > $this->threshold) {
-                    $predictions[] = 1;
-
-                    continue 2;
-                }
-
-                $score += $z;
+            foreach ($sample as $column => $value) {
+                $zHat[] = abs(
+                    (self::LAMBDA * ($value - $this->medians[$column]))
+                    / $this->mads[$column]
+                );
             }
 
-            $predictions[] = ($score / $p) > $this->tolerance ? 1 : 0;
+            $scores[] = max($zHat);
         }
 
-        return $predictions;
+        return $scores;
+    }
+
+    /**
+     * The decision function.
+     *
+     * @param float $score
+     * @return int
+     */
+    protected function decide(float $score) : int
+    {
+        return $score > $this->threshold ? 1 : 0;
     }
 }

@@ -7,6 +7,7 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\AnomalyDetectors\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
@@ -18,9 +19,9 @@ use RuntimeException;
 
 class RobustZScoreTest extends TestCase
 {
-    protected const TRAIN_SIZE = 200;
+    protected const TRAIN_SIZE = 300;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -37,7 +38,7 @@ class RobustZScoreTest extends TestCase
             1 => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(1.8, 3.0);
+        $this->estimator = new RobustZScore(3.5);
 
         $this->metric = new FBeta();
 
@@ -48,6 +49,7 @@ class RobustZScoreTest extends TestCase
     {
         $this->assertInstanceOf(RobustZScore::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Ranking::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);
 

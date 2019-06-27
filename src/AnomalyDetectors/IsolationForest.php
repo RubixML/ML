@@ -66,7 +66,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      *
      * @var array
      */
-    protected $forest = [
+    protected $trees = [
         //
     ];
 
@@ -135,7 +135,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return $this->offset and $this->forest;
+        return $this->offset and $this->trees;
     }
 
     /**
@@ -154,7 +154,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $p = (int) round($this->ratio * $n);
 
-        $this->forest = [];
+        $this->trees = [];
 
         for ($i = 1; $i <= $this->estimators; $i++) {
             $tree = new ITree($maxDepth);
@@ -163,7 +163,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
             $tree->grow($subset);
 
-            $this->forest[] = $tree;
+            $this->trees[] = $tree;
         }
 
         $this->pHat = $this->c($p);
@@ -205,7 +205,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if (empty($this->forest)) {
+        if (empty($this->trees)) {
             throw new RuntimeException('The estimator has not'
                 . ' been trained.');
         }
@@ -225,7 +225,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     {
         $depth = 0.;
 
-        foreach ($this->forest as $tree) {
+        foreach ($this->trees as $tree) {
             $node = $tree->search($sample);
 
             $depth += $node ? $node->depth() : EPSILON;
