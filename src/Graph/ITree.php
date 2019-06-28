@@ -22,6 +22,8 @@ use InvalidArgumentException;
  */
 class ITree implements BinaryTree
 {
+    protected const CELL_MAX = 1;
+    
     /**
      * The root node of the tree.
      *
@@ -37,31 +39,17 @@ class ITree implements BinaryTree
     protected $maxDepth;
 
     /**
-     * The maximum number of samples that a leaf node can contain.
-     *
-     * @var int
-     */
-    protected $maxLeafSize;
-
-    /**
      * @param int $maxDepth
-     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $maxDepth = PHP_INT_MAX, int $maxLeafSize = 3)
+    public function __construct(int $maxDepth = PHP_INT_MAX)
     {
         if ($maxDepth < 1) {
             throw new InvalidArgumentException('A tree cannot have a depth'
                 . " less than 1, $maxDepth given.");
         }
 
-        if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('At least one sample is required'
-                . " to create a leaf, $maxLeafSize given.");
-        }
-
         $this->maxDepth = $maxDepth;
-        $this->maxLeafSize = $maxLeafSize;
     }
 
     /**
@@ -121,6 +109,8 @@ class ITree implements BinaryTree
 
             [$left, $right] = $current->groups();
 
+            $current->cleanup();
+
             $depth++;
 
             if ($depth >= $this->maxDepth) {
@@ -130,7 +120,7 @@ class ITree implements BinaryTree
                 continue 1;
             }
     
-            if ($left->numRows() > $this->maxLeafSize) {
+            if ($left->numRows() > self::CELL_MAX) {
                 $node = Isolator::split($left);
     
                 $current->attachLeft($node);
@@ -140,7 +130,7 @@ class ITree implements BinaryTree
                 $current->attachLeft(Cell::terminate($left, $depth));
             }
     
-            if ($right->numRows() > $this->maxLeafSize) {
+            if ($right->numRows() > self::CELL_MAX) {
                 $node = Isolator::split($right);
     
                 $current->attachRight($node);
@@ -149,8 +139,6 @@ class ITree implements BinaryTree
             } else {
                 $current->attachRight(Cell::terminate($right, $depth));
             }
-
-            $current->cleanup();
         }
     }
 

@@ -26,14 +26,14 @@ class L2Normalizer implements Transformer
         foreach ($samples as &$sample) {
             $norm = 0.;
 
-            foreach ($sample as &$feature) {
-                $norm += $feature ** 2;
+            foreach ($sample as &$value) {
+                $norm += $value ** 2;
             }
 
             $norm = sqrt($norm ?: EPSILON);
 
-            foreach ($sample as &$feature) {
-                $feature /= $norm;
+            foreach ($sample as &$value) {
+                $value /= $norm;
             }
         }
     }

@@ -124,6 +124,8 @@ class BallTree implements BinaryTree
 
             [$left, $right] = $current->groups();
 
+            $current->cleanup();
+
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Hypersphere::split($left, $this->kernel);
     
@@ -147,8 +149,6 @@ class BallTree implements BinaryTree
 
                 $current->attachRight($node);
             }
-
-            $current->cleanup();
         }
     }
 

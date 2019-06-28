@@ -12,7 +12,7 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](classific
 |---|---|---|---|---|
 | 1 | base | ClassificationTree | object | The base tree estimator. The default is a fully grown Classification Tree. |
 | 2 | estimators | 100 | int | The number of estimators to train in the ensemble. |
-| 3 | ratio | 0.1 | float | The ratio of random samples to train each estimator with. |
+| 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each estimator with. |
 
 ### Additional Methods
 This estimator does not have any additional methods.
@@ -22,7 +22,7 @@ This estimator does not have any additional methods.
 use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
-$estimator = new RandomForest(new ClassificationTree(10), 400, 0.1);
+$estimator = new RandomForest(new ClassificationTree(10), 300, 0.1);
 ```
 
 ### References

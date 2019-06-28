@@ -235,13 +235,12 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
         foreach ($this->experts as $estimator) {
             $this->backend->enqueue(
                 new Deferred(
-                    [self::class, 'trainer'],
+                    [self::class, '_train'],
                     [$estimator, $dataset]
                 ),
                 function ($result) {
                     if ($this->logger) {
-                        $this->logger->info(Params::shortName($result)
-                            . ' complete');
+                        $this->logger->info(Params::shortName($result) . ' finished');
                     }
                 }
             );
@@ -274,24 +273,24 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
 
         foreach ($this->experts as $estimator) {
             $this->backend->enqueue(new Deferred(
-                [self::class, 'predictor'],
+                [self::class, '_predict'],
                 [$estimator, $dataset]
             ));
         }
 
         $aggregate = $this->backend->process();
 
-        $votes = array_map(null, ...$aggregate);
+        $aggregate = array_map(null, ...$aggregate);
 
         switch ($this->type) {
             case self::CLASSIFIER:
-                return array_map([$this, 'decideClass'], $votes);
+                return array_map([$this, 'decideClass'], $aggregate);
 
             case self::REGRESSOR:
-                return array_map([$this, 'decideValue'], $votes);
+                return array_map([$this, 'decideValue'], $aggregate);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([$this, 'decideAnomaly'], $votes);
+                return array_map([$this, 'decideAnomaly'], $aggregate);
         }
     }
 
@@ -341,13 +340,13 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
 
     /**
-     * Train an learner using a dataset and return it.
+     * Train a learner with a dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
+    public static function _train(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 
@@ -355,13 +354,13 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
     }
     
     /**
-     * Return the predictions from an expert.
+     * Return the predictions from an estimator.
      *
      * @param \Rubix\ML\Estimator $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
-    public static function predictor(Estimator $estimator, Dataset $dataset) : array
+    public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {
         return $estimator->predict($dataset);
     }

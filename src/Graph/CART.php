@@ -267,7 +267,7 @@ abstract class CART implements BinaryTree
     public function featureImportances() : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('Tree has not been grown.');
+            throw new RuntimeException('Tree has not been grown yet.');
         }
 
         $importances = array_fill(0, $this->featureCount, 0.);

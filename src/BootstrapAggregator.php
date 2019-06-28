@@ -85,9 +85,9 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
                 . " least 1 learner, $estimators given.");
         }
         
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0. or $ratio > 1.5) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1, $ratio given.");
+                . " 0 and 1.5, $ratio given.");
         }
 
         $this->base = $base;
@@ -154,7 +154,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
             $subset = $dataset->randomSubsetWithReplacement($p);
 
             $this->backend->enqueue(new Deferred(
-                [self::class, 'trainer'],
+                [self::class, '_train'],
                 [$estimator, $subset]
             ));
         }
@@ -179,24 +179,24 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 
         foreach ($this->ensemble as $estimator) {
             $this->backend->enqueue(new Deferred(
-                [self::class, 'predictor'],
+                [self::class, '_predict'],
                 [$estimator, $dataset]
             ));
         }
 
         $aggregate = $this->backend->process();
 
-        $votes = array_map(null, ...$aggregate);
+        $aggregate = array_map(null, ...$aggregate);
         
         switch ($this->type()) {
             case self::CLASSIFIER:
-                return array_map([self::class, 'decideClass'], $votes);
+                return array_map([self::class, 'decideClass'], $aggregate);
 
             case self::REGRESSOR:
-                return array_map([Stats::class, 'mean'], $votes);
+                return array_map([Stats::class, 'mean'], $aggregate);
 
             case self::ANOMALY_DETECTOR:
-                return array_map([self::class, 'decideAnomaly'], $votes);
+                return array_map([self::class, 'decideAnomaly'], $aggregate);
 
         }
     }
@@ -224,13 +224,13 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
     }
 
     /**
-     * Parallel training routine.
+     * Train a single learner and return it.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
+    public static function _train(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 
@@ -244,7 +244,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
-    public static function predictor(Estimator $estimator, Dataset $dataset) : array
+    public static function _predict(Estimator $estimator, Dataset $dataset) : array
     {
         return $estimator->predict($dataset);
     }

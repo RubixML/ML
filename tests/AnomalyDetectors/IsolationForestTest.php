@@ -20,7 +20,7 @@ class IsolationForestTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -37,7 +37,7 @@ class IsolationForestTest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new IsolationForest(300, 0.4, 0.1);
+        $this->estimator = new IsolationForest(100, 0.2, 0.1);
 
         $this->metric = new FBeta();
 

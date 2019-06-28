@@ -83,16 +83,16 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * @param float $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 300, float $ratio = 0.2, float $contamination = 0.1)
+    public function __construct(int $estimators = 100, float $ratio = 0.2, float $contamination = 0.1)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
                 . " cannot be less than 1, $estimators given.");
         }
 
-        if ($ratio < 0.01 or $ratio > 1.) {
+        if ($ratio <= 0. or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0.01 and 1, $ratio given.");
+                . " 0 and 1, $ratio given.");
         }
 
         if ($contamination < 0. or $contamination > 0.5) {

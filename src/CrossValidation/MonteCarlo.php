@@ -98,7 +98,7 @@ class MonteCarlo implements Validator, Parallel
                 : $dataset->split($this->ratio);
     
             $this->backend->enqueue(new Deferred(
-                [self::class, 'scorer'],
+                [self::class, 'score'],
                 [$estimator, $training, $testing, $metric]
             ));
         }
@@ -117,7 +117,7 @@ class MonteCarlo implements Validator, Parallel
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @return float
      */
-    public static function scorer(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
+    public static function score(Learner $estimator, Dataset $training, Labeled $testing, Metric $metric) : float
     {
         $estimator->train($training);
 

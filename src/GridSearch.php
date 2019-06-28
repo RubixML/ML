@@ -299,7 +299,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 
             $this->backend->enqueue(
                 new Deferred(
-                    [self::class, 'scorer'],
+                    [self::class, 'score'],
                     [
                         $this->validator,
                         $estimator,
@@ -332,10 +332,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             }
         }
 
-        $this->best = [
-            'score' => $bestScore,
-            'params' => $bestParams,
-        ];
+        $this->best = ['score' => $bestScore, 'params' => $bestParams];
 
         if ($this->logger) {
             $constructor = array_combine($this->args, $bestParams) ?: [];
@@ -344,6 +341,10 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
         }
 
         $estimator = new $this->base(...$bestParams);
+
+        if ($this->logger) {
+            $this->logger->info('Training base on full dataset');
+        }
 
         $estimator->train($dataset);
 
@@ -375,7 +376,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
      * @param \Rubix\ML\CrossValidation\Metrics\Metric $metric
      * @return float
      */
-    public static function scorer(Validator $validator, Learner $estimator, Labeled $dataset, Metric $metric) : float
+    public static function score(Validator $validator, Learner $estimator, Labeled $dataset, Metric $metric) : float
     {
         return $validator->test($estimator, $dataset, $metric);
     }

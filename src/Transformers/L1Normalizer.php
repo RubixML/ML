@@ -26,8 +26,8 @@ class L1Normalizer implements Transformer
         foreach ($samples as &$sample) {
             $norm = array_sum(array_map('abs', $sample)) ?: EPSILON;
 
-            foreach ($sample as &$feature) {
-                $feature /= $norm;
+            foreach ($sample as &$value) {
+                $value /= $norm;
             }
         }
     }

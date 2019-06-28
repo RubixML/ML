@@ -3,8 +3,8 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
-use Rubix\ML\Deferred;
 use Rubix\ML\Parallel;
+use Rubix\ML\Deferred;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
@@ -15,6 +15,8 @@ use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
+
+use function Rubix\ML\argmax;
 
 /**
  * Random Forest
@@ -59,20 +61,16 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     /**
      * The decision trees that make up the forest.
      *
-     * @var array
+     * @var array|null
      */
-    protected $trees = [
-        //
-    ];
+    protected $trees;
 
     /**
      * The possible class outcomes.
      *
-     * @var array
+     * @var array|null
      */
-    protected $classes = [
-        //
-    ];
+    protected $classes;
 
     /**
      * The number of feature columns in the training set.
@@ -87,7 +85,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param float $ratio
      * @throws \InvalidArgumentException
      */
-    public function __construct(?ClassificationTree $base = null, int $estimators = 100, float $ratio = 0.1)
+    public function __construct(?ClassificationTree $base = null, int $estimators = 100, float $ratio = 0.2)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
@@ -95,9 +93,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
                 . ' given.');
         }
 
-        if ($ratio <= 0. or $ratio >= 1.) {
+        if ($ratio <= 0. or $ratio > 1.5) {
             throw new InvalidArgumentException('Ratio must be between'
-                . " 0 and 1, $ratio given.");
+                . " 0 and 1.5, $ratio given.");
         }
 
         $this->base = $base ?? new ClassificationTree();
@@ -150,6 +148,9 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        $this->classes = $dataset->possibleOutcomes();
+        $this->featureCount = $dataset->numColumns();
         
         $k = (int) round($this->ratio * $dataset->numRows());
 
@@ -159,15 +160,12 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
             $subset = $dataset->randomSubsetWithReplacement($k);
 
             $this->backend->enqueue(new Deferred(
-                [self::class, 'trainer'],
+                [self::class, '_train'],
                 [$estimator, $subset]
             ));
         }
 
         $this->trees = $this->backend->process();
-
-        $this->classes = $dataset->possibleOutcomes();
-        $this->featureCount = $dataset->numColumns();
     }
 
     /**
@@ -178,7 +176,30 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      */
     public function predict(Dataset $dataset) : array
     {
-        return array_map('Rubix\ML\argmax', $this->proba($dataset));
+        if (!$this->trees) {
+            throw new RuntimeException('The estimator has not been trained.');
+        }
+
+        $this->backend->flush();
+
+        foreach ($this->trees as $estimator) {
+            $this->backend->enqueue(new Deferred(
+                [self::class, '_predict'],
+                [$estimator, $dataset]
+            ));
+        }
+
+        $aggregate = $this->backend->process();
+
+        $aggregate = array_map(null, ...$aggregate);
+
+        $predictions = [];
+
+        foreach ($aggregate as $votes) {
+            $predictions[] = argmax(array_count_values($votes));
+        }
+
+        return $predictions;
     }
 
     /**
@@ -190,27 +211,26 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      */
     public function proba(Dataset $dataset) : array
     {
-        if (empty($this->trees)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+        if (!$this->trees or !$this->classes) {
+            throw new RuntimeException('The estimator has not been trained.');
         }
-
-        $this->backend->flush();
-
-        foreach ($this->trees as $estimator) {
-            $this->backend->enqueue(new Deferred(
-                [self::class, 'predictor'],
-                [$estimator, $dataset]
-            ));
-        }
-
-        $aggregate = $this->backend->process();
 
         $probabilities = array_fill(
             0,
             $dataset->numRows(),
             array_fill_keys($this->classes, 0.)
         );
+
+        $this->backend->flush();
+
+        foreach ($this->trees as $estimator) {
+            $this->backend->enqueue(new Deferred(
+                [self::class, '_proba'],
+                [$estimator, $dataset]
+            ));
+        }
+
+        $aggregate = $this->backend->process();
 
         foreach ($aggregate as $proba) {
             foreach ($proba as $i => $joint) {
@@ -239,8 +259,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     public function featureImportances() : array
     {
         if (!$this->trees or !$this->featureCount) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         $importances = array_fill(0, $this->featureCount, 0.);
@@ -265,11 +284,23 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return \Rubix\ML\Learner
      */
-    public static function trainer(Learner $estimator, Dataset $dataset) : Learner
+    public static function _train(Learner $estimator, Dataset $dataset) : Learner
     {
         $estimator->train($dataset);
 
         return $estimator;
+    }
+
+    /**
+     * Return the predictions from a decision tree.
+     *
+     * @param \Rubix\ML\Estimator $estimator
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @return array
+     */
+    public static function _predict(Estimator $estimator, Dataset $dataset) : array
+    {
+        return $estimator->predict($dataset);
     }
 
     /**
@@ -279,7 +310,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @return array
      */
-    public static function predictor(Probabilistic $estimator, Dataset $dataset) : array
+    public static function _proba(Probabilistic $estimator, Dataset $dataset) : array
     {
         return $estimator->proba($dataset);
     }

@@ -4,7 +4,7 @@
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
-- **Developer-friendly** API is straightforward and delightful
+- **Developer-friendly** API is delightful to work with
 - **Modular** architecture combines power, flexibility, and extensibility
 - **40+** modern supervised and unsupervised learning algorithms
 - **Open source** and free to use commercially

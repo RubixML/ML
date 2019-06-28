@@ -40,7 +40,7 @@ class RandomForestTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new RandomForest(new ClassificationTree(10), 100, 0.2);
+        $this->estimator = new RandomForest(new ClassificationTree(3), 100, 0.2);
 
         $this->estimator->setBackend(new Serial());
 
@@ -76,6 +76,8 @@ class RandomForestTest extends TestCase
         $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
+
+        $this->estimator->proba($testing);
 
         $score = $this->metric->score($predictions, $testing->labels());
 

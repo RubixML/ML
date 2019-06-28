@@ -143,7 +143,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 . " than 0, $rate given.");
         }
 
-        if ($ratio <= 0 or $ratio >= 1.) {
+        if ($ratio <= 0 or $ratio > 1.) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
