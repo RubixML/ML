@@ -10,7 +10,7 @@ Probability-based classifier that estimates posterior probabilities of each clas
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing to apply to the probabilities. |
+| 1 | alpha | 1.0 | float | The amount of additive (Laplace/Lidstone) smoothing applied to the probabilities. |
 | 2 | priors | Auto | array | The class prior probabilities as an associative array with class labels as keys and the prior probabilities as values. |
 
 ### Additional Methods
@@ -19,9 +19,9 @@ Return the class prior probabilities:
 public priors() : array
 ```
 
-Return the negative log probabilities of each feature given each class label:
+Return the counts for each category per class:
 ```php
-public probabilities() : array
+public counts() : array
 ```
 
 ### Example

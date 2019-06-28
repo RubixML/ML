@@ -14,7 +14,6 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 
 use const Rubix\ML\EPSILON;
@@ -106,27 +105,20 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . " than 0, $alpha given.");
         }
 
-        if (is_array($priors)) {
-            $total = 0;
-            
-            foreach ($priors as $class => $probability) {
-                if (!is_string($class)) {
-                    throw new InvalidArgumentException('Class label must be a'
-                        . ' string, ' . gettype($class) . ' found.');
-                }
-
-                if (!is_int($probability) and !is_float($probability)) {
-                    throw new InvalidArgumentException('Probability must be'
-                        . ' an integer or float, ' . gettype($probability)
+        if ($priors) {
+            foreach ($priors as $weight) {
+                if (!is_int($weight) and !is_float($weight)) {
+                    throw new InvalidArgumentException('Weight must be'
+                        . ' an integer or float, ' . gettype($weight)
                         . ' found.');
                 }
-
-                $total += $probability;
             }
 
-            if ($total != 1 and $total != 0) {
-                foreach ($priors as &$probability) {
-                    $probability /= $total;
+            $total = array_sum($priors) ?: EPSILON;
+
+            if ($total != 1) {
+                foreach ($priors as &$weight) {
+                    $weight = log($weight / $total);
                 }
             }
         }
@@ -179,11 +171,11 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         $priors = [];
 
-        if (is_array($this->priors)) {
-            $max = logsumexp($this->priors);
+        if ($this->priors) {
+            $total = logsumexp($this->priors);
 
-            foreach ($this->priors as $class => $probability) {
-                $priors[$class] = exp($probability - $max);
+            foreach ($this->priors as $class => $weight) {
+                $priors[$class] = exp($weight - $total);
             }
         }
 
@@ -191,14 +183,13 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Return the conditional log probabilities of each feature given each class
-     * label.
+     * Return the counts for each category per class.
      *
      * @return array|null
      */
-    public function probabilities() : ?array
+    public function counts() : ?array
     {
-        return $this->probs;
+        return $this->counts;
     }
 
     /**
@@ -214,15 +205,17 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
                 . ' Labeled training set.');
         }
 
-        $classes = $dataset->possibleOutcomes();
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->classes = $classes;
-        $this->weights = array_fill_keys($classes, 0);
+        $classes = $dataset->possibleOutcomes();
 
         $this->counts = $this->probs = array_fill_keys(
             $classes,
             array_fill(0, $dataset->numColumns(), [])
         );
+
+        $this->classes = $classes;
+        $this->weights = array_fill_keys($classes, 0);
 
         $this->partial($dataset);
     }
@@ -235,20 +228,18 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function partial(Dataset $dataset) : void
     {
+        if (empty($this->weights) or empty($this->counts) or empty($this->probs)) {
+            $this->train($dataset);
+
+            return;
+        }
+
         if (!$dataset instanceof Labeled) {
             throw new InvalidArgumentException('This Estimator requires a'
                 . ' Labeled training set.');
         }
 
-        if (!$dataset->homogeneous() or $dataset->columnType(0) !== DataType::CATEGORICAL) {
-            throw new InvalidArgumentException('This estimator only works'
-                . ' with categorical features.');
-        }
-
-        if (empty($this->weights) or empty($this->counts) or empty($this->probs)) {
-            $this->train($dataset);
-            return;
-        }
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         foreach ($dataset->stratify() as $class => $stratum) {
             $classCounts = $this->counts[$class];
@@ -315,15 +306,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
+        $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
-        foreach ($dataset as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
-
-            $predictions[] = argmax($jll);
-        }
-
-        return $predictions;
+        return array_map('Rubix\ML\argmax', $jll);
     }
 
     /**
@@ -375,8 +360,8 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
         foreach ($this->probs as $class => $probs) {
             $likelihood = $this->priors[$class] ?? LOG_EPSILON;
 
-            foreach ($sample as $column => $feature) {
-                $likelihood += $probs[$column][$feature] ?? LOG_EPSILON;
+            foreach ($sample as $column => $value) {
+                $likelihood += $probs[$column][$value] ?? LOG_EPSILON;
             }
 
             $likelihoods[$class] = $likelihood;

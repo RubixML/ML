@@ -178,21 +178,15 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
         foreach ($dataset as $sample) {
             [$iHat, $dHat] = $this->tree->nearest($sample, $this->k);
 
-            $distances[] = $dHat;
             $indices[] = $iHat;
+            $distances[] = $dHat;
             
             $this->kdistances[] = end($dHat);
         }
 
-        foreach ($distances as $i => $row) {
-            $this->lrds[] = $this->localReachabilityDensity($indices[$i], $row);
-        }
+        $this->lrds = array_map([self::class, 'localReachabilityDensity'], $indices, $distances);
 
-        $lofs = [];
-
-        foreach ($dataset as $sample) {
-            $lofs[] = $this->localOutlierFactor($sample);
-        }
+        $lofs = $this->rank($dataset);
 
         $shift = Stats::percentile($lofs, 100. * $this->contamination);
         
@@ -250,16 +244,10 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
 
         $lrd = $this->localReachabilityDensity($indices, $distances);
 
-        $lrds = [];
+        $ratios = [];
         
         foreach ($indices as $index) {
-            $lrds[] = $this->lrds[$index];
-        }
-
-        $ratios = [];
-
-        foreach ($lrds as $lHat) {
-            $ratios[] = $lHat / $lrd;
+            $ratios[] = $this->lrds[$index] / $lrd;
         }
 
         return Stats::mean($ratios);
@@ -277,8 +265,7 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
     protected function localReachabilityDensity(array $indices, array $distances) : float
     {
         if (empty($this->kdistances)) {
-            throw new RuntimeException('K distances have not been computed,'
-                . ' must train estimator first.');
+            throw new RuntimeException('Kdistances have not been computed.');
         }
 
         $kdistances = [];

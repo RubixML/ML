@@ -12,6 +12,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Robust Z Score
  *
@@ -43,14 +45,14 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * The median of each feature column in the training set.
      *
-     * @var array|null
+     * @var float[]|null
      */
     protected $medians;
 
     /**
      * The median absolute deviation of each feature column.
      *
-     * @var array|null
+     * @var float[]|null
      */
     protected $mads;
 
@@ -130,17 +132,13 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $n = $dataset->numColumns();
-
         $this->medians = $this->mads = [];
 
-        for ($column = 0; $column < $n; $column++) {
-            $values = $dataset->column($column);
-
+        foreach ($dataset->columns() as $column => $values) {
             [$median, $mad] = Stats::medianMad($values);
 
             $this->medians[$column] = $median;
-            $this->mads[$column] = $mad;
+            $this->mads[$column] = $mad ?: EPSILON;
         }
     }
 
@@ -170,8 +168,6 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
-
-        $p = $dataset->numColumns();
 
         $scores = [];
 

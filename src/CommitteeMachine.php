@@ -84,17 +84,17 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
      */
     public function __construct(array $experts, ?array $influences = null)
     {
-        $p = count($experts);
+        $k = count($experts);
 
-        if ($p < 1) {
-            throw new InvalidArgumentException('Committee must contain at least'
-                . ' 1 expert, none given.');
+        if ($k < 1) {
+            throw new InvalidArgumentException('Committee must contain at'
+                . ' least 1 expert, none given.');
         }
 
         foreach ($experts as $expert) {
             if (!$expert instanceof Learner) {
-                throw new InvalidArgumentException('Expert must implement the'
-                    . ' learner interface.');
+                throw new InvalidArgumentException('Expert must implement'
+                    . ' the learner interface.');
             }
         }
 
@@ -116,25 +116,28 @@ class CommitteeMachine implements Estimator, Learner, Parallel, Persistable, Ver
             }
         }
 
-        if (is_array($influences)) {
-            if (count($influences) !== $p) {
+        if ($influences) {
+            if (count($influences) !== $k) {
                 throw new InvalidArgumentException('The number of influence'
-                    . " values must equal the number of experts, $p needed"
+                    . " values must equal the number of experts, $k needed"
                     . ' but ' . count($influences) . ' given.');
             }
 
-            $total = array_sum($influences);
-
-            if ($total == 0) {
-                throw new InvalidArgumentException('Total influence for the'
-                    . ' committee cannot be 0.');
+            foreach ($influences as $weight) {
+                if (!is_int($weight) and !is_float($weight)) {
+                    throw new InvalidArgumentException('Influence must be'
+                        . ' an integer or float, ' . gettype($weight)
+                        . ' found.');
+                }
             }
 
-            foreach ($influences as &$influence) {
-                $influence /= $total;
+            $total = array_sum($influences) ?: EPSILON;
+
+            foreach ($influences as &$weight) {
+                $weight /= $total;
             }
         } else {
-            $influences = array_fill(0, $p, 1 / $p);
+            $influences = array_fill(0, $k, 1 / $k);
         }
 
         $compatibility = array_intersect(...array_map(function ($estimator) {

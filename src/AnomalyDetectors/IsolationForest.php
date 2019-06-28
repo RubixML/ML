@@ -59,7 +59,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      *
      * @var float|null
      */
-    protected $pHat;
+    protected $delta;
 
     /**
      * The trees that make up the forest.
@@ -152,21 +152,21 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         
         $maxDepth = (int) ceil(log(max($n, 2), 2));
 
-        $p = (int) round($this->ratio * $n);
+        $k = (int) round($this->ratio * $n);
 
         $this->trees = [];
 
-        for ($i = 1; $i <= $this->estimators; $i++) {
+        for ($i = 0; $i < $this->estimators; $i++) {
             $tree = new ITree($maxDepth);
 
-            $subset = $dataset->randomize()->head($p);
+            $subset = $dataset->randomize()->head($k);
 
             $tree->grow($subset);
 
             $this->trees[] = $tree;
         }
 
-        $this->pHat = $this->c($p);
+        $this->delta = $this->c($k);
 
         $scores = $this->rank($dataset);
 
@@ -233,7 +233,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $depth /= $this->estimators;
 
-        return 2. ** -($depth / $this->pHat);
+        return 2. ** -($depth / $this->delta);
     }
 
     /**

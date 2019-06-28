@@ -46,6 +46,13 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $bins;
 
     /**
+     * Should we calculate the equi-width bin count on the fly?
+     *
+     * @var bool
+     */
+    protected $fitBins;
+
+    /**
      * The number of projection/histogram pairs in the ensemble.
      *
      * @var int
@@ -58,13 +65,6 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
      * @var float
      */
     protected $threshold;
-
-    /**
-     * Should we calculate the equi-width bin count on the fly?
-     *
-     * @var bool
-     */
-    protected $fitBins;
 
     /**
      * The random projection matrix.
@@ -122,9 +122,9 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
         }
 
         $this->bins = $bins;
+        $this->fitBins = is_null($bins);
         $this->estimators = $estimators;
         $this->threshold = $threshold;
-        $this->fitBins = empty($bins);
     }
 
     /**
@@ -309,26 +309,15 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             ->matmul($this->r)
             ->transpose();
 
-        return $this->logLikelihood($z);
-    }
-
-    /**
-     * Return the negative log likelihoods of each projection.
-     *
-     * @param \Rubix\Tensor\Matrix $z
-     * @return array
-     */
-    protected function logLikelihood(Matrix $z) : array
-    {
-        $likelihoods = array_fill(0, $z->n(), 0.);
-        
+        $scores = array_fill(0, $z->n(), 0.);
+    
         foreach ($z as $i => $values) {
             [$edges, $counts, $densities] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
                 foreach ($edges as $k => $edge) {
                     if ($value < $edge) {
-                        $likelihoods[$j] += $densities[$k];
+                        $scores[$j] += $densities[$k];
 
                         break 1;
                     }
@@ -336,11 +325,11 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             }
         }
 
-        foreach ($likelihoods as &$likelihood) {
-            $likelihood /= $this->estimators;
+        foreach ($scores as &$score) {
+            $score /= $this->estimators;
         }
 
-        return $likelihoods;
+        return $scores;
     }
 
     /**

@@ -15,7 +15,6 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 
 use const Rubix\ML\TWO_PI;
@@ -96,27 +95,20 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function __construct(?array $priors = null)
     {
-        if (is_array($priors)) {
-            $total = 0;
-            
-            foreach ($priors as $class => $probability) {
-                if (!is_string($class)) {
-                    throw new InvalidArgumentException('Class label must be a'
-                        . ' string, ' . gettype($class) . ' found.');
-                }
-
-                if (!is_int($probability) and !is_float($probability)) {
-                    throw new InvalidArgumentException('Probability must be'
-                        . ' an integer or float, ' . gettype($probability)
+        if ($priors) {
+            foreach ($priors as $weight) {
+                if (!is_int($weight) and !is_float($weight)) {
+                    throw new InvalidArgumentException('Weight must be'
+                        . ' an integer or float, ' . gettype($weight)
                         . ' found.');
                 }
-
-                $total += $probability;
             }
 
-            if ($total != 1 and $total != 0) {
-                foreach ($priors as &$probability) {
-                    $probability /= $total;
+            $total = array_sum($priors) ?: EPSILON;
+
+            if ($total != 1) {
+                foreach ($priors as &$weight) {
+                    $weight = log($weight / $total);
                 }
             }
         }
@@ -166,11 +158,11 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     {
         $priors = [];
 
-        if (is_array($this->priors)) {
+        if ($this->priors) {
             $total = logsumexp($this->priors);
 
-            foreach ($this->priors as $class => $probability) {
-                $priors[$class] = exp($probability - $total);
+            foreach ($this->priors as $class => $weight) {
+                $priors[$class] = exp($weight - $total);
             }
         }
 
@@ -248,8 +240,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Uupdate the rolling means and variances of each feature column using an
-     * online updating algorithm.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -328,15 +319,9 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
+        $jll = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
-        foreach ($dataset as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
-
-            $predictions[] = argmax($jll);
-        }
-
-        return $predictions;
+        return array_map('Rubix\ML\argmax', $jll);
     }
 
     /**
@@ -390,12 +375,12 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
 
             $likelihood = $this->priors[$class] ?? LOG_EPSILON;
 
-            foreach ($sample as $column => $feature) {
+            foreach ($sample as $column => $value) {
                 $mean = $means[$column];
                 $variance = $variances[$column];
 
                 $pdf = -0.5 * log(TWO_PI * $variance);
-                $pdf -= 0.5 * (($feature - $mean) ** 2) / $variance;
+                $pdf -= 0.5 * (($value - $mean) ** 2) / $variance;
 
                 $likelihood += $pdf;
             }

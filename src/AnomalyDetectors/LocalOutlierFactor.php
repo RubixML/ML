@@ -175,17 +175,11 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
 
         $this->samples = array_merge($this->samples, $dataset->samples());
 
-        $distances = [];
+        $distances = array_map([self::class, 'localRegion'], $this->samples);
 
-        foreach ($this->samples as $i => $sample) {
-            $distances[] = $d = $this->localRegion($sample);
+        $this->kdistances = array_map('end', $distances);
 
-            $this->kdistances[$i] = end($d);
-        }
-
-        foreach ($distances as $i => $row) {
-            $this->lrds[$i] = $this->localReachabilityDensity($row);
-        }
+        $this->lrds = array_map([self::class, 'localReachabilityDensity'], $distances);
 
         $lofs = $this->rank($dataset);
 
