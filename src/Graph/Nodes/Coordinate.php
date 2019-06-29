@@ -67,9 +67,7 @@ class Coordinate extends BinaryNode implements Box
     {
         $columns = $dataset->columns();
 
-        $variances = array_map([Stats::class, 'variance'], $columns);
-
-        $column = argmax($variances);
+        $column = argmax(array_map([Stats::class, 'variance'], $columns));
 
         $value = Stats::median($columns[$column]);
 

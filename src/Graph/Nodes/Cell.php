@@ -2,6 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
+use Rubix\ML\Graph\ITree;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 
@@ -31,24 +32,9 @@ class Cell extends BinaryNode implements Leaf
      */
     public static function terminate(Dataset $dataset, int $depth) : self
     {
-        $depth += self::c($dataset->numRows()) - 1.;
+        $depth += ITree::c($dataset->numRows()) - 1.;
 
         return new self($depth);
-    }
-
-    /**
-     * Calculate the average path length of an unsuccessful search for n nodes.
-     *
-     * @param int $n
-     * @return float
-     */
-    protected static function c(int $n) : float
-    {
-        if ($n <= 1) {
-            return 1.;
-        }
-        
-        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 
     /**

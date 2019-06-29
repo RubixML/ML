@@ -53,10 +53,7 @@ class Hypersphere extends BinaryNode implements Ball
     {
         $samples = $dataset->samples();
 
-        $center = Matrix::quick($samples)
-            ->transpose()
-            ->mean()
-            ->asArray();
+        $center = Matrix::quick($samples)->transpose()->mean()->asArray();
             
         $distances = [];
 
@@ -107,8 +104,7 @@ class Hypersphere extends BinaryNode implements Ball
         foreach ($groups as $group) {
             if (!$group instanceof Dataset) {
                 throw new InvalidArgumentException('Groups must contain'
-                    . ' dataset objects, ' . gettype($group)
-                    . ' given.');
+                    . ' dataset objects, ' . gettype($group) . ' given.');
             }
         }
 

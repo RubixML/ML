@@ -27,7 +27,7 @@ use const Rubix\ML\LOG_EPSILON;
  * user through the *contamination* hyper-parameter.
  *
  * References:
- * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anamalies.
+ * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
  * [2] L. Birg´e et al. (2005). How Many Bins Should Be Put In A Regular Histogram.
  *
  * @category    Machine Learning
@@ -74,7 +74,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $r;
 
     /**
-     * The edges, counts, and densities of the histograms.
+     * The edges, counts, and precomputed probability densities of each histogram.
      *
      * @var array[]|null
      */
@@ -88,14 +88,14 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $n;
 
     /**
-     * Estimate the number of bins from a dataset.
+     * Estimate the number of bins from the number of samples in a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param int $n
      * @return int
      */
-    public static function estimateBins(Dataset $dataset) : int
+    public static function estimateBins(int $n) : int
     {
-        return (int) round(log($dataset->numRows(), 2)) + 1;
+        return (int) round(log($n, 2)) + 1;
     }
 
     /**
@@ -104,7 +104,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
      * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(?int $bins = null, int $estimators = 100, float $threshold = 5.5)
+    public function __construct(?int $bins = null, int $estimators = 100, float $threshold = 10.)
     {
         if (isset($bins) and $bins < 1) {
             throw new InvalidArgumentException('The number of bins cannot'
@@ -169,10 +169,6 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        if ($this->fitBins) {
-            $this->bins = self::estimateBins($dataset);
-        }
-
         [$m, $n] = $dataset->shape();
 
         $this->r = Matrix::gaussian($n, $this->estimators);
@@ -184,11 +180,15 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             $this->r = $this->r->multiply($mask);
         }
 
-        $z = Matrix::quick($dataset->samples())
+        $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
 
-        foreach ($z as $values) {
+        if ($this->fitBins) {
+            $this->bins = self::estimateBins($m);
+        }
+
+        foreach ($projections as $values) {
             $start = min($values) - EPSILON;
             $end = max($values) + EPSILON;
 
@@ -198,7 +198,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
             $counts = array_fill(0, $this->bins + 2, 0);
 
-            $interior = array_slice($edges, 1, $this->bins);
+            $interior = array_slice($edges, 1, $this->bins, true);
 
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
@@ -244,14 +244,14 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
         $this->n += $dataset->numRows();
 
-        $z = Matrix::quick($dataset->samples())
+        $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
 
-        foreach ($z as $i => $values) {
+        foreach ($projections as $i => $values) {
             [$edges, $counts, $densities] = $this->histograms[$i];
 
-            $interior = array_slice($edges, 1, $this->bins);
+            $interior = array_slice($edges, 1, $this->bins, true);
 
             foreach ($values as $value) {
                 foreach ($interior as $k => $edge) {
@@ -299,19 +299,18 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (!$this->r or !$this->histograms) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $z = Matrix::quick($dataset->samples())
+        $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
 
-        $scores = array_fill(0, $z->n(), 0.);
+        $scores = array_fill(0, $projections->n(), 0.);
     
-        foreach ($z as $i => $values) {
+        foreach ($projections as $i => $values) {
             [$edges, $counts, $densities] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
@@ -335,11 +334,11 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * The decision function.
      *
-     * @param float $likelihood
+     * @param float $score
      * @return int
      */
-    protected function decide(float $likelihood) : int
+    protected function decide(float $score) : int
     {
-        return $likelihood > $this->threshold ? 1 : 0;
+        return $score > $this->threshold ? 1 : 0;
     }
 }

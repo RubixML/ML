@@ -42,6 +42,15 @@ class ITreeTest extends TestCase
         $this->assertEquals(0, $this->tree->height());
     }
 
+    public function test_c()
+    {
+        $this->assertEquals(3.748880484475505, ITree::c(10));
+        $this->assertEquals(8.364671030072245, ITree::c(100));
+        $this->assertEquals(12.969940887100174, ITree::c(1000));
+        $this->assertEquals(17.575112063754766, ITree::c(10000));
+        $this->assertEquals(22.180282259643523, ITree::c(100000));
+    }
+
     public function test_grow_range()
     {
         $this->tree->grow($this->generator->generate(50));

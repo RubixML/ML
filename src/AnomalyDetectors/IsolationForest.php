@@ -32,6 +32,8 @@ use const Rubix\ML\EPSILON;
  */
 class IsolationForest implements Estimator, Learner, Ranking, Persistable
 {
+    protected const DEFAULT_SUBSAMPLE = 256;
+
     /**
      * The number of estimators to train in the ensemble.
      *
@@ -42,7 +44,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     /**
      * The ratio of training samples to train each estimator on.
      *
-     * @var float
+     * @var float|null
      */
     protected $ratio;
 
@@ -79,18 +81,18 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
     /**
      * @param int $estimators
-     * @param float $ratio
+     * @param float|null $ratio
      * @param float $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, float $ratio = 0.2, float $contamination = 0.1)
+    public function __construct(int $estimators = 100, ?float $ratio = 0.2, float $contamination = 0.1)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
                 . " cannot be less than 1, $estimators given.");
         }
 
-        if ($ratio <= 0. or $ratio > 1.) {
+        if (isset($ratio) and ($ratio <= 0. or $ratio > 1.)) {
             throw new InvalidArgumentException('Ratio must be between'
                 . " 0 and 1, $ratio given.");
         }
@@ -149,10 +151,11 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
         $n = $dataset->numRows();
-        
-        $maxDepth = (int) ceil(log(max($n, 2), 2));
 
-        $k = (int) round($this->ratio * $n);
+        $k = $this->ratio ? (int) round($this->ratio * $n)
+            : min(self::DEFAULT_SUBSAMPLE, $n);
+
+        $maxDepth = (int) ceil(log(max($n, 2), 2));
 
         $this->trees = [];
 
@@ -166,7 +169,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
             $this->trees[] = $tree;
         }
 
-        $this->delta = $this->c($k);
+        $this->delta = ITree::c($k);
 
         $scores = $this->rank($dataset);
 
@@ -188,8 +191,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function predict(Dataset $dataset) : array
     {
         if ($this->offset === null) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
 
         return array_map([self::class, 'decide'], $this->rank($dataset));
@@ -206,8 +208,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     public function rank(Dataset $dataset) : array
     {
         if (empty($this->trees)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('The estimator has not been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -234,21 +235,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
         $depth /= $this->estimators;
 
         return 2. ** -($depth / $this->delta);
-    }
-
-    /**
-     * Calculate the average path length of an unsuccessful search for n nodes.
-     *
-     * @param int $n
-     * @return float
-     */
-    protected function c(int $n) : float
-    {
-        if ($n <= 1) {
-            return 1.;
-        }
-        
-        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
     }
 
     /**

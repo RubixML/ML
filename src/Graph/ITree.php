@@ -39,6 +39,21 @@ class ITree implements BinaryTree
     protected $maxDepth;
 
     /**
+     * Calculate the average path length of an unsuccessful search among n nodes.
+     *
+     * @param int $n
+     * @return float
+     */
+    public static function c(int $n) : float
+    {
+        if ($n <= 1) {
+            return 1.;
+        }
+        
+        return 2. * (log($n - 1) + M_EULER) - 2. * ($n - 1) / $n;
+    }
+
+    /**
      * @param int $maxDepth
      * @throws \InvalidArgumentException
      */
