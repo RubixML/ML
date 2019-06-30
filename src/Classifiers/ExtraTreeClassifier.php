@@ -37,14 +37,14 @@ class ExtraTreeClassifier extends ClassificationTree
         $bestColumn = $bestValue = null;
         $bestGroups = [];
 
-        $max = $dataset->numRows() - 1;
+        $maxIndex = $dataset->numRows() - 1;
 
         shuffle($this->columns);
 
-        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
-            $sample = $dataset[rand(0, $max)];
+        $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
-            $value = $sample[$column];
+        foreach ($columns as $column) {
+            $value = $dataset[rand(0, $maxIndex)][$column];
 
             $groups = $dataset->partition($column, $value);
 
@@ -62,6 +62,11 @@ class ExtraTreeClassifier extends ClassificationTree
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestImpurity);
+        return new Decision(
+            $bestColumn,
+            $bestValue,
+            $bestGroups,
+            $bestImpurity
+        );
     }
 }

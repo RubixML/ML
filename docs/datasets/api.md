@@ -19,26 +19,6 @@ Select the *values* of a feature column at offset:
 public column(int $index) : array
 ```
 
-Return the *first* **n** rows of data in a new dataset object:
-```php
-public head(int $n = 10) : self
-```
-
-Return the *last* **n** rows of data in a new dataset object:
-```php
-public tail(int $n = 10) : self
-```
-
-**Example**
-
-```php
-// Return the sample matrix
-$samples = $dataset->samples();
-
-// Return just the first 5 rows in a new dataset
-$subset = $dataset->head(5);
-```
-
 ### Properties
 Return the number of rows in the dataset:
 ```php
@@ -92,7 +72,28 @@ To append a given dataset onto the end of another dataset:
 public append(Dataset $dataset) : self
 ```
 
-### Slicing and Splitting
+### Head and Tail
+Return the *first* **n** rows of data in a new dataset object:
+```php
+public head(int $n = 10) : self
+```
+
+Return the *last* **n** rows of data in a new dataset object:
+```php
+public tail(int $n = 10) : self
+```
+
+**Example**
+
+```php
+// Return the first 5 rows in a new dataset
+$subset = $dataset->head(5);
+
+// Return the last 10 rows in a new dataset
+$subset = $dataset->tail(10);
+```
+
+### Taking and Leaving
 Remove **n** rows from the dataset and return them in a new dataset:
 ```php
 public take(int $n = 1) : self
@@ -103,56 +104,77 @@ Leave **n** samples on the dataset and return the rest in a new dataset:
 public leave(int $n = 1) : self
 ```
 
-Split the dataset into *left* and *right* subsets given by a **ratio**:
+### Slicing and Splicing
+Return an *n* size portion of the dataset in a new dataset:
+```php
+public slice(int $offset, int $n) : self
+```
+
+Remove a size *n* chunk of the dataset starting at *offset* and return it in a new dataset:
+```php
+public splice(int $offset, int $n) : self
+```
+
+# Splitting
+Split the dataset into left and right subsets given by a *ratio*:
 ```php
 public split(float $ratio = 0.5) : array
 ```
 
-Partition the dataset into *left* and *right* subsets based on the value of a feature in a specified column:
+Partition the dataset into left and right subsets based on the value of a feature in a specified column:
 ```php
 public partition(int $index, mixed $value) : array
-```
-
-### Folding
-Fold the dataset **k** - 1 times to form **k** equal size datasets:
-```php
-public fold(int $k = 10) : array
-```
-
-### Batching
-Batch the dataset into subsets containing a maximum of **n** rows per batch:
-```php
-public batch(int $n = 50) : array
 ```
 
 **Example**
 
 ```php
-// Remove the first 5 rows and return them in a new dataset
-$subset = $dataset->take(5);
-
 // Split the dataset into left and right subsets
 [$left, $right] = $dataset->split(0.5);
 
 // Partition the dataset by the feature column at index 4 by value '50'
 [$left, $right] = $dataset->partition(4, 50);
-
-// Fold the dataset into 8 equal size datasets
-$folds = $dataset->fold(8);
 ```
 
-### Randomizing
+### Folding
+Fold the dataset *k* - 1 times to form *k* equal size datasets:
+```php
+public fold(int $k = 10) : array
+```
+
+**Example**
+
+```php
+// Fold the dataset into 8 equal size datasets
+$folds = $dataset->fold(8);
+
+var_dump(count($folds));
+```
+
+**Output**
+
+```sh
+int(8)
+```
+
+### Batching
+Batch the dataset into subsets containing a maximum of *n* rows per batch:
+```php
+public batch(int $n = 50) : array
+```
+
+### Randomization
 Randomize the order of the Dataset and return it:
 ```php
 public randomize() : self
 ```
 
-Generate a random subset with replacement of size **n**:
+Generate a random subset with replacement of size *n*:
 ```php
 public randomSubsetWithReplacement($n) : self
 ```
 
-Generate a random *weighted* subset with replacement of size **n**:
+Generate a random *weighted* subset with replacement of size *n*:
 ```php
 public randomWeightedSubsetWithReplacement($n, array $weights) : self
 ```

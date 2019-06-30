@@ -188,7 +188,9 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
 
         shuffle($this->columns);
 
-        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
+        $columns = array_slice($this->columns, 0, $this->maxFeatures);
+
+        foreach ($columns as $column) {
             $values = array_unique($dataset->column($column));
 
             foreach ($values as $value) {
@@ -209,7 +211,12 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestVariance);
+        return new Decision(
+            $bestColumn,
+            $bestValue,
+            $bestGroups,
+            $bestVariance
+        );
     }
 
     /**

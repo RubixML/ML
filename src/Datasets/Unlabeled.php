@@ -73,8 +73,8 @@ class Unlabeled extends DataFrame implements Dataset
 
         foreach ($datasets as $dataset) {
             if (!$dataset instanceof Dataset) {
-                throw new InvalidArgumentException('Dataset must be'
-                    . ' an instance of Dataset, ' . get_class($dataset)
+                throw new InvalidArgumentException('Dataset must be an'
+                    . ' instance of Dataset, ' . get_class($dataset)
                     . ' given.');
             }
 
@@ -107,32 +107,50 @@ class Unlabeled extends DataFrame implements Dataset
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function head(int $n = 10) : self
     {
-        return self::quick(array_slice($this->samples, 0, $n));
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
+
+        return $this->slice(0, $n);
     }
 
     /**
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function tail(int $n = 10) : self
     {
-        return self::quick(array_slice($this->samples, -$n));
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
+
+        return $this->slice(-$n, $this->numRows());
     }
 
     /**
      * Take n samples from this dataset and return them in a new dataset.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function take(int $n = 1) : self
     {
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
+
         return $this->splice(0, $n);
     }
 
@@ -140,11 +158,42 @@ class Unlabeled extends DataFrame implements Dataset
      * Leave n samples on this dataset and return the rest in a new dataset.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function leave(int $n = 1) : self
     {
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
+
         return $this->splice($n, $this->numRows());
+    }
+
+    /**
+     * Return an n size portion of the dataset in a new dataset.
+     *
+     * @param int $offset
+     * @param int $n
+     * @return self
+     */
+    public function slice(int $offset, int $n) : self
+    {
+        return self::quick(array_slice($this->samples, $offset, $n));
+    }
+
+    /**
+     * Remove a size n chunk of the dataset starting at offset and return it in
+     * a new dataset.
+     *
+     * @param int $offset
+     * @param int $n
+     * @return self
+     */
+    public function splice(int $offset, int $n) : self
+    {
+        return self::quick(array_splice($this->samples, $offset, $n));
     }
 
     /**
@@ -170,19 +219,6 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
-     * Remove a size n chunk of the dataset starting at offset and return it in
-     * a new dataset.
-     *
-     * @param int $offset
-     * @param int $n
-     * @return self
-     */
-    public function splice(int $offset, int $n) : self
-    {
-        return self::quick(array_splice($this->samples, $offset, $n));
-    }
-
-    /**
      * Randomize the dataset in place and return self for chaining.
      *
      * @return self
@@ -198,15 +234,15 @@ class Unlabeled extends DataFrame implements Dataset
      * Run a filter over the dataset using the values of a given column.
      *
      * @param int $index
-     * @param callable $fn
+     * @param callable $callback
      * @return self
      */
-    public function filterByColumn(int $index, callable $fn) : self
+    public function filterByColumn(int $index, callable $callback) : self
     {
         $samples = [];
 
         foreach ($this->samples as $sample) {
-            if ($fn($sample[$index])) {
+            if ($callback($sample[$index])) {
                 $samples[] = $sample;
             }
         }
@@ -244,12 +280,12 @@ class Unlabeled extends DataFrame implements Dataset
                 . " between 0 and 1, $ratio given.");
         }
 
-        $p = (int) ($ratio * $this->numRows());
+        $n = (int) floor($ratio * $this->numRows());
 
-        $left = self::quick(array_slice($this->samples, 0, $p));
-        $right = self::quick(array_slice($this->samples, $p));
-
-        return [$left, $right];
+        return [
+            self::quick(array_slice($this->samples, 0, $n)),
+            self::quick(array_slice($this->samples, $n)),
+        ];
     }
 
     /**
@@ -289,15 +325,7 @@ class Unlabeled extends DataFrame implements Dataset
      */
     public function batch(int $n = 50) : array
     {
-        $batches = [];
-
-        $samples = $this->samples;
-
-        foreach (array_chunk($this->samples, $n) as $batch) {
-            $batches[] = self::quick($batch);
-        }
-
-        return $batches;
+        return array_map([self::class, 'quick'], array_chunk($this->samples, $n));
     }
 
     /**
@@ -324,7 +352,7 @@ class Unlabeled extends DataFrame implements Dataset
         $left = $right = [];
 
         if ($this->columnType($column) === DataType::CATEGORICAL) {
-            foreach ($this->samples as $i => $sample) {
+            foreach ($this->samples as $sample) {
                 if ($sample[$column] === $value) {
                     $left[] = $sample;
                 } else {
@@ -332,7 +360,7 @@ class Unlabeled extends DataFrame implements Dataset
                 }
             }
         } else {
-            foreach ($this->samples as $i => $sample) {
+            foreach ($this->samples as $sample) {
                 if ($sample[$column] < $value) {
                     $left[] = $sample;
                 } else {
@@ -366,7 +394,7 @@ class Unlabeled extends DataFrame implements Dataset
 
         $left = $right = [];
 
-        foreach ($this->samples as $i => $sample) {
+        foreach ($this->samples as $sample) {
             $lHat = $kernel->compute($sample, $leftCentroid);
             $rHat = $kernel->compute($sample, $rightCentroid);
 
@@ -397,12 +425,12 @@ class Unlabeled extends DataFrame implements Dataset
                 . " less than 1 sample, $n given.");
         }
 
-        $max = $this->numRows() - 1;
+        $maxIndex = $this->numRows() - 1;
 
         $subset = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $subset[] = $this->samples[rand(0, $max)];
+            $subset[] = $this->samples[rand(0, $maxIndex)];
         }
 
         return self::quick($subset);

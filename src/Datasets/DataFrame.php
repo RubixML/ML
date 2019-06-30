@@ -10,6 +10,16 @@ use ArrayIterator;
 use ArrayAccess;
 use Countable;
 
+/**
+ * Data Frame
+ *
+ * A table-like data structure with an internal type system and basic row
+ * and column operations.
+ *
+ * @category    Machine Learning
+ * @package     Rubix/ML
+ * @author      Andrew DalPino
+ */
 class DataFrame implements ArrayAccess, IteratorAggregate, Countable
 {
     /**

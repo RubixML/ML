@@ -149,6 +149,17 @@ class UnlabeledTest extends TestCase
         $this->assertCount(1, $this->dataset);
     }
 
+    public function test_slice_dataset()
+    {
+        $this->assertCount(6, $this->dataset);
+
+        $subset = $this->dataset->slice(2, 2);
+
+        $this->assertInstanceOf(Unlabeled::class, $subset);
+        $this->assertCount(2, $subset);
+        $this->assertCount(6, $this->dataset);
+    }
+
     public function test_splice_dataset()
     {
         $this->assertCount(6, $this->dataset);

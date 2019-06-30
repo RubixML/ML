@@ -8,6 +8,7 @@
     - Dropped Persistable contract between SVM-based learners
     - Random Forest feature importances now serial
     - Removed Robust Z Score tolerance parameter
+    - Added slice method to Dataset API
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer

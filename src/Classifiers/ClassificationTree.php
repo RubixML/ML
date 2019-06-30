@@ -80,7 +80,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     ) {
         if ($maxFeatures and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
-                . " feature to determine a split, $maxFeatures given.");
+                . " feature to determin split, $maxFeatures given.");
         }
 
         if ($tolerance < 0.) {
@@ -145,9 +145,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         $k = $dataset->numColumns();
 
-        $this->classes = $dataset->possibleOutcomes();
         $this->columns = range(0, $dataset->numColumns() - 1);
         $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
+        $this->classes = $dataset->possibleOutcomes();
 
         $this->grow($dataset);
 
@@ -230,7 +230,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         shuffle($this->columns);
 
-        foreach (array_slice($this->columns, 0, $this->maxFeatures) as $column) {
+        $columns = array_slice($this->columns, 0, $this->maxFeatures);
+
+        foreach ($columns as $column) {
             $values = array_unique($dataset->column($column));
 
             foreach ($values as $value) {
@@ -251,7 +253,12 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             }
         }
 
-        return new Decision($bestColumn, $bestValue, $bestGroups, $bestImpurity);
+        return new Decision(
+            $bestColumn,
+            $bestValue,
+            $bestGroups,
+            $bestImpurity
+        );
     }
 
     /**

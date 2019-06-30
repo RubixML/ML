@@ -158,6 +158,15 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function leave(int $n = 1);
 
     /**
+     * Return an n size portion of the dataset in a new dataset.
+     *
+     * @param int $offset
+     * @param int $n
+     * @return self
+     */
+    public function slice(int $offset, int $n);
+
+    /**
      * Remove a size n chunk of the dataset starting at offset and return it in
      * a new dataset.
      *

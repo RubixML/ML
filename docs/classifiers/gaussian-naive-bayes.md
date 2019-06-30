@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/GaussianNB.php">Source</a></span>
 
 # Gaussian Naive Bayes
-A variate of the [Naive Bayes](naive-bayes.md) algorithm that uses a probability density function (*PDF*) over *continuous* features that are assumed to be normally distributed.
+A variate of the [Naive Bayes](naive-bayes.md) classifier that uses a probability density function over continuous features which are assumed to be normally distributed.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

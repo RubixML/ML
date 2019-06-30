@@ -25,9 +25,8 @@ use const Rubix\ML\LOG_EPSILON;
  * Gaussian Naive Bayes
  *
  * A variate of the Naive Bayes classifier that uses a probability density
- * function over continuous features. The distribution of values is assumed to
- * be Gaussian therefore your data might need to be transformed beforehand if
- * it is not normally distributed.
+ * function over continuous features which are assumed to be normally
+ * distributed.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for

@@ -194,12 +194,12 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Map labels to their new values.
      *
-     * @param callable $fn
+     * @param callable $callback
      * @throws \RuntimeException
      */
-    public function transformLabels(callable $fn) : void
+    public function transformLabels(callable $callback) : void
     {
-        $labels = array_map($fn, $this->labels);
+        $labels = array_map($callback, $this->labels);
 
         foreach ($labels as $label) {
             if (!is_string($label) and !is_numeric($label)) {
@@ -244,28 +244,34 @@ class Labeled extends DataFrame implements Dataset
      * Return a dataset containing only the first n samples.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function head(int $n = 10) : self
     {
-        $samples = array_slice($this->samples, 0, $n);
-        $labels = array_slice($this->labels, 0, $n);
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
 
-        return self::quick($samples, $labels);
+        return $this->slice(0, $n);
     }
 
     /**
      * Return a dataset containing only the last n samples.
      *
      * @param int $n
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function tail(int $n = 10) : self
     {
-        $samples = array_slice($this->samples, -$n);
-        $labels = array_slice($this->labels, -$n);
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
+        }
 
-        return self::quick($samples, $labels);
+        return $this->slice($n, $this->numRows());
     }
 
     /**
@@ -278,8 +284,9 @@ class Labeled extends DataFrame implements Dataset
      */
     public function take(int $n = 1) : self
     {
-        if ($n < 0) {
-            throw new InvalidArgumentException('Cannot take less than 0 samples.');
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
         }
 
         return $this->splice(0, $n);
@@ -295,11 +302,43 @@ class Labeled extends DataFrame implements Dataset
      */
     public function leave(int $n = 1) : self
     {
-        if ($n < 0) {
-            throw new InvalidArgumentException('Cannot leave less than 0 samples.');
+        if ($n < 1) {
+            throw new InvalidArgumentException('The number of samples'
+                . " cannot be less than 1, $n given.");
         }
 
         return $this->splice($n, $this->numRows());
+    }
+
+    /**
+     * Return an n size portion of the dataset in a new dataset.
+     *
+     * @param int $offset
+     * @param int $n
+     * @return self
+     */
+    public function slice(int $offset, int $n) : self
+    {
+        return self::quick(
+            array_slice($this->samples, $offset, $n),
+            array_slice($this->labels, $offset, $n)
+        );
+    }
+
+    /**
+     * Remove a size n chunk of the dataset starting at offset and return it in
+     * a new dataset.
+     *
+     * @param int $offset
+     * @param int $n
+     * @return self
+     */
+    public function splice(int $offset, int $n) : self
+    {
+        return self::quick(
+            array_splice($this->samples, $offset, $n),
+            array_splice($this->labels, $offset, $n)
+        );
     }
 
     /**
@@ -316,10 +355,10 @@ class Labeled extends DataFrame implements Dataset
                 . 'dataset.');
         }
 
-        $samples = array_merge($dataset->samples(), $this->samples);
-        $labels = array_merge($dataset->labels(), $this->labels);
-
-        return self::quick($samples, $labels);
+        return self::quick(
+            array_merge($dataset->samples(), $this->samples),
+            array_merge($dataset->labels(), $this->labels)
+        );
     }
 
     /**
@@ -336,26 +375,10 @@ class Labeled extends DataFrame implements Dataset
                 . 'dataset.');
         }
 
-        $samples = array_merge($this->samples, $dataset->samples());
-        $labels = array_merge($this->labels, $dataset->labels());
-
-        return self::quick($samples, $labels);
-    }
-
-    /**
-     * Remove a size n chunk of the dataset starting at offset and return it in
-     * a new dataset.
-     *
-     * @param int $offset
-     * @param int $n
-     * @return self
-     */
-    public function splice(int $offset, int $n) : self
-    {
-        $samples = array_splice($this->samples, $offset, $n);
-        $labels = array_splice($this->labels, $offset, $n);
-
-        return self::quick($samples, $labels);
+        return self::quick(
+            array_merge($this->samples, $dataset->samples()),
+            array_merge($this->labels, $dataset->labels())
+        );
     }
 
     /**
@@ -365,7 +388,7 @@ class Labeled extends DataFrame implements Dataset
      */
     public function randomize() : self
     {
-        $order = range(0, $this->numRows() - 1);
+        $order = range(0, max(0, $this->numRows() - 1));
 
         shuffle($order);
 
@@ -378,15 +401,15 @@ class Labeled extends DataFrame implements Dataset
      * Run a filter over the dataset using the values of a given column.
      *
      * @param int $index
-     * @param callable $fn
+     * @param callable $callback
      * @return self
      */
-    public function filterByColumn(int $index, callable $fn) : self
+    public function filterByColumn(int $index, callable $callback) : self
     {
         $samples = $labels = [];
 
         foreach ($this->samples as $i => $sample) {
-            if ($fn($sample[$index])) {
+            if ($callback($sample[$index])) {
                 $samples[] = $sample;
                 $labels[] = $this->labels[$i];
             }
@@ -398,15 +421,15 @@ class Labeled extends DataFrame implements Dataset
     /**
      * Run a filter over the dataset using the labels.
      *
-     * @param callable $fn
+     * @param callable $callback
      * @return self
      */
-    public function filterByLabel(callable $fn) : self
+    public function filterByLabel(callable $callback) : self
     {
         $samples = $labels = [];
 
         foreach ($this->labels as $i => $label) {
-            if ($fn($label)) {
+            if ($callback($label)) {
                 $samples[] = $this->samples[$i];
                 $labels[] = $label;
             }
@@ -483,21 +506,21 @@ class Labeled extends DataFrame implements Dataset
     public function split(float $ratio = 0.5) : array
     {
         if ($ratio <= 0 or $ratio >= 1) {
-            throw new InvalidArgumentException('Split ratio must be strictly'
-            . " between 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be strictly'
+                . " between 0 and 1, $ratio given.");
         }
 
-        $n = (int) ($ratio * $this->numRows());
-
-        $leftSamples = array_slice($this->samples, 0, $n);
-        $leftLabels = array_slice($this->labels, 0, $n);
-
-        $rightSamples = array_slice($this->samples, $n);
-        $rightLabels = array_slice($this->labels, $n);
+        $n = (int) floor($ratio * $this->numRows());
 
         return [
-            self::quick($leftSamples, $leftLabels),
-            self::quick($rightSamples, $rightLabels),
+            self::quick(
+                array_slice($this->samples, 0, $n),
+                array_slice($this->labels, 0, $n)
+            ),
+            self::quick(
+                array_slice($this->samples, $n),
+                array_slice($this->labels, $n)
+            ),
         ];
     }
 
@@ -511,8 +534,8 @@ class Labeled extends DataFrame implements Dataset
     public function stratifiedSplit(float $ratio = 0.5) : array
     {
         if ($ratio <= 0. or $ratio >= 1.) {
-            throw new InvalidArgumentException('Split ratio must be'
-            . " strictly between 0 and 1, $ratio given.");
+            throw new InvalidArgumentException('Ratio must be strictly'
+                . " between 0 and 1, $ratio given.");
         }
 
         $leftSamples = $leftLabels = $rightSamples = $rightLabels = [];
@@ -622,16 +645,11 @@ class Labeled extends DataFrame implements Dataset
      */
     public function batch(int $n = 50) : array
     {
-        $sChunks = array_chunk($this->samples, $n);
-        $lChunks = array_chunk($this->labels, $n);
-
-        $batches = [];
-
-        foreach ($sChunks as $i => $samples) {
-            $batches[] = self::quick($samples, $lChunks[$i]);
-        }
-
-        return $batches;
+        return array_map(
+            [self::class, 'quick'],
+            array_chunk($this->samples, $n),
+            array_chunk($this->labels, $n)
+        );
     }
 
     /**
@@ -737,12 +755,12 @@ class Labeled extends DataFrame implements Dataset
                 . " subset of less than 1 sample, $n given.");
         }
 
-        $max = $this->numRows() - 1;
+        $maxIndex = $this->numRows() - 1;
 
         $samples = $labels = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $index = rand(0, $max);
+            $index = rand(0, $maxIndex);
 
             $samples[] = $this->samples[$index];
             $labels[] = $this->labels[$index];
