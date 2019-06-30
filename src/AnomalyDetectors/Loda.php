@@ -18,13 +18,13 @@ use const Rubix\ML\EPSILON;
 use const Rubix\ML\LOG_EPSILON;
 
 /**
- * LODA
+ * Loda
  *
- * Lightweight Online Detector of Anomalies uses sparse random projection vectors
- * to generate an ensemble of unique one dimensional equi-width histograms able
- * to estimate the probability density of an unknown sample. The anomaly score is
- * given by the negative log likelihood whose upper threshold can be set by the
- * user through the *contamination* hyper-parameter.
+ * Lightweight Online Detector of Anomalies a.k.a. Loda uses sparse random
+ * projection vectors to generate an ensemble of unique one dimensional
+ * equi-width histograms able to estimate the probability density of an unknown
+ * sample. The anomaly score is given by the negative log likelihood whose upper
+ * threshold can be set by the user through the *contamination* hyper-parameter.
  *
  * References:
  * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
@@ -34,7 +34,7 @@ use const Rubix\ML\LOG_EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LODA implements Estimator, Learner, Online, Ranking, Persistable
+class Loda implements Estimator, Learner, Online, Ranking, Persistable
 {
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
@@ -74,7 +74,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     protected $r;
 
     /**
-     * The edges, counts, and precomputed probability densities of each histogram.
+     * The edges, and bin counts of each histogram.
      *
      * @var array[]|null
      */
@@ -83,9 +83,9 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
     /**
      * The number of samples that have been learned so far.
      *
-     * @var int|null
+     * @var int
      */
-    protected $n;
+    protected $n = 0;
 
     /**
      * Estimate the number of bins from the number of samples in a dataset.
@@ -212,15 +212,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
                 $counts[$this->bins]++;
             }
 
-            $densities = [];
-
-            foreach ($counts as $count) {
-                $densities[] = $count > 0
-                    ? -log($count / $m)
-                    : -LOG_EPSILON;
-            }
-
-            $this->histograms[] = [$edges, $counts, $densities];
+            $this->histograms[] = [$edges, $counts];
         }
 
         $this->n = $m;
@@ -234,7 +226,7 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
      */
     public function partial(Dataset $dataset) : void
     {
-        if (!$this->r or !$this->histograms or !$this->n) {
+        if (!$this->r or !$this->histograms) {
             $this->train($dataset);
 
             return;
@@ -242,14 +234,12 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->n += $dataset->numRows();
-
         $projections = Matrix::quick($dataset->samples())
             ->matmul($this->r)
             ->transpose();
 
         foreach ($projections as $i => $values) {
-            [$edges, $counts, $densities] = $this->histograms[$i];
+            [$edges, $counts] = $this->histograms[$i];
 
             $interior = array_slice($edges, 1, $this->bins, true);
 
@@ -265,14 +255,10 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
                 $counts[$this->bins]++;
             }
 
-            foreach ($counts as $j => $count) {
-                $densities[$j] = $count > 0
-                    ? -log($count / $this->n)
-                    : -LOG_EPSILON;
-            }
-
-            $this->histograms[$i] = [$edges, $counts, $densities];
+            $this->histograms[$i] = [$edges, $counts];
         }
+
+        $this->n += $dataset->numRows();
     }
 
     /**
@@ -308,15 +294,19 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             ->matmul($this->r)
             ->transpose();
 
-        $scores = array_fill(0, $projections->n(), 0.);
+        $densities = array_fill(0, $projections->n(), 0.);
     
         foreach ($projections as $i => $values) {
-            [$edges, $counts, $densities] = $this->histograms[$i];
+            [$edges, $counts] = $this->histograms[$i];
 
             foreach ($values as $j => $value) {
                 foreach ($edges as $k => $edge) {
                     if ($value < $edge) {
-                        $scores[$j] += $densities[$k];
+                        $count = $counts[$k];
+
+                        $densities[$j] += $count > 0
+                            ? -log($counts[$k] / $this->n)
+                            : -LOG_EPSILON;
 
                         break 1;
                     }
@@ -324,11 +314,11 @@ class LODA implements Estimator, Learner, Online, Ranking, Persistable
             }
         }
 
-        foreach ($scores as &$score) {
-            $score /= $this->estimators;
+        foreach ($densities as &$density) {
+            $density /= $this->estimators;
         }
 
-        return $scores;
+        return $densities;
     }
 
     /**

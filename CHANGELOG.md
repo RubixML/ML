@@ -1,14 +1,15 @@
-- Unreleased
+- 0.0.13-beta
     - Added documentation site
     - Added Regression and Classification Loss interfaces
     - Robust Z Score is now a Ranking anomaly detector
-    - LODA now defaults to auto detect bin count
+    - Loda now defaults to auto detect bin count
     - Removed tolerance param from Gradient Boost and AdaBoost
     - Screen logger timestamp format now configurable
     - Dropped Persistable contract between SVM-based learners
     - Random Forest feature importances now serial
     - Removed Robust Z Score tolerance parameter
     - Added slice method to Dataset API
+    - Loda now performs density estimation on the fly
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer
@@ -33,7 +34,7 @@
     - Removed Model Orchestra meta-estimator
     - Grid Search automatically retrains base estimator
     - Added neural net Parameter namespace and interface
-    - Changed order of LODA hyperparameters
+    - Changed order of Loda hyperparameters
     - Replaced F1 Score with F Beta metric
     - Removed ISRU and Gaussian activation functions
     - Fixed SELU derivitive computation
@@ -69,7 +70,7 @@
     - Pipeline is now more verbose
 
 - 0.0.10-beta
-    - Added LODA online anomaly detector
+    - Added Loda online anomaly detector
     - Added Radius Neighbors classifier and regressor
     - Added fast k-d LOF anomaly detector
     - Added base Ball Tree implementation
@@ -84,7 +85,7 @@
     - K Means is no longer Online
     - Removed Sign function
     - Added Binary Tree interface
-    - Added bin count heuristic to LODA
+    - Added bin count heuristic to Loda
     - Changed order of k-d neighbors hyperparameters
     - Removed Hamming distance kernel
 

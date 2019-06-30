@@ -1,6 +1,6 @@
-<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/LODA.php">Source</a></span>
+<span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/Loda.php">Source</a></span>
 
-# LODA
+# Loda
 *Lightweight Online Detector of Anomalies* uses a sparse random projection matrix to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The decision function takes the anomaly score given by the negative log likelihood whose upper threshold can be set by the user.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
@@ -22,13 +22,13 @@ public static estimateBins($dataset) : int
 
 ### Example
 ```php
-use Rubix\ML\AnomalyDetection\LODA;
+use Rubix\ML\AnomalyDetection\Loda;
 
-$bins = LODA::estimateBins(1000);
+$bins = Loda::estimateBins(1000);
 
-$estimator = new LODA($bins); // Automatically choose bin count
+$estimator = new Loda($bins); // Automatically choose bin count
 
-$estimator = new LODA(5, 250, 3.5); // Specifying bins
+$estimator = new Loda(5, 250, 3.5); // Specifying bins
 ```
 
 ### References

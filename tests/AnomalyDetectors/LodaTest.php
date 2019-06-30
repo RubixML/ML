@@ -7,7 +7,7 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetectors\LODA;
+use Rubix\ML\AnomalyDetectors\Loda;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\AnomalyDetectors\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class LODATest extends TestCase
+class LodaTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
@@ -39,7 +39,7 @@ class LODATest extends TestCase
             1 => new Circle(0., 0., 8., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new LODA(null, 100, 10.);
+        $this->estimator = new Loda(null, 100, 10.);
 
         $this->metric = new FBeta();
 
@@ -48,7 +48,7 @@ class LODATest extends TestCase
 
     public function test_build_detector()
     {
-        $this->assertInstanceOf(LODA::class, $this->estimator);
+        $this->assertInstanceOf(Loda::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
@@ -65,11 +65,11 @@ class LODATest extends TestCase
 
     public function test_estimate_bins()
     {
-        $this->assertSame(4, LODA::estimateBins(10));
-        $this->assertSame(8, LODA::estimateBins(100));
-        $this->assertSame(11, LODA::estimateBins(1000));
-        $this->assertSame(14, LODA::estimateBins(10000));
-        $this->assertSame(18, LODA::estimateBins(100000));
+        $this->assertSame(4, Loda::estimateBins(10));
+        $this->assertSame(8, Loda::estimateBins(100));
+        $this->assertSame(11, Loda::estimateBins(1000));
+        $this->assertSame(14, Loda::estimateBins(10000));
+        $this->assertSame(18, Loda::estimateBins(100000));
     }
 
     public function test_train_partial_predict()

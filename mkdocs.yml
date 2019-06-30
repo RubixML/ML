@@ -35,7 +35,7 @@ nav:
   - API Reference: anomaly-detectors/api.md
   - Isolation Forest: anomaly-detectors/isolation-forest.md
   - K-d LOF: anomaly-detectors/kd-lof.md
-  - LODA: anomaly-detectors/loda.md
+  - Loda: anomaly-detectors/loda.md
   - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
   - One Class SVM: anomaly-detectors/one-class-svm.md
   - Robust Z Score: anomaly-detectors/robust-z-score.md
