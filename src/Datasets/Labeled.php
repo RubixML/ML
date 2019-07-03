@@ -192,12 +192,13 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Map labels to their new values.
+     * Map labels to their new valuesa dn return self for method chaining.
      *
      * @param callable $callback
      * @throws \RuntimeException
+     * @return self
      */
-    public function transformLabels(callable $callback) : void
+    public function transformLabels(callable $callback) : self
     {
         $labels = array_map($callback, $this->labels);
 
@@ -209,6 +210,8 @@ class Labeled extends DataFrame implements Dataset
         }
 
         $this->labels = $labels;
+
+        return $this;
     }
 
     /**
@@ -445,7 +448,7 @@ class Labeled extends DataFrame implements Dataset
      * @param bool $descending
      * @return self
      */
-    public function sortByColumn(int $index, bool $descending = false)
+    public function sortByColumn(int $index, bool $descending = false) : self
     {
         $order = $this->column($index);
 
@@ -463,9 +466,9 @@ class Labeled extends DataFrame implements Dataset
      * Sort the dataset in place by its labels.
      *
      * @param bool $descending
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return self
      */
-    public function sortByLabel(bool $descending = false) : Dataset
+    public function sortByLabel(bool $descending = false) : self
     {
         array_multisort(
             $this->labels,

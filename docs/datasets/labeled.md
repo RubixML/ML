@@ -106,9 +106,9 @@ array(2) {
 ```
 
 #### Transform
-Transform the labels in the dataset using a callback function:
+Transform the labels in the dataset using a callback function and return self for method chaining:
 ```php
-public transformLabels(callable $fn) : void
+public transformLabels(callable $fn) : self
 ```
 
 > **Note:** The callback function is given a label as its only argument and should return the transformed label as a continuous or categorical value.
@@ -158,7 +158,7 @@ $filtered = $dataset->filterByLabel(function ($label)) {
 ```
 
 #### Sorting
-Sort the dataset by label:
+Sort the dataset by label and return self for method chaining:
 ```php
 public sortByLabel(bool $descending = false) : self
 ```

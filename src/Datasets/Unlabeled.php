@@ -257,7 +257,7 @@ class Unlabeled extends DataFrame implements Dataset
      * @param bool $descending
      * @return self
      */
-    public function sortByColumn(int $index, bool $descending = false)
+    public function sortByColumn(int $index, bool $descending = false) : self
     {
         $column = $this->column($index);
 

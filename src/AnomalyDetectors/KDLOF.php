@@ -216,9 +216,8 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
      */
     public function rank(Dataset $dataset) : array
     {
-        if ($this->tree->bare()) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+        if ($this->tree->bare() or empty($this->lrds)) {
+            throw new RuntimeException('The estimator has not been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -235,11 +234,6 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
      */
     protected function localOutlierFactor(array $sample) : float
     {
-        if (empty($this->lrds)) {
-            throw new RuntimeException('Local reachability distances have'
-                . ' not been computed, must train estimator first.');
-        }
-
         [$indices, $distances] = $this->tree->nearest($sample, $this->k);
 
         $lrd = $this->localReachabilityDensity($indices, $distances);

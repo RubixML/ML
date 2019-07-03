@@ -10,6 +10,7 @@
     - Removed Robust Z Score tolerance parameter
     - Added slice method to Dataset API
     - Loda now performs density estimation on the fly
+    - Transform labels now returns self for method chaining
 
 - 0.0.12-beta
     - Added AdaMax neural network Optimizer
