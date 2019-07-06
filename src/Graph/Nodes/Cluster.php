@@ -85,18 +85,13 @@ class Cluster extends BinaryNode implements Ball, Leaf
      */
     public function __construct(array $samples, ?array $labels, array $center, float $radius)
     {
-        if (empty($samples)) {
-            throw new InvalidArgumentException('Cluster cannot be empty');
-        }
-
         if (isset($labels) and count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The number of samples'
                 . ' must be equal to the number of labels.');
         }
 
         if (empty($center)) {
-            throw new InvalidArgumentException('Center vector must'
-                . ' not be empty.');
+            throw new InvalidArgumentException('Center vector cannot be empty.');
         }
 
         if ($radius < 0.) {

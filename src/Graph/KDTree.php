@@ -2,9 +2,9 @@
 
 namespace Rubix\ML\Graph;
 
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Coordinate;
 use Rubix\ML\Graph\Nodes\Box;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -30,7 +30,7 @@ class KDTree implements BinaryTree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Coordinate|null
+     * @var \Rubix\ML\Graph\Nodes\Hypercube|null
      */
     protected $root;
 
@@ -65,9 +65,9 @@ class KDTree implements BinaryTree
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Coordinate|null
+     * @return \Rubix\ML\Graph\Nodes\Hypercube|null
      */
-    public function root() : ?Coordinate
+    public function root() : ?Hypercube
     {
         return $this->root;
     }
@@ -110,21 +110,21 @@ class KDTree implements BinaryTree
      */
     public function grow(Labeled $dataset) : void
     {
-        $this->root = Coordinate::split($dataset);
+        $this->root = Hypercube::split($dataset);
 
         $stack = [$this->root];
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if (!$current instanceof Coordinate) {
+            if (!$current instanceof Hypercube) {
                 continue 1;
             }
 
             [$left, $right] = $current->groups();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = Coordinate::split($left);
+                $node = Hypercube::split($left);
     
                 $current->attachLeft($node);
 
@@ -134,7 +134,7 @@ class KDTree implements BinaryTree
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = Coordinate::split($right);
+                $node = Hypercube::split($right);
     
                 $current->attachRight($node);
 
@@ -159,7 +159,7 @@ class KDTree implements BinaryTree
         $current = $this->root;
 
         while ($current) {
-            if ($current instanceof Coordinate) {
+            if ($current instanceof Hypercube) {
                 if ($sample[$current->column()] < $current->value()) {
                     $current = $current->left();
                 } else {

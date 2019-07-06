@@ -4,11 +4,11 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
-class CoordinateTest extends TestCase
+class HypercubeTest extends TestCase
 {
     protected const COLUMN = 1;
     protected const VALUE = 3.;
@@ -36,9 +36,9 @@ class CoordinateTest extends TestCase
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Coordinate(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
+        $node = new Hypercube(self::COLUMN, self::VALUE, $groups, self::MIN, self::MAX);
 
-        $this->assertInstanceOf(Coordinate::class, $node);
+        $this->assertInstanceOf(Hypercube::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 
@@ -47,7 +47,7 @@ class CoordinateTest extends TestCase
 
     public function test_split()
     {
-        $node = Coordinate::split(Labeled::quick(self::SAMPLES, self::LABELS));
+        $node = Hypercube::split(Labeled::quick(self::SAMPLES, self::LABELS));
 
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }

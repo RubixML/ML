@@ -6,7 +6,7 @@ use Rubix\ML\Graph\Tree;
 use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Graph\BinaryTree;
-use Rubix\ML\Graph\Nodes\Coordinate;
+use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -46,7 +46,7 @@ class KDTreeTest extends TestCase
     {
         $this->tree->grow($this->generator->generate(50));
 
-        $this->assertInstanceOf(Coordinate::class, $this->tree->root());
+        $this->assertInstanceOf(Hypercube::class, $this->tree->root());
         $this->assertInstanceOf(Box::class, $this->tree->root());
         $this->assertInstanceOf(BinaryNode::class, $this->tree->root());
 

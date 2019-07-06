@@ -56,9 +56,6 @@ class Neighborhood extends BinaryNode implements Box, Leaf
      */
     public static function terminate(Labeled $dataset) : self
     {
-        $samples = $dataset->samples();
-        $labels = $dataset->labels();
-
         $min = $max = [];
 
         foreach ($dataset->columns() as $values) {
@@ -66,7 +63,7 @@ class Neighborhood extends BinaryNode implements Box, Leaf
             $max[] = max($values);
         }
 
-        return new self($samples, $labels, $min, $max);
+        return new self($dataset->samples(), $dataset->labels(), $min, $max);
     }
 
     /**
@@ -78,22 +75,14 @@ class Neighborhood extends BinaryNode implements Box, Leaf
      */
     public function __construct(array $samples, array $labels, array $min, array $max)
     {
-        if (empty($samples)) {
-            throw new InvalidArgumentException('Cluster cannot be empty');
-        }
-
         if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The number of samples'
                 . ' must be equal to the number of labels.');
         }
 
-        if (empty($min)) {
-            throw new InvalidArgumentException('Bounding box cannot be empty');
-        }
-
         if (count($min) !== count($max)) {
-            throw new InvalidArgumentException('Min and max vectors must be'
-                . ' the same dimensionality.');
+            throw new InvalidArgumentException('Sides of bounding box'
+                . ' must be the same dimensionality.');
         }
 
         $this->samples = $samples;

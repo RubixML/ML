@@ -3,22 +3,22 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Other\Helpers\Stats;
 use InvalidArgumentException;
 use Generator;
 
 use function Rubix\ML\argmax;
 
 /**
- * Coordinate
+ * Hypercube
  *
- * A coordinate node represents a coordinate column of a k-d tree.
+ * A hypercube node represents a cell of points contained within a
+ * d-dimensional bounding box.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Coordinate extends BinaryNode implements Box
+class Hypercube extends BinaryNode implements Box
 {
     /**
      * The feature column (index) of the split value.
@@ -57,30 +57,29 @@ class Coordinate extends BinaryNode implements Box
 
     /**
      * Factory method to build a coordinate node from a labeled dataset
-     * using the column with the highest variance as the column for the
-     * split.
+     * using the column with the highest range as the column for the split.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return self
      */
     public static function split(Labeled $dataset) : self
     {
-        $columns = $dataset->columns();
+        $mins = $maxs = $ranges = [];
 
-        $column = argmax(array_map([Stats::class, 'variance'], $columns));
+        foreach ($dataset->columns() as $values) {
+            $mins[] = $min = min($values);
+            $maxs[] = $max = max($values);
 
-        $value = Stats::median($columns[$column]);
-
-        $groups = $dataset->partition($column, $value);
-
-        $min = $max = [];
-
-        foreach ($columns as $values) {
-            $min[] = min($values);
-            $max[] = max($values);
+            $ranges[] = $max - $min;
         }
 
-        return new self($column, $value, $groups, $min, $max);
+        $column = argmax($ranges);
+
+        $value = 0.5 * ($mins[$column] + $maxs[$column]);
+
+        $groups = $dataset->partition($column, $value);
+            
+        return new self($column, $value, $groups, $mins, $maxs);
     }
 
     /**
@@ -105,13 +104,9 @@ class Coordinate extends BinaryNode implements Box
 
         foreach ($groups as $group) {
             if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Sample groups must be'
-                    . ' dataset objects, ' . gettype($group) . ' given.');
+                throw new InvalidArgumentException('Group must be a'
+                    . ' dataset object, ' . gettype($group) . ' given.');
             }
-        }
-
-        if (empty($min)) {
-            throw new InvalidArgumentException('Bounding box cannot be empty');
         }
 
         if (count($min) !== count($max)) {

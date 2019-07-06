@@ -1,3 +1,7 @@
+- Unreleased
+    - Fixed issue with Dataset partitioning
+    - Renamed Coordinate node to Hypercube
+
 - 0.0.13-beta
     - Added documentation site
     - Added Regression and Classification Loss interfaces
