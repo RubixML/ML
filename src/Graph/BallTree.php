@@ -36,7 +36,7 @@ class BallTree implements BinaryTree
     protected $root;
 
     /**
-     * The maximum number of samples that each ball node can contain.
+     * The maximum number of samples that each leaf node can contain.
      *
      * @var int
      */
@@ -58,7 +58,7 @@ class BallTree implements BinaryTree
     {
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
-                . " to form a neighborhood, $maxLeafSize given.");
+                . " to form a leaf node, $maxLeafSize given.");
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -133,9 +133,7 @@ class BallTree implements BinaryTree
 
                 $stack[] = $node;
             } else {
-                $node = Cluster::terminate($left, $this->kernel);
-
-                $current->attachLeft($node);
+                $current->attachLeft(Cluster::terminate($left, $this->kernel));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
@@ -145,9 +143,7 @@ class BallTree implements BinaryTree
 
                 $stack[] = $node;
             } else {
-                $node = Cluster::terminate($right, $this->kernel);
-
-                $current->attachRight($node);
+                $current->attachRight(Cluster::terminate($right, $this->kernel));
             }
         }
     }

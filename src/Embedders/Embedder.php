@@ -18,7 +18,7 @@ interface Embedder
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return array
      */
-    public function embed(Dataset $dataset) : Dataset;
+    public function embed(Dataset $dataset) : array;
 }

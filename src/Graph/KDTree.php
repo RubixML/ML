@@ -123,6 +123,8 @@ class KDTree implements BinaryTree
 
             [$left, $right] = $current->groups();
 
+            $current->cleanup();
+
             if ($left->numRows() > $this->maxLeafSize) {
                 $node = Hypercube::split($left);
     
@@ -142,8 +144,6 @@ class KDTree implements BinaryTree
             } else {
                 $current->attachRight(Neighborhood::terminate($right));
             }
-
-            $current->cleanup();
         }
     }
 
@@ -232,7 +232,7 @@ class KDTree implements BinaryTree
                 continue 1;
             }
 
-            $target = $distances[$k - 1] ?? INF;
+            $radius = $distances[$k - 1] ?? INF;
 
             foreach ($current->children() as $child) {
                 if ($visited->contains($child)) {
@@ -243,7 +243,7 @@ class KDTree implements BinaryTree
                     foreach ($child->sides() as $side) {
                         $distance = $this->kernel->compute($sample, $side);
 
-                        if ($distance < $target) {
+                        if ($distance < $radius) {
                             $stack[] = $child;
 
                             continue 2;
@@ -255,9 +255,9 @@ class KDTree implements BinaryTree
             }
         }
 
-        $distances = array_slice($distances, 0, $k);
-        $labels = array_slice($labels, 0, $k);
-
-        return [$labels, $distances];
+        return [
+            array_slice($labels, 0, $k),
+            array_slice($distances, 0, $k),
+        ];
     }
 }

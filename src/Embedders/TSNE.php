@@ -4,9 +4,7 @@ namespace Rubix\ML\Embedders;
 
 use Rubix\ML\Verbose;
 use Rubix\Tensor\Matrix;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
@@ -240,9 +238,9 @@ class TSNE implements Embedder, Verbose
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
-     * @return \Rubix\ML\Datasets\Dataset
+     * @return array
      */
-    public function embed(Dataset $dataset) : Dataset
+    public function embed(Dataset $dataset) : array
     {
         DatasetIsCompatibleWithEmbedder::check($dataset, $this);
 
@@ -346,17 +344,11 @@ class TSNE implements Embedder, Verbose
             }
         }
 
-        $samples = $y->asArray();
-
         if ($this->logger) {
             $this->logger->info('Embedding complete');
         }
 
-        if ($dataset instanceof Labeled) {
-            return Labeled::quick($samples, $dataset->labels());
-        }
-
-        return Unlabeled::quick($samples);
+        return $y->asArray();
     }
 
     /**

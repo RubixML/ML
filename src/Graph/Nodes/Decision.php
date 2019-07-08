@@ -73,15 +73,9 @@ class Decision extends BinaryNode implements Purity
 
         foreach ($groups as $group) {
             if (!$group instanceof Labeled) {
-                throw new InvalidArgumentException('Sample groups must be'
-                    . ' labeled dataset objects, ' . gettype($group)
-                    . ' given.');
+                throw new InvalidArgumentException('Group must be a'
+                    . ' labeled dataset, ' . gettype($group) . ' given.');
             }
-        }
-
-        if ($impurity < 0.) {
-            throw new InvalidArgumentException('Impurity cannot be less than'
-                . " 0, $impurity given.");
         }
 
         $this->column = $column;

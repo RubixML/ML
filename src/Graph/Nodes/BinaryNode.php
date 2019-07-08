@@ -64,6 +64,23 @@ class BinaryNode implements Node
     }
 
     /**
+     * Return a generator for all of the node's edges i.e. the nodes that
+     * this node connects to.
+     *
+     * @return Generator
+     */
+    public function edges() : Generator
+    {
+        foreach ($this->children() as $node) {
+            yield $node;
+        }
+
+        if ($this->parent) {
+            yield $this->parent;
+        }
+    }
+
+    /**
      * Return the left child node.
      *
      * @return \Rubix\ML\Graph\Nodes\BinaryNode|null

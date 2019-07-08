@@ -4,7 +4,6 @@ namespace Rubix\ML\Tests\Embedders;
 
 use Rubix\ML\Verbose;
 use Rubix\ML\Embedders\TSNE;
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Other\Helpers\DataType;
@@ -27,10 +26,10 @@ class TSNETest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            'red' => new Blob([255, 0, 0], 30.),
+            'red' => new Blob([255, 32, 0], 30.),
             'green' => new Blob([0, 128, 0], 10.),
-            'blue' => new Blob([0, 0, 255], 20.),
-        ]);
+            'blue' => new Blob([0, 32, 255], 20.),
+        ], [2, 3, 4]);
 
         $this->embedder = new TSNE(1, 10, 12., 10., new Euclidean(), 500, 1e-7, 5);
 
@@ -52,12 +51,12 @@ class TSNETest extends TestCase
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE);
 
-        $embedding = $this->embedder->embed($dataset);
+        $samples = $this->embedder->embed($dataset);
 
-        $this->assertInstanceOf(Labeled::class, $embedding);
-        $this->assertCount(self::TRAIN_SIZE, $embedding);
+        $this->assertCount(self::TRAIN_SIZE, $samples);
+        $this->assertCount(1, $samples[0]);
 
-        // file_put_contents('test.json', json_encode($embedding, JSON_PRETTY_PRINT));
+        // file_put_contents('embedding.json', json_encode($samples, JSON_PRETTY_PRINT));
     }
 
     public function test_embed_incompatible()

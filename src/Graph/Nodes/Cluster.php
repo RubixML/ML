@@ -91,7 +91,7 @@ class Cluster extends BinaryNode implements Ball, Leaf
         }
 
         if (empty($center)) {
-            throw new InvalidArgumentException('Center vector cannot be empty.');
+            throw new InvalidArgumentException('Center cannot be empty.');
         }
 
         if ($radius < 0.) {

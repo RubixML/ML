@@ -1,4 +1,5 @@
 - Unreleased
+    - Embed method now returns an array instead of dataset
     - Fixed issue with Dataset partitioning
     - Renamed Coordinate node to Hypercube
 
