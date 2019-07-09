@@ -34,6 +34,8 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 {
     protected const DEFAULT_SUBSAMPLE = 256;
 
+    public const DEFAULT_THRESHOLD = 0.5;
+
     /**
      * The number of estimators to train in the ensemble.
      *
@@ -52,7 +54,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      * The amount of contamination (outliers) that is presumed to be in
      * the training set as a percentage.
      *
-     * @var float
+     * @var float|null
      */
     protected $contamination;
 
@@ -73,19 +75,19 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
     ];
 
     /**
-     * The isolation score offset used by the decision function.
+     * The isolation score threshold used by the decision function.
      *
      * @var float|null
      */
-    protected $offset;
+    protected $threshold;
 
     /**
      * @param int $estimators
      * @param float|null $ratio
-     * @param float $contamination
+     * @param float|null $contamination
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $estimators = 100, ?float $ratio = 0.2, float $contamination = 0.1)
+    public function __construct(int $estimators = 100, ?float $ratio = null, ?float $contamination = null)
     {
         if ($estimators < 1) {
             throw new InvalidArgumentException('The number of estimators'
@@ -97,7 +99,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
                 . " 0 and 1, $ratio given.");
         }
 
-        if ($contamination < 0. or $contamination > 0.5) {
+        if (isset($ratio) and ($contamination < 0. or $contamination > 0.5)) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
@@ -137,7 +139,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function trained() : bool
     {
-        return $this->offset and $this->trees;
+        return $this->threshold and $this->trees;
     }
 
     /**
@@ -171,13 +173,15 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
 
         $this->delta = ITree::c($k);
 
-        $scores = $this->rank($dataset);
+        if ($this->contamination) {
+            $scores = array_map([self::class, 'isolationScore'], $dataset->samples());
 
-        $p = 100. - (100. * $this->contamination);
+            $threshold = Stats::percentile($scores, 100. - (100. * $this->contamination));
+        } else {
+            $threshold = self::DEFAULT_THRESHOLD;
+        }
 
-        $shift = Stats::percentile($scores, $p);
-
-        $this->offset = $shift;
+        $this->threshold = $threshold;
     }
 
     /**
@@ -190,7 +194,7 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if ($this->offset === null) {
+        if ($this->threshold === null) {
             throw new RuntimeException('The estimator has not been trained.');
         }
 
@@ -245,6 +249,6 @@ class IsolationForest implements Estimator, Learner, Ranking, Persistable
      */
     protected function decide(float $score) : int
     {
-        return $score > $this->offset ? 1 : 0;
+        return $score > $this->threshold ? 1 : 0;
     }
 }

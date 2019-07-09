@@ -11,7 +11,7 @@ An ensemble anomaly detector comprised of Isolation Trees each trained on a diff
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | estimators | 300 | int | The number of isolation trees to train in the ensemble. |
-| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 2 | contamination | null | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | ratio | 0.2 | float | The ratio of samples to train each estimator with. If *null* then subsample size is 256. |
 
 ### Additional Methods
@@ -23,7 +23,7 @@ use Rubix\ML\AnomalyDetection\IsolationForest;
 
 $estimator = new IsolationForest(100, 0.2, 0.01);
 
-$estimator = new IsolationForest(100, null, 0.01); // Default sample size
+$estimator = new IsolationForest(100); // Default sample size and threshold
 ```
 
 ### References

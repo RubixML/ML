@@ -1,4 +1,5 @@
 - Unreleased
+    - LOF and Isolation Forest contamination off by default
     - Embed method now returns an array instead of dataset
     - Fixed issue with Dataset partitioning
     - Renamed Coordinate node to Hypercube

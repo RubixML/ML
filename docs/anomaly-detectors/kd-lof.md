@@ -11,7 +11,7 @@ A k-d tree accelerated version of [Local Outlier Factor](local-outlier-factor.md
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 20 | int | The k nearest neighbors that form a local region. |
-| 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
+| 2 | contamination | null | float | The percentage of outliers that are assumed to be present in the training set. |
 | 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 

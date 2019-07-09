@@ -35,7 +35,7 @@ use const Rubix\ML\EPSILON;
  */
 class KDLOF implements Estimator, Learner, Ranking, Persistable
 {
-    protected const THRESHOLD = 1.5;
+    protected const DEFAULT_THRESHOLD = 1.5;
 
     /**
      * The number of nearest neighbors to consider a local region.
@@ -48,7 +48,7 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
      * The percentage of outliers that are assumed to be present in the
      * training set.
      *
-     * @var float
+     * @var float|null
      */
     protected $contamination;
 
@@ -72,11 +72,11 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
     ];
 
     /**
-     * The local outlier factor offset used by the decision function.
+     * The local outlier factor threshold used by the decision function.
      *
      * @var float|null
      */
-    protected $offset;
+    protected $threshold;
 
     /**
      * The k-d tree used for nearest neighbor queries.
@@ -87,14 +87,14 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
 
     /**
      * @param int $k
-     * @param float $contamination
+     * @param float|null $contamination
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $k = 20,
-        float $contamination = 0.1,
+        ?float $contamination = null,
         ?Distance $kernel = null,
         int $maxLeafSize = 30
     ) {
@@ -103,9 +103,9 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
                 . " to form a local region, $k given.");
         }
 
-        if ($contamination < 0.) {
-            throw new InvalidArgumentException('Contamination cannot be less'
-                . " than 0, $contamination given.");
+        if (isset($contamination) and ($contamination < 0. or $contamination > 0.5)) {
+            throw new InvalidArgumentException('Contamination must be'
+                . " between 0 and 0.5, $contamination given.");
         }
 
         $this->k = $k;
@@ -185,12 +185,16 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
         }
 
         $this->lrds = array_map([self::class, 'localReachabilityDensity'], $indices, $distances);
-
-        $lofs = $this->rank($dataset);
-
-        $shift = Stats::percentile($lofs, 100. * $this->contamination);
         
-        $this->offset = self::THRESHOLD + $shift;
+        if ($this->contamination) {
+            $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
+
+            $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));
+        } else {
+            $threshold = self::DEFAULT_THRESHOLD;
+        }
+
+        $this->threshold = $threshold;
     }
 
     /**
@@ -283,6 +287,6 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
      */
     protected function decide(float $score) : int
     {
-        return $score > $this->offset ? 1 : 0;
+        return $score > $this->threshold ? 1 : 0;
     }
 }

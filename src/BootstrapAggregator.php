@@ -30,7 +30,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
     use Multiprocessing;
 
-    protected const COMPATIBLE_ESTIMATOR_TYPES = [
+    protected const COMPATIBLE_ESTIMATORS = [
         self::CLASSIFIER,
         self::REGRESSOR,
         self::ANOMALY_DETECTOR,
@@ -74,7 +74,7 @@ class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
      */
     public function __construct(Learner $base, int $estimators = 10, float $ratio = 0.5)
     {
-        if (!in_array($base->type(), self::COMPATIBLE_ESTIMATOR_TYPES)) {
+        if (!in_array($base->type(), self::COMPATIBLE_ESTIMATORS)) {
             throw new InvalidArgumentException('This meta estimator'
                 . ' only supports classifiers, regressors, and anomaly'
                 . ' detectors, ' . self::TYPES[$base->type()] . ' given.');

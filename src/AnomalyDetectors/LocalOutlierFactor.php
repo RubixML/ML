@@ -35,8 +35,8 @@ use const Rubix\ML\EPSILON;
  */
 class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persistable
 {
-    protected const THRESHOLD = 1.5;
-
+    protected const DEFAULT_THRESHOLD = 1.5;
+    
     /**
      * The number of nearest neighbors to consider a local region.
      *
@@ -48,7 +48,7 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      * The percentage of outliers that are assumed to be present in the
      * training set.
      *
-     * @var float
+     * @var float|null
      */
     protected $contamination;
 
@@ -89,26 +89,26 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
     ];
 
     /**
-     * The local outlier factor offset used by the decision function.
+     * The local outlier factor threshold used by the decision function.
      *
      * @var float|null
      */
-    protected $offset;
+    protected $threshold;
 
     /**
      * @param int $k
-     * @param float $contamination
+     * @param float|null $contamination
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 20, float $contamination = 0.1, ?Distance $kernel = null)
+    public function __construct(int $k = 20, ?float $contamination = null, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to form a local region, $k given.");
         }
 
-        if ($contamination < 0. or $contamination > 0.5) {
+        if (isset($contamination) and ($contamination < 0. or $contamination > 0.5)) {
             throw new InvalidArgumentException('Contamination must be'
                 . " between 0 and 0.5, $contamination given.");
         }
@@ -147,7 +147,7 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     public function trained() : bool
     {
-        return $this->offset and $this->samples;
+        return $this->threshold and $this->samples;
     }
 
     /**
@@ -181,11 +181,15 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
 
         $this->lrds = array_map([self::class, 'localReachabilityDensity'], $distances);
 
-        $lofs = $this->rank($dataset);
+        if ($this->contamination) {
+            $lofs = array_map([self::class, 'localOutlierFactor'], $this->samples);
 
-        $shift = Stats::percentile($lofs, 100. * $this->contamination);
-        
-        $this->offset = self::THRESHOLD + $shift;
+            $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));
+        } else {
+            $threshold = self::DEFAULT_THRESHOLD;
+        }
+
+        $this->threshold = $threshold;
     }
 
     /**
@@ -301,6 +305,6 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     protected function decide(float $score) : int
     {
-        return $score > $this->offset ? 1 : 0;
+        return $score > $this->threshold ? 1 : 0;
     }
 }
