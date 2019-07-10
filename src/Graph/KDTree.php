@@ -126,55 +126,21 @@ class KDTree implements BinaryTree
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = Hypercube::split($left);
+                $stack[] = $node = Hypercube::split($left);
     
                 $current->attachLeft($node);
-
-                $stack[] = $node;
             } else {
                 $current->attachLeft(Neighborhood::terminate($left));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = Hypercube::split($right);
+                $stack[] = $node = Hypercube::split($right);
     
                 $current->attachRight($node);
-
-                $stack[] = $node;
             } else {
                 $current->attachRight(Neighborhood::terminate($right));
             }
         }
-    }
-
-    /**
-     * Search the tree for a neighborhood and return an array of samples and
-     * labels.
-     *
-     * @param array $sample
-     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
-     */
-    public function search(array $sample) : ?Neighborhood
-    {
-        $current = $this->root;
-
-        while ($current) {
-            if ($current instanceof Hypercube) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Neighborhood) {
-                return $current;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -193,31 +159,57 @@ class KDTree implements BinaryTree
                 . " neighbors must be greater than 0, $k given.");
         }
 
-        $neighborhood = $this->search($sample);
-
-        if (!$neighborhood) {
-            return [[], []];
-        }
-
-        $distances = $labels = [];
+        $stack = $distances = $labels = [];
 
         $visited = new SplObjectStorage();
 
-        $stack = [$neighborhood];
+        $current = $this->root;
+
+        while ($current) {
+            $stack[] = $current;
+
+            if ($current instanceof Hypercube) {
+                if ($sample[$current->column()] < $current->value()) {
+                    $current = $current->left();
+                } else {
+                    $current = $current->right();
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Neighborhood) {
+                break 1;
+            }
+        }
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if ($visited->contains($current)) {
+            if ($current instanceof Hypercube) {
+                $radius = $distances[$k - 1] ?? INF;
+
+                foreach ($current->children() as $child) {
+                    if (!$visited->contains($child)) {
+                        if ($child instanceof Box) {
+                            foreach ($child->sides() as $side) {
+                                $distance = $this->kernel->compute($sample, $side);
+
+                                if ($distance < $radius) {
+                                    $stack[] = $child;
+
+                                    continue 2;
+                                }
+                            }
+                        }
+
+                        $visited->attach($child);
+                    }
+                }
+
+                $visited->attach($current);
+
                 continue 1;
-            }
-
-            $visited->attach($current);
-
-            $parent = $current->parent();
-
-            if ($parent) {
-                $stack[] = $parent;
             }
 
             if ($current instanceof Neighborhood) {
@@ -229,29 +221,7 @@ class KDTree implements BinaryTree
 
                 array_multisort($distances, $labels);
 
-                continue 1;
-            }
-
-            $radius = $distances[$k - 1] ?? INF;
-
-            foreach ($current->children() as $child) {
-                if ($visited->contains($child)) {
-                    continue 1;
-                }
-
-                if ($child instanceof Box) {
-                    foreach ($child->sides() as $side) {
-                        $distance = $this->kernel->compute($sample, $side);
-
-                        if ($distance < $radius) {
-                            $stack[] = $child;
-
-                            continue 2;
-                        }
-                    }
-                }
-
-                $visited->attach($child);
+                $visited->attach($current);
             }
         }
 

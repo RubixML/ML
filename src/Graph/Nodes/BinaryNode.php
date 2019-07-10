@@ -17,13 +17,6 @@ use Generator;
 class BinaryNode implements Node
 {
     /**
-     * The parent node.
-     *
-     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
-     */
-    protected $parent;
-
-    /**
      * The left child node.
      *
      * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
@@ -38,16 +31,6 @@ class BinaryNode implements Node
     protected $right;
 
     /**
-     * Return the parent node.
-     *
-     * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
-     */
-    public function parent() : ?self
-    {
-        return $this->parent;
-    }
-
-    /**
      * Return the children of this node in a generator.
      *
      * @return \Generator
@@ -60,23 +43,6 @@ class BinaryNode implements Node
         
         if ($this->right) {
             yield $this->right;
-        }
-    }
-
-    /**
-     * Return a generator for all of the node's edges i.e. the nodes that
-     * this node connects to.
-     *
-     * @return Generator
-     */
-    public function edges() : Generator
-    {
-        foreach ($this->children() as $node) {
-            yield $node;
-        }
-
-        if ($this->parent) {
-            yield $this->parent;
         }
     }
 
@@ -128,24 +94,12 @@ class BinaryNode implements Node
     }
 
     /**
-     * Set the parent of this node.
-     *
-     * @param self|null $node
-     */
-    public function setParent(?BinaryNode $node = null) : void
-    {
-        $this->parent = $node;
-    }
-
-    /**
      * Set the left child node.
      *
      * @param self $node
      */
     public function attachLeft(BinaryNode $node) : void
     {
-        $node->setParent($this);
-
         $this->left = $node;
     }
 
@@ -156,8 +110,6 @@ class BinaryNode implements Node
      */
     public function attachRight(BinaryNode $node) : void
     {
-        $node->setParent($this);
-
         $this->right = $node;
     }
 
@@ -166,11 +118,7 @@ class BinaryNode implements Node
      */
     public function detachLeft() : void
     {
-        if ($this->left) {
-            $this->left->setParent(null);
-
-            $this->left = null;
-        }
+        $this->left = null;
     }
 
     /**
@@ -178,21 +126,7 @@ class BinaryNode implements Node
      */
     public function detachRight() : void
     {
-        if ($this->right) {
-            $this->right->setParent(null);
-
-            $this->right = null;
-        }
-    }
-
-    /**
-     * Is this an orphaned node?
-     *
-     * @return bool
-     */
-    public function orphan() : bool
-    {
-        return !$this->parent and $this->leaf();
+        $this->right = null;
     }
 
     /**

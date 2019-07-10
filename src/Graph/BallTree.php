@@ -5,7 +5,6 @@ namespace Rubix\ML\Graph;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\Cluster;
-use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
@@ -127,21 +126,17 @@ class BallTree implements BinaryTree
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $node = Hypersphere::split($left, $this->kernel);
+                $stack[] = $node = Hypersphere::split($left, $this->kernel);
     
                 $current->attachLeft($node);
-
-                $stack[] = $node;
             } else {
                 $current->attachLeft(Cluster::terminate($left, $this->kernel));
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $node = Hypersphere::split($right, $this->kernel);
+                $stack[] = $node = Hypersphere::split($right, $this->kernel);
     
                 $current->attachRight($node);
-
-                $stack[] = $node;
             } else {
                 $current->attachRight(Cluster::terminate($right, $this->kernel));
             }
@@ -171,7 +166,17 @@ class BallTree implements BinaryTree
         while ($stack) {
             $current = array_pop($stack);
 
-            if (!$current instanceof BinaryNode) {
+            if ($current instanceof Hypersphere) {
+                foreach ($current->children() as $child) {
+                    if ($child instanceof Ball) {
+                        $distance = $this->kernel->compute($sample, $child->center());
+
+                        if ($distance <= ($child->radius() + $radius)) {
+                            $stack[] = $child;
+                        }
+                    }
+                }
+
                 continue 1;
             }
 
@@ -183,18 +188,6 @@ class BallTree implements BinaryTree
                         $samples[] = $neighbor;
                         $labels[] = $current->label($i);
                         $distances[] = $distance;
-                    }
-                }
-
-                continue 1;
-            }
-
-            foreach ($current->children() as $child) {
-                if ($child instanceof Ball) {
-                    $distance = $this->kernel->compute($sample, $child->center());
-
-                    if ($distance <= ($child->radius() + $radius)) {
-                        $stack[] = $child;
                     }
                 }
             }

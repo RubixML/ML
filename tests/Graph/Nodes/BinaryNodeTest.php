@@ -22,22 +22,9 @@ class BinaryNodeTest extends TestCase
 
         $this->assertEquals(1, $this->node->height());
         $this->assertEquals(0, $this->node->balance());
-        $this->assertNull($this->node->parent());
         $this->assertNull($this->node->left());
         $this->assertNull($this->node->right());
-        $this->assertTrue($this->node->orphan());
         $this->assertTrue($this->node->leaf());
-    }
-
-    public function test_set_and_remove_parent()
-    {
-        $this->node->setparent(new BinaryNode());
-
-        $this->assertInstanceOf(BinaryNode::class, $this->node->parent());
-
-        $this->node->setParent(null);
-
-        $this->assertNull($this->node->parent());
     }
 
     public function test_attach_left_child()
