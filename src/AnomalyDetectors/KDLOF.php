@@ -190,11 +190,9 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
             $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
             $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));
-        } else {
-            $threshold = self::DEFAULT_THRESHOLD;
         }
 
-        $this->threshold = $threshold;
+        $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
     }
 
     /**
@@ -274,9 +272,7 @@ class KDLOF implements Estimator, Learner, Ranking, Persistable
 
         $rds = array_map('max', $distances, $kdistances);
 
-        $mean = Stats::mean($rds);
-
-        return 1. / ($mean ?: EPSILON);
+        return 1. / (Stats::mean($rds) ?: EPSILON);
     }
 
     /**

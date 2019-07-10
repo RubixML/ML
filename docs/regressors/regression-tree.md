@@ -32,6 +32,11 @@ Return the balance of the tree:
 public balance() : int
 ```
 
+Print out a human readable text representation of the decision tree:
+```php
+public showRules() : void
+```
+
 ### Example
 ```php
 use Rubix\ML\Regressors\RegressionTree;

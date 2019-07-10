@@ -316,16 +316,16 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $membership = $deltas = [];
 
         foreach ($this->centroids as $centroid) {
-            $deltas[] = $this->kernel->compute($sample, $centroid);
+            $deltas[] = $this->kernel->compute($sample, $centroid) ?: EPSILON;
         }
 
         foreach ($this->centroids as $cluster => $centroid) {
-            $alpha = $this->kernel->compute($sample, $centroid);
+            $distance = $this->kernel->compute($sample, $centroid);
 
             $sigma = 0.;
 
             foreach ($deltas as $delta) {
-                $sigma += ($alpha / ($delta ?: EPSILON)) ** $this->lambda;
+                $sigma += ($distance / $delta) ** $this->lambda;
             }
 
             $membership[$cluster] = 1. / ($sigma ?: EPSILON);

@@ -185,11 +185,9 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
             $lofs = array_map([self::class, 'localOutlierFactor'], $this->samples);
 
             $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));
-        } else {
-            $threshold = self::DEFAULT_THRESHOLD;
         }
 
-        $this->threshold = $threshold;
+        $this->threshold = $threshold ?? self::DEFAULT_THRESHOLD;
     }
 
     /**
@@ -245,13 +243,13 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
 
         $lrds = array_intersect_key($this->lrds, $distances);
 
-        $ratios = [];
+        $densities = [];
 
         foreach ($lrds as $lHat) {
-            $ratios[] = $lHat / $lrd;
+            $densities[] = $lHat / $lrd;
         }
 
-        return Stats::mean($ratios);
+        return Stats::mean($densities);
     }
 
     /**

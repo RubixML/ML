@@ -5,6 +5,8 @@ namespace Rubix\ML\Graph;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Leaf;
+use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
@@ -28,6 +30,8 @@ use const Rubix\ML\EPSILON;
  */
 abstract class CART implements BinaryTree
 {
+    protected const BRANCH_INDENTER = '|---';
+
     /**
      * The root node of the tree.
      *
@@ -285,6 +289,60 @@ abstract class CART implements BinaryTree
         }
 
         return $importances;
+    }
+
+    /**
+     * Print a human readable text representation of the decision tree.
+     *
+     * @throws RuntimeException
+     */
+    public function showRules() : void
+    {
+        if (!$this->root) {
+            throw new RuntimeException('Tree has not been grown yet.');
+        }
+
+        $this->_showRules($this->root);
+    }
+
+    /**
+     * Recursive function to print out the decision rule at each node
+     * using preorder traversal.
+     *
+     * @param \Rubix\ML\Graph\Nodes\BinaryNode $node
+     * @param int $depth
+     */
+    protected function _showRules(BinaryNode $node, int $depth = 0) : void
+    {
+        $depth++;
+
+        $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
+
+        if ($node instanceof Decision) {
+            if ($node->left() !== null) {
+                $operator = is_string($node->value()) ? '==' : '<';
+
+                echo $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+
+                $this->_showRules($node->left(), $depth);
+            }
+            
+            if ($node->right() !== null) {
+                $operator = is_string($node->value()) ? '!=' : '>=';
+
+                echo $prefix . "Column_{$node->column()} $operator {$node->value()}" . PHP_EOL;
+
+                $this->_showRules($node->right(), $depth);
+            }
+        }
+
+        if ($node instanceof Outcome) {
+            echo $prefix . $node->class() . PHP_EOL;
+        }
+
+        if ($node instanceof Average) {
+            echo $prefix . $node->outcome() . PHP_EOL;
+        }
     }
 
     /**

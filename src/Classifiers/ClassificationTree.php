@@ -22,8 +22,8 @@ use function Rubix\ML\argmax;
 /**
  * Classification Tree
  *
- * A binary tree-based classifier that minimizes gini impurity to greedily
- * search for the best splits in a training set.
+ * A binary tree-based learner that minimizes gini impurity as a metric
+ * to greedily construct a decision tree used for classification.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
