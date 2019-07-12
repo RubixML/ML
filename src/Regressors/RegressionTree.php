@@ -34,6 +34,8 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
 {
     protected const VARIANCE_TOLERANCE = 1e-4;
 
+    protected const SUBSAMPLE_RATIO = 0.2;
+    
     /**
      * The maximum number of feature columns to consider when determining
      * a split.
@@ -179,7 +181,17 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
         foreach ($columns as $column) {
-            $values = array_unique($dataset->column($column));
+            $values = $dataset->column($column);
+
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $n = max(2., round(count($values) * self::SUBSAMPLE_RATIO));
+
+                $p = range(0., 100., 100. / $n);
+
+                $values = Stats::percentiles($values, $p);
+            } else {
+                $values = array_unique($values);
+            }
 
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);

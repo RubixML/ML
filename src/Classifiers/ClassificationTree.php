@@ -10,6 +10,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
@@ -32,6 +33,8 @@ use function Rubix\ML\argmax;
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, Persistable
 {
     protected const GINI_TOLERANCE = 1e-3;
+
+    protected const SUBSAMPLE_RATIO = 0.2;
     
     /**
      * The maximum number of features to consider when determining a split.
@@ -220,7 +223,17 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $columns = array_slice($this->columns, 0, $this->maxFeatures);
 
         foreach ($columns as $column) {
-            $values = array_unique($dataset->column($column));
+            $values = $dataset->column($column);
+
+            if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+                $n = max(2., round(count($values) * self::SUBSAMPLE_RATIO));
+
+                $p = range(0., 100., 100. / $n);
+
+                $values = Stats::percentiles($values, $p);
+            } else {
+                $values = array_unique($values);
+            }
 
             foreach ($values as $value) {
                 $groups = $dataset->partition($column, $value);

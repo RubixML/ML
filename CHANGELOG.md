@@ -6,6 +6,7 @@
     - Radius Neighbors now uses base spatial tree
     - Local Outlier Factor interchangable base search tree
     - DBSCAN now uses any Spatial tree for range searches
+    - CART uses downsampling on continuous features
     - LOF and Isolation Forest contamination off by default
     - Embed method now returns an array instead of dataset
     - Fixed issue with Dataset partitioning

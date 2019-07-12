@@ -203,7 +203,7 @@ class Stats
             $remainder = $x - $xHat;
 
             $a = $values[$xHat - 1];
-            $b = $values[$xHat];
+            $b = $values[$xHat] ?? end($values);
 
             $percentiles[] = $a + $remainder * ($b - $a);
         }
