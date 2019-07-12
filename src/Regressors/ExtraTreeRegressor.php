@@ -54,7 +54,7 @@ class ExtraTreeRegressor extends RegressionTree
                 $bestImpurity = $impurity;
             }
 
-            if ($impurity < $this->tolerance) {
+            if ($impurity < self::VARIANCE_TOLERANCE) {
                 break 1;
             }
         }

@@ -4,8 +4,8 @@ namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Regressors\RegressionTree;
@@ -19,7 +19,7 @@ class RegressionTreeTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.7;
+    protected const MIN_SCORE = 0.8;
 
     protected const RANDOM_SEED = 0;
 
@@ -33,7 +33,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new RegressionTree(40, 2, 0., null, 1e-4);
+        $this->estimator = new RegressionTree(30, 2, 0., null);
 
         $this->metric = new RSquared();
 

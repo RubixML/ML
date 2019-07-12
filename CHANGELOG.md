@@ -13,6 +13,7 @@
     - KNN default k is now 5 instead of 3
     - Removed Local Outlier Factor brute force version
     - Changed namespace of trees to Graph/Trees
+    - CART impurity tolerances are now hardcoded
 
 - 0.0.13-beta
     - Added documentation site

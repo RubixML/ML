@@ -31,19 +31,14 @@ use function Rubix\ML\argmax;
  */
 class ClassificationTree extends CART implements Estimator, Learner, Probabilistic, Persistable
 {
+    protected const GINI_TOLERANCE = 1e-3;
+    
     /**
      * The maximum number of features to consider when determining a split.
      *
      * @var int|null
      */
     protected $maxFeatures;
-
-    /**
-     * A small amount of impurity to tolerate when choosing a perfect split.
-     *
-     * @var float
-     */
-    protected $tolerance;
 
     /**
      * The possible class outcomes.
@@ -68,28 +63,20 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @param int $maxLeafSize
      * @param float $minImpurityIncrease
      * @param int|null $maxFeatures
-     * @param float $tolerance
      * @throws \InvalidArgumentException
      */
     public function __construct(
         int $maxDepth = PHP_INT_MAX,
         int $maxLeafSize = 3,
         float $minImpurityIncrease = 0.,
-        ?int $maxFeatures = null,
-        float $tolerance = 1e-3
+        ?int $maxFeatures = null
     ) {
         if ($maxFeatures and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determin split, $maxFeatures given.");
         }
 
-        if ($tolerance < 0.) {
-            throw new InvalidArgumentException('Impurity tolerance must be 0'
-                . " or greater, $tolerance given.");
-        }
-
         $this->maxFeatures = $maxFeatures;
-        $this->tolerance = $tolerance;
 
         parent::__construct($maxDepth, $maxLeafSize, $minImpurityIncrease);
     }
@@ -143,10 +130,10 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $k = $dataset->numColumns();
+        $n = $dataset->numColumns();
 
-        $this->columns = range(0, $dataset->numColumns() - 1);
-        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
+        $this->columns = range(0, $n - 1);
+        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
         $this->classes = $dataset->possibleOutcomes();
 
         $this->grow($dataset);
@@ -247,7 +234,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
                     $bestImpurity = $impurity;
                 }
 
-                if ($impurity <= $this->tolerance) {
+                if ($impurity <= self::GINI_TOLERANCE) {
                     break 2;
                 }
             }

@@ -35,7 +35,7 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
 
-        $this->estimator = new ExtraTreeRegressor(30, 3, 0., null, 1e-4);
+        $this->estimator = new ExtraTreeRegressor(30, 3, 0., null);
 
         $this->metric = new RSquared();
 

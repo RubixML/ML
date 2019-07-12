@@ -4,7 +4,7 @@
 
 A high-level machine learning and deep learning library for the [PHP](https://php.net) language.
 
-- **Developer-friendly** API is delightful to work with
+- **Developer-friendly** API is easy and delightful
 - **Modular** architecture combines power, flexibility, and extensibility
 - **40+** modern supervised and unsupervised learning algorithms
 - **Open source** and free to use commercially
@@ -27,7 +27,7 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Getting Started
-If you are completely new to machine learning in PHP with Rubix ML, we recommend going over the [basic introduction](basic-introduction.md) to learn the fundamental concepts of the library.
+If you are completely new to machine learning in PHP with Rubix ML, we recommend going over the [basic introduction](basic-introduction.md) to learn the fundamental concepts of the library. Once you're ready, you can browse the example projects and tutorials below to dive deeper.
 
 ### Example Projects w/ Tutorials
 These example projects are a quick and easy way to get started using Rubix ML.

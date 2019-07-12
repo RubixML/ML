@@ -39,7 +39,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new ClassificationTree(10, 3, 0., 3, 1e-3);
+        $this->estimator = new ClassificationTree(10, 3, 0., 3);
 
         $this->metric = new Accuracy();
 

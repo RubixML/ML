@@ -39,7 +39,7 @@ class ExtraTreeClassifierTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new ExtraTreeClassifier(10, 3, 0., null, 1e-4);
+        $this->estimator = new ExtraTreeClassifier(10, 3, 0., null);
 
         $this->metric = new Accuracy();
 

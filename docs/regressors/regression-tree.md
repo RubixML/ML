@@ -14,7 +14,6 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 2 | max leaf size | 3 | int | The maximum number of samples that a leaf node can contain. |
 | 3 | min purity increase | 0. | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 | 4 | max features | Auto | int | The maximum number of features to consider when determining a best split. |
-| 5 | tolerance | 1e-4 | float | A small amount of impurity to tolerate when choosing a best split. |
 
 ### Additional Methods
 Return the feature importances calculated during training indexed by feature column:
@@ -41,5 +40,5 @@ public showRules() : void
 ```php
 use Rubix\ML\Regressors\RegressionTree;
 
-$estimator = new RegressionTree(30, 2, 35., null, 1e-4);
+$estimator = new RegressionTree(30, 2, 35., null);
 ```

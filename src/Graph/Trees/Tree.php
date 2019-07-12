@@ -22,6 +22,13 @@ interface Tree
     public function grow(Dataset $dataset) : void;
 
     /**
+     * Return the height of the tree.
+     *
+     * @return int
+     */
+    public function height() : int;
+
+    /**
      * Is the tree bare?
      *
      * @return bool
