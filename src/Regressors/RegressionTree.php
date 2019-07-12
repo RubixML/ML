@@ -4,13 +4,13 @@ namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Other\Helpers\Stats;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -178,9 +178,9 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
      * determined by the variance of the split.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function split(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Comparison
     {
         $bestVariance = INF;
         $bestColumn = $bestValue = null;
@@ -211,7 +211,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
             }
         }
 
-        return new Decision(
+        return new Comparison(
             $bestColumn,
             $bestValue,
             $bestGroups,

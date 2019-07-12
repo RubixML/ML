@@ -1,12 +1,12 @@
 <?php
 
-namespace Rubix\ML\Tests\Graph;
+namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Tree;
-use Rubix\ML\Graph\ITree;
-use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Graph\Nodes\Cell;
+use Rubix\ML\Graph\Trees\Tree;
+use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Graph\Nodes\Isolator;
+use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;

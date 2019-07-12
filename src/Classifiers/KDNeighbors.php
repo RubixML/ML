@@ -5,12 +5,12 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,6 +44,13 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $k;
 
     /**
+     * The spatial tree used for nearest neighbor queries.
+     *
+     * @var \Rubix\ML\Graph\Trees\Spatial
+     */
+    protected $tree;
+
+    /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
      *
@@ -52,7 +59,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $weighted;
 
     /**
-     * The unique class outcomes.
+     * The unique class labels.
      *
      * @var array
      */
@@ -61,33 +68,21 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     ];
 
     /**
-     * The k-d tree used for nearest neighbor queries.
-     *
-     * @var \Rubix\ML\Graph\KDTree
-     */
-    protected $tree;
-
-    /**
      * @param int $k
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param bool $weighted
-     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        int $k = 3,
-        ?Distance $kernel = null,
-        bool $weighted = true,
-        int $maxLeafSize = 30
-    ) {
+    public function __construct(int $k = 5, ?Spatial $tree = null, bool $weighted = true)
+    {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
                 . " to make a prediction, $k given.");
         }
 
         $this->k = $k;
+        $this->tree = $tree ?? new KDTree();
         $this->weighted = $weighted;
-        $this->tree = new KDTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -123,11 +118,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
-     * Return the base k-d tree instance.
+     * Return the base spatial tree instance.
      *
-     * @var \Rubix\ML\Graph\KDTree
+     * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    public function tree() : KDTree
+    public function tree() : Spatial
     {
         return $this->tree;
     }
@@ -172,7 +167,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         $predictions = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->tree->nearest($sample, $this->k);
+            [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);
@@ -212,7 +207,7 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         $probabilities = [];
 
         foreach ($dataset as $sample) {
-            [$labels, $distances] = $this->tree->nearest($sample, $this->k);
+            [$samples, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
             if ($this->weighted) {
                 $weights = array_fill_keys($labels, 0.);

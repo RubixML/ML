@@ -2,9 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\Tensor\Matrix;
-use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
@@ -51,41 +50,35 @@ class Cluster extends BinaryNode implements Ball, Leaf
     /**
      * Terminate a branch with a dataset.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return self
      */
-    public static function terminate(Dataset $dataset, Distance $kernel) : self
+    public static function terminate(Labeled $dataset, Distance $kernel) : self
     {
-        $samples = $dataset->samples();
-        $labels = $dataset instanceof Labeled ? $dataset->labels() : null;
-
-        $center = Matrix::quick($samples)
-            ->transpose()
-            ->mean()
-            ->asArray();
+        $center = array_map([Stats::class, 'mean'], $dataset->columns());
 
         $distances = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $distances[] = $kernel->compute($sample, $center);
         }
 
         $radius = max($distances);
 
-        return new self($samples, $labels, $center, $radius);
+        return new self($dataset->samples(), $dataset->labels(), $center, $radius);
     }
 
     /**
      * @param array $samples
-     * @param array|null $labels
+     * @param array $labels
      * @param array $center
      * @param float $radius
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $samples, ?array $labels, array $center, float $radius)
+    public function __construct(array $samples, array $labels, array $center, float $radius)
     {
-        if (isset($labels) and count($samples) !== count($labels)) {
+        if (count($samples) !== count($labels)) {
             throw new InvalidArgumentException('The number of samples'
                 . ' must be equal to the number of labels.');
         }
@@ -100,7 +93,7 @@ class Cluster extends BinaryNode implements Ball, Leaf
         }
 
         $this->samples = $samples;
-        $this->labels = $labels ?? [];
+        $this->labels = $labels;
         $this->center = $center;
         $this->radius = $radius;
     }
@@ -126,7 +119,7 @@ class Cluster extends BinaryNode implements Ball, Leaf
     }
 
     /**
-     * Return the samples in the neighborhood.
+     * Return the samples in the cluster.
      *
      * @return array[]
      */
@@ -138,21 +131,10 @@ class Cluster extends BinaryNode implements Ball, Leaf
     /**
      * Return the labels in the cluster.
      *
-     * @return array|null
+     * @return (int|float|string)[]
      */
-    public function labels() : ?array
+    public function labels() : array
     {
         return $this->labels;
-    }
-
-    /**
-     * Return the label cooresponding to the ith sample in the cluster.
-     *
-     * @param int $index
-     * @return mixed|null
-     */
-    public function label(int $index)
-    {
-        return $this->labels[$index] ?? null;
     }
 }

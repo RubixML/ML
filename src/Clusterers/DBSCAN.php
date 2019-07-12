@@ -3,12 +3,12 @@
 namespace Rubix\ML\Clusterers;
 
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 
@@ -51,32 +51,20 @@ class DBSCAN implements Estimator
     protected $minDensity;
 
     /**
-     * The distance kernel to use when computing the distances between points.
+     * The spatial tree used for range searches.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $kernel;
-
-    /**
-     * The maximum number of samples that each ball node can contain.
-     *
-     * @var int
-     */
-    protected $maxLeafSize;
+    protected $tree;
 
     /**
      * @param float $radius
      * @param int $minDensity
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @param int $maxLeafSize
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        float $radius = 0.5,
-        int $minDensity = 5,
-        ?Distance $kernel = null,
-        int $maxLeafSize = 30
-    ) {
+    public function __construct(float $radius = 0.5, int $minDensity = 5, ?Spatial $tree = null)
+    {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Neighbor radius must be'
                 . " greater than 0, $radius given.");
@@ -87,15 +75,9 @@ class DBSCAN implements Estimator
                 . " greater than 0, $minDensity given.");
         }
 
-        if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('Max leaf size cannot be'
-                . " less than 1, $maxLeafSize given.");
-        }
-
         $this->radius = $radius;
         $this->minDensity = $minDensity;
-        $this->kernel = $kernel ?? new Euclidean();
-        $this->maxLeafSize = $maxLeafSize;
+        $this->tree = $tree ?? new BallTree();
     }
 
     /**
@@ -131,24 +113,20 @@ class DBSCAN implements Estimator
     {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $n = $dataset->numRows();
+        $dataset = Labeled::quick($dataset->samples(), range(0, $dataset->numRows() - 1));
 
-        $dataset = Labeled::quick($dataset->samples(), range(0, $n - 1));
-
-        $tree = new BallTree($this->maxLeafSize, $this->kernel);
-
-        $tree->grow($dataset);
-        
-        $cluster = self::START_CLUSTER;
+        $this->tree->grow($dataset);
 
         $predictions = [];
+        
+        $cluster = self::START_CLUSTER;
 
         foreach ($dataset as $i => $sample) {
             if (isset($predictions[$i])) {
                 continue 1;
             }
 
-            [$samples, $neighbors, $distances] = $tree->range($sample, $this->radius);
+            [$samples, $neighbors, $distances] = $this->tree->range($sample, $this->radius);
 
             if (count($neighbors) < $this->minDensity) {
                 $predictions[$i] = self::NOISE;
@@ -173,7 +151,7 @@ class DBSCAN implements Estimator
 
                 $neighbor = $dataset[$index];
 
-                [$samples, $seeds, $distances] = $tree->range($neighbor, $this->radius);
+                [$samples, $seeds, $distances] = $this->tree->range($neighbor, $this->radius);
 
                 if (count($seeds) >= $this->minDensity) {
                     $neighbors = array_unique(array_merge($neighbors, $seeds));
@@ -182,6 +160,8 @@ class DBSCAN implements Estimator
 
             $cluster++;
         }
+
+        $this->tree->destroy();
 
         return $predictions;
     }

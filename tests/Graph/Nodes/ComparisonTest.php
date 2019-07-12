@@ -2,13 +2,13 @@
 
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
-class DecisionTest extends TestCase
+class ComparisonTest extends TestCase
 {
     protected const COLUMN = 1;
     protected const VALUE = 3.;
@@ -32,9 +32,9 @@ class DecisionTest extends TestCase
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Decision(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
+        $node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
 
-        $this->assertInstanceOf(Decision::class, $node);
+        $this->assertInstanceOf(Comparison::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 

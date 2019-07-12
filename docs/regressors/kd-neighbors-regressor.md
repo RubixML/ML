@@ -10,21 +10,20 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
+| 2 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 ### Additional Methods
-Return the base k-d tree instance:
+Return the base spatial tree instance:
 ```php
-public tree() : KDTree
+public tree() : Spatial
 ```
 
 ### Example
 ```php
 use Rubix\ML\Regressors\KDNeighborsRegressor;
-use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Graph\Trees\BallTree;
 
-$estimator = new KDNeighborsRegressor(5, new Minkowski(4.0), true, 30);
+$estimator = new KDNeighborsRegressor(5, new BallTree(50), true);
 ```

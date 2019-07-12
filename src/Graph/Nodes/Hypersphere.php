@@ -2,8 +2,8 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\Tensor\Matrix;
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
@@ -38,26 +38,25 @@ class Hypersphere extends BinaryNode implements Ball
     /**
      * The left and right splits of the training data.
      *
-     * @var \Rubix\ML\Datasets\Dataset[]
+     * @var \Rubix\ML\Datasets\Labeled[]
      */
     protected $groups;
 
     /**
-     * Factory method to build a hypersphere splitting the samples by sides.
+     * Factory method to build a hypersphere by splitting the dataset into
+     * left and right clusters.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @param \Rubix\ML\Kernels\Distance\Distance $kernel
      * @return self
      */
-    public static function split(Dataset $dataset, Distance $kernel) : self
+    public static function split(Labeled $dataset, Distance $kernel) : self
     {
-        $samples = $dataset->samples();
-
-        $center = Matrix::quick($samples)->transpose()->mean()->asArray();
+        $center = array_map([Stats::class, 'mean'], $dataset->columns());
             
         $distances = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $distances[] = $kernel->compute($sample, $center);
         }
 
@@ -67,15 +66,15 @@ class Hypersphere extends BinaryNode implements Ball
 
         $distances = [];
 
-        foreach ($samples as $sample) {
+        foreach ($dataset as $sample) {
             $distances[] = $kernel->compute($sample, $leftCentroid);
         }
 
         $rightCentroid = $dataset->row(argmax($distances));
         
-        $subsets = $dataset->spatialPartition($leftCentroid, $rightCentroid, $kernel);
+        $groups = $dataset->spatialPartition($leftCentroid, $rightCentroid, $kernel);
 
-        return new self($center, $radius, $subsets);
+        return new self($center, $radius, $groups);
     }
 
     /**
@@ -91,7 +90,7 @@ class Hypersphere extends BinaryNode implements Ball
                 . ' not be empty.');
         }
 
-        if ($radius <= 0.) {
+        if ($radius < 0.) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
@@ -102,9 +101,9 @@ class Hypersphere extends BinaryNode implements Ball
         }
 
         foreach ($groups as $group) {
-            if (!$group instanceof Dataset) {
-                throw new InvalidArgumentException('Groups must contain'
-                    . ' dataset objects, ' . gettype($group) . ' given.');
+            if (!$group instanceof Labeled) {
+                throw new InvalidArgumentException('Group must be a'
+                    . ' Labeled dataset, ' . gettype($group) . ' given.');
             }
         }
 

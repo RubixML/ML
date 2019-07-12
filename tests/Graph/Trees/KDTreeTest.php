@@ -1,14 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Graph;
+namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Tree;
-use Rubix\ML\Graph\KDTree;
 use Rubix\ML\Graph\Nodes\Box;
-use Rubix\ML\Graph\BinaryTree;
+use Rubix\ML\Graph\Trees\Tree;
+use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Nodes\Hypercube;
+use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +29,7 @@ class KDTreeTest extends TestCase
             'west' => new Blob([0, 5, -3]),
         ], [0.5, 0.5]);
 
-        $this->tree = new KDTree();
+        $this->tree = new KDTree(20, new Euclidean());
 
         srand(self::RANDOM_SEED);
     }
@@ -35,6 +37,7 @@ class KDTreeTest extends TestCase
     public function test_build_tree()
     {
         $this->assertInstanceOf(KDTree::class, $this->tree);
+        $this->assertInstanceOf(Spatial::class, $this->tree);
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
 
@@ -54,10 +57,19 @@ class KDTreeTest extends TestCase
 
         $sample = $this->generator->generate(1)->row(0);
 
-        [$labels, $distances] = $this->tree->nearest($sample, 5);
+        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
 
+        $this->assertCount(5, $samples);
         $this->assertCount(5, $labels);
         $this->assertCount(5, $distances);
+
+        $this->assertCount(1, array_unique($labels));
+
+        [$samples, $labels, $distances] = $this->tree->range($sample, 5.);
+
+        $this->assertCount(25, $samples);
+        $this->assertCount(25, $labels);
+        $this->assertCount(25, $distances);
 
         $this->assertCount(1, array_unique($labels));
     }

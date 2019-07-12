@@ -13,25 +13,20 @@ This is the regressor version of Radius Neighbors implementing a binary spatial 
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 2 | tree | BallTree | object | The spatial tree used for range queries. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
 ### Additional Methods
-Return the height of the tree:
+Return the base spatial tree instance:
 ```php
-public height() : int
-```
-
-Return the balance of the tree:
-```php
-public balance() : int
+public tree() : Spatial
 ```
 
 ### Example
 ```php
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new RadiusNeighborsRegressor(0.5, new Diagonal(), true, 20);
+$estimator = new RadiusNeighborsRegressor(0.5, new BallTree(30, new Diagonal()), true);
 ```

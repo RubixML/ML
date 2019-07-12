@@ -5,12 +5,12 @@ namespace Rubix\ML\Tests\Classifiers;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Manhattan;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +39,7 @@ class KDNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new KDNeighbors(3, new Manhattan(), true, 20);
+        $this->estimator = new KDNeighbors(5, new KDTree(), true);
 
         $this->metric = new Accuracy();
 

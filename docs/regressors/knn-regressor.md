@@ -12,7 +12,7 @@ A version of K Nearest Neighbors that uses the average (mean) outcome of K neare
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
+| 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
 

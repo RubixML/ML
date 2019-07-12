@@ -5,17 +5,20 @@ namespace Rubix\ML\Clusterers;
 use Rubix\ML\Learner;
 use Rubix\ML\Verbose;
 use Rubix\ML\Estimator;
-use Rubix\Tensor\Matrix;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
+use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -43,7 +46,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 {
     use LoggerAware;
 
-    protected const MIN_SEEDS = 25;
+    protected const MIN_SEEDS = 15;
 
     /**
      * The bandwidth of the radial basis function kernel. i.e. The maximum
@@ -61,18 +64,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $delta;
 
     /**
-     * The distance kernel to use when computing the distances.
+     * The spatial tree used for range searches.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $kernel;
-
-    /**
-     * The maximum number of samples that each ball node can contain.
-     *
-     * @var int
-     */
-    protected $maxLeafSize;
+    protected $tree;
 
     /**
      * The maximum number of iterations to run until the algorithm terminates.
@@ -89,18 +85,18 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
     protected $minChange;
 
     /**
-     * The cluster centroid seeder.
-     *
-     * @var \Rubix\ML\Clusterers\Seeders\Seeder|null
-     */
-    protected $seeder;
-
-    /**
      * The ratio of samples from the training set to seed the algorithm with.
      *
      * @var float
      */
     protected $ratio;
+
+    /**
+     * The cluster centroid seeder.
+     *
+     * @var \Rubix\ML\Clusterers\Seeders\Seeder
+     */
+    protected $seeder;
 
     /**
      * The computed centroid vectors of the training data.
@@ -156,31 +152,24 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
     /**
      * @param float $radius
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
-     * @param int $maxLeafSize
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param int $epochs
      * @param float $minChange
-     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @param float $ratio
+     * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
     public function __construct(
         float $radius,
-        ?Distance $kernel = null,
-        int $maxLeafSize = 30,
+        ?Spatial $tree = null,
         int $epochs = 100,
         float $minChange = 1e-4,
-        ?Seeder $seeder = null,
-        float $ratio = 0.20
+        float $ratio = 0.10,
+        ?Seeder $seeder = null
     ) {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Cluster radius must be'
                 . " greater than 0, $radius given.");
-        }
-
-        if ($maxLeafSize < 1) {
-            throw new InvalidArgumentException('Max leaf size cannot be'
-                . " less than 1, $maxLeafSize given.");
         }
 
         if ($epochs < 1) {
@@ -200,12 +189,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $this->radius = $radius;
         $this->delta = 2. * $radius ** 2;
-        $this->kernel = $kernel ?? new Euclidean();
-        $this->maxLeafSize = $maxLeafSize;
+        $this->tree = $tree ?? new BallTree();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->seeder = $seeder;
         $this->ratio = $ratio;
+        $this->seeder = $seeder ?? new Random();
     }
 
     /**
@@ -273,8 +261,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
                 'radius' => $this->radius,
-                'kernel' => $this->kernel,
-                'max_leaf_size' => $this->maxLeafSize,
+                'tree' => $this->tree,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
                 'seeder' => $this->seeder,
@@ -284,30 +271,25 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
 
         $n = $dataset->numRows();
 
-        $tree = new BallTree($this->maxLeafSize, $this->kernel);
+        $dataset = Labeled::quick($dataset->samples(), range(0, $n - 1));
 
-        if ($this->seeder and $n > self::MIN_SEEDS) {
-            $k = (int) round($this->ratio * $n);
+        $k = max(min(self::MIN_SEEDS, $n), (int) round($this->ratio * $n));
 
-            $centroids = $this->seeder->seed($dataset, $k);
-        } else {
-            $centroids = $dataset->samples();
-        }
+        $centroids = $this->seeder->seed($dataset, $k);
 
-        $tree->grow($dataset);
-
-        $previous = $centroids;
+        $this->tree->grow($dataset);
 
         $this->steps = [];
+
+        $previous = $centroids;
  
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             foreach ($centroids as $i => &$centroid) {
-                [$samples, $labels, $distances] = $tree->range($centroid, $this->radius);
+                [$samples, $indices, $distances] = $this->tree->range($centroid, $this->radius);
 
-                $step = Matrix::quick($samples)
-                    ->transpose()
-                    ->mean()
-                    ->asArray();
+                $columns = Unlabeled::quick($samples)->columns();
+
+                $step = array_map([Stats::class, 'mean'], $columns);
 
                 $mu2 = Stats::mean($distances) ** 2;
 
@@ -321,8 +303,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                     if ($i === $j) {
                         continue 1;
                     }
-
-                    $distance = $this->kernel->compute($centroid, $neighbor);
+                    
+                    $distance = $this->tree->kernel()->compute($centroid, $neighbor);
 
                     if ($distance < $this->radius) {
                         unset($centroids[$j]);
@@ -350,6 +332,8 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         }
 
         $this->centroids = array_values($centroids);
+
+        $this->tree->destroy();
 
         if ($this->logger) {
             $this->logger->info('Training complete');
@@ -406,7 +390,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         $bestCluster = -1;
 
         foreach ($this->centroids as $cluster => $centroid) {
-            $distance = $this->kernel->compute($sample, $centroid);
+            $distance = $this->tree->kernel()->compute($sample, $centroid);
 
             if ($distance < $bestDistance) {
                 $bestDistance = $distance;
@@ -428,7 +412,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
         $membership = $distances = [];
 
         foreach ($this->centroids as $centroid) {
-            $distances[] = $this->kernel->compute($sample, $centroid);
+            $distances[] = $this->tree->kernel()->compute($sample, $centroid);
         }
 
         $total = array_sum($distances) ?: EPSILON;

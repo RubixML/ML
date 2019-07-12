@@ -1,14 +1,16 @@
 <?php
 
-namespace Rubix\ML\Tests\Graph;
+namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Tree;
-use Rubix\ML\Graph\BallTree;
-use Rubix\ML\Graph\BinaryTree;
 use Rubix\ML\Graph\Nodes\Ball;
-use Rubix\ML\Graph\Nodes\Hypersphere;
+use Rubix\ML\Graph\Trees\Tree;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +29,7 @@ class BallTreeTest extends TestCase
             'west' => new Blob([0, 5, -3]),
         ], [0.5, 0.5]);
 
-        $this->tree = new BallTree();
+        $this->tree = new BallTree(20, new Euclidean());
 
         srand(self::RANDOM_SEED);
     }
@@ -35,6 +37,7 @@ class BallTreeTest extends TestCase
     public function test_build_tree()
     {
         $this->assertInstanceOf(BallTree::class, $this->tree);
+        $this->assertInstanceOf(Spatial::class, $this->tree);
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
 
@@ -42,7 +45,7 @@ class BallTreeTest extends TestCase
         $this->assertEquals(0, $this->tree->height());
     }
 
-    public function test_grow_range()
+    public function test_grow_neighbors_range()
     {
         $this->tree->grow($this->generator->generate(50));
 
@@ -54,8 +57,17 @@ class BallTreeTest extends TestCase
 
         $sample = $this->generator->generate(1)->row(0);
 
+        [$samples, $labels, $distances] = $this->tree->nearest($sample, 5);
+
+        $this->assertCount(5, $samples);
+        $this->assertCount(5, $labels);
+        $this->assertCount(5, $distances);
+
+        $this->assertCount(1, array_unique($labels));
+
         [$samples, $labels, $distances] = $this->tree->range($sample, 5.);
 
+        $this->assertCount(25, $samples);
         $this->assertCount(25, $labels);
         $this->assertCount(25, $distances);
 

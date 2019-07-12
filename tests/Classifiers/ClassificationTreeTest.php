@@ -4,7 +4,7 @@ namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\CART;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;

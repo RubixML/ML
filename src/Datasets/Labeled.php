@@ -708,7 +708,7 @@ class Labeled extends DataFrame implements Dataset
 
     /**
      * Partition the dataset into left and right subsets based on their distance
-     * between two centroids.
+     * from two centroids.
      *
      * @param array $leftCentroid
      * @param array $rightCentroid

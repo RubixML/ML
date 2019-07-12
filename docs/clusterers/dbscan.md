@@ -16,8 +16,7 @@
 |---|---|---|---|---|
 | 1 | radius | 0.5 | float | The maximum distance between two points to be considered neighbors. |
 | 2 | min density | 5 | int | The minimum number of points within radius of each other to form a cluster. |
-| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
+| 3 | tree | BallTree | object | The spatial tree used for range queries. |
 
 ### Additional Methods
 This estimator does not have any additional methods.
@@ -25,9 +24,10 @@ This estimator does not have any additional methods.
 ### Example
 ```php
 use Rubix\ML\Clusterers\DBSCAN;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Diagonal;
 
-$estimator = new DBSCAN(4.0, 5, new Diagonal(), 20);
+$estimator = new DBSCAN(4.0, 5, new BallTree(20, new Diagonal()));
 ```
 
 ### References

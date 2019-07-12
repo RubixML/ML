@@ -4,13 +4,13 @@ namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Graph\Nodes\Outcome;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -220,9 +220,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * Greedy algorithm to choose the best split point for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function split(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Comparison
     {
         $bestImpurity = INF;
         $bestColumn = $bestValue = null;
@@ -253,7 +253,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             }
         }
 
-        return new Decision(
+        return new Comparison(
             $bestColumn,
             $bestValue,
             $bestGroups,

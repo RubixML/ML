@@ -1,13 +1,13 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Nodes\Average;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use InvalidArgumentException;
 use RuntimeException;
@@ -35,7 +35,7 @@ abstract class CART implements BinaryTree
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Decision|null
+     * @var \Rubix\ML\Graph\Nodes\Comparison|null
      */
     protected $root;
 
@@ -101,9 +101,9 @@ abstract class CART implements BinaryTree
      * Choose a split for a given dataset.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    abstract protected function split(Labeled $dataset) : Decision;
+    abstract protected function split(Labeled $dataset) : Comparison;
 
     /**
      * Terminate the branch.
@@ -116,9 +116,9 @@ abstract class CART implements BinaryTree
     /**
      * Return the root node of the tree.
      *
-     * @return \Rubix\ML\Graph\Nodes\Decision|null
+     * @return \Rubix\ML\Graph\Nodes\Comparison|null
      */
-    public function root() : ?Decision
+    public function root() : ?Comparison
     {
         return $this->root;
     }
@@ -154,13 +154,18 @@ abstract class CART implements BinaryTree
     }
 
     /**
-     * Insert a root node into the tree and recursively split the training data
-     * until a terminating condition is met.
+     * Insert a root node and recursively split the dataset a terminating
+     * condition is met.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
      */
-    public function grow(Labeled $dataset) : void
+    public function grow(Dataset $dataset) : void
     {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('Tree requires a labeled dataset.');
+        }
+        
         $this->featureCount = $dataset->numColumns();
 
         $this->root = $this->split($dataset);
@@ -233,7 +238,7 @@ abstract class CART implements BinaryTree
         $current = $this->root;
 
         while ($current) {
-            if ($current instanceof Decision) {
+            if ($current instanceof Comparison) {
                 $value = $current->value();
 
                 if (is_string($value)) {
@@ -277,7 +282,7 @@ abstract class CART implements BinaryTree
         $importances = array_fill(0, $this->featureCount, 0.);
 
         foreach ($this->dump() as $node) {
-            if ($node instanceof Decision) {
+            if ($node instanceof Comparison) {
                 $importances[$node->column()] += exp($node->purityIncrease());
             }
         }
@@ -318,7 +323,7 @@ abstract class CART implements BinaryTree
 
         $prefix = str_repeat(self::BRANCH_INDENTER, $depth) . ' ';
 
-        if ($node instanceof Decision) {
+        if ($node instanceof Comparison) {
             if ($node->left() !== null) {
                 $operator = is_string($node->value()) ? '==' : '<';
 
@@ -363,5 +368,13 @@ abstract class CART implements BinaryTree
                 }
             }
         }
+    }
+
+    /**
+     * Destroy the tree.
+     */
+    public function destroy() : void
+    {
+        unset($this->root);
     }
 }

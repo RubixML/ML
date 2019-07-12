@@ -2,7 +2,7 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Graph\ITree;
+use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Datasets\Dataset;
 use InvalidArgumentException;
 

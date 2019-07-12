@@ -13,12 +13,11 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | | float | The bandwidth of the radial basis function. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between samples. |
-| 3 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
-| 4 | epochs | 100 | int | The maximum number of training rounds to execute. |
-| 5 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
-| 6 | seeder | None | object | The seeder used to initialize the cluster centroids. |
-| 7 | ratio | 0.2 | float | The ratio of samples from the training set to seed the algorithm with. |
+| 2 | tree | BallTree | object | The spatial tree used for range queries. |
+| 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
+| 4 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
+| 5 | ratio | 0.2 | float | The ratio of samples from the training set to seed the algorithm with. |
+| 6 | seeder | Random | object | The seeder used to initialize the cluster centroids. |
 
 ### Additional Methods
 Estimate the radius of a cluster that encompasses a certain percentage of the total training samples:
@@ -41,12 +40,14 @@ public steps() : array
 ### Example
 ```php
 use Rubix\ML\Clusterers\MeanShift;
-use Rubix\ML\Kernels\Distance\Diagonal;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 
-$radius = MeanShift::estimateRadius($dataset, 30., new Diagonal()); // Automatically choose radius
+$radius = MeanShift::estimateRadius($dataset);
 
-$estimator = new MeanShift($radius, new Diagonal(), 30, 2000, 1e-6, new KMC2(), 0.1);
+$estimator = new MeanShift($radius); // Set radius automatically
+
+$estimator = new MeanShift(2.5, new BallTree(100), 2000, 1e-6, 0.05, new KMC2());
 ```
 
 ### References

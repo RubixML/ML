@@ -3,7 +3,7 @@
 namespace Rubix\ML\Regressors;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 
 /**
  * Extra Tree Regressor
@@ -11,9 +11,6 @@ use Rubix\ML\Graph\Nodes\Decision;
  * An *Extremely Randomized* Regression Tree, these trees differ from standard
  * Regression Trees in that they choose a split drawn from a set random set
  * determined by max features, rather than searching the entire column.
- *
- * > **Note**: Decision tree based algorithms can handle both categorical and
- * continuous features at the same time.
  *
  * References:
  * [1] P. Geurts et al. (2005). Extremely Randomized Trees.
@@ -29,9 +26,9 @@ class ExtraTreeRegressor extends RegressionTree
      * variance among a random assortment of features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function split(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Comparison
     {
         $bestImpurity = INF;
         $bestColumn = $bestValue = null;
@@ -62,7 +59,7 @@ class ExtraTreeRegressor extends RegressionTree
             }
         }
 
-        return new Decision(
+        return new Comparison(
             $bestColumn,
             $bestValue,
             $bestGroups,

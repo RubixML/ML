@@ -1,6 +1,6 @@
 <?php
 
-namespace Rubix\ML\Graph;
+namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Cell;
@@ -108,8 +108,8 @@ class ITree implements BinaryTree
     }
 
     /**
-     * Insert a root node into the tree and recursively split the training data
-     * until a terminating condition is met.
+     * Insert a root node and recursively split the dataset a terminating
+     * condition is met.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
@@ -194,5 +194,13 @@ class ITree implements BinaryTree
         }
 
         return null;
+    }
+
+    /**
+     * Destroy the tree.
+     */
+    public function destroy() : void
+    {
+        unset($this->root);
     }
 }

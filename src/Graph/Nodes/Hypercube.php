@@ -105,7 +105,7 @@ class Hypercube extends BinaryNode implements Box
         foreach ($groups as $group) {
             if (!$group instanceof Labeled) {
                 throw new InvalidArgumentException('Group must be a'
-                    . ' dataset object, ' . gettype($group) . ' given.');
+                    . ' Labeled dataset, ' . gettype($group) . ' given.');
             }
         }
 

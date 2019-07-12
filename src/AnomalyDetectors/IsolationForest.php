@@ -5,7 +5,7 @@ namespace Rubix\ML\AnomalyDetectors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\ITree;
+use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;

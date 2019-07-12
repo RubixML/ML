@@ -9,11 +9,11 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Clusterers\MeanShift;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
-use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\VMeasure;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +42,7 @@ class MeanShiftTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new MeanShift(66, new Euclidean(), 30, 100, 1e-4, new KMC2(50), 0.10);
+        $this->estimator = new MeanShift(66, new BallTree(), 100, 1e-4, 0.10, new Random());
 
         $this->metric = new VMeasure();
 

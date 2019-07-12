@@ -6,16 +6,16 @@ use Rubix\ML\Datasets\Labeled;
 use InvalidArgumentException;
 
 /**
- * Decision
+ * Comparison
  *
- * A decision node that marks a Decision between an input value and the
- * value of the Decision node.
+ * A node that represents a comparison of a value in a single dimension
+ * with the value on the node (i.e. the split value).
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Decision extends BinaryNode implements Purity
+class Comparison extends BinaryNode implements Purity
 {
     /**
      * The feature column (index) of the split value.

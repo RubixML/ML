@@ -3,7 +3,7 @@
 namespace Rubix\ML\Classifiers;
 
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Decision;
+use Rubix\ML\Graph\Nodes\Comparison;
 
 /**
  * Extra Tree Classifier
@@ -29,9 +29,9 @@ class ExtraTreeClassifier extends ClassificationTree
      * impurity among a random assortment of features.
      *
      * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Decision
+     * @return \Rubix\ML\Graph\Nodes\Comparison
      */
-    protected function split(Labeled $dataset) : Decision
+    protected function split(Labeled $dataset) : Comparison
     {
         $bestImpurity = INF;
         $bestColumn = $bestValue = null;
@@ -62,7 +62,7 @@ class ExtraTreeClassifier extends ClassificationTree
             }
         }
 
-        return new Decision(
+        return new Comparison(
             $bestColumn,
             $bestValue,
             $bestGroups,

@@ -10,21 +10,21 @@ A fast [K Nearest Neighbors](k-nearest-neighbors.md) algorithm that uses a K-d t
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | k | 3 | int | The number of neighboring training samples to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
+| 2 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*neighborhood*). |
 
 ### Additional Methods
-Return the base k-d tree instance:
+Return the base spatial tree instance:
 ```php
-public tree() : KDTree
+public tree() : Spatial
 ```
 
 ### Example
 ```php
 use Rubix\ML\Classifiers\KDNeighbors;
-use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Graph\Trees\BallTree;
+use Rubix\ML\Kernels\Distance\Minskowski;
 
-$estimator = new KDNeighbors(3, new Euclidean(), false, 10);
+$estimator = new KDNeighbors(3, new BallTree(40, new Minkowski()), false);
 ```

@@ -5,9 +5,9 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Regressors\RadiusNeighborsRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +35,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
 
-        $this->estimator = new RadiusNeighborsRegressor(1.5, new Euclidean(), true, 20);
+        $this->estimator = new RadiusNeighborsRegressor(1.5, new BallTree(), true);
         
         $this->metric = new RSquared();
 

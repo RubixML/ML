@@ -6,9 +6,10 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
-use Rubix\ML\Graph\BallTree;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\Spatial;
+use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
@@ -45,6 +46,13 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $radius;
 
     /**
+     * The spatial tree used for range queries.
+     *
+     * @var \Rubix\ML\Graph\Trees\Spatial
+     */
+    protected $tree;
+
+    /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
      *
@@ -62,33 +70,21 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     ];
 
     /**
-     * The ball tree used for radius queries.
-     *
-     * @var \Rubix\ML\Graph\BallTree
-     */
-    protected $tree;
-
-    /**
      * @param float $radius
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param bool $weighted
-     * @param int $maxLeafSize
      * @throws \InvalidArgumentException
      */
-    public function __construct(
-        float $radius = 1.0,
-        ?Distance $kernel = null,
-        bool $weighted = true,
-        int $maxLeafSize = 30
-    ) {
+    public function __construct(float $radius = 1.0, ?Spatial $tree = null, bool $weighted = true)
+    {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
                 . " greater than 0, $radius given.");
         }
 
         $this->radius = $radius;
+        $this->tree = $tree ?? new BallTree();
         $this->weighted = $weighted;
-        $this->tree = new BallTree($maxLeafSize, $kernel);
     }
 
     /**
@@ -124,11 +120,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     }
 
     /**
-     * Return the base ball tree instance.
+     * Return the base spatial tree instance.
      *
-     * @return \Rubix\ML\Graph\BallTree
+     * @return \Rubix\ML\Graph\Trees\Spatial
      */
-    public function tree() : BallTree
+    public function tree() : Spatial
     {
         return $this->tree;
     }

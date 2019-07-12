@@ -2,15 +2,15 @@
 
 namespace Rubix\ML\AnomalyDetectors;
 
-use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Trees\KDTree;
+use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Kernels\Distance\Distance;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -18,11 +18,11 @@ use RuntimeException;
 use const Rubix\ML\EPSILON;
 
 /**
- * Local Outlier Factor
+ * Local outlier Factor
  *
- * Local Outlier Factor (LOF) measures the local deviation of density
- * of a given sample with respect to its k nearest neighbors. As such,
- * LOF only considers the local region of a sample thus enabling it to
+ * Local Outlier Factor (LOF) measures the local deviation of density of a given
+ * sample with respect to its *k* nearest neighbors. As such, LOF only considers
+ * the local region (or *neighborhood*) of an unknown sample which enables it to
  * detect anomalies within individual clusters of data.
  *
  * References:
@@ -33,10 +33,10 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persistable
+class LocalOutlierFactor implements Estimator, Learner, Ranking, Persistable
 {
     protected const DEFAULT_THRESHOLD = 1.5;
-    
+
     /**
      * The number of nearest neighbors to consider a local region.
      *
@@ -53,21 +53,11 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
     protected $contamination;
 
     /**
-     * The distance kernel to use when computing the distances between two
-     * data points.
+     * The k-d tree used for nearest neighbor queries.
      *
-     * @var \Rubix\ML\Kernels\Distance\Distance
+     * @var \Rubix\ML\Graph\Trees\Spatial
      */
-    protected $kernel;
-
-    /**
-     * The training samples.
-     *
-     * @var array[]
-     */
-    protected $samples = [
-        //
-    ];
+    protected $tree;
 
     /**
      * The precomputed k distances between each training sample and its kth
@@ -98,10 +88,10 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
     /**
      * @param int $k
      * @param float|null $contamination
-     * @param \Rubix\ML\Kernels\Distance\Distance $kernel
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 20, ?float $contamination = null, ?Distance $kernel = null)
+    public function __construct(int $k = 20, ?float $contamination = null, ?Spatial $tree = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -115,11 +105,11 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
 
         $this->k = $k;
         $this->contamination = $contamination;
-        $this->kernel = $kernel ?? new Euclidean();
+        $this->tree = $tree ?? new KDTree();
     }
 
     /**
-     * Return the integer encoded estimator type.
+     * Return the integer encoded type of estimator this is.
      *
      * @return int
      */
@@ -147,7 +137,19 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     public function trained() : bool
     {
-        return $this->threshold and $this->samples;
+        return !$this->tree->bare()
+            and $this->kdistances
+            and $this->lrds;
+    }
+
+    /**
+     * Return the base k-d tree instance.
+     *
+     * @var \Rubix\ML\Graph\Trees\Spatial
+     */
+    public function tree() : Spatial
+    {
+        return $this->tree;
     }
 
     /**
@@ -158,31 +160,31 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     public function train(Dataset $dataset) : void
     {
-        $this->samples = $this->kdistances = $this->lrds = [];
-
-        $this->partial($dataset);
-    }
-
-    /**
-     * Perform a partial train on the learner.
-     *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
-     * @throws \InvalidArgumentException
-     */
-    public function partial(Dataset $dataset) : void
-    {
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $this->samples = array_merge($this->samples, $dataset->samples());
+        $labels = range(0, $dataset->numRows() - 1);
 
-        $distances = array_map([self::class, 'localRegion'], $this->samples);
+        $dataset = Labeled::quick($dataset->samples(), $labels);
 
-        $this->kdistances = array_map('end', $distances);
+        $this->tree->grow($dataset);
 
-        $this->lrds = array_map([self::class, 'localReachabilityDensity'], $distances);
+        $this->kdistances = $this->lrds = [];
 
+        $iHat = $dHat = [];
+
+        foreach ($dataset as $sample) {
+            [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
+
+            $iHat[] = $indices;
+            $dHat[] = $distances;
+            
+            $this->kdistances[] = end($distances);
+        }
+
+        $this->lrds = array_map([self::class, 'localReachabilityDensity'], $iHat, $dHat);
+        
         if ($this->contamination) {
-            $lofs = array_map([self::class, 'localOutlierFactor'], $this->samples);
+            $lofs = array_map([self::class, 'localOutlierFactor'], $dataset->samples());
 
             $threshold = Stats::percentile($lofs, 100. - (100. * $this->contamination));
         }
@@ -213,9 +215,8 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     public function rank(Dataset $dataset) : array
     {
-        if (empty($this->samples)) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+        if ($this->tree->bare() or empty($this->lrds)) {
+            throw new RuntimeException('The estimator has not been trained.');
         }
         
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -232,67 +233,39 @@ class LocalOutlierFactor implements Estimator, Learner, Online, Ranking, Persist
      */
     protected function localOutlierFactor(array $sample) : float
     {
-        if (empty($this->lrds)) {
-            throw new RuntimeException('Local reachability distances have'
-                . ' not been computed, must train estimator first.');
+        [$samples, $indices, $distances] = $this->tree->nearest($sample, $this->k);
+
+        $lrd = $this->localReachabilityDensity($indices, $distances);
+
+        $ratios = [];
+        
+        foreach ($indices as $index) {
+            $ratios[] = $this->lrds[$index] / $lrd;
         }
 
-        $distances = $this->localRegion($sample);
-
-        $lrd = $this->localReachabilityDensity($distances);
-
-        $lrds = array_intersect_key($this->lrds, $distances);
-
-        $densities = [];
-
-        foreach ($lrds as $lHat) {
-            $densities[] = $lHat / $lrd;
-        }
-
-        return Stats::mean($densities);
+        return Stats::mean($ratios);
     }
 
     /**
      * Calculate the local reachability density of a sample given its
      * distances to its k nearest neighbors.
      *
+     * @param array $indices
      * @param array $distances
      * @throws \RuntimeException
      * @return float
      */
-    protected function localReachabilityDensity(array $distances) : float
+    protected function localReachabilityDensity(array $indices, array $distances) : float
     {
-        if (empty($this->kdistances)) {
-            throw new RuntimeException('K distances have not been computed,'
-                . ' must train estimator first.');
-        }
+        $kdistances = [];
 
-        $kdistances = array_intersect_key($this->kdistances, $distances);
+        foreach ($indices as $index) {
+            $kdistances[] = $this->kdistances[$index];
+        }
 
         $rds = array_map('max', $distances, $kdistances);
 
         return 1. / (Stats::mean($rds) ?: EPSILON);
-    }
-
-    /**
-     * Find the K nearest neighbors to the given sample vector using the
-     * brute force method.
-     *
-     * @param array $sample
-     * @throws \RuntimeException
-     * @return array
-     */
-    protected function localRegion(array $sample) : array
-    {
-        $distances = [];
-
-        foreach ($this->samples as $neighbor) {
-            $distances[] = $this->kernel->compute($sample, $neighbor);
-        }
-
-        asort($distances);
-
-        return array_slice($distances, 0, $this->k, true);
     }
 
     /**

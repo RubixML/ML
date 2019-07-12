@@ -13,20 +13,20 @@ Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | radius | 1.0 | float | The radius within which points are considered neighboors. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
+| 2 | tree | BallTree | object | The spatial tree used for range queries. |
 | 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
-| 4 | max leaf size | 30 | int | The max number of samples in a leaf node (*ball*). |
 
 ### Additional Methods
-Return the base ball tree instance:
+Return the base spatial tree instance:
 ```php
-public tree() : BallTree
+public tree() : Spatial
 ```
 
 ### Example
 ```php
 use Rubix\ML\Classifiers\RadiusNeighbors;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Kernels\Distance\Manhattan;
 
-$estimator = new RadiusNeighbors(50.0, new Manhattan(), false, 30);
+$estimator = new RadiusNeighbors(50.0, new KDTree(100, new Manhattan()), false);
 ```

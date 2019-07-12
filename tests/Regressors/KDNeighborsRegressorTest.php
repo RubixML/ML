@@ -5,9 +5,9 @@ namespace Rubix\ML\Tests\Regressors;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Kernels\Distance\Minkowski;
 use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -33,7 +33,7 @@ class KDNeighborsRegressorTest extends TestCase
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
-        $this->estimator = new KDNeighborsRegressor(3, new Minkowski(3.0), true, 20);
+        $this->estimator = new KDNeighborsRegressor(5, new KDTree(), true);
         
         $this->metric = new RSquared();
 

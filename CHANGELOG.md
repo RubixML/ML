@@ -1,9 +1,18 @@
 - Unreleased
+    - Added Spatial tree interface
     - CART can now print text representation of decision rules
+    - Mean Shift compatible with Spatial trees
+    - K-d Neighbors base spatial tree configurable
+    - Radius Neighbors now uses base spatial tree
+    - Local Outlier Factor interchangable base search tree
+    - DBSCAN now uses any Spatial tree for range searches
     - LOF and Isolation Forest contamination off by default
     - Embed method now returns an array instead of dataset
     - Fixed issue with Dataset partitioning
     - Renamed Coordinate node to Hypercube
+    - KNN default k is now 5 instead of 3
+    - Removed Local Outlier Factor brute force version
+    - Changed namespace of trees to Graph/Trees
 
 - 0.0.13-beta
     - Added documentation site

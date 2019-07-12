@@ -79,7 +79,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
      * @param bool $weighted
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 3, ?Distance $kernel = null, bool $weighted = true)
+    public function __construct(int $k = 5, ?Distance $kernel = null, bool $weighted = true)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
