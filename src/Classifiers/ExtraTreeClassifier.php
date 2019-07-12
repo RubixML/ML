@@ -57,7 +57,7 @@ class ExtraTreeClassifier extends ClassificationTree
                 $bestImpurity = $impurity;
             }
 
-            if ($impurity < self::GINI_TOLERANCE) {
+            if ($impurity <= self::GINI_TOLERANCE) {
                 break 1;
             }
         }

@@ -23,18 +23,17 @@ use RuntimeException;
  * A Decision Tree learning algorithm (CART) that performs greedy splitting
  * by minimizing the variance (*impurity*) among decision node splits.
  *
- * > **Note**: Decision tree based algorithms can handle both categorical
- * and continuous features at the same time.
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
 class RegressionTree extends CART implements Estimator, Learner, Persistable
 {
-    protected const VARIANCE_TOLERANCE = 1e-4;
+    protected const VARIANCE_TOLERANCE = 1e-5;
 
-    protected const SUBSAMPLE_RATIO = 0.2;
+    protected const CONTINUOUS_DOWNSAMPLE_RATIO = 0.25;
+
+    protected const MIN_TEST_SPLITS = 2;
     
     /**
      * The maximum number of feature columns to consider when determining
@@ -43,6 +42,13 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
      * @var int|null
      */
     protected $maxFeatures;
+
+    /**
+     * Should we determine max features on the fly?
+     *
+     * @var bool
+     */
+    protected $fitMaxFeatures;
 
     /**
      * The memoized random column indices.
@@ -66,14 +72,15 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
         float $minPurityIncrease = 0.,
         ?int $maxFeatures = null
     ) {
-        if ($maxFeatures and $maxFeatures < 1) {
+        if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
                 . " feature to determine a split, $maxFeatures given.");
         }
 
-        $this->maxFeatures = $maxFeatures;
-
         parent::__construct($maxDepth, $maxLeafSize, $minPurityIncrease);
+
+        $this->maxFeatures = $maxFeatures;
+        $this->fitMaxFeatures = is_null($maxFeatures);
     }
 
     /**
@@ -125,10 +132,13 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $k = $dataset->numColumns();
+        $n = $dataset->numColumns();
 
-        $this->columns = range(0, $dataset->numColumns() - 1);
-        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($k));
+        $this->columns = range(0, $n - 1);
+
+        if ($this->fitMaxFeatures) {
+            $this->maxFeatures = (int) round(sqrt($n));
+        }
 
         $this->grow($dataset);
 
@@ -184,9 +194,9 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
             $values = $dataset->column($column);
 
             if ($dataset->columnType($column) === DataType::CONTINUOUS) {
-                $n = max(2., round(count($values) * self::SUBSAMPLE_RATIO));
+                $k = ceil(count($values) * self::CONTINUOUS_DOWNSAMPLE_RATIO);
 
-                $p = range(0., 100., 100. / $n);
+                $p = range(0, 100, 100 / $k);
 
                 $values = Stats::percentiles($values, $p);
             } else {
@@ -245,15 +255,13 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
         $impurity = 0.;
 
         foreach ($groups as $dataset) {
-            $k = $dataset->numRows();
+            $m = $dataset->numRows();
 
-            if ($k < 2) {
+            if ($m <= 1) {
                 continue 1;
             }
 
-            $variance = Stats::variance($dataset->labels());
-
-            $impurity += ($k / $n) * $variance;
+            $impurity += ($m / $n) * Stats::variance($dataset->labels());
         }
 
         return $impurity;

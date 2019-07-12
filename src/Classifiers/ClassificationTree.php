@@ -34,7 +34,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
 {
     protected const GINI_TOLERANCE = 1e-3;
 
-    protected const SUBSAMPLE_RATIO = 0.2;
+    protected const CONTINUOUS_DOWNSAMPLE_RATIO = 0.25;
     
     /**
      * The maximum number of features to consider when determining a split.
@@ -42,6 +42,13 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
      * @var int|null
      */
     protected $maxFeatures;
+
+    /**
+     * Should we determine max features on the fly?
+     *
+     * @var bool
+     */
+    protected $fitMaxFeatures;
 
     /**
      * The possible class outcomes.
@@ -74,14 +81,15 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         float $minImpurityIncrease = 0.,
         ?int $maxFeatures = null
     ) {
-        if ($maxFeatures and $maxFeatures < 1) {
+        if (isset($maxFeatures) and $maxFeatures < 1) {
             throw new InvalidArgumentException('Tree must consider at least 1'
-                . " feature to determin split, $maxFeatures given.");
+                . " feature to determine a split, $maxFeatures given.");
         }
 
-        $this->maxFeatures = $maxFeatures;
-
         parent::__construct($maxDepth, $maxLeafSize, $minImpurityIncrease);
+
+        $this->maxFeatures = $maxFeatures;
+        $this->fitMaxFeatures = is_null($maxFeatures);
     }
 
     /**
@@ -136,11 +144,14 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $n = $dataset->numColumns();
 
         $this->columns = range(0, $n - 1);
-        $this->maxFeatures = $this->maxFeatures ?? (int) round(sqrt($n));
-        $this->classes = $dataset->possibleOutcomes();
+
+        if ($this->fitMaxFeatures) {
+            $this->maxFeatures = (int) round(sqrt($n));
+        }
 
         $this->grow($dataset);
 
+        $this->classes = $dataset->possibleOutcomes();
         $this->columns = [];
     }
 
@@ -155,8 +166,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     public function predict(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -185,8 +195,7 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
     public function proba(Dataset $dataset) : array
     {
         if ($this->bare()) {
-            throw new RuntimeException('The estimator has not'
-                . ' been trained.');
+            throw new RuntimeException('Estimator has not been trained.');
         }
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
@@ -226,9 +235,9 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
             $values = $dataset->column($column);
 
             if ($dataset->columnType($column) === DataType::CONTINUOUS) {
-                $n = max(2., round(count($values) * self::SUBSAMPLE_RATIO));
+                $k = ceil(count($values) * self::CONTINUOUS_DOWNSAMPLE_RATIO);
 
-                $p = range(0., 100., 100. / $n);
+                $p = range(0, 100, 100 / $k);
 
                 $values = Stats::percentiles($values, $p);
             } else {
@@ -302,21 +311,21 @@ class ClassificationTree extends CART implements Estimator, Learner, Probabilist
         $impurity = 0.;
 
         foreach ($groups as $dataset) {
-            $k = $dataset->numRows();
+            $m = $dataset->numRows();
 
-            if ($k < 2) {
+            if ($m <= 1) {
                 continue 1;
             }
 
             $counts = array_count_values($dataset->labels());
 
-            $p = 0.;
+            $gini = 0.;
     
             foreach ($counts as $count) {
-                $p += 1. - ($count / $n) ** 2;
+                $gini += 1. - ($count / $n) ** 2;
             }
 
-            $impurity += ($k / $n) * $p;
+            $impurity += ($m / $n) * $gini;
         }
 
         return $impurity;

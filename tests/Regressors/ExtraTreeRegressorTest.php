@@ -17,7 +17,7 @@ use RuntimeException;
 class ExtraTreeRegressorTest extends TestCase
 {
     protected const TEST_SIZE = 5;
-    protected const MIN_SCORE = 0.6;
+    protected const MIN_SCORE = 0.8;
 
     protected const RANDOM_SEED = 0;
 
