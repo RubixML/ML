@@ -22,7 +22,7 @@ nav:
     - Circle: datasets/generators/circle.md
     - Half Moon: datasets/generators/half-moon.md
     - Swiss Roll: datasets/generators/swiss-roll.md
-- General API:
+- General API Reference:
   - Estimator: estimator.md
   - Learner: learner.md
   - Online: online.md
@@ -166,6 +166,11 @@ nav:
     - RMS Prop: neural-network/optimizers/rms-prop.md
     - Step Decay: neural-network/optimizers/step-decay.md
     - Stochastic: neural-network/optimizers/stochastic.md
+- Graph:
+  - Trees:
+    - API Reference: graph/trees/api.md
+    - Ball Tree: graph/trees/ball-tree.md
+    - K-d Tree: graph/trees/k-d-tree.md
 - Kernels:
   - Distance:
     - Canberra: kernels/distance/canberra.md

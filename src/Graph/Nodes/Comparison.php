@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 /**
@@ -15,8 +16,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Comparison extends BinaryNode implements Purity
+class Comparison implements Decision
 {
+    use HasBinaryChildren;
+    
     /**
      * The feature column (index) of the split value.
      *
@@ -144,12 +147,12 @@ class Comparison extends BinaryNode implements Purity
     {
         $impurity = $this->impurity;
 
-        if ($this->left instanceof Purity) {
+        if ($this->left instanceof Decision) {
             $impurity -= $this->left->impurity()
                 * ($this->left->n() / $this->n);
         }
 
-        if ($this->right instanceof Purity) {
+        if ($this->right instanceof Decision) {
             $impurity -= $this->right->impurity()
                 * ($this->right->n() / $this->n);
         }

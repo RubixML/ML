@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -17,9 +18,9 @@ use RuntimeException;
 
 class RegressionTreeTest extends TestCase
 {
-    protected const TRAIN_SIZE = 400;
+    protected const TRAIN_SIZE = 300;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -33,7 +34,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.2);
 
-        $this->estimator = new RegressionTree(30, 2, 0., null);
+        $this->estimator = new RegressionTree(10, 2, 3, 1e-7);
 
         $this->metric = new RSquared();
 
@@ -44,6 +45,7 @@ class RegressionTreeTest extends TestCase
     {
         $this->assertInstanceOf(RegressionTree::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

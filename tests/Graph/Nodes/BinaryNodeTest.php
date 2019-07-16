@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use PHPUnit\Framework\TestCase;
 
 class BinaryNodeTest extends TestCase
@@ -12,7 +13,9 @@ class BinaryNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->node = new BinaryNode();
+        $this->node = new class implements BinaryNode {
+            use HasBinaryChildren;
+        };
     }
 
     public function test_build_node()
@@ -29,7 +32,9 @@ class BinaryNodeTest extends TestCase
 
     public function test_attach_left_child()
     {
-        $this->node->attachLeft(new BinaryNode());
+        $this->node->attachLeft(new class implements BinaryNode {
+            use HasBinaryChildren;
+        });
 
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
@@ -41,7 +46,9 @@ class BinaryNodeTest extends TestCase
 
     public function test_attach_right_child()
     {
-        $this->node->attachRight(new BinaryNode());
+        $this->node->attachRight(new class implements BinaryNode {
+            use HasBinaryChildren;
+        });
 
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());
@@ -53,7 +60,9 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_left_child()
     {
-        $this->node->attachLeft(new BinaryNode());
+        $this->node->attachLeft(new class implements BinaryNode {
+            use HasBinaryChildren;
+        });
 
         $this->assertNotNull($this->node->left());
         $this->assertInstanceOf(BinaryNode::class, $this->node->left());
@@ -65,7 +74,9 @@ class BinaryNodeTest extends TestCase
 
     public function test_detach_right_child()
     {
-        $this->node->attachRight(new BinaryNode());
+        $this->node->attachRight(new class implements BinaryNode {
+            use HasBinaryChildren;
+        });
 
         $this->assertNotNull($this->node->right());
         $this->assertInstanceOf(BinaryNode::class, $this->node->right());

@@ -6,6 +6,8 @@ use InvalidArgumentException;
 use ReflectionMethod;
 use ReflectionClass;
 
+use const Rubix\ML\PHI;
+
 /**
  * Params
  *
@@ -18,8 +20,6 @@ use ReflectionClass;
  */
 class Params
 {
-    protected const PHI = 100000000;
-
     /**
      * Generate a random unique integer distribution.
      *
@@ -80,13 +80,13 @@ class Params
                 . ' than 1 parameter.');
         }
 
-        $min = (int) round($min * self::PHI);
-        $max = (int) round($max * self::PHI);
+        $min = (int) round($min * PHI);
+        $max = (int) round($max * PHI);
 
         $distribution = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $distribution[] = rand($min, $max) / self::PHI;
+            $distribution[] = rand($min, $max) / PHI;
         }
 
         return $distribution;

@@ -2,18 +2,28 @@
 
 namespace Rubix\ML\Classifiers;
 
+use Rubix\ML\Learner;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Graph\Nodes\Comparison;
+use Rubix\ML\Graph\Nodes\Best;
+use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Trees\ExtraTree;
+use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Extra Tree Classifier
  *
  * An Extremely Randomized Classification Tree that splits the training set at
- * a random point chosen among the maximum features. Extra Trees are useful in
- * Ensembles such as Random Forest or AdaBoost as the “weak” classifier or they
- * can be used on their own. The strength of Extra Trees are computational
- * efficiency as well as increasing variance of the prediction (if that is
- * desired).
+ * a random point with the lowest entropy among *m* features. Extra Trees are
+ * useful in ensembles such as Random Forest or AdaBoost as the *weak* classifier
+ * or they can be used on their own. The strength of Extra Trees are their
+ * computational efficiency as well as increased variance of the prediction.
  *
  * References:
  * [1] P. Geurts et al. (2005). Extremely Randomized Trees.
@@ -22,51 +32,201 @@ use Rubix\ML\Graph\Nodes\Comparison;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ExtraTreeClassifier extends ClassificationTree
+class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Probabilistic, Persistable
 {
     /**
-     * Randomized algorithm that chooses the split point with the lowest gini
-     * impurity among a random assortment of features.
+     * The memoized class outcomes.
      *
-     * @param \Rubix\ML\Datasets\Labeled $dataset
-     * @return \Rubix\ML\Graph\Nodes\Comparison
+     * @var array
      */
-    protected function split(Labeled $dataset) : Comparison
+    protected $classes = [
+        //
+    ];
+
+    /**
+     * @param int $maxDepth
+     * @param int $maxLeafSize
+     * @param int|null $maxFeatures
+     * @param float $minPurityIncrease
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(
+        int $maxDepth = PHP_INT_MAX,
+        int $maxLeafSize = 3,
+        ?int $maxFeatures = null,
+        float $minPurityIncrease = 1e-7
+    ) {
+        parent::__construct($maxDepth, $maxLeafSize, $maxFeatures, $minPurityIncrease);
+    }
+
+    /**
+     * Return the integer encoded estimator type.
+     *
+     * @return int
+     */
+    public function type() : int
     {
-        $bestImpurity = INF;
-        $bestColumn = $bestValue = null;
-        $bestGroups = [];
+        return self::CLASSIFIER;
+    }
 
-        $maxIndex = $dataset->numRows() - 1;
+    /**
+     * Return the data types that this estimator is compatible with.
+     *
+     * @return int[]
+     */
+    public function compatibility() : array
+    {
+        return [
+            DataType::CATEGORICAL,
+            DataType::CONTINUOUS,
+        ];
+    }
 
-        shuffle($this->columns);
+    /**
+     * Has the learner been trained?
+     *
+     * @return bool
+     */
+    public function trained() : bool
+    {
+        return !$this->bare();
+    }
 
-        $columns = array_slice($this->columns, 0, $this->maxFeatures);
-
-        foreach ($columns as $column) {
-            $value = $dataset[rand(0, $maxIndex)][$column];
-
-            $groups = $dataset->partition($column, $value);
-
-            $impurity = $this->splitImpurity($groups);
-
-            if ($impurity < $bestImpurity) {
-                $bestColumn = $column;
-                $bestValue = $value;
-                $bestGroups = $groups;
-                $bestImpurity = $impurity;
-            }
-
-            if ($impurity <= self::GINI_TOLERANCE) {
-                break 1;
-            }
+    /**
+     * Train the regression tree by learning the optimal splits in the
+     * training set.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \InvalidArgumentException
+     */
+    public function train(Dataset $dataset) : void
+    {
+        if (!$dataset instanceof Labeled) {
+            throw new InvalidArgumentException('This estimator requires a'
+                . ' labeled training set.');
         }
 
-        return new Comparison(
-            $bestColumn,
-            $bestValue,
-            $bestGroups,
-            $bestImpurity
-        );
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        $this->classes = $dataset->possibleOutcomes();
+
+        $this->grow($dataset);
+    }
+
+    /**
+     * Make predictions from a dataset.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function predict(Dataset $dataset) : array
+    {
+        if ($this->bare()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        $predictions = [];
+
+        foreach ($dataset as $sample) {
+            $node = $this->search($sample);
+
+            $predictions[] = $node instanceof Best
+                ? $node->outcome()
+                : null;
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Estimate probabilities for each possible outcome.
+     *
+     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function proba(Dataset $dataset) : array
+    {
+        if ($this->bare()) {
+            throw new RuntimeException('Estimator has not been trained.');
+        }
+
+        DatasetIsCompatibleWithEstimator::check($dataset, $this);
+
+        $template = array_fill_keys($this->classes, 0.);
+
+        $probabilities = [];
+
+        foreach ($dataset as $sample) {
+            $node = $this->search($sample);
+
+            $probabilities[] = $node instanceof Best
+                ? array_replace($template, $node->probabilities())
+                : null;
+        }
+
+        return $probabilities;
+    }
+
+    /**
+     * Terminate the branch by selecting the class outcome with the highest
+     * probability.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return \Rubix\ML\Graph\Nodes\Outcome
+     */
+    protected function terminate(Labeled $dataset) : Outcome
+    {
+        $n = $dataset->numRows();
+
+        $counts = array_count_values($dataset->labels());
+
+        $max = max($counts);
+
+        $outcome = array_search($max, $counts);
+
+        $probabilities = [];
+
+        foreach ($counts as $class => $count) {
+            $probabilities[$class] = $count / $n;
+        }
+
+        $p = $n ? $max / $n : 1.;
+
+        $impurity = -($p * log($p));
+
+        return new Best($outcome, $probabilities, $impurity, $n);
+    }
+
+    /**
+     * Compute the impurity of a labeled dataset.
+     *
+     * @param \Rubix\ML\Datasets\Labeled $dataset
+     * @return float
+     */
+    protected function impurity(Labeled $dataset) : float
+    {
+        $n = $dataset->numRows();
+
+        if ($n <= 1) {
+            return 0.;
+        }
+
+        $counts = array_count_values($dataset->labels());
+
+        $entropy = 0.;
+
+        foreach ($counts as $count) {
+            $p = $count / $n;
+
+            $entropy -= $p * log($p);
+        }
+
+        return $entropy;
     }
 }

@@ -262,6 +262,7 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
             $this->logger->info('Learner init ' . Params::stringify([
                 'radius' => $this->radius,
                 'tree' => $this->tree,
+                'kernel' => $this->tree->kernel(),
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
                 'seeder' => $this->seeder,

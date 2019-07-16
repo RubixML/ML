@@ -3,6 +3,7 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 /**
@@ -15,8 +16,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Isolator extends BinaryNode
+class Isolator implements BinaryNode
 {
+    use HasBinaryChildren;
+    
     /**
      * The feature column (index) of the split value.
      *

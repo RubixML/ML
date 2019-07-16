@@ -4,10 +4,11 @@ namespace Rubix\ML\Tests\Regressors;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Regressors\ExtraTreeRegressor;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +36,7 @@ class ExtraTreeRegressorTest extends TestCase
 
         $this->testing = $this->training->randomize()->take(self::TEST_SIZE);
 
-        $this->estimator = new ExtraTreeRegressor(30, 3, 0., null);
+        $this->estimator = new ExtraTreeRegressor(10, 3, 6, 1e-7);
 
         $this->metric = new RSquared();
 
@@ -46,6 +47,7 @@ class ExtraTreeRegressorTest extends TestCase
     {
         $this->assertInstanceOf(ExtraTreeRegressor::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

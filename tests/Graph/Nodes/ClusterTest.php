@@ -7,6 +7,7 @@ use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
 use Rubix\ML\Graph\Nodes\Cluster;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
@@ -29,6 +30,7 @@ class ClusterTest extends TestCase
         $node = new Cluster(self::SAMPLES, self::LABELS, self::CENTER, self::RADIUS);
 
         $this->assertInstanceOf(Cluster::class, $node);
+        $this->assertInstanceOf(Hypersphere::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Leaf::class, $node);
         $this->assertInstanceOf(Node::class, $node);

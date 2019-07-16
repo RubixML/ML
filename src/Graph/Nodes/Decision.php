@@ -2,18 +2,18 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-interface Purity extends Node
+interface Decision extends BinaryNode
 {
     /**
-     * Return the impurity score of the node.
+     * Return the impurity score as a result of the decision.
      *
      * @return float
      */
     public function impurity() : float;
 
     /**
-     * Return the number of samples from the training set this node
-     * represents.
+     * Return the number of samples from the training set that this
+     * node represents.
      *
      * @return int
      */

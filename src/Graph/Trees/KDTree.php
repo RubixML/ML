@@ -16,8 +16,9 @@ use SplObjectStorage;
  * K-d Tree
  *
  * A multi-dimensional binary search tree for fast nearest neighbor queries.
- * Each node maintains its own *bounding box* that is used to prune off leaf
- * nodes during search.
+ * The K-d tree construction algorithm separates data points into bounded
+ * hypercubes or *bounding boxes* that are used to prune off nodes during
+ * nearest neighbor and range searches.
  *
  * [1] J. L. Bentley. (1975). Multidimensional Binary Seach Trees Used for
  * Associative Searching.
@@ -45,7 +46,7 @@ class KDTree implements BinaryTree, Spatial
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Hypercube|null
+     * @var \Rubix\ML\Graph\Nodes\Box|null
      */
     protected $root;
 
@@ -61,20 +62,12 @@ class KDTree implements BinaryTree, Spatial
                 . " to form a neighborhood, $maxLeafSize given.");
         }
 
-        $this->kernel = $kernel ?? new Euclidean();
         $this->maxLeafSize = $maxLeafSize;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Hypercube|null
-     */
-    public function root() : ?Hypercube
-    {
-        return $this->root;
-    }
-
-    /**
-     * Return the height of the tree.
+     * Return the height of the tree i.e. the number of levels.
      *
      * @return int
      */
@@ -84,7 +77,9 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the balance of the tree.
+     * Return the balance factor of the tree. A balanced tree will have
+     * a factor of 0 whereas an imbalanced tree will either be positive
+     * or negative indicating the direction and degree of the imbalance.
      *
      * @return int
      */
@@ -126,7 +121,7 @@ class KDTree implements BinaryTree, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
-        $this->root = Hypercube::split($dataset);
+        $this->root = Box::split($dataset);
 
         $stack = [$this->root];
 
@@ -142,7 +137,7 @@ class KDTree implements BinaryTree, Spatial
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Hypercube::split($left);
+                $stack[] = $node = Box::split($left);
     
                 $current->attachLeft($node);
             } else {
@@ -150,13 +145,46 @@ class KDTree implements BinaryTree, Spatial
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Hypercube::split($right);
+                $stack[] = $node = Box::split($right);
     
                 $current->attachRight($node);
             } else {
                 $current->attachRight(Neighborhood::terminate($right));
             }
         }
+    }
+
+    /**
+     * Return the path taken from the root to a leaf node in an array.
+     *
+     * @param array $sample
+     * @return array
+     */
+    protected function path(array $sample) : array
+    {
+        $current = $this->root;
+
+        $path = [];
+
+        while ($current) {
+            $path[] = $current;
+
+            if ($current instanceof Box) {
+                if ($sample[$current->column()] < $current->value()) {
+                    $current = $current->left();
+                } else {
+                    $current = $current->right();
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Neighborhood) {
+                break 1;
+            }
+        }
+
+        return $path;
     }
 
     /**
@@ -179,17 +207,17 @@ class KDTree implements BinaryTree, Spatial
 
         $samples = $labels = $distances = [];
 
-        $stack = $this->tracePath($sample);
+        $stack = $this->path($sample);
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if ($current instanceof Hypercube) {
+            if ($current instanceof Box) {
                 $radius = $distances[$k - 1] ?? INF;
 
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
-                        if ($child instanceof Box) {
+                        if ($child instanceof Hypercube) {
                             foreach ($child->sides() as $side) {
                                 $distance = $this->kernel->compute($sample, $side);
 
@@ -254,9 +282,9 @@ class KDTree implements BinaryTree, Spatial
         while ($stack) {
             $current = array_pop($stack);
 
-            if ($current instanceof Hypercube) {
+            if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
-                    if ($child instanceof Box) {
+                    if ($child instanceof Hypercube) {
                         foreach ($child->sides() as $side) {
                             $distance = $this->kernel->compute($sample, $side);
 
@@ -288,39 +316,6 @@ class KDTree implements BinaryTree, Spatial
         }
 
         return [$samples, $labels, $distances];
-    }
-
-    /**
-     * Return the path taken from the root to a leaf node.
-     *
-     * @param array $sample
-     * @return array
-     */
-    protected function tracePath(array $sample) : array
-    {
-        $current = $this->root;
-
-        $path = [];
-
-        while ($current) {
-            $path[] = $current;
-
-            if ($current instanceof Hypercube) {
-                if ($sample[$current->column()] < $current->value()) {
-                    $current = $current->left();
-                } else {
-                    $current = $current->right();
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Neighborhood) {
-                break 1;
-            }
-        }
-
-        return $path;
     }
 
     /**

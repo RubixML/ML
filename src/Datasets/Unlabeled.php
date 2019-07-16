@@ -8,6 +8,8 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Kernels\Distance\Distance;
 use InvalidArgumentException;
 
+use const Rubix\ML\PHI;
+
 /**
  * Unlabeled
  *
@@ -20,8 +22,6 @@ use InvalidArgumentException;
  */
 class Unlabeled extends DataFrame implements Dataset
 {
-    protected const PHI = 100000000;
-    
     /**
      * Build a new unlabeled dataset with validation.
      *
@@ -459,12 +459,12 @@ class Unlabeled extends DataFrame implements Dataset
         }
 
         $total = array_sum($weights);
-        $max = (int) round($total * self::PHI);
+        $max = (int) round($total * PHI);
 
         $subset = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $delta = rand(0, $max) / self::PHI;
+            $delta = rand(0, $max) / PHI;
 
             foreach ($weights as $index => $weight) {
                 $delta -= $weight;

@@ -5,6 +5,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
+use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,7 @@ class NeighborhoodTest extends TestCase
         $node = new Neighborhood(self::SAMPLES, self::LABELS, self::MIN, self::MAX);
 
         $this->assertInstanceOf(Neighborhood::class, $node);
+        $this->assertInstanceOf(Hypercube::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Leaf::class, $node);
         $this->assertInstanceOf(Node::class, $node);

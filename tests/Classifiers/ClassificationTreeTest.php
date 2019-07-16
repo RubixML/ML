@@ -4,11 +4,12 @@ namespace Rubix\ML\Tests\Classifiers;
 
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
+use Rubix\ML\Graph\Trees\CART;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -19,7 +20,7 @@ use RuntimeException;
 
 class ClassificationTreeTest extends TestCase
 {
-    protected const TRAIN_SIZE = 250;
+    protected const TRAIN_SIZE = 300;
     protected const TEST_SIZE = 10;
     protected const MIN_SCORE = 0.9;
 
@@ -39,7 +40,7 @@ class ClassificationTreeTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new ClassificationTree(10, 3, 0., 3);
+        $this->estimator = new ClassificationTree(10, 3, 3, 1e-7);
 
         $this->metric = new Accuracy();
 
@@ -50,6 +51,7 @@ class ClassificationTreeTest extends TestCase
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
         $this->assertInstanceOf(CART::class, $this->estimator);
+        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Persistable::class, $this->estimator);

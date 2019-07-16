@@ -9,7 +9,8 @@
 
 **Data Type Compatibility:** Continuous only
 
-### ParametersThis transformer does not have any parameters.
+### Parameters
+This transformer does not have any parameters.
 
 ### Additional Methods
 Return the inverse document frequencies calculated during fitting:

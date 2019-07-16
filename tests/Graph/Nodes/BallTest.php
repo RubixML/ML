@@ -4,12 +4,13 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
-use Rubix\ML\Graph\Nodes\Hypersphere;
+use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Nodes\BinaryNode;
+use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use PHPUnit\Framework\TestCase;
 
-class HypersphereTest extends TestCase
+class BallTest extends TestCase
 {
     protected const COLUMN = 1;
     protected const VALUE = 3.;
@@ -33,8 +34,9 @@ class HypersphereTest extends TestCase
             Labeled::quick([self::SAMPLES[1]], [self::LABELS[1]]),
         ];
 
-        $node = new Hypersphere(self::CENTER, self::RADIUS, $groups);
+        $node = new Ball(self::CENTER, self::RADIUS, $groups);
 
+        $this->assertInstanceOf(Ball::class, $node);
         $this->assertInstanceOf(Hypersphere::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
@@ -48,7 +50,7 @@ class HypersphereTest extends TestCase
     {
         $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
-        $node = Hypersphere::split($dataset, new Euclidean());
+        $node = Ball::split($dataset, new Euclidean());
 
         $this->assertEquals(self::CENTER, $node->center());
         $this->assertEquals(self::RADIUS, $node->radius());

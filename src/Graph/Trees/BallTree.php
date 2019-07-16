@@ -15,8 +15,10 @@ use SplObjectStorage;
 /**
  * Ball Tree
  *
- * A binary spatial tree with *ball* nodes whose boundary is defined by a
- * centroid and radius.
+ * A binary spatial tree that partitions the dataset into successively smaller
+ * and tighter *ball* nodes whose boundary are defined by a centroid and radius.
+ * Ball Trees work well in higher dimensions since the partitioning schema does
+ * not rely on a finite number of 1-dimensional axis aligned splits.
  *
  * References:
  * [1] S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
@@ -46,7 +48,7 @@ class BallTree implements BinaryTree, Spatial
     /**
      * The root node of the tree.
      *
-     * @var \Rubix\ML\Graph\Nodes\Hypersphere|null
+     * @var \Rubix\ML\Graph\Nodes\Ball|null
      */
     protected $root;
 
@@ -62,20 +64,12 @@ class BallTree implements BinaryTree, Spatial
                 . " to form a leaf node, $maxLeafSize given.");
         }
 
-        $this->kernel = $kernel ?? new Euclidean();
         $this->maxLeafSize = $maxLeafSize;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
-     * @return \Rubix\ML\Graph\Nodes\Hypersphere|null
-     */
-    public function root() : ?Hypersphere
-    {
-        return $this->root;
-    }
-
-    /**
-     * Return the height of the tree.
+     * Return the height of the tree i.e. the number of levels.
      *
      * @return int
      */
@@ -85,7 +79,9 @@ class BallTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the balance of the tree.
+     * Return the balance factor of the tree. A balanced tree will have
+     * a factor of 0 whereas an imbalanced tree will either be positive
+     * or negative indicating the direction and degree of the imbalance.
      *
      * @return int
      */
@@ -127,7 +123,7 @@ class BallTree implements BinaryTree, Spatial
             throw new InvalidArgumentException('Tree requires a labeled dataset.');
         }
 
-        $this->root = Hypersphere::split($dataset, $this->kernel);
+        $this->root = Ball::split($dataset, $this->kernel);
 
         $stack = [$this->root];
 
@@ -143,7 +139,7 @@ class BallTree implements BinaryTree, Spatial
             $current->cleanup();
 
             if ($left->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Hypersphere::split($left, $this->kernel);
+                $stack[] = $node = Ball::split($left, $this->kernel);
     
                 $current->attachLeft($node);
             } else {
@@ -151,13 +147,54 @@ class BallTree implements BinaryTree, Spatial
             }
     
             if ($right->numRows() > $this->maxLeafSize) {
-                $stack[] = $node = Hypersphere::split($right, $this->kernel);
+                $stack[] = $node = Ball::split($right, $this->kernel);
     
                 $current->attachRight($node);
             } else {
                 $current->attachRight(Cluster::terminate($right, $this->kernel));
             }
         }
+    }
+
+    /**
+     * Return the path taken from the root to a leaf node in an array.
+     *
+     * @param array $sample
+     * @return array
+     */
+    public function path(array $sample) : array
+    {
+        $current = $this->root;
+
+        $path = [];
+
+        while ($current) {
+            $path[] = $current;
+
+            if ($current instanceof Ball) {
+                $left = $current->left();
+                $right = $current->right();
+
+                if ($left instanceof Hypersphere and $right instanceof Hypersphere) {
+                    $lHat = $this->kernel->compute($sample, $left->center());
+                    $rHat = $this->kernel->compute($sample, $right->center());
+
+                    if ($lHat < $rHat) {
+                        $current = $current->left();
+                    } else {
+                        $current = $current->right();
+                    }
+                }
+
+                continue 1;
+            }
+
+            if ($current instanceof Cluster) {
+                break 1;
+            }
+        }
+
+        return $path;
     }
 
     /**
@@ -180,17 +217,17 @@ class BallTree implements BinaryTree, Spatial
 
         $samples = $labels = $distances = [];
 
-        $stack = $this->tracePath($sample);
+        $stack = $this->path($sample);
 
         while ($stack) {
             $current = array_pop($stack);
 
-            if ($current instanceof Hypersphere) {
+            if ($current instanceof Ball) {
                 $radius = $distances[$k - 1] ?? INF;
 
                 foreach ($current->children() as $child) {
                     if (!$visited->contains($child)) {
-                        if ($child instanceof Ball) {
+                        if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
     
                             if ($distance < ($child->radius() + $radius)) {
@@ -253,9 +290,9 @@ class BallTree implements BinaryTree, Spatial
         while ($stack) {
             $current = array_pop($stack);
 
-            if ($current instanceof Hypersphere) {
+            if ($current instanceof Ball) {
                 foreach ($current->children() as $child) {
-                    if ($child instanceof Ball) {
+                    if ($child instanceof Hypersphere) {
                         $distance = $this->kernel->compute($sample, $child->center());
 
                         if ($distance <= ($child->radius() + $radius)) {
@@ -283,47 +320,6 @@ class BallTree implements BinaryTree, Spatial
         }
 
         return [$samples, $labels, $distances];
-    }
-
-    /**
-     * Return the path taken from the root to a leaf node.
-     *
-     * @param array $sample
-     * @return array
-     */
-    protected function tracePath(array $sample) : array
-    {
-        $current = $this->root;
-
-        $path = [];
-
-        while ($current) {
-            $path[] = $current;
-
-            if ($current instanceof Hypersphere) {
-                $left = $current->left();
-                $right = $current->right();
-
-                if ($left instanceof Ball and $right instanceof Ball) {
-                    $lHat = $this->kernel->compute($sample, $left->center());
-                    $rHat = $this->kernel->compute($sample, $right->center());
-
-                    if ($lHat < $rHat) {
-                        $current = $current->left();
-                    } else {
-                        $current = $current->right();
-                    }
-                }
-
-                continue 1;
-            }
-
-            if ($current instanceof Cluster) {
-                break 1;
-            }
-        }
-
-        return $path;
     }
 
     /**

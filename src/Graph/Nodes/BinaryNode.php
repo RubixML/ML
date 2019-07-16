@@ -4,57 +4,21 @@ namespace Rubix\ML\Graph\Nodes;
 
 use Generator;
 
-/**
- * Binary Node
- *
- * A node of a binary tree i.e a tree whose nodes have a maximum of
- * two immediate children and one parent.
- *
- * @category    Machine Learning
- * @package     Rubix/ML
- * @author      Andrew DalPino
- */
-class BinaryNode implements Node
+interface BinaryNode extends Node
 {
-    /**
-     * The left child node.
-     *
-     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
-     */
-    protected $left;
-
-    /**
-     * The right child node.
-     *
-     * @var \Rubix\ML\Graph\Nodes\BinaryNode|null
-     */
-    protected $right;
-
     /**
      * Return the children of this node in a generator.
      *
      * @return \Generator
      */
-    public function children() : Generator
-    {
-        if ($this->left) {
-            yield $this->left;
-        }
-        
-        if ($this->right) {
-            yield $this->right;
-        }
-    }
+    public function children() : Generator;
 
     /**
      * Return the left child node.
      *
      * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
-    public function left() : ?self
-    {
-        return $this->left;
-    }
+    public function left() : ?BinaryNode;
 
     /**
      * Return the right child node.
@@ -62,23 +26,14 @@ class BinaryNode implements Node
      *
      * @return \Rubix\ML\Graph\Nodes\BinaryNode|null
      */
-    public function right() : ?self
-    {
-        return $this->right;
-    }
+    public function right() : ?BinaryNode;
 
     /**
      * Recursive function to determine the height of the node in the tree.
      *
      * @return int
      */
-    public function height() : int
-    {
-        return 1 + max(
-            $this->left ? $this->left->height() : 0,
-            $this->right ? $this->right->height() : 0
-        );
-    }
+    public function height() : int;
 
     /**
      * The balance factor of the node. Negative numbers indicate a
@@ -87,55 +42,36 @@ class BinaryNode implements Node
      *
      * @return int
      */
-    public function balance() : int
-    {
-        return ($this->right ? $this->right->height() : 0)
-            - ($this->left ? $this->left->height() : 0);
-    }
+    public function balance() : int;
 
     /**
      * Set the left child node.
      *
      * @param self $node
      */
-    public function attachLeft(BinaryNode $node) : void
-    {
-        $this->left = $node;
-    }
+    public function attachLeft(BinaryNode $node) : void;
 
     /**
      * Set the right child node.
      *
      * @param self $node
      */
-    public function attachRight(BinaryNode $node) : void
-    {
-        $this->right = $node;
-    }
+    public function attachRight(BinaryNode $node) : void;
 
     /**
      * Detach the left child node.
      */
-    public function detachLeft() : void
-    {
-        $this->left = null;
-    }
+    public function detachLeft() : void;
 
     /**
      * Detach the right child node.
      */
-    public function detachRight() : void
-    {
-        $this->right = null;
-    }
+    public function detachRight() : void;
 
     /**
      * Is this a leaf node? i.e no children.
      *
      * @return bool
      */
-    public function leaf() : bool
-    {
-        return !$this->left and !$this->right;
-    }
+    public function leaf() : bool;
 }

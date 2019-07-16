@@ -1,6 +1,5 @@
 - Unreleased
-    - Added Spatial tree interface
-    - CART can now print text representation of decision rules
+    - Added Spatial and Decision tree interface
     - Mean Shift compatible with Spatial trees
     - K-d Neighbors base spatial tree configurable
     - Radius Neighbors now uses base spatial tree
@@ -12,9 +11,15 @@
     - Fixed issue with Dataset partitioning
     - Renamed Coordinate node to Hypercube
     - KNN default k is now 5 instead of 3
+    - CART can now print a text representation of the decision rules
     - Removed Local Outlier Factor brute force version
     - Changed namespace of trees to Graph/Trees
     - CART impurity tolerances are now hardcoded
+    - Changed order of CART hyperparameters
+    - Added Extra Tree base implementation
+    - Extra Tree splits are now unbiased
+    - Extra Tree Classifier now minimizes entropy
+    - Reduced the memory footprint of Binary Nodes
 
 - 0.0.13-beta
     - Added documentation site

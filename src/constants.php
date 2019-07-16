@@ -16,4 +16,9 @@ namespace Rubix\ML
      * Two multiplied by pi.
      */
     const TWO_PI = 2. * M_PI;
+
+    /**
+     * Floating point precision.
+     */
+    const PHI = 1e8;
 }

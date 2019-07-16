@@ -29,7 +29,6 @@ interface Spatial extends BinaryTree
      *
      * @param array $sample
      * @param float $radius
-     * @throws \InvalidArgumentException
      * @return array[]
      */
     public function range(array $sample, float $radius) : array;

@@ -4,6 +4,7 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\Comparison;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
@@ -35,6 +36,7 @@ class ComparisonTest extends TestCase
         $node = new Comparison(self::COLUMN, self::VALUE, $groups, self::IMPURITY);
 
         $this->assertInstanceOf(Comparison::class, $node);
+        $this->assertInstanceOf(Decision::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Node::class, $node);
 

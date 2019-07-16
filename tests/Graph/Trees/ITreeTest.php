@@ -5,7 +5,6 @@ namespace Rubix\ML\Tests\Graph\Trees;
 use Rubix\ML\Graph\Nodes\Cell;
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\ITree;
-use Rubix\ML\Graph\Nodes\Isolator;
 use Rubix\ML\Graph\Trees\BinaryTree;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use Rubix\ML\Datasets\Generators\Blob;
@@ -38,7 +37,6 @@ class ITreeTest extends TestCase
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
 
-        $this->assertNull($this->tree->root());
         $this->assertEquals(0, $this->tree->height());
     }
 
@@ -54,9 +52,6 @@ class ITreeTest extends TestCase
     public function test_grow_range()
     {
         $this->tree->grow($this->generator->generate(50));
-
-        $this->assertInstanceOf(Isolator::class, $this->tree->root());
-        $this->assertInstanceOf(BinaryNode::class, $this->tree->root());
 
         $this->assertGreaterThan(5, $this->tree->height());
 

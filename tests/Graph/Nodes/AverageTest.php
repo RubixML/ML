@@ -4,8 +4,9 @@ namespace Rubix\ML\Tests\Graph\Nodes;
 
 use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Graph\Nodes\Leaf;
-use Rubix\ML\Graph\Nodes\Purity;
 use Rubix\ML\Graph\Nodes\Average;
+use Rubix\ML\Graph\Nodes\Outcome;
+use Rubix\ML\Graph\Nodes\Decision;
 use Rubix\ML\Graph\Nodes\BinaryNode;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +21,8 @@ class AverageTest extends TestCase
         $node = new Average(self::OUTCOME, self::IMPURITY, self::N);
 
         $this->assertInstanceOf(Average::class, $node);
-        $this->assertInstanceOf(Purity::class, $node);
+        $this->assertInstanceOf(Outcome::class, $node);
+        $this->assertInstanceOf(Decision::class, $node);
         $this->assertInstanceOf(BinaryNode::class, $node);
         $this->assertInstanceOf(Leaf::class, $node);
         $this->assertInstanceOf(Node::class, $node);

@@ -2,8 +2,9 @@
 
 namespace Rubix\ML\Graph\Nodes;
 
-use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Trees\ITree;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 /**
@@ -15,8 +16,10 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cell extends BinaryNode implements Leaf
+class Cell implements BinaryNode, Leaf
 {
+    use HasBinaryChildren;
+    
     /**
      * The approximated depth of this node.
      *

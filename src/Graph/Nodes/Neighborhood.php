@@ -3,21 +3,24 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 use Generator;
 
 /**
  * Neighborhood
  *
- * Neighborhoods represent a group of samples that are close to
- * each other in distance but not *necessarily* the closest.
+ * Neighborhoods represent a group of samples that are close to each
+ * other in distance but not *necessarily* the closest.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Neighborhood extends BinaryNode implements Box, Leaf
+class Neighborhood implements BinaryNode, Hypercube, Leaf
 {
+    use HasBinaryChildren;
+    
     /**
      * The samples that make up the neighborhood.
      *

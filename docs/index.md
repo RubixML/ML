@@ -10,7 +10,7 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **Open source** and free to use commercially
 
 ## Installation
-Install Rubix ML into your project using [Composer](https://getcomposer.org/):
+Install into your project using [Composer](https://getcomposer.org/):
 
 ```sh
 $ composer require rubix/ml

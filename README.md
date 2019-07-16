@@ -15,7 +15,7 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 Read the latest documentation [here](https://docs.rubixml.com/en/latest/).
 
 ## Installation
-Install Rubix ML into your project using [Composer](https://getcomposer.org/):
+Install into your project using [Composer](https://getcomposer.org/):
 ```sh
 $ composer require rubix/ml
 ```

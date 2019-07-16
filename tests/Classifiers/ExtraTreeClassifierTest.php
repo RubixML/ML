@@ -7,9 +7,10 @@ use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Graph\Trees\DecisionTree;
 use Rubix\ML\Datasets\Generators\Blob;
-use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Classifiers\ExtraTreeClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
@@ -21,7 +22,7 @@ class ExtraTreeClassifierTest extends TestCase
 {
     protected const TRAIN_SIZE = 300;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
     
@@ -39,7 +40,7 @@ class ExtraTreeClassifierTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new ExtraTreeClassifier(10, 3, 0., null);
+        $this->estimator = new ExtraTreeClassifier(10, 3, 3, 1e-7);
 
         $this->metric = new Accuracy();
 
@@ -49,7 +50,8 @@ class ExtraTreeClassifierTest extends TestCase
     public function test_build_classifier()
     {
         $this->assertInstanceOf(ExtraTreeClassifier::class, $this->estimator);
-        $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
+        $this->assertInstanceOf(ExtraTree::class, $this->estimator);
+        $this->assertInstanceOf(DecisionTree::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Probabilistic::class, $this->estimator);
         $this->assertInstanceOf(Estimator::class, $this->estimator);

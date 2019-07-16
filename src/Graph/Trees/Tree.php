@@ -7,22 +7,15 @@ use Rubix\ML\Datasets\Dataset;
 interface Tree
 {
     /**
-     * Return the root node of the tree.
-     *
-     * @return mixed
-     */
-    public function root();
-    
-    /**
-     * Insert a root node and recursively split the dataset a terminating
-     * condition is met.
+     * Insert a root node and recursively split the dataset until a
+     * terminating condition is met.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function grow(Dataset $dataset) : void;
 
     /**
-     * Return the height of the tree.
+     * Return the height of the tree i.e. the number of levels.
      *
      * @return int
      */
@@ -36,7 +29,7 @@ interface Tree
     public function bare() : bool;
 
     /**
-     * Destroy the tree.
+     * Remove the root node and its descendents from the tree.
      */
     public function destroy() : void;
 }

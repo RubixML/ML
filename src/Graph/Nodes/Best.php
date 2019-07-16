@@ -6,28 +6,35 @@ use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
 
 /**
- * Average
+ * Best
  *
- * A decision node whose outcome is the average of all the labels it is
- * responsible for.
+ * A decision node whose outcome is the most probable class given a set
+ * of class labels.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Average implements Outcome, Leaf
+class Best implements Outcome, Leaf
 {
     use HasBinaryChildren;
-    
+
     /**
-     * The average of the labels contained within.
+     * The outcome of a decision.
      *
-     * @var int|float
+     * @var int|float|string
      */
     protected $outcome;
 
     /**
-     * The amount of impurity within the labels of the node.
+     * The probabilities of each discrete class outcome.
+     *
+     * @var float[]
+     */
+    protected $probabilities;
+
+    /**
+     * The amount of impurity among the labels in the node.
      *
      * @var float
      */
@@ -42,31 +49,42 @@ class Average implements Outcome, Leaf
     
     /**
      * @param mixed $outcome
+     * @param array $probabilities
      * @param float $impurity
      * @param int $n
      * @throws \InvalidArgumentException
      */
-    public function __construct($outcome, float $impurity, int $n)
+    public function __construct($outcome, array $probabilities, float $impurity, int $n)
     {
-        if (!is_int($outcome) and !is_float($outcome)) {
+        if (!is_int($outcome) and !is_string($outcome)) {
             throw new InvalidArgumentException('Outcome must be an'
-                . ' integer or float, ' . gettype($outcome) . ' found.');
+                . ' int or string, ' . gettype($outcome) . ' given.');
         }
 
         $this->outcome = $outcome;
+        $this->probabilities = $probabilities;
         $this->impurity = $impurity;
         $this->n = $n;
     }
 
     /**
-     * Return the outcome of the decision i.e the average of the
-     * labels.
+     * Return the outcome of the decision.
      *
      * @return int|float|string
      */
     public function outcome()
     {
         return $this->outcome;
+    }
+
+    /**
+     * Return the probabilities of each possible outcome.
+     *
+     * @return float[]
+     */
+    public function probabilities() : array
+    {
+        return $this->probabilities;
     }
 
     /**

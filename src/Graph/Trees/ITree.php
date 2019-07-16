@@ -22,7 +22,7 @@ use InvalidArgumentException;
  */
 class ITree implements BinaryTree
 {
-    protected const CELL_MAX = 1;
+    protected const MAX_LEAF_SIZE = 1;
     
     /**
      * The root node of the tree.
@@ -68,17 +68,7 @@ class ITree implements BinaryTree
     }
 
     /**
-     * Return the root node of the tree.
-     *
-     * @return \Rubix\ML\Graph\Nodes\Isolator|null
-     */
-    public function root() : ?Isolator
-    {
-        return $this->root;
-    }
-
-    /**
-     * Return the height of the tree.
+     * Return the height of the tree i.e. the number of levels.
      *
      * @return int
      */
@@ -88,7 +78,9 @@ class ITree implements BinaryTree
     }
 
     /**
-     * Return the balance of the tree.
+     * Return the balance factor of the tree. A balanced tree will have
+     * a factor of 0 whereas an imbalanced tree will either be positive
+     * or negative indicating the direction and degree of the imbalance.
      *
      * @return int
      */
@@ -108,8 +100,8 @@ class ITree implements BinaryTree
     }
 
     /**
-     * Insert a root node and recursively split the dataset a terminating
-     * condition is met.
+     * Insert a root node and recursively split the dataset until a
+     * terminating condition is met.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
@@ -135,7 +127,7 @@ class ITree implements BinaryTree
                 continue 1;
             }
     
-            if ($left->numRows() > self::CELL_MAX) {
+            if ($left->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($left);
     
                 $current->attachLeft($node);
@@ -145,7 +137,7 @@ class ITree implements BinaryTree
                 $current->attachLeft(Cell::terminate($left, $depth));
             }
     
-            if ($right->numRows() > self::CELL_MAX) {
+            if ($right->numRows() > self::MAX_LEAF_SIZE) {
                 $node = Isolator::split($right);
     
                 $current->attachRight($node);
@@ -158,7 +150,7 @@ class ITree implements BinaryTree
     }
 
     /**
-     * Search the tree for a terminal node.
+     * Search the tree for a leaf node.
      *
      * @param array $sample
      * @return \Rubix\ML\Graph\Nodes\Cell|null

@@ -2,13 +2,10 @@
 
 namespace Rubix\ML\Tests\Graph\Trees;
 
-use Rubix\ML\Graph\Nodes\Ball;
 use Rubix\ML\Graph\Trees\Tree;
 use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Graph\Trees\BinaryTree;
-use Rubix\ML\Graph\Nodes\BinaryNode;
-use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
@@ -41,17 +38,12 @@ class BallTreeTest extends TestCase
         $this->assertInstanceOf(BinaryTree::class, $this->tree);
         $this->assertInstanceOf(Tree::class, $this->tree);
 
-        $this->assertNull($this->tree->root());
         $this->assertEquals(0, $this->tree->height());
     }
 
     public function test_grow_neighbors_range()
     {
         $this->tree->grow($this->generator->generate(50));
-
-        $this->assertInstanceOf(Hypersphere::class, $this->tree->root());
-        $this->assertInstanceOf(Ball::class, $this->tree->root());
-        $this->assertInstanceOf(BinaryNode::class, $this->tree->root());
 
         $this->assertGreaterThan(2, $this->tree->height());
 
