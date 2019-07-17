@@ -164,9 +164,14 @@ public batch(int $n = 50) : array
 ```
 
 ### Randomization
-Randomize the order of the Dataset and return it:
+Randomize the order of the Dataset and return it for method chaining:
 ```php
 public randomize() : self
+```
+
+Generate a random subset without replacement:
+```php
+public randomSubsetWithoutReplacement(int $n) : self
 ```
 
 Generate a random subset with replacement of size *n*:
@@ -182,11 +187,17 @@ public randomWeightedSubsetWithReplacement($n, array $weights) : self
 **Example**
 
 ```php
-// Randomize and split the dataset into two subsets
+// Randomize and split the dataset and split into two subsets
 [$left, $right] = $dataset->randomize()->split(0.8);
 
-// Generate a bootstrap dataset of 500 random samples
+// Generate a random unique subset of 50 random samples
+$subset = $dataset->randomSubsetWithoutReplacement(50);
+
+// Generate a 'bootstrap' dataset of 500 random samples
 $subset = $dataset->randomSubsetWithReplacement(500);
+
+// Sample a random subset according to a given weight distribution
+$subset = $dataset->randomWeightedSubsetWithReplacement(200, $weights);
 ```
 
 ### Filtering

@@ -20,6 +20,9 @@
     - Extra Tree splits are now unbiased
     - Extra Tree Classifier now minimizes entropy
     - Reduced the memory footprint of Binary Nodes
+    - Gradient Boost shrinkage bounded between 0 and 1
+    - Added random subset without replacement to dataset API
+    - Changed order of Gradient Boost hyperparameters
 
 - 0.0.13-beta
     - Added documentation site

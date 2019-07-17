@@ -249,6 +249,14 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
     public function spatialPartition(array $leftCentroid, array $rightCentroid, Distance $kernel);
 
     /**
+     * Generate a random subset without replacement.
+     *
+     * @param int $n
+     * @return self
+     */
+    public function randomSubsetWithoutReplacement(int $n);
+
+    /**
      * Generate a random subset of n samples with replacement.
      *
      * @param int $n

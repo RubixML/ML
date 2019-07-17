@@ -412,6 +412,34 @@ class Unlabeled extends DataFrame implements Dataset
     }
 
     /**
+     * Generate a random subset without replacement.
+     *
+     * @param int $n
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function randomSubsetWithoutReplacement(int $n) : self
+    {
+        if ($n < 1) {
+            throw new InvalidArgumentException('Cannot generate a'
+                . " subset of less than 1 sample, $n given.");
+        }
+
+        if ($n > $this->numRows()) {
+            throw new InvalidArgumentException('Cannot generate subset'
+                . " of more than {$this->numRows()}, $n given.");
+        }
+
+        $indices = array_rand($this->samples, $n);
+
+        $indices = is_array($indices) ? $indices : [$indices];
+        
+        $indices = array_flip($indices);
+
+        return self::quick(array_intersect_key($this->samples, $indices));
+    }
+
+    /**
      * Generate a random subset with replacement.
      *
      * @param int $n

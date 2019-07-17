@@ -209,6 +209,13 @@ class UnlabeledTest extends TestCase
         $this->assertCount(4, $right);
     }
 
+    public function test_random_subset_without_replacement()
+    {
+        $subset = $this->dataset->randomSubsetWithoutReplacement(3);
+
+        $this->assertCount(3, $subset);
+    }
+
     public function test_random_subset_with_replacement()
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);

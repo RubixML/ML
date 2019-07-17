@@ -41,11 +41,16 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 {
     use LoggerAware;
 
+    public const COMPATIBLE_BOOSTERS = [
+        RegressionTree::class,
+        ExtraTreeRegressor::class,
+    ];
+
     /**
      * The weak regressor that will fix up the error residuals of the base
      * learner.
      *
-     * @var \Rubix\ML\Regressors\RegressionTree
+     * @var \Rubix\ML\Learner
      */
     protected $booster;
 
@@ -103,25 +108,30 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     ];
 
     /**
-     * @param \Rubix\ML\Regressors\RegressionTree|null $booster
-     * @param int $estimators
+     * @param \Rubix\ML\Learner|null $booster
      * @param float $rate
+     * @param int $estimators
      * @param float $ratio
      * @param float $minChange
      * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        ?RegressionTree $booster = null,
-        int $estimators = 100,
+        ?Learner $booster = null,
         float $rate = 0.1,
-        float $ratio = 0.8,
+        int $estimators = 100,
+        float $ratio = 1.0,
         float $minChange = 1e-4,
         ?Learner $base = null
     ) {
-        if ($rate < 0.) {
-            throw new InvalidArgumentException('Learning rate must be greater'
-                . " than 0, $rate given.");
+        if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
+            throw new InvalidArgumentException('Booster learner is not'
+                . ' compatible with ensemble.');
+        }
+
+        if ($rate <= 0. or $rate > 1.) {
+            throw new InvalidArgumentException('Learning rate must be between'
+                . " 0 and 1, $rate given.");
         }
 
         if ($estimators < 1) {
@@ -135,8 +145,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         if ($minChange < 0.) {
-            throw new InvalidArgumentException('Minimum change cannot be less'
-                . " than 0, $minChange given.");
+            throw new InvalidArgumentException('Minimum change must be'
+                . " greater than 0, $minChange given.");
         }
 
         if ($base and $base->type() !== self::REGRESSOR) {
@@ -145,8 +155,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         $this->booster = $booster ?? new RegressionTree(3);
-        $this->estimators = $estimators;
         $this->rate = $rate;
+        $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->minChange = $minChange;
         $this->base = $base ?? new DummyRegressor(new Mean());
@@ -184,7 +194,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      */
     public function trained() : bool
     {
-        return !empty($this->ensemble);
+        return $this->base->trained() and $this->ensemble;
     }
 
     /**
@@ -215,8 +225,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         if ($this->logger) {
             $this->logger->info('Learner init ' . Params::stringify([
                 'booster' => $this->booster,
-                'estimators' => $this->estimators,
                 'rate' => $this->rate,
+                'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
                 'base' => $this->base,
@@ -231,26 +241,30 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
         $this->base->train($dataset);
 
-        $output = Vector::quick($this->base->predict($dataset));
         $target = Vector::quick($dataset->labels());
+        $output = Vector::quick($this->base->predict($dataset));
 
         $gradient = $this->gradient($output, $target)->asArray();
-
+    
         $dataset = Labeled::quick($dataset->samples(), $gradient);
 
         $this->ensemble = $this->steps = [];
 
+        $prevOut = $output;
         $previous = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
             $booster = clone $this->booster;
 
-            $subset = $dataset->randomize()->head($p);
+            $subset = $dataset->randomSubsetWithoutReplacement($p);
 
             $booster->train($subset);
 
-            $output = Vector::quick($booster->predict($dataset));
-            $target = Vector::quick($dataset->labels());
+            $predictions = $booster->predict($dataset);
+
+            $output = Vector::quick($predictions)
+                ->multiply($this->rate)
+                ->add($prevOut);
 
             $loss = $this->loss($output, $target);
 
@@ -269,13 +283,12 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            $output = $output->multiply($this->rate);
-
             $gradient = $this->gradient($output, $target)->asArray();
 
             $dataset = Labeled::quick($dataset->samples(), $gradient);
 
             $previous = $loss;
+            $prevOut = $output;
         }
 
         if ($this->logger) {
@@ -311,7 +324,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
-     * Calculate the training loss.
+     * Calculate the mean squared error training loss.
      *
      * @param \Rubix\Tensor\Vector $output
      * @param \Rubix\Tensor\Vector $target
