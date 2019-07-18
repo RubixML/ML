@@ -130,8 +130,11 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
      * @throws \InvalidArgumentException
      * @return float
      */
-    public static function estimateRadius(Dataset $dataset, float $percentile = 30., ?Distance $kernel = null) : float
-    {
+    public static function estimateRadius(
+        Dataset $dataset,
+        float $percentile = 30.,
+        ?Distance $kernel = null
+    ) : float {
         if ($percentile < 0. or $percentile > 100.) {
             throw new InvalidArgumentException('Percentile must be between'
                 . " 0 and 100, $percentile given.");
@@ -313,19 +316,19 @@ class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistab
                 }
             }
 
-            $shift = $this->shift($centroids, $previous);
+            $loss = $this->shift($centroids, $previous);
 
-            $this->steps[] = $shift;
+            $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Shift=$shift");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($shift)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
-            if ($shift < $this->minChange) {
+            if ($loss < $this->minChange) {
                 break 1;
             }
 

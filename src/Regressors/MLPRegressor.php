@@ -20,9 +20,9 @@ use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\CostFunctions\RegressionLoss;
-use Rubix\ML\CrossValidation\Metrics\MeanSquaredError;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -114,19 +114,19 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
     protected $holdout;
 
     /**
-     * The Validation metric used to validate the performance of the model.
-     *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
-     */
-    protected $metric;
-
-    /**
-     * The training window to consider during early stop checking i.e. the last
-     * n epochs.
+     * The number of epochs to consider when determining an early stop.
      *
      * @var int
      */
     protected $window;
+
+    /**
+     * The metric used to score the generalization performance of the model
+     * during training.
+     *
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
+    protected $metric;
 
     /**
      * The underlying neural network instance.
@@ -162,8 +162,8 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
      * @param float $minChange
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
      * @param float $holdout
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param int $window
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -175,8 +175,8 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
         float $minChange = 1e-4,
         ?RegressionLoss $costFn = null,
         float $holdout = 0.1,
-        ?Metric $metric = null,
-        int $window = 3
+        int $window = 3,
+        ?Metric $metric = null
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -203,13 +203,13 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
-        }
-
         if ($window < 2) {
             throw new InvalidArgumentException('Window must be at least 2'
                 . " epochs, $window given.");
+        }
+
+        if ($metric) {
+            EstimatorIsCompatibleWithMetric::check($this, $metric);
         }
 
         $this->hidden = $hidden;
@@ -220,8 +220,8 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
         $this->minChange = $minChange;
         $this->costFn = $costFn ?? new LeastSquares();
         $this->holdout = $holdout;
-        $this->metric = $metric ?? new MeanSquaredError();
         $this->window = $window;
+        $this->metric = $metric ?? new RSquared();
     }
 
     /**
@@ -340,27 +340,22 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
                 'cost_fn' => $this->costFn,
+                'hold_out' => $this->holdout,
+                'metric' => $this->metric,
+                'window' => $this->window,
             ]));
         }
 
-        $n = $dataset->numRows();
-
-        [$testing, $training] = $dataset->stratifiedSplit($this->holdout);
+        [$testing, $training] = $dataset->randomize()->split($this->holdout);
 
         [$min, $max] = $this->metric->range();
 
-        $randomize = $n > $this->batchSize ? true : false;
-
         $bestScore = $min;
         $bestSnapshot = null;
-        $previous = INF;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            if ($randomize) {
-                $training->randomize();
-            }
-
-            $batches = $training->batch($this->batchSize);
+            $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.;
 
@@ -368,32 +363,29 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $n;
+            $loss /= count($batches);
 
             $predictions = $this->predict($testing);
 
             $score = $this->metric->score($predictions, $testing->labels());
-
-            $this->steps[] = $loss;
-            $this->scores[] = $score;
 
             if ($score > $bestScore) {
                 $bestScore = $score;
                 $bestSnapshot = new Snapshot($this->network);
             }
 
-            if ($this->logger) {
-                $scoreName = Params::shortName($this->metric);
-                $lossName = Params::shortName($this->costFn);
+            $this->steps[] = $loss;
+            $this->scores[] = $score;
 
-                $this->logger->info("Epoch $epoch $scoreName=$score $lossName=$loss");
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch score=$score loss=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if (abs($previous - $loss) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
@@ -411,15 +403,13 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                     break 1;
                 }
             }
+
+            $prevLoss = $loss;
         }
 
         if (end($this->scores) < $bestScore) {
             if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
-
-                if ($this->logger) {
-                    $this->logger->info('Network restored from snapshot');
-                }
             }
         }
 

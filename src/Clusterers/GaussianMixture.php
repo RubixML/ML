@@ -316,7 +316,7 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 

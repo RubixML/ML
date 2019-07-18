@@ -18,10 +18,10 @@ A multi layer feedforward neural network with a continuous output layer suitable
 | 4 | alpha | 1e-4 | float | The amount of L2 regularization to apply to the weights of the network. |
 | 5 | epochs | 1000 | int | The maximum number of training epochs to execute. |
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
-| 7 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
+| 7 | cost fn | LeastSquares | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | metric | Mean Squared Error | object | The validation metric used to monitor the training progress of the network. |
-| 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 9 | window | 3 | int | The number of epochs to consider when determining an early stop. |
+| 10 | metric | RSquared | object | The metric used to score the generalization performance of the model during training. |
 
 ### Additional Methods
 Return the average loss of a sample at each epoch of training:
@@ -55,7 +55,7 @@ $estimator = new MLPRegressor([
 	new Activation(new LeakyReLU(0.1)),
 	new Dense(50),
 	new Activation(new LeakyReLU(0.1)),
-], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, new RSquared(), 3);
+], 256, new RMSProp(0.001), 1e-3, 100, 1e-5, new LeastSquares(), 0.1, 3, new RSquared());
 ```
 
 ### References

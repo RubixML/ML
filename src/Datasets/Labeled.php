@@ -767,12 +767,14 @@ class Labeled extends DataFrame implements Dataset
 
         $indices = is_array($indices) ? $indices : [$indices];
 
-        $indices = array_flip($indices);
+        $samples = $labels = [];
 
-        return self::quick(
-            array_intersect_key($this->samples, $indices),
-            array_intersect_key($this->labels, $indices)
-        );
+        foreach ($indices as $index) {
+            $samples[] = $this->samples[$index];
+            $labels[] = $this->labels[$index];
+        }
+
+        return self::quick($samples, $labels);
     }
 
     /**

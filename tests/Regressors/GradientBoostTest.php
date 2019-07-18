@@ -6,11 +6,9 @@ use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Loggers\BlackHole;
 use Rubix\ML\Regressors\GradientBoost;
-use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Regressors\RegressionTree;
 use Rubix\ML\Datasets\Generators\SwissRoll;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
@@ -36,7 +34,7 @@ class GradientBoostTest extends TestCase
     {
         $this->generator = new SwissRoll(4., -7., 0., 1., 0.3);
 
-        $this->estimator = new GradientBoost(new RegressionTree(3), 0.1, 100, 0.5, 1e-4, new DummyRegressor(new Mean()));
+        $this->estimator = new GradientBoost(new RegressionTree(3), 0.3, 300, 0.3, 1e-4);
     
         $this->metric = new RSquared();
 

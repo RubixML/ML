@@ -53,7 +53,7 @@ class MultiLayerPerceptronTest extends TestCase
             new Activation(new LeakyReLU()),
             new Dense(10),
             new Activation(new LeakyReLU()),
-        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, new MCC(), 3);
+        ], 10, new AdaMax(0.01), 1e-4, 100, 1e-3, new CrossEntropy(), 0.1, 3, new MCC());
 
         $this->metric = new Accuracy();
 

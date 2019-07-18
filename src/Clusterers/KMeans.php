@@ -280,16 +280,12 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         $order = range(0, $n - 1);
 
-        $randomize = $n > $this->batchSize ? true : false;
-
-        $previous = INF;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            if ($randomize) {
-                shuffle($order);
+            shuffle($order);
 
-                array_multisort($order, $samples, $labels);
-            }
+            array_multisort($order, $samples, $labels);
 
             $sBatches = array_chunk($samples, $this->batchSize, true);
             $lBatches = array_chunk($labels, $this->batchSize, true);
@@ -331,23 +327,23 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 }
             }
 
-            $inertia = $this->inertia($samples);
+            $loss = $this->inertia($samples);
 
-            $this->steps[] = $inertia;
+            $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Inertia=$inertia");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($inertia)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
-            if (abs($previous - $inertia) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $inertia;
+            $prevLoss = $loss;
         }
 
         if ($this->logger) {

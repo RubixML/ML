@@ -434,9 +434,13 @@ class Unlabeled extends DataFrame implements Dataset
 
         $indices = is_array($indices) ? $indices : [$indices];
         
-        $indices = array_flip($indices);
+        $samples = [];
 
-        return self::quick(array_intersect_key($this->samples, $indices));
+        foreach ($indices as $index) {
+            $samples[] = $this->samples[$index];
+        }
+
+        return self::quick($samples);
     }
 
     /**

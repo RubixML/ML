@@ -12,6 +12,9 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\CrossValidation\Metrics\Metric;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -32,6 +35,7 @@ use const Rubix\ML\EPSILON;
  * References:
  * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient
  * Boosting Machine.
+ * [2] J. H. Friedman. (1999). Stochastic Gradient Boosting.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -83,6 +87,29 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $minChange;
 
     /**
+     * The holdout of training samples to use for validation. i.e. the holdout
+     * holdout.
+     *
+     * @var float
+     */
+    protected $holdout;
+
+    /**
+     * The number of epochs to consider when determining an early stop.
+     *
+     * @var int
+     */
+    protected $window;
+
+    /**
+     * The metric used to score the generalization performance of the model
+     * during training.
+     *
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
+    protected $metric;
+
+    /**
      * The base regressor to be boosted.
      *
      * @var \Rubix\ML\Learner
@@ -90,11 +117,20 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $base;
 
     /**
-     * The ensemble of "weak" regressors.
+     * An ensemble of weak regressors.
      *
      * @var array
      */
     protected $ensemble = [
+        //
+    ];
+
+    /**
+     * The validation scores at each epoch.
+     *
+     * @var array
+     */
+    protected $scores = [
         //
     ];
 
@@ -113,15 +149,21 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * @param int $estimators
      * @param float $ratio
      * @param float $minChange
+     * @param float $holdout
+     * @param int $window
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param \Rubix\ML\Learner|null $base
      * @throws \InvalidArgumentException
      */
     public function __construct(
         ?Learner $booster = null,
         float $rate = 0.1,
-        int $estimators = 100,
-        float $ratio = 1.0,
+        int $estimators = 1000,
+        float $ratio = 0.5,
         float $minChange = 1e-4,
+        float $holdout = 0.1,
+        int $window = 6,
+        ?Metric $metric = null,
         ?Learner $base = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
@@ -149,6 +191,20 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " greater than 0, $minChange given.");
         }
 
+        if ($holdout < 0.01 or $holdout > 0.5) {
+            throw new InvalidArgumentException('Holdout ratio must be between'
+                . " 0.01 and 0.5, $holdout given.");
+        }
+
+        if ($window < 2) {
+            throw new InvalidArgumentException('Window must be at least 2'
+                . " epochs, $window given.");
+        }
+
+        if ($metric) {
+            EstimatorIsCompatibleWithMetric::check($this, $metric);
+        }
+
         if ($base and $base->type() !== self::REGRESSOR) {
             throw new InvalidArgumentException('Base estimator must be a'
                 . ' regressor, ' . self::TYPES[$base->type()] . ' given.');
@@ -159,6 +215,9 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $this->estimators = $estimators;
         $this->ratio = $ratio;
         $this->minChange = $minChange;
+        $this->holdout = $holdout;
+        $this->window = $window;
+        $this->metric = $metric ?? new RSquared();
         $this->base = $base ?? new DummyRegressor(new Mean());
     }
 
@@ -198,6 +257,16 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     }
 
     /**
+     * Return the validation scores at each epoch.
+     *
+     * @return array
+     */
+    public function scores() : array
+    {
+        return $this->scores;
+    }
+
+    /**
      * Return the average cost at every epoch.
      *
      * @return array
@@ -229,66 +298,102 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 'estimators' => $this->estimators,
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
+                'hold_out' => $this->holdout,
+                'metric' => $this->metric,
+                'window' => $this->window,
                 'base' => $this->base,
             ]));
         }
 
-        $p = (int) round($this->ratio * $dataset->numRows());
+        $this->ensemble = $this->scores = $this->steps = [];
+
+        [$testing, $training] = $dataset->randomize()->split($this->holdout);
+
+        [$min, $max] = $this->metric->range();
 
         if ($this->logger) {
-            $this->logger->info('Training base estimator');
+            $this->logger->info('Training base learner');
         }
 
-        $this->base->train($dataset);
+        $this->base->train($training);
 
-        $target = Vector::quick($dataset->labels());
-        $output = Vector::quick($this->base->predict($dataset));
+        $out = $prevOut = Vector::quick($this->base->predict($training));
+        $target = Vector::quick($training->labels());
 
-        $gradient = $this->gradient($output, $target)->asArray();
-    
-        $dataset = Labeled::quick($dataset->samples(), $gradient);
+        $prevPred = Vector::quick($this->base->predict($testing));
 
-        $this->ensemble = $this->steps = [];
+        $k = (int) round($this->ratio * $training->numRows());
 
-        $prevOut = $output;
-        $previous = INF;
+        $bestScore = $min;
+        $bestEpoch = 0;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
+            $gradient = $this->gradient($out, $target)->asArray();
+    
+            $training = Labeled::quick($training->samples(), $gradient);
+
             $booster = clone $this->booster;
 
-            $subset = $dataset->randomSubsetWithoutReplacement($p);
+            $subset = $training->randomSubsetWithoutReplacement($k);
 
             $booster->train($subset);
 
-            $predictions = $booster->predict($dataset);
-
-            $output = Vector::quick($predictions)
+            $out = Vector::quick($booster->predict($training))
                 ->multiply($this->rate)
                 ->add($prevOut);
 
-            $loss = $this->loss($output, $target);
+            $loss = $this->loss($out, $target);
+
+            $pred = Vector::quick($booster->predict($testing))
+                ->multiply($this->rate)
+                ->add($prevPred);
+
+            $score = $this->metric->score($pred->asArray(), $testing->labels());
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestEpoch = $epoch;
+            }
 
             $this->ensemble[] = $booster;
             $this->steps[] = $loss;
+            $this->scores[] = $score;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch loss=$loss");
+                $this->logger->info("Epoch $epoch score=$score loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
+            if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if (abs($previous - $loss) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $gradient = $this->gradient($output, $target)->asArray();
+            if ($loss < EPSILON or $score >= $max) {
+                break 1;
+            }
 
-            $dataset = Labeled::quick($dataset->samples(), $gradient);
+            if ($epoch > $this->window) {
+                $window = array_slice($this->scores, -$this->window);
 
-            $previous = $loss;
-            $prevOut = $output;
+                $worst = $window;
+                rsort($worst);
+
+                if ($window === $worst) {
+                    break 1;
+                }
+            }
+
+            $prevLoss = $loss;
+            $prevOut = $out;
+            $prevPred = $pred;
+        }
+
+        if (end($this->scores) < $bestScore) {
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
         }
 
         if ($this->logger) {
@@ -306,7 +411,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->ensemble)) {
+        if (!$this->base->trained() or empty($this->ensemble)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -330,19 +435,20 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
      * @param \Rubix\Tensor\Vector $target
      * @return float
      */
-    public function loss(Vector $output, Vector $target) : float
+    protected function loss(Vector $output, Vector $target) : float
     {
         return $target->subtract($output)->square()->mean();
     }
 
     /**
-     * Compute the negative gradient of the cost function.
+     * Compute the pseudo residuals i.e. the negative gradient of the
+     * cost function.
      *
      * @param \Rubix\Tensor\Vector $output
      * @param \Rubix\Tensor\Vector $target
      * @return \Rubix\Tensor\Vector
      */
-    public function gradient(Vector $output, Vector $target) : Vector
+    protected function gradient(Vector $output, Vector $target) : Vector
     {
         return $target->subtract($output);
     }

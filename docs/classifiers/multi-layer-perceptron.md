@@ -20,8 +20,8 @@ A multiclass feedforward Neural Network classifier that uses a series of user-de
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | metric | FBeta | object | The validation metric used to monitor the training progress of the network. |
-| 10 | window | 3 | int | The number of epochs to consider when determining if the algorithm should terminate or keep training. |
+| 9 | window | 3 | int | The number of epochs to consider when determining an early stop. |
+| 10 | metric | RSquared | object | The metric used to score the generalization performance of the model during training. |
 
 ### Additional Methods
 Return the average loss of a sample at each epoch of training:
@@ -62,8 +62,7 @@ $estimator = new MultiLayerPerceptron([
     new PReLU(),
     new Dense(30),
     new PReLU(),
-], 100, new Adam(0.001), 1e-4, 1000, 1e-3,
-new CrossEntropy(), 0.1, new MCC(), 3);
+], 100, new Adam(0.001), 1e-4, 1000, 1e-3, new CrossEntropy(), 0.1, 3, new MCC());
 ```
 
 ### References

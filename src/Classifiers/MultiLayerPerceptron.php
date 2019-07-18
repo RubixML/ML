@@ -115,19 +115,19 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
     protected $holdout;
 
     /**
-     * The Validation metric used to validate the performance of the model.
-     *
-     * @var \Rubix\ML\CrossValidation\Metrics\Metric
-     */
-    protected $metric;
-
-    /**
-     * The training window to consider during early stop checking i.e. the last
-     * n epochs.
+     * The number of epochs to consider when determining an early stop.
      *
      * @var int
      */
     protected $window;
+
+    /**
+     * The metric used to score the generalization performance of the model
+     * during training.
+     *
+     * @var \Rubix\ML\CrossValidation\Metrics\Metric
+     */
+    protected $metric;
 
     /**
      * The unique class labels.
@@ -170,8 +170,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
      * @param float $minChange
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
      * @param float $holdout
-     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @param int $window
+     * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -183,8 +183,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         float $minChange = 1e-4,
         ?ClassificationLoss $costFn = null,
         float $holdout = 0.1,
-        ?Metric $metric = null,
-        int $window = 3
+        int $window = 3,
+        ?Metric $metric = null
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -211,13 +211,13 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if ($metric) {
-            EstimatorIsCompatibleWithMetric::check($this, $metric);
-        }
-
         if ($window < 2) {
             throw new InvalidArgumentException('Window must be at least 2'
                 . " epochs, $window given.");
+        }
+
+        if ($metric) {
+            EstimatorIsCompatibleWithMetric::check($this, $metric);
         }
 
         $this->hidden = $hidden;
@@ -228,8 +228,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         $this->minChange = $minChange;
         $this->costFn = $costFn ?? new CrossEntropy();
         $this->holdout = $holdout;
-        $this->metric = $metric ?? new FBeta();
         $this->window = $window;
+        $this->metric = $metric ?? new FBeta();
     }
 
     /**
@@ -355,24 +355,16 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
             ]));
         }
 
-        $n = $dataset->numRows();
-
         [$testing, $training] = $dataset->stratifiedSplit($this->holdout);
 
         [$min, $max] = $this->metric->range();
 
-        $randomize = $n > $this->batchSize ? true : false;
-
         $bestScore = $min;
         $bestSnapshot = null;
-        $previous = INF;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            if ($randomize) {
-                $training->randomize();
-            }
-            
-            $batches = $training->batch($this->batchSize);
+            $batches = $training->randomize()->batch($this->batchSize);
 
             $loss = 0.;
 
@@ -380,32 +372,29 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $n;
+            $loss /= count($batches);
 
             $predictions = $this->predict($testing);
 
             $score = $this->metric->score($predictions, $testing->labels());
-
-            $this->steps[] = $loss;
-            $this->scores[] = $score;
 
             if ($score > $bestScore) {
                 $bestScore = $score;
                 $bestSnapshot = new Snapshot($this->network);
             }
 
-            if ($this->logger) {
-                $scoreName = Params::shortName($this->metric);
-                $lossName = Params::shortName($this->costFn);
+            $this->steps[] = $loss;
+            $this->scores[] = $score;
 
-                $this->logger->info("Epoch $epoch $scoreName=$score $lossName=$loss");
+            if ($this->logger) {
+                $this->logger->info("Epoch $epoch score=$score loss=$loss");
             }
 
             if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
-            if (abs($previous - $loss) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
@@ -424,16 +413,12 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 }
             }
 
-            $previous = $loss;
+            $prevLoss = $loss;
         }
 
         if (end($this->scores) < $bestScore) {
             if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
-
-                if ($this->logger) {
-                    $this->logger->info('Network restored from snapshot');
-                }
             }
         }
 

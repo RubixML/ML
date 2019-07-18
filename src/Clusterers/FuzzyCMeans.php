@@ -231,7 +231,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         $samples = $dataset->samples();
         $rotated = $dataset->columns();
 
-        $previous = INF;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $memberships = array_map([self::class, 'membership'], $samples);
@@ -251,23 +251,23 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 }
             }
 
-            $inertia = $this->inertia($dataset, $memberships);
+            $loss = $this->inertia($dataset, $memberships);
 
-            $this->steps[] = $inertia;
+            $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Inertia=$inertia");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($inertia)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
-            if (abs($previous - $inertia) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $inertia;
+            $prevLoss = $loss;
         }
 
         if ($this->logger) {

@@ -23,6 +23,8 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\EPSILON;
+
 /**
  * Adaline
  *
@@ -252,19 +254,11 @@ class Adaline implements Estimator, Online, Verbose, Persistable
                 'cost_fn' => $this->costFn,
             ]));
         }
-
-        $n = $dataset->numRows();
-
-        $randomize = $n > $this->batchSize ? true : false;
         
-        $previous = INF;
+        $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            if ($randomize) {
-                $dataset->randomize();
-            }
-            
-            $batches = $dataset->batch($this->batchSize);
+            $batches = $dataset->randomize()->batch($this->batchSize);
 
             $loss = 0.;
 
@@ -272,25 +266,23 @@ class Adaline implements Estimator, Online, Verbose, Persistable
                 $loss += $this->network->roundtrip($batch);
             }
 
-            $loss /= $n;
+            $loss /= count($batches);
 
             $this->steps[] = $loss;
             
             if ($this->logger) {
-                $name = Params::shortName($this->costFn);
-
-                $this->logger->info("Epoch $epoch $name=$loss");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss)) {
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
-            if (abs($previous - $loss) < $this->minChange) {
+            if (abs($prevLoss - $loss) < $this->minChange) {
                 break 1;
             }
 
-            $previous = $loss;
+            $prevLoss = $loss;
         }
 
         if ($this->logger) {

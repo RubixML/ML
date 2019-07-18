@@ -125,14 +125,6 @@ class TSNE implements Embedder, Verbose
     protected $minGradient;
 
     /**
-     * The number of most recent epochs to consider when determining an early
-     * stop.
-     *
-     * @var int
-     */
-    protected $window;
-
-    /**
      * The magnitudes of the gradient at each epoch since the last embedding.
      *
      * @var float[]
@@ -146,10 +138,9 @@ class TSNE implements Embedder, Verbose
      * @param int $perplexity
      * @param float $exaggeration
      * @param float $rate
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minGradient
-     * @param int $window
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -157,10 +148,9 @@ class TSNE implements Embedder, Verbose
         int $perplexity = 30,
         float $exaggeration = 12.,
         float $rate = 100.,
-        ?Distance $kernel = null,
         int $epochs = 1000,
         float $minGradient = 1e-8,
-        int $window = 3
+        ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
             throw new InvalidArgumentException('Cannot embed into less than 1'
@@ -192,22 +182,16 @@ class TSNE implements Embedder, Verbose
                 . " gradient must be 0 or greater, $minGradient given.");
         }
 
-        if ($window < 2) {
-            throw new InvalidArgumentException('The window of epochs used for'
-                . " monitoring must be greater than 1, $window given.");
-        }
-
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
         $this->perplexity = $perplexity;
         $this->entropy = log($perplexity);
         $this->exaggeration = $exaggeration;
         $this->rate = $rate;
-        $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->early = min(250, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
-        $this->window = $window;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**
@@ -245,17 +229,15 @@ class TSNE implements Embedder, Verbose
         DatasetIsCompatibleWithEmbedder::check($dataset, $this);
 
         if ($this->logger) {
-            $this->logger->info('Embedder init w/ '
-                . Params::stringify([
-                    'dimensions' => $this->dimensions,
-                    'perplexity' => $this->perplexity,
-                    'exaggeration' => $this->exaggeration,
-                    'rate' => $this->rate,
-                    'kernel' => $this->kernel,
-                    'epochs' => $this->epochs,
-                    'min_gradient' => $this->minGradient,
-                    'window' => $this->window,
-                ]));
+            $this->logger->info('Embedder init w/ ' . Params::stringify([
+                'dimensions' => $this->dimensions,
+                'perplexity' => $this->perplexity,
+                'exaggeration' => $this->exaggeration,
+                'rate' => $this->rate,
+                'kernel' => $this->kernel,
+                'epochs' => $this->epochs,
+                'min_gradient' => $this->minGradient,
+            ]));
         }
 
         $n = $dataset->numRows();
@@ -263,7 +245,7 @@ class TSNE implements Embedder, Verbose
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing affinity matrix');
+            $this->logger->info('Computing pairwise affinity matrix');
         }
 
         $distances = $this->pairwiseDistances($x);
@@ -285,7 +267,7 @@ class TSNE implements Embedder, Verbose
 
             $gradient = $this->gradient($p, $y, $distances);
 
-            $magnitude = $gradient->l2Norm();
+            $loss = $gradient->l2Norm();
 
             $direction = $velocity->multiply($gradient);
 
@@ -308,29 +290,18 @@ class TSNE implements Embedder, Verbose
 
             $y = $y->add($velocity);
 
-            $this->steps[] = $magnitude;
+            $this->steps[] = $loss;
 
             if ($this->logger) {
-                $this->logger->info("Epoch $epoch Gradient=$magnitude");
+                $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($magnitude)) {
+            if (is_nan($loss)) {
                 break 1;
             }
 
-            if ($magnitude < $this->minGradient) {
+            if ($loss < $this->minGradient) {
                 break 1;
-            }
-
-            if ($epoch > $this->window) {
-                $window = array_slice($this->steps, -$this->window);
-
-                $worst = $window;
-                sort($worst);
-
-                if ($window === $worst) {
-                    break 1;
-                }
             }
 
             if ($epoch === $this->early) {
