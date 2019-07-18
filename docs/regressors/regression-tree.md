@@ -16,7 +16,7 @@ A Decision Tree learning algorithm (CART) that performs greedy splitting by mini
 | 4 | min purity increase | 1e-7 | float | The minimum increase in purity necessary for a node *not* to be post pruned. |
 
 ### Additional Methods
-Return the feature importances calculated during training indexed by feature column:
+Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
 ```php
 public featureImportances() : array
 ```

@@ -1,4 +1,5 @@
 - Unreleased
+    - Added feature importances to Gradient Boost
     - Added progress monitoring to Gradient Boost w/ early stop
     - Added Spatial and Decision tree interface
     - Mean Shift compatible with Spatial trees

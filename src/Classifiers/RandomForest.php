@@ -260,8 +260,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     }
 
     /**
-     * Return the feature importances calculated during training keyed by
-     * feature column.
+     * Return the normalized feature importances i.e. the proportion that each
+     * feature contributes to the overall model, indexed by feature column.
      *
      * @throws \RuntimeException
      * @return array

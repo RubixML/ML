@@ -126,6 +126,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     ];
 
     /**
+     * The number of feature columns in the training set.
+     *
+     * @var int|null
+     */
+    protected $featureCount;
+
+    /**
      * The validation scores at each epoch.
      *
      * @var array
@@ -305,7 +312,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
             ]));
         }
 
-        $this->ensemble = $this->scores = $this->steps = [];
+        $this->featureCount = $dataset->numColumns();
 
         [$testing, $training] = $dataset->randomize()->split($this->holdout);
 
@@ -316,6 +323,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         $this->base->train($training);
+
+        $this->ensemble = $this->scores = $this->steps = [];
 
         $out = $prevOut = Vector::quick($this->base->predict($training));
         $target = Vector::quick($training->labels());
@@ -426,6 +435,36 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         return $predictions;
+    }
+
+    /**
+     * Return the normalized feature importances i.e. the proportion that each
+     * feature contributes to the overall model, indexed by feature column.
+     *
+     * @throws \RuntimeException
+     * @return array
+     */
+    public function featureImportances() : array
+    {
+        if (!$this->ensemble or !$this->featureCount) {
+            throw new RuntimeException('The estimator has not been trained.');
+        }
+
+        $importances = array_fill(0, $this->featureCount, 0.);
+
+        foreach ($this->ensemble as $tree) {
+            foreach ($tree->featureImportances() as $column => $value) {
+                $importances[$column] += $value;
+            }
+        }
+
+        $n = count($this->ensemble);
+
+        foreach ($importances as &$importance) {
+            $importance /= $n;
+        }
+
+        return $importances;
     }
 
     /**

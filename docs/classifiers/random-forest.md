@@ -15,7 +15,10 @@ Ensemble classifier that trains Decision Trees ([Classification Trees](classific
 | 3 | ratio | 0.2 | float | The ratio of random samples (between 0 and 1.5) to train each estimator with. |
 
 ### Additional Methods
-This estimator does not have any additional methods.
+Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
+```php
+public featureImportances() : array
+```
 
 ### Example
 ```php
@@ -23,6 +26,22 @@ use Rubix\ML\Classifiers\RandomForest;
 use Rubix\ML\Classifiers\ClassificationTree;
 
 $estimator = new RandomForest(new ClassificationTree(10), 300, 0.1);
+
+// Train the ensemble
+
+$importances = $estimator->featureImportances();
+
+var_dump($importances);
+```
+
+**Output**
+
+```sh
+array(3) {
+  [0]=> float(0.39250395133811)
+  [1]=> float(0.1555633977313)
+  [2]=> float(0.45193265093059)
+}
 ```
 
 ### References

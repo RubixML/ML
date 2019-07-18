@@ -23,6 +23,16 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 | 9 | base | DummyRegressor | object | The *weak* learner to be boosted. |
 
 ### Additional Methods
+Return the normalized feature importances i.e. the proportion that each feature contributes to the overall model, indexed by feature column:
+```php
+public featureImportances() : array
+```
+
+Return the validation scores at each epoch of training:
+```php
+public scores() : array
+```
+
 Return the training error at each epoch:
 ```php
 public steps() : array
