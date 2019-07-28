@@ -1,4 +1,4 @@
-- Unreleased
+- 0.0.14-beta
     - Added feature importances to Gradient Boost
     - Added progress monitoring to Gradient Boost w/ early stop
     - Added Spatial and Decision tree interface
@@ -26,6 +26,7 @@
     - Added random subset without replacement to dataset API
     - Changed order of Gradient Boost hyperparameters
     - Changed order of MLP hyperparameters
+    - Ranking interface is now a general interface
 
 - 0.0.13-beta
     - Added documentation site

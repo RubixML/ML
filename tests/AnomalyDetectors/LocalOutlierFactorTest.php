@@ -8,7 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\AnomalyDetectors\Ranking;
+use Rubix\ML\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\CrossValidation\Metrics\FBeta;

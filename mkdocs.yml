@@ -29,6 +29,7 @@ nav:
   - Parallel: parallel.md
   - Persistable: persistable.md
   - Probabilistic: probabilistic.md
+  - Ranking: ranking.md
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Anomaly Detectors:
