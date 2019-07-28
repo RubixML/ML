@@ -27,6 +27,7 @@
     - Changed order of Gradient Boost hyperparameters
     - Changed order of MLP hyperparameters
     - Ranking interface is now a general interface
+    - Changed default t-SNE minimum gradient
 
 - 0.0.13-beta
     - Added documentation site

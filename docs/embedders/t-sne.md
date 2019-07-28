@@ -15,7 +15,7 @@
 | 3 | exaggeration | 12. | float | The factor to exaggerate the distances between samples during the early stage of fitting. |
 | 4 | rate | 100. | float | The learning rate that controls the step size. |
 | 5 | epochs | 1000 | int | The maximum number of times to iterate over the embedding. |
-| 6 | min gradient | 1e-8 | float | The minimum gradient necessary to continue embedding. |
+| 6 | min gradient | 1e-7 | float | The minimum gradient necessary to continue the embedding. |
 | 7 | kernel | Euclidean | object | The distance kernel to use when measuring distances between samples. |
 
 ### Additional Methods
@@ -29,7 +29,7 @@ public steps() : array
 use Rubi\ML\Embedders\TSNE;
 use Rubix\ML\Kernels\Manhattan;
 
-$embedder = new TSNE(3, 30, 12., 10., 500, 1e-7, new Manhattan());
+$embedder = new TSNE(3, 30, 12., 10., 500, 1e-6, new Manhattan());
 ```
 
 ### References

@@ -149,7 +149,7 @@ class TSNE implements Embedder, Verbose
         float $exaggeration = 12.,
         float $rate = 100.,
         int $epochs = 1000,
-        float $minGradient = 1e-8,
+        float $minGradient = 1e-7,
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
