@@ -85,11 +85,12 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
     protected $costFn;
 
     /**
-     * The unique class labels.
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
      *
-     * @var array|null
+     * @var int
      */
-    protected $classes;
+    protected $window;
 
     /**
      * The underlying neural network instance.
@@ -97,6 +98,13 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
      * @var \Rubix\ML\NeuralNet\FeedForward|null
      */
     protected $network;
+
+    /**
+     * The unique class labels.
+     *
+     * @var array|null
+     */
+    protected $classes;
 
     /**
      * The average cost of a training sample at each epoch.
@@ -114,6 +122,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss|null $costFn
+     * @param int $window
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -122,7 +131,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?ClassificationLoss $costFn = null
+        ?ClassificationLoss $costFn = null,
+        int $window = 5
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -144,12 +154,18 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
                 . " than 0, $minChange given.");
         }
 
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
+        }
+
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->costFn = $costFn ?? new CrossEntropy();
+        $this->window = $window;
     }
 
     /**
@@ -205,6 +221,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
@@ -230,8 +248,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
     }
 
     /**
-     * Perform mini-batch gradient descent with given optimizer over the training
-     * set and update the input weights accordingly.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -262,7 +279,8 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
             ]));
         }
 
-        $prevLoss = INF;
+        $prevLoss = $bestLoss = INF;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -286,6 +304,18 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
+                break 1;
+            }
+
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+                
+                $delta = 0;
+            } else {
+                $delta++;
+            }
+
+            if ($delta >= $this->window) {
                 break 1;
             }
 

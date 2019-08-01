@@ -16,6 +16,7 @@ A generalization of [Logistic Regression](logistic-regression.md) for multiclass
 | 4 | epochs | 1000 | int | The maximum number of training epochs to execute. |
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Cross Entropy | object | The function that computes the cost of an erroneous activation during training. |
+| 7 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 
 ### Additional Methods
 Return the average loss of a sample at each epoch of training:
@@ -34,5 +35,5 @@ use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\NeuralNet\Optimizers\Momentum;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 
-$estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, new CrossEntropy());
+$estimator = new SoftmaxClassifier(256, new Momentum(0.001), 1e-4, 300, 1e-4, new CrossEntropy(), 10);
 ```

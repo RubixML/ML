@@ -134,6 +134,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     }
 
     /**
+     * Train the estimator with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      */
     public function train(Dataset $dataset) : void
@@ -144,8 +146,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     }
 
     /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

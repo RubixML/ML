@@ -221,7 +221,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Compute the rolling counts and conditional probabilities.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

@@ -41,14 +41,6 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     use LoggerAware;
 
     /**
-     * The maximum number of training epochs. i.e. the number of times to iterate
-     * over the entire training set.
-     *
-     * @var int
-     */
-    protected $epochs;
-
-    /**
      * The number of training samples to consider per iteration of gradient descent.
      *
      * @var int
@@ -70,6 +62,21 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     protected $alpha;
 
     /**
+     * The maximum number of training epochs. i.e. the number of times to iterate
+     * over the entire training set.
+     *
+     * @var int
+     */
+    protected $epochs;
+
+    /**
+     * The minimum change in the weights necessary to continue training.
+     *
+     * @var float
+     */
+    protected $minChange;
+
+    /**
      * The function that computes the cost of an erroneous activation during
      * training.
      *
@@ -78,11 +85,12 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     protected $costFn;
 
     /**
-     * The minimum change in the weights necessary to continue training.
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
      *
-     * @var float
+     * @var int
      */
-    protected $minChange;
+    protected $window;
 
     /**
      * The underlying neural network instance.
@@ -107,6 +115,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
      * @param int $epochs
      * @param float $minChange
      * @param \Rubix\ML\NeuralNet\CostFunctions\RegressionLoss|null $costFn
+     * @param int $window
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -115,7 +124,8 @@ class Adaline implements Estimator, Online, Verbose, Persistable
         float $alpha = 1e-4,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        ?RegressionLoss $costFn = null
+        ?RegressionLoss $costFn = null,
+        int $window = 5
     ) {
         if ($batchSize < 1) {
             throw new InvalidArgumentException('Cannot have less than 1 sample'
@@ -137,12 +147,18 @@ class Adaline implements Estimator, Online, Verbose, Persistable
                 . " than 0, $minChange given.");
         }
 
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
+        }
+
         $this->batchSize = $batchSize;
         $this->optimizer = $optimizer ?? new Adam();
         $this->alpha = $alpha;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
         $this->costFn = $costFn ?? new LeastSquares();
+        $this->window = $window;
     }
 
     /**
@@ -223,8 +239,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     }
 
     /**
-     * Perform mini-batch gradient descent with given optimizer over the training
-     * set and update the model.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
@@ -255,7 +270,8 @@ class Adaline implements Estimator, Online, Verbose, Persistable
             ]));
         }
         
-        $prevLoss = INF;
+        $prevLoss = $bestLoss = INF;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -282,6 +298,18 @@ class Adaline implements Estimator, Online, Verbose, Persistable
                 break 1;
             }
 
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+                
+                $delta = 0;
+            } else {
+                $delta++;
+            }
+
+            if ($delta >= $this->window) {
+                break 1;
+            }
+
             $prevLoss = $loss;
         }
 
@@ -291,8 +319,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
     }
 
     /**
-     * Feed a sample through the network and make a prediction based on the
-     * activation of the output neuron.
+     * Make predictions from a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

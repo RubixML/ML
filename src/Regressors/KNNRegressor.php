@@ -124,6 +124,8 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */
@@ -140,8 +142,7 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     }
 
     /**
-     * Store the sample and outcome arrays. No other work to be done as this is
-     * a lazy learning algorithm.
+     * Perform a partial train on the learner.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

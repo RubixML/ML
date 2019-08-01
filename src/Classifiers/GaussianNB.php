@@ -189,8 +189,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     }
 
     /**
-     * Compute the necessary statistics to estimate a probability density for
-     * each feature column.
+     * Train the estimator with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

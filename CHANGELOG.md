@@ -1,3 +1,6 @@
+- Unreleased
+    - Added early stopping window to Logistic Regression, Adaline, and Softmax Classifier
+
 - 0.0.14-beta
     - Added feature importances to Gradient Boost
     - Added progress monitoring to Gradient Boost w/ early stop

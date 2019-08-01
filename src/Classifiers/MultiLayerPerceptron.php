@@ -295,6 +295,8 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */

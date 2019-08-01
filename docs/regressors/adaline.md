@@ -16,6 +16,7 @@ Adaptive Linear Neuron or (*Adaline*) is a type of single layer neural network w
 | 4 | epochs | 100 | int | The maximum number of training epochs to execute. |
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | cost fn | Least Squares | object | The function that computes the cost of an erroneous activation during training. |
+| 7 | window | 5 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 
 ### Additional Methods
 Return the average loss of a sample at each epoch of training:
@@ -34,5 +35,5 @@ use Rubix\ML\Classifers\Adaline;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 
-$estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5));
+$estimator = new Adaline(10, new Adam(0.001), 500, 1e-6, new HuberLoss(2.5), 5);
 ```
