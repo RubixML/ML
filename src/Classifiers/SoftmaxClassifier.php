@@ -300,20 +300,20 @@ class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Pe
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss) or $loss < EPSILON) {
-                break 1;
-            }
-
-            if (abs($prevLoss - $loss) < $this->minChange) {
-                break 1;
-            }
-
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
                 $delta = 0;
             } else {
                 $delta++;
+            }
+
+            if (is_nan($loss) or $loss < EPSILON) {
+                break 1;
+            }
+
+            if (abs($prevLoss - $loss) < $this->minChange) {
+                break 1;
             }
 
             if ($delta >= $this->window) {

@@ -114,7 +114,8 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
     protected $holdout;
 
     /**
-     * The number of epochs to consider when determining an early stop.
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
      *
      * @var int
      */
@@ -203,9 +204,9 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if ($window < 2) {
-            throw new InvalidArgumentException('Window must be at least 2'
-                . " epochs, $window given.");
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
         }
 
         if ($metric) {
@@ -341,8 +342,8 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 'min_change' => $this->minChange,
                 'cost_fn' => $this->costFn,
                 'hold_out' => $this->holdout,
-                'metric' => $this->metric,
                 'window' => $this->window,
+                'metric' => $this->metric,
             ]));
         }
 
@@ -353,6 +354,7 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
         $bestScore = $min;
         $bestSnapshot = null;
         $prevLoss = INF;
+        $delta = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -369,11 +371,6 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
 
             $score = $this->metric->score($predictions, $testing->labels());
 
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestSnapshot = new Snapshot($this->network);
-            }
-
             $this->steps[] = $loss;
             $this->scores[] = $score;
 
@@ -381,11 +378,16 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 $this->logger->info("Epoch $epoch score=$score loss=$loss");
             }
 
-            if (is_nan($loss) or is_nan($score)) {
-                break 1;
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestSnapshot = new Snapshot($this->network);
+
+                $delta = 0;
+            } else {
+                $delta++;
             }
 
-            if (abs($prevLoss - $loss) < $this->minChange) {
+            if (is_nan($loss) or is_nan($score)) {
                 break 1;
             }
 
@@ -393,15 +395,12 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($epoch > $this->window) {
-                $window = array_slice($this->scores, -$this->window);
+            if (abs($prevLoss - $loss) < $this->minChange) {
+                break 1;
+            }
 
-                $worst = $window;
-                rsort($worst);
-
-                if ($window === $worst) {
-                    break 1;
-                }
+            if ($delta >= $this->window) {
+                break 1;
             }
 
             $prevLoss = $loss;

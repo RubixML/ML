@@ -20,7 +20,7 @@ A multi layer feedforward neural network with a continuous output layer suitable
 | 6 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 7 | cost fn | LeastSquares | object | The function that computes the cost of an erroneous activation during training. |
 | 8 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 9 | window | 3 | int | The number of epochs to consider when determining an early stop. |
+| 9 | window | 3 | int | The number of epochs without improvement in the training loss to wait before considering an early stop. |
 | 10 | metric | RSquared | object | The metric used to score the generalization performance of the model during training. |
 
 ### Additional Methods
