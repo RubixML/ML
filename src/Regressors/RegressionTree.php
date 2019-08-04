@@ -83,8 +83,7 @@ class RegressionTree extends CART implements Estimator, Learner, Persistable
     }
 
     /**
-     * Train the regression tree by learning the optimal splits in the
-     * training set.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException

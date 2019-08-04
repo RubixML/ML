@@ -82,6 +82,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     protected $minChange;
 
     /**
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
+     *
+     * @var int
+     */
+    protected $window;
+
+    /**
      * The cluster centroid seeder.
      *
      * @var \Rubix\ML\Clusterers\Seeders\Seeder
@@ -122,6 +130,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param int $epochs
      * @param float $minChange
+     * @param int $window
      * @param \Rubix\ML\Clusterers\Seeders\Seeder|null $seeder
      * @throws \InvalidArgumentException
      */
@@ -131,6 +140,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         ?Distance $kernel = null,
         int $epochs = 300,
         float $minChange = 10.,
+        int $window = 10,
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
@@ -153,11 +163,17 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 . " than 1, $minChange given.");
         }
 
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
+        }
+
         $this->k = $k;
         $this->batchSize = $batchSize;
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
+        $this->window = $window;
         $this->seeder = $seeder ?? new PlusPlus($kernel);
     }
 
@@ -236,7 +252,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
 
         $this->centroids = $this->seeder->seed($dataset, $this->k);
 
-        $sizes = array_fill(1, $this->k, 0);
+        $sizes = array_fill(0, $this->k, 0);
         $sizes[0] = $dataset->numRows();
 
         $this->sizes = $sizes;
@@ -273,14 +289,13 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             ]));
         }
 
-        $n = $dataset->numRows();
-
         $samples = $dataset->samples();
-        $labels = array_fill(0, $n, 0);
+        $labels = array_fill(0, $dataset->numRows(), 0);
 
-        $order = range(0, $n - 1);
+        $order = range(0, $dataset->numRows() - 1);
 
-        $prevLoss = INF;
+        $prevLoss = $bestLoss = INF;
+        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             shuffle($order);
@@ -335,11 +350,23 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+                
+                $nu = 0;
+            } else {
+                $nu++;
+            }
+
             if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
             if (abs($prevLoss - $loss) < $this->minChange) {
+                break 1;
+            }
+
+            if ($nu >= $this->window) {
                 break 1;
             }
 

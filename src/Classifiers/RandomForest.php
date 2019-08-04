@@ -164,6 +164,8 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
         
         $k = (int) round($this->ratio * $dataset->numRows());
 
+        $this->backend->flush();
+
         for ($i = 0; $i < $this->estimators; $i++) {
             $estimator = clone $this->base;
 
@@ -288,7 +290,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     }
 
     /**
-     * Train an estimator using a dataset and return it.
+     * Train an estimator using a supplied dataset and return it.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset
@@ -314,7 +316,7 @@ class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persi
     }
 
     /**
-     * Return the probabilities from a decision tree.
+     * Return the probabilities of each class outcome from a decision tree.
      *
      * @param \Rubix\ML\Probabilistic $estimator
      * @param \Rubix\ML\Datasets\Dataset $dataset

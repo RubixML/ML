@@ -46,6 +46,7 @@ use const Rubix\ML\EPSILON;
  *
  * References:
  * [1] G. E. Hinton. (1989). Connectionist learning procedures.
+ * [2] L. Prechelt. (1997). Early Stopping - but when?
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -115,7 +116,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
     protected $holdout;
 
     /**
-     * The number of epochs without improvement in the training loss to wait
+     * The number of epochs without improvement in the validation score to wait
      * before considering an early stop.
      *
      * @var int
@@ -365,7 +366,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         $bestScore = $min;
         $bestSnapshot = null;
         $prevLoss = INF;
-        $delta = 0;
+        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $training->randomize()->batch($this->batchSize);
@@ -393,9 +394,9 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 $bestScore = $score;
                 $bestSnapshot = new Snapshot($this->network);
 
-                $delta = 0;
+                $nu = 0;
             } else {
-                $delta++;
+                $nu++;
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -410,7 +411,7 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
                 break 1;
             }
 
-            if ($delta >= $this->window) {
+            if ($nu >= $this->window) {
                 break 1;
             }
 

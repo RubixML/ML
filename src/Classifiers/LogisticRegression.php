@@ -280,7 +280,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
         }
 
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -302,9 +302,9 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $delta = 0;
+                $nu = 0;
             } else {
-                $delta++;
+                $nu++;
             }
 
             if (is_nan($loss) or $loss < EPSILON) {
@@ -315,7 +315,7 @@ class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, P
                 break 1;
             }
 
-            if ($delta >= $this->window) {
+            if ($nu >= $this->window) {
                 break 1;
             }
 

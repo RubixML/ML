@@ -1,5 +1,5 @@
 # What is Machine Learning?
-Machine learning (or ML for short) is the process by which a computer program is able to progressively improve performance on a task through *training* and data without explicitly being programmed. In other words, it is a way of programming with data. After an estimator has been trained, we can use it to make predictions about future outcomes which we refer to as *inference*. There are two types of machine learning that Rubix supports out of the box - Supervised and Unsupervised.
+Machine learning (ML) is the process by which a computer program is able to progressively improve performance on a task through *training* and data without explicitly being programmed. It is a way of programming with data. After training, we can use the estimator to make predictions about future outcomes (referred to as *inference*). There are two types of machine learning that Rubix supports out of the box - Supervised and Unsupervised.
 
 ## Supervised Learning
 Supervised learning is a type of machine learning that includes a training signal in the form of human annotations called *labels* along with the training samples. The training signal guides the learner to output predictions that resemble values found in the labels of the training set.

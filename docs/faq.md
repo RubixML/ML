@@ -4,9 +4,9 @@ Here you will find answers to the most frequently asked Rubix ML questions.
 ### What environment (SAPI) should I run Rubix in?
 All Rubix programs are designed to run from the PHP [command line interface](http://php.net/manual/en/features.commandline.php) (CLI). The reason almost always boils down to performance and memory consumption.
 
-If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run an optimized standalone model server that implements its own networking (HTTP, TCP, etc.) layer and runs from the CLI instead of Apache server or NGINX via FPM which are much slower.
+If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run an optimized standalone model server.
 
-To run a program using the PHP command line interface (CLI), open a terminal and enter:
+To run a program using the PHP command line interface (CLI), open a terminal window and enter:
 ```sh
 $ php example.php
 ```
@@ -24,10 +24,10 @@ You can temporarily set the `memory_limit` in your script by using the `ini_set(
 ini_set('memory_limit', '-1');
 ```
 
-> **Note:** Machine Learning can sometimes require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](online.md) learners for more information.
+> **Note:** Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](online.md) learners for more information.
 
 ### What is a Tuple?
-A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In other languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
+A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
 
 **Example**
 
@@ -49,7 +49,7 @@ Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggab
 Not currently, however we plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
-Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
+Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings in natural language processing. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
 
 ### Does Rubix support Reinforcement Learning?
 Not currently. Rubix is for *supervised* and *unsupervised* learning only.

@@ -18,7 +18,8 @@ namespace Rubix\ML
     const TWO_PI = 2. * M_PI;
 
     /**
-     * Floating point precision.
+     * Coefficient that determines floating point precision of
+     * random number generation.
      */
-    const PHI = 1e8;
+    const PHI = 100000000;
 }

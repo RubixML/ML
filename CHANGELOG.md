@@ -1,5 +1,5 @@
 - Unreleased
-    - Added early stopping window to Logistic Regression, Adaline, and Softmax Classifier
+    - Added early stopping window to Gradient Descent-based Learners
     - Changed early stopping behavior of MLP-based estimators
 
 - 0.0.14-beta

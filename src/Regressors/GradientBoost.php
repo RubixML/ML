@@ -95,7 +95,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
     protected $holdout;
 
     /**
-     * The number of epochs to consider when determining an early stop.
+     * The number of epochs without improvement in the validation score to wait
+     * before considering an early stop.
      *
      * @var int
      */
@@ -169,13 +170,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         float $ratio = 0.5,
         float $minChange = 1e-4,
         float $holdout = 0.1,
-        int $window = 6,
+        int $window = 10,
         ?Metric $metric = null,
         ?Learner $base = null
     ) {
         if ($booster and !in_array(get_class($booster), self::COMPATIBLE_BOOSTERS)) {
             throw new InvalidArgumentException('Booster learner is not'
-                . ' compatible with ensemble.');
+                . ' compatible with the ensemble.');
         }
 
         if ($rate <= 0. or $rate > 1.) {
@@ -203,9 +204,9 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 . " 0.01 and 0.5, $holdout given.");
         }
 
-        if ($window < 2) {
-            throw new InvalidArgumentException('Window must be at least 2'
-                . " epochs, $window given.");
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
         }
 
         if ($metric) {
@@ -306,8 +307,8 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 'ratio' => $this->ratio,
                 'min_change' => $this->minChange,
                 'hold_out' => $this->holdout,
-                'metric' => $this->metric,
                 'window' => $this->window,
+                'metric' => $this->metric,
                 'base' => $this->base,
             ]));
         }
@@ -334,13 +335,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         $k = (int) round($this->ratio * $training->numRows());
 
         $bestScore = $min;
-        $bestEpoch = 0;
+        $bestEpoch = $nu = 0;
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->estimators; $epoch++) {
-            $gradient = $this->gradient($out, $target)->asArray();
+            $gradient = $target->subtract($out);
     
-            $training = Labeled::quick($training->samples(), $gradient);
+            $training = Labeled::quick($training->samples(), $gradient->asArray());
 
             $booster = clone $this->booster;
 
@@ -352,7 +353,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 ->multiply($this->rate)
                 ->add($prevOut);
 
-            $loss = $this->loss($out, $target);
+            $loss = $gradient->square()->mean();
 
             $pred = Vector::quick($booster->predict($testing))
                 ->multiply($this->rate)
@@ -360,17 +361,21 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
             $score = $this->metric->score($pred->asArray(), $testing->labels());
 
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestEpoch = $epoch;
-            }
-
             $this->ensemble[] = $booster;
             $this->steps[] = $loss;
             $this->scores[] = $score;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch score=$score loss=$loss");
+            }
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestEpoch = $epoch;
+
+                $nu = 0;
+            } else {
+                $nu++;
             }
 
             if (is_nan($loss) or is_nan($score)) {
@@ -385,20 +390,13 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
                 break 1;
             }
 
-            if ($epoch > $this->window) {
-                $window = array_slice($this->scores, -$this->window);
-
-                $worst = $window;
-                rsort($worst);
-
-                if ($window === $worst) {
-                    break 1;
-                }
+            if ($nu >= $this->window) {
+                break 1;
             }
 
-            $prevLoss = $loss;
             $prevOut = $out;
             $prevPred = $pred;
+            $prevLoss = $loss;
         }
 
         if (end($this->scores) < $bestScore) {
@@ -465,30 +463,5 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
         }
 
         return $importances;
-    }
-
-    /**
-     * Calculate the mean squared error training loss.
-     *
-     * @param \Rubix\Tensor\Vector $output
-     * @param \Rubix\Tensor\Vector $target
-     * @return float
-     */
-    protected function loss(Vector $output, Vector $target) : float
-    {
-        return $target->subtract($output)->square()->mean();
-    }
-
-    /**
-     * Compute the pseudo residuals i.e. the negative gradient of the
-     * cost function.
-     *
-     * @param \Rubix\Tensor\Vector $output
-     * @param \Rubix\Tensor\Vector $target
-     * @return \Rubix\Tensor\Vector
-     */
-    protected function gradient(Vector $output, Vector $target) : Vector
-    {
-        return $target->subtract($output);
     }
 }

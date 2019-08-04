@@ -271,7 +271,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
         }
         
         $prevLoss = $bestLoss = INF;
-        $delta = 0;
+        $nu = 0;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             $batches = $dataset->randomize()->batch($this->batchSize);
@@ -293,9 +293,9 @@ class Adaline implements Estimator, Online, Verbose, Persistable
             if ($loss < $bestLoss) {
                 $bestLoss = $loss;
                 
-                $delta = 0;
+                $nu = 0;
             } else {
-                $delta++;
+                $nu++;
             }
 
             if (is_nan($loss) or $loss < EPSILON) {
@@ -306,7 +306,7 @@ class Adaline implements Estimator, Online, Verbose, Persistable
                 break 1;
             }
 
-            if ($delta >= $this->window) {
+            if ($nu >= $this->window) {
                 break 1;
             }
 

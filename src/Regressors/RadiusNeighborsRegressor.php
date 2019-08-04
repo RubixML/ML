@@ -117,6 +117,8 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
     }
 
     /**
+     * Train the learner with a dataset.
+     *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
      */

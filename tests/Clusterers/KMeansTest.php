@@ -43,7 +43,7 @@ class KMeansTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new KMeans(3, 100, new Euclidean(), 300, 10., new PlusPlus());
+        $this->estimator = new KMeans(3, 100, new Euclidean(), 300, 10., 10, new PlusPlus());
 
         $this->estimator->setLogger(new BlackHole());
 

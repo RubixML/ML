@@ -18,7 +18,7 @@ Gradient Boost is a stage-wise additive model that uses a Gradient Descent boost
 | 4 | ratio | 0.5 | float | The ratio of samples to subsample from the training dataset per epoch. |
 | 5 | min change | 1e-4 | float | The minimum change in the cost function necessary to continue training. |
 | 6 | holdout | 0.1 | float | The ratio of samples to hold out for progress monitoring. |
-| 7 | window | 3 | int | The number of epochs to consider when determining an early stop. |
+| 7 | window | 10 | int | The number of epochs without improvement in the validation score to wait before considering an early stop. |
 | 8 | metric | RSquared | object | The metric used to score the generalization performance of the model during training. |
 | 9 | base | DummyRegressor | object | The *weak* learner to be boosted. |
 
@@ -28,14 +28,14 @@ Return the normalized feature importances i.e. the proportion that each feature 
 public featureImportances() : array
 ```
 
-Return the validation scores at each epoch of training:
-```php
-public scores() : array
-```
-
-Return the training error at each epoch:
+Return the training loss at each epoch:
 ```php
 public steps() : array
+```
+
+Return the validation scores at each epoch:
+```php
+public scores() : array
 ```
 
 ### Example
@@ -46,7 +46,7 @@ use Rubix\ML\CrossValidation\Metrics\SMAPE;
 use Rubix\ML\Regressors\DummyRegressor;
 use Rubix\ML\Other\Strategies\Constant;
 
-$estimator = new GradientBoost(new RegressionTree(3), 0.1, 1000, 0.5, 1e-4, 0.1, 6, new SMAPE(), new DummyRegressor(new Constant(0.0)));
+$estimator = new GradientBoost(new RegressionTree(3), 0.1, 1000, 0.8, 1e-4, 0.1, 20, new SMAPE(), new DummyRegressor(new Constant(0.0)));
 ```
 
 ### References

@@ -55,7 +55,7 @@ class Ridge implements Estimator, Learner, Persistable
     public function __construct(float $alpha = 1.)
     {
         if ($alpha < 0.) {
-            throw new InvalidArgumentException('L2 regularization penalty must'
+            throw new InvalidArgumentException('Alpha must be'
                 . " 0 or greater, $alpha given.");
         }
 
@@ -115,8 +115,7 @@ class Ridge implements Estimator, Learner, Persistable
     }
 
     /**
-     * Calculate the coefficients of the training data. i.e. compute the line
-     * that best fits the training data.
+     * Train the learner with a dataset.
      *
      * @param \Rubix\ML\Datasets\Dataset $dataset
      * @throws \InvalidArgumentException
