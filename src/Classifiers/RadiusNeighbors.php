@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Trees\Spatial;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -36,6 +37,8 @@ use const Rubix\ML\EPSILON;
  */
 class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 {
+    use PredictsSingle;
+    
     public const OUTLIER = -1;
 
     /**

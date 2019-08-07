@@ -4,6 +4,7 @@ namespace Rubix\ML;
 
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Persisters\Persister;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -19,6 +20,8 @@ use RuntimeException;
  */
 class PersistentModel implements Estimator, Learner, Wrapper, Probabilistic
 {
+    use PredictsSingle;
+    
     /**
      * The underlying persistable estimator instance.
      *

@@ -6,6 +6,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -28,7 +29,7 @@ use RuntimeException;
  */
 class BootstrapAggregator implements Estimator, Learner, Parallel, Persistable
 {
-    use Multiprocessing;
+    use Multiprocessing, PredictsSingle;
 
     protected const COMPATIBLE_ESTIMATORS = [
         self::CLASSIFIER,

@@ -11,6 +11,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -38,6 +39,8 @@ use const Rubix\ML\LOG_EPSILON;
  */
 class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The class prior probabilities.
      *

@@ -16,6 +16,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\NeuralNet\Layers\Binary;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  */
 class LogisticRegression implements Estimator, Online, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
 
     /**
      * The number of training samples to consider per iteration of gradient descent.

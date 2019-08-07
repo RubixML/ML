@@ -8,6 +8,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Categorical;
 use Rubix\ML\Other\Strategies\PopularityContest;
 use InvalidArgumentException;
@@ -26,6 +27,8 @@ use RuntimeException;
  */
 class DummyClassifier implements Estimator, Learner, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The guessing strategy that the dummy employs.
      *

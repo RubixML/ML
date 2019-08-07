@@ -11,6 +11,7 @@ use Rubix\ML\Probabilistic;
 use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -35,7 +36,7 @@ use function Rubix\ML\argmax;
  */
 class RandomForest implements Estimator, Learner, Probabilistic, Parallel, Persistable
 {
-    use Multiprocessing;
+    use Multiprocessing, PredictsSingle;
 
     public const COMPATIBLE_LEARNERS = [
         ClassificationTree::class,

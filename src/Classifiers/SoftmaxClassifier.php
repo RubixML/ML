@@ -15,6 +15,7 @@ use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
 use Rubix\ML\NeuralNet\Optimizers\Optimizer;
@@ -38,7 +39,7 @@ use const Rubix\ML\EPSILON;
  */
 class SoftmaxClassifier implements Estimator, Online, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
     
     /**
      * The number of training samples to consider per iteration of gradient

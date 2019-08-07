@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Traits\LoggerAware;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
@@ -43,7 +44,7 @@ use const Rubix\ML\EPSILON;
  */
 class GradientBoost implements Estimator, Learner, Verbose, Persistable
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
 
     public const COMPATIBLE_BOOSTERS = [
         RegressionTree::class,

@@ -9,6 +9,7 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Strategies\Mean;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Continuous;
 use InvalidArgumentException;
 use RuntimeException;
@@ -26,6 +27,8 @@ use RuntimeException;
  */
 class DummyRegressor implements Estimator, Learner, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The guessing strategy that the dummy employs.
      *

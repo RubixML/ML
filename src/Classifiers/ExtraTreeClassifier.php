@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Nodes\Best;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Graph\Trees\ExtraTree;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -34,6 +35,8 @@ use RuntimeException;
  */
 class ExtraTreeClassifier extends ExtraTree implements Estimator, Learner, Probabilistic, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The memoized class outcomes.
      *

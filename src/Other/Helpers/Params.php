@@ -43,7 +43,7 @@ class Params
 
         if ($n > ($max - $min + 1)) {
             throw new InvalidArgumentException('Cannot generate more'
-                . ' unique integers than in range.');
+                . ' unique integers than within range.');
         }
 
         $distribution = [];

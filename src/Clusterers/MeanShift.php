@@ -20,6 +20,7 @@ use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Clusterers\Seeders\Random;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -44,7 +45,7 @@ use const Rubix\ML\EPSILON;
  */
 class MeanShift implements Estimator, Learner, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
 
     protected const MIN_SEEDS = 15;
 

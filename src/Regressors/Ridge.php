@@ -10,6 +10,7 @@ use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -26,6 +27,8 @@ use RuntimeException;
  */
 class Ridge implements Estimator, Learner, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The regularization parameter that controls the penalty to the size of the
      * coeffecients. i.e. the ridge penalty.

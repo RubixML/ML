@@ -12,6 +12,7 @@ use Rubix\ML\Graph\Nodes\Average;
 use Rubix\ML\Graph\Nodes\Outcome;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -33,6 +34,8 @@ use RuntimeException;
  */
 class RegressionTree extends CART implements Estimator, Learner, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * @param int $maxDepth
      * @param int $maxLeafSize

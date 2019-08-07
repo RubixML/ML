@@ -32,3 +32,27 @@ var_dump($estimator->trained());
 ```sh
 bool(true)
 ```
+
+### Predict Single Sample
+Predict a single sample and return the result:
+```php
+public predictSample(array $sample) : mixed
+```
+
+**Example**
+
+```php
+// Import samples
+
+$dataset = new Unlabeled($samples);
+
+$prediction = $estimator->predictSample($dataset[2]); // Predict the third sample in dataset
+
+var_dump($prediction);
+```
+
+**Output**
+
+```sh
+string(8) "divorced"
+```

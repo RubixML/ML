@@ -17,6 +17,7 @@ use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\NeuralNet\Layers\Multiclass;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
@@ -54,7 +55,7 @@ use const Rubix\ML\EPSILON;
  */
 class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose, Persistable
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
 
     /**
      * The user-specified hidden layers of the network.

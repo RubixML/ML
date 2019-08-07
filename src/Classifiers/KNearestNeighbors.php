@@ -12,6 +12,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -34,6 +35,8 @@ use const Rubix\ML\EPSILON;
  */
 class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
+    use PredictsSingle;
+    
     /**
      * The number of neighbors to consider when making a prediction.
      *

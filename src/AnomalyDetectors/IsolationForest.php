@@ -6,10 +6,11 @@ use Rubix\ML\Learner;
 use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
-use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Graph\Trees\ITree;
 use Rubix\ML\Other\Helpers\Stats;
 use Rubix\ML\Other\Helpers\DataType;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -33,6 +34,8 @@ use const Rubix\ML\EPSILON;
  */
 class IsolationForest implements Estimator, Learner, Ranking, Persistable
 {
+    use PredictsSingle;
+    
     protected const DEFAULT_SUBSAMPLE = 256;
 
     public const DEFAULT_THRESHOLD = 0.5;

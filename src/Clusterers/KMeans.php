@@ -17,6 +17,7 @@ use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Clusterers\Seeders\PlusPlus;
 use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
@@ -43,7 +44,7 @@ use const Rubix\ML\EPSILON;
  */
 class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, Verbose
 {
-    use LoggerAware;
+    use PredictsSingle, LoggerAware;
 
     /**
      * The target number of clusters.

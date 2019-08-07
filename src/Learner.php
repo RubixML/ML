@@ -19,4 +19,12 @@ interface Learner extends Estimator
      * @return bool
      */
     public function trained() : bool;
+
+    /**
+     * Predict a single sample and return the result.
+     *
+     * @param array $sample
+     * @return mixed
+     */
+    public function predictSample(array $sample);
 }

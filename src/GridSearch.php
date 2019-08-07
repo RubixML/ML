@@ -9,6 +9,7 @@ use Rubix\ML\Other\Helpers\Params;
 use Rubix\ML\CrossValidation\KFold;
 use Rubix\ML\Other\Traits\LoggerAware;
 use Rubix\ML\CrossValidation\Validator;
+use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\CrossValidation\Metrics\Metric;
@@ -34,7 +35,7 @@ use ReflectionClass;
  */
 class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
 {
-    use Multiprocessing, LoggerAware;
+    use Multiprocessing, PredictsSingle, LoggerAware;
 
     /**
      * The class name of the base estimator.
