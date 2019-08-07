@@ -30,9 +30,9 @@ use const Rubix\ML\EPSILON;
  * A fast online centroid-based hard clustering algorithm capable of clustering
  * linearly separable data points given some prior knowledge of the target number
  * of clusters (defined by *k*). K Means with inertia is trained using adaptive
- * mini batch gradient descent and minimizes the inertial cost function. Inertia
+ * mini batch gradient descent and minimizes the inertia cost function. Inertia
  * is defined as the sum of the distances between each sample and its nearest
- * cluster centroid.
+ * cluster center (centroid).
  *
  * References:
  * [1] D. Sculley. (2010). Web-Scale K-Means Clustering.
@@ -285,12 +285,14 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                 'kernel' => $this->kernel,
                 'epochs' => $this->epochs,
                 'min_change' => $this->minChange,
+                'window' => $this->window,
                 'seeder' => $this->seeder,
             ]));
         }
 
         $samples = $dataset->samples();
-        $labels = array_fill(0, $dataset->numRows(), 0);
+
+        $clusters = array_fill(0, $dataset->numRows(), 0);
 
         $order = range(0, $dataset->numRows() - 1);
 
@@ -300,20 +302,21 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
             shuffle($order);
 
-            array_multisort($order, $samples, $labels);
+            array_multisort($order, $samples, $clusters);
 
             $sBatches = array_chunk($samples, $this->batchSize, true);
-            $lBatches = array_chunk($labels, $this->batchSize, true);
+            $lBatches = array_chunk($clusters, $this->batchSize, true);
 
             foreach ($sBatches as $i => $batch) {
                 $assignments = array_map([self::class, 'assign'], $batch);
 
-                $lHat = $lBatches[$i];
+                $labels = $lBatches[$i];
 
                 foreach ($assignments as $j => $cluster) {
-                    $expected = $lHat[$j];
+                    $expected = $labels[$j];
 
                     if ($cluster !== $expected) {
+                        $clusters[$j] = $cluster;
                         $labels[$j] = $cluster;
 
                         $this->sizes[$expected]--;
@@ -321,18 +324,17 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
                     }
                 }
 
-                $strata = Labeled::quick($batch, $lHat)->stratify();
+                $strata = Labeled::quick($batch, $labels)->stratify();
 
                 foreach ($strata as $cluster => $stratum) {
                     $centroid = $this->centroids[$cluster];
-                    $size = $this->sizes[$cluster];
 
                     $step = Matrix::quick($stratum->samples())
                         ->transpose()
                         ->mean()
                         ->asArray();
 
-                    $weight = 1. / ($size ?: EPSILON);
+                    $weight = 1. / ($this->sizes[$cluster] ?: EPSILON);
 
                     foreach ($centroid as $i => &$mean) {
                         $mean = (1. - $weight) * $mean + $weight * $step[$i];
@@ -463,7 +465,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     }
 
     /**
-     * Calculate the sum of distances between all samples and their closest
+     * Calculate the average distance between all samples and their closest
      * centroid.
      *
      * @param array $samples

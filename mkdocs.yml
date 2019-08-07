@@ -33,7 +33,6 @@ nav:
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Anomaly Detectors:
-  - API Reference: anomaly-detectors/api.md
   - Isolation Forest: anomaly-detectors/isolation-forest.md
   - Loda: anomaly-detectors/loda.md
   - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md
