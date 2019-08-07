@@ -110,19 +110,27 @@ class TSNE implements Embedder, Verbose
     protected $rate;
 
     /**
+     * The minimum gradient necessary to continue fitting.
+     *
+     * @var float
+     */
+    protected $minGradient;
+
+    /**
+     * The number of epochs without improvement in the training loss to wait
+     * before considering an early stop.
+     *
+     * @var int
+     */
+    protected $window;
+
+    /**
      * The distance metric used to measure distances between samples in both
      * high and low dimensions.
      *
      * @var \Rubix\ML\Kernels\Distance\Distance
      */
     protected $kernel;
-
-    /**
-     * The minimum gradient necessary to continue fitting.
-     *
-     * @var float
-     */
-    protected $minGradient;
 
     /**
      * The magnitudes of the gradient at each epoch since the last embedding.
@@ -150,6 +158,7 @@ class TSNE implements Embedder, Verbose
         float $rate = 100.,
         int $epochs = 1000,
         float $minGradient = 1e-7,
+        int $window = 10,
         ?Distance $kernel = null
     ) {
         if ($dimensions < 1) {
@@ -182,6 +191,11 @@ class TSNE implements Embedder, Verbose
                 . " gradient must be 0 or greater, $minGradient given.");
         }
 
+        if ($window < 1) {
+            throw new InvalidArgumentException('Window must be at least 1'
+                . " epoch, $window given.");
+        }
+
         $this->dimensions = $dimensions;
         $this->degrees = max($dimensions - 1, 1);
         $this->perplexity = $perplexity;
@@ -191,6 +205,7 @@ class TSNE implements Embedder, Verbose
         $this->epochs = $epochs;
         $this->early = min(250, (int) round($epochs / 4));
         $this->minGradient = $minGradient;
+        $this->window = $window;
         $this->kernel = $kernel ?? new Euclidean();
     }
 
@@ -234,18 +249,17 @@ class TSNE implements Embedder, Verbose
                 'perplexity' => $this->perplexity,
                 'exaggeration' => $this->exaggeration,
                 'rate' => $this->rate,
-                'kernel' => $this->kernel,
                 'epochs' => $this->epochs,
                 'min_gradient' => $this->minGradient,
+                'window' => $this->window,
+                'kernel' => $this->kernel,
             ]));
         }
-
-        $n = $dataset->numRows();
 
         $x = Matrix::build($dataset->samples());
 
         if ($this->logger) {
-            $this->logger->info('Computing pairwise affinity matrix');
+            $this->logger->info('Computing pairwise affinities');
         }
 
         $distances = $this->pairwiseDistances($x);
@@ -253,12 +267,15 @@ class TSNE implements Embedder, Verbose
         $p = $this->highAffinities($distances)
             ->multiply($this->exaggeration);
 
-        $y = $yHat = Matrix::gaussian($n, $this->dimensions)
+        $y = $yHat = Matrix::gaussian($dataset->numRows(), $this->dimensions)
             ->multiply(self::Y_INIT);
 
-        $velocity = Matrix::zeros($n, $this->dimensions);
-        $gains = Matrix::ones($n, $this->dimensions)->asArray();
+        $velocity = Matrix::zeros($dataset->numRows(), $this->dimensions);
+        $gains = Matrix::ones($dataset->numRows(), $this->dimensions)->asArray();
+
         $momentum = self::INIT_MOMENTUM;
+        $bestLoss = INF;
+        $nu = 0;
 
         $this->steps = [];
 
@@ -267,15 +284,13 @@ class TSNE implements Embedder, Verbose
 
             $gradient = $this->gradient($p, $y, $distances);
 
-            $loss = $gradient->l2Norm();
-
-            $direction = $velocity->multiply($gradient);
+            $directions = $velocity->multiply($gradient);
 
             foreach ($gains as $i => &$row) {
-                $temp = $direction[$i];
+                $direction = $directions[$i];
 
                 foreach ($row as $j => &$gain) {
-                    $gain = $temp[$j] < 0.
+                    $gain = $direction[$j] < 0.
                         ? $gain + self::GAIN_ACCELERATE
                         : $gain * self::GAIN_BRAKE;
 
@@ -290,17 +305,31 @@ class TSNE implements Embedder, Verbose
 
             $y = $y->add($velocity);
 
+            $loss = $gradient->l2Norm();
+
             $this->steps[] = $loss;
 
             if ($this->logger) {
                 $this->logger->info("Epoch $epoch loss=$loss");
             }
 
-            if (is_nan($loss)) {
+            if ($loss < $bestLoss) {
+                $bestLoss = $loss;
+                
+                $nu = 0;
+            } else {
+                $nu++;
+            }
+
+            if (is_nan($loss) or $loss < EPSILON) {
                 break 1;
             }
 
             if ($loss < $this->minGradient) {
+                break 1;
+            }
+
+            if ($nu >= $this->window) {
                 break 1;
             }
 
