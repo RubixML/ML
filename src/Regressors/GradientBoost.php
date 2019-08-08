@@ -37,6 +37,8 @@ use const Rubix\ML\EPSILON;
  * [1] J. H. Friedman. (2001). Greedy Function Approximation: A Gradient
  * Boosting Machine.
  * [2] J. H. Friedman. (1999). Stochastic Gradient Boosting.
+ * [3] Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms:
+ * A general analysis with localized complexities.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -346,7 +348,7 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
             $booster = clone $this->booster;
 
-            $subset = $training->randomSubsetWithoutReplacement($k);
+            $subset = $training->randomSubset($k);
 
             $booster->train($subset);
 

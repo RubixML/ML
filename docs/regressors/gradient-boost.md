@@ -52,3 +52,4 @@ $estimator = new GradientBoost(new RegressionTree(3), 0.1, 1000, 0.8, 1e-4, 0.1,
 ### References
 >- J. H. Friedman. (2001). Greedy Function Approximation: A Gradient Boosting Machine.
 >- J. H. Friedman. (1999). Stochastic Gradient Boosting.
+>- Y. Wei. et al. (2017). Early stopping for kernel boosting algorithms: A general analysis with localized complexities.

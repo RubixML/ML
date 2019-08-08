@@ -418,7 +418,7 @@ class Unlabeled extends DataFrame implements Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function randomSubsetWithoutReplacement(int $n) : self
+    public function randomSubset(int $n) : self
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate a'

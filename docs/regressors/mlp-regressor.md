@@ -60,3 +60,4 @@ $estimator = new MLPRegressor([
 
 ### References
 >- G. E. Hinton. (1989). Connectionist learning procedures.
+>- L. Prechelt. (1997). Early Stopping - but when?

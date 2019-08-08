@@ -27,7 +27,7 @@ use RuntimeException;
  * have higher variance than a regular decision tree.
  *
  * References:
- * [1] P. Geurts et al. (2005). Extremely Randomized Trees.
+ * [1] P. Geurts. et al. (2005). Extremely Randomized Trees.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

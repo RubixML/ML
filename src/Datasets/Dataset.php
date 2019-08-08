@@ -254,7 +254,7 @@ interface Dataset extends ArrayAccess, IteratorAggregate, Countable
      * @param int $n
      * @return self
      */
-    public function randomSubsetWithoutReplacement(int $n);
+    public function randomSubset(int $n);
 
     /**
      * Generate a random subset of n samples with replacement.

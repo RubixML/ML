@@ -192,7 +192,7 @@ class Labeled extends DataFrame implements Dataset
     }
 
     /**
-     * Map labels to their new valuesa dn return self for method chaining.
+     * Map labels to their new values and return self for method chaining.
      *
      * @param callable $callback
      * @throws \RuntimeException
@@ -751,7 +751,7 @@ class Labeled extends DataFrame implements Dataset
      * @throws \InvalidArgumentException
      * @return self
      */
-    public function randomSubsetWithoutReplacement(int $n) : self
+    public function randomSubset(int $n) : self
     {
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate subset'
