@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KNearestNeighbors.php">Source</a></span>
 
 # K Nearest Neighbors
-A distance-based algorithm that locates the K nearest neighbors from the training set and uses a weighted vote to classify the unknown sample.
+A distance-based algorithm that locates the k nearest neighbors (data points) from the training set and uses a weighted vote to classify unknown samples during inference. A *kernelized* distance function allows the user to specify different concepts of distance measurement to the estimator. 
 
 > **Note:** K Nearest Neighbors is considered a *lazy* learner because it does the majority of its computation at inference. For a fast tree-based version, see [KD Neighbors](#k-d-neighbors).
 

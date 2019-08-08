@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/KFold.php">Source</a></span>
 
 # K Fold
-K Fold is a technique that splits the training set into K individual sets and for each training round uses 1 of the folds to measure the validation performance of the model. The score is then averaged over K. For example, a K value of 10 will train and test 10 versions of the model using a different testing set each time.
+K Fold is a cross validation technique that splits the training set into k individual folds and for each training round uses 1 of the folds to measure the validation performance of the model and the rest as training data. The final score is then averaged.
 
 **Interfaces:** [Parallel](#parallel)
 

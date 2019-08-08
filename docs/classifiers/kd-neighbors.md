@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Classifiers/KDNeighbors.php">Source</a></span>
 
 # K-d Neighbors
-A fast [K Nearest Neighbors](k-nearest-neighbors.md) algorithm that uses a K-d tree to divide the training set into neighborhoods whose max size are controlled by the max leaf size parameter. K-d Neighbors does a binary search to locate the nearest neighborhood and then prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over regular brute force KNN is that it is faster, however it cannot be partially trained.
+A fast and efficient k nearest neighbors algorithm that uses a binary tree to divide the training set into neighborhoods whose max size are controlled by the user. K-d Neighbors then does a binary search to locate the nearest neighborhood of an unknown sample and prunes all neighborhoods whose bounding box is further than the kth nearest neighbor found so far. The main advantage of K-d Neighbors over brute force [KNN]((k-nearest-neighbors.md) is that it is quicker, however it cannot be partially trained.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Persistable](../persistable.md)
 

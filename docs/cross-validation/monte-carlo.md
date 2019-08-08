@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/MonteCarlo.php">Source</a></span>
 
 # Monte Carlo
-Repeated Random Subsampling or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulations (randomized splits of the dataset).
+*Repeated Random Subsampling* or Monte Carlo cross validation is a technique that takes the average validation score over a user-supplied number of simulation rounds where a learner is trained and tested on randomized splits of the dataset.
 
 **Interfaces:** [Parallel](#parallel)
 

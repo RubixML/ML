@@ -37,9 +37,9 @@ Before data can become useful, we need to load it into the computer in the prope
 - [Google BigQuery](https://cloud.google.com/bigquery/docs/reference/libraries) - Cloud-based data warehouse via SQL
 
 ## The Dataset Object
-In Rubix, data is passed around in specialized data containers called Dataset objects. [Datasets](#dataset-objects) internally handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during cross validation. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
+In Rubix, data is passed around in specialized data containers called Dataset objects. [Datasets](datasets/api.md) internally handle selecting, splitting, folding, transforming, and randomizing the samples and labels contained within. In general, there are two types of datasets, *Labeled* and *Unlabeled*. Labeled datasets are used for supervised learning and for providing the ground-truth during cross validation. Unlabeled datasets are used for unsupervised learning and for making predictions (*inference*) on unknown samples.
 
-As a simplistic example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled](#labeled) Dataset object from this data by passing the samples and labels into the constructor.
+As a simplistic example, suppose that you went out and asked 100 couples (50 married and 50 divorced) to rate their partner's communication skills (between 1 and 5), attractiveness (between 1 and 5), and time spent together per week (hours per week). You could construct a [Labeled](datasets/labeled.md) Dataset object from this data by passing the samples and labels into the constructor.
 
 ```php
 use Rubix\ML\Datasets\Labeled;
@@ -54,9 +54,9 @@ $dataset = new Labeled($samples, $labels);
 ```
 
 # Choosing an Estimator
-Estimators make up the core of the Rubix library as they are responsible for making predictions. There are many different estimators to choose from and each one operates differently. Choosing the right [Estimator](#estimators) for the job is crucial to creating a performant system.
+Estimators make up the core of the Rubix library as they are responsible for making predictions. There are many different estimators to choose from and each one operates differently. Choosing the right [Estimator](estimator.md) for the job is crucial to creating a performant system.
 
-For our simple example we will focus on an easily intuitable classifier called [K Nearest Neighbors](#k-nearest-neighbors). Since the label of each training sample we collect will be a discrete class (*married couples* or *divorced couples*), we need an Estimator that is designed to output class predictions. The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that appears most often.
+For our simple example we will focus on an easily intuitable classifier called [K Nearest Neighbors](classifiers/k-nearest-neighbors.md). Since the label of each training sample we collect will be a discrete class (*married couples* or *divorced couples*), we need an Estimator that is designed to output class predictions. The K Nearest Neighbors classifier works by locating the closest training samples to an unknown sample and choosing the class label that appears most often.
 
 > **Note:** In practice, you will test out a number of different estimators to get the best sense of what works for your particular dataset.
 
@@ -65,7 +65,7 @@ Like most estimators, the K Nearest Neighbors (KNN) classifier requires a set of
 
 In K Nearest Neighbors, the hyper-parameter *k* is the number of nearest points from the training set to compare an unknown sample to in order to infer its class label. For example, if the 5 closest neighbors to a given unknown sample have 4 married labels and 1 divorced label, then the algorithm will output a prediction of married with a probability of 0.8.
 
-The second hyper-parameter is the distance *kernel* that determines how distance is measured within the model. We'll go with standard [Euclidean](#euclidean) distance for now.
+The second hyper-parameter is the distance *kernel* that determines how distance is measured within the model. We'll go with standard [Euclidean](kernels/distance/euclidean.md) distance for now.
 
 Then, to instantiate the K Nearest Neighbors classifier ...
 
@@ -75,8 +75,6 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 
 $estimator = new KNearestNeighbors(5, new Euclidean());
 ```
-
-> **Note:** You can find a full description of all of the K Nearest Neighbors hyper-parameters in the [API reference](#k-nearest-neighbors).
 
 # Training and Prediction
 Training is the process of feeding the learning algorithm data so that it can build a model of the problem. A trained model consists of all of the parameters (except hyper-parameters) that are required for the estimator to make predictions. If you try to make predictions using an untrained learner, it will throw an exception.
@@ -127,7 +125,7 @@ array(5) {
 ```
 
 # Model Evaluation
-Making predictions is not very useful unless the estimator can correctly generalize what it has learned during training to the real world. [Cross Validation](#cross-validation) is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](#hold-out) validator will take care of splitting the dataset into training and testing sets automatically, such that a portion of the data is *held out* to be used for testing (or *validating*) the model. The reason we do not use *all* of the data for training is because we want to test the Estimator on samples that it has never seen before.
+Making predictions is not very useful unless the estimator can correctly generalize what it has learned during training to the real world. Cross Validation is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use a simple form of cross validation called *Hold Out*. The [Hold Out](cross-validation/hold-out.md) validator will take care of splitting the dataset into training and testing sets automatically, such that a portion of the data is *held out* to be used for testing (or *validating*) the model. The reason we do not use *all* of the data for training is because we want to test the Estimator on samples that it has never seen before.
 
 The Hold Out validator requires you to set the ratio of testing to training samples as a constructor parameter. In this case, let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training. Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce precise testing results.
 
@@ -149,3 +147,6 @@ var_dump($score);
 ```sh
 float(0.945)
 ```
+
+# Next Steps
+Congratulations, you're done with the basic introduction to machine learning in Rubix ML. For a more in-depth tutorial using the K Nearest Neighbors classifier, check out the [Iris Flower](https://github.com/RubixML/Iris) example project. From here, we highly recommend browsing the rest of the documentation and the other [example projects](https://github.com/RubixML) which range from beginner to advanced skill level.

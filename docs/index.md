@@ -27,11 +27,9 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Getting Started
-If you are completely new to machine learning in PHP with Rubix ML, we recommend going over the [basic introduction](basic-introduction.md) to learn the fundamental concepts of the library. Once you're ready, you can browse the example projects and tutorials below to dive deeper.
+If you are completely new to machine learning in PHP with Rubix ML, we recommend going over the [basic introduction](basic-introduction.md) to learn the fundamental concepts of the library. You can also browse the [example projects](https://github.com/RubixML) and tutorials below which range from beginner to advanced skill level. Most projects even include a pre-cleaned dataset that is ready to go.
 
-### Example Projects w/ Tutorials
-These example projects are a quick and easy way to get started using Rubix ML.
-
+### Example Projects
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 - [Color Clusterer](https://github.com/RubixML/Colors)
 - [Credit Default Risk Predictor](https://github.com/RubixML/Credit)

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/Ridge.php">Source</a></span>
 
 # Ridge
-L2 penalized least squares linear regression solved using closed-form equation.
+L2 penalized least squares linear regression solved using the closed-form equation. The addition of regularization controlled by the alpha parameter makes Ridge less prone to overfitting than ordinary least squares linear regression.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 

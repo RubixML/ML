@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/HoldOut.php">Source</a></span>
 
 # Hold Out
-Hold Out is a simple cross validation technique that uses a *hold out* validation set. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train on the entire training set.
+Hold Out is a simple cross validation technique that uses a validation set that is *held out* from the training data. The advantages of Hold Out is that it is quick, but it doesn't allow the model to train and test on the entire training set.
 
 ### Parameters
 | # | Param | Default | Type | Description |
@@ -13,5 +13,5 @@ Hold Out is a simple cross validation technique that uses a *hold out* validatio
 ```php
 use Rubix\ML\CrossValidation\HoldOut;
 
-$validator = new HoldOut(0.25, true);
+$validator = new HoldOut(0.3, true);
 ```

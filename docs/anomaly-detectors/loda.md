@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/Loda.php">Source</a></span>
 
 # Loda
-*Lightweight Online Detector of Anomalies* uses a sparse random projection matrix to produce an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. The decision function takes the anomaly score given by the negative log likelihood whose upper threshold can be set by the user.
+*Lightweight Online Detector of Anomalies* uses a sparse random projection matrix to produce input to an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. Samples with low density will receive a high anomaly score.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
 

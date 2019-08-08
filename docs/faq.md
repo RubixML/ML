@@ -6,7 +6,7 @@ All Rubix programs are designed to run from the PHP [command line interface](htt
 
 If you want to serve your trained estimators in production then you can use the [Rubix Server](https://github.com/RubixML/Server) library to run an optimized standalone model server.
 
-To run a program using the PHP command line interface (CLI), open a terminal window and enter:
+To run your script using the PHP command line interface (CLI), open a terminal window and enter:
 ```sh
 $ php example.php
 ```
@@ -24,16 +24,19 @@ You can temporarily set the `memory_limit` in your script by using the `ini_set(
 ini_set('memory_limit', '-1');
 ```
 
-> **Note:** Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners allow you to train in batches. See the section on [Online](online.md) learners for more information.
+> **Note:** Training can require a lot of memory. The amount necessary will depend on the amount of training data and the size of your model. If you have more data than you can hold in memory, some learners will allow you to train in batches. See the section on [Online](online.md) learners for more information.
 
 ### What is a Tuple?
-A *tuple* is a way to denote an immutable sequential array with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, unlike PHP arrays.
+A *tuple* is a way to denote an immutable sequential hetorogeneous list with a predefined length. An *n-tuple* is a tuple with the length of n. In some languages, tuples are a separate datatype and their properties such as immutability are enforced by the compiler/interpreter, however in PHP, tuples are denoted by sequential arrays which are mutable as a side effect.
 
 **Example**
 
 ```php
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
+
+### How do I import data into my script?
+There are many ways to import data into your script depending on where the data are stored. For example, if your data exist on a filesystem in comma separated (CSV) text format, you can use a library such as [League CSV](https://csv.thephpleague.com/) to read the data into your script. PHP also provides [native functions](https://www.php.net/manual/en/function.str-getcsv.php) for CSV manipulations if that's more your style.
 
 ### What is the difference between categorical and continuous data types?
 There are generally 2 classes of data types that Rubix distinguishes by convention.

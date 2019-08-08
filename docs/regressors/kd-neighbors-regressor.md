@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/KDNeighborsRegressor.php">Source</a></span>
 
 # K-d Neighbors Regressor
-A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-aware K-d tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
+A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-aware binary tree. The KDN Regressor works by locating the neighborhood of a sample via binary search and then does a brute force search only on the samples close to or within the neighborhood of the unknown sample. The main advantage of K-d Neighbors over brute force KNN is inference speed, however you no longer have the ability to partially train.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Persistable](../persistable.md)
 
