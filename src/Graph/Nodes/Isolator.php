@@ -3,8 +3,11 @@
 namespace Rubix\ML\Graph\Nodes;
 
 use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildren;
 use InvalidArgumentException;
+
+use const Rubix\ML\PHI;
 
 /**
  * Isolator
@@ -52,7 +55,18 @@ class Isolator implements BinaryNode
     {
         $column = rand(0, $dataset->numColumns() - 1);
 
-        $value = $dataset[rand(0, $dataset->numRows() - 1)][$column];
+        $values = $dataset->column($column);
+
+        if ($dataset->columnType($column) === DataType::CONTINUOUS) {
+            $min = (int) round(min($values) * PHI);
+            $max = (int) round(max($values) * PHI);
+
+            $value = rand($min, $max) / PHI;
+        } else {
+            $values = array_unique($values);
+            
+            $value = $values[array_rand($values)];
+        }
 
         $groups = $dataset->partition($column, $value);
 

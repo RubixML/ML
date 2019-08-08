@@ -139,9 +139,9 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
         int $k,
         int $batchSize = 100,
         ?Distance $kernel = null,
-        int $epochs = 300,
-        float $minChange = 10.,
-        int $window = 10,
+        int $epochs = 1000,
+        float $minChange = 1e-4,
+        int $window = 5,
         ?Seeder $seeder = null
     ) {
         if ($k < 1) {
@@ -466,7 +466,7 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
     }
 
     /**
-     * Calculate the average distance between all samples and their closest
+     * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
      * @param array $samples
@@ -474,6 +474,10 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
      */
     protected function inertia(array $samples) : float
     {
+        if (empty($samples)) {
+            return 0.;
+        }
+
         $inertia = 0.;
 
         foreach ($samples as $sample) {
@@ -482,6 +486,6 @@ class KMeans implements Estimator, Learner, Online, Probabilistic, Persistable, 
             }
         }
 
-        return $inertia;
+        return $inertia / count($samples);
     }
 }

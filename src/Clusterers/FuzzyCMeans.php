@@ -58,7 +58,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
      *
      * @var float
      */
-    protected $lambda;
+    protected $rho;
 
     /**
      * The distance kernel to use when computing the distances between samples.
@@ -120,7 +120,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
         float $fuzz = 2.0,
         ?Distance $kernel = null,
         int $epochs = 300,
-        float $minChange = 10.,
+        float $minChange = 1e-4,
         ?Seeder $seeder = null
     ) {
         if ($c < 1) {
@@ -145,7 +145,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         $this->c = $c;
         $this->fuzz = $fuzz;
-        $this->lambda = 2. / ($fuzz - 1.);
+        $this->rho = 2. / ($fuzz - 1.);
         $this->kernel = $kernel ?? new Euclidean();
         $this->epochs = $epochs;
         $this->minChange = $minChange;
@@ -227,18 +227,17 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
 
         $this->centroids = $this->seeder->seed($dataset, $this->c);
 
-        $this->steps = $memberships = [];
+        $this->steps = [];
 
-        $samples = $dataset->samples();
-        $rotated = $dataset->columns();
+        $columns = $dataset->columns();
 
         $prevLoss = INF;
 
         for ($epoch = 1; $epoch <= $this->epochs; $epoch++) {
-            $memberships = array_map([self::class, 'membership'], $samples);
+            $memberships = array_map([self::class, 'membership'], $dataset->samples());
 
             foreach ($this->centroids as $cluster => &$centroid) {
-                foreach ($rotated as $column => $values) {
+                foreach ($columns as $column => $values) {
                     $sigma = $total = 0.;
 
                     foreach ($memberships as $i => $probabilities) {
@@ -252,7 +251,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
                 }
             }
 
-            $loss = $this->inertia($dataset, $memberships);
+            $loss = $this->inertia($dataset->samples(), $memberships);
 
             $this->steps[] = $loss;
 
@@ -326,7 +325,7 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             $sigma = 0.;
 
             foreach ($deltas as $delta) {
-                $sigma += ($distance / $delta) ** $this->lambda;
+                $sigma += ($distance / $delta) ** $this->rho;
             }
 
             $membership[$cluster] = 1. / ($sigma ?: EPSILON);
@@ -336,18 +335,22 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
     }
 
     /**
-     * Calculate the sum of distances between all samples and their closest
+     * Calculate the average sum of distances between all samples and their closest
      * centroid.
      *
-     * @param \Rubix\ML\Datasets\Dataset $dataset
+     * @param array $samples
      * @param array $memberships
      * @return float
      */
-    protected function inertia(Dataset $dataset, array $memberships) : float
+    protected function inertia(array $samples, array $memberships) : float
     {
+        if (empty($samples)) {
+            return 0.;
+        }
+
         $inertia = 0.;
 
-        foreach ($dataset as $i => $sample) {
+        foreach ($samples as $i => $sample) {
             $membership = $memberships[$i];
 
             foreach ($this->centroids as $cluster => $centroid) {
@@ -356,6 +359,6 @@ class FuzzyCMeans implements Estimator, Learner, Probabilistic, Verbose, Persist
             }
         }
 
-        return $inertia;
+        return $inertia / count($samples);
     }
 }

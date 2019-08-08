@@ -1,8 +1,10 @@
 - Unreleased
+    - Added Patreon funding support
     - Added early stopping window to Gradient Descent-based Learners
     - Changed early stopping behavior of MLP-based estimators
     - Added predict single sample method to Learner interface
     - Changed method signature of random subset without replacement
+    - Changed K Means default max iterations
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost
