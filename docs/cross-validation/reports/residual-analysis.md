@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/ResidualAnalysis.php">Source</a></span>
 
 # Residual Analysis
-Residual Analysis is a Report that measures the differences between the predicted and actual values of a regression problem in detail.
+Residual Analysis is a report that measures the differences between the predicted and target values of a regression problem in detail. In one report, you get multiple error measurements (MAE, MSE, MAPE, R2, etc.) as well as statistics regarding the distribution of errors.
 
 **Estimator Compatibility:** Regressor
 
@@ -35,7 +35,7 @@ array(18) {
     ['error_median']=> float(0.0007000000000000001)
     ['error_variance']=> float(0.04786594657656853)
     ['error_mad']=> float(0.17630000000000004)
-    ['error_interquartile_range']=> float(0.455155412565378)
+    ['error_iqr']=> float(0.455155412565378)
     ['error_skewness']=> float(-0.49093461098755187)
     ['error_kurtosis']=> float(-1.216490935575394)
     ['error_min']=> float(-0.423310825130748)

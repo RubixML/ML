@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ThresholdedReLU.php">Source</a></span>
 
 # Thresholded ReLU
-A thresholded version of the ReLU function that activated only if the input is above some user specified threshold value.
+A thresholded version of the [ReLU](relu.md) function that activates only if the input is above some user specified threshold value.
 
 ### Parameters
 | # | Param | Default | Type | Description |

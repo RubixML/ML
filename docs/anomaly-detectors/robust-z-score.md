@@ -3,7 +3,7 @@
 # Robust Z Score
 A statistical anomaly detector that uses modified Z scores that are robust to preexisting outliers. The modified Z score takes the median and median absolute deviation (MAD) unlike the mean and standard deviation of a *standard* Z score - thus making the statistic more robust to training sets that may already contain outliers. Anomalies are flagged if their maximum feature-specific Z score exceeds some user-defined threshold parameter.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

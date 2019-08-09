@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Kernels/Distance/Jaccard.php">Source</a></span>
 
 # Jaccard
-This *generalized* Jaccard distance is a measure of similarity that one sample has to another with a range from 0 to 1. The higher the percentage, the more dissimilar they are.
+This *generalized* Jaccard distance is a measure of distance with a range from 0 to 1 and is thought of as the size of the intersection divided by the size of the union of the two points.
 
 ### Parameters
 This kernel does not have any parameters.

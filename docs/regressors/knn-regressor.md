@@ -1,9 +1,9 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Regressors/KNNRegressor.php">Source</a></span>
 
 # KNN Regressor
-A version of [K Nearest Neighbors](../classifiers/k-nearest-neighbors.md) that uses the average (mean) outcome of K nearest data points to make continuous valued predictions suitable for regression problems.
+A version of the K Nearest Neighbors algorithm that uses the average (mean) outcome of the k nearest data points to make continuous valued predictions suitable for regression problems.
 
-> **Note:** K Nearest Neighbors is considered a *lazy* learning estimator because it does the majority of its computation at prediction time.
+> **Note:** This learner is considered a *lazy* learner because it does the majority of its computation during inference. For a fast spatial tree-based version, see [KD Neighbors Regressor](kd-neighbors-regressor.md).
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Persistable](../persistable.md)
 

@@ -52,7 +52,7 @@ Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggab
 Not currently, however we plan to add CPU and GPU multithreading in the future.
 
 ### Does Rubix support Deep Learning?
-Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings in natural language processing. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](#multi-layer-perceptron) classifier and [MLP Regressor](#mlp-regressor).
+Yes. Deep Learning is a subset of machine learning that involves forming higher-order representations of the input features such as edges and textures in an image or word meanings in natural language processing. A number of learners in Rubix support Deep Learning including the [Multi Layer Perceptron](classifiers/multi-layer-perceptron.md) classifier and [MLP Regressor](regressors/mlp-regressor.md).
 
 ### Does Rubix support Reinforcement Learning?
 Not currently. Rubix is for *supervised* and *unsupervised* learning only.

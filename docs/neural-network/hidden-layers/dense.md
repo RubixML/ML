@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/Layers/Dense.php">Source</a></span>
 
 # Dense
-Dense layers are fully connected neuronal layers, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The majority of the parameters in a standard feedforward network are usually contained within the Dense hidden layers of the network.
+Dense layers are fully connected layers of *neurons*, meaning each neuron is connected to each other in the previous layer by a weighted *synapse*. The weights can be initialized by a user specified Initializer. The majority of the parameters in a standard feedforward network are contained within Dense layers.
 
 ### Parameters
 | # | Param | Default | Type | Description |

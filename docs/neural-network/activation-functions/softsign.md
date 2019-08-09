@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/Softsign.php">Source</a></span>
 
 # Softsign
-A function that squashes the input smoothly between -1 and 1.
+A smooth sigmoid-shaped function that squashes the input between -1 and 1.
 
 ### Parameters
 This activation function does not have any parameters.

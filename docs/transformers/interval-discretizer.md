@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/IntervalDiscretizer.php">Source</a></span>
 
 # Interval Discretizer
-This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label. The Interval Discretizer is helpful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
+This transformer creates an equi-width histogram for each continuous feature column and encodes a discrete category with an automatic bin label for each continuous feature column. The Interval Discretizer is useful when converting continuous features to categorical features so they can be learned by an estimator that supports categorical features natively.
 
 **Interfaces:** [Transformer](api.md#transformer), [Stateful](api.md#stateful)
 
@@ -10,7 +10,7 @@ This transformer creates an equi-width histogram for each continuous feature col
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | bins | 5 | int | The number of bins (discrete features) per continuous feature column. |
+| 1 | bins | 5 | int | The number of bins (discrete categories) per continuous feature column. |
 
 ### Additional Methods
 Return the possible categories of each feature column:

@@ -27,9 +27,11 @@ $ composer require rubix/ml
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
 
 ## Getting Started
-If you are completely new to machine learning in PHP with Rubix ML, we recommend going over the [basic introduction](basic-introduction.md) to learn the fundamental concepts of the library. You can also browse the [example projects](https://github.com/RubixML) and tutorials below which range from beginner to advanced skill level. Most projects even include a pre-cleaned dataset that is ready to go.
+If you are new to machine learning, we recommend the [basic introduction](basic-introduction.md) to get started. From there, you can browse the [example projects](https://github.com/RubixML) and tutorials listed below which range from beginner to advanced skill level.
 
 ### Example Projects
+Check out these example projects using the Rubix ML library. Most come with a tutorial and a pre-cleaned dataset.
+
 - [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
 - [Color Clusterer](https://github.com/RubixML/Colors)
 - [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
@@ -38,3 +40,14 @@ If you are completely new to machine learning in PHP with Rubix ML, we recommend
 - [Iris Flower Classifier](https://github.com/RubixML/Iris)
 - [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
 - [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
+
+## Funding
+Rubix ML is funded entirely by donations from the open source software community. If you are interested in becoming a patron, you can make a contribution to one our funding sources below.
+
+- [Patreon](https://www.patreon.com/rubixml)
+
+## Contributing
+See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.
+
+## License
+[MIT](https://github.com/RubixML/RubixML/blob/master/LICENSE.md)

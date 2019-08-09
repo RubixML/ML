@@ -10,9 +10,10 @@ use const Rubix\ML\EPSILON;
 /**
  * SMAPE
  *
- * *Symmetric Mean Absolute Percentage Error* expresses the relative error of
- * a set of predictions and their labels as a percentage. It has an upper
- * bound of 100 and a lower bound of 0.
+ * *Symmetric Mean Absolute Percentage Error* is a scale-independent regression
+ * metric that expresses the relative error of a set of predictions and their labels
+ * as a percentage. It is an improvement over the standard MAPE in that it is both
+ * upper and lower bounded.
  *
  * References:
  * [1] V. Kreinovich. et al. How to Estimate Forecasting Quality: A System

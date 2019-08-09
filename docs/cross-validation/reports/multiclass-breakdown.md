@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Reports/MulticlassBreakdown.php">Source</a></span>
 
 # Multiclass Breakdown
-A report that drills down in to each unique class outcome. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
+A classification and anomaly detection report that drills down into unique class statistics as well as provide an overall picture. The report includes metrics such as Accuracy, F1 Score, MCC, Precision, Recall, Fall Out, and Miss Rate.
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 

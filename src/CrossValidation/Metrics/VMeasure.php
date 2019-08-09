@@ -9,8 +9,8 @@ use const Rubix\ML\EPSILON;
 /**
  * V Measure
  *
- * V Measure is the harmonic balance between homogeneity and completeness
- * and is used as a measure to determine the quality of a clustering.
+ * V Measure is an entropy-based clustering metric that balances homogeneity
+ * and completeness.
  *
  * References:
  * [1] A. Rosenberg et al. (2007). V-Measure: A conditional entropy-based

@@ -9,8 +9,12 @@ use InvalidArgumentException;
 /**
  * Median Absolute Error
  *
- * Median Absolute Error (MAE) is a robust measure of the error that ignores
- * highly erroneous predictions.
+ * Median Absolute Error (MAD) is a robust measure of error, similar to MAE, that
+ * ignores highly erroneous predictions. Because MAD is a robust statistic, it
+ * works well even when used to measure non-normal distributions.
+ *
+ * > **Note:** In order to maintain the convention of *maximizing* validation scores,
+ * this metric outputs the negative of the original score.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

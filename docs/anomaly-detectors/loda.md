@@ -3,7 +3,7 @@
 # Loda
 *Lightweight Online Detector of Anomalies* uses a sparse random projection matrix to produce input to an ensemble of unique one dimensional equi-width histograms able to estimate the probability density of an unknown sample. Samples with low density will receive a high anomaly score.
 
-**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](api.md#ranking), [Persistable](../persistable.md)
+**Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
 **Data Type Compatibility:** Continuous
 

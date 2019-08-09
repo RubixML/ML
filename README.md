@@ -11,9 +11,6 @@ A high-level machine learning and deep learning library for the [PHP](https://ph
 - **40+** modern supervised and unsupervised learning algorithms
 - **Open source** and free to use commercially
 
-## Documentation
-Read the latest documentation [here](https://docs.rubixml.com/en/latest/).
-
 ## Installation
 Install into your project using [Composer](https://getcomposer.org/):
 ```sh
@@ -29,6 +26,29 @@ $ composer require rubix/ml
 - [GD extension](https://php.net/manual/en/book.image.php) for image manipulation
 - [Redis extension](https://github.com/phpredis/phpredis) for persisting to a Redis DB
 - [Igbinary extension](https://github.com/igbinary/igbinary) for fast binary serialization of persistables
+
+## Documentation
+Read the latest documentation [here](https://docs.rubixml.com/en/latest/).
+
+## Getting Started
+If you are new to machine learning, we recommend the [basic introduction](basic-introduction.md) to get started. From there, you can browse the [example projects](https://github.com/RubixML) and tutorials listed below which range from beginner to advanced skill level.
+
+### Example Projects
+Check out these example projects using the Rubix ML library. Most come with a tutorial and a pre-cleaned dataset.
+
+- [CIFAR-10 Image Recognizer](https://github.com/RubixML/CIFAR-10)
+- [Color Clusterer](https://github.com/RubixML/Colors)
+- [Credit Default Risk Predictor](https://github.com/RubixML/Credit)
+- [Human Activity Recognizer](https://github.com/RubixML/HAR)
+- [Housing Price Predictor](https://github.com/RubixML/Housing)
+- [Iris Flower Classifier](https://github.com/RubixML/Iris)
+- [MNIST Handwritten Digit Recognizer](https://github.com/RubixML/MNIST)
+- [Text Sentiment Analyzer](https://github.com/RubixML/Sentiment)
+
+## Funding
+Rubix ML is funded entirely by donations from the open source software community. If you are interested in becoming a patron, you can make a contribution to one our funding sources below.
+
+- [Patreon](https://www.patreon.com/rubixml)
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/RubixML/RubixML/blob/master/CONTRIBUTING.md) for guidelines.

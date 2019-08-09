@@ -1,5 +1,5 @@
 # Learner
-Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can formulate a generalized function that maps future samples to good predictions.
+Most estimators have the ability to be trained with data. These estimators are called *Learners* and require training before they are can make predictions. Training is the process of feeding data to the learner so that it can form a generalized internal function that maps future unknown samples to good predictions.
 
 ### Train a Learner
 To train a learner pass it a training dataset:

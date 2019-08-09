@@ -22,8 +22,10 @@ use function Rubix\ML\argmax;
 /**
  * Classification Tree
  *
- * A binary search tree-based learner that greedily constructs a decision tree
- * for classification that minimizes Gini impurity.
+ * A binary tree-based learner that greedily constructs a decision map for classification
+ * that minimizes the Gini impurity among the training labels during splitting and within
+ * leaf nodes. Classification Trees also serve as the base learner of ensemble methods
+ * such as Random Forest and AdaBoost.
  *
  * References:
  * [1] W. Y. Loh. (2011). Classification and Regression Trees.

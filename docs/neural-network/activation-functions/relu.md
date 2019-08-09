@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/NeuralNet/ActivationFunctions/ReLU.php">Source</a></span>
 
 # ReLU
-A Thresholded ReLU (Rectified Linear Unit) only outputs the signal above a user-defined threshold parameter.
+Rectified Linear Units only output the positive signal of the input. Both the function and its derivative are monotonic and cheap to compute.
 
 ### Parameters
 | # | Param | Default | Type | Description |

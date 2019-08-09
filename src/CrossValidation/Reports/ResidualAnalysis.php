@@ -12,7 +12,9 @@ use const Rubix\ML\EPSILON;
  * Residual Analysis
  *
  * Residual Analysis is a report that measures the differences between the predicted
- * and actual values of a regression problem in detail.
+ * and target values of a regression problem in detail. In one report, you get
+ * multiple error measurements (MAE, MSE, MAPE, R2, etc.) as well as statistics
+ * regarding the distribution of errors.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -88,7 +90,7 @@ class ResidualAnalysis implements Report
             'error_median' => $median,
             'error_variance' => $variance,
             'error_mad' => $mad,
-            'error_interquartile_range' => Stats::iqr($errors),
+            'error_iqr' => Stats::iqr($errors),
             'error_skewness' => Stats::skewness($errors, $mean),
             'error_kurtosis' => Stats::kurtosis($errors, $mean),
             'error_min' => $min,

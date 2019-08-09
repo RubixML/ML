@@ -8,8 +8,13 @@ use InvalidArgumentException;
 /**
  * Mean Squared Error
  *
- * A metric that punishes bad predictions the worse they get by taking the
- * squared error and averaging it over the testing set.
+ * A scale-dependent regression metric that punishes bad predictions more the worse
+ * they are. Formally, MSE is the average of the squared differences between a set
+ * of predictions and their target labels. For an unbiased estimator, the MSE
+ * measures the variance of the predictions.
+ *
+ * > **Note:** In order to maintain the convention of *maximizing* validation scores,
+ * this metric outputs the negative of the original score.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

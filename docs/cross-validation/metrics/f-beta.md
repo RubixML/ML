@@ -1,9 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/CrossValidation/Metrics/FBeta.php">Source</a></span>
 
 # F Beta
-A weighted harmonic mean of precision and recall. The beta parameter controls the weight of precision in the combined score. As beta goes to infinity the score only considers recall whereas when it goes to 0 it only considers precision.
-
-> **Note:** Beta equal to 1 is called an F1 score.
+A weighted harmonic mean of precision and recall. The beta parameter controls the weight of precision in the combined score. As beta goes to infinity the score only considers recall whereas when it goes to 0 it only considers precision. When beta is equal to 1, the metric is called an F1 score.
 
 **Estimator Compatibility:** Classifier, Anomaly Detector
 
