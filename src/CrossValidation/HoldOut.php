@@ -5,6 +5,7 @@ namespace Rubix\ML\CrossValidation;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
 use InvalidArgumentException;
@@ -12,9 +13,9 @@ use InvalidArgumentException;
 /**
  * Hold Out
  *
- * In the holdout method, we randomly assign data points to two sets (training
- * and testing set). The size of each of the testing set is given by the holdout
- * ratio and is typically smaller than the training set.
+ * Hold Out is a simple cross validation technique that uses a validation set that is
+ * *held out* from the training data. The advantages of Hold Out is that it is quick,
+ * but it doesn't allow the learner to train and test on the entire training set.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -30,30 +31,21 @@ class HoldOut implements Validator
     protected $ratio;
 
     /**
-     * Should we stratify the dataset before splitting?
-     *
-     * @var bool
-     */
-    protected $stratify;
-
-    /**
      * @param float $ratio
-     * @param bool $stratify
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $ratio = 0.2, bool $stratify = false)
+    public function __construct(float $ratio = 0.2)
     {
-        if ($ratio < 0.01 or $ratio > 1.) {
-            throw new InvalidArgumentException('Holdout ratio must be'
-                . " between 0.01 and 1, $ratio given.");
+        if ($ratio <= 0. or $ratio >= 1.) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0 and 1, $ratio given.");
         }
 
         $this->ratio = $ratio;
-        $this->stratify = $stratify;
     }
 
     /**
-     * Test the estimator with the supplied dataset and return a score.
+     * Test the estimator with the supplied dataset and return a validation score.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -65,7 +57,9 @@ class HoldOut implements Validator
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
-        [$testing, $training] = $this->stratify
+        $dataset->randomize();
+
+        [$testing, $training] = $dataset->labelType() === DataType::CATEGORICAL
             ? $dataset->stratifiedSplit($this->ratio)
             : $dataset->split($this->ratio);
 

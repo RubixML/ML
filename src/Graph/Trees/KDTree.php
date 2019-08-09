@@ -27,7 +27,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KDTree implements BinaryTree, Spatial
+class KDTree implements BST, Spatial
 {
     /**
      * The maximum number of samples that each neighborhood node can contain.
@@ -155,12 +155,30 @@ class KDTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the path taken from the root to a leaf node in an array.
+     * Search the tree for a leaf node or return null if not found.
+     *
+     * @param array $sample
+     * @return \Rubix\ML\Graph\Nodes\Neighborhood|null
+     */
+    public function search(array $sample) : ?Neighborhood
+    {
+        $path = $this->path($sample);
+
+        if (!end($path) instanceof Neighborhood) {
+            return null;
+        }
+
+        return end($path);
+    }
+
+    /**
+     * Return the path of a sample taken from the root node to a leaf node
+     * in an array.
      *
      * @param array $sample
      * @return array
      */
-    protected function path(array $sample) : array
+    public function path(array $sample) : array
     {
         $current = $this->root;
 

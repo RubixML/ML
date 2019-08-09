@@ -100,33 +100,6 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     protected $estimator;
 
     /**
-     * Return an array of all possible combinations of parameters. i.e the
-     * Cartesian product of the supplied parameter grid.
-     *
-     * @param array $grid
-     * @return array
-     */
-    public static function combineGrid(array $grid) : array
-    {
-        $combinations = [[]];
-
-        foreach ($grid as $i => $params) {
-            $append = [];
-
-            foreach ($combinations as $product) {
-                foreach ($params as $param) {
-                    $product[$i] = $param;
-                    $append[] = $product;
-                }
-            }
-
-            $combinations = $append;
-        }
-
-        return $combinations;
-    }
-
-    /**
      * @param string $base
      * @param array $grid
      * @param \Rubix\ML\CrossValidation\Metrics\Metric|null $metric
@@ -197,7 +170,7 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
             }
         }
 
-        $combinations = self::combineGrid($grid);
+        $combinations = $this->combineGrid($grid);
 
         $this->base = $base;
         $this->combinations = $combinations;
@@ -366,6 +339,33 @@ class GridSearch implements Estimator, Learner, Parallel, Persistable, Verbose
     public function predict(Dataset $dataset) : array
     {
         return $this->estimator->predict($dataset);
+    }
+
+    /**
+     * Return an array of all possible combinations of parameters. i.e the
+     * Cartesian product of the supplied parameter grid.
+     *
+     * @param array $grid
+     * @return array
+     */
+    protected function combineGrid(array $grid) : array
+    {
+        $combinations = [[]];
+
+        foreach ($grid as $i => $params) {
+            $append = [];
+
+            foreach ($combinations as $product) {
+                foreach ($params as $param) {
+                    $product[$i] = $param;
+                    $append[] = $product;
+                }
+            }
+
+            $combinations = $append;
+        }
+
+        return $combinations;
     }
 
     /**

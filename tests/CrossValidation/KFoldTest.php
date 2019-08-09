@@ -31,7 +31,7 @@ class KFoldTest extends TestCase
 
         $this->estimator = new DummyClassifier();
 
-        $this->validator = new KFold(10, false);
+        $this->validator = new KFold(10);
 
         $this->validator->setBackend(new Serial());
     }

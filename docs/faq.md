@@ -35,18 +35,18 @@ A *tuple* is a way to denote an immutable sequential hetorogeneous list with a p
 $tuple = ['first', 'second', 0.001]; // a 3-tuple
 ```
 
-### How do I import data into my script?
-There are many ways to import data into your script depending on where the data are stored. For example, if your data exist on a filesystem in comma separated (CSV) text format, you can use a library such as [League CSV](https://csv.thephpleague.com/) to read the data into your script. PHP also provides [native functions](https://www.php.net/manual/en/function.str-getcsv.php) for CSV manipulations if that's more your style.
+### How do I import data into my project?
+There are many ways to import data into your script depending on where the data are stored. For example, if your data exist on a filesystem in comma separated (CSV) text format, you can use a library such as [League CSV](https://csv.thephpleague.com/) to read the data into memory. PHP also provides [native functions](https://www.php.net/manual/en/function.str-getcsv.php) for CSV manipulations if that's more your style.
 
 ### What is the difference between categorical and continuous data types?
-There are generally 2 classes of data types that Rubix distinguishes by convention.
+In general, there are 2 classes of data types that Rubix distinguishes by convention.
 
-Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *gender* or *city* and can be 1 of K possible values. Categorical feature types are always represented as a string internal type.
+Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *gender* or *city* and can be 1 of k possible values. Categorical feature types are always represented as  string internal types.
 
 Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
-Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood. Objects that implement the [Parallel](parallel.md) interface are able to take advantage of parallel backends.
+Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood. Objects that implement the [Parallel](parallel.md) interface are able to take advantage of parallel computing backends.
 
 ### Does Rubix support multithreading?
 Not currently, however we plan to add CPU and GPU multithreading in the future.

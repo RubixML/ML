@@ -4,7 +4,7 @@ namespace Rubix\ML\Graph\Trees;
 
 use Rubix\ML\Kernels\Distance\Distance;
 
-interface Spatial extends BinaryTree
+interface Spatial extends Tree
 {
     /**
      * Return the distance kernel used to compute distances.

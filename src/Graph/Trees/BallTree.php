@@ -18,7 +18,8 @@ use SplObjectStorage;
  * A binary spatial tree that partitions the dataset into successively smaller
  * and tighter *ball* nodes whose boundary are defined by a centroid and radius.
  * Ball Trees work well in higher dimensions since the partitioning schema does
- * not rely on a finite number of 1-dimensional axis aligned splits.
+ * not rely on a finite number of 1-dimensional axis aligned splits as with k-d
+ * trees.
  *
  * References:
  * [1] S. M. Omohundro. (1989). Five Balltree Construction Algorithms.
@@ -29,7 +30,7 @@ use SplObjectStorage;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class BallTree implements BinaryTree, Spatial
+class BallTree implements BST, Spatial
 {
     /**
      * The maximum number of samples that each leaf node can contain.
@@ -157,7 +158,25 @@ class BallTree implements BinaryTree, Spatial
     }
 
     /**
-     * Return the path taken from the root to a leaf node in an array.
+     * Search the tree for a leaf node or return null if not found.
+     *
+     * @param array $sample
+     * @return \Rubix\ML\Graph\Nodes\Cluster|null
+     */
+    public function search(array $sample) : ?Cluster
+    {
+        $path = $this->path($sample);
+
+        if (!end($path) instanceof Cluster) {
+            return null;
+        }
+
+        return end($path);
+    }
+
+    /**
+     * Return the path of a sample taken from the root node to a leaf node
+     * in an array.
      *
      * @param array $sample
      * @return array

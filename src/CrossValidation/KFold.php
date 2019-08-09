@@ -10,6 +10,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
@@ -18,14 +19,11 @@ use InvalidArgumentException;
 /**
  * K Fold
  *
- * In k-fold cross-validation, the dataset is partitioned into k equal sized
- * subsets. Of the k subsets, a single fold is retained as the validation set
- * for testing the model, and the remaining k − 1 subsets are used as training
- * data. The cross-validation process is then repeated k times, with each of the
- * k folds used exactly once as the validation data. The k results are then
- * averaged to produce a single validation score. The advantage of this method
- * over Hold Out is that all observations are used for both training and
- * validation, and each observation is used for validation exactly once.
+ * K Fold is a cross validation technique that splits the training set into k individual
+ * folds and for each training round uses 1 of the folds to measure the generalization
+ * performance of the model and the rest as training data. The final score is the average
+ * validation score over k rounds. K Fold has the advantage of training and testing on
+ * each sample in the dataset at least once.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -36,39 +34,28 @@ class KFold implements Validator, Parallel
     use Multiprocessing;
 
     /**
-     * The number of times to fold the dataset and therefore the number of
-     * unique testing sets that will be generated.
+     * The number of folds to split the dataset into.
      *
      * @var int
      */
     protected $k;
 
     /**
-     * Should we stratify the dataset before folding?
-     *
-     * @var bool
-     */
-    protected $stratify;
-
-    /**
      * @param int $k
-     * @param bool $stratify
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 10, bool $stratify = false)
+    public function __construct(int $k = 5)
     {
         if ($k < 2) {
-            throw new InvalidArgumentException('K cannot be less than 2'
-                . ", $k given.");
+            throw new InvalidArgumentException("K cannot be less than 2, $k given.");
         }
 
         $this->k = $k;
-        $this->stratify = $stratify;
         $this->backend = new Serial();
     }
 
     /**
-     * Test the estimator with the supplied dataset and return a score.
+     * Test the estimator with the supplied dataset and return a validation score.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -80,7 +67,9 @@ class KFold implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::check($estimator, $metric);
 
-        $folds = $this->stratify
+        $dataset->randomize();
+
+        $folds = $dataset->labelType() === DataType::CATEGORICAL
             ? $dataset->stratifiedFold($this->k)
             : $dataset->fold($this->k);
 

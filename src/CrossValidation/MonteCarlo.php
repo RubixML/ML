@@ -10,6 +10,7 @@ use Rubix\ML\Backends\Serial;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Other\Helpers\Stats;
+use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\Multiprocessing;
 use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Other\Specifications\EstimatorIsCompatibleWithMetric;
@@ -18,9 +19,9 @@ use InvalidArgumentException;
 /**
  * Monte Carlo
  *
- * Repeated Random Subsampling or Monte Carlo cross validation is a technique
- * that takes the average validation score over a user-supplied number of
- * simulations (random splits of the dataset).
+ * Monte Carlo cross validation or *repeated random subsampling* is a technique that
+ * averages the validation score of a learner over a user-defined number of simulations
+ * where the learner is trained and tested on random splits of the dataset.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -31,7 +32,7 @@ class MonteCarlo implements Validator, Parallel
     use Multiprocessing;
 
     /**
-     * The number of simulations to run i.e the number of tests to average.
+     * The number of simulations i.e. random subsamplings of the dataset.
      *
      * @var int
      */
@@ -45,38 +46,29 @@ class MonteCarlo implements Validator, Parallel
     protected $ratio;
 
     /**
-     * Should we stratify the dataset before splitting?
-     *
-     * @var bool
-     */
-    protected $stratify;
-
-    /**
      * @param int $simulations
      * @param float $ratio
-     * @param bool $stratify
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $simulations = 10, float $ratio = 0.2, bool $stratify = false)
+    public function __construct(int $simulations = 10, float $ratio = 0.2)
     {
         if ($simulations < 2) {
             throw new InvalidArgumentException('Must run at least 2'
                 . " simulations, $simulations given.");
         }
 
-        if ($ratio <= 0.01 or $ratio >= 1.) {
-            throw new InvalidArgumentException('Holdout ratio must be'
-                . " between 0 and 1, $ratio given.");
+        if ($ratio <= 0. or $ratio >= 1.) {
+            throw new InvalidArgumentException('Ratio must be between'
+                . " 0 and 1, $ratio given.");
         }
 
         $this->simulations = $simulations;
         $this->ratio = $ratio;
-        $this->stratify = $stratify;
         $this->backend = new Serial();
     }
 
     /**
-     * Test the estimator with the supplied dataset and return a score.
+     * Test the estimator with the supplied dataset and return a validation score.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset
@@ -93,7 +85,7 @@ class MonteCarlo implements Validator, Parallel
         for ($i = 0; $i < $this->simulations; $i++) {
             $dataset->randomize();
 
-            [$testing, $training] = $this->stratify
+            [$testing, $training] = $dataset->labelType() === DataType::CATEGORICAL
                 ? $dataset->stratifiedSplit($this->ratio)
                 : $dataset->split($this->ratio);
     
