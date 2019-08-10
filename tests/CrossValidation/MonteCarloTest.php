@@ -31,7 +31,7 @@ class MonteCarloTest extends TestCase
 
         $this->estimator = new DummyClassifier();
 
-        $this->validator = new MonteCarlo(3, 0.2, false);
+        $this->validator = new MonteCarlo(3, 0.2);
 
         $this->validator->setBackend(new Serial());
     }

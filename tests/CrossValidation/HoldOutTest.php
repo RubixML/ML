@@ -29,7 +29,7 @@ class HoldOutTest extends TestCase
 
         $this->estimator = new DummyClassifier();
 
-        $this->validator = new HoldOut(0.2, false);
+        $this->validator = new HoldOut(0.2);
     }
 
     public function test_build_validator()

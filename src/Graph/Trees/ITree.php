@@ -20,7 +20,7 @@ use InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class ITree implements BinaryTree
+class ITree implements BST
 {
     protected const MAX_LEAF_SIZE = 1;
     

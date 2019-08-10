@@ -18,10 +18,11 @@ use InvalidArgumentException;
 /**
  * Leave P Out
  *
- * Leave P Out cross-validation involves using p observations as the validation
- * set and the remaining observations as the training set. This is repeated on
- * all ways to cut the original sample on a validation set of p observations
- * and a training set. The resulting score is an average of all the tests.
+ * Leave P Out tests a learner with a unique holdout set of size p for each round
+ * until all samples have been tested.
+ *
+ * > **Note:** Leave P Out can take long especially with large datasets and small
+ * values of p.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -46,7 +47,7 @@ class LeavePOut implements Validator, Parallel
     {
         if ($p < 1) {
             throw new InvalidArgumentException('P cannot be less'
-                . "than 1, $p given.");
+                . " than 1, $p given.");
         }
 
         $this->p = $p;
@@ -54,7 +55,7 @@ class LeavePOut implements Validator, Parallel
     }
 
     /**
-     * Test the estimator with the supplied dataset and return a score.
+     * Test the estimator with the supplied dataset and return a validation score.
      *
      * @param \Rubix\ML\Learner $estimator
      * @param \Rubix\ML\Datasets\Labeled $dataset

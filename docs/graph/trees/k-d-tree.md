@@ -3,7 +3,7 @@
 # K-d Tree
 A multi-dimensional binary search tree for fast nearest neighbor queries. The K-d tree construction algorithm separates data points into bounded hypercubes or *bounding boxes* that are used to prune off nodes during nearest neighbor and range searches.
 
-**Interfaces:** [Tree](api.md#tree), [Binary Tree](api.md#binary-tree), [Spatial](api.md#spatial)
+**Interfaces:** [Tree](api.md#tree), [Binary Tree](api.md#binary-tree), [BST](api.md#bst), [Spatial](api.md#spatial)
 
 **Data Type Compatibility:** Continuous
 
@@ -14,7 +14,10 @@ A multi-dimensional binary search tree for fast nearest neighbor queries. The K-
 | 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 
 ### Additional Methods
-This tree does not have any additional methods.
+Return the path of a sample taken from the root node to a leaf node in an array.
+```php
+public path(array $sample) : array
+```
 
 ### Example
 ```php

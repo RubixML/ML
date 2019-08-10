@@ -6,6 +6,8 @@
     - Changed method signature of random subset without replacement
     - Changed K Means default max iterations
     - Robust Z Score now uses weighted combination of scores
+    - Cross validators now stratify dataset automatically
+    - Changed default k in K Fold validator
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

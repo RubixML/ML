@@ -73,6 +73,15 @@ var_dump($tree->balance());
 int(-1)
 ```
 
+# BST
+Binary Search Trees (BSTs) are binary tree structures that provide a fast O(log n) search API. They are used to power machine learning algorithms such as decision trees.
+
+### Search
+Search the tree for a leaf node or return null if not found:
+```php
+public search(array $sample) : Leaf
+```
+
 # Spatial
 Spatial trees are constructed in such a way as to maximize performance on spatial queries such as nearest neighbor or radius searches. They do so by embedding spatial metadata within each node that enable fast search and pruning.
 

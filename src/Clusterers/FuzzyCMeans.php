@@ -25,8 +25,11 @@ use const Rubix\ML\EPSILON;
 /**
  * Fuzzy C Means
  *
- * Distance-based soft clusterer that allows samples to belong to multiple clusters
- * if they fall within a *fuzzy* region controlled by the *fuzz* parameter.
+ * A distance-based soft clustering algorithm that allows samples to belong to
+ * multiple clusters if they fall within a *fuzzy* region controlled by the
+ * fuzz parameter. Like K Means, Fuzzy C Means minimizes the inertia cost
+ * function. However, unlike K Means, which trains using mini batches of data,
+ * FCM uses a batch solver that requires the entire dataset at each iteration.
  *
  * References:
  * [1] J. C. Bezdek et al. (1984). FCM: The Fuzzy C-Means Clustering Algorithm.

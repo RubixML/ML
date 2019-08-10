@@ -29,7 +29,7 @@ use const Rubix\ML\EPSILON;
 /**
  * Adaline
  *
- * Adaptive Linear Neuron or (*Adaline*) is a type of single layer neural network
+ * *Adaptive Linear Neuron* is a type of single layer neural network
  * with a linear output neuron. Training is equivalent to solving Ridge regression
  * iteratively using mini batch Gradient Descent.
  *

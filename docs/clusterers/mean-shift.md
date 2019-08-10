@@ -1,9 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Clusterers/MeanShift.php">Source</a></span>
 
 # Mean Shift
-A hierarchical clustering algorithm that uses peak finding to locate the local maxima (*centroids*) of a training set given by a radius constraint.
-
-> **Note:** Seeding Mean Shift with a Seeder can speed up convergence on large datasets. The default behavior is to initialize all training samples as seeds.
+A hierarchical clustering algorithm that uses peak finding to locate the local maxima (the *centroids*) of a training set given a radius constraint.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Probabilistic](../probabilistic.md), [Verbose](../verbose.md), [Persistable](../persistable.md)
 
@@ -16,7 +14,7 @@ A hierarchical clustering algorithm that uses peak finding to locate the local m
 | 2 | tree | BallTree | object | The spatial tree used for range queries. |
 | 3 | epochs | 100 | int | The maximum number of training rounds to execute. |
 | 4 | min change | 1e-4 | float | The minimum change in centroids necessary for the algorithm to continue training. |
-| 5 | ratio | 0.2 | float | The ratio of samples from the training set to seed the algorithm with. |
+| 5 | ratio | 0.1 | float | The ratio of samples from the training set to seed the algorithm with. |
 | 6 | seeder | Random | object | The seeder used to initialize the cluster centroids. |
 
 ### Additional Methods
