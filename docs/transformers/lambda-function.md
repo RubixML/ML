@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/Transformers/LambdaFunction.php">Source</a></span>
 
 # Lambda Function
-Run a stateless lambda function (*anonymous* function) over the sample matrix. The lambda function receives the sample matrix (and labels if applicable) as an argument and should return the transformed sample matrix and labels in a [2-tuple](../faq.md#what-is-a-tuple).
+Run a stateless lambda function (*anonymous* function) over the samples. The lambda function receives the sample matrix as an argument and should return the transformed matrix.
 
 **Interfaces:** [Transformer](api.md#transformer)
 

@@ -3,11 +3,11 @@
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
@@ -38,7 +38,7 @@ class RobustZScoreTest extends TestCase
             1 => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(3.5);
+        $this->estimator = new RobustZScore(0.5, 3.5);
 
         $this->metric = new FBeta();
 

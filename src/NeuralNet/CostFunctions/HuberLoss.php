@@ -9,7 +9,7 @@ use InvalidArgumentException;
  * Huber Loss
  *
  * The pseudo Huber Loss function transitions between L1 and L2 (Least Squares)
- * loss at a given pivot point (*delta*) such that the function becomes more
+ * loss at a given pivot point (*alpha*) such that the function becomes more
  * quadratic as the loss decreases. The combination of L1 and L2 loss makes
  * Huber Loss robust to outliers while maintaining smoothness near the minimum.
  *
@@ -20,33 +20,34 @@ use InvalidArgumentException;
 class HuberLoss implements RegressionLoss
 {
     /**
-     * The pivot point i.e the point where numbers larger will be evalutated
-     * with an L1 loss while number smaller will be evalutated with an L2 loss.
+     * The alpha quantile i.e the pivot point at which numbers larger will be
+     * evalutated with an L1 loss while number smaller will be evalutated with
+     * an L2 loss.
      *
      * @var float
      */
-    protected $delta;
+    protected $alpha;
 
     /**
-     * The square of delta.
+     * The square of the alpha parameter.
      *
      * @var float
      */
-    protected $delta2;
+    protected $alpha2;
 
     /**
-     * @param float $delta
+     * @param float $alpha
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $delta = 1.)
+    public function __construct(float $alpha = 0.9)
     {
-        if ($delta <= 0.) {
-            throw new InvalidArgumentException('Delta must be greater than'
-                . " 0, $delta given.");
+        if ($alpha <= 0.) {
+            throw new InvalidArgumentException('Alpha must be greater than'
+                . " 0, $alpha given.");
         }
 
-        $this->delta = $delta;
-        $this->delta2 = $delta ** 2;
+        $this->alpha = $alpha;
+        $this->alpha2 = $alpha ** 2;
     }
 
     /**
@@ -83,7 +84,7 @@ class HuberLoss implements RegressionLoss
         $alpha = $output->subtract($target);
 
         return $alpha->square()
-            ->add($this->delta2)
+            ->add($this->alpha2)
             ->pow(-0.5)
             ->multiply($alpha);
     }
@@ -94,6 +95,6 @@ class HuberLoss implements RegressionLoss
      */
     public function _compute(float $z) : float
     {
-        return $this->delta2 * (sqrt(1. + ($z / $this->delta) ** 2) - 1.);
+        return $this->alpha2 * (sqrt(1. + ($z / $this->alpha) ** 2) - 1.);
     }
 }

@@ -5,6 +5,7 @@
     - Added predict single sample method to Learner interface
     - Changed method signature of random subset without replacement
     - Changed K Means default max iterations
+    - Robust Z Score now uses weighted combination of scores
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

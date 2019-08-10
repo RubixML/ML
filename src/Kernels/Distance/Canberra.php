@@ -7,8 +7,14 @@ use const Rubix\ML\EPSILON;
 /**
  * Canberra
  *
- * A weighted version of Manhattan distance which computes the L1 distance
- * between two coordinates in a vector space.
+ * A weighted version of the Manhattan distance, Canberra examines the sum of
+ * a series of fractional differences between two samples. Canberra can be
+ * very sensitive when both coordinates are near zero.
+ *
+ *
+ * References:
+ * [1] G. N. Lance et al. (1967). Mixed-data classificatory programs I.
+ * Agglomerative Systems.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

@@ -20,14 +20,17 @@ use const Rubix\ML\EPSILON;
  * Robust Z Score
  *
  * A statistical anomaly detector that uses modified Z scores that are robust to
- * preexisting outliers. The modified Z score takes the median and median absolute
+ * preexisting outliers. The modified Z score uses the median and median absolute
  * deviation (MAD) unlike the mean and standard deviation of a *standard* Z score
- * - thus making the statistic more robust to training sets that may already contain
- * outliers. Anomalies are flagged if their maximum feature-specific Z score exceeds
- * some user-defined threshold parameter.
+ * which are sensitive to outliers. Anomalies are flagged if their final weighted
+ * Z score exceeds the user-defined threshold.
+ *
+ * > **Note:** An alpha value of 1 means the estimator only considers the maximum
+ * absolute z score whereas a setting of 0 indicates that only the average z score
+ * factors into the final score.
  *
  * References:
- * [1] P. J. Rousseeuw et al. (2017). Anomaly Detection by Robust Statistics.
+ * [1] B. Iglewicz et al. (1993). How to Detect and Handle Outliers.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -37,10 +40,18 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
 {
     use PredictsSingle;
     
-    protected const LAMBDA = 0.6745;
+    protected const ETA = 0.6745;
 
     /**
-     * The minimum average z score to be considered an anomaly.
+     * The weight of the maximum per sample z score in the overall anomaly
+     * score.
+     *
+     * @var float
+     */
+    protected $alpha;
+
+    /**
+     * The minimum z score to be flagged as an anomaly.
      *
      * @var float
      */
@@ -61,16 +72,23 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     protected $mads;
 
     /**
+     * @param float $alpha
      * @param float $threshold
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $threshold = 3.5)
+    public function __construct(float $alpha = 0.5, float $threshold = 3.5)
     {
+        if ($alpha < 0. or $alpha > 1.) {
+            throw new InvalidArgumentException('Alpha must be between'
+                . " 0 and 1, $alpha given.");
+        }
+
         if ($threshold <= 0.) {
             throw new InvalidArgumentException('Threshold must be greater'
                 . " than 0, $threshold given.");
         }
 
+        $this->alpha = $alpha;
         $this->threshold = $threshold;
     }
 
@@ -176,16 +194,17 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
         $scores = [];
 
         foreach ($dataset as $sample) {
-            $zHat = [];
+            $z = [];
 
             foreach ($sample as $column => $value) {
-                $zHat[] = abs(
-                    (self::LAMBDA * ($value - $this->medians[$column]))
+                $z[] = abs(
+                    (self::ETA * ($value - $this->medians[$column]))
                     / $this->mads[$column]
                 );
             }
 
-            $scores[] = max($zHat);
+            $scores[] = (1. - $this->alpha) * Stats::mean($z)
+                + $this->alpha * max($z);
         }
 
         return $scores;

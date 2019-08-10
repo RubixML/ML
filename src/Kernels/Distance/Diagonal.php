@@ -5,9 +5,9 @@ namespace Rubix\ML\Kernels\Distance;
 /**
  * Diagonal
  *
- * The Diagonal (sometimes called Chebyshev) distance is a measure that
- * constrains movement to horizontal, vertical, and diagonal from a point. An
- * example that uses Diagonal movement is a chess board.
+ * The Diagonal (sometimes called *Chebyshev*) distance is a measure that constrains
+ * movement to horizontal, vertical, and diagonal movement from a point. An example
+ * of a game that uses diagonal movement is a chess board.
  *
  * @category    Machine Learning
  * @package     Rubix/ML

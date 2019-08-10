@@ -7,8 +7,9 @@ use const Rubix\ML\EPSILON;
 /**
  * L1 Normalizer
  *
- * Transform each sample vector in the sample matrix such that each feature is
- * divided by the L1 norm (or magnitude) of that vector.
+ * Transform each sample vector in the sample matrix such that each feature is divided
+ * by the L1 norm (or *magnitude*) of that vector. The resulting sample will have
+ * continuous features between 0 and 1.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
