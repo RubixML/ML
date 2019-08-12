@@ -31,7 +31,7 @@ $ composer require rubix/ml
 Read the latest documentation [here](https://docs.rubixml.com/en/latest/).
 
 ## Getting Started
-If you are new to machine learning, we recommend the [basic introduction](basic-introduction.md) to get started. From there, you can browse the [example projects](https://github.com/RubixML) and tutorials listed below which range from beginner to advanced skill level.
+If you are new to machine learning, we recommend the [basic introduction](https://docs.rubixml.com/en/latest/basic-introduction.html) to get started. From there, you can browse the [example projects](https://github.com/RubixML) and tutorials listed below which range from beginner to advanced skill level.
 
 ### Example Projects
 Check out these example projects using the Rubix ML library. Most come with a tutorial and a pre-cleaned dataset.
