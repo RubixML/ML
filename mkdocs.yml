@@ -33,6 +33,7 @@ nav:
   - Verbose: verbose.md
   - Wrapper: wrapper.md
 - Anomaly Detectors:
+  - Gaussian KDE: anomaly-detectors/gaussian-kde.md
   - Isolation Forest: anomaly-detectors/isolation-forest.md
   - Loda: anomaly-detectors/loda.md
   - Local Outlier Factor: anomaly-detectors/local-outlier-factor.md

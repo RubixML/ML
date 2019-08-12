@@ -20,7 +20,6 @@ use Rubix\ML\Other\Specifications\DatasetIsCompatibleWithEstimator;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Rubix\ML\argmax;
 use function Rubix\ML\logsumexp;
 
 use const Rubix\ML\TWO_PI;
@@ -349,15 +348,9 @@ class GaussianMixture implements Estimator, Learner, Probabilistic, Verbose, Per
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $predictions = [];
+        $jlls = array_map([self::class, 'jointLogLikelihood'], $dataset->samples());
 
-        foreach ($dataset as $sample) {
-            $jll = $this->jointLogLikelihood($sample);
-
-            $predictions[] = argmax($jll);
-        }
-
-        return $predictions;
+        return array_map('Rubix\ML\argmax', $jlls);
     }
 
     /**

@@ -21,7 +21,7 @@ class RadiusNeighborsTest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
-    protected const MIN_SCORE = 0.8;
+    protected const MIN_SCORE = 0.9;
 
     protected const RANDOM_SEED = 0;
 
@@ -39,7 +39,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new RadiusNeighbors(10.5, new BallTree(), true);
+        $this->estimator = new RadiusNeighbors(35.5, new BallTree(), true);
 
         $this->metric = new Accuracy();
 

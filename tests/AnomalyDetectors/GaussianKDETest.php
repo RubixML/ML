@@ -4,21 +4,21 @@ namespace Rubix\ML\Tests\AnomalyDetectors;
 
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
+use Rubix\ML\Ranking;
 use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\AnomalyDetectors\Loda;
 use Rubix\ML\Other\Helpers\DataType;
-use Rubix\ML\Ranking;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
-use Rubix\ML\Datasets\Generators\Agglomerate;
+use Rubix\ML\AnomalyDetectors\GaussianKDE;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
+use Rubix\ML\Datasets\Generators\Agglomerate;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
 
-class LodaTest extends TestCase
+class GaussianKDETest extends TestCase
 {
     protected const TRAIN_SIZE = 400;
     protected const TEST_SIZE = 10;
@@ -35,11 +35,11 @@ class LodaTest extends TestCase
     public function setUp()
     {
         $this->generator = new Agglomerate([
-            0 => new Blob([0., 0.], 0.5),
-            1 => new Circle(0., 0., 8., 0.1),
+            0 => new Blob([0., 0.], 1.0),
+            1 => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new Loda(10., 100, null);
+        $this->estimator = new GaussianKDE(3.5, 0.1);
 
         $this->metric = new FBeta();
 
@@ -48,7 +48,7 @@ class LodaTest extends TestCase
 
     public function test_build_detector()
     {
-        $this->assertInstanceOf(Loda::class, $this->estimator);
+        $this->assertInstanceOf(GaussianKDE::class, $this->estimator);
         $this->assertInstanceOf(Learner::class, $this->estimator);
         $this->assertInstanceOf(Online::class, $this->estimator);
         $this->assertInstanceOf(Ranking::class, $this->estimator);
@@ -63,16 +63,7 @@ class LodaTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    public function test_estimate_bins()
-    {
-        $this->assertSame(4, Loda::estimateBins(10));
-        $this->assertSame(8, Loda::estimateBins(100));
-        $this->assertSame(11, Loda::estimateBins(1000));
-        $this->assertSame(14, Loda::estimateBins(10000));
-        $this->assertSame(18, Loda::estimateBins(100000));
-    }
-
-    public function test_train_partial_predict()
+    public function test_train_predict()
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
         
@@ -81,7 +72,9 @@ class LodaTest extends TestCase
         $folds = $training->fold(3);
 
         $this->estimator->train($folds[0]);
+
         $this->estimator->partial($folds[1]);
+
         $this->estimator->partial($folds[2]);
 
         $this->assertTrue($this->estimator->trained());

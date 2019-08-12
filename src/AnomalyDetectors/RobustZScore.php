@@ -43,19 +43,19 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     protected const ETA = 0.6745;
 
     /**
+     * The minimum z score to be flagged as an anomaly.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
      * The weight of the maximum per sample z score in the overall anomaly
      * score.
      *
      * @var float
      */
     protected $alpha;
-
-    /**
-     * The minimum z score to be flagged as an anomaly.
-     *
-     * @var float
-     */
-    protected $threshold;
 
     /**
      * The median of each feature column in the training set.
@@ -72,24 +72,24 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     protected $mads;
 
     /**
-     * @param float $alpha
      * @param float $threshold
+     * @param float $alpha
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $alpha = 0.5, float $threshold = 3.5)
+    public function __construct(float $threshold = 3.5, float $alpha = 0.5)
     {
-        if ($alpha < 0. or $alpha > 1.) {
-            throw new InvalidArgumentException('Alpha must be between'
-                . " 0 and 1, $alpha given.");
-        }
-
         if ($threshold <= 0.) {
             throw new InvalidArgumentException('Threshold must be greater'
                 . " than 0, $threshold given.");
         }
 
-        $this->alpha = $alpha;
+        if ($alpha < 0. or $alpha > 1.) {
+            throw new InvalidArgumentException('Alpha must be between'
+                . " 0 and 1, $alpha given.");
+        }
+
         $this->threshold = $threshold;
+        $this->alpha = $alpha;
     }
 
     /**

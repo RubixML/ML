@@ -38,7 +38,7 @@ class RobustZScoreTest extends TestCase
             1 => new Circle(0., 0., 6., 0.1),
         ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(0.5, 3.5);
+        $this->estimator = new RobustZScore(3.5, 0.5);
 
         $this->metric = new FBeta();
 

@@ -1,5 +1,6 @@
 - Unreleased
     - Added Patreon funding support
+    - Added Gaussian KDE anomaly detector
     - Added early stopping window to Gradient Descent-based Learners
     - Changed early stopping behavior of MLP-based estimators
     - Added predict single sample method to Learner interface
@@ -8,6 +9,7 @@
     - Robust Z Score now uses weighted combination of scores
     - Cross validators now stratify dataset automatically
     - Changed default k in K Fold validator
+    - Changed order of Loda hyperparameters
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

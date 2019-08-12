@@ -22,11 +22,11 @@ use const Rubix\ML\LOG_EPSILON;
 /**
  * Loda
  *
- * Lightweight Online Detector of Anomalies a.k.a. Loda uses sparse random
- * projection vectors to generate an ensemble of unique one dimensional
- * equi-width histograms able to estimate the probability density of an unknown
- * sample. The anomaly score is given by the negative log likelihood whose upper
- * threshold can be set by the user through the *contamination* hyper-parameter.
+ * *Lightweight Online Detector of Anomalies* uses a sparse random projection matrix
+ * to produce input to an ensemble of unique one dimensional equi-width histograms
+ * able to estimate the probability density of a potential anomaly. The anomaly score
+ * is defined as the negative log likelihood of a sample being an outlier. Thus,
+ * samples with low probability density will be given a high anomaly score.
  *
  * References:
  * [1] T. Pevný. (2015). Loda: Lightweight on-line detector of anomalies.
@@ -43,6 +43,20 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     protected const MIN_SPARSE_DIMENSIONS = 3;
 
     /**
+     * The minimum negative log likelihood score necessary to flag an anomaly.
+     *
+     * @var float
+     */
+    protected $threshold;
+
+    /**
+     * The number of projection/histogram pairs in the ensemble.
+     *
+     * @var int
+     */
+    protected $estimators;
+
+    /**
      * The number of bins in each equi-width histogram.
      *
      * @var int|null
@@ -57,21 +71,7 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     protected $fitBins;
 
     /**
-     * The number of projection/histogram pairs in the ensemble.
-     *
-     * @var int
-     */
-    protected $estimators;
-
-    /**
-     * The threshold anomaly score to be flagged as an outlier.
-     *
-     * @var float
-     */
-    protected $threshold;
-
-    /**
-     * The random projection matrix.
+     * The sparse random projection matrix.
      *
      * @var \Rubix\Tensor\Matrix|null
      */
@@ -103,16 +103,16 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * @param int|null $bins
-     * @param int $estimators
      * @param float $threshold
+     * @param int $estimators
+     * @param int|null $bins
      * @throws \InvalidArgumentException
      */
-    public function __construct(?int $bins = null, int $estimators = 100, float $threshold = 10.)
+    public function __construct(float $threshold = 10., int $estimators = 100, ?int $bins = null)
     {
-        if (isset($bins) and $bins < 1) {
-            throw new InvalidArgumentException('The number of bins cannot'
-                . " be less than 1, $bins given.");
+        if ($threshold < 0.) {
+            throw new InvalidArgumentException('Threshold must be'
+                . " greater than 0, $threshold given.");
         }
 
         if ($estimators < 1) {
@@ -120,15 +120,15 @@ class Loda implements Estimator, Learner, Online, Ranking, Persistable
                 . " requied to make a prediction, $estimators given.");
         }
 
-        if ($threshold < 0.) {
-            throw new InvalidArgumentException('Threshold must be'
-                . " greater than 0, $threshold given.");
+        if (isset($bins) and $bins < 1) {
+            throw new InvalidArgumentException('The number of bins cannot'
+                . " be less than 1, $bins given.");
         }
 
+        $this->threshold = $threshold;
+        $this->estimators = $estimators;
         $this->bins = $bins;
         $this->fitBins = is_null($bins);
-        $this->estimators = $estimators;
-        $this->threshold = $threshold;
     }
 
     /**
