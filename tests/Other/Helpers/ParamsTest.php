@@ -43,7 +43,7 @@ class ParamsTest extends TestCase
 
     public function test_extract_args()
     {
-        $expected = ['k', 'kernel', 'weighted'];
+        $expected = ['k', 'weighted', 'kernel'];
 
         $this->assertEquals($expected, Params::args(new KNearestNeighbors()));
     }

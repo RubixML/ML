@@ -48,8 +48,9 @@ class GaussianRandomProjector implements Transformer, Stateful
      */
     public static function minDimensions(int $n, float $maxDistortion = 0.1) : int
     {
-        return (int) round(4. * log($n)
-            / ($maxDistortion ** 2 / 2. - $maxDistortion ** 3 / 3.));
+        $denominator = $maxDistortion ** 2 / 2. - $maxDistortion ** 3 / 3.;
+
+        return (int) round(4. * log($n) / $denominator);
     }
 
     /**

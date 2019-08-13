@@ -34,7 +34,7 @@ class KNNRegressorTest extends TestCase
     {
         $this->generator = new HalfMoon(4., -7., 1., 90, 0.02);
 
-        $this->estimator = new KNNRegressor(3, new Minkowski(3.0), true);
+        $this->estimator = new KNNRegressor(3, true, new Minkowski(3.0));
 
         $this->metric = new RSquared();
 

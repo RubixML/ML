@@ -40,7 +40,7 @@ class KNearestNeighborsTest extends TestCase
             'outer' => new Circle(0., 0., 10., 0.1),
         ], [3, 3, 4]);
 
-        $this->estimator = new KNearestNeighbors(3, new Euclidean(), true);
+        $this->estimator = new KNearestNeighbors(3, true, new Euclidean());
 
         $this->metric = new Accuracy();
 

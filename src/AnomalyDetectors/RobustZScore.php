@@ -60,16 +60,20 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
     /**
      * The median of each feature column in the training set.
      *
-     * @var float[]|null
+     * @var float[]
      */
-    protected $medians;
+    protected $medians = [
+        //
+    ];
 
     /**
      * The median absolute deviation of each feature column.
      *
-     * @var float[]|null
+     * @var float[]
      */
-    protected $mads;
+    protected $mads = [
+        //
+    ];
 
     /**
      * @param float $threshold
@@ -191,23 +195,28 @@ class RobustZScore implements Estimator, Learner, Ranking, Persistable
 
         DatasetIsCompatibleWithEstimator::check($dataset, $this);
 
-        $scores = [];
+        return array_map([self::class, 'z'], $dataset->samples());
+    }
 
-        foreach ($dataset as $sample) {
-            $z = [];
+    /**
+     * Calculate the modified z score for a given sample.
+     *
+     * @param array $sample
+     * @return float
+     */
+    protected function z(array $sample) : float
+    {
+        $z = [];
 
-            foreach ($sample as $column => $value) {
-                $z[] = abs(
-                    (self::ETA * ($value - $this->medians[$column]))
-                    / $this->mads[$column]
-                );
-            }
-
-            $scores[] = (1. - $this->alpha) * Stats::mean($z)
-                + $this->alpha * max($z);
+        foreach ($sample as $column => $value) {
+            $z[] = abs(
+                (self::ETA * ($value - $this->medians[$column]))
+                / $this->mads[$column]
+            );
         }
 
-        return $scores;
+        return (1. - $this->alpha) * Stats::mean($z)
+            + $this->alpha * max($z);
     }
 
     /**

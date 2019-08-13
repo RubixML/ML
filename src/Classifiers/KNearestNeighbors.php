@@ -27,7 +27,7 @@ use const Rubix\ML\EPSILON;
  * A distance-based algorithm that locates the k nearest neighbors (data points) from the
  * training set and uses a weighted vote to classify unknown samples during inference. A
  * *kernelized* distance function allows the user to specify different concepts of distance
- * measurement to the estimator.
+ * to the estimator.
  *
  * > **Note:** This learner is considered a *lazy* learner because it does the majority of
  * its computation during inference.
@@ -48,19 +48,19 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
     protected $k;
 
     /**
-     * The distance function to use when computing the distances.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
      *
      * @var bool
      */
     protected $weighted;
+
+    /**
+     * The distance function to use when computing the distances.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
 
     /**
      * The unique class outcomes.
@@ -91,11 +91,11 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
 
     /**
      * @param int $k
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 5, ?Distance $kernel = null, bool $weighted = true)
+    public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -103,8 +103,8 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pe
         }
 
         $this->k = $k;
-        $this->kernel = $kernel ?? new Euclidean();
         $this->weighted = $weighted;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**

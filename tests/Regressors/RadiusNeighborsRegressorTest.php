@@ -35,7 +35,7 @@ class RadiusNeighborsRegressorTest extends TestCase
 
         $this->testing = $this->training->randomize()->head(self::TEST_SIZE);
 
-        $this->estimator = new RadiusNeighborsRegressor(1.5, new BallTree(), true);
+        $this->estimator = new RadiusNeighborsRegressor(1.5, true, new BallTree());
         
         $this->metric = new RSquared();
 

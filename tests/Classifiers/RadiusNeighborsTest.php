@@ -39,7 +39,7 @@ class RadiusNeighborsTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new RadiusNeighbors(35.5, new BallTree(), true);
+        $this->estimator = new RadiusNeighbors(35.5, true, new BallTree());
 
         $this->metric = new Accuracy();
 

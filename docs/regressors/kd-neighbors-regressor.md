@@ -11,8 +11,8 @@ A fast implementation of [KNN Regressor](knn-regressor.md) using a spatially-awa
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
-| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 3 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
 
 ### Additional Methods
 Return the base spatial tree instance:
@@ -25,5 +25,5 @@ public tree() : Spatial
 use Rubix\ML\Regressors\KDNeighborsRegressor;
 use Rubix\ML\Graph\Trees\BallTree;
 
-$estimator = new KDNeighborsRegressor(5, new BallTree(50), true);
+$estimator = new KDNeighborsRegressor(5, true, new BallTree(50));
 ```

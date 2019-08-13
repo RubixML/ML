@@ -24,8 +24,8 @@ use RuntimeException;
  * is a weighted average of each label from the training set that is within
  * a fixed user-defined radius.
  *
- * > **Note**: Unknown samples with 0 samples from the training set that are
- * within radius will be labeled *NaN*.
+ * > **Note**: Unknown samples with no training samples within radius are labeled
+ * *NaN*. As such, Radius Neighbors is also a quasi anomaly detector.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -61,11 +61,11 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
 
     /**
      * @param float $radius
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param bool $weighted
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $radius = 1.0, ?Spatial $tree = null, bool $weighted = true)
+    public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
@@ -73,8 +73,8 @@ class RadiusNeighborsRegressor implements Estimator, Learner, Persistable
         }
 
         $this->radius = $radius;
-        $this->tree = $tree ?? new BallTree();
         $this->weighted = $weighted;
+        $this->tree = $tree ?? new BallTree();
     }
 
     /**

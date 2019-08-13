@@ -43,19 +43,19 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
     protected $k;
 
     /**
-     * The distance kernel to use when computing the distances.
-     *
-     * @var \Rubix\ML\Kernels\Distance\Distance
-     */
-    protected $kernel;
-
-    /**
      * Should we use the inverse distances as confidence scores when
      * making predictions?
      *
      * @var bool
      */
     protected $weighted;
+
+    /**
+     * The distance kernel to use when computing the distances.
+     *
+     * @var \Rubix\ML\Kernels\Distance\Distance
+     */
+    protected $kernel;
 
     /**
      * The training samples.
@@ -77,11 +77,11 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
 
     /**
      * @param int $k
-     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @param bool $weighted
+     * @param \Rubix\ML\Kernels\Distance\Distance|null $kernel
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 5, ?Distance $kernel = null, bool $weighted = true)
+    public function __construct(int $k = 5, bool $weighted = true, ?Distance $kernel = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -89,8 +89,8 @@ class KNNRegressor implements Estimator, Learner, Online, Persistable
         }
 
         $this->k = $k;
-        $this->kernel = $kernel ?? new Euclidean();
         $this->weighted = $weighted;
+        $this->kernel = $kernel ?? new Euclidean();
     }
 
     /**

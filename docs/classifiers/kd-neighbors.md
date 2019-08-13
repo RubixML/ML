@@ -11,8 +11,8 @@ A fast and efficient k nearest neighbors algorithm that uses a binary tree to di
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
-| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 3 | tree | KDTree | object | The spatial tree used for nearest neighbor queries. |
 
 ### Additional Methods
 Return the base spatial tree instance:
@@ -26,5 +26,5 @@ use Rubix\ML\Classifiers\KDNeighbors;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Kernels\Distance\Minskowski;
 
-$estimator = new KDNeighbors(3, new BallTree(40, new Minkowski()), false);
+$estimator = new KDNeighbors(3, false, new BallTree(40, new Minkowski()));
 ```

@@ -1,7 +1,7 @@
 <span style="float:right;"><a href="https://github.com/RubixML/RubixML/blob/master/src/AnomalyDetectors/RobustZScore.php">Source</a></span>
 
 # Gaussian KDE
-The Gaussian Kernel Density Estimator is able to spot outliers by computing a probability density function over the features assuming they are independent and normally (Gaussian) distributed. Assigning low probability density translates to a high anomaly score. The final anomaly score is given as the negative log likelihood of a sample being an outlier.
+The Gaussian Kernel Density Estimator is able to spot outliers by computing a probability density function over the features assuming they are independent and normally (Gaussian) distributed. Assigning low probability density translates to a high anomaly score. The final anomaly score is given as the log likelihood of a sample being an outlier.
 
 **Interfaces:** [Estimator](../estimator.md), [Learner](../learner.md), [Online](../online.md), [Ranking](../ranking.md), [Persistable](../persistable.md)
 
@@ -10,7 +10,7 @@ The Gaussian Kernel Density Estimator is able to spot outliers by computing a pr
 ### Parameters
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
-| 1 | threshold | 5.0 | float | The minimum negative log likelihood to be flagged as an anomaly. |
+| 1 | threshold | 5.0 | float | The minimum log likelihood to be flagged as an anomaly. |
 | 2 | contamination | 0.1 | float | The percentage of outliers that are assumed to be present in the training set. |
 
 ### Additional Methods

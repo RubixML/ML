@@ -13,8 +13,8 @@ A version of the K Nearest Neighbors algorithm that uses the average (mean) outc
 | # | Param | Default | Type | Description |
 |---|---|---|---|---|
 | 1 | k | 5 | int | The number of nearest neighbors to consider when making a prediction. |
-| 2 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
-| 3 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 2 | weighted | true | bool | Should we use the inverse distances as confidence scores when making predictions? |
+| 3 | kernel | Euclidean | object | The distance kernel used to compute the distance between sample points. |
 
 ### Additional Methods
 This estimator does not have any additional methods.
@@ -24,5 +24,5 @@ This estimator does not have any additional methods.
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Kernels\Distance\Minkowski;
 
-$estimator = new KNNRegressor(2, new Minkowski(3.0), false);
+$estimator = new KNNRegressor(2, false, new Minkowski(3.0));
 ```

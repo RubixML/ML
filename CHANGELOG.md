@@ -10,6 +10,7 @@
     - Cross validators now stratify dataset automatically
     - Changed default k in K Fold validator
     - Changed order of Loda hyperparameters
+    - Changed hyperparamter order of KNN-based learners
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost

@@ -12,7 +12,6 @@ use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Classifiers\GaussianNB;
 use Rubix\ML\Other\Loggers\BlackHole;
-use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\ClassificationTree;
@@ -46,7 +45,7 @@ class CommitteeMachineTest extends TestCase
 
         $this->estimator = new CommitteeMachine([
             new ClassificationTree(10, 3, 2),
-            new KNearestNeighbors(3, new Euclidean()),
+            new KNearestNeighbors(3),
             new GaussianNB(),
         ], [3, 4, 5]);
 

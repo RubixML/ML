@@ -47,19 +47,19 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $k;
 
     /**
+     * Should we use the inverse distances as confidence scores when making
+     * predictions?
+     *
+     * @var bool
+     */
+    protected $weighted;
+
+    /**
      * The spatial tree used for nearest neighbor queries.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
     protected $tree;
-
-    /**
-     * Should we use the inverse distances as confidence scores when
-     * making predictions?
-     *
-     * @var bool
-     */
-    protected $weighted;
 
     /**
      * The unique class labels.
@@ -72,11 +72,11 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
     /**
      * @param int $k
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param bool $weighted
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $k = 5, ?Spatial $tree = null, bool $weighted = true)
+    public function __construct(int $k = 5, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($k < 1) {
             throw new InvalidArgumentException('At least 1 neighbor is required'
@@ -84,8 +84,8 @@ class KDNeighbors implements Estimator, Learner, Probabilistic, Persistable
         }
 
         $this->k = $k;
-        $this->tree = $tree ?? new KDTree();
         $this->weighted = $weighted;
+        $this->tree = $tree ?? new KDTree();
     }
 
     /**

@@ -25,7 +25,7 @@ use const Rubix\ML\EPSILON;
  * probability density function over the features assuming they are independent
  * and normally (Gaussian) distributed. Assigning low probability density
  * translates to a high anomaly score. The final anomaly score is given as the
- * negative log likelihood of a sample being an outlier.
+ * log likelihood of a sample being an outlier.
  *
  * References:
  * [1] T. F. Chan et al. (1979). Updating Formulae and a Pairwise Algorithm for
@@ -40,14 +40,14 @@ class GaussianKDE implements Estimator, Learner, Online, Ranking, Persistable
     use PredictsSingle;
 
     /**
-     * The minimum negative log likelihood score necessary to flag an anomaly.
+     * The minimum log likelihood score necessary to flag an anomaly.
      *
      * @var float
      */
     protected $threshold;
 
     /**
-     * The prior log probability of an anomaly.
+     * The prior log probability of an outlier.
      *
      * @var float
      */
@@ -245,7 +245,7 @@ class GaussianKDE implements Estimator, Learner, Online, Ranking, Persistable
     }
 
     /**
-     * Calculate the negative log likelihood of a sample being an outlier.
+     * Calculate the log likelihood of a sample being an outlier.
      *
      * @param array $sample
      * @return float

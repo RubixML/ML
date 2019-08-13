@@ -270,7 +270,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             }
 
-            $total = array_sum($this->weights);
+            $total = array_sum($this->weights) ?: EPSILON;
 
             $loss /= $total;
 
@@ -296,7 +296,7 @@ class AdaBoost implements Estimator, Learner, Probabilistic, Verbose, Persistabl
                 }
             }
 
-            $total = array_sum($this->weights);
+            $total = array_sum($this->weights) ?: EPSILON;
 
             foreach ($this->weights as &$weight) {
                 $weight /= $total;

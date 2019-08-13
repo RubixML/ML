@@ -1,5 +1,5 @@
 # Contributing Guidelines
-We strongly believe that our contributors play an important and meaningful role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can continue to provide high quality software that our users love.
+Thank you for considering a code contribution to Rubix ML. We strongly believe that our contributors play the most important role in bringing powerful machine learning tools to the PHP language. Please read over the following guidelines so that we can continue to provide a high quality product that our users love.
 
 ### Pull Request Checklist
 Here are some things to check off before sending in a pull request
@@ -12,10 +12,10 @@ Here are some things to check off before sending in a pull request
 - Does your change require updates to the documentation?
 - Does an entry to the CHANGELOG need to be added?
 
-> Are you new to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
+> New to pull requests? Github has a great [howto](https://help.github.com/articles/about-pull-requests/) to get you started.
 
 ### Coding Style
-Rubix follows the PSR-2 coding style with additional rules. For any new file, include a header that contains a title, a clear short description, any references, and the author and package name. If you are making changes to an existing file, you may add your name to the author list under the last entry if you want.
+Rubix ML follows the PSR-2 coding style with additional rules. For any new class, include a class header that contains a title, a short description of what the class does, any references, and the author and package name. If you are making changes to an existing class, you may add your name to the author list under the last entry if you want.
 
 To run the style checker:
 ```sh
@@ -28,7 +28,7 @@ $ composer fix
 ```
 
 ### Static Analysis
-Static analysis is an important component of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
+Static code analysis is an integral part of our overall testing and quality assurance strategy. Static analysis allows us to catch bugs before they make it into the codebase. Therefore, it is important that your updates pass static analysis at the level set by the project lead.
 
 To run static analysis:
 ```sh
@@ -36,7 +36,7 @@ $ composer analyze
 ```
   
 ### Unit Testing
-All new code *requires* an accompanying unit test whether it be a new feature or a bug fix. Exactly what to test depends on the type of change you are making. See the individual unit testing guidlines below.
+All new code *requires* an accompanying unit test whether it be a new feature or a bug fix. What to test depends on the type of change you are making. See the individual unit testing guidelines below.
 
 To run the unit tests:
 ```sh
@@ -52,7 +52,7 @@ Rubix uses a unique end-to-end testing schema for all learners that involves gen
 Typically bugs indicate an area of the code that has not been properly tested yet. When submitting a bug fix, please include a passing test that would have reproduced the bug prior to your changes.
 
 ### Mutability Policy
-Objects implemented in Rubix have a mutability policy of *generally* immutable which means properties are kept protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some cases, such as for performance reasons, object properties may be allowed to be mutated directly.
+Objects implemented in Rubix have a mutability policy of *generally* immutable which means properties are kept protected and state cannot be modified without creating a new object. Certain objects such as Learners have model parameters that are mutated during training. In such cases, mutability must be controlled through public interfaces. In general, any stateful object that requires mutation must only be updated through a well-defined public method. In some special cases, such as for performance reasons, object properties may be allowed to be mutated directly.
 
 ### Anti Plagiarism Policy
 Our community takes a strong stance against plagiarism, or the copying of another author's code without attribution. Since the spirit of open source is to make code freely available, it is up to the community to enforce policies that deter plagiarism. As such, we do not allow contributions from those who violate this policy.

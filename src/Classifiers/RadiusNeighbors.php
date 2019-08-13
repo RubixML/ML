@@ -25,11 +25,12 @@ use const Rubix\ML\EPSILON;
  * Radius Neighbors
  *
  * Radius Neighbors is a spatial tree-based classifier that takes the weighted vote
- * of each neighbor within a fixed user-defined radius measured by a kernel distance
- * function.
+ * of each neighbor within a fixed user-defined radius measured by a kernelized
+ * distance function. Since the radius of the search can be constrained, Radius
+ * Neighbors is more robust to outliers than K Nearest Neighbors.
  *
- * > **Note**: Unknown samples that have 0 samples from the training set that are
- * within radius will be labeled as outliers (-1).
+ * > **Note**: Unknown samples with no training samples within radius are labeled
+ * *-1*. As such, Radius Neighbors is also a quasi anomaly detector.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -49,19 +50,19 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     protected $radius;
 
     /**
+     * Should we use the inverse distances as confidence scores when making
+     * predictions?
+     *
+     * @var bool
+     */
+    protected $weighted;
+
+    /**
      * The spatial tree used for range queries.
      *
      * @var \Rubix\ML\Graph\Trees\Spatial
      */
     protected $tree;
-
-    /**
-     * Should we use the inverse distances as confidence scores when
-     * making predictions?
-     *
-     * @var bool
-     */
-    protected $weighted;
 
     /**
      * The unique class outcomes.
@@ -74,11 +75,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
 
     /**
      * @param float $radius
-     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @param bool $weighted
+     * @param \Rubix\ML\Graph\Trees\Spatial|null $tree
      * @throws \InvalidArgumentException
      */
-    public function __construct(float $radius = 1.0, ?Spatial $tree = null, bool $weighted = true)
+    public function __construct(float $radius = 1.0, bool $weighted = true, ?Spatial $tree = null)
     {
         if ($radius <= 0.) {
             throw new InvalidArgumentException('Radius must be'
@@ -86,8 +87,8 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
         }
 
         $this->radius = $radius;
-        $this->tree = $tree ?? new BallTree();
         $this->weighted = $weighted;
+        $this->tree = $tree ?? new BallTree();
     }
 
     /**
