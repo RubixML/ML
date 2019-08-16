@@ -39,11 +39,11 @@ $tuple = ['first', 'second', 0.001]; // a 3-tuple
 There are many ways to import data into your script depending on where the data are stored. For example, if your data exist on a filesystem in comma separated (CSV) text format, you can use a library such as [League CSV](https://csv.thephpleague.com/) to read the data into memory. PHP also provides [native functions](https://www.php.net/manual/en/function.str-getcsv.php) for CSV manipulations if that's more your style.
 
 ### What is the difference between categorical and continuous data types?
-In general, there are 2 classes of data types that Rubix distinguishes by convention.
+In general, there are 2 classes of data types that Rubix ML distinguishes by convention.
 
-Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as *gender* or *city* and can be 1 of k possible values. Categorical feature types are always represented as  string internal types.
+Categorical (or *discrete*) data are those that describe a *qualitative* property of a sample such as gender, city, or product category and can be 1 of k possible values. Categorical feature types are always represented as string internal types.
 
-Continuous data are *quantitative* properties of samples such as *age* or *speed* and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
+Continuous data are *quantitative* properties of samples such as age, speed, or temperature and can be any number within the set of infinite real numbers. Continuous features are represented as either floating point or integer types internally.
 
 ### Does Rubix support multiprocessing?
 Yes, Rubix supports parallel processing (multiprocessing) by utilizing a pluggable parallel computing [Backend](backends/api.md) under the hood. Objects that implement the [Parallel](parallel.md) interface are able to take advantage of parallel computing backends.

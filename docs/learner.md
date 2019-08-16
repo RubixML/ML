@@ -54,5 +54,5 @@ var_dump($prediction);
 **Output**
 
 ```sh
-string(8) "divorced"
+string(3) "cat"
 ```

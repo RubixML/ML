@@ -11,6 +11,7 @@
     - Changed default k in K Fold validator
     - Changed order of Loda hyperparameters
     - Changed hyperparamter order of KNN-based learners
+    - Added method to return categories from One Hot Encoder
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost
@@ -301,7 +302,7 @@
     - Committee Machine is now a Meta Estimator Ensemble
     - Added Bootstrap Aggregator Meta Estimator Ensemble
     - Added Gaussian Naive Bayes
-    - Naive Bayes classifiers are now Elastic Estimators
+    - Naive Bayes classifiers are now Online learners
     - Added tolerance to Robust Z Score detector
     - Added Concentration clustering metric (Calinski Harabasz)
 

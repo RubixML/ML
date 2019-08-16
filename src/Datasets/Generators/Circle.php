@@ -36,7 +36,7 @@ class Circle implements Generator
     protected $scale;
 
     /**
-     * The amount of gaussian noise to add to the points as a percentage.
+     * The factor of gaussian noise to add to the data points.
      *
      * @var float
      */

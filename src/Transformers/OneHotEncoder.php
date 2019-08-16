@@ -13,7 +13,7 @@ use RuntimeException;
  * *one-hot* representation where n is equal to the number of unique categories in that
  * column. After the transformation, a 0 in any location indicates that the category
  * represented by that column is not present in the sample whereas a 1 indicates that a
- * category is present. One hot encoded is typically used to convert categorical data to
+ * category is present. One hot encoding is typically used to convert categorical data to
  * continuous so that it can be used to train a learner that is only compatible with
  * continuous features.
  *
@@ -38,6 +38,16 @@ class OneHotEncoder implements Transformer, Stateful
     public function fitted() : bool
     {
         return isset($this->categories);
+    }
+
+    /**
+     * Return the categories computed during fitting indexed by feature column.
+     *
+     * @return array|null
+     */
+    public function categories() : ?array
+    {
+        return $this->categories ? array_map('array_flip', $this->categories) : null;
     }
 
     /**

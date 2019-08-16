@@ -20,8 +20,9 @@ use RuntimeException;
 /**
  * Regression Tree
  *
- * A Decision Tree learning algorithm (CART) that performs greedy splitting
- * by minimizing the variance (*impurity*) among decision node splits.
+ * A decision tree based on the CART (Classification and Regression Tree) learning
+ * algorithm that performs greedy splitting by minimizing the variance of the labels
+ * at each node split.
  *
  * References:
  * [1] W. Y. Loh. (2011). Classification and Regression Trees.

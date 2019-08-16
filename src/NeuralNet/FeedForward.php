@@ -182,17 +182,19 @@ class FeedForward implements Network
     }
 
     /**
-     * Do a forward and backward pass of the network in one call. Returns
+     * Perform a forward and backward pass of the network in one call. Returns
      * the loss from the backward pass.
      *
-     * @param \Rubix\ML\Datasets\Labeled $batch
+     * @param \Rubix\ML\Datasets\Labeled $dataset
      * @return float
      */
-    public function roundtrip(Labeled $batch) : float
+    public function roundtrip(Labeled $dataset) : float
     {
-        $this->feed(Matrix::quick($batch->samples())->transpose());
+        $this->feed(Matrix::quick($dataset->samples())->transpose());
+        
+        $loss = $this->backpropagate($dataset->labels());
 
-        return $this->backpropagate($batch->labels());
+        return $loss;
     }
 
     /**
@@ -209,7 +211,9 @@ class FeedForward implements Network
             $input = $hidden->forward($input);
         }
 
-        return $this->output->forward($input);
+        $activations = $this->output->forward($input);
+
+        return $activations;
     }
 
     /**
@@ -226,7 +230,9 @@ class FeedForward implements Network
             $input = $hidden->infer($input);
         }
 
-        return $this->output->infer($input);
+        $activations = $this->output->infer($input);
+
+        return $activations;
     }
 
     /**

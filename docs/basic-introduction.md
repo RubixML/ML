@@ -92,16 +92,16 @@ bool(true)
 
 For our small training set, the training process should only take a matter of microseconds, but larger datasets with higher dimensionality can take much longer. Once the estimator has been fully trained, we can now feed in some unknown samples to see what the estimator predicts.
 
-Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could make predic whether or not they will stay married by taking their answers and running them passed the trained KNN estimator in and [Unlabeled](https://docs.rubixml.com/en/latest/datasets/unlabeled.html) dataset.
+Suppose that we went out and collected 5 new data points from our friends using the same questions we asked the couples we interviewed for our training set. We could predict whether or not they will stay married by taking their answers and running them past the trained KNN estimator in and [Unlabeled](https://docs.rubixml.com/en/latest/datasets/unlabeled.html) dataset.
 
 ```php
 use Rubix\ML\Datasets\Unlabeled;
 
-$unknown = [
+$samples = [
     [4, 3, 44.2], [2, 2, 16.7], [2, 4, 19.5], [1, 5, 8.6], [3, 3, 55.0],
 ];
 
-$dataset = new Unlabeled($unknown);
+$dataset = new Unlabeled($samples);
 
 $predictions = $estimator->predict($dataset);
 
@@ -121,9 +121,9 @@ array(5) {
 ```
 
 # Model Evaluation
-Making predictions is not very useful unless the estimator can correctly generalize what it has learned during training to the real world. Cross Validation is a process by which we can test the model for its generalization ability. For the purposes of this introduction, we will use the [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
+To test that the estimator can correctly generalize what it has learned during training to the real world we use a process called *cross validation*. The goal of cross validation is to train and test the learner on different subsets of the dataset as to produce a validation score. For the purposes of this introduction, we will use the [Hold Out](cross-validation/hold-out.md) validator which takes a portion of the dataset for testing and leaves the rest for training. The reason we do not use *all* of the data for training is because we want to test the estimator on samples that it has never seen before.
 
-The Hold Out validator requires you to set the ratio of testing to training samples as a constructor parameter. In this case, let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
+The Hold Out validator requires you to set the ratio of testing to training samples as a constructor parameter. Let's choose to use a factor of 0.2 (20%) of the dataset for testing leaving the rest (80%) for training.
 
 > **Note:** Typically, 0.2 is a good default choice however your mileage may vary. The important thing to note here is the trade off between more data for training and more data to produce better testing results.
 
