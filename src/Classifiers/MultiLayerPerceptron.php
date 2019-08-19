@@ -422,6 +422,11 @@ class MultiLayerPerceptron implements Estimator, Online, Probabilistic, Verbose,
         if (end($this->scores) < $bestScore) {
             if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
+
+                if ($this->logger) {
+                    $this->logger->info('Network restored from'
+                        . 'previous snapshot');
+                }
             }
         }
 

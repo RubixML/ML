@@ -17,7 +17,7 @@ class WildGuessTest extends TestCase
     {
         $this->values = [1, 2, 3, 4, 5];
 
-        $this->strategy = new WildGuess(2);
+        $this->strategy = new WildGuess(0.5);
     }
 
     public function test_build_random_copy_paste_strategy()
@@ -27,7 +27,7 @@ class WildGuessTest extends TestCase
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_make_guess()
+    public function test_range_guess()
     {
         $this->strategy->fit($this->values);
 

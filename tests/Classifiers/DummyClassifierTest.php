@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\DummyClassifier;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
-use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Prior;
 use PHPUnit\Framework\TestCase;
 
 class DummyClassifierTest extends TestCase
@@ -35,7 +35,7 @@ class DummyClassifierTest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.),
         ], [2, 3, 4]);
 
-        $this->estimator = new DummyClassifier(new PopularityContest());
+        $this->estimator = new DummyClassifier(new Prior());
 
         $this->metric = new Accuracy();
 

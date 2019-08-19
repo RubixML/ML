@@ -23,7 +23,7 @@ class ConstantTest extends TestCase
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_make_guess()
+    public function test_guess()
     {
         $this->strategy->fit([]);
 

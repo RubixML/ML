@@ -5,12 +5,13 @@ namespace Rubix\ML\Other\Strategies;
 use InvalidArgumentException;
 use RuntimeException;
 
+use const Rubix\ML\PHI;
+
 /**
  * Wild Guess
  *
- * It is what you think it is. Make a guess somewhere in between the minimum
- * and maximum values observed during fitting with equal probability given to
- * all values within range.
+ * Guess a random number somewhere between an upper and lower bound given by
+ * the data and a user-defined *shrinkage* parameter.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -19,11 +20,11 @@ use RuntimeException;
 class WildGuess implements Continuous
 {
     /**
-     * The number of decimal places of precision for each guess.
-     *
-     * @var int
+     * The range between the upper and lower bounds of the guess. A value of 1.0
+     * indicates the full range of fitted values, whereas the range becomes narrower
+     * as the parameter goes to 0.
      */
-    protected $precision;
+    protected $alpha;
 
     /**
      * The minimum value of the fitted data.
@@ -40,17 +41,17 @@ class WildGuess implements Continuous
     protected $max;
 
     /**
-     * @param int $precision
+     * @param float $alpha
      * @throws \InvalidArgumentException
      */
-    public function __construct(int $precision = 2)
+    public function __construct(float $alpha = 0.5)
     {
-        if ($precision < 0) {
-            throw new InvalidArgumentException('The number of decimal places'
-                . ' cannot be less than 0.');
+        if ($alpha <= 0. or $alpha > 1.) {
+            throw new InvalidArgumentException('Alpha must be between'
+                . " 0 and 1, $alpha given.");
         }
 
-        $this->precision = $precision;
+        $this->alpha = $alpha;
     }
 
     /**
@@ -62,12 +63,22 @@ class WildGuess implements Continuous
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy must be fit with'
-                . ' at least 1 value.');
+            throw new InvalidArgumentException('Strategy must be fitted'
+                . ' to at least 1 value.');
         }
 
-        $this->min = min($values);
-        $this->max = max($values);
+        $this->min = $this->alpha * min($values);
+        $this->max = $this->alpha * max($values);
+    }
+
+    /**
+     * Return the lower and upper bounds in a 2-tuple.
+     *
+     * @return (int|float|null)[]
+     */
+    public function range() : array
+    {
+        return [$this->min, $this->max];
     }
 
     /**
@@ -82,9 +93,9 @@ class WildGuess implements Continuous
             throw new RuntimeException('Strategy has not been fitted.');
         }
 
-        $min = (int) round($this->min * $this->precision);
-        $max = (int) round($this->max * $this->precision);
+        $min = (int) round($this->min * PHI);
+        $max = (int) round($this->max * PHI);
 
-        return rand($min, $max) / $this->precision;
+        return rand($min, $max) / PHI;
     }
 }

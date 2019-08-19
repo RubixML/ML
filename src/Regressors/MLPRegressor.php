@@ -411,6 +411,11 @@ class MLPRegressor implements Estimator, Online, Verbose, Persistable
         if (end($this->scores) < $bestScore) {
             if ($bestSnapshot) {
                 $this->network->restore($bestSnapshot);
+
+                if ($this->logger) {
+                    $this->logger->info('Network restored from'
+                        . 'previous snapshot');
+                }
             }
         }
 

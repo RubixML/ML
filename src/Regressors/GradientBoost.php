@@ -404,6 +404,10 @@ class GradientBoost implements Estimator, Learner, Verbose, Persistable
 
         if (end($this->scores) < $bestScore) {
             $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
+
+            if ($this->logger) {
+                $this->logger->info("Ensemble restored to epoch $bestEpoch");
+            }
         }
 
         if ($this->logger) {

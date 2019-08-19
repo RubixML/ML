@@ -18,7 +18,7 @@ This estimator does not have any additional methods.
 ### Example
 ```php
 use Rubix\ML\Classifiers\DummyClassifier;
-use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Prior;
 
-$estimator = new DummyClassifier(new PopularityContest());
+$estimator = new DummyClassifier(new Prior());
 ```

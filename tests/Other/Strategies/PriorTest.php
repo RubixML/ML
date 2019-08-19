@@ -2,12 +2,12 @@
 
 namespace Rubix\ML\Tests\Other\Strategies;
 
+use Rubix\ML\Other\Strategies\Prior;
 use Rubix\ML\Other\Strategies\Strategy;
 use Rubix\ML\Other\Strategies\Categorical;
-use Rubix\ML\Other\Strategies\PopularityContest;
 use PHPUnit\Framework\TestCase;
 
-class PopularityContestTest extends TestCase
+class PriorTest extends TestCase
 {
     protected $values;
 
@@ -17,19 +17,27 @@ class PopularityContestTest extends TestCase
     {
         $this->values = ['a', 'a', 'b', 'a', 'c'];
 
-        $this->strategy = new PopularityContest();
+        $this->strategy = new Prior();
     }
 
     public function test_build_local_celebrity_strategy()
     {
-        $this->assertInstanceOf(PopularityContest::class, $this->strategy);
+        $this->assertInstanceOf(Prior::class, $this->strategy);
         $this->assertInstanceOf(Categorical::class, $this->strategy);
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_make_guess()
+    public function test_priors_guess()
     {
         $this->strategy->fit($this->values);
+
+        $expected = [
+            'a' => 0.6,
+            'b' => 0.2,
+            'c' => 0.2,
+        ];
+
+        $this->assertEquals($expected, $this->strategy->priors());
 
         $value = $this->strategy->guess();
 

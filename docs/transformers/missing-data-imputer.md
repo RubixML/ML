@@ -20,8 +20,8 @@ This transformer does not have any additional methods.
 ### Example
 ```php
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Other\Strategies\BlurryPercentile;
-use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Percentile;
+use Rubix\ML\Other\Strategies\Prior;
 
-$transformer = new MissingDataImputer('?', new BlurryPercentile(0.61), new PopularityContest());
+$transformer = new MissingDataImputer('?', new Percentile(0.61), new Prior());
 ```

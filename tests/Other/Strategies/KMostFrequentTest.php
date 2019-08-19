@@ -27,9 +27,13 @@ class KMostFrequentTest extends TestCase
         $this->assertInstanceOf(Strategy::class, $this->strategy);
     }
 
-    public function test_make_guess()
+    public function test_classes_guess()
     {
         $this->strategy->fit($this->values);
+
+        $exptected = ['a', 'b'];
+
+        $this->assertEquals($exptected, $this->strategy->classes());
 
         $value = $this->strategy->guess();
 

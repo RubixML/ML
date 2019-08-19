@@ -10,7 +10,7 @@ use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Other\Helpers\DataType;
 use Rubix\ML\Other\Traits\PredictsSingle;
 use Rubix\ML\Other\Strategies\Categorical;
-use Rubix\ML\Other\Strategies\PopularityContest;
+use Rubix\ML\Other\Strategies\Prior;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -48,7 +48,7 @@ class DummyClassifier implements Estimator, Learner, Persistable
      */
     public function __construct(?Categorical $strategy = null)
     {
-        $this->strategy = $strategy ?? new PopularityContest();
+        $this->strategy = $strategy ?? new Prior();
         $this->trained = false;
     }
 

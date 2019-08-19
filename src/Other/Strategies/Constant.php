@@ -5,7 +5,7 @@ namespace Rubix\ML\Other\Strategies;
 /**
  * Constant
  *
- * Always guess a constant value.
+ * Always guess the same value.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -14,7 +14,7 @@ namespace Rubix\ML\Other\Strategies;
 class Constant implements Continuous
 {
     /**
-     * The value to guess.
+     * The value to constantly guess.
      *
      * @var float
      */
@@ -23,7 +23,7 @@ class Constant implements Continuous
     /**
      * @param float $value
      */
-    public function __construct(float $value)
+    public function __construct(float $value = 0.)
     {
         $this->value = $value;
     }

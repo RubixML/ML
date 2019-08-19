@@ -3,24 +3,35 @@
 namespace Rubix\ML\Other\Strategies;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * K Most Frequent
  *
- * This Strategy outputs one of K most frequently occurring classes at random.
+ * This Strategy outputs one of k most frequently occurring classes at random
+ * with equal probability.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KMostFrequent extends Lottery
+class KMostFrequent implements Categorical
 {
     /**
-     * The number of most frequent categories to guess from.
+     * The number of most frequent classes to consider.
      *
      * @var int
      */
     protected $k;
+
+    /**
+     * The k most frequent classes.
+     *
+     * @var array
+     */
+    protected $classes = [
+        //
+    ];
 
     /**
      * @param int $k
@@ -29,11 +40,21 @@ class KMostFrequent extends Lottery
     public function __construct(int $k = 1)
     {
         if ($k < 1) {
-            throw new InvalidArgumentException('Cannot guess less than 1'
-                . ' category.');
+            throw new InvalidArgumentException('Cannot guess less than'
+                . " 1 class, $k given.");
         }
 
         $this->k = $k;
+    }
+
+    /**
+     * Return the k most frequent classes.
+     *
+     * @return string[]
+     */
+    public function classes() : array
+    {
+        return $this->classes;
     }
 
     /**
@@ -45,16 +66,31 @@ class KMostFrequent extends Lottery
     public function fit(array $values) : void
     {
         if (empty($values)) {
-            throw new InvalidArgumentException('Strategy must be fit with'
-                . ' at least 1 value.');
+            throw new InvalidArgumentException('Strategy must be fitted'
+                . ' to at least 1 value.');
         }
 
-        $categories = array_count_values($values);
+        $classes = array_count_values($values);
 
-        arsort($categories);
+        arsort($classes);
 
-        $categories = array_slice($categories, 0, $this->k, true);
+        $classes = array_slice($classes, 0, $this->k, true);
 
-        $this->categories = array_keys($categories);
+        $this->classes = array_keys($classes);
+    }
+
+    /**
+     * Make a guess.
+     *
+     * @throws \RuntimeException
+     * @return string
+     */
+    public function guess() : string
+    {
+        if (!$this->classes) {
+            throw new RuntimeException('Strategy has not been fitted.');
+        }
+
+        return $this->classes[rand(0, $this->k - 1)];
     }
 }

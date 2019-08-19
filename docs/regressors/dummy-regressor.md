@@ -18,7 +18,7 @@ This estimator does not have any additional methods.
 ### Example
 ```php
 use Rubix\ML\Regressors\DummyRegressor;
-use Rubix\ML\Other\Strategies\BlurryPercentile;
+use Rubix\ML\Other\Strategies\Percentile;
 
-$estimator = new DummyRegressor(new BlurryPercentile(56.5, 0.1));
+$estimator = new DummyRegressor(new Percentile(56.5, 0.1));
 ```

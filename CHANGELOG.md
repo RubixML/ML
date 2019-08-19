@@ -12,6 +12,11 @@
     - Changed order of Loda hyperparameters
     - Changed hyperparamter order of KNN-based learners
     - Added method to return categories from One Hot Encoder
+    - Removed Lottery and Blurry Percentile guessing strategy
+    - Added Percentile guessing strategy
+    - Added shrinkage parameter to Wild Guess strategy
+    - Added additional methods to random Strategies
+    - Renamed Popularity Contest strategy to Prior
 
 - 0.0.14-beta
     - Added feature importances to Gradient Boost
